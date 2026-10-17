@@ -1,0 +1,25 @@
+{
+    "name": "mob.skeleton.death",
+    "volume": 0.9,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.9,
+            "density": 80,
+            "attack": 0.01,
+            "curve": 1.5,
+            "highpass": 800,
+            "lowpass": 5000,
+            "gain": 1.0
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.6,
+            "frequency": 380,
+            "endFrequency": 120,
+            "attack": 0.01,
+            "curve": 1.5,
+            "gain": 0.3
+        }
+    ]
+}

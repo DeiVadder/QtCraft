@@ -2,9 +2,21 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
+**QtCraft:** [Any arrow](#tag-qtcraft-arrows) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
 
 ## QtCraft
+
+### <a id="tag-qtcraft-arrows"></a>Any arrow
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:arrows` |
+
+**Items in this group**
+
+[Arrow](items.md#item-qtcraft-arrow)
 
 ### <a id="tag-qtcraft-chunk_loaders"></a>Any chunk loader
 

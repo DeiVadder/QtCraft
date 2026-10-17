@@ -1,0 +1,11 @@
+{
+    "name": "bone_meal",
+    "type": "shapeless",
+    "ingredients": [
+        "bone"
+    ],
+    "result": {
+        "item": "bone_meal",
+        "count": 3
+    }
+}

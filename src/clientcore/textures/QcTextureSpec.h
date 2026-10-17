@@ -189,6 +189,14 @@ struct QcTextureSpec
         Dropper,
         Rail,
         Minecart,
+        // Patterns of QcTextureRangedPatterns (decision E-425): a bow (wood primary, string
+        // secondary), an arrow (shaft primary, fletching secondary), a feather (vanes primary,
+        // quill secondary) and a bone (primary, its knobs shaded by secondary; decision E-426), all
+        // icons on the diagonal.
+        Bow,
+        Arrow,
+        Feather,
+        Bone,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

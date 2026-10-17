@@ -323,6 +323,31 @@ private slots:
         QVERIFY(checked >= 8);
     }
 
+    void undeadStandInShade()
+    {
+        // The showcase stands at noon: creatures that burn in daylight (decision E-426) stand under
+        // an opaque roof, which glass is not.
+        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const QcShowcaseGenerator generator(content);
+        const QHash<QcChunkPos, std::shared_ptr<QcChunk>> chunks = generateAll(generator);
+        int checked = 0;
+        const QcWorldSetup setup = generator.setup();
+        for (const QcWorldSetup::Mob &placed : setup.mobs) {
+            const QcMobDefinition &mob = content->mobs().at(*content->mobIndex(placed.mob));
+            if (!mob.burnsInDaylight) {
+                continue;
+            }
+            bool roofed = false;
+            for (int y = int(std::floor(placed.at.y + mob.height)); y < QcWorld::worldHeight && !roofed; ++y) {
+                const QcBlockId block = blockAt(chunks, {int(std::floor(placed.at.x)), y, int(std::floor(placed.at.z))});
+                roofed = block != qcAirBlockId && content->block(block).opaque;
+            }
+            QVERIFY2(roofed, qPrintable(mob.name));
+            ++checked;
+        }
+        QVERIFY(checked >= 2);
+    }
+
     void labelsNameTheBlocksAndLieInTheirChunk()
     {
         const QcShowcasePlan &plan = m_generator->plan();

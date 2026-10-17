@@ -1,0 +1,8 @@
+{
+    "name": "skeleton_head",
+    "pattern": "speckle",
+    "primary": "#d8d6cc",
+    "secondary": "#b8b6aa",
+    "variation": 0.08,
+    "seed": 5301
+}

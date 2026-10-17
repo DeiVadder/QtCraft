@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -142,6 +142,10 @@ Kürbis- und Melonenkerne wachsen zu Stängeln. Ein reifer Stängel legt seine F
 
 Körner, Karotten und Kartoffeln, die auf freiem Ackerboden liegen, pflanzen eines aus ihrem Stapel selbst (geprüft alle 1 s, mit hoher Wahrscheinlichkeit). Ein Stapel, dessen eigener Block belegt ist oder der mehr enthält, bepflanzt den freien Ackerboden direkt um ihn herum, ein Korn pro Prüfung; so bepflanzen auch zu einem Stapel verschmolzene Drops das ganze Feld. Fließendes Wasser trägt liegende Items mit seiner Strömung, stehendes nicht. Ein von hinten mit Wasser abgespültes Feld bepflanzt sich dort neu, wo die Drops liegen bleiben; den Rest der Ernte einsammeln.
 
+**Knochenmehl**
+
+Ein Knochen eines Skeletts ergibt drei Knochenmehl. Auf eine noch nicht reife Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wird mit 45 % Wahrscheinlichkeit sofort zum Baum, wenn er Platz hat. Jede Anwendung verbraucht ein Knochenmehl, außer im Kreativmodus.
+
 **Tiere züchten**
 
 Schweine mit Karotten oder Kartoffeln, Schafe mit Weizen füttern: ein gefüttertes erwachsenes Tier verliebt sich für eine Weile und läuft zu einem anderen verliebten Tier seiner Art; zwei, die sich sehen, bekommen ein Junges. Eltern ruhen fünf Minuten, bevor sie wieder Junge bekommen; ein Junges wächst in zwanzig Minuten heran, jedes Füttern nimmt 10 % dieser Zeit weg. Junge Tiere lassen nichts fallen. Wo schon zu viele Tiere leben, kommen keine Jungen mehr.
@@ -152,7 +156,7 @@ Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zu
 
 **Siehe auch**
 
-[Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato), [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem), [Melonenstängel](blocks.md#block-qtcraft-melon_stem), [Brot](food.md#item-qtcraft-bread), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep)
+[Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato), [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem), [Melonenstängel](blocks.md#block-qtcraft-melon_stem), [Knochenmehl](items.md#item-qtcraft-bone_meal), [Brot](food.md#item-qtcraft-bread), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="chapter-qtcraft-signal"></a>Signalstaub
 
@@ -402,6 +406,24 @@ Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab d
 
 [Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel)
 
+### <a id="chapter-qtcraft-archery"></a>Bogenschießen
+
+**Spannen und schießen**
+
+Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und lass los, um zu schießen. Voll gespannt ist er nach 1 s und schickt den Pfeil mit 60 m/s los; kurz gespannt schießt er schwächer, sehr kurz gar nicht. Der Bogen nimmt den ersten Pfeil deines Inventars und nutzt sich mit jedem Schuss ab.
+
+**Pfeile im Flug**
+
+Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Treffer richtet umso mehr Schaden an, je schneller der Pfeil fliegt, und stößt das Ziel zurück; Rüstung schützt wie gegen Schläge. Pfeile bleiben im getroffenen Block stecken und fallen, wenn er verschwindet; lauf darüber, um sie aufzuheben. Nach 60 s verschwinden sie. Eine Welt hält höchstens 1024 fliegende oder steckende Pfeile und höchstens 64 steckende in einem Chunk (die ältesten gehen zuerst).
+
+**Werfen**
+
+Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen.
+
+**Siehe auch**
+
+[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball)
+
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
 **Wenn du stirbst**
@@ -444,13 +466,17 @@ Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine
 
 Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf Gras, feindliche im Dunkeln bei Nacht und in Höhlen mindestens 8 Blöcke unter der Oberfläche. Fackeln und Lampen halten feindliche Wesen fern. Jede Seite nennt Blöcke, Biome, Zeit und Licht, die ein Wesen braucht.
 
+**Brennen im Tageslicht**
+
+Zombies und Skelette fangen im direkten Sonnenlicht Feuer und brennen noch 8 s, nachdem sie es verlassen haben. Schatten, ein Dach oder Laub über dem Kopf, Wasser und Regen schützen sie, ebenso Höhlen.
+
 **Obergrenzen**
 
 Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 

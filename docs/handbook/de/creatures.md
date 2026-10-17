@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -94,7 +94,7 @@ Friedliches Tier des Graslands; lässt Wolle fallen.
 | Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
 | Vermehrt sich mit | [Weizen](items.md#item-qtcraft-wheat) |
 | Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
-| Beute | [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) |
+| Beute | [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool) (50 %), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) (50 %) |
 
 **Erscheint auf**
 
@@ -169,9 +169,38 @@ Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
 
 Alle Biome.
 
+### <a id="mob-qtcraft-skeleton"></a>Skelett
+
+Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schießt Pfeile mit seinem Bogen, sobald er gespannt ist; kommst du zu nah, weicht es zurück. Seine Pfeile lassen sich nicht aufheben. Brennt im direkten Sonnenlicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:skeleton` |
+| Verhalten | feindlich: hält Abstand, umkreist Spieler und schießt auf sie |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 2,6 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nachts |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Knochen](items.md#item-qtcraft-bone), [Knochen](items.md#item-qtcraft-bone) (50 %), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil](items.md#item-qtcraft-arrow) (50 %) |
+
+**Erscheint auf**
+
+[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 
-Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu.
+Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu. Brennt im direkten Sonnenlicht.
 
 | | |
 |---|---|
@@ -188,7 +217,7 @@ Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und sch
 | Gruppengröße | bis 3 |
 | Erscheinungsgewicht | 3 |
 | Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
-| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato) |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %), [Feder](items.md#item-qtcraft-feather) (25 %) |
 
 **Erscheint auf**
 

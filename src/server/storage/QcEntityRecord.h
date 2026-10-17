@@ -5,6 +5,7 @@
 #include "server/entities/QcExperienceOrb.h"
 #include "server/entities/QcFallingBlock.h"
 #include "server/entities/QcMinecart.h"
+#include "server/entities/QcProjectile.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobManager.h"
 
@@ -42,6 +43,9 @@ struct QcEntityRecord
     QList<Ordered<QcMinecart>> minecarts;
     // Experience orbs with their motion, value and age; the id is not saved (decision E-398).
     QList<Ordered<QcExperienceOrb>> orbs;
+    // Projectiles flying or stuck, by their type's name; the id and the shooter are not saved
+    // (decision E-425).
+    QList<Ordered<QcProjectile>> projectiles;
     // The chunk got its group of animals already (decision E-086); kept with the chunk.
     bool populated = false;
 
@@ -49,7 +53,7 @@ struct QcEntityRecord
     bool isEmpty() const
     {
         return creatures.isEmpty() && items.isEmpty() && fallingBlocks.isEmpty() && stands.isEmpty() && minecarts.isEmpty()
-               && orbs.isEmpty();
+               && orbs.isEmpty() && projectiles.isEmpty();
     }
 };
 

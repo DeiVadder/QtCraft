@@ -98,6 +98,8 @@ void encode(QDataStream &stream, QcMsg::PlayerExperience m);
 void encode(QDataStream &stream, QcMsg::GameMode m);
 void encode(QDataStream &stream, QcMsg::CreativeItem m);
 void encode(QDataStream &stream, QcMsg::PickBlock m);
+void encode(QDataStream &stream, QcMsg::DrawLauncher m);
+void encode(QDataStream &stream, QcMsg::ThrowItem m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SelectHotbarSlot>, QDataStream &stream);
@@ -118,6 +120,8 @@ void encode(QDataStream &stream, QcMsg::PickBlock m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DrawLauncher>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ThrowItem>, QDataStream &stream);
 
 // Trading (QcTradeCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::TradeState &m);

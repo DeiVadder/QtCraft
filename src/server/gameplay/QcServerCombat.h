@@ -22,7 +22,22 @@ public:
 
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
+    // A blow or a hit on a creature: from where, and whether a player dealt it (only then it gives
+    // experience).
+    struct Blow
+    {
+        quint32 creature = 0;
+        double damage = 0.0;
+        QcVec3 from;
+        bool byPlayer = false;
+        // Strength of the push away from `from`; 1 is a blow's (decision E-427).
+        double knockback = 1.0;
+    };
+
     void attack(QcServerClient &client, quint32 entityId);
+    // Deals `blow` with the creature's sounds, its loot and experience when it dies; false when the
+    // creature was not hurt (unknown, or invulnerable for a moment after the last hit).
+    static bool hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow);
     // Drops the loot of a creature that died at `position`, each drop by its chance (also burn
     // deaths, QcBodyBurning).
     static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position);

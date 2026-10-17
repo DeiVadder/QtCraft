@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
+**QtCraft:** [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
 
 ## QtCraft
 
@@ -73,6 +73,18 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 **Items dieser Gruppe**
 
 [Blauer Farbstoff](items.md#item-qtcraft-blue_dye), [Brauner Farbstoff](items.md#item-qtcraft-brown_dye), [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye), [Grauer Farbstoff](items.md#item-qtcraft-gray_dye), [Grüner Farbstoff](items.md#item-qtcraft-green_dye), [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye), [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye), [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye), [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye), [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye), [Roter Farbstoff](items.md#item-qtcraft-red_dye), [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye), [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye), [Violetter Farbstoff](items.md#item-qtcraft-purple_dye), [Weißer Farbstoff](items.md#item-qtcraft-white_dye)
+
+### <a id="tag-qtcraft-arrows"></a>Beliebiger Pfeil
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:arrows` |
+
+**Items dieser Gruppe**
+
+[Pfeil](items.md#item-qtcraft-arrow)
 
 ### <a id="tag-qtcraft-coals"></a>Kohle oder Holzkohle
 

@@ -68,6 +68,18 @@ void writeItem(QDataStream &stream, const QcItemDefinition &item)
     }
     stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand << item.cartBlock << item.ignites;
     QcArmourSerializer::write(stream, item.armour);
+    // The launcher (decision E-425): the client draws it while the use button is held, only with
+    // ammunition (the projectile kind, checked when the content was finished) outside creative mode.
+    stream << item.launcher.has_value();
+    if (item.launcher) {
+        stream << item.launcher->drawSeconds << item.launcher->speed << item.launcher->minPower << item.launcher->ammunition;
+    }
+    stream << item.projectile;
+    // Thrown by hand (decision E-427): the client swings the arm and keeps the cooldown.
+    stream << item.throwable.has_value();
+    if (item.throwable) {
+        stream << item.throwable->speed << item.throwable->cooldownSeconds << item.throwable->inaccuracyDegrees;
+    }
 }
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -187,6 +199,29 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand >> item.cartBlock >> item.ignites;
     if (!QcArmourSerializer::read(stream, item.armour)) {
         return false;
+    }
+    bool launcher = false;
+    stream >> launcher;
+    if (launcher) {
+        QcLauncherDefinition read;
+        stream >> read.drawSeconds >> read.speed >> read.minPower >> read.ammunition;
+        if (!(read.drawSeconds >= 0.05 && read.drawSeconds <= 10.0) || !(read.minPower >= 0.0 && read.minPower <= 1.0)
+            || !(read.speed >= 1.0 && read.speed <= QcProjectileDefinition::maxSpeed) || read.ammunition.size() > 64) {
+            return false;
+        }
+        item.launcher = read;
+    }
+    stream >> item.projectile;
+    bool throwable = false;
+    stream >> throwable;
+    if (throwable) {
+        QcThrowableDefinition read;
+        stream >> read.speed >> read.cooldownSeconds >> read.inaccuracyDegrees;
+        if (!(read.cooldownSeconds >= 0.0 && read.cooldownSeconds <= 60.0) || !(read.speed >= 1.0 && read.speed <= QcProjectileDefinition::maxSpeed)
+            || !(read.inaccuracyDegrees >= 0.0 && read.inaccuracyDegrees <= 45.0)) {
+            return false;
+        }
+        item.throwable = read;
     }
     item.maxStack = maxStack;
     item.toolLevel = toolLevel;

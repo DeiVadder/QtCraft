@@ -18,6 +18,7 @@
                 "chapter:qtcraft:villages",
                 "chapter:qtcraft:villagers",
                 "chapter:qtcraft:trading",
+                "chapter:qtcraft:archery",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -329,6 +330,7 @@
         {
             "entries": [
                 "item:qtcraft:blue_dye",
+                "item:qtcraft:bow",
                 "item:qtcraft:brown_dye",
                 "item:qtcraft:book",
                 "item:qtcraft:diamond",
@@ -336,6 +338,7 @@
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
                 "item:qtcraft:string",
+                "item:qtcraft:feather",
                 "item:qtcraft:flint",
                 "item:qtcraft:flint_and_steel",
                 "item:qtcraft:fired_lamp_shell",
@@ -350,6 +353,8 @@
                 "item:qtcraft:light_gray_dye",
                 "item:qtcraft:lime_dye",
                 "item:qtcraft:charcoal",
+                "item:qtcraft:bone",
+                "item:qtcraft:bone_meal",
                 "item:qtcraft:coal",
                 "item:qtcraft:coal_chunk",
                 "item:qtcraft:pumpkin_seeds",
@@ -362,10 +367,12 @@
                 "item:qtcraft:melon_seeds",
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:paper",
+                "item:qtcraft:arrow",
                 "item:qtcraft:pink_dye",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:armor_stand",
                 "item:qtcraft:slimeball",
+                "item:qtcraft:snowball",
                 "item:qtcraft:bowl",
                 "item:qtcraft:black_dye",
                 "item:qtcraft:emerald",
@@ -462,6 +469,7 @@
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:pig",
+                "mob:qtcraft:skeleton",
                 "mob:qtcraft:zombie"
             ],
             "id": "creatures",
@@ -530,6 +538,7 @@
                 "tag:qtcraft:wool",
                 "tag:qtcraft:chunk_loaders",
                 "tag:qtcraft:dyes",
+                "tag:qtcraft:arrows",
                 "tag:qtcraft:coals"
             ],
             "id": "tags",
@@ -692,6 +701,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -840,6 +855,12 @@
                             "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -1026,6 +1047,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -1192,6 +1219,12 @@
                             "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -1366,6 +1399,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -1532,6 +1571,12 @@
                             "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -1718,6 +1763,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -1854,6 +1905,12 @@
                             "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -15148,6 +15205,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -17772,6 +17835,12 @@
                             "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -39287,6 +39356,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -43499,13 +43574,13 @@
                     "label": "Abbauen mit der Hand",
                     "links": [
                     ],
-                    "value": "0,3 s"
+                    "value": "1 s"
                 },
                 {
                     "label": "Werkzeug",
                     "links": [
                     ],
-                    "value": "Schaufel (schneller, nicht nötig)"
+                    "value": "Schaufel, Stufe 1 oder besser (nötig für Beute)"
                 },
                 {
                     "label": "Abbauen mit dem besten Werkzeug",
@@ -43523,13 +43598,19 @@
                     "label": "Beute",
                     "links": [
                         {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Schneeblock"
+                            "icon": "qtcraft:snowball",
+                            "note": "4×",
+                            "target": "item:qtcraft:snowball",
+                            "text": "Schneeball"
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
                 },
                 {
                     "label": "Klang",
@@ -43544,6 +43625,59 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Schneeball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Schneeball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Schneeball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Schneeball"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:snow_block",
+                            "needsTable": false,
+                            "note": "Handwerksraster",
+                            "result": {
+                                "icon": "qtcraft:snow_block",
+                                "note": "",
+                                "target": "block:qtcraft:snow_block",
+                                "text": "Schneeblock"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
                 {
                     "links": [
                         {
@@ -43594,7 +43728,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "Schneller mit"
+                    "title": "Abbaubar mit"
                 },
                 {
                     "links": [
@@ -43618,6 +43752,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -43655,13 +43795,13 @@
                     "label": "Abbauen mit der Hand",
                     "links": [
                     ],
-                    "value": "0,15 s"
+                    "value": "0,5 s"
                 },
                 {
                     "label": "Werkzeug",
                     "links": [
                     ],
-                    "value": "Schaufel (schneller, nicht nötig)"
+                    "value": "Schaufel, Stufe 1 oder besser (nötig für Beute)"
                 },
                 {
                     "label": "Abbauen mit dem besten Werkzeug",
@@ -43679,13 +43819,19 @@
                     "label": "Beute",
                     "links": [
                         {
-                            "icon": "qtcraft:snow_layer",
+                            "icon": "qtcraft:snowball",
                             "note": "",
-                            "target": "block:qtcraft:snow_layer",
-                            "text": "Schneeschicht"
+                            "target": "item:qtcraft:snowball",
+                            "text": "Schneeball"
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
                 },
                 {
                     "label": "Lichtdämpfung",
@@ -43795,7 +43941,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "Schneller mit"
+                    "title": "Abbaubar mit"
                 },
                 {
                     "links": [
@@ -46541,6 +46687,12 @@
                             "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -50185,7 +50337,7 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "50 %",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         }
@@ -51726,6 +51878,78 @@
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Gelber Teppich"
         },
+        "chapter:qtcraft:archery": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Archery",
+            "facts": [
+            ],
+            "icon": "qtcraft:bow",
+            "id": "chapter:qtcraft:archery",
+            "name": "qtcraft:archery",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und lass los, um zu schießen. Voll gespannt ist er nach 1 s und schickt den Pfeil mit 60 m/s los; kurz gespannt schießt er schwächer, sehr kurz gar nicht. Der Bogen nimmt den ersten Pfeil deines Inventars und nutzt sich mit jedem Schuss ab.",
+                    "title": "Spannen und schießen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Treffer richtet umso mehr Schaden an, je schneller der Pfeil fliegt, und stößt das Ziel zurück; Rüstung schützt wie gegen Schläge. Pfeile bleiben im getroffenen Block stecken und fallen, wenn er verschwindet; lauf darüber, um sie aufzuheben. Nach 60 s verschwinden sie. Eine Welt hält höchstens 1024 fliegende oder steckende Pfeile und höchstens 64 steckende in einem Chunk (die ältesten gehen zuerst).",
+                    "title": "Pfeile im Flug"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen.",
+                    "title": "Werfen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bogen"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
+                        },
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feder"
+                        },
+                        {
+                            "icon": "qtcraft:snowball",
+                            "note": "",
+                            "target": "item:qtcraft:snowball",
+                            "text": "Schneeball"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Bogenschießen"
+        },
         "chapter:qtcraft:basics": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -52155,6 +52379,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Zombies und Skelette fangen im direkten Sonnenlicht Feuer und brennen noch 8 s, nachdem sie es verlassen haben. Schatten, ein Dach oder Laub über dem Kopf, Wasser und Regen schützen sie, ebenso Höhlen.",
+                    "title": "Brennen im Tageslicht"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.",
                     "title": "Obergrenzen"
                 },
@@ -52165,6 +52397,12 @@
                             "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
                         },
                         {
                             "icon": "",
@@ -52357,6 +52595,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Ein Knochen eines Skeletts ergibt drei Knochenmehl. Auf eine noch nicht reife Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wird mit 45 % Wahrscheinlichkeit sofort zum Baum, wenn er Platz hat. Jede Anwendung verbraucht ein Knochenmehl, außer im Kreativmodus.",
+                    "title": "Knochenmehl"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Schweine mit Karotten oder Kartoffeln, Schafe mit Weizen füttern: ein gefüttertes erwachsenes Tier verliebt sich für eine Weile und läuft zu einem anderen verliebten Tier seiner Art; zwei, die sich sehen, bekommen ein Junges. Eltern ruhen fünf Minuten, bevor sie wieder Junge bekommen; ein Junges wächst in zwanzig Minuten heran, jedes Füttern nimmt 10 % dieser Zeit weg. Junge Tiere lassen nichts fallen. Wo schon zu viele Tiere leben, kommen keine Jungen mehr.",
                     "title": "Tiere züchten"
                 },
@@ -52417,6 +52663,12 @@
                             "note": "",
                             "target": "block:qtcraft:melon_stem",
                             "text": "Melonenstängel"
+                        },
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Knochenmehl"
                         },
                         {
                             "icon": "qtcraft:bread",
@@ -55965,6 +56217,107 @@
             "text": "Auf einen Block stellen und einkleiden: Rechtsklick mit Rüstung oder einem Item legt es an, mit leerer Hand nimmst du es zurück. Zwei schnelle Schläge (der zweite nach der Abklingzeit deines Angriffs, innerhalb einer Sekunde) brechen ihn ab; er lässt sich selbst und alles, was er trägt, fallen. Der Befehl /armorstand stellt seine Pose ein.",
             "title": "Rüstungsständer"
         },
+        "item:qtcraft:arrow": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Arrow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:arrow"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Gruppen",
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "tag:qtcraft:arrows",
+                            "text": "Beliebiger Pfeil"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:arrow",
+            "id": "item:qtcraft:arrow",
+            "name": "qtcraft:arrow",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:flint",
+                                    "note": "",
+                                    "target": "item:qtcraft:flint",
+                                    "text": "Feuerstein"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:feather",
+                                    "note": "",
+                                    "target": "item:qtcraft:feather",
+                                    "text": "Feder"
+                                }
+                            ],
+                            "count": 4,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:arrow",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:arrow",
+                                "note": "",
+                                "target": "item:qtcraft:arrow",
+                                "text": "Pfeil"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Wird mit dem Bogen geschossen. Sein Schaden wächst mit seiner Geschwindigkeit; Rüstung hält einen Teil ab. Pfeile bleiben in Blöcken stecken, wo du sie wieder aufheben kannst, bis sie nach 60 s verschwinden.",
+            "title": "Pfeil"
+        },
         "item:qtcraft:baked_potato": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -56305,6 +56658,125 @@
             "text": "Aus Kornblumen.",
             "title": "Blauer Farbstoff"
         },
+        "item:qtcraft:bone": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Bone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bone"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:bone",
+            "id": "item:qtcraft:bone",
+            "name": "qtcraft:bone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Knochenmehl"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Lassen Skelette fallen. Daraus wird Knochenmehl.",
+            "title": "Knochen"
+        },
+        "item:qtcraft:bone_meal": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Bone meal",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bone_meal"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:bone_meal",
+            "id": "item:qtcraft:bone_meal",
+            "name": "qtcraft:bone_meal",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:bone",
+                                    "note": "",
+                                    "target": "item:qtcraft:bone",
+                                    "text": "Knochen"
+                                }
+                            ],
+                            "count": 3,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bone_meal",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:bone_meal",
+                                "note": "",
+                                "target": "item:qtcraft:bone_meal",
+                                "text": "Knochenmehl"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Auf eine Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wird mit 45 % Wahrscheinlichkeit sofort zum Baum. Jede Anwendung verbraucht eines.",
+            "title": "Knochenmehl"
+        },
         "item:qtcraft:book": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -56413,6 +56885,108 @@
             ],
             "text": "In Leder gebundenes Papier.",
             "title": "Buch"
+        },
+        "item:qtcraft:bow": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Bow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bow"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Haltbarkeit",
+                    "links": [
+                    ],
+                    "value": "384 Benutzungen"
+                }
+            ],
+            "icon": "qtcraft:bow",
+            "id": "item:qtcraft:bow",
+            "name": "qtcraft:bow",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "Faden"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "Faden"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "Faden"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bow",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:bow",
+                                "note": "",
+                                "target": "item:qtcraft:bow",
+                                "text": "Bogen"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Halte die Benutzen-Taste, um ihn zu spannen, und lass los, um einen Pfeil aus deinem Inventar zu schießen. Je länger du spannst (bis 1 s), desto weiter und härter fliegt der Pfeil. Jeder Schuss nutzt ihn ein wenig ab; im Kreativmodus schießt er ohne Pfeile.",
+            "title": "Bogen"
         },
         "item:qtcraft:bowl": {
             "category": "items",
@@ -56949,7 +57523,7 @@
                         },
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "2,5 %",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -59559,6 +60133,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kann abbauen"
                 }
             ],
             "text": "Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.",
@@ -59742,6 +60336,62 @@
             "text": "Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden für das, was sie kaufen, und verlangen sie für das, was sie verkaufen.",
             "title": "Smaragd"
         },
+        "item:qtcraft:feather": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Feather",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:feather"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:feather",
+            "id": "item:qtcraft:feather",
+            "name": "qtcraft:feather",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "25 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Leicht und weich. Zombies lassen manchmal eine fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.",
+            "title": "Feder"
+        },
         "item:qtcraft:fired_lamp_shell": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -59924,6 +60574,12 @@
                             "note": "",
                             "target": "item:qtcraft:flint_and_steel",
                             "text": "Feuerzeug"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
                         }
                     ],
                     "recipes": [
@@ -61914,6 +62570,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kann abbauen"
                 }
             ],
             "text": "Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wie Holz.",
@@ -64249,6 +64925,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kann abbauen"
                 }
             ],
             "text": "Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.",
@@ -66457,7 +67153,7 @@
                         },
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "2,5 %",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -66836,7 +67532,7 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "50 %",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         }
@@ -67262,6 +67958,68 @@
             "text": "Fällt von Schleimen.",
             "title": "Schleimball"
         },
+        "item:qtcraft:snowball": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Snowball",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:snowball"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "16"
+                }
+            ],
+            "icon": "qtcraft:snowball",
+            "id": "item:qtcraft:snowball",
+            "name": "qtcraft:snowball",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "4×",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Wird mit der Benutzen-Taste geworfen, einer nach dem anderen und sofort. Er tut nicht weh, stößt aber zurück, was er trifft, und zerplatzt an allem, worauf er trifft. Schnee mit einer Schaufel abgebaut gibt Schneebälle; vier ergeben einen Schneeblock.",
+            "title": "Schneeball"
+        },
         "item:qtcraft:stick": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -67364,6 +68122,12 @@
                             "note": "",
                             "target": "block:qtcraft:birch_fence_gate",
                             "text": "Birkenzauntor"
+                        },
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bogen"
                         },
                         {
                             "icon": "qtcraft:diamond_axe",
@@ -67538,6 +68302,12 @@
                             "note": "",
                             "target": "block:qtcraft:ladder",
                             "text": "Leiter"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
                         },
                         {
                             "icon": "qtcraft:armor_stand",
@@ -68575,6 +69345,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kann abbauen"
                 }
             ],
             "text": "Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.",
@@ -68693,6 +69483,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bogen"
+                        },
                         {
                             "icon": "qtcraft:signal_dispenser",
                             "note": "",
@@ -70297,6 +71093,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Schneeschicht"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kann abbauen"
                 }
             ],
             "text": "Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.",
@@ -70986,7 +71802,7 @@
                         },
                         {
                             "icon": "qtcraft:white_wool",
-                            "note": "",
+                            "note": "50 %",
                             "target": "block:qtcraft:white_wool",
                             "text": "Weiße Wolle"
                         },
@@ -70998,7 +71814,7 @@
                         },
                         {
                             "icon": "qtcraft:raw_mutton",
-                            "note": "",
+                            "note": "50 %",
                             "target": "item:qtcraft:raw_mutton",
                             "text": "Rohes Hammelfleisch"
                         }
@@ -71037,6 +71853,176 @@
             ],
             "text": "Friedliches Tier des Graslands; lässt Wolle fallen.",
             "title": "Schaf"
+        },
+        "mob:qtcraft:skeleton": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Skeleton",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:skeleton"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: hält Abstand, umkreist Spieler und schießt auf sie"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "20 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 1,95 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,4 m/s beim Gehen, 2,6 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "2 Schaden bis 1,6 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nachts"
+                },
+                {
+                    "label": "Höhlen",
+                    "links": [
+                    ],
+                    "value": "auch in Höhlen zu jeder Zeit"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 7"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 2"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Knochen"
+                        },
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "50 %",
+                            "target": "item:qtcraft:bone",
+                            "text": "Knochen"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "50 %",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:bone",
+            "id": "mob:qtcraft:skeleton",
+            "name": "qtcraft:skeleton",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schießt Pfeile mit seinem Bogen, sobald er gespannt ist; kommst du zu nah, weicht es zurück. Seine Pfeile lassen sich nicht aufheben. Brennt im direkten Sonnenlicht.",
+            "title": "Skelett"
         },
         "mob:qtcraft:slime": {
             "category": "creatures",
@@ -71368,15 +72354,21 @@
                         },
                         {
                             "icon": "qtcraft:carrot",
-                            "note": "",
+                            "note": "2,5 %",
                             "target": "item:qtcraft:carrot",
                             "text": "Karotte"
                         },
                         {
                             "icon": "qtcraft:potato",
-                            "note": "",
+                            "note": "2,5 %",
                             "target": "item:qtcraft:potato",
                             "text": "Kartoffel"
+                        },
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "25 %",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feder"
                         }
                     ],
                     "value": ""
@@ -71435,7 +72427,7 @@
                     "title": "Erscheint in Biomen"
                 }
             ],
-            "text": "Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu.",
+            "text": "Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu. Brennt im direkten Sonnenlicht.",
             "title": "Zombie"
         },
         "ore:qtcraft:clay_pocket": {
@@ -73581,12 +74573,48 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "- Stufe 1 nötig für: Schneeblock, Schneeschicht",
                     "title": "Schaufel"
                 }
             ],
             "text": "Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit dieser Werkzeugart mindestens seiner Stufe abgebaut wird. Höhere Stufen bauen schneller ab und halten länger.",
             "title": "Werkzeugstufen"
+        },
+        "tag:qtcraft:arrows": {
+            "category": "tags",
+            "categoryTitle": "Item-Gruppen",
+            "englishTitle": "Any arrow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "#qtcraft:arrows"
+                }
+            ],
+            "icon": "qtcraft:arrow",
+            "id": "tag:qtcraft:arrows",
+            "name": "qtcraft:arrows",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Pfeil"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Items dieser Gruppe"
+                }
+            ],
+            "text": "Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.",
+            "title": "Beliebiger Pfeil"
         },
         "tag:qtcraft:chunk_loaders": {
             "category": "tags",

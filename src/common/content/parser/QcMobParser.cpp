@@ -62,7 +62,8 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     for (const auto &entry : list) {
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
-        const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64)};
+        const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
+                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0)};
         if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
             reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
             break;
@@ -94,22 +95,43 @@ void parseMobStats(QcMobDefinition &mob, QcJsonFieldReader &reader)
 void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
 {
     using Ai = QcMobDefinition::Ai;
-    static const QHash<QString, Ai> names = {{u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}};
+    static const QHash<QString, Ai> names = {
+        {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer}};
     const Ai fallback = mob.villager ? Ai::Villager : mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        reader.fail(u"'ai' must be passive, hostile or villager"_s);
+        reader.fail(u"'ai' must be passive, hostile, villager or archer"_s);
         return;
     }
 
     mob.ai = names.value(name);
     if ((mob.ai == Ai::Villager) != mob.villager) {
         reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
-    } else if (mob.ai == Ai::Hostile && !mob.hostile) {
-        reader.fail(u"the hostile AI needs 'hostile': true"_s);
+    } else if ((mob.ai == Ai::Hostile || mob.ai == Ai::Archer) && !mob.hostile) {
+        reader.fail(u"the hostile and archer AIs need 'hostile': true"_s);
     }
     if (mob.ai == Ai::Villager) {
         mob.abilities = {true, QcMobAbilities::Climbing::Ladders, false, false};
+    }
+}
+
+// How an archer shoots (decision E-426): "archer" with the projectile and the times, speed, spread
+// and distances; it goes with the archer AI.
+void parseArcher(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcArcherDefinition &archer = mob.archer;
+    archer.projectile = reader.name(u"projectile"_s, packNamespace);
+    archer.drawSeconds = reader.number(u"drawSeconds"_s, archer.drawSeconds, 0.1, 10.0);
+    archer.cooldownSeconds = reader.number(u"cooldownSeconds"_s, archer.cooldownSeconds, 0.0, 60.0);
+    archer.speed = reader.number(u"speed"_s, archer.speed, 1.0, 100.0);
+    archer.spreadDegrees = reader.number(u"spreadDegrees"_s, archer.spreadDegrees, 0.0, 45.0);
+    archer.range = reader.number(u"range"_s, archer.range, 2.0, 64.0);
+    archer.minDistance = reader.number(u"minDistance"_s, archer.minDistance, 0.0, 32.0);
+    archer.keepDistance = reader.number(u"keepDistance"_s, archer.keepDistance, 1.0, 64.0);
+    if (archer.projectile.isEmpty()) {
+        reader.fail(u"needs a 'projectile'"_s);
+    } else if (archer.minDistance >= archer.keepDistance || archer.keepDistance > archer.range) {
+        reader.fail(u"needs 'minDistance' < 'keepDistance' <= 'range'"_s);
     }
 }
 
@@ -438,6 +460,14 @@ namespace QcMobParser {
     if (reader.ok() && mob.abilities.opensDoors && mob.ai != QcMobDefinition::Ai::Villager) {
         reader.fail(u"only the villager AI opens doors"_s);
     }
+    reader.nestedObject(u"archer"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseArcher(mob, nested, packNamespace);
+    });
+    if (reader.ok() && json.contains(u"archer"_s) != (mob.ai == QcMobDefinition::Ai::Archer)) {
+        reader.fail(u"the archer AI goes with 'archer' settings, and they with it"_s);
+    }
+    mob.burnsInDaylight = reader.boolean(u"burnsInDaylight"_s, false);
+    mob.heldItem = reader.name(u"heldItem"_s, packNamespace);
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
     mob.experience = QcContentFields::parseExperience(u"experience"_s, reader);
     parseMobSounds(json, mob, reader, packNamespace);

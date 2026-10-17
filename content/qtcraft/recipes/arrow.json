@@ -1,0 +1,18 @@
+{
+    "name": "arrow",
+    "type": "shaped",
+    "pattern": [
+        "F",
+        "|",
+        "E"
+    ],
+    "key": {
+        "F": "flint",
+        "|": "stick",
+        "E": "feather"
+    },
+    "result": {
+        "item": "arrow",
+        "count": 4
+    }
+}

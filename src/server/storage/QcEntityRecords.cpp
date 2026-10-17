@@ -79,6 +79,11 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
             recordOf(records, chunk).orbs.append({orb, orb.id});
         }
     }
+    for (const QcProjectile &shot : entities.projectiles().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(shot); wanted(chunk)) {
+            recordOf(records, chunk).projectiles.append({shot, shot.id});
+        }
+    }
 }
 
 } // namespace
@@ -104,6 +109,7 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.stands().editableStands().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
     entities.orbs().editableOrbs().removeIf(gone);
+    entities.projectiles().editableAll().removeIf(gone);
     entities.movingBlocks().editableAll().removeIf(gone);
     return records;
 }
@@ -135,6 +141,9 @@ QStringList apply(const QcEntityRecord &record, QcEntities &entities)
     }
     if (const qsizetype merged = entities.orbs().adopt(inOrder(record.orbs), newId); merged > 0) {
         warnings.append(u"%1 experience orbs beyond the limit of %2 joined the nearest orb"_s.arg(merged).arg(entities.orbs().limit()));
+    }
+    if (const qsizetype left = entities.projectiles().adopt(inOrder(record.projectiles), newId); left > 0) {
+        warnings.append(u"%1 projectiles beyond the limits were left out"_s.arg(left));
     }
     return warnings;
 }

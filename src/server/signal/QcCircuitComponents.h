@@ -9,6 +9,8 @@
 
 #include <QSet>
 
+struct QcSignalDefinition;
+
 // How each kind of component reacts (decision E-336), as decisions on the world before a step. A
 // component reacts when a block changes next to it (or next to what powers it) and again when its
 // scheduled tick comes:
@@ -44,9 +46,24 @@ public:
     static constexpr int observerPulseTicks = 2;
     static constexpr int dispenserDelayTicks = 4;
 
+    // Plates something lies on in this tick, those a player or creature stands on and those a
+    // minecart stands on.
+    struct Plates
+    {
+        QSet<QcBlockPos> anything;
+        QSet<QcBlockPos> living;
+        QSet<QcBlockPos> carts;
+
+        // The plates of this tick that a plate with `signal` counts as pressed
+        // (QcSignalDefinition::detectsItems, detectsCarts).
+        const QSet<QcBlockPos> &pressing(const QcSignalDefinition &signal) const;
+        void clear();
+    };
+
     struct Context
     {
-        const QcSignalPower &power;
+        // A view of the world and the signal table, copied.
+        QcSignalPower power;
         // What components remember at their position and their scheduled ticks.
         QcBlockEntities &entities;
         quint64 now = 0;
@@ -54,11 +71,7 @@ public:
         bool quasiConnectivity = true;
         // Pistons that already extended (bit 1) or retracted (bit 2) in this tick.
         const QHash<QcBlockPos, quint8> &pistonActs;
-        // Plates something lies on in this tick, those a player or creature stands on and those a
-        // minecart stands on.
-        const QSet<QcBlockPos> &pressedByAnything;
-        const QSet<QcBlockPos> &pressedByLiving;
-        const QSet<QcBlockPos> &pressedByCarts;
+        const Plates &plates;
         // What comparators read from containers and readable blocks.
         const QcComparatorReadings &readings;
         // The tracks of rails (the lines of powered and activator rails).

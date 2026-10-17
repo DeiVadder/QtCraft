@@ -194,6 +194,10 @@ Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a 
 | [Stick](items.md#item-qtcraft-stick) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Can harvest**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (level 1), [Snow layer](blocks.md#block-qtcraft-snow_layer) (level 1)
+
 ### <a id="item-qtcraft-diamond_sword"></a>Diamond sword
 
 A weapon: deals more damage to creatures.
@@ -402,6 +406,10 @@ Very fast but soft: it wears out after a few uses and only mines what wood can.
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden shovel](#item-qtcraft-golden_shovel) |
 | [Stick](items.md#item-qtcraft-stick) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
+
+**Can harvest**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (level 1), [Snow layer](blocks.md#block-qtcraft-snow_layer) (level 1)
 
 ### <a id="item-qtcraft-golden_sword"></a>Golden sword
 
@@ -612,6 +620,10 @@ Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a 
 | [Stick](items.md#item-qtcraft-stick) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Can harvest**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (level 1), [Snow layer](blocks.md#block-qtcraft-snow_layer) (level 1)
+
 ### <a id="item-qtcraft-iron_sword"></a>Iron sword
 
 A weapon: deals more damage to creatures.
@@ -821,6 +833,10 @@ Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a 
 | [Stick](items.md#item-qtcraft-stick) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Can harvest**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (level 1), [Snow layer](blocks.md#block-qtcraft-snow_layer) (level 1)
+
 ### <a id="item-qtcraft-stone_sword"></a>Stone sword
 
 A weapon: deals more damage to creatures.
@@ -943,6 +959,10 @@ Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a 
 | [Any planks](tags.md#tag-qtcraft-planks) | [Wooden shovel](#item-qtcraft-wooden_shovel) |
 | [Stick](items.md#item-qtcraft-stick) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
+
+**Can harvest**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (level 1), [Snow layer](blocks.md#block-qtcraft-snow_layer) (level 1)
 
 ### <a id="item-qtcraft-wooden_sword"></a>Wooden sword
 

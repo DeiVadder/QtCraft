@@ -15,6 +15,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcExperienceDrop.h
     content/definitions/QcFarmingDefinitions.h
     content/definitions/QcFireDefinition.h
+    content/definitions/QcHitEffect.h
     content/definitions/QcItemDefinition.h
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
@@ -24,6 +25,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcModelDefinition.h
     content/definitions/QcPackReference.h
     content/definitions/QcPartFamily.h
+    content/definitions/QcProjectileDefinition.h
     content/definitions/QcRecipeDefinition.h content/definitions/QcRecipeDefinition.cpp
     content/definitions/QcShapeCondition.h
     content/definitions/QcShapeDefinition.h
@@ -56,6 +58,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
+    content/parser/QcProjectileParser.h content/parser/QcProjectileParser.cpp
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
     content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp

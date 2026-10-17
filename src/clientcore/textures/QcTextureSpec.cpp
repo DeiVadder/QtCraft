@@ -62,7 +62,9 @@ using namespace Qt::StringLiterals;
         {u"observer_face"_s, Pattern::ObserverFace}, {u"observer_back"_s, Pattern::ObserverBack},
         {u"observer_side"_s, Pattern::ObserverSide}, {u"dispenser"_s, Pattern::Dispenser},
         {u"dropper"_s, Pattern::Dropper},   {u"rail"_s, Pattern::Rail},
-        {u"minecart"_s, Pattern::Minecart},
+        {u"minecart"_s, Pattern::Minecart}, {u"bow"_s, Pattern::Bow},
+        {u"arrow"_s, Pattern::Arrow},       {u"feather"_s, Pattern::Feather},
+        {u"bone"_s, Pattern::Bone},
     };
 
     const auto it = patterns.constFind(name);

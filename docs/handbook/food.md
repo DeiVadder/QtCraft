@@ -73,7 +73,7 @@ A snack and the seed of carrot plants. Pigs follow their love for it.
 
 **Dropped by**
 
-[Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
 
 ### <a id="item-qtcraft-cooked_mutton"></a>Cooked mutton
 
@@ -182,7 +182,7 @@ Barely filling raw; plant it on farmland or bake it in a furnace.
 
 **Dropped by**
 
-[Potato crop](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Potato crop](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
 
 ### <a id="item-qtcraft-pumpkin_pie"></a>Pumpkin pie
 
@@ -227,7 +227,7 @@ Meat of a sheep; better cooked in a furnace.
 
 **Dropped by**
 
-[Sheep](creatures.md#mob-qtcraft-sheep)
+[Sheep](creatures.md#mob-qtcraft-sheep) (50 %)
 
 ### <a id="item-qtcraft-raw_porkchop"></a>Raw porkchop
 

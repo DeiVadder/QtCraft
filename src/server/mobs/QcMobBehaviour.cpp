@@ -16,6 +16,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_villagers(m_content, m_random, m_paths)
     , m_passive(m_random, m_paths)
     , m_hostile(m_random, m_paths)
+    , m_archers(*m_content, m_random, m_paths)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
@@ -29,6 +30,9 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
         case QcMobDefinition::Ai::Villager:
             m_brains.push_back(&m_villagers);
             break;
+        case QcMobDefinition::Ai::Archer:
+            m_brains.push_back(&m_archers);
+            break;
         }
     }
 }
@@ -38,9 +42,10 @@ void QcMobBehaviour::setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, q
     m_paths.setLimits(nodesPerTick, nodesPerSearch, pathLength);
 }
 
-void QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players, Clock clock,
-                          QList<QcMobManager::PlayerHit> &hits)
+QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world,
+                                                    const QList<QcMobManager::PlayerView> &players, Clock clock)
 {
+    QList<QcMobManager::PlayerHit> hits;
     m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[std::size_t(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
     m_villagers.startTick();
@@ -51,10 +56,12 @@ void QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world, const Q
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
         if (!mobs[i].dormant) {
-            const QcMobBrain::Context context{world, mobs, clock.worldTime, clock.dt, m_rules[std::size_t(mobs[i].type)], &players, &hits, m_tick};
+            const QcMobBrain::Context context{world,    mobs,  clock.worldTime, clock.dt, m_rules[std::size_t(mobs[i].type)],
+                                              &players, &hits, m_tick,          &m_launches};
             update(i, mobs[i], context);
         }
     }
+    return hits;
 }
 
 void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::Context &context)
@@ -121,7 +128,7 @@ QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMob
 
     // Along the path it has, without searching, and never off an edge.
     QcPhysics::Steering steering = QcMobNavigator::steerAlong(mob, mob.lastSpeed, m_paths, context.world, context.rules).steering;
-    if (!QcMobNavigator::safeStep(mob, steering.wish, context.world, m_paths.cells(), context.rules)) {
+    if (!QcMobNavigator::safeStep(mob, steering.wish, {context.world, m_paths.cells(), context.rules})) {
         return {{}, steering.speed};
     }
     if (steering.wish.length() > 0.0) {
@@ -134,7 +141,7 @@ void QcMobBehaviour::steerApart(qsizetype index, const QcCreature &mob, const Qc
 {
     // The crowd pushes apart, but not off a cliff.
     const QcVec3 push = m_crowd.push(index, mob, m_content->mobs()[mob.type].width * 0.5);
-    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, world, m_paths.cells(), m_rules[std::size_t(mob.type)])) {
+    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[std::size_t(mob.type)]})) {
         return;
     }
 

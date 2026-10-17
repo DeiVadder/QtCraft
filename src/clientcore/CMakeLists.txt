@@ -63,6 +63,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
+    meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
 )
 target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp
@@ -80,6 +81,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h
     session/QcClientGameMode.h session/QcClientGameMode.cpp
+    session/QcClientLauncher.h session/QcClientLauncher.cpp
     session/QcClientLogin.h session/QcClientLogin.cpp
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
     session/QcClientRiding.h session/QcClientRiding.cpp
@@ -137,6 +139,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTexturePaint.h
+    textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
@@ -155,6 +158,6 @@ target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs
 # multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).
 set_source_files_properties(
     textures/QcTextureSynthesizer.cpp textures/QcTextureCraftPatterns.cpp textures/QcTextureFarmPatterns.cpp
-    textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
+    textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
     textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
     PROPERTIES COMPILE_OPTIONS "$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-ffp-contract=off>")

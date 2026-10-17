@@ -20,7 +20,8 @@ struct QcClientEntity
     int creatureType = 0;
     // The block of a falling block; air otherwise.
     QcBlockId block = qcAirBlockId;
-    // The stack of a dropped item, the item of a minecart (what it carries); empty otherwise.
+    // The stack of a dropped item, the item of a minecart (what it carries) or a projectile (its
+    // look); empty otherwise.
     QcItemStack item;
     QString name;
     // Where the entity is shown at the end of the current client tick and at its start; frames
@@ -64,6 +65,7 @@ struct QcClientEntity
     bool isArmourStand() const { return kind == QcEntityKind::ArmourStand; }
     bool isMinecart() const { return kind == QcEntityKind::Minecart; }
     bool isExperienceOrb() const { return kind == QcEntityKind::ExperienceOrb; }
+    bool isProjectile() const { return kind == QcEntityKind::Projectile; }
     // The block a minecart carries (its item's cartBlock, decision E-386); nothing for a plain cart.
     std::optional<QcBlockId> cartBlock(const QcContentRegistry &content) const
     {

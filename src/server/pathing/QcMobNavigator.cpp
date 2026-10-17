@@ -96,7 +96,7 @@ void follow(QcCreature &mob)
     }
 }
 
-bool needsSearch(const QcCreature &mob, const QcPathPlanner &planner, const QcBlockAccess &world, QcPathRules rules)
+bool needsSearch(const QcCreature &mob, const QcPathGround &ground)
 {
     const QcMobPath &path = mob.path;
     if (path.queued) {
@@ -114,7 +114,7 @@ bool needsSearch(const QcCreature &mob, const QcPathPlanner &planner, const QcBl
     if (moved > (path.waitTicks > 0 ? std::max(farGoalMove, tolerance(mob)) : tolerance(mob))) {
         return true;
     }
-    if (!pathClear(path, path.age % fullCheckTicks == 0, world, planner.cells(), rules)) {
+    if (!pathClear(path, path.age % fullCheckTicks == 0, ground)) {
         return true;
     }
     if (path.waitTicks > 0) {
@@ -124,19 +124,10 @@ bool needsSearch(const QcCreature &mob, const QcPathPlanner &planner, const QcBl
            || (path.finished() && !path.reachesGoal);
 }
 
-// What one steering looks at, and whether it may ask for a path.
-struct Context
-{
-    QcPathPlanner &planner;
-    const QcBlockAccess &world;
-    QcPathRules rules;
-    bool mayPlan = true;
-};
-
 // The steering along a planned path: to the next waypoint, then to the goal itself if the path gets
 // there, as long as the step keeps to safe ground (the goal may lie beyond an edge, the path ends
 // within its closeEnough).
-QcPhysics::Steering along(const QcCreature &mob, double speed, const Context &context)
+QcPhysics::Steering along(const QcCreature &mob, double speed, const QcPathGround &ground)
 {
     const QcMobPath &path = mob.path;
     if (!path.planned) {
@@ -144,7 +135,7 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const Context &co
     }
     if (path.next >= path.cells.size()) {
         const QcPhysics::Steering last = path.reachesGoal ? towards(mob, path.goal, speed) : QcPhysics::Steering{{}, speed};
-        return safeStep(mob, last.wish, context.world, context.planner.cells(), context.rules) ? last : QcPhysics::Steering{{}, speed};
+        return safeStep(mob, last.wish, ground) ? last : QcPhysics::Steering{{}, speed};
     }
 
     const QcBlockPos waypoint = path.cells[path.next];
@@ -161,10 +152,10 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const Context &co
 
 // The closed door the creature stands in (another one shut it behind itself while this one was in
 // the doorway), else the closed door on the next waypoint, if there is one.
-std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcBlockAccess &world, const QcPathCellTable &cells)
+std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcPathGround &ground)
 {
     const QcMobPath &path = mob.path;
-    const QcPathDirectCells direct(world, cells);
+    const QcPathDirectCells direct(ground.world, ground.cells);
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0});
     if (QcPathCell::kindOf(direct.cell(feet)) == QcPathCell::Kind::ClosedDoor) {
         return feet;
@@ -179,27 +170,28 @@ std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcBlockAccess &
     return waypoint;
 }
 
-Navigation navigate(QcCreature &mob, double speed, const Context &context)
+// Steering along the path; asks the planner for a path when needed only if it `mayPlan`.
+Navigation navigate(QcCreature &mob, double speed, QcPathPlanner &planner, const QcPathGround &ground, bool mayPlan)
 {
     QcMobPath &path = mob.path;
     if (!path.hasGoal()) {
         return {{{}, speed}, std::nullopt};
     }
-    if (!context.planner.enabled()) {
+    if (!planner.enabled()) {
         return {towards(mob, path.goal, speed), std::nullopt};
     }
-    if (!context.mayPlan && !path.planned) {
+    if (!mayPlan && !path.planned) {
         return {{{}, speed}, std::nullopt};
     }
 
     ++path.age;
     path.waitTicks = std::max(0, path.waitTicks - 1);
     follow(mob);
-    if (context.mayPlan && needsSearch(mob, context.planner, context.world, context.rules)) {
-        context.planner.request(mob);
+    if (mayPlan && needsSearch(mob, ground)) {
+        planner.request(mob);
     }
 
-    return {along(mob, speed, context), context.rules.opensDoors ? doorAhead(mob, context.world, context.planner.cells()) : std::nullopt};
+    return {along(mob, speed, ground), ground.rules.opensDoors ? doorAhead(mob, ground) : std::nullopt};
 }
 
 } // namespace
@@ -217,20 +209,19 @@ void setGoal(QcCreature &mob, QcMobPath::Purpose purpose, const QcVec3 &goal, in
     mob.path.closeEnough = closeEnough;
 }
 
-bool pathClear(const QcMobPath &path, bool all, const QcBlockAccess &world, const QcPathCellTable &cells, QcPathRules rules)
+bool pathClear(const QcMobPath &path, bool all, const QcPathGround &ground)
 {
-    QcPathDirectCells direct(world, cells);
+    QcPathDirectCells direct(ground.world, ground.cells);
     const std::size_t end = all ? path.cells.size() : std::min(path.cells.size(), path.next + checkedAhead);
     for (std::size_t i = path.next; i < end; ++i) {
-        if (!QcPathTerrain::standAt(direct, path.cells[i], rules).ok) {
+        if (!QcPathTerrain::standAt(direct, path.cells[i], ground.rules).ok) {
             return false;
         }
     }
     return true;
 }
 
-bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcBlockAccess &world, const QcPathCellTable &cells,
-              QcPathRules rules)
+bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcPathGround &ground)
 {
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.01, 0.0});
     const QcVec3 flat{direction.x, 0.0, direction.z};
@@ -242,13 +233,13 @@ bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcBlockAcces
         return true;
     }
 
-    QcPathDirectCells direct(world, cells);
-    for (int dy = 1; dy >= -std::max(rules.maxDrop, QcPathRules::waterDrop); --dy) {
+    QcPathDirectCells direct(ground.world, ground.cells);
+    for (int dy = 1; dy >= -std::max(ground.rules.maxDrop, QcPathRules::waterDrop); --dy) {
         const QcBlockPos cell = ahead.offset(0, dy, 0);
-        if (QcPathTerrain::standAt(direct, cell, rules).ok) {
-            return QcPathTerrain::safeLanding(direct, cell, -dy, rules);
+        if (QcPathTerrain::standAt(direct, cell, ground.rules).ok) {
+            return QcPathTerrain::safeLanding(direct, cell, -dy, ground.rules);
         }
-        if (dy < 0 && !QcPathTerrain::passable(direct, cell, rules, false)) {
+        if (dy < 0 && !QcPathTerrain::passable(direct, cell, ground.rules, false)) {
             return false;
         }
     }
@@ -257,12 +248,12 @@ bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcBlockAcces
 
 Navigation steer(QcCreature &mob, double speed, QcPathPlanner &planner, const QcBlockAccess &world, QcPathRules rules)
 {
-    return navigate(mob, speed, {planner, world, rules, true});
+    return navigate(mob, speed, planner, {world, planner.cells(), rules}, true);
 }
 
 Navigation steerAlong(QcCreature &mob, double speed, QcPathPlanner &planner, const QcBlockAccess &world, QcPathRules rules)
 {
-    return navigate(mob, speed, {planner, world, rules, false});
+    return navigate(mob, speed, planner, {world, planner.cells(), rules}, false);
 }
 
 } // namespace QcMobNavigator

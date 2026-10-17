@@ -1,0 +1,15 @@
+{
+    "name": "snow_block",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "snowball"
+    },
+    "result": {
+        "item": "snow_block",
+        "count": 1
+    }
+}

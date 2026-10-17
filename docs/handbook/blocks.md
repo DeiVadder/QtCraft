@@ -1831,7 +1831,7 @@ Plain earth below the grass.
 
 **Creatures appearing on it**
 
-[Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-dirt_path"></a>Dirt path
 
@@ -2255,7 +2255,7 @@ Earth covered with grass, the surface of most land.
 
 **Creatures appearing on it**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
@@ -5056,7 +5056,7 @@ Falls when nothing holds it. Smelts into glass.
 
 **Creatures appearing on it**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstone
 
@@ -5562,17 +5562,27 @@ Packed snow of cold mountains and tundra.
 |---|---|
 | ID | `qtcraft:snow_block` |
 | Hardness | 0.2 |
-| Breaking by hand | 0.3 s |
-| Tool | Shovel (faster, not needed) |
+| Breaking by hand | 1 s |
+| Tool | Shovel, level 1 or better (needed for drops) |
 | Breaking with the best tool | 0.05 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
-| Drops | [Snow block](#block-qtcraft-snow_block) |
+| Drops | [Snowball](items.md#item-qtcraft-snowball) (4×) |
+| Drops without the right tool | nothing |
 | Sound | snow |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Snowball](items.md#item-qtcraft-snowball) | [Snowball](items.md#item-qtcraft-snowball) | [Snow block](#block-qtcraft-snow_block) |
+| [Snowball](items.md#item-qtcraft-snowball) | [Snowball](items.md#item-qtcraft-snowball) |  |
 
 **Used in**
 
 [Snow layer](#block-qtcraft-snow_layer)
 
-**Faster with**
+**Mined with**
 
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
@@ -5582,7 +5592,7 @@ Packed snow of cold mountains and tundra.
 
 **Creatures appearing on it**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Snow layer
 
@@ -5592,10 +5602,11 @@ A thin cover of snow that needs a block below. It settles by itself where snow f
 |---|---|
 | ID | `qtcraft:snow_layer` |
 | Hardness | 0.1 |
-| Breaking by hand | 0.15 s |
-| Tool | Shovel (faster, not needed) |
+| Breaking by hand | 0.5 s |
+| Tool | Shovel, level 1 or better (needed for drops) |
 | Breaking with the best tool | 0.05 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
-| Drops | [Snow layer](#block-qtcraft-snow_layer) |
+| Drops | [Snowball](items.md#item-qtcraft-snowball) |
+| Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
 | Sound | snow |
@@ -5608,7 +5619,7 @@ A thin cover of snow that needs a block below. It settles by itself where snow f
 |---|---|---|---|
 | [Snow block](#block-qtcraft-snow_block) | [Snow block](#block-qtcraft-snow_block) | [Snow block](#block-qtcraft-snow_block) | 6 × [Snow layer](#block-qtcraft-snow_layer) |
 
-**Faster with**
+**Mined with**
 
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
@@ -5914,7 +5925,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 
 **Creatures appearing on it**
 
-[Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_bricks"></a>Stone bricks
 
@@ -6316,7 +6327,7 @@ Soft block from sheep; dye any wool with a dye to colour it.
 
 **Dropped by**
 
-[Sheep](creatures.md#mob-qtcraft-sheep)
+[Sheep](creatures.md#mob-qtcraft-sheep) (50 %)
 
 ### <a id="block-qtcraft-wild_carrots"></a>Wild carrots
 

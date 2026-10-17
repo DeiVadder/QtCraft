@@ -18,6 +18,7 @@
                 "chapter:qtcraft:villages",
                 "chapter:qtcraft:villagers",
                 "chapter:qtcraft:trading",
+                "chapter:qtcraft:archery",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -329,9 +330,13 @@
         {
             "entries": [
                 "item:qtcraft:armor_stand",
+                "item:qtcraft:arrow",
                 "item:qtcraft:black_dye",
                 "item:qtcraft:blue_dye",
+                "item:qtcraft:bone",
+                "item:qtcraft:bone_meal",
                 "item:qtcraft:book",
+                "item:qtcraft:bow",
                 "item:qtcraft:bowl",
                 "item:qtcraft:brick",
                 "item:qtcraft:brown_dye",
@@ -343,6 +348,7 @@
                 "item:qtcraft:cyan_dye",
                 "item:qtcraft:diamond",
                 "item:qtcraft:emerald",
+                "item:qtcraft:feather",
                 "item:qtcraft:fired_lamp_shell",
                 "item:qtcraft:firefly_bottle",
                 "item:qtcraft:flint",
@@ -373,6 +379,7 @@
                 "item:qtcraft:purple_dye",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:slimeball",
+                "item:qtcraft:snowball",
                 "item:qtcraft:stick",
                 "item:qtcraft:string",
                 "item:qtcraft:sugar",
@@ -460,6 +467,7 @@
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:sheep",
+                "mob:qtcraft:skeleton",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:villager",
                 "mob:qtcraft:zombie"
@@ -525,6 +533,7 @@
         },
         {
             "entries": [
+                "tag:qtcraft:arrows",
                 "tag:qtcraft:chunk_loaders",
                 "tag:qtcraft:dyes",
                 "tag:qtcraft:planks",
@@ -686,6 +695,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Slime"
                         },
@@ -834,6 +849,12 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -1020,6 +1041,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Slime"
                         },
@@ -1186,6 +1213,12 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -1360,6 +1393,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Slime"
                         },
@@ -1526,6 +1565,12 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -1712,6 +1757,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Slime"
                         },
@@ -1848,6 +1899,12 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -15142,6 +15199,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Slime"
                         },
@@ -17766,6 +17829,12 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -39287,6 +39356,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -43499,13 +43574,13 @@
                     "label": "Breaking by hand",
                     "links": [
                     ],
-                    "value": "0.3 s"
+                    "value": "1 s"
                 },
                 {
                     "label": "Tool",
                     "links": [
                     ],
-                    "value": "Shovel (faster, not needed)"
+                    "value": "Shovel, level 1 or better (needed for drops)"
                 },
                 {
                     "label": "Breaking with the best tool",
@@ -43523,13 +43598,19 @@
                     "label": "Drops",
                     "links": [
                         {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Snow block"
+                            "icon": "qtcraft:snowball",
+                            "note": "4×",
+                            "target": "item:qtcraft:snowball",
+                            "text": "Snowball"
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
                 },
                 {
                     "label": "Sound",
@@ -43544,6 +43625,59 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Snowball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Snowball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Snowball"
+                                },
+                                {
+                                    "icon": "qtcraft:snowball",
+                                    "note": "",
+                                    "target": "item:qtcraft:snowball",
+                                    "text": "Snowball"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:snow_block",
+                            "needsTable": false,
+                            "note": "Crafting grid",
+                            "result": {
+                                "icon": "qtcraft:snow_block",
+                                "note": "",
+                                "target": "block:qtcraft:snow_block",
+                                "text": "Snow block"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
                 {
                     "links": [
                         {
@@ -43594,7 +43728,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "Faster with"
+                    "title": "Mined with"
                 },
                 {
                     "links": [
@@ -43618,6 +43752,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -43655,13 +43795,13 @@
                     "label": "Breaking by hand",
                     "links": [
                     ],
-                    "value": "0.15 s"
+                    "value": "0.5 s"
                 },
                 {
                     "label": "Tool",
                     "links": [
                     ],
-                    "value": "Shovel (faster, not needed)"
+                    "value": "Shovel, level 1 or better (needed for drops)"
                 },
                 {
                     "label": "Breaking with the best tool",
@@ -43679,13 +43819,19 @@
                     "label": "Drops",
                     "links": [
                         {
-                            "icon": "qtcraft:snow_layer",
+                            "icon": "qtcraft:snowball",
                             "note": "",
-                            "target": "block:qtcraft:snow_layer",
-                            "text": "Snow layer"
+                            "target": "item:qtcraft:snowball",
+                            "text": "Snowball"
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
                 },
                 {
                     "label": "Light blocked",
@@ -43795,7 +43941,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "Faster with"
+                    "title": "Mined with"
                 },
                 {
                     "links": [
@@ -46536,6 +46682,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -50185,7 +50337,7 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "50 %",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
                         }
@@ -51726,6 +51878,78 @@
             "text": "A thin layer of wool that needs a block below.",
             "title": "Yellow carpet"
         },
+        "chapter:qtcraft:archery": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Archery",
+            "facts": [
+            ],
+            "icon": "qtcraft:bow",
+            "id": "chapter:qtcraft:archery",
+            "name": "qtcraft:archery",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Hold the use button with a bow in your hand to draw it and let go to shoot. A full draw takes 1 s and sends the arrow off at 60 m/s; a short draw shoots weaker, and a very short one not at all. The bow uses the first arrow of your inventory and wears with every shot.",
+                    "title": "Drawing and shooting"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Arrows fall in an arc and slow down, much faster in water. A hit deals more damage the faster the arrow flies and pushes the target back; armour protects as against blows. Arrows stick in the block they hit and fall when it goes; walk over them to pick them up. They vanish after 60 s. A world holds at most 1024 arrows in flight or stuck, and at most 64 stuck in one chunk (the oldest go first).",
+                    "title": "Arrows in flight"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit.",
+                    "title": "Throwing"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bow"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        },
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feather"
+                        },
+                        {
+                            "icon": "qtcraft:snowball",
+                            "note": "",
+                            "target": "item:qtcraft:snowball",
+                            "text": "Snowball"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Archery"
+        },
         "chapter:qtcraft:basics": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -52155,6 +52379,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Zombies and skeletons catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves.",
+                    "title": "Burning in daylight"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.",
                     "title": "Limits"
                 },
@@ -52165,6 +52397,12 @@
                             "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
                         },
                         {
                             "icon": "",
@@ -52357,6 +52595,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "A bone from a skeleton makes three bone meal. Used on a crop that is not ripe yet, it grows 2–5 stages at once; on a sapling it has a 45 % chance to let the tree grow right away, if it has room. Each use takes one bone meal, except in creative mode.",
+                    "title": "Bone meal"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Feed pigs with carrots or potatoes and sheep with wheat: a fed adult falls in love for a while and walks towards another one of its kind in love; two that see each other get a young one. Parents rest five minutes before they breed again; a young one grows up in twenty minutes, each feeding takes 10 % of that time off. Young animals leave nothing behind. Crowded places get no more young ones.",
                     "title": "Breeding animals"
                 },
@@ -52417,6 +52663,12 @@
                             "note": "",
                             "target": "block:qtcraft:melon_stem",
                             "text": "Melon stem"
+                        },
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Bone meal"
                         },
                         {
                             "icon": "qtcraft:bread",
@@ -55965,6 +56217,107 @@
             "text": "Place it on a block and dress it: right click with armour or an item puts it on, with an empty hand you take it back. Two quick hits (the second after your attack cooldown, within a second) break it; it drops itself and everything it wears. The command /armorstand poses it.",
             "title": "Armour stand"
         },
+        "item:qtcraft:arrow": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Arrow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:arrow"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Groups",
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "tag:qtcraft:arrows",
+                            "text": "Any arrow"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:arrow",
+            "id": "item:qtcraft:arrow",
+            "name": "qtcraft:arrow",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:flint",
+                                    "note": "",
+                                    "target": "item:qtcraft:flint",
+                                    "text": "Flint"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:feather",
+                                    "note": "",
+                                    "target": "item:qtcraft:feather",
+                                    "text": "Feather"
+                                }
+                            ],
+                            "count": 4,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:arrow",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:arrow",
+                                "note": "",
+                                "target": "item:qtcraft:arrow",
+                                "text": "Arrow"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "Shot from a bow. Its damage grows with its speed; armour takes part of it. Arrows stick in blocks, where you can pick them up again until they vanish after 60 s.",
+            "title": "Arrow"
+        },
         "item:qtcraft:baked_potato": {
             "category": "food",
             "categoryTitle": "Food",
@@ -56305,6 +56658,125 @@
             "text": "Made from cornflowers.",
             "title": "Blue dye"
         },
+        "item:qtcraft:bone": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Bone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bone"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:bone",
+            "id": "item:qtcraft:bone",
+            "name": "qtcraft:bone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Bone meal"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "Dropped by skeletons. Crafted into bone meal.",
+            "title": "Bone"
+        },
+        "item:qtcraft:bone_meal": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Bone meal",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bone_meal"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:bone_meal",
+            "id": "item:qtcraft:bone_meal",
+            "name": "qtcraft:bone_meal",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:bone",
+                                    "note": "",
+                                    "target": "item:qtcraft:bone",
+                                    "text": "Bone"
+                                }
+                            ],
+                            "count": 3,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bone_meal",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:bone_meal",
+                                "note": "",
+                                "target": "item:qtcraft:bone_meal",
+                                "text": "Bone meal"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Use it on a crop to make it grow 2–5 stages at once, or on a sapling for a 45 % chance that it grows into a tree right away. Each use takes one.",
+            "title": "Bone meal"
+        },
         "item:qtcraft:book": {
             "category": "items",
             "categoryTitle": "Items",
@@ -56413,6 +56885,108 @@
             ],
             "text": "Paper bound in leather.",
             "title": "Book"
+        },
+        "item:qtcraft:bow": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Bow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bow"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Durability",
+                    "links": [
+                    ],
+                    "value": "384 uses"
+                }
+            ],
+            "icon": "qtcraft:bow",
+            "id": "item:qtcraft:bow",
+            "name": "qtcraft:bow",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "String"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "String"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "String"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bow",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:bow",
+                                "note": "",
+                                "target": "item:qtcraft:bow",
+                                "text": "Bow"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Hold the use button to draw it, release to shoot an arrow from your inventory. The longer you draw (up to 1 s), the farther and harder the arrow flies. Every shot wears it a little; in creative mode it shoots without arrows.",
+            "title": "Bow"
         },
         "item:qtcraft:bowl": {
             "category": "items",
@@ -56949,7 +57523,7 @@
                         },
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "2.5 %",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -59559,6 +60133,26 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Can harvest"
                 }
             ],
             "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
@@ -59742,6 +60336,62 @@
             "text": "A green gem and the money of the villagers: they pay in emeralds for what they buy and ask for them for what they sell.",
             "title": "Emerald"
         },
+        "item:qtcraft:feather": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Feather",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:feather"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:feather",
+            "id": "item:qtcraft:feather",
+            "name": "qtcraft:feather",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "25 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "Light and soft. Zombies sometimes drop one. With flint and a stick it makes arrows.",
+            "title": "Feather"
+        },
         "item:qtcraft:fired_lamp_shell": {
             "category": "items",
             "categoryTitle": "Items",
@@ -59919,6 +60569,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        },
                         {
                             "icon": "qtcraft:flint_and_steel",
                             "note": "",
@@ -61914,6 +62570,26 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Can harvest"
                 }
             ],
             "text": "Very fast but soft: it wears out after a few uses and only mines what wood can.",
@@ -64249,6 +64925,26 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Can harvest"
                 }
             ],
             "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
@@ -66457,7 +67153,7 @@
                         },
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "2.5 %",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -66836,7 +67532,7 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
+                            "note": "50 %",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
                         }
@@ -67262,6 +67958,68 @@
             "text": "Dropped by slimes.",
             "title": "Slimeball"
         },
+        "item:qtcraft:snowball": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Snowball",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:snowball"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "16"
+                }
+            ],
+            "icon": "qtcraft:snowball",
+            "id": "item:qtcraft:snowball",
+            "name": "qtcraft:snowball",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "4×",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "Thrown with the use button, one at a time and at once. It does no harm but pushes back what it hits, and bursts on anything it meets. Breaking snow with a shovel gives snowballs; four make a snow block.",
+            "title": "Snowball"
+        },
         "item:qtcraft:stick": {
             "category": "items",
             "categoryTitle": "Items",
@@ -67354,6 +68112,12 @@
                             "text": "Armour stand"
                         },
                         {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        },
+                        {
                             "icon": "qtcraft:barrel",
                             "note": "",
                             "target": "block:qtcraft:barrel",
@@ -67370,6 +68134,12 @@
                             "note": "",
                             "target": "block:qtcraft:birch_fence_gate",
                             "text": "Birch fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bow"
                         },
                         {
                             "icon": "qtcraft:diamond_axe",
@@ -68575,6 +69345,26 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Can harvest"
                 }
             ],
             "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
@@ -68693,6 +69483,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bow",
+                            "note": "",
+                            "target": "item:qtcraft:bow",
+                            "text": "Bow"
+                        },
                         {
                             "icon": "qtcraft:signal_dispenser",
                             "note": "",
@@ -70297,6 +71093,26 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "level 1",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Can harvest"
                 }
             ],
             "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
@@ -70986,7 +71802,7 @@
                         },
                         {
                             "icon": "qtcraft:white_wool",
-                            "note": "",
+                            "note": "50 %",
                             "target": "block:qtcraft:white_wool",
                             "text": "White wool"
                         },
@@ -70998,7 +71814,7 @@
                         },
                         {
                             "icon": "qtcraft:raw_mutton",
-                            "note": "",
+                            "note": "50 %",
                             "target": "item:qtcraft:raw_mutton",
                             "text": "Raw mutton"
                         }
@@ -71037,6 +71853,176 @@
             ],
             "text": "Peaceful animal of grassy land; drops wool.",
             "title": "Sheep"
+        },
+        "mob:qtcraft:skeleton": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Skeleton",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:skeleton"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: keeps its distance, circles and shoots at players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 1.95 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.4 m/s walking, 2.6 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "2 damage within 1.6 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "at night"
+                },
+                {
+                    "label": "Caves",
+                    "links": [
+                    ],
+                    "value": "also in caves at any time"
+                },
+                {
+                    "label": "Spawn light",
+                    "links": [
+                    ],
+                    "value": "block light up to 7"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 2"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all hostile creatures together: 8 per player"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        },
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "50 %",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "50 %",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:bone",
+            "id": "mob:qtcraft:skeleton",
+            "name": "qtcraft:skeleton",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "All biomes.",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "Comes out at night and lives in caves. Keeps its distance, circles you and shoots arrows with its bow once it has drawn it; it backs away when you come close. Its arrows cannot be picked up. Burns in direct sunlight.",
+            "title": "Skeleton"
         },
         "mob:qtcraft:slime": {
             "category": "creatures",
@@ -71368,15 +72354,21 @@
                         },
                         {
                             "icon": "qtcraft:carrot",
-                            "note": "",
+                            "note": "2.5 %",
                             "target": "item:qtcraft:carrot",
                             "text": "Carrot"
                         },
                         {
                             "icon": "qtcraft:potato",
-                            "note": "",
+                            "note": "2.5 %",
                             "target": "item:qtcraft:potato",
                             "text": "Potato"
+                        },
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "25 %",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feather"
                         }
                     ],
                     "value": ""
@@ -71435,7 +72427,7 @@
                     "title": "Appears in biomes"
                 }
             ],
-            "text": "Comes out at night and lives in caves. Chases players it sees and hits hard.",
+            "text": "Comes out at night and lives in caves. Chases players it sees and hits hard. Burns in direct sunlight.",
             "title": "Zombie"
         },
         "ore:qtcraft:clay_pocket": {
@@ -73581,12 +74573,48 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "- Level 1 needed for: Snow block, Snow layer",
                     "title": "Shovel"
                 }
             ],
             "text": "A block that needs a tool drops its items only when mined with that kind of tool of at least its level. Higher levels mine faster and last longer.",
             "title": "Tool tiers"
+        },
+        "tag:qtcraft:arrows": {
+            "category": "tags",
+            "categoryTitle": "Item groups",
+            "englishTitle": "Any arrow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "#qtcraft:arrows"
+                }
+            ],
+            "icon": "qtcraft:arrow",
+            "id": "tag:qtcraft:arrows",
+            "name": "qtcraft:arrows",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Items in this group"
+                }
+            ],
+            "text": "Recipes that ask for this group take any of its items.",
+            "title": "Any arrow"
         },
         "tag:qtcraft:chunk_loaders": {
             "category": "tags",

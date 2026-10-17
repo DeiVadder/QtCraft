@@ -65,6 +65,15 @@ bool chunkUsesKnownBlocks(const QcChunk &chunk, const QcContentRegistry &content
     return true;
 }
 
+// Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,
+// doors, levers, buttons, repeaters and crafting tables, unless the player sneaks.
+bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
+{
+    return block && !sneaking
+           && (block->opensCrafting || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
+               || block->signal.isUsable());
+}
+
 } // namespace
 
 QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent)
@@ -420,6 +429,8 @@ void QcClientSession::tick()
         m_lastHeld = heldItem;
         m_switchTicks = 0;
     }
+    m_launcher.tick(heldItem != qcNoItem && m_content->isValidItem(heldItem) ? &m_content->item(heldItem) : nullptr,
+                    m_inventory.selectedHotbarSlot(), m_worldTime.speed);
 
     // Keep swinging while a block is being mined.
     if (m_miningPos && m_swingTicks < 0) {
@@ -510,7 +521,7 @@ void QcClientSession::refreshTarget()
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : m_entities.all()) {
-        if (entity.isItem() || entity.isExperienceOrb() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
+        if (entity.isItem() || entity.isExperienceOrb() || entity.isProjectile() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
             continue;
         }
 
@@ -560,6 +571,7 @@ QcEntityPose QcClientSession::localPose(double alpha) const
     pose.riding = m_riding.isRiding();
     pose.sneaking = pose.sneaking && !pose.riding;
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
+    pose.drawProgress = m_launcher.progress(alpha);
     pose.headPitch = m_intent.pitch;
     return pose;
 }
@@ -586,6 +598,8 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
     pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * float(alpha);
+    // Others only tell that they draw (decision E-425): shown fully drawn.
+    pose.drawProgress = (entity.flags & QcMsg::Drawing) != 0 ? 1.0 : -1.0;
     return pose;
 }
 
@@ -678,10 +692,7 @@ bool QcClientSession::useItem()
     // otherwise food without a block to place is eaten and everything else acts on the targeted block.
     const std::optional<QcBlockId> targetBlock = m_target ? m_world->blockAt(m_target->block) : std::nullopt;
     const QcBlockDefinition *targetDefinition = targetBlock ? &m_content->block(*targetBlock) : nullptr;
-    const bool opensScreen = targetDefinition && !m_intent.sneak
-                             && (targetDefinition->opensCrafting || targetDefinition->machine.isMachine()
-                                 || targetDefinition->containerSlots > 0 || targetDefinition->toggles
-                                 || targetDefinition->signal.isUsable());
+    const bool opensScreen = reactsToUse(targetDefinition, m_intent.sneak);
     // An armour stand takes or gives armour and items, also with an empty hand; a minecart takes the
     // player in or opens its screen; a villager opens its trading screen (decision E-414).
     const QcClientEntity targeted = m_targetEntity ? m_entities.all().value(*m_targetEntity) : QcClientEntity();
@@ -705,6 +716,17 @@ bool QcClientSession::useItem()
         return true;
     }
 
+    // A launcher draws while the button is held (decision E-425), releaseUse shoots; a throwable
+    // item is thrown at once (decision E-427).
+    if (item && !opensScreen && QcClientLauncher::uses(*item)) {
+        const std::optional<QcMessage> message = m_launcher.use(held.item, *item, m_inventory, *m_content, m_gameMode.rules().infiniteItems);
+        if (message) {
+            m_connection->send(*message);
+        }
+        m_swingTicks = QcClientLauncher::swingAfter(message, m_swingTicks);
+        return true;
+    }
+
     // Food is eaten and armour put on (both sent as ConsumeItem) unless the food plants a block and
     // a block is aimed at: then the server plants it or, where it cannot, eats it (decision E-292).
     const bool eats = item && item->food > 0 && (item->placesBlock.isEmpty() || !m_target);
@@ -725,6 +747,20 @@ bool QcClientSession::useItem()
     m_connection->send(QcMsg::UseItem{m_target->block, m_target->face, {clamp01(hit.x), clamp01(hit.y), clamp01(hit.z)}});
     m_useTicks = 0;
     return true;
+}
+
+void QcClientSession::releaseUse()
+{
+    if (m_launcher.release() && m_state == State::Playing) {
+        m_connection->send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Release});
+    }
+}
+
+void QcClientSession::cancelUse()
+{
+    if (m_launcher.release() && m_state == State::Playing) {
+        m_connection->send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
+    }
 }
 
 void QcClientSession::sendChat(const QString &text)

@@ -105,6 +105,9 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
         mob.villager->look = quint32(qcMixSeed(m_seed, 4101 + quint64(id)));
         mob.persistent = true;
     }
+    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Archer) {
+        mob.archer.emplace();
+    }
     // Only creatures that are saved have a persistent id (decision E-420).
     if (mob.persistent) {
         mob.uid = m_nextUid++;
@@ -113,7 +116,12 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     return id;
 }
 
-std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amount, const QcVec3 &from)
+QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength)
+{
+    return away * (knockbackSpeed * strength) + QcVec3{0.0, knockbackLift * std::min(strength, 1.0), 0.0};
+}
+
+std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amount, const QcVec3 &from, double knockback)
 {
     const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
     if (it == m_mobs.end() || it->hurtTimer > 0.0) {
@@ -121,12 +129,16 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
     }
 
     QcCreature &mob = *it;
-    mob.health -= amount;
-    mob.hurtTimer = hurtInvulnerability;
+    mob.health -= std::max(0.0, amount);
+    if (amount > 0.0) {
+        mob.hurtTimer = hurtInvulnerability;
+    }
     mob.hurtThisTick = true;
 
     const QcVec3 away = QcVec3{mob.motion.position.x - from.x, 0.0, mob.motion.position.z - from.z}.normalized();
-    mob.motion.velocity = away * knockbackSpeed + QcVec3{0.0, 5.0, 0.0};
+    if (knockback > 0.0) {
+        mob.motion.velocity = knockbackVelocity(away, knockback);
+    }
 
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     if (!definition.hostile) {
@@ -257,15 +269,19 @@ void QcMobManager::departWhere(const std::function<std::optional<Departure>(cons
     m_mobs.remove(kept, m_mobs.size() - kept);
 }
 
+QList<QcProjectileManager::Launch> QcMobManager::takeLaunches()
+{
+    return m_behaviour->takeLaunches();
+}
+
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
-    QList<PlayerHit> hits;
     for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
         mob.attackedThisTick = false;
     }
-    m_behaviour->tick(m_mobs, world, players, {worldTime, dt}, hits);
+    const QList<PlayerHit> hits = m_behaviour->tick(m_mobs, world, players, {worldTime, dt});
 
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
@@ -350,6 +366,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         // only guards against a world.json put back by hand.
         m_nextUid = std::max(m_nextUid, stored.uid + 1);
         mob.uid = uniqueUid(stored.uid, uids, m_nextUid);
+        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {
+            mob.archer.emplace();
+        }
         if (m_content->mobs()[stored.type].villager) {
             static_cast<QcVillagerRecord &>(mob.villager.emplace()) = stored.villager.value_or(QcVillagerRecord{});
             // A profession the content no longer has (a mod was removed): unemployed.

@@ -61,6 +61,26 @@ int QcInventory::removeFromSlot(int index, int count)
     return removed;
 }
 
+int QcInventory::ammunitionSlot(const QcContentRegistry &content, const QcLauncherDefinition &launcher) const
+{
+    for (int slot = 0; slot < slotCount; ++slot) {
+        const QcItemStack &stack = m_slots[slot];
+        if (!stack.isEmpty() && content.isValidItem(stack.item) && isAmmunition(content.item(stack.item), launcher)) {
+            return slot;
+        }
+    }
+    return -1;
+}
+
+bool QcInventory::isAmmunition(const QcItemDefinition &item, const QcLauncherDefinition &launcher)
+{
+    // Without a list a launcher takes every ammunition but what is thrown by hand (decision E-427).
+    if (item.projectile.isEmpty() || (launcher.ammunition.isEmpty() && item.throwable)) {
+        return false;
+    }
+    return launcher.takes(item.name, item.tags);
+}
+
 int QcInventory::countOf(QcItemId item) const
 {
     int total = 0;

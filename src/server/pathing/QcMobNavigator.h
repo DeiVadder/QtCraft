@@ -2,7 +2,7 @@
 
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
-#include "server/pathing/QcPathTerrain.h"
+#include "server/pathing/QcPathGround.h"
 
 #include <optional>
 
@@ -53,12 +53,11 @@ Navigation steer(QcCreature &mob, double speed, QcPathPlanner &planner, const Qc
 Navigation steerAlong(QcCreature &mob, double speed, QcPathPlanner &planner, const QcBlockAccess &world, QcPathRules rules);
 
 // Whether the waypoints from the next one on (all of them, or the next two) can still be stood on.
-bool pathClear(const QcMobPath &path, bool all, const QcBlockAccess &world, const QcPathCellTable &cells, QcPathRules rules);
+bool pathClear(const QcMobPath &path, bool all, const QcPathGround &ground);
 
 // Whether a step in `direction` keeps the creature on ground it can stand on: the cell ahead is
 // level, a step up or a drop of at most QcPathRules::maxDrop or into deep water (pushes between
 // creatures and coasting in a crowd must not take one off a cliff).
-bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcBlockAccess &world, const QcPathCellTable &cells,
-              QcPathRules rules);
+bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcPathGround &ground);
 
 } // namespace QcMobNavigator

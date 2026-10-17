@@ -36,6 +36,9 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
         return true;
     case QcEntityKind::ExperienceOrb:
         return spawn.health > 0.0;
+    case QcEntityKind::Projectile:
+        // Drawn as its item (an arrow, decision E-425).
+        return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
     }
     return false;
 }
@@ -54,8 +57,9 @@ QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
 
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    // Items and minecarts (what the cart carries, decision E-386).
-    const bool item = spawn.kind == QcEntityKind::Item || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+    // Items, projectiles (their look) and minecarts (what the cart carries, decision E-386).
+    const bool item = spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile
+                      || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
 
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();
@@ -84,8 +88,9 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         return false;
     }
 
-    // Items and minecarts (what the cart carries, decision E-386).
-    const bool item = spawn.kind == QcEntityKind::Item || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+    // Items, projectiles (their look) and minecarts (what the cart carries, decision E-386).
+    const bool item = spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile
+                      || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
     // A known entity sent again changed its count (items) or look (players); keep its motion history.
     const auto known = m_entities.find(spawn.id);
     if (known != m_entities.end() && known->kind == spawn.kind && known->creatureType == creatureTypeOf(spawn)) {
@@ -100,6 +105,10 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         if (known->isArmourStand()) {
             // A stand turned by a command; it never moves otherwise.
             known->yaw = known->previousYaw = spawn.yaw;
+        }
+        if (known->isProjectile()) {
+            // Stuck or falling again (decision E-425); its moves bring the place.
+            known->flags = spawn.flags;
         }
         return true;
     }
@@ -146,7 +155,7 @@ void QcClientEntities::remove(QcMsg::EntityRemove removed)
 {
     m_tracks.remove(removed.id);
     QcClientEntity gone = m_entities.take(removed.id);
-    if (removed.died && gone.id == removed.id && !gone.isItem() && !gone.isExperienceOrb()) {
+    if (removed.died && gone.id == removed.id && !gone.isItem() && !gone.isExperienceOrb() && !gone.isProjectile()) {
         gone.deathTicks = 0;
         gone.previousPosition = gone.position;
         m_dying.insert(gone.id, gone);

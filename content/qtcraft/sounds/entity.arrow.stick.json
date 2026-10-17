@@ -1,0 +1,29 @@
+{
+    "name": "entity.arrow.stick",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 3,
+            "lowpass": 6000,
+            "highpass": 800,
+            "gain": 0.7
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.18,
+            "frequency": 340,
+            "endFrequency": 300,
+            "attack": 0.002,
+            "curve": 3,
+            "tremoloRate": 38,
+            "tremoloDepth": 0.6,
+            "gain": 0.4
+        }
+    ]
+}

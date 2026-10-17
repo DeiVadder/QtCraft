@@ -33,6 +33,9 @@ public:
     // Timers, hunger and the void for every playing player in a simulated tick.
     void tick();
     void damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
+    // Pushes the player along `direction` with `strength` times a blow's push (a projectile's
+    // knockback, decision E-427, also without damage).
+    static void knock(QcServerClient &client, const QcVec3 &direction, double strength = 1.0);
     // Fall damage after a movement step.
     void afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY);
     void respawn(QcServerClient &client);

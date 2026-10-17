@@ -33,6 +33,7 @@
 #include "server/mobs/QcServerAnimals.h"
 #include "server/mobs/QcServerCreatures.h"
 #include "server/plants/QcServerPlants.h"
+#include "server/projectiles/QcServerProjectiles.h"
 #include "server/signal/QcServerCircuits.h"
 #include "server/storage/QcServerPersistence.h"
 #include "server/tick/QcTickControl.h"
@@ -111,6 +112,7 @@ public:
     // Experience orbs and the players' experience (decision E-398).
     QcExperienceOrbManager &orbs() { return m_state.entities().orbs(); }
     QcServerExperience &experience() { return m_experience; }
+    QcServerProjectiles &projectiles() { return m_projectiles; }
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits() { return m_circuits; }
     QcCircuitState &circuitState() { return m_state.circuits(); }
@@ -269,6 +271,7 @@ private:
     QcServerExperience m_experience;
     QcServerCombat m_combat;
     QcServerCreatures m_creatures;
+    QcServerProjectiles m_projectiles;
     QcServerTrading m_trading;
     QcEnvironmentDamage m_environment;
     QcBodyBurning m_burning;

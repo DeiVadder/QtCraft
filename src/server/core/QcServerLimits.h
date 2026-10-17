@@ -70,6 +70,10 @@ struct QcServerLimits
     qint64 itemsTotal = 4096;
     // Experience orbs in the world (E-398); beyond, dropped experience joins the nearest orb.
     qint64 experienceOrbs = 1024;
+    // Projectiles (E-425) in the world (beyond, a launcher does not shoot) and stuck in one chunk
+    // (beyond, the oldest stuck there goes).
+    qint64 projectiles = 1024;
+    qint64 projectilesPerChunk = 64;
     // Creatures that spawn by themselves per player, by kind.
     qint64 hostileCreaturesPerPlayer = 8;
     qint64 passiveCreaturesPerPlayer = 6;

@@ -27,6 +27,18 @@ QcBlockFace leftOf(QcBlockFace face)
 
 } // namespace
 
+const QSet<QcBlockPos> &QcCircuitComponents::Plates::pressing(const QcSignalDefinition &signal) const
+{
+    return signal.detectsCarts ? carts : signal.detectsItems ? anything : living;
+}
+
+void QcCircuitComponents::Plates::clear()
+{
+    anything.clear();
+    living.clear();
+    carts.clear();
+}
+
 QcCircuitComponents::QcCircuitComponents(const Context &context)
     : m_context(context)
 {
@@ -347,11 +359,7 @@ void QcCircuitComponents::reactHead(QcBlockPos pos, QcSignalState state, QcCircu
 
 void QcCircuitComponents::releasePlate(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
 {
-    const QcSignalDefinition &signal = definition(block);
-    const QSet<QcBlockPos> &pressed = signal.detectsCarts ? m_context.pressedByCarts
-                                      : signal.detectsItems ? m_context.pressedByAnything
-                                                            : m_context.pressedByLiving;
-    if (pressed.contains(pos)) {
+    if (m_context.plates.pressing(definition(block)).contains(pos)) {
         plan.schedules.append({pos, plateCheckTicks, Priority::Release});
     } else if (state.on) {
         plan.writes.insert(pos, table().withFlag(block, u"powered"_s, false));

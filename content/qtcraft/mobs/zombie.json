@@ -11,6 +11,7 @@
     "walkSpeed": 1.2,
     "chaseSpeed": 3.2,
     "hostile": true,
+    "burnsInDaylight": true,
     "attackDamage": 3,
     "attackRange": 1.6,
     "attackCooldown": 1.0,
@@ -43,6 +44,10 @@
         {
             "item": "potato",
             "chance": 0.025
+        },
+        {
+            "item": "feather",
+            "chance": 0.25
         }
     ],
     "experience": 5

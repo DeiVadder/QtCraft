@@ -46,6 +46,15 @@ void lieOnBack(BodyPose &result, double idle)
     result.bodyLift = 0.0;
 }
 
+// Aiming a bow (decision E-425): the left arm holds it out along the view, the right one pulls the
+// string back towards the face.
+void aimBow(BodyPose &result, const QcEntityPose &pose)
+{
+    const double aim = 90.0 + pose.headPitch;
+    bone(result, QcBoneRole::LeftArm) = {aim, 12.0};
+    bone(result, QcBoneRole::RightArm) = {aim - 8.0 * pose.drawProgress, -25.0 - 15.0 * pose.drawProgress};
+}
+
 } // namespace
 
 double swingLift(double progress)
@@ -103,6 +112,9 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     if (pose.armsForward) {
         bone(result, QcBoneRole::RightArm) = {90.0 + stride * amplitude * 0.15, 0.0};
         bone(result, QcBoneRole::LeftArm) = {90.0 - stride * amplitude * 0.15, 0.0};
+    }
+    if (pose.drawProgress >= 0.0) {
+        aimBow(result, pose);
     }
     if (pose.sneaking && pose.onGround && !pose.inWater) {
         result.bodyPitch = 12.0;
@@ -175,6 +187,16 @@ HandPose animateHand(const QcEntityPose &pose, double time, double switchProgres
         hand.offset.z -= 0.10 * thrust;
         hand.pitch += lift >= 0.0 ? 22.0 * lift : 12.0 * lift;
         hand.yaw += 18.0 * down;
+    }
+    if (pose.drawProgress >= 0.0) {
+        // Drawing a bow: the hand comes to the middle and pulls back, trembling at a full draw.
+        const double draw = std::clamp(pose.drawProgress, 0.0, 1.0);
+        const double tremble = draw >= 1.0 ? std::sin(time * 40.0) * 0.004 : 0.0;
+        hand.offset.x -= 0.18;
+        hand.offset.y += 0.06 + tremble;
+        hand.offset.z += 0.12 * draw;
+        hand.yaw += 20.0;
+        hand.pitch += 10.0;
     }
     if (useProgress >= 0.0) {
         const double push = std::sin(std::clamp(useProgress, 0.0, 1.0) * M_PI);

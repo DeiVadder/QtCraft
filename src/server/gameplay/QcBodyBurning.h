@@ -17,13 +17,16 @@ class QcServerState;
 // contact damage of the block), and water around its feet or body puts it out at once, as will rain
 // (setRainCheck, weather of stage 35). Players in creative mode never catch fire. Players hear of
 // their own burning with their health (QcMsg::PlayerHealth::burning), everyone sees it on the
-// entity (QcMsg::Burning). A burning creature makes its hurt sound when the damage takes and drops
+// entity (QcMsg::Burning). Creatures that burn in daylight catch fire in direct sunlight. A burning creature makes its hurt sound when the damage takes and drops
 // its loot when it dies, like after a hit. Items in fire or lava burn up in QcEnvironmentDamage.
 class QcBodyBurning
 {
 public:
     static constexpr double burnDamage = 1.0;
     static constexpr int burnIntervalTicks = 20;
+    // Creatures that burn in daylight (QcMobDefinition::burnsInDaylight, decision E-426) catch fire
+    // for this long in direct sunlight, as from fire; water, rain and shade keep them from it.
+    static constexpr int sunlightTicks = 8 * 20;
 
     // Whether rain falls on a position; rain puts out the bodies it falls on.
     using RainCheck = std::function<bool(QcBlockPos pos)>;
@@ -37,7 +40,9 @@ public:
 private:
     // The burn time a body has after this tick: what it touches sets it alight, water or rain puts
     // it out, otherwise one tick less.
-    int burnTicksAfter(const QcEntity &body, double width, double height) const;
+    int burnTicksAfter(const QcEntity &body, double width, double height, int alightTicks = 0) const;
+    // Whether the sun shines on the head of a body of `height` (decision E-426): day, full sky light.
+    bool inSunlight(const QcEntity &body, double height) const;
     // Whether water (a liquid that sets nothing alight) fills a cell of the body's feet or middle.
     bool inWater(const QcVec3 &feet, double height) const;
     // Whether rain falls on the body standing at `feet` (the rain check on the cell above the feet).

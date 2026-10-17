@@ -1,0 +1,35 @@
+{
+    "name": "skeleton",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "skeleton_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "skeleton_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "skeleton_ribs",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "skeleton_bone",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "skeleton_bone",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "skeleton_bone",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "skeleton_bone",
+            "tint": "none"
+        }
+    }
+}

@@ -176,7 +176,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -375,6 +375,8 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcVillagerSettings settings) { registry.registerVillagerSettings(std::move(settings)); });
     loadDefinitions(root.filePath(u"trades"_s), packId, warnings, QcContentParser::parseTradeSet,
                     [&registry](QcTradeSet set) { registry.registerTradeSet(std::move(set)); });
+    loadDefinitions(root.filePath(u"projectiles"_s), packId, warnings, QcContentParser::parseProjectile,
+                    [&registry](QcProjectileDefinition projectile) { registry.registerProjectile(std::move(projectile)); });
     loadDefinitions(root.filePath(u"commands"_s), packId, warnings, QcContentParser::parseCommandMacro,
                     [&registry](QcCommandMacroDefinition macro) { registry.registerCommandMacro(std::move(macro)); });
 }

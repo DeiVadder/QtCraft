@@ -40,6 +40,8 @@ A block that needs a tool drops its items only when mined with that kind of tool
 
 **Shovel**
 
+- Level 1 needed for: Snow block, Snow layer
+
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1, × 12, 32 uses), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1, × 2, 59 uses), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2, × 4, 131 uses), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3, × 6, 250 uses), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4, × 8, 1561 uses)
 
 ### <a id="table-armour"></a>Armour

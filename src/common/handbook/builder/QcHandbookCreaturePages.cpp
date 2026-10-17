@@ -17,10 +17,16 @@ QString kindOf(const QcMobDefinition &mob)
     return mob.ambient ? u"ambient"_s : (mob.hostile ? u"hostile"_s : u"passive"_s);
 }
 
+// The behaviour label: the category, or "archer" for hostile creatures that shoot (decision E-426).
+QString behaviourOf(const QcMobDefinition &mob)
+{
+    return mob.ai == QcMobDefinition::Ai::Archer ? u"archer"_s : kindOf(mob);
+}
+
 // Behaviour, health, size, speeds and how it attacks.
 void addBodyFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fact> &facts)
 {
-    facts.append({text.label(u"fact.behaviour"_s), text.label(u"value.mob."_s + kindOf(mob)), {}});
+    facts.append({text.label(u"fact.behaviour"_s), text.label(u"value.mob."_s + behaviourOf(mob)), {}});
     facts.append({text.label(u"fact.health"_s), text.healthPoints(mob.maxHealth), {}});
     facts.append({text.label(u"fact.size"_s), text.label(u"unit.size"_s).arg(text.number(mob.width), text.number(mob.height)), {}});
 

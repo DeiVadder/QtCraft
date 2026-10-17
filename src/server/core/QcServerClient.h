@@ -146,6 +146,13 @@ struct QcServerClient : QcEntity
     bool sprinting = false;
     // Set by actions that swing the arm; reported to other clients in this tick's sync.
     bool swung = false;
+    // Drawing the launcher in the hotbar slot drawSlot since the tick drawStart (decision E-425,
+    // QcPlayerLaunchers); others see the aim.
+    bool drawing = false;
+    quint64 drawStart = 0;
+    int drawSlot = -1;
+    // The tick from which each thrown item may be thrown again (decision E-427, QcPlayerThrows).
+    QHash<QcItemId, quint64> throwReady;
     QcAppearance appearance;
     QcInventory inventory;
     // Armour slots; sent to the player and to everyone who sees them.

@@ -300,6 +300,27 @@ void registerByName(QList<Definition> &list, QHash<QString, qsizetype> &index, D
     }
 }
 
+// What does not go together with the projectile uses of `item`, left out with a warning each.
+QStringList checkProjectileUses(QcItemDefinition &item)
+{
+    // The use button throws a throwable item (QcClientLauncher::uses), so its other uses would never
+    // happen: they are left out (decision E-427).
+    QStringList warnings;
+    if (item.throwable && (item.ignites || item.fertilizes || item.scoops || item.bottles || !item.emptiesTo.isEmpty())) {
+        warnings.append(u"item '%1': a 'throwable' item neither ignites, fertilizes, scoops nor bottles; it is only thrown"_s.arg(item.name));
+        item.ignites = false;
+        item.fertilizes = false;
+        item.scoops = false;
+        item.bottles = false;
+        item.emptiesTo.clear();
+    }
+    if (item.launcher && item.launcher->emptyAmmunitionList) {
+        warnings.append(u"item '%1': an empty 'ammunition' list means none: the launcher takes all ammunition that is not thrown"_s.arg(item.name));
+        item.launcher->emptyAmmunitionList = false;
+    }
+    return warnings;
+}
+
 } // namespace
 
 void QcContentRegistry::registerPartFamily(QcPartFamily family)
@@ -342,9 +363,64 @@ QStringList QcContentRegistry::finish()
             mob.ai = QcMobDefinition::Ai::Passive;
             mob.abilities.opensDoors = false;
         }
+        warnings.append(resolveArcher(mob));
     }
+    warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
+    return warnings;
+}
+
+QStringList QcContentRegistry::resolveArcher(QcMobDefinition &mob) const
+{
+    // An archer whose projectile no pack has fights in melee like other hostile creatures, and a
+    // held item no pack has is not shown (decision E-426).
+    QStringList warnings;
+    if (mob.ai == QcMobDefinition::Ai::Archer && !projectile(mob.archer.projectile)) {
+        warnings.append(u"mob '%1': no projectile '%2'; it fights in melee"_s.arg(mob.name, mob.archer.projectile));
+        mob.ai = QcMobDefinition::Ai::Hostile;
+    }
+    const std::optional<QcItemId> held = mob.heldItem.isEmpty() ? std::nullopt : itemId(mob.heldItem);
+    if (!mob.heldItem.isEmpty() && !held) {
+        warnings.append(u"mob '%1': no item '%2' to hold"_s.arg(mob.name, mob.heldItem));
+        mob.heldItem.clear();
+    }
+    mob.heldItemId = held.value_or(qcNoItem);
+    return warnings;
+}
+
+QStringList QcContentRegistry::resolveProjectiles()
+{
+    // Ammunition of a projectile kind no pack has is no ammunition (its projectile is cleared, so
+    // QcInventory::ammunitionSlot passes over it), and a projectile kind of an item no pack has gives
+    // nothing back when picked up (decision E-425).
+    QStringList warnings;
+    for (QcItemDefinition &item : m_items) {
+        if (!item.projectile.isEmpty() && !projectile(item.projectile)) {
+            warnings.append(u"item '%1': no projectile '%2'; it is no ammunition"_s.arg(item.name, item.projectile));
+            item.projectile.clear();
+        }
+    }
+    for (QcItemDefinition &item : m_items) {
+        if (item.throwable && item.projectile.isEmpty()) {
+            warnings.append(u"item '%1': 'throwable' without a projectile; it is not thrown"_s.arg(item.name));
+            item.throwable.reset();
+        }
+        warnings.append(checkProjectileUses(item));
+    }
+    for (QcProjectileDefinition &kind : m_projectiles) {
+        if (!itemId(kind.item)) {
+            warnings.append(u"projectile '%1': no item '%2'"_s.arg(kind.name, kind.item));
+        }
+        // Effect types are a table in code (decision E-427); others are left out.
+        kind.onHit.removeIf([&](const QcHitEffect &effect) {
+            const bool known = QcHitEffect::typeNamed(effect.type).has_value();
+            if (!known) {
+                warnings.append(u"projectile '%1': unknown onHit type '%2' left out"_s.arg(kind.name, effect.type));
+            }
+            return !known;
+        });
+    }
     return warnings;
 }
 
@@ -524,6 +600,17 @@ const QcVillagerProfession *QcContentRegistry::profession(const QString &name) c
 {
     const auto it = m_professionIndex.constFind(name);
     return it == m_professionIndex.constEnd() ? nullptr : &m_professions[*it];
+}
+
+void QcContentRegistry::registerProjectile(QcProjectileDefinition projectile)
+{
+    registerByName(m_projectiles, m_projectileIndex, std::move(projectile));
+}
+
+const QcProjectileDefinition *QcContentRegistry::projectile(const QString &name) const
+{
+    const auto it = m_projectileIndex.constFind(name);
+    return it == m_projectileIndex.constEnd() ? nullptr : &m_projectiles[*it];
 }
 
 void QcContentRegistry::registerTradeSet(QcTradeSet set)

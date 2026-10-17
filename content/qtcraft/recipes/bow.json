@@ -1,0 +1,16 @@
+{
+    "name": "bow",
+    "type": "shaped",
+    "pattern": [
+        " |S",
+        "| S",
+        " |S"
+    ],
+    "key": {
+        "|": "stick",
+        "S": "string"
+    },
+    "result": {
+        "item": "bow"
+    }
+}

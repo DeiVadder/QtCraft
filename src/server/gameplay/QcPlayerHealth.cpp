@@ -87,8 +87,7 @@ void QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 
                   client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
 
     if (knockback.length() > 0.0) {
-        client.motion.velocity = knockback.normalized() * QcMobManager::knockbackSpeed + QcVec3{0.0, 5.0, 0.0};
-        client.stateDirty = true;
+        knock(client, knockback);
     }
 
     if (client.health <= 0.0) {
@@ -98,10 +97,20 @@ void QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 
     sendHealth(client);
 }
 
+void QcPlayerHealth::knock(QcServerClient &client, const QcVec3 &direction, double strength)
+{
+    if (direction.length() <= 0.0 || strength <= 0.0) {
+        return;
+    }
+    client.motion.velocity = QcMobManager::knockbackVelocity(direction.normalized(), strength);
+    client.stateDirty = true;
+}
+
 void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
 {
     client.dead = true;
     client.mining.pos.reset();
+    client.drawing = false;
     m_state.entities().noteDeath(client.id);
 
     const char *message = kind == DamageKind::Void ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world")

@@ -39,6 +39,10 @@ enum EntityFlag : quint16 {
     // decision E-411) or sitting; neither for standing.
     Lying = 512,
     Sitting = 1024,
+    // A player drawing a bow (decision E-425): arms raised to aim in the third person.
+    Drawing = 2048,
+    // A projectile stuck in a block: it no longer turns with its flight.
+    Stuck = 4096,
 };
 
 // The pose bits of a creature's flags, and the pose they carry.
@@ -65,7 +69,7 @@ struct EntitySpawn
     float yaw = 0.0f;
     // Players and creatures: their health; experience orbs: their value (decision E-398).
     double health = 0.0;
-    // The stack of an item entity; empty for the other kinds.
+    // The stack of an item entity; projectiles: the item they look like (an arrow); empty for the other kinds.
     QcItemStack item;
     // Players: their chosen look; villagers: the look the server gives them (decision E-411); armour
     // stands: only its cape counts (decision E-239).

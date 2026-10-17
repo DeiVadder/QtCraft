@@ -62,6 +62,8 @@ void encode(QDataStream &, QcMsg::CloseCrafting) {}
 
 void encode(QDataStream &, QcMsg::ConsumeItem) {}
 
+void encode(QDataStream &, QcMsg::ThrowItem) {}
+
 void encode(QDataStream &stream, QcMsg::OpenCrafting m)
 {
     stream << m.size;
@@ -108,6 +110,11 @@ void encode(QDataStream &stream, QcMsg::CreativeItem m)
 void encode(QDataStream &stream, QcMsg::PickBlock m)
 {
     writePos(stream, m.pos);
+}
+
+void encode(QDataStream &stream, QcMsg::DrawLauncher m)
+{
+    stream << quint8(m.action);
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
@@ -193,6 +200,11 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ConsumeItem>, QDataStream &)
 {
     return QcMsg::ConsumeItem{};
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ThrowItem>, QDataStream &)
+{
+    return QcMsg::ThrowItem{};
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenCrafting>, QDataStream &stream)
@@ -282,6 +294,16 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream)
 {
     return QcMsg::PickBlock{readPos(stream)};
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DrawLauncher>, QDataStream &stream)
+{
+    quint8 action = 0;
+    stream >> action;
+    if (action > quint8(QcMsg::DrawLauncher::Action::Cancel)) {
+        return qcError(u"Unknown launcher action %1"_s.arg(action));
+    }
+    return QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action(action)};
 }
 
 } // namespace QcProtocolCodec

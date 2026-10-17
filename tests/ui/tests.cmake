@@ -125,6 +125,10 @@ if(NOT QC_SANITIZERS)
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 240)
+    # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
+    # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
+    add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
+    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 240)
 endif()
 # The menu's multiplayer screen with a refused join (nobody listens on port 1), and a world opened
 # to the network on this computer only with the open-to-LAN screen and the player list, load

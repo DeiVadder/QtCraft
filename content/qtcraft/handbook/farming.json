@@ -7,6 +7,7 @@
         "crops",
         "stems",
         "seeds",
+        "bone_meal",
         "animals",
         "food"
     ],
@@ -19,6 +20,7 @@
         "potato",
         "pumpkin_stem",
         "melon_stem",
+        "bone_meal",
         "bread",
         "pig",
         "sheep"

@@ -177,3 +177,53 @@ bool QcServerPlants::flatten(QcServerClient &client, QcBlockPos target, QcBlockF
     m_inventory.wearHeld(client);
     return true;
 }
+
+bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(target);
+    if (!held || !held->fertilizes || !clicked || !content.isValidBlock(*clicked) || client.dead
+        || !QcLineOfSight::isWithinReach(client, target)) {
+        return false;
+    }
+
+    const QcBlockDefinition &block = content.block(*clicked);
+    QRandomGenerator &random = m_state.random();
+    if (block.sapling.isSapling()) {
+        // A sapling without its timer (set by a command) gets one first.
+        if (!m_state.blockEntities().sapling(target)) {
+            m_state.plants().saplingPlaced(m_state.blockEntities(), target, *clicked);
+        }
+        if (m_state.blockEntities().sapling(target) && random.generateDouble() < QcItemDefinition::fertilizeSaplingChance) {
+            m_state.blockEntities().setSaplingRemaining(target, 0.0);
+        }
+    } else if (!growCrop(target, random.bounded(fertilizeStagesMin, fertilizeStagesMax + 1))) {
+        return false;
+    }
+
+    m_sounds.playBlock(block, QcBlockSoundAction::Place, target);
+    if (!client.rules().infiniteItems) {
+        client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    }
+    m_inventory.send(client);
+    return true;
+}
+
+bool QcServerPlants::growCrop(QcBlockPos pos, int stages)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!block || !content.isValidBlock(*block) || !content.block(*block).crop.isCrop()) {
+        return false;
+    }
+
+    const QcCropDefinition &crop = content.block(*block).crop;
+    const QcBlockProperty *values = content.block(*block).property(crop.property);
+    const qsizetype stage = values ? values->values.indexOf(content.property(*block, crop.property)) : -1;
+    const qsizetype last = values ? values->values.size() - 1 : -1;
+    if (stage < 0 || stage >= last) {
+        return false;
+    }
+    m_blocks.setAndBroadcast(pos, content.withProperty(*block, crop.property, values->values[std::min(last, stage + stages)]));
+    return true;
+}

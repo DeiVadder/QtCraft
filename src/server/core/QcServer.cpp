@@ -54,6 +54,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health, m_blocks)
+    , m_projectiles(m_state, m_sounds, m_health, m_inventory)
     , m_trading(m_state, m_sounds, m_inventory, m_screens)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
@@ -350,6 +351,10 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_gameModes.creativeItem(client, *creative);
     } else if (const auto *pick = std::get_if<QcMsg::PickBlock>(&message)) {
         m_gameModes.pickBlock(client, pick->pos);
+    } else if (std::holds_alternative<QcMsg::ThrowItem>(message)) {
+        m_projectiles.throws().throwHeld(client);
+    } else if (const auto *draw = std::get_if<QcMsg::DrawLauncher>(&message)) {
+        m_projectiles.launchers().draw(client, draw->action);
     } else {
         return false;
     }
@@ -579,6 +584,8 @@ void QcServer::simulate()
     m_burning.tick();
     m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
+    m_projectiles.tick();
+    m_phases.lap(Phase::Projectiles);
     m_plants.plantItems(m_items.tick());
     m_experience.tick();
     m_phases.lap(Phase::Items);

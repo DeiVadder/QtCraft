@@ -4,6 +4,8 @@
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 
+#include <QJsonArray>
+
 #include <algorithm>
 #include <cmath>
 
@@ -12,6 +14,71 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // "dispense": throw (default), place_liquid, scoop, equip or ignite, checked against what the item is.
+// What it does used on a block besides placing one: hoe, shovel, flint and steel, bone meal.
+void parseBlockUses(QcItemDefinition &item, QcJsonFieldReader &reader)
+{
+    item.tills = reader.boolean(u"tills"_s, false);
+    item.flattens = reader.boolean(u"flattens"_s, false);
+    item.ignites = reader.boolean(u"ignites"_s, false);
+    if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.flattens || item.scoops || item.bottles)) {
+        reader.fail(u"an item that 'ignites' neither places, tills, flattens, scoops nor bottles"_s);
+    }
+    item.fertilizes = reader.boolean(u"fertilizes"_s, false);
+    if (item.fertilizes && (!item.placesBlock.isEmpty() || item.ignites)) {
+        reader.fail(u"an item that 'fertilizes' neither places nor ignites"_s);
+    }
+}
+
+// "ammunition" of a launcher: item names and "#tag"s (decision E-427).
+QStringList parseAmmunition(const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = reader.json.value(u"ammunition"_s);
+    const QJsonArray list = value.toArray();
+    if (!value.isUndefined() && (!value.isArray() || list.size() > 64)) {
+        reader.fail(u"'ammunition' must be an array of at most 64 item names or tags"_s);
+        return {};
+    }
+    QStringList names;
+    for (const auto &entry : list) {
+        const QString name = entry.isString() ? QcContentFields::qualifyIngredient(entry.toString(), packNamespace) : QString();
+        if (name.isEmpty()) {
+            reader.fail(u"invalid 'ammunition' entry"_s);
+            return {};
+        }
+        names.append(name);
+    }
+    return names;
+}
+
+// What the item does with projectiles: a launcher, ammunition, thrown by hand (decisions E-425, E-427).
+void parseProjectileUses(QcItemDefinition &item, const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    reader.nestedObject(u"launcher"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcLauncherDefinition launcher;
+        launcher.drawSeconds = nested.number(u"drawSeconds"_s, launcher.drawSeconds, 0.05, 10.0);
+        launcher.speed = nested.number(u"speed"_s, launcher.speed, 1.0, QcProjectileDefinition::maxSpeed);
+        launcher.minPower = nested.number(u"minPower"_s, launcher.minPower, 0.0, 1.0);
+        launcher.ammunition = parseAmmunition(packNamespace, nested);
+        const QJsonValue listed = nested.json.value(u"ammunition"_s);
+        launcher.emptyAmmunitionList = listed.isArray() && listed.toArray().isEmpty();
+        item.launcher = launcher;
+    });
+    item.projectile = reader.name(u"projectile"_s, packNamespace);
+    reader.nestedObject(u"throwable"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcThrowableDefinition throwable;
+        throwable.speed = nested.number(u"speed"_s, throwable.speed, 1.0, QcProjectileDefinition::maxSpeed);
+        throwable.cooldownSeconds = nested.number(u"cooldownSeconds"_s, throwable.cooldownSeconds, 0.0, 60.0);
+        throwable.inaccuracyDegrees = nested.number(u"inaccuracyDegrees"_s, throwable.inaccuracyDegrees, 0.0, 45.0);
+        item.throwable = throwable;
+    });
+    if (item.throwable && (item.launcher || !item.placesBlock.isEmpty() || item.food > 0 || item.armour)) {
+        reader.fail(u"a 'throwable' item neither launches, places, is eaten nor worn"_s);
+    }
+    if (item.launcher && (!item.placesBlock.isEmpty() || item.food > 0 || item.armour)) {
+        reader.fail(u"a 'launcher' neither places, is eaten nor worn"_s);
+    }
+}
+
 void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
 {
     const QString action = reader.string(u"dispense"_s, u"throw"_s);
@@ -81,17 +148,13 @@ namespace QcItemParser {
     if (!item.cartBlock.isEmpty() && !item.placesCart) {
         reader.fail(u"only an item that places a minecart has a 'cartBlock'"_s);
     }
-    item.tills = reader.boolean(u"tills"_s, false);
-    item.flattens = reader.boolean(u"flattens"_s, false);
-    item.ignites = reader.boolean(u"ignites"_s, false);
-    if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.flattens || item.scoops || item.bottles)) {
-        reader.fail(u"an item that 'ignites' neither places, tills, flattens, scoops nor bottles"_s);
-    }
+    parseBlockUses(item, reader);
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
     });
 
     parseDispense(item, reader);
+    parseProjectileUses(item, packNamespace, reader);
 
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;

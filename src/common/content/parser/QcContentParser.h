@@ -6,6 +6,7 @@
 #include "common/content/parser/QcItemParser.h"
 #include "common/content/parser/QcMaterialParser.h"
 #include "common/content/parser/QcMobParser.h"
+#include "common/content/parser/QcProjectileParser.h"
 #include "common/content/parser/QcRecipeParser.h"
 #include "common/content/parser/QcShapeParser.h"
 #include "common/content/parser/QcShowcaseParser.h"
@@ -38,6 +39,7 @@ using QcMobParser::parseModel;
 using QcMobParser::parseAppearance;
 using QcRecipeParser::parseRecipe;
 using QcItemParser::parseItem;
+using QcProjectileParser::parseProjectile;
 using QcRecipeParser::parseSmeltingRecipe;
 using QcShowcaseParser::parseShowcase;
 using QcSoundParser::parseSound;

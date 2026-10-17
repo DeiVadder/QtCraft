@@ -143,9 +143,7 @@ bool QcServerCircuits::use(QcBlockPos pos)
 
 void QcServerCircuits::pressPlates()
 {
-    m_pressedByAnything.clear();
-    m_pressedByLiving.clear();
-    m_pressedByCarts.clear();
+    m_plates.clear();
     QHash<QcBlockPos, quint32> readings;
     const QcSectionMarks &marks = m_state.world().marks();
     if (marks.isEmpty(QcBlockTrait::Plate)) {
@@ -161,12 +159,12 @@ void QcServerCircuits::pressPlates()
         }
         const std::optional<QcBlockId> block = m_state.world().blockAt(cell);
         if (block && m_table.at(*block).kind == QcSignalKind::Plate) {
-            m_pressedByAnything.insert(cell);
+            m_plates.anything.insert(cell);
             if (body.kind == QcEntityKind::Player || body.kind == QcEntityKind::Creature) {
-                m_pressedByLiving.insert(cell);
+                m_plates.living.insert(cell);
             }
             if (body.kind == QcEntityKind::Minecart) {
-                m_pressedByCarts.insert(cell);
+                m_plates.carts.insert(cell);
             }
             if (body.kind == QcEntityKind::Minecart && !body.as<QcMinecart>().stacks.isEmpty()) {
                 const quint32 reading = readings.value(cell, body.id);
@@ -186,9 +184,9 @@ void QcServerCircuits::pressPlates()
     noteCartReadings(std::move(readings));
 
     QcCircuitPlan plan;
-    for (const QcBlockPos &cell : std::as_const(m_pressedByAnything)) {
+    for (const QcBlockPos &cell : std::as_const(m_plates.anything)) {
         const QcBlockId block = m_state.world().blockAt(cell).value_or(qcAirBlockId);
-        if (pressedSet(block).contains(cell) && !m_table.at(block).on) {
+        if (m_plates.pressing(m_table.content().block(block).signal).contains(cell) && !m_table.at(block).on) {
             plan.writes.insert(cell, m_table.withFlag(block, u"powered"_s, true));
             plan.schedules.append({cell, QcCircuitComponents::plateCheckTicks, QcSignalSchedule::Priority::Release});
         }
@@ -211,10 +209,9 @@ void QcServerCircuits::noteCartReadings(QHash<QcBlockPos, quint32> readings)
     m_cartReadings = std::move(readings);
 }
 
-const QSet<QcBlockPos> &QcServerCircuits::pressedSet(QcBlockId plate) const
+QcCircuitComponents::Context QcServerCircuits::componentContext(QcSignalPower power, const QcComparatorReadings &readings) const
 {
-    const QcSignalDefinition &signal = m_table.content().block(plate).signal;
-    return signal.detectsCarts ? m_pressedByCarts : signal.detectsItems ? m_pressedByAnything : m_pressedByLiving;
+    return {power, m_state.blockEntities(), m_state.clock().tick(), m_state.info().quasiConnectivity, m_pistonActs, m_plates, readings, m_rails};
 }
 
 void QcServerCircuits::settle(qsizetype reserve)
@@ -351,8 +348,7 @@ void QcServerCircuits::runWave(qsizetype limit)
     }
 
     const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
-    QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.clock().tick(), m_state.info().quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving, m_pressedByCarts, readings, m_rails});
+    QcCircuitComponents reactions(componentContext(power, readings));
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
             if (m_table.at(m_state.world().blockAt(pos).value_or(qcAirBlockId)).kind != QcSignalKind::None) {
@@ -397,8 +393,7 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
 
     const QcSignalPower power(m_state.world(), m_table);
     const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
-    QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.clock().tick(), m_state.info().quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving, m_pressedByCarts, readings, m_rails});
+    QcCircuitComponents reactions(componentContext(power, readings));
     QcCircuitPlan plan;
     for (const QcBlockPos &pos : std::as_const(positions)) {
         // Next to an unloaded chunk the component waits for it and then looks again.

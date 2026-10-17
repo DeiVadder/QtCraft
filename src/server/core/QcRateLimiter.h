@@ -20,7 +20,7 @@ public:
         // second; the limit leaves a clear margin, a dropped StartMining or FinishMining gets its
         // true block back).
         Mining,
-        // UseItem, UseEntity, ConsumeItem (one per click).
+        // UseItem, UseEntity, ConsumeItem, the press of DrawLauncher (one per click).
         Use,
         AttackEntity,
         // Chat lines and commands.
@@ -59,10 +59,11 @@ public:
     // The bucket a client message pays into; std::nullopt for messages that are not limited here.
     [[nodiscard]] static std::optional<Kind> kindOf(const QcMessage &message);
     // The client messages that are deliberately not limited here: PlayerInput has its own budget,
-    // Hello, Respawn and Disconnect are harmless, LoginResponse is accepted once before the client
-    // plays (the connection limits of QcNetworkServer bound logins), DebugSubscribe is state (the latest one counts and
-    // must never be dropped; the debug data itself comes at a fixed pace, decision E-225). Every
-    // other client message needs a bucket.
+    // Hello, Respawn, Disconnect and the release or cancel of DrawLauncher are harmless,
+    // LoginResponse is accepted once before the client plays (the connection limits of
+    // QcNetworkServer bound logins), DebugSubscribe is state (the latest one counts and must never be
+    // dropped; the debug data itself comes at a fixed pace, decision E-225). Every other client
+    // message needs a bucket.
     static bool isUnlimited(const QcMessage &message);
     static const char *name(Kind kind);
 

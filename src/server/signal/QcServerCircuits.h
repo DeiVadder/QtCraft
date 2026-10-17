@@ -10,7 +10,6 @@
 #include "server/signal/QcSignalTable.h"
 
 #include <QHash>
-#include <QSet>
 
 #include <vector>
 
@@ -61,8 +60,8 @@ private:
     // Comparators behind detector rails read again where the container cart they read changed
     // (QcComparatorReading::Carts): another cart arrived or left while the rail stayed pressed.
     void noteCartReadings(QHash<QcBlockPos, quint32> readings);
-    // The bodies that press the plate `plate` in this tick (QcSignalDefinition::detectsItems, detectsCarts).
-    const QSet<QcBlockPos> &pressedSet(QcBlockId plate) const;
+    // What the components look at in a step, on `power` and `readings` of the world as it is.
+    QcCircuitComponents::Context componentContext(QcSignalPower power, const QcComparatorReadings &readings) const;
     // Runs steps of changes while more than `reserve` of the budget is left.
     void settle(qsizetype reserve);
     // The changes of the next step, at most `limit` (at least the minimum step), without those next to
@@ -101,9 +100,7 @@ private:
     qsizetype m_lastWork = 0;
     // Pistons that extended (bit 1) or retracted (bit 2) in this tick: each does both at most once.
     QHash<QcBlockPos, quint8> m_pistonActs;
-    QSet<QcBlockPos> m_pressedByAnything;
-    QSet<QcBlockPos> m_pressedByLiving;
-    QSet<QcBlockPos> m_pressedByCarts;
+    QcCircuitComponents::Plates m_plates;
     // The container cart with the lowest id in each plate cell in the latest tick (what a comparator reads).
     QHash<QcBlockPos, quint32> m_cartReadings;
     QcRails::Table m_rails;

@@ -72,6 +72,7 @@ QcGameController::QcGameController(QObject *parent)
         m_input->clearKeys();
         if (m_parts.session) {
             m_parts.session->setMining(false);
+            m_parts.session->cancelUse();
         }
         m_input->releaseMouse();
     });
@@ -276,6 +277,8 @@ void QcGameController::setOverlay(const QString &overlay)
     }
     if (m_parts.session) {
         m_parts.session->setMining(false);
+        // A screen opening or closing lets a drawn bow go without a shot.
+        m_parts.session->cancelUse();
         // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
         // the furnace or chest screen closes the block.
         if (m_overlay != u"inventory"_s) {
@@ -574,6 +577,7 @@ void QcGameController::onHealthChanged()
     // Releases on the death screen go to QML; forget held keys so nothing sticks after respawn.
     m_input->clearKeys();
     m_parts.session->setMining(false);
+    m_parts.session->cancelUse();
 }
 
 void QcGameController::onContentReady()

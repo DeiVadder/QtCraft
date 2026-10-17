@@ -40,6 +40,8 @@ Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit 
 
 **Schaufel**
 
+- Stufe 1 nötig für: Schneeblock, Schneeschicht
+
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1, × 12, 32 Benutzungen), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1, × 2, 59 Benutzungen), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2, × 4, 131 Benutzungen), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3, × 6, 250 Benutzungen), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4, × 8, 1561 Benutzungen)
 
 ### <a id="table-armour"></a>Rüstung

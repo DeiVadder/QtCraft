@@ -199,6 +199,9 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
     if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::Mine, key.key())) {
         m_parts.session->setMining(false);
     }
+    if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::Use, key.key())) {
+        m_parts.session->releaseUse();
+    }
     if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::PlayerList, key.key())) {
         setPlayerListHeld(false);
     }
@@ -241,6 +244,8 @@ void QcGameInput::handleMouseButton(Qt::MouseButton button, bool pressed) const
         m_parts.session->setMining(pressed);
     } else if (button == Qt::RightButton && pressed) {
         m_parts.session->useItem();
+    } else if (button == Qt::RightButton) {
+        m_parts.session->releaseUse();
     } else if (button == Qt::MiddleButton && pressed) {
         pickBlock();
     }

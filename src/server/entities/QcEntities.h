@@ -9,6 +9,7 @@
 #include "server/items/QcItemEntityManager.h"
 #include "server/minecarts/QcMinecartManager.h"
 #include "server/mobs/QcMobManager.h"
+#include "server/projectiles/QcProjectileManager.h"
 #include "server/signal/QcMovingBlocks.h"
 
 #include <QList>
@@ -22,7 +23,7 @@
 // The entity register of a world (decision E-364): every entity is a QcEntity of one kind and lives
 // in the table of its kind, which also carries the kind's own behaviour (QcMobManager: creature AI
 // and spawning; QcItemEntityManager: items falling, merging and ageing; QcFallingBlockManager;
-// QcArmourStandManager; QcMovingBlocks; QcMinecartManager: carts on rails; QcExperienceOrbManager). Players are the clients of the server and are only visited
+// QcArmourStandManager; QcMovingBlocks; QcMinecartManager: carts on rails; QcExperienceOrbManager; QcProjectileManager: arrows). Players are the clients of the server and are only visited
 // here. What exists once for all kinds lives in this class: ids, visiting every entity in a fixed
 // order, the chunk an entity belongs to and whether it rests there, the box of a
 // body, moving a body from outside (pistons), knowing which clients must hear of an entity again.
@@ -55,11 +56,13 @@ public:
     const QcMinecartManager &minecarts() const { return m_carts; }
     QcExperienceOrbManager &orbs() { return m_orbs; }
     const QcExperienceOrbManager &orbs() const { return m_orbs; }
+    QcProjectileManager &projectiles() { return m_projectiles; }
+    const QcProjectileManager &projectiles() const { return m_projectiles; }
     // The clients, whose players are entities too (only playing, living ones are visited).
     const Clients &clients() const { return m_clients; }
 
     // Every entity in a fixed order: creatures, players (those playing and alive), falling blocks,
-    // sliding blocks, items, armour stands, minecarts, experience orbs; each kind in the order of its table. `visit` takes a
+    // sliding blocks, items, armour stands, minecarts, experience orbs, projectiles; each kind in the order of its table. `visit` takes a
     // QcEntity and must not add or remove entities.
     template<typename Visit>
     void forEach(Visit &&visit)
@@ -158,6 +161,7 @@ private:
             each(self.m_stands.stands());
             each(self.m_carts.all());
             each(self.m_orbs.orbs());
+            each(self.m_projectiles.all());
         } else {
             each(self.m_falling.editableAll());
             each(self.m_moving.editableAll());
@@ -165,6 +169,7 @@ private:
             each(self.m_stands.editableStands());
             each(self.m_carts.editableAll());
             each(self.m_orbs.editableOrbs());
+            each(self.m_projectiles.editableAll());
         }
     }
 
@@ -178,6 +183,7 @@ private:
     QcMovingBlocks m_moving;
     QcMinecartManager m_carts;
     QcExperienceOrbManager m_orbs;
+    QcProjectileManager m_projectiles;
     QSet<quint32> m_died;
     // The loadedEpoch of the last settle; none before the first.
     std::optional<quint64> m_settledEpoch;

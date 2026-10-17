@@ -3,8 +3,8 @@
 #include "worldgen/showcase/QcShowcaseArea.h"
 
 // A glass enclosure for every creature of the registry, side by side (decision E-220): sized to the
-// creature, roofed, with walls for hostile ones thicker than their reach (attackRange) beyond the
-// glass, and a label.
+// creature, roofed (with the podium's block for creatures that burn in daylight, decision E-426),
+// with walls for hostile ones thicker than their reach (attackRange) beyond the glass, and a label.
 // The creatures are spawned once with the world and stay (persistent).
 namespace QcShowcaseCreatureArea {
 

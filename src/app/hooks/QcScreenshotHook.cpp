@@ -98,4 +98,10 @@ void QcScreenshotHook::logLayoutCheck() const
         qCWarning(lcScreenshot).noquote() << "Outside the window:" << item;
     }
     qCInfo(lcScreenshot).noquote() << u"Layout check: %1 items outside the window %2x%3"_s.arg(outside.size()).arg(content->width()).arg(content->height());
+
+    const QStringList overlaps = QcLayoutCheck::chatOverlaps(*content);
+    for (const QString &row : overlaps) {
+        qCWarning(lcScreenshot).noquote() << "Chat lines overlap:" << row;
+    }
+    qCInfo(lcScreenshot).noquote() << u"HUD check: chat lines overlap %1 status rows"_s.arg(overlaps.size());
 }

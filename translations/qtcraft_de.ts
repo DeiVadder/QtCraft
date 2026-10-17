@@ -1153,6 +1153,11 @@
         <translation>Wesen</translation>
     </message>
     <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
+        <source>Projectiles</source>
+        <translation>Geschosse</translation>
+    </message>
+    <message>
         <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
         <source>Weather</source>
         <translation>Wetter</translation>

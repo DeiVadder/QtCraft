@@ -191,6 +191,10 @@ public:
     void registerProfession(QcVillagerProfession profession);
     const QList<QcVillagerProfession> &professions() const { return m_professions; }
     const QcVillagerProfession *profession(const QString &name) const;
+    // Kinds of projectiles (decision E-425, server side only), replaced by name.
+    void registerProjectile(QcProjectileDefinition projectile);
+    const QList<QcProjectileDefinition> &projectiles() const { return m_projectiles; }
+    const QcProjectileDefinition *projectile(const QString &name) const;
     // Offers of the professions (decision E-414, server side only): sets replaced by name.
     void registerTradeSet(QcTradeSet set);
     const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
@@ -218,6 +222,11 @@ private:
     friend class QcContentSerializer;
 
     void rebuildStates();
+    // Checks what an archer shoots and what a creature holds (finish); the warnings.
+    QStringList resolveArcher(QcMobDefinition &mob) const;
+    // Checks that ammunition and projectile kinds name each other's kinds (finish): ammunition of
+    // an unknown kind is none; the warnings.
+    QStringList resolveProjectiles();
 
     QList<QcBlockDefinition> m_blocks;
     // Block name -> index into m_blocks.
@@ -266,6 +275,8 @@ private:
     QHash<QString, qsizetype> m_villagerSettingsIndex;
     QList<QcVillagerProfession> m_professions;
     QHash<QString, qsizetype> m_professionIndex;
+    QList<QcProjectileDefinition> m_projectiles;
+    QHash<QString, qsizetype> m_projectileIndex;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

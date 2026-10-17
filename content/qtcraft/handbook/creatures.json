@@ -4,10 +4,12 @@
     "icon": "rotten_flesh",
     "sections": [
         "spawning",
+        "daylight",
         "limits"
     ],
     "related": [
         "zombie",
+        "skeleton",
         "slime",
         "pig",
         "sheep",

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "server/mobs/QcArcherBrain.h"
 #include "server/mobs/QcCreatureBrains.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/mobs/QcMobManager.h"
@@ -9,6 +10,7 @@
 #include "server/villages/QcVillagerBehaviour.h"
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 // What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
@@ -51,9 +53,11 @@ public:
     };
 
     // One tick of the awake creatures at the clock's world time: the waiting path searches, then each
-    // decides and moves.
-    void tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players, Clock clock,
-              QList<QcMobManager::PlayerHit> &hits);
+    // decides and moves. Returns the blows they dealt to players; their shots wait in takeLaunches.
+    QList<QcMobManager::PlayerHit> tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players,
+                                        Clock clock);
+    // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425).
+    QList<QcProjectileManager::Launch> takeLaunches() { return std::exchange(m_launches, {}); }
     // A creature leaves the world for good (QcMobManager::Departure other than Unloaded): its brain
     // lets go of what it held (a villager's open door).
     void leave(const QcCreature &mob) const { brainOf(mob.type).leave(mob); }
@@ -80,11 +84,13 @@ private:
     QcVillagerBehaviour m_villagers;
     QcPassiveBrain m_passive;
     QcHostileBrain m_hostile;
+    QcArcherBrain m_archers;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;
     QcMobCrowd m_crowd;
     TierCounts m_tiers;
+    QList<QcProjectileManager::Launch> m_launches;
     // Ticks since the start: when creatures look for players and throttled ones think (by their ids).
     quint64 m_tick = 0;
 };

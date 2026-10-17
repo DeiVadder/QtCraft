@@ -1,6 +1,8 @@
 #include "server/gameplay/QcBodyBurning.h"
 
+#include "common/light/QcLightTable.h"
 #include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -46,17 +48,28 @@ bool QcBodyBurning::rainsOn(const QcVec3 &feet) const
     return m_rainsOn && m_rainsOn(QcPhysics::blockContaining(feet).offset(0, 1, 0));
 }
 
-int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double height) const
+int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double height, int alightTicks) const
 {
     const QcVec3 &feet = body.motion.position;
     const QcContactDamage::Touch touch = m_state.contactDamage().touching(m_state.world(), QcPhysics::boxAt(feet, width, height));
-    if (body.burnTicks <= 0 && touch.alightTicks <= 0) {
+    const int alight = std::max(touch.alightTicks, alightTicks);
+    if (body.burnTicks <= 0 && alight <= 0) {
         return 0;
     }
     if (inWater(feet, height) || rainsOn(feet)) {
         return 0;
     }
-    return std::max(body.burnTicks - 1, touch.alightTicks);
+    return std::max(body.burnTicks - 1, alight);
+}
+
+bool QcBodyBurning::inSunlight(const QcEntity &body, double height) const
+{
+    // By day, with nothing above the head that keeps out the sky (shade, a roof, leaves).
+    if (QcDayCycle::isNight(m_state.info().worldTime)) {
+        return false;
+    }
+    const QcBlockPos head = QcPhysics::blockContaining(body.motion.position + QcVec3{0.0, height * 0.9, 0.0});
+    return m_state.world().skyLight(head) >= QcLightTable::maxLevel;
 }
 
 bool QcBodyBurning::damageDue(const QcEntity &body) const
@@ -94,7 +107,8 @@ void QcBodyBurning::tickCreatures()
             continue;
         }
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        mob.burnTicks = burnTicksAfter(mob, definition.width, definition.height);
+        const bool sunburn = definition.burnsInDaylight && inSunlight(mob, definition.height);
+        mob.burnTicks = burnTicksAfter(mob, definition.width, definition.height, sunburn ? sunlightTicks : 0);
         if (mob.burnTicks > 0 && damageDue(mob)) {
             hurt.append(mob.id);
         }

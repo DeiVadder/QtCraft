@@ -1,0 +1,127 @@
+{
+    "name": "archery_range",
+    "showcase": {
+        "order": 90
+    },
+    "palette": {
+        "S": "stone",
+        "H": "hay_block",
+        "W": "white_wool",
+        "R": "red_wool",
+        "C": "chest[facing=north]"
+    },
+    "layers": [
+        [
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS"
+        ],
+        [
+            "H  HHH  H",
+            "H  WWW  H",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "      C  ",
+            "         "
+        ],
+        [
+            "H  HHH  H",
+            "R  WRW  R",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         "
+        ],
+        [
+            "   HHH   ",
+            "   WWW   ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         "
+        ]
+    ],
+    "stands": [
+        {
+            "at": [
+                4.5,
+                1.0,
+                9.5
+            ],
+            "yaw": 0,
+            "properties": [
+                "equip bow",
+                "pose right_arm 90 0 0",
+                "pose left_arm 90 0 20"
+            ]
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                6,
+                1,
+                9
+            ],
+            "items": [
+                {
+                    "item": "bow",
+                    "count": 1
+                },
+                {
+                    "item": "arrow",
+                    "count": 64
+                },
+                {
+                    "item": "feather",
+                    "count": 16
+                },
+                {
+                    "item": "flint",
+                    "count": 16
+                },
+                {
+                    "item": "string",
+                    "count": 16
+                },
+                {
+                    "item": "snowball",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                4.6,
+                5.5
+            ],
+            "text": "structure.qtcraft.archery_range"
+        }
+    ]
+}

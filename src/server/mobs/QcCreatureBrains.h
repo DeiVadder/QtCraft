@@ -28,13 +28,15 @@ protected:
     virtual bool chases() const { return false; }
     // Along the creature's path, asking for a new one only when it `mayPlan`.
     QcMobNavigator::Navigation navigate(QcCreature &mob, double speed, const Context &context, bool mayPlan);
+    // Walking to a place nearby, standing still or fleeing when hurt.
+    QcPhysics::Steering wander(QcCreature &mob, const QcMobDefinition &definition, const Context &context, bool mayPlan);
+    QRandomGenerator &random() { return m_random; }
+    const QcPathPlanner &paths() const { return m_paths; }
 
 private:
     // Along a path towards the target, or a blow in melee.
     QcPhysics::Steering chase(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
                               const Context &context, bool mayPlan);
-    // Walking to a place nearby, standing still or fleeing when hurt.
-    QcPhysics::Steering wander(QcCreature &mob, const QcMobDefinition &definition, const Context &context, bool mayPlan);
 
     QRandomGenerator &m_random;
     QcPathPlanner &m_paths;

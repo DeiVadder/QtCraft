@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -108,11 +108,40 @@ Peaceful animal of grassy land; drops wool.
 | Limit | all peaceful creatures together: 6 per player |
 | Breeds when fed | [Wheat](items.md#item-qtcraft-wheat) |
 | Breeding | again after 5 min, young grow up in 20 min |
-| Drops | [White wool](blocks.md#block-qtcraft-white_wool), [White wool](blocks.md#block-qtcraft-white_wool), [Raw mutton](food.md#item-qtcraft-raw_mutton), [Raw mutton](food.md#item-qtcraft-raw_mutton) |
+| Drops | [White wool](blocks.md#block-qtcraft-white_wool), [White wool](blocks.md#block-qtcraft-white_wool) (50 %), [Raw mutton](food.md#item-qtcraft-raw_mutton), [Raw mutton](food.md#item-qtcraft-raw_mutton) (50 %) |
 
 **Appears on**
 
 [Grass block](blocks.md#block-qtcraft-grass_block)
+
+**Appears in biomes**
+
+All biomes.
+
+### <a id="mob-qtcraft-skeleton"></a>Skeleton
+
+Comes out at night and lives in caves. Keeps its distance, circles you and shoots arrows with its bow once it has drawn it; it backs away when you come close. Its arrows cannot be picked up. Burns in direct sunlight.
+
+| | |
+|---|---|
+| ID | `qtcraft:skeleton` |
+| Behaviour | hostile: keeps its distance, circles and shoots at players |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.4 m/s walking, 2.6 m/s chasing |
+| Attack | 2 damage within 1.6 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | at night |
+| Caves | also in caves at any time |
+| Spawn light | block light up to 7 |
+| Group size | up to 2 |
+| Spawn weight | 2 |
+| Limit | all hostile creatures together: 8 per player |
+| Drops | [Bone](items.md#item-qtcraft-bone), [Bone](items.md#item-qtcraft-bone) (50 %), [Arrow](items.md#item-qtcraft-arrow), [Arrow](items.md#item-qtcraft-arrow) (50 %) |
+
+**Appears on**
+
+[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
 
 **Appears in biomes**
 
@@ -171,7 +200,7 @@ Lives in a village with a bed of its own and, with luck, a workstation that give
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 
-Comes out at night and lives in caves. Chases players it sees and hits hard.
+Comes out at night and lives in caves. Chases players it sees and hits hard. Burns in direct sunlight.
 
 | | |
 |---|---|
@@ -188,7 +217,7 @@ Comes out at night and lives in caves. Chases players it sees and hits hard.
 | Group size | up to 3 |
 | Spawn weight | 3 |
 | Limit | all hostile creatures together: 8 per player |
-| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato) |
+| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot) (2.5 %), [Potato](food.md#item-qtcraft-potato) (2.5 %), [Feather](items.md#item-qtcraft-feather) (25 %) |
 
 **Appears on**
 

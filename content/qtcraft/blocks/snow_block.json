@@ -3,6 +3,13 @@
     "sound": "snow",
     "hardness": 0.2,
     "tool": "shovel",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "snowball",
+            "count": 4
+        }
+    ],
     "textures": {
         "all": "snow"
     }

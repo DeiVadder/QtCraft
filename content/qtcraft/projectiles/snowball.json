@@ -1,0 +1,14 @@
+{
+    "name": "snowball",
+    "item": "snowball",
+    "gravity": 12.0,
+    "drag": 0.2,
+    "waterDrag": 10.0,
+    "onHit": [
+        { "type": "knockback", "strength": 1.0 },
+        { "type": "break", "sound": "block.snow.break" }
+    ],
+    "size": 0.25,
+    "flightSeconds": 60.0,
+    "sticks": false
+}

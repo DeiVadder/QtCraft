@@ -144,6 +144,7 @@ public:
             ++entityMoveMessages;
             for (const QcMsg::EntityMove &move : moves->moves) {
                 flags[move.id] |= move.flags;
+                held[move.id] = move.held;
                 if (move.hurt) {
                     hurt.insert(move.id);
                 }
@@ -221,6 +222,8 @@ public:
     QHash<quint32, QcMsg::EntitySpawn> spawns;
     QSet<quint32> died;
     QHash<quint32, quint16> flags;
+    // The latest held item per entity.
+    QHash<quint32, QcItemId> held;
     // Entities reported hurt in any move.
     QSet<quint32> hurt;
     // Labels per chunk and the last world time.

@@ -1,0 +1,8 @@
+{
+    "name": "skeleton_ribs",
+    "pattern": "bars",
+    "primary": "#d0cec4",
+    "secondary": "#3a3a38",
+    "variation": 0.06,
+    "seed": 5303
+}

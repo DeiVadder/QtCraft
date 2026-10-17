@@ -16,13 +16,17 @@ class QcServerState;
 // Plants in the server tick: growing saplings and decaying leaves (QcPlantManager), random ticks of
 // plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth), items that plant
 // themselves (despawning saplings, seeds lying on free soil; decision E-294), and players tilling
-// soil with a hoe (decision E-290) and making paths with a shovel (decision E-406).
+// soil with a hoe (decision E-290), making paths with a shovel (decision E-406) and bone meal on crops
+// and saplings (decision E-426).
 class QcServerPlants
 {
 public:
     // Seeds (items placing a crop with `plantChance`) plant themselves once every this many ticks
     // with that chance when they lie on soil with air above (decision E-294).
     static constexpr int seedCheckTicks = 20;
+    // Stages bone meal makes a crop grow, drawn evenly (the reference's 2 to 5).
+    static constexpr int fertilizeStagesMin = 2;
+    static constexpr int fertilizeStagesMax = 5;
 
     QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory);
 
@@ -39,6 +43,14 @@ public:
     // `flattensInto` (decision E-406): only on its top face, with air above, within reach. False when
     // the click is no flattening.
     bool flatten(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
+    // Bone meal (an item that `fertilizes`, decision E-426) on the clicked block within reach: a crop
+    // that is not ripe grows fertilizeStagesMin..Max stages at once, a sapling grows into its tree on
+    // the next tick with QcItemDefinition::fertilizeSaplingChance; either takes one item (not in
+    // creative mode). False for other blocks (then other uses of the item may follow).
+    bool fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
+    // Grows the crop at `pos` by up to `stages` stages (not beyond ripe); false when it is no crop
+    // or ripe already.
+    bool growCrop(QcBlockPos pos, int stages);
 
 private:
     // Puts a despawning sapling item into the ground when there is room.

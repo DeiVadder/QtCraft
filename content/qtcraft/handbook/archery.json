@@ -1,0 +1,16 @@
+{
+    "name": "archery",
+    "order": 86,
+    "icon": "bow",
+    "sections": [
+        "bow",
+        "arrows",
+        "throwing"
+    ],
+    "related": [
+        "bow",
+        "arrow",
+        "feather",
+        "snowball"
+    ]
+}

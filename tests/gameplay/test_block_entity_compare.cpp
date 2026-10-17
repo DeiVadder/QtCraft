@@ -132,6 +132,8 @@ private:
             return -6;
         case QcEntityKind::ExperienceOrb:
             return -7;
+        case QcEntityKind::Projectile:
+            return -8;
         }
         return 0;
     }

@@ -368,6 +368,42 @@ private slots:
         QCOMPARE(levelled.value(u"experienceForNext"_s).toInt(), 112 + (level - 30) * 9);
     }
 
+    // Archery as a bot plays it (decision E-425): a bow and arrows given, a full draw at a wall,
+    // the arrow sticks there, the bot walks over and picks it up again.
+    void archeryThroughTheInterface()
+    {
+        const auto chat = [&](const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}); };
+        chat(u"/fill ~-2 ~-1 ~-2 ~8 ~-1 ~2 stone"_s);
+        chat(u"/fill ~-2 ~ ~-2 ~7 ~3 ~2 air"_s);
+        chat(u"/fill ~8 ~ ~-2 ~8 ~3 ~2 stone"_s);
+        chat(u"/give bow 1"_s);
+        chat(u"/give arrow 2"_s);
+        QVERIFY(QTest::qWaitFor([&] { return countOf(u"qtcraft:arrow"_s) == 2 && countOf(u"qtcraft:bow"_s) == 1; }, timeoutMs));
+
+        // Yaw 90 looks east (+x), at the wall eight blocks away.
+        const QJsonObject shot = request({{u"cmd"_s, u"shoot"_s}, {u"yaw"_s, 90.0}, {u"pitch"_s, 0.0}, {u"ticks"_s, 20}});
+        QVERIFY2(shot.value(u"ok"_s).toBool(), QJsonDocument(shot).toJson().constData());
+        QJsonObject stuck;
+        QVERIFY(QTest::qWaitFor(
+            [&] {
+                const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 16}}).value(u"entities"_s).toArray();
+                for (const auto &entity : entities) {
+                    if (entity.toObject().value(u"type"_s).toString() == u"projectile"_s && entity.toObject().value(u"stuck"_s).toBool()) {
+                        stuck = entity.toObject();
+                        return true;
+                    }
+                }
+                return false;
+            },
+            timeoutMs));
+        QCOMPARE(stuck.value(u"item"_s).toString(), u"qtcraft:arrow"_s);
+        QCOMPARE(countOf(u"qtcraft:arrow"_s), 1);
+
+        // Walking to the wall picks it up again.
+        request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1.0}, {u"ticks"_s, 60}});
+        QVERIFY(QTest::qWaitFor([&] { return countOf(u"qtcraft:arrow"_s) == 2; }, timeoutMs));
+    }
+
     // Trading as a bot plays it (decision E-414): a summoned villager made a smith, its screen
     // opened, an offer the inventory pays traded, the screen closed.
     void tradingThroughTheInterface()

@@ -9,6 +9,14 @@ Item {
     id: hud
 
     required property GameController game
+    // The rows over the hotbar, bottom to top: the chat lines end above the highest one shown, so
+    // they never cover a row at any window size. A new row over the hotbar belongs in this list and
+    // in statusTop; the layout check of screenshot runs (QcLayoutCheck) reports chat lines that
+    // overlap a row of the list.
+    readonly property list<Item> statusRows: [hotbar, experienceBar, experienceLevel, hearts, foodBar, armourBar]
+    readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y)
+
+    objectName: "hud"
 
     // On fire (decision E-393): flames rise from the bottom of the view and flicker until the
     // burning ends or water puts it out.
@@ -120,10 +128,14 @@ Item {
         font.pixelSize: 16
     }
 
+    // The chat lines above the status rows; long lines wrap within the window.
     Column {
-        anchors.left: parent.left
-        anchors.bottom: hotbar.top
-        anchors.margins: 12
+        id: chat
+
+        objectName: "hudChat"
+        x: 12
+        y: hud.statusTop - 6 - height
+        width: hud.width - 24
         spacing: 2
 
         Repeater {
@@ -132,6 +144,8 @@ Item {
             HudLabel {
                 required property string modelData
 
+                width: Math.min(implicitWidth, chat.width)
+                wrapMode: Text.Wrap
                 text: modelData
                 font.pixelSize: 15
             }
@@ -141,6 +155,8 @@ Item {
     // Armour points above the hearts while something is worn: ten chestplates, two points each
     // (decision E-234).
     Row {
+        id: armourBar
+
         objectName: "armourBar"
         anchors.left: hotbar.left
         anchors.bottom: hearts.top
@@ -235,6 +251,8 @@ Item {
     Row {
         id: hearts
 
+        objectName: "hearts"
+
         anchors.left: hotbar.left
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
@@ -283,6 +301,8 @@ Item {
 
     // Ten food icons, two food points each, emptying from the left like the hearts fill from it.
     Row {
+        id: foodBar
+
         objectName: "foodBar"
         anchors.right: hotbar.right
         anchors.bottom: experienceLevel.top

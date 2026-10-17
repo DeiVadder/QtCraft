@@ -82,6 +82,8 @@ private:
             return u"minecart"_s;
         case QcEntityKind::ExperienceOrb:
             return u"orb"_s;
+        case QcEntityKind::Projectile:
+            return u"projectile"_s;
         case QcEntityKind::Creature:
             break;
         }
@@ -266,6 +268,17 @@ private:
     }
 
 private slots:
+    // The recorded scenario stands by day; its zombie keeps out of the sun's fire, which came later
+    // (decision E-426).
+    void initTestCase()
+    {
+        auto content = std::make_shared<QcContentRegistry>(*m_content);
+        QcMobDefinition zombie = content->mobs().at(*content->mobIndex(u"qtcraft:zombie"_s));
+        zombie.burnsInDaylight = false;
+        content->registerMob(zombie);
+        m_content = content;
+    }
+
     void cleanupTestCase()
     {
         if (const QString path = qEnvironmentVariable("QTCRAFT_COMPARE_DUMP"); !path.isEmpty()) {

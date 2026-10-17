@@ -77,6 +77,8 @@ private slots:
         QCOMPARE(limits.maxMinecarts, 4096);
         QCOMPARE(limits.movingBlocksShown, 4096);
         QCOMPARE(limits.experienceOrbs, 1024);
+        QCOMPARE(limits.projectiles, 1024);
+        QCOMPARE(limits.projectilesPerChunk, 64);
         // Path finding of creatures (stage 37.1, decision E-400).
         QCOMPARE(limits.pathNodesPerTick, 4096);
         QCOMPARE(limits.pathNodesPerSearch, 512);
@@ -98,7 +100,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(61));
+        QCOMPARE(keys.size(), qsizetype(63));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

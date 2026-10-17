@@ -114,9 +114,9 @@ private slots:
         QCOMPARE(found.first().toObject().value(u"title"_s).toString(), u"Eisenerz"_s);
 
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
-        // Zombie, pig, slime, firefly, sheep, villager and the two mannequins of the showcase (one with
-        // a cape).
-        QCOMPARE(creatures.size(), 8);
+        // Zombie, skeleton, pig, slime, firefly, sheep, villager and the two mannequins of the showcase
+        // (one with a cape).
+        QCOMPARE(creatures.size(), 9);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);
@@ -373,7 +373,7 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 41);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 42);
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
         QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
         const QJsonObject server = debug.value(u"server"_s).toObject();
@@ -397,7 +397,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 41);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 42);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

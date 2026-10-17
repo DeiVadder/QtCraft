@@ -888,6 +888,9 @@ private slots:
         const QcMobDefinition &sheep = m_content->mobs()[*m_content->mobIndex(u"qtcraft:sheep"_s)];
         QCOMPARE(sheep.drops.first().item, u"qtcraft:white_wool"_s);
 
+        // Snow blocks from four snowballs (decision E-427).
+        QCOMPARE(crafted({{0, "snowball"}, {1, "snowball"}, {2, "snowball"}, {3, "snowball"}}, 2), u"qtcraft:snow_block"_s);
+
         // Snow layers from snow blocks; on the server they need ground and break without it.
         QCOMPARE(crafted({{0, "snow_block"}, {1, "snow_block"}, {2, "snow_block"}}, 3), u"qtcraft:snow_layer"_s);
         join();
@@ -897,7 +900,8 @@ private slots:
         chat(u"/setblock %1 air"_s.arg(cmdPos(m_feet.offset(2, -1, 0))));
         ticks(2);
         QCOMPARE(nameAt(m_feet.offset(2, 0, 0)), u"qtcraft:air"_s);
-        QCOMPARE(dropped(item("snow_layer")), 1);
+        // A layer drops a snowball (decision E-427).
+        QCOMPARE(dropped(item("snowball")), 1);
     }
 
     void generatorPlacesVegetationOnItsGround()

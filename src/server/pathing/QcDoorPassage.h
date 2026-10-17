@@ -9,7 +9,6 @@
 #include <optional>
 
 class QcContentRegistry;
-class QcPathCellTable;
 struct QcCreature;
 
 // How creatures that open doors (QcPathRules::opensDoors, decision E-423) go through them: they open
@@ -36,14 +35,6 @@ public:
         std::optional<QcBlockPos> open;
     };
 
-    // Where the creature walks: the world, the path cells of its blocks and the creature's rules.
-    struct Ground
-    {
-        const QcBlockAccess &world;
-        const QcPathCellTable &cells;
-        QcPathRules rules;
-    };
-
     explicit QcDoorPassage(const QcContentRegistry &content);
 
     // A new tick: the turns of the last one decide.
@@ -53,7 +44,7 @@ public:
     // else the nearest, as of the last tick); the others wait, stepping back out of the doorway
     // where the ground allows. The steering of one that waits; none for one that goes or has no
     // door ahead (or flees).
-    std::optional<QcPhysics::Steering> waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const Ground &ground);
+    std::optional<QcPhysics::Steering> waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcPathGround &ground);
     // Opens the door on the path ahead and closes the one it went through.
     static Moves use(const QcCreature &mob, std::optional<QcBlockPos> &opened, const QcMobNavigator::Navigation &navigation);
 
@@ -62,7 +53,7 @@ private:
     std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcBlockAccess &world,
                                         bool &inside) const;
     // A waiting creature steps back and aside to stepBack from the door, facing it.
-    static QcPhysics::Steering stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const Ground &ground);
+    static QcPhysics::Steering stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const QcPathGround &ground);
 
     const QcContentRegistry &m_content;
     // Who goes through a door first: the creature nearest to it, of the last tick and of this one.

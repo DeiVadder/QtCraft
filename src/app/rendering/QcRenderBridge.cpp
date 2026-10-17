@@ -5,6 +5,7 @@
 #include "clientcore/light/QcSky.h"
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/meshing/QcProjectileMesher.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/physics/QcPhysics.h"
@@ -318,6 +319,12 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
                                        {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
         } else if (entity.isExperienceOrb()) {
             QcEntityMesher::appendOrb(*mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
+        } else if (entity.isProjectile()) {
+            const QcVec3 centre = lerp(entity.previousPosition, entity.position, alpha);
+            const QcProjectileMesher::Placement placement{centre, lerpYaw(entity.previousYaw, entity.yaw, alpha),
+                                                          entity.previousPitch + (entity.pitch - entity.previousPitch) * alpha,
+                                                          entityLight(frame.world, centre)};
+            QcProjectileMesher::append(*mesh, placement, uv(QcFigureLook::item(frame.content, entity.item.item).sprite));
         } else if (entity.isMinecart()) {
             const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
             QcEntityMesher::appendParts(*mesh, QcEntityMesher::minecartParts(),

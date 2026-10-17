@@ -29,6 +29,8 @@ QLatin1StringView name(QcEntityKind kind)
         return QLatin1StringView("minecart");
     case QcEntityKind::ExperienceOrb:
         return QLatin1StringView("experience orb");
+    case QcEntityKind::Projectile:
+        return QLatin1StringView("projectile");
     }
     return QLatin1StringView("unknown");
 }

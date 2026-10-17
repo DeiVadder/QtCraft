@@ -145,6 +145,10 @@ Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benut
 | [Stock](items.md#item-qtcraft-stick) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Kann abbauen**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block) (Stufe 1), [Schneeschicht](blocks.md#block-qtcraft-snow_layer) (Stufe 1)
+
 ### <a id="item-qtcraft-diamond_sword"></a>Diamantschwert
 
 Eine Waffe: richtet mehr Schaden an Wesen an.
@@ -353,6 +357,10 @@ Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benut
 | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenschaufel](#item-qtcraft-iron_shovel) |
 | [Stock](items.md#item-qtcraft-stick) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Kann abbauen**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block) (Stufe 1), [Schneeschicht](blocks.md#block-qtcraft-snow_layer) (Stufe 1)
 
 ### <a id="item-qtcraft-iron_sword"></a>Eisenschwert
 
@@ -563,6 +571,10 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 | [Stock](items.md#item-qtcraft-stick) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Kann abbauen**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block) (Stufe 1), [Schneeschicht](blocks.md#block-qtcraft-snow_layer) (Stufe 1)
+
 ### <a id="item-qtcraft-golden_sword"></a>Goldschwert
 
 Weiches Gold: trifft wie ein Holzschwert und bricht bald.
@@ -706,6 +718,10 @@ Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benut
 | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Holzschaufel](#item-qtcraft-wooden_shovel) |
 | [Stock](items.md#item-qtcraft-stick) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Kann abbauen**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block) (Stufe 1), [Schneeschicht](blocks.md#block-qtcraft-snow_layer) (Stufe 1)
 
 ### <a id="item-qtcraft-wooden_sword"></a>Holzschwert
 
@@ -917,6 +933,10 @@ Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benut
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Steinschaufel](#item-qtcraft-stone_shovel) |
 | [Stock](items.md#item-qtcraft-stick) |  |
 | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Kann abbauen**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block) (Stufe 1), [Schneeschicht](blocks.md#block-qtcraft-snow_layer) (Stufe 1)
 
 ### <a id="item-qtcraft-stone_sword"></a>Steinschwert
 

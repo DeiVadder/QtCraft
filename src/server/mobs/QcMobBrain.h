@@ -30,6 +30,9 @@ public:
         QList<QcMobManager::PlayerHit> *hits = nullptr;
         // Ticks since the start: creatures look for players in turns, staggered by their ids.
         quint64 tick = 0;
+        // Shots of this tick (an archer's arrow, decision E-425): QcMobManager::takeLaunches hands
+        // them to the server, which adds them as projectiles in the phase of the creatures.
+        QList<QcProjectileManager::Launch> *launches = nullptr;
     };
 
     QcMobBrain() = default;

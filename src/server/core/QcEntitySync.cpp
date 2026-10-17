@@ -47,6 +47,13 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.health = creature.health;
         now.hurt = creature.hurtThisTick;
         now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
+        // An archer's bow in its hand, drawn while it aims (decision E-426).
+        if (const QcItemId held = m_state.content().mobs()[creature.type].heldItemId; held != qcNoItem) {
+            now.held = held;
+        }
+        if (creature.archer.has() && creature.archer->drawing()) {
+            now.flags = quint16(now.flags | QcMsg::Drawing);
+        }
         break;
     }
     case QcEntityKind::Player: {
@@ -61,6 +68,9 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
             now.flags = quint16((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
         }
         now.held = held.isEmpty() ? qcNoItem : held.item;
+        if (player.drawing) {
+            now.flags = quint16(now.flags | QcMsg::Drawing);
+        }
         break;
     }
     case QcEntityKind::Minecart:
@@ -79,6 +89,14 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         // The client draws an orb by its value (decision E-398).
         now.health = entity.as<QcExperienceOrb>().value;
         break;
+    case QcEntityKind::Projectile: {
+        // Turned along its flight; a stuck one keeps where it points (decision E-425).
+        const auto &projectile = entity.as<QcProjectile>();
+        now.yaw = projectile.yaw;
+        now.pitch = projectile.pitch;
+        now.flags = projectile.stuck ? quint16(QcMsg::Stuck) : quint16(0);
+        break;
+    }
     case QcEntityKind::Item:
     case QcEntityKind::FallingBlock:
         break;
@@ -124,6 +142,14 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     }
     case QcEntityKind::ExperienceOrb:
         break;
+    case QcEntityKind::Projectile: {
+        // The client draws it as its item (an arrow).
+        const QcProjectileDefinition *definition = m_state.content().projectile(entity.as<QcProjectile>().type);
+        if (const std::optional<QcItemId> item = definition ? m_state.content().itemId(definition->item) : std::nullopt) {
+            spawn.item = {*item, 1, 0};
+        }
+        break;
+    }
     case QcEntityKind::Minecart:
         // The cart's item tells what it carries (QcItemDefinition::cartBlock).
         if (const std::optional<QcItemId> item = m_state.content().itemId(entity.as<QcMinecart>().item)) {
@@ -154,7 +180,11 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     const QcMsg::EntityMove now = seen(entity);
 
     pass.visible.insert(entity.id);
-    const int count = orb ? entity.as<QcExperienceOrb>().value : item ? entity.as<QcItemEntity>().stack.count : 0;
+    // Projectiles count whether they stick, so sticking and falling again send them anew.
+    const bool projectile = entity.kind == QcEntityKind::Projectile;
+    const int count = orb ? entity.as<QcExperienceOrb>().value
+                      : item ? entity.as<QcItemEntity>().stack.count
+                             : projectile && entity.as<QcProjectile>().stuck ? 1 : 0;
     const auto known = client.view.known.find(entity.id);
     if (known == client.view.known.end()) {
         client.view.known.insert(entity.id, {count, now.position});
@@ -165,8 +195,15 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     switch (entity.kind) {
     case QcEntityKind::Item:
     case QcEntityKind::ExperienceOrb:
-        // Sent again when the count changed, moved only when the position did.
-        if (known->count != count) {
+    case QcEntityKind::Projectile:
+        // Sent again when the count (a projectile: whether it sticks) changed, moved only when the
+        // position did.
+        if (known->count != count && projectile) {
+            // Stuck or falling again: the new state, a move to where it is and a stop sample after it.
+            *known = {count, now.position, true};
+            client.connection->send(spawnOf(entity, now));
+            pass.moves.moves.append(now);
+        } else if (known->count != count) {
             *known = {count, now.position, false};
             client.connection->send(spawnOf(entity, now));
         } else {

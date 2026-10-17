@@ -1,0 +1,28 @@
+{
+    "name": "mob.skeleton.hurt",
+    "volume": 0.8,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.3,
+            "density": 60,
+            "attack": 0.005,
+            "curve": 2,
+            "highpass": 1500,
+            "lowpass": 6000,
+            "gain": 1.0
+        },
+        {
+            "wave": "square",
+            "duration": 0.15,
+            "frequency": 520,
+            "endFrequency": 360,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 2000,
+            "gain": 0.25
+        }
+    ]
+}

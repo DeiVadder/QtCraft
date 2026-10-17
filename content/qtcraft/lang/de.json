@@ -98,6 +98,10 @@
     "item.qtcraft.lava_bucket": "Lavaeimer",
     "item.qtcraft.flint": "Feuerstein",
     "item.qtcraft.flint_and_steel": "Feuerzeug",
+    "item.qtcraft.bow": "Bogen",
+    "item.qtcraft.arrow": "Pfeil",
+    "item.qtcraft.snowball": "Schneeball",
+    "item.qtcraft.feather": "Feder",
     "block.qtcraft.tall_grass": "Hohes Gras",
     "block.qtcraft.dandelion": "Löwenzahn",
     "block.qtcraft.poppy": "Mohn",
@@ -324,6 +328,7 @@
     "structure.qtcraft.liquid_flow": "Fließendes Wasser und Lava",
     "structure.qtcraft.obsidian_demo": "Wasser trifft Lava",
     "structure.qtcraft.fire_station": "Feuerstelle auf Magma",
+    "structure.qtcraft.archery_range": "Schießstand",
     "structure.qtcraft.falling_blocks": "Fallende Blöcke",
     "structure.qtcraft.workshop": "Werkstatt",
     "structure.qtcraft.sugar_cane_shore": "Zuckerrohr am Wasser",
@@ -519,5 +524,9 @@
     "appearance.qtcraft.villager_fisher_hat": "Südwester",
     "appearance.qtcraft.villager_headwrap": "Kopftuch",
     "appearance.qtcraft.villager_fur_hat": "Pelzmütze",
-    "appearance.qtcraft.villager_reed_hat": "Schilfhut"
+    "appearance.qtcraft.villager_reed_hat": "Schilfhut",
+    "mob.qtcraft.skeleton": "Skelett",
+    "appearance.qtcraft.skeleton": "Skelett",
+    "item.qtcraft.bone": "Knochen",
+    "item.qtcraft.bone_meal": "Knochenmehl"
 }

@@ -25,6 +25,9 @@ private:
     void useOnBlock(const QJsonObject &request);
     // Selects the first item of the hotbar that lights fire (flint and steel) and uses it like `use`.
     void ignite(const QJsonObject &request);
+    // Draws the first launcher of the hotbar (a bow) along yaw/pitch for `ticks` and lets go
+    // (decision E-425).
+    void shoot(const QJsonObject &request);
 
     QcControlContext &m_context;
 };

@@ -53,6 +53,18 @@ QJsonObject animationJson(const QcClientEntity &entity)
             {u"hurt"_s, pose.hurtProgress >= 0.0}};
 }
 
+// A projectile (decision E-425): the item it looks like and whether it sticks.
+QJsonObject projectileJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
+{
+    const bool known = content && content->isValidItem(entity.item.item);
+    return {{u"id"_s, qint64(entity.id)},
+            {u"type"_s, u"projectile"_s},
+            {u"item"_s, known ? content->item(entity.item.item).name : QString()},
+            {u"stuck"_s, (entity.flags & QcMsg::Stuck) != 0},
+            {u"position"_s, QcControlReports::vectorJson(entity.position)},
+            {u"distance"_s, distance}};
+}
+
 QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
 {
     if (entity.isItem()) {
@@ -81,6 +93,10 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                 {u"value"_s, int(entity.health)},
                 {u"position"_s, QcControlReports::vectorJson(entity.position)},
                 {u"distance"_s, distance}};
+    }
+
+    if (entity.isProjectile()) {
+        return projectileJson(content, entity, distance);
     }
 
     if (entity.isBlockEntity()) {

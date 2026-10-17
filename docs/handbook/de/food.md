@@ -95,7 +95,7 @@ Ein Happen und die Saat von Karottenpflanzen. Schweine lieben sie.
 
 **Droppt aus**
 
-[Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
 
 ### <a id="item-qtcraft-potato"></a>Kartoffel
 
@@ -122,7 +122,7 @@ Roh kaum sättigend; auf Ackerboden pflanzen oder im Ofen backen.
 
 **Droppt aus**
 
-[Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
 
 ### <a id="item-qtcraft-pumpkin_pie"></a>Kürbiskuchen
 
@@ -227,7 +227,7 @@ Fleisch eines Schafs; im Ofen gebraten besser.
 
 **Droppt aus**
 
-[Schaf](creatures.md#mob-qtcraft-sheep)
+[Schaf](creatures.md#mob-qtcraft-sheep) (50 %)
 
 ### <a id="item-qtcraft-raw_porkchop"></a>Rohes Schweinefleisch
 

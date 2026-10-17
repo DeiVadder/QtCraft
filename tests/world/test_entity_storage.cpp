@@ -106,8 +106,8 @@ QByteArray creatureBlob(const QString &type, quint64 uid, const QList<RawCompone
             out << component.id << component.version << component.length.value_or(quint32(component.payload.size()));
             out.writeRawData(component.payload.constData(), int(component.payload.size()));
         }
-        // No items, falling blocks, stands, carts or orbs; not populated.
-        out << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint8(0);
+        // No items, falling blocks, stands, carts, orbs or projectiles; not populated.
+        out << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint8(0);
     });
 }
 

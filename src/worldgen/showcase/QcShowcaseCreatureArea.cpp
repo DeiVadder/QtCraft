@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -29,22 +30,23 @@ Pen penFor(const QcMobDefinition &mob)
 }
 
 // One column of a pen at `offset` (x and z) from its corner: a wall from the ground up unless the
-// column is inside, a roof on top.
-void buildPenColumn(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockPos offset, QcBlockId glass)
+// column is inside, a roof on top (`blocks`: of the walls, of the roof).
+void buildPenColumn(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockPos offset, std::pair<QcBlockId, QcBlockId> blocks)
 {
     const auto inPen = [&pen](int along) { return along >= pen.wall && along < pen.wall + pen.inner; };
     const int bottom = inPen(offset.x) && inPen(offset.z) ? pen.height + 1 : 1;
     for (int y = bottom; y <= pen.height + 1; ++y) {
-        structure.set(corner.x + offset.x, y, corner.z + offset.z, glass);
+        structure.set(corner.x + offset.x, y, corner.z + offset.z, y == pen.height + 1 ? blocks.second : blocks.first);
     }
 }
 
-// Walls from the ground up to the pen's height and a roof above, from the local corner on.
-void buildPen(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockId glass)
+// Walls from the ground up to the pen's height and a roof above, from the local corner on
+// (`blocks`: of the walls, of the roof).
+void buildPen(QcStructure &structure, Pen pen, QcBlockPos corner, std::pair<QcBlockId, QcBlockId> blocks)
 {
     for (int x = 0; x < pen.outer(); ++x) {
         for (int z = 0; z < pen.outer(); ++z) {
-            buildPenColumn(structure, pen, corner, {x, 0, z}, glass);
+            buildPenColumn(structure, pen, corner, {x, 0, z}, blocks);
         }
     }
 }
@@ -72,7 +74,9 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         const Pen pen = penFor(mob);
         // Pens line up along the south edge, the side people come from.
         const int z = depth - pen.outer();
-        buildPen(*structure, pen, {x, 0, z}, context.enclosure);
+        // The showcase stands at noon: creatures that burn in daylight get a roof of the podium's
+        // opaque block for shade (decision E-426).
+        buildPen(*structure, pen, {x, 0, z}, {context.enclosure, mob.burnsInDaylight ? context.podium : context.enclosure});
 
         const double centreX = x + pen.wall + pen.inner / 2.0;
         const double centreZ = z + pen.wall + pen.inner / 2.0;

@@ -512,35 +512,33 @@ void prepareScriptedRun(const AppOptions &options, bool offscreen)
     return render;
 }
 
-// The parts of the user interface the running game keeps using: the engine and translator switch
-// the language, the icon provider draws item icons.
-struct UiParts
+// Loads the settings; texture packs for this run only, e.g. for screenshots and benchmarks:
+// comma-separated pack ids, highest priority first, or "none" (decision E-304), set before the
+// settings load them.
+void loadSettings(QcGameController &game)
 {
-    QQmlApplicationEngine &engine;
-    QTranslator &translator;
-    QString contentLanguage;
-    QcItemIconProvider *icons = nullptr;
-    QcTexturePackPreviewProvider *texturePackPreviews = nullptr;
-};
-
-// Settings, language, worlds, mods and the scripted parts of the run; screenshots come from the
-// offscreen renderer when there is one.
-void startGame(const UiParts &ui, QcGameController &game, const AppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
-{
-    game.setIconProvider(ui.icons);
-    game.settings()->texturePacks()->setPreviewProvider(ui.texturePackPreviews);
-    // Texture packs for this run only, e.g. for screenshots and benchmarks: comma-separated pack
-    // ids, highest priority first, or "none" (decision E-304); set before the settings load them.
     if (const QString packs = qEnvironmentVariable("QTCRAFT_TEXTURE_PACKS"); !packs.isEmpty()) {
         game.settings()->texturePacks()->overrideSelection(packs == u"none"_s ? QStringList() : packs.split(u',', Qt::SkipEmptyParts));
     }
     game.settings()->loadSettings();
-    game.setLanguage(ui.contentLanguage);
-    QObject::connect(game.settings(), &QcSettingsController::languageChangeRequested, &ui.engine,
-                     [&engine = ui.engine, &translator = ui.translator, &game](const QString &name) {
+}
+
+// Gives the game its content language and switches the language of the user interface (translator
+// and engine) and of the content when the settings ask for another one.
+void connectLanguage(QcGameController &game, QQmlApplicationEngine &engine, QTranslator &translator, const QString &language)
+{
+    game.setLanguage(language);
+    QObject::connect(game.settings(), &QcSettingsController::languageChangeRequested, &engine,
+                     [&engine, &translator, &game](const QString &name) {
                          game.setLanguage(installLanguage(translator, name));
                          engine.retranslate();
                      });
+}
+
+// Worlds, mods and the scripted parts of the run; screenshots come from the offscreen renderer when
+// there is one.
+void startGame(QcGameController &game, const AppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
+{
     game.library()->refreshWorlds();
     setUpMods(game, options);
     applySceneOptions(game, options);
@@ -602,6 +600,10 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    startGame({engine, translator, contentLanguage, icons, texturePackPreviews}, *game, options, *window, offscreenRender->get());
+    game->setIconProvider(icons);
+    game->settings()->texturePacks()->setPreviewProvider(texturePackPreviews);
+    loadSettings(*game);
+    connectLanguage(*game, engine, translator, contentLanguage);
+    startGame(*game, options, *window, offscreenRender->get());
     return QGuiApplication::exec();
 }

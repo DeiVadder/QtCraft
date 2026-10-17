@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/core/QcWorldConstants.h"
 
@@ -40,6 +41,30 @@ struct QcMobAbilities
     bool operator==(const QcMobAbilities &) const = default;
 };
 
+// How a creature with the archer AI shoots (decision E-426), from its data (`archer`). Server side
+// only.
+struct QcArcherDefinition
+{
+    // Name of the QcProjectileDefinition it shoots.
+    QString projectile;
+    // Seconds it draws before a shot, and waits after one before it draws again.
+    double drawSeconds = 1.0;
+    double cooldownSeconds = 1.0;
+    // Launch speed in m/s (the projectile's damage grows with it).
+    double speed = 25.0;
+    // Random deviation of a shot from its aim, in degrees (the spread of the reference's archers on
+    // normal difficulty; this game has no difficulty).
+    double spreadDegrees = 1.5;
+    // It shoots at targets up to `range` metres away; it backs off from one closer than
+    // `minDistance` and walks towards one farther than `keepDistance` (or one it does not see),
+    // circling sideways in between. All three are horizontal distances.
+    double range = 15.0;
+    double minDistance = 5.0;
+    double keepDistance = 12.0;
+
+    bool operator==(const QcArcherDefinition &) const = default;
+};
+
 // Data definition of a creature: stats, behaviour, spawning, model and drops.
 struct QcMobDefinition
 {
@@ -59,10 +84,21 @@ struct QcMobDefinition
     bool hostile = false;
     // What decides what it does (decision E-423): QcMobBehaviour keeps one brain of each kind.
     // Hostile ones chase players (only with `hostile`), passive ones wander and flee, villagers live
-    // by their villager settings (only with `villager`). Server side only.
-    enum class Ai : quint8 { Passive, Hostile, Villager };
+    // by their villager settings (only with `villager`), archers keep their distance and shoot
+    // (only with `hostile` and `archer`, decision E-426). Server side only.
+    enum class Ai : quint8 { Passive, Hostile, Villager, Archer };
     Ai ai = Ai::Passive;
     QcMobAbilities abilities;
+    // How an archer shoots (Ai::Archer).
+    QcArcherDefinition archer;
+    // Catches fire in direct sunlight (decision E-426): by day, with the open sky above its head,
+    // neither in water nor in the rain. Server side only.
+    bool burnsInDaylight = false;
+    // Item it holds in its right hand (an archer's bow), shown on the client with the entity's held
+    // item; empty for none. Server side only.
+    QString heldItem;
+    // The id of heldItem, resolved when the content is finished (QcContentRegistry::finish).
+    QcItemId heldItemId = qcNoItem;
     double attackDamage = 2.0;
     double attackRange = 1.6;
     double attackCooldown = 1.0;

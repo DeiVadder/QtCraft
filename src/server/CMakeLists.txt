@@ -88,6 +88,7 @@ target_sources(qc_server PRIVATE
     entities/QcItemEntity.h
     entities/QcMinecart.h
     entities/QcMovingBlock.h
+    entities/QcProjectile.h
 )
 target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
@@ -130,6 +131,8 @@ target_sources(qc_server PRIVATE
     minecarts/QcServerMinecarts.h minecarts/QcServerMinecarts.cpp
 )
 target_sources(qc_server PRIVATE
+    mobs/QcArcherBrain.h mobs/QcArcherBrain.cpp
+    mobs/QcArcherState.h
     mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobBrain.h
@@ -155,6 +158,7 @@ target_sources(qc_server PRIVATE
     pathing/QcMobPath.h
     pathing/QcPathCells.h pathing/QcPathCells.cpp
     pathing/QcPathFinder.h pathing/QcPathFinder.cpp
+    pathing/QcPathGround.h
     pathing/QcPathPlanner.h pathing/QcPathPlanner.cpp
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
@@ -164,6 +168,14 @@ target_sources(qc_server PRIVATE
     plants/QcPlantGrowth.h plants/QcPlantGrowth.cpp
     plants/QcPlantManager.h plants/QcPlantManager.cpp
     plants/QcServerPlants.h plants/QcServerPlants.cpp
+)
+target_sources(qc_server PRIVATE
+    projectiles/QcHitEffects.h projectiles/QcHitEffects.cpp
+    projectiles/QcPlayerLaunchers.h projectiles/QcPlayerLaunchers.cpp
+    projectiles/QcPlayerThrows.h projectiles/QcPlayerThrows.cpp
+    projectiles/QcProjectileFlight.h projectiles/QcProjectileFlight.cpp
+    projectiles/QcProjectileManager.h projectiles/QcProjectileManager.cpp
+    projectiles/QcServerProjectiles.h projectiles/QcServerProjectiles.cpp
 )
 target_sources(qc_server PRIVATE
     signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp

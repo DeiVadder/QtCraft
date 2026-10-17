@@ -71,6 +71,7 @@ void QcControlWorldCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"place"_s, [this](const QJsonObject &request) { useOnBlock(request); });
     table.add(u"use"_s, [this](const QJsonObject &request) { useOnBlock(request); });
     table.add(u"ignite"_s, [this](const QJsonObject &request) { ignite(request); });
+    table.add(u"shoot"_s, [this](const QJsonObject &request) { shoot(request); });
     table.add(u"block"_s, [this](const QJsonObject &request) { block(request); });
     table.add(u"blocks"_s, [this](const QJsonObject &request) { blocks(request); });
 }
@@ -155,6 +156,45 @@ void QcControlWorldCommands::ignite(const QJsonObject &request)
         }
     }
     m_context.fail(request, u"No item that lights fire (flint and steel) in the hotbar"_s);
+}
+
+void QcControlWorldCommands::shoot(const QJsonObject &request)
+{
+    const std::shared_ptr<const QcContentRegistry> content = session().content();
+    int bow = -1;
+    for (int slot = 0; content && slot < QcInventory::hotbarSize && bow < 0; ++slot) {
+        const QcItemStack &stack = session().inventory().slot(slot);
+        bow = !stack.isEmpty() && content->isValidItem(stack.item) && content->item(stack.item).launcher ? slot : -1;
+    }
+    if (bow < 0) {
+        m_context.fail(request, u"No launcher (bow) in the hotbar"_s);
+        return;
+    }
+
+    session().selectHotbarSlot(bow);
+    QcPlayerInput intent = session().intent();
+    intent.yaw = float(std::fmod(request.value(u"yaw"_s).toDouble(intent.yaw), 360.0));
+    intent.pitch = float(std::clamp(request.value(u"pitch"_s).toDouble(intent.pitch), -90.0, 90.0));
+    session().setIntent(intent);
+
+    // One tick for the view to reach the server, the draw, then the release.
+    const quint64 startTick = session().tickCount();
+    const int ticks = QcControlArguments::ticks(request, 20);
+    std::optional<quint64> drawnAt;
+    m_context.begin({request, QcControlActiveCommand::timeoutPolls(ticks + 2), [this, startTick, ticks, drawnAt]() mutable {
+                         if (!drawnAt) {
+                             if (session().tickCount() > startTick) {
+                                 session().useItem();
+                                 drawnAt = session().tickCount();
+                             }
+                             return false;
+                         }
+                         if (session().tickCount() < *drawnAt + quint64(ticks)) {
+                             return false;
+                         }
+                         session().releaseUse();
+                         return true;
+                     }});
 }
 
 void QcControlWorldCommands::useOnBlock(const QJsonObject &request)

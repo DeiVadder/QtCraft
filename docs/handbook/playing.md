@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -142,6 +142,10 @@ Pumpkin and melon seeds grow into stems. A ripe stem puts its fruit onto a free 
 
 Seeds, carrots and potatoes lying on free farmland plant one of their stack by themselves (checked every 1 s, with a high chance). A stack whose own block is taken, or that holds more, plants into the free farmland right around it, one seed per check, so drops that merged into one stack still plant the whole patch. Flowing water carries dropped items along its current; still water does not. A field washed off with water from behind replants itself where the drops come to rest; collect the rest of the harvest.
 
+**Bone meal**
+
+A bone from a skeleton makes three bone meal. Used on a crop that is not ripe yet, it grows 2–5 stages at once; on a sapling it has a 45 % chance to let the tree grow right away, if it has room. Each use takes one bone meal, except in creative mode.
+
 **Breeding animals**
 
 Feed pigs with carrots or potatoes and sheep with wheat: a fed adult falls in love for a while and walks towards another one of its kind in love; two that see each other get a young one. Parents rest five minutes before they breed again; a young one grows up in twenty minutes, each feeding takes 10 % of that time off. Young animals leave nothing behind. Crowded places get no more young ones.
@@ -152,7 +156,7 @@ Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pump
 
 **See also**
 
-[Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat seeds](items.md#item-qtcraft-wheat_seeds), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato), [Pumpkin stem](blocks.md#block-qtcraft-pumpkin_stem), [Melon stem](blocks.md#block-qtcraft-melon_stem), [Bread](food.md#item-qtcraft-bread), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+[Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat seeds](items.md#item-qtcraft-wheat_seeds), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato), [Pumpkin stem](blocks.md#block-qtcraft-pumpkin_stem), [Melon stem](blocks.md#block-qtcraft-melon_stem), [Bone meal](items.md#item-qtcraft-bone_meal), [Bread](food.md#item-qtcraft-bread), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="chapter-qtcraft-signal"></a>Signal Dust
 
@@ -402,6 +406,24 @@ A file in `trades/` lists offers of one profession: for each the level from whic
 
 [Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel)
 
+### <a id="chapter-qtcraft-archery"></a>Archery
+
+**Drawing and shooting**
+
+Hold the use button with a bow in your hand to draw it and let go to shoot. A full draw takes 1 s and sends the arrow off at 60 m/s; a short draw shoots weaker, and a very short one not at all. The bow uses the first arrow of your inventory and wears with every shot.
+
+**Arrows in flight**
+
+Arrows fall in an arc and slow down, much faster in water. A hit deals more damage the faster the arrow flies and pushes the target back; armour protects as against blows. Arrows stick in the block they hit and fall when it goes; walk over them to pick them up. They vanish after 60 s. A world holds at most 1024 arrows in flight or stuck, and at most 64 stuck in one chunk (the oldest go first).
+
+**Throwing**
+
+Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit.
+
+**See also**
+
+[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball)
+
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
 **When you die**
@@ -444,13 +466,17 @@ Operators change experience with /xp add <player> <amount> [points|levels] (a ne
 
 Creatures appear 20–48 m away from players: peaceful animals on grass by day, hostile ones in the dark at night and in caves at least 8 blocks below the surface. Torches and lamps keep hostile creatures away. Each page lists the blocks, biomes, time and light a creature needs.
 
+**Burning in daylight**
+
+Zombies and skeletons catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves.
+
 **Limits**
 
 Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 

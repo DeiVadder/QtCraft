@@ -1,0 +1,11 @@
+{
+    "name": "bow",
+    "maxStack": 1,
+    "durability": 384,
+    "launcher": {
+        "drawSeconds": 1.0,
+        "speed": 60.0,
+        "minPower": 0.1,
+        "ammunition": ["#arrows"]
+    }
+}

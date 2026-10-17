@@ -5,6 +5,7 @@
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientGameMode.h"
+#include "clientcore/session/QcClientLauncher.h"
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
 #include "clientcore/session/QcClientRiding.h"
@@ -101,6 +102,9 @@ public:
     double miningProgress() const { return m_miningProgress; }
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();
+    // The use button released: a drawn launcher shoots (decision E-425); cancelUse lets it go without one.
+    void releaseUse();
+    void cancelUse();
     void selectHotbarSlot(int slot);
     // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
     void moveInventoryItem(int from, int to, int count = 0);
@@ -276,6 +280,7 @@ private:
     int m_useTicks = -1;
     int m_switchTicks = -1;
     int m_landingTicks = -1;
+    QcClientLauncher m_launcher;
     double m_walkDistance = 0.0;
     double m_lastStep = 0.0;
     QcItemId m_lastHeld = qcNoItem;

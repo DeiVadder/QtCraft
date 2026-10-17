@@ -135,6 +135,9 @@ private slots:
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::FinishMining{}), std::optional(Kind::Mining));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::UseItem{}), std::optional(Kind::Use));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::ConsumeItem{}), std::optional(Kind::Use));
+        // A throw pays like any other use of an item (decision E-427).
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::ThrowItem{}), std::optional(Kind::Use));
+        QVERIFY(!QcRateLimiter::isUnlimited(QcMsg::ThrowItem{}));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::AttackEntity{}), std::optional(Kind::AttackEntity));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::ChatInput{}), std::optional(Kind::Chat));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::DropItem{}), std::optional(Kind::Drop));
@@ -146,6 +149,14 @@ private slots:
         QVERIFY(QcRateLimiter::isUnlimited(QcMsg::DebugSubscribe{}));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::PlayerInput{}), std::nullopt);
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::Respawn{}), std::nullopt);
+        // Only the press of a bow pays; its release and cancel only end a draw.
+        using Action = QcMsg::DrawLauncher::Action;
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::DrawLauncher{Action::Draw}), std::optional(Kind::Use));
+        QVERIFY(!QcRateLimiter::isUnlimited(QcMsg::DrawLauncher{Action::Draw}));
+        for (const Action action : {Action::Release, Action::Cancel}) {
+            QCOMPARE(QcRateLimiter::kindOf(QcMsg::DrawLauncher{action}), std::nullopt);
+            QVERIFY(QcRateLimiter::isUnlimited(QcMsg::DrawLauncher{action}));
+        }
     }
 
     void everyClientMessageIsSortedIn()

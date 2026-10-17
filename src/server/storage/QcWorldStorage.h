@@ -29,12 +29,13 @@
 // (stage 37.2b) saves villagers with their home, workstation and profession (decision E-411), format 12
 // (stage 37.2c) also the state of their offers and their last restock (decision E-414), format 13
 // (package 37.R2) saves every entity as a header and versioned components and gives saved creatures
-// a persistent id (decision E-420): new fields no longer need a new format. Worlds of older
+// a persistent id (decision E-420): new fields no longer need a new format; format 14 adds the list
+// of projectiles to each chunk's entities (decision E-425). Worlds of older
 // development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 13;
-    static constexpr int oldestFormatVersion = 13;
+    static constexpr int formatVersion = 14;
+    static constexpr int oldestFormatVersion = 14;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;

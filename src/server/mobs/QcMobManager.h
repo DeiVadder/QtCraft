@@ -7,6 +7,7 @@
 #include "server/entities/QcCreature.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/mobs/QcMobCrowd.h"
+#include "server/projectiles/QcProjectileManager.h"
 #include "server/villages/QcVillager.h"
 
 #include <QList>
@@ -16,6 +17,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <utility>
 
 class QcChunk;
 class QcMobBehaviour;
@@ -41,6 +43,12 @@ public:
     static constexpr double flyMaxHeight = 3.0;
     static constexpr double hurtInvulnerability = 0.5;
     static constexpr double knockbackSpeed = 6.0;
+    // The upward speed of a blow's push at strength 1; a weaker push lifts less, a stronger one
+    // only pushes further (decision E-427).
+    static constexpr double knockbackLift = 5.0;
+
+    // The velocity of a push along `away` (horizontal, normalized) with `strength` times a blow's push.
+    static QcVec3 knockbackVelocity(const QcVec3 &away, double strength);
 
     // A persistent mob as saved with the world.
     struct Stored
@@ -124,8 +132,13 @@ public:
     // Advances all mobs by one tick and returns the hits they dealt to players.
     QList<PlayerHit> tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime, double dt,
                           const std::function<quint32()> &nextEntityId);
-    // Applies damage from a player at `from`; returns the mob's drops when it died.
-    std::optional<QList<QcItemDrop>> damage(quint32 mobId, double amount, const QcVec3 &from);
+    // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425);
+    // the server adds them as projectiles after the tick.
+    QList<QcProjectileManager::Launch> takeLaunches();
+    // Applies damage from a player at `from`, pushing the mob away with `knockback` times a blow's
+    // push (0: not at all); returns the mob's drops when it died. A hit without damage (a snowball)
+    // pushes and frightens but gives no invulnerability (decision E-427).
+    std::optional<QList<QcItemDrop>> damage(quint32 mobId, double amount, const QcVec3 &from, double knockback = 1.0);
     // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
     // was removed.
     bool hurt(quint32 mobId, double amount);

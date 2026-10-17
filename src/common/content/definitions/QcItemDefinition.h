@@ -1,9 +1,12 @@
 #pragma once
 
 #include "common/content/definitions/QcArmourDefinition.h"
+#include "common/content/definitions/QcProjectileDefinition.h"
 
 #include <QString>
 #include <QStringList>
+
+#include <optional>
 
 // Runtime item id: index into the registry's item table. 0 is "no item" (empty slot).
 using QcItemId = quint32;
@@ -83,6 +86,21 @@ struct QcItemDefinition
     // Used on a block face, lights fire in the cell in front of it and wears by one (flint and
     // steel, decision E-393). Also reaches the client (the creative inventory files it under tools).
     bool ignites = false;
+    // Used on a crop, makes it grow by a few stages; on a sapling, lets it grow into its tree soon
+    // with fertilizeSaplingChance (bone meal, decision E-426). Server side only.
+    bool fertilizes = false;
+    static constexpr double fertilizeSaplingChance = 0.45;
     // Server side only.
     QcDispenseAction dispense = QcDispenseAction::Throw;
+    // Drawn with the use button and shooting ammunition (a bow, decision E-425); reaches the client,
+    // which draws it while the button is held.
+    std::optional<QcLauncherDefinition> launcher;
+    // Ammunition: the projectile (QcProjectileDefinition) it becomes when a launcher shoots it;
+    // empty when its kind is unknown (QcContentRegistry::finish). The name reaches the client,
+    // which draws a launcher only with ammunition.
+    QString projectile;
+    // Thrown by hand with the use button as its projectile (a snowball, decision E-427); needs
+    // `projectile`. Reaches the client (arm swing and cooldown); launchers without an ammunition
+    // list do not shoot it.
+    std::optional<QcThrowableDefinition> throwable;
 };

@@ -5,6 +5,8 @@
 #include <QList>
 
 class QcContentRegistry;
+struct QcItemDefinition;
+struct QcLauncherDefinition;
 
 // Player inventory: hotbar slots 0..8 followed by the main storage. Pure data; the server owns the
 // authoritative copy and sends it to the client.
@@ -30,6 +32,11 @@ public:
     // Removes up to `count` items from a slot; returns how many were removed.
     int removeFromSlot(int index, int count);
     int countOf(QcItemId item) const;
+    // The first slot holding ammunition `launcher` takes (decisions E-425, E-427): an item with a
+    // projectile kind (QcContentRegistry::finish clears unknown ones; the client gets the cleared
+    // names) by the launcher's ammunition list; -1 without one.
+    int ammunitionSlot(const QcContentRegistry &content, const QcLauncherDefinition &launcher) const;
+    static bool isAmmunition(const QcItemDefinition &item, const QcLauncherDefinition &launcher);
     // Removes `count` items of a type across all stacks; fails without changes if there are fewer.
     [[nodiscard]] bool removeItems(QcItemId item, int count);
     // Moves the stack in `from` onto `to`: merges equal items up to the stack limit, else swaps.

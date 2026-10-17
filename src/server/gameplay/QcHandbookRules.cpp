@@ -66,6 +66,21 @@ QMap<QString, double> villageValues()
     };
 }
 
+// Bows and arrows (decision E-425): the defaults the base content's bow and arrow keep.
+QMap<QString, double> archeryValues()
+{
+    return {
+        {u"projectiles.despawnSeconds"_s, QcProjectileDefinition{}.despawnSeconds},
+        {u"projectiles.limit"_s, double(QcServerLimits{}.projectiles)},
+        {u"projectiles.perChunk"_s, double(QcServerLimits{}.projectilesPerChunk)},
+        {u"bow.drawSeconds"_s, QcLauncherDefinition{}.drawSeconds},
+        {u"bow.speed"_s, QcLauncherDefinition{}.speed},
+        {u"boneMeal.stagesMin"_s, double(QcServerPlants::fertilizeStagesMin)},
+        {u"boneMeal.stagesMax"_s, double(QcServerPlants::fertilizeStagesMax)},
+        {u"boneMeal.saplingChance"_s, 100.0 * QcItemDefinition::fertilizeSaplingChance},
+    };
+}
+
 // The rules of the weather (decisions E-395, E-396).
 QMap<QString, double> weatherValues()
 {
@@ -139,6 +154,7 @@ QMap<QString, double> values()
         {u"fire.total"_s, double(QcServerLimits{}.fires)},
         {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
         {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
+        {u"fire.sunlightSeconds"_s, QcBodyBurning::sunlightTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcPlayerHealth::voidDamage},
         {u"void.interval"_s, QcPlayerHealth::voidDamageIntervalTicks * QcPhysics::tickDuration},
@@ -165,6 +181,7 @@ QMap<QString, double> values()
         {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
     rules.insert(weatherValues());
+    rules.insert(archeryValues());
     rules.insert(villageValues());
     return rules;
 }

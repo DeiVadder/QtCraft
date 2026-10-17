@@ -49,6 +49,9 @@ inline constexpr auto flintAndSteel = "qtcraft:item.flint_and_steel.use";
 // A collected experience orb and a level gained (decision E-398).
 inline constexpr auto experienceOrb = "qtcraft:player.experience";
 inline constexpr auto levelUp = "qtcraft:player.levelup";
+// A launcher drawn and shooting (decision E-425); projectiles name their own sounds.
+inline constexpr auto bowDraw = "qtcraft:item.bow.draw";
+inline constexpr auto bowShoot = "qtcraft:item.bow.shoot";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

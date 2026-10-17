@@ -4,6 +4,7 @@
 #include "common/physics/QcPose.h"
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
+#include "server/mobs/QcArcherState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
 
@@ -66,6 +67,9 @@ struct QcCreature : QcEntity
     // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411): a component
     // only creatures of a villager kind have (decision E-423).
     QcComponent<QcVillager> villager;
+    // The draw and aim of an archer (QcMobDefinition::Ai::Archer, decision E-426): a component only
+    // creatures with the archer AI have.
+    QcComponent<QcArcherState> archer;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give

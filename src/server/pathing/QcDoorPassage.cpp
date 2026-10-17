@@ -59,7 +59,7 @@ std::optional<QcBlockPos> QcDoorPassage::doorAhead(const QcCreature &mob, const 
     return std::nullopt;
 }
 
-std::optional<QcPhysics::Steering> QcDoorPassage::waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const Ground &ground)
+std::optional<QcPhysics::Steering> QcDoorPassage::waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcPathGround &ground)
 {
     bool inside = false;
     const std::optional<QcBlockPos> door = doorAhead(mob, navigation, ground.world, inside);
@@ -85,7 +85,7 @@ std::optional<QcPhysics::Steering> QcDoorPassage::waitAtDoor(QcCreature &mob, co
     return stepAside(mob, centreOf(*door), navigation.steering.speed, ground);
 }
 
-QcPhysics::Steering QcDoorPassage::stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const Ground &ground)
+QcPhysics::Steering QcDoorPassage::stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const QcPathGround &ground)
 {
     // Out of the doorway and aside, out of the way of the one coming through, facing the door.
     const QcVec3 away{mob.motion.position.x - doorCentre.x, 0.0, mob.motion.position.z - doorCentre.z};
@@ -100,7 +100,7 @@ QcPhysics::Steering QcDoorPassage::stepAside(QcCreature &mob, const QcVec3 &door
     const QcVec3 back = away.normalized();
     const QcVec3 side = QcVec3{-back.z, 0.0, back.x} * (mob.id % 2 == 0 ? 1.0 : -1.0);
     for (const QcVec3 &step : {(back + side).normalized(), (back - side).normalized(), back}) {
-        if (QcMobNavigator::safeStep(mob, step, ground.world, ground.cells, ground.rules)) {
+        if (QcMobNavigator::safeStep(mob, step, ground)) {
             return {step, speed};
         }
     }

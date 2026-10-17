@@ -286,8 +286,9 @@ private slots:
 
         join(config);
         QCOMPARE(*m_server->world().blockAt({pos.x, y + 1, pos.z}), id("qtcraft:snow_layer"));
-        // The layer breaks into itself (the content has no snowball).
-        QCOMPARE(m_content->block(id("qtcraft:snow_layer")).drops.first().item, u"qtcraft:snow_layer"_s);
+        // The layer breaks into a snowball, with a shovel (decision E-427).
+        QCOMPARE(m_content->block(id("qtcraft:snow_layer")).drops.first().item, u"qtcraft:snowball"_s);
+        QCOMPARE(m_content->block(id("qtcraft:snow_layer")).toolLevel, 1);
     }
 
     void lightningHurtsTheBodiesNearIt()

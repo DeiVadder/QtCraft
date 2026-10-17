@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 61> table{{
+constexpr std::array<QcServerLimits::Field, 63> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -39,6 +39,8 @@ constexpr std::array<QcServerLimits::Field, 61> table{{
     {"itemsQueued", "dropped items waiting to appear", 16, 1 << 20, &QcServerLimits::itemsQueued},
     {"itemsTotal", "dropped items in the world", 64, 1 << 20, &QcServerLimits::itemsTotal},
     {"experienceOrbs", "experience orbs in the world (beyond, experience joins the nearest orb)", 16, 1 << 20, &QcServerLimits::experienceOrbs},
+    {"projectiles", "projectiles in the world (beyond, launchers do not shoot)", 16, 1 << 16, &QcServerLimits::projectiles},
+    {"projectilesPerChunk", "projectiles stuck in one chunk (beyond, the oldest goes)", 1, 4096, &QcServerLimits::projectilesPerChunk},
     {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
     {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
     {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},

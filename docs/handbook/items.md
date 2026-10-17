@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Emerald](#item-qtcraft-emerald) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Emerald](#item-qtcraft-emerald) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -24,6 +24,30 @@ Place it on a block and dress it: right click with armour or an item puts it on,
 | [Stick](#item-qtcraft-stick) | [Stick](#item-qtcraft-stick) | [Stick](#item-qtcraft-stick) | [Armour stand](#item-qtcraft-armor_stand) |
 | · | [Stick](#item-qtcraft-stick) | · |  |
 | [Stick](#item-qtcraft-stick) | [Polished stone slab](parts.md#block-qtcraft-polished_stone_slab) | [Stick](#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-arrow"></a>Arrow
+
+Shot from a bow. Its damage grows with its speed; armour takes part of it. Arrows stick in blocks, where you can pick them up again until they vanish after 60 s.
+
+| | |
+|---|---|
+| ID | `qtcraft:arrow` |
+| Stack size | 64 |
+| Groups | [Any arrow](tags.md#tag-qtcraft-arrows) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Flint](#item-qtcraft-flint) | 4 × [Arrow](#item-qtcraft-arrow) |
+| [Stick](#item-qtcraft-stick) |  |
+| [Feather](#item-qtcraft-feather) |  |
+
+**Dropped by**
+
+[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %)
 
 ### <a id="item-qtcraft-black_dye"></a>Black dye
 
@@ -75,6 +99,40 @@ Made from cornflowers.
 
 [Blue concrete powder](blocks.md#block-qtcraft-blue_concrete_powder), [Blue stained glass](blocks.md#block-qtcraft-blue_stained_glass), [Blue terracotta](blocks.md#block-qtcraft-blue_terracotta), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Cyan dye](#item-qtcraft-cyan_dye), [Purple dye](#item-qtcraft-purple_dye)
 
+### <a id="item-qtcraft-bone"></a>Bone
+
+Dropped by skeletons. Crafted into bone meal.
+
+| | |
+|---|---|
+| ID | `qtcraft:bone` |
+| Stack size | 64 |
+
+**Used in**
+
+[Bone meal](#item-qtcraft-bone_meal)
+
+**Dropped by**
+
+[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %)
+
+### <a id="item-qtcraft-bone_meal"></a>Bone meal
+
+Use it on a crop to make it grow 2–5 stages at once, or on a sapling for a 45 % chance that it grows into a tree right away. Each use takes one.
+
+| | |
+|---|---|
+| ID | `qtcraft:bone_meal` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Bone](#item-qtcraft-bone) | 3 × [Bone meal](#item-qtcraft-bone_meal) |
+
 ### <a id="item-qtcraft-book"></a>Book
 
 Paper bound in leather.
@@ -100,6 +158,26 @@ Paper bound in leather.
 **Dropped by**
 
 [Bookshelf](blocks.md#block-qtcraft-bookshelf) (3×)
+
+### <a id="item-qtcraft-bow"></a>Bow
+
+Hold the use button to draw it, release to shoot an arrow from your inventory. The longer you draw (up to 1 s), the farther and harder the arrow flies. Every shot wears it a little; in creative mode it shoots without arrows.
+
+| | |
+|---|---|
+| ID | `qtcraft:bow` |
+| Stack size | 1 |
+| Durability | 384 uses |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | [Stick](#item-qtcraft-stick) | [String](#item-qtcraft-string) | [Bow](#item-qtcraft-bow) |
+| [Stick](#item-qtcraft-stick) | · | [String](#item-qtcraft-string) |  |
+| · | [Stick](#item-qtcraft-stick) | [String](#item-qtcraft-string) |  |
 
 ### <a id="item-qtcraft-bowl"></a>Bowl
 
@@ -391,6 +469,23 @@ A green gem and the money of the villagers: they pay in emeralds for what they b
 
 [Emerald ore](blocks.md#block-qtcraft-emerald_ore)
 
+### <a id="item-qtcraft-feather"></a>Feather
+
+Light and soft. Zombies sometimes drop one. With flint and a stick it makes arrows.
+
+| | |
+|---|---|
+| ID | `qtcraft:feather` |
+| Stack size | 64 |
+
+**Used in**
+
+[Arrow](#item-qtcraft-arrow)
+
+**Dropped by**
+
+[Zombie](creatures.md#mob-qtcraft-zombie) (25 %)
+
 ### <a id="item-qtcraft-fired_lamp_shell"></a>Fired lamp shell
 
 Put a firefly in a bottle into it to make a mine lamp.
@@ -444,7 +539,7 @@ A sharp stone that sometimes comes out of gravel. With an iron ingot it makes fl
 
 **Used in**
 
-[Flint and steel](#item-qtcraft-flint_and_steel)
+[Arrow](#item-qtcraft-arrow), [Flint and steel](#item-qtcraft-flint_and_steel)
 
 **Dropped by**
 
@@ -1071,6 +1166,23 @@ Dropped by slimes.
 
 [Slime](creatures.md#mob-qtcraft-slime)
 
+### <a id="item-qtcraft-snowball"></a>Snowball
+
+Thrown with the use button, one at a time and at once. It does no harm but pushes back what it hits, and bursts on anything it meets. Breaking snow with a shovel gives snowballs; four make a snow block.
+
+| | |
+|---|---|
+| ID | `qtcraft:snowball` |
+| Stack size | 16 |
+
+**Used in**
+
+[Snow block](blocks.md#block-qtcraft-snow_block)
+
+**Dropped by**
+
+[Snow block](blocks.md#block-qtcraft-snow_block) (4×), [Snow layer](blocks.md#block-qtcraft-snow_layer)
+
 ### <a id="item-qtcraft-stick"></a>Stick
 
 Handle of tools and torches.
@@ -1092,7 +1204,7 @@ Handle of tools and torches.
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Arrow](#item-qtcraft-arrow), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Bow](#item-qtcraft-bow), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
 
 **Dropped by**
 
@@ -1109,7 +1221,7 @@ Thread from a cobweb; four make white wool.
 
 **Used in**
 
-[Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [White wool](blocks.md#block-qtcraft-white_wool)
+[Bow](#item-qtcraft-bow), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [White wool](blocks.md#block-qtcraft-white_wool)
 
 **Dropped by**
 

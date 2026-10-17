@@ -11,6 +11,8 @@
 #              seen by 64 zombies (the summon limit) summoned 14 m away in four directions: they
 #              path through the hills to the pillar, cannot reach the player and crowd at its foot
 #              (path searches with partial paths and back-off, separation, sight rays; stage 37.1)
+#              crowd and horde play by day unless SCENE_TIME names another time (night: undead do not
+#              burn, so the scene shows the same bodies as before stage 52.1)
 #   light    - standing on a cleared stone floor while torches appear and vanish around the player
 #              four times a second (block light and remeshing in the background)
 #   liquids  - standing on a cleared stone floor while water and lava sources appear above it and
@@ -547,7 +549,7 @@ scene_chat() {
     glass) glass_chat "$GLASS_WALLS" "$GLASS_LAMPS" "$GLASS_TOGGLES" "$2" ;;
     glass-full) glass_chat "$GLASS_FULL_WALLS" "$GLASS_FULL_LAMPS" "$GLASS_FULL_TOGGLES" "$2" ;;
     crowd)
-        printf '%s\n' "/time set day" "/summon qtcraft:pig 16" "/summon qtcraft:pig 16" "/summon qtcraft:zombie 16" "/summon qtcraft:slime 8"
+        printf '%s\n' "/time set ${SCENE_TIME:-day}" "/summon qtcraft:pig 16" "/summon qtcraft:pig 16" "/summon qtcraft:zombie 16" "/summon qtcraft:slime 8"
         for item in $CROWD_ITEMS; do
             echo "/spawnitem qtcraft:$item 1"
         done
@@ -563,7 +565,7 @@ scene_chat() {
     horde)
         # Pillar under the player, then four groups of 16 zombies dropped from 8 m above the pillar
         # top, 14 m east, west, south and north of it; the player ends on the pillar.
-        printf '%s\n' "/time set day" "/fill ~ ~ ~ ~ ~3 ~ stone" "/tp ~ ~4 ~"
+        printf '%s\n' "/time set ${SCENE_TIME:-day}" "/fill ~ ~ ~ ~ ~3 ~ stone" "/tp ~ ~4 ~"
         for offset in 14,0 -14,0 0,14 0,-14; do
             dx=${offset%,*}
             dz=${offset#*,}

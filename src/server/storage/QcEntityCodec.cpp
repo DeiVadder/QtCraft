@@ -113,7 +113,8 @@ public:
     {
         return entries([this](const Header &h) { return creature(h); }) && entries([this](const Header &h) { return item(h); })
                && entries([this](const Header &h) { return falling(h); }) && entries([this](const Header &h) { return stand(h); })
-               && entries([this](const Header &h) { return minecart(h); }) && entries([this](const Header &h) { return orb(h); });
+               && entries([this](const Header &h) { return minecart(h); }) && entries([this](const Header &h) { return orb(h); })
+               && entries([this](const Header &h) { return projectile(h); });
     }
 
 private:
@@ -393,6 +394,42 @@ private:
         return true;
     }
 
+    bool projectile(const Header &header)
+    {
+        QcEntityRecord::Ordered<QcProjectile> entry{{}, header.order};
+        QcProjectile &shot = entry.entry;
+        shot.motion.position = header.position;
+        shot.motion.velocity = header.velocity;
+        shot.yaw = header.yaw;
+        quint8 pickup = 0;
+        QString stuckState;
+        const auto fields = [&](QDataStream &in, quint16) {
+            in >> shot.pitch >> shot.age >> pickup >> shot.damageFactor >> shot.stuck >> shot.stuckIn.x >> shot.stuckIn.y >> shot.stuckIn.z;
+            return QcComponentFrames::readText(in, stuckState, maxTypeName);
+        };
+        keepHeader(header, shot.kept, false);
+        if (!readComponents(shot.kept.components, {known(Component::Projectile, kindVersion, fields)}) || !std::isfinite(shot.age)
+            || !std::isfinite(shot.pitch) || !std::isfinite(shot.damageFactor) || pickup > quint8(QcProjectilePickup::Never)) {
+            return false;
+        }
+
+        // A kind a mod took away goes; a block that no longer exists lets it fall.
+        if (!m_content.projectile(header.type)) {
+            warnOnce(u"projectile"_s, header.type);
+            return true;
+        }
+        shot.type = header.type;
+        shot.pickup = QcProjectilePickup(pickup);
+        shot.age = std::clamp(shot.age, 0.0, 3600.0);
+        shot.damageFactor = std::clamp(shot.damageFactor, 0.0, 100.0);
+        shot.motion.velocity = clampedVelocity(shot.motion.velocity);
+        const std::optional<QcBlockId> state = shot.stuck ? m_content.stateId(stuckState) : std::nullopt;
+        shot.stuck = state.has_value();
+        shot.stuckState = state.value_or(0);
+        m_record.projectiles.append(entry);
+        return true;
+    }
+
     // What a stand wears or holds: one item, by name; unknown items are dropped with a warning.
     QcItemStack standStack(QDataStream &in)
     {
@@ -530,6 +567,20 @@ void writeCartsAndOrbs(QDataStream &stream, const QcEntityRecord &record, const 
     });
 }
 
+void writeProjectiles(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+{
+    writeEntries(stream, record.projectiles, [&](const QcProjectile &shot, quint64 order) {
+        const Header header{shot.type, shot.motion.position, shot.motion.velocity, shot.yaw, order, shot.kept.uid};
+        const QString state = shot.stuck ? content.stateName(shot.stuckState) : QString();
+        const auto fields = [&shot, &state](QDataStream &out) {
+            out << shot.pitch << shot.age << quint8(shot.pickup) << shot.damageFactor << shot.stuck << shot.stuckIn.x << shot.stuckIn.y
+                << shot.stuckIn.z << state;
+        };
+        writeEntry(stream, header, shot.kept.components,
+                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::Projectile), kindVersion, fields); });
+    });
+}
+
 } // namespace
 
 namespace QcEntityCodec {
@@ -543,6 +594,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     writeItemsAndBlocks(stream, record, content);
     writeStands(stream, record, content);
     writeCartsAndOrbs(stream, record, content);
+    writeProjectiles(stream, record, content);
     stream << quint8(record.populated ? 1 : 0);
     return blob;
 }

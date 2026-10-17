@@ -1362,7 +1362,7 @@ Einfache Erde unter dem Gras.
 
 **Wesen, die darauf erscheinen**
 
-[Schleim](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-torch"></a>Fackel
 
@@ -2181,7 +2181,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Wesen, die darauf erscheinen**
 
-[Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
@@ -4639,7 +4639,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Wesen, die darauf erscheinen**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstein
 
@@ -4805,17 +4805,27 @@ Fester Schnee kalter Berge und der Tundra.
 |---|---|
 | ID | `qtcraft:snow_block` |
 | Härte | 0,2 |
-| Abbauen mit der Hand | 0,3 s |
-| Werkzeug | Schaufel (schneller, nicht nötig) |
+| Abbauen mit der Hand | 1 s |
+| Werkzeug | Schaufel, Stufe 1 oder besser (nötig für Beute) |
 | Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) |
-| Beute | [Schneeblock](#block-qtcraft-snow_block) |
+| Beute | [Schneeball](items.md#item-qtcraft-snowball) (4×) |
+| Beute ohne passendes Werkzeug | nichts |
 | Klang | Schnee |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Schneeball](items.md#item-qtcraft-snowball) | [Schneeball](items.md#item-qtcraft-snowball) | [Schneeblock](#block-qtcraft-snow_block) |
+| [Schneeball](items.md#item-qtcraft-snowball) | [Schneeball](items.md#item-qtcraft-snowball) |  |
 
 **Wird verwendet für**
 
 [Schneeschicht](#block-qtcraft-snow_layer)
 
-**Schneller mit**
+**Abbaubar mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
@@ -4825,7 +4835,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Wesen, die darauf erscheinen**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Schneeschicht
 
@@ -4835,10 +4845,11 @@ Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von sel
 |---|---|
 | ID | `qtcraft:snow_layer` |
 | Härte | 0,1 |
-| Abbauen mit der Hand | 0,15 s |
-| Werkzeug | Schaufel (schneller, nicht nötig) |
+| Abbauen mit der Hand | 0,5 s |
+| Werkzeug | Schaufel, Stufe 1 oder besser (nötig für Beute) |
 | Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) |
-| Beute | [Schneeschicht](#block-qtcraft-snow_layer) |
+| Beute | [Schneeball](items.md#item-qtcraft-snowball) |
+| Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
 | Klang | Schnee |
@@ -4851,7 +4862,7 @@ Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von sel
 |---|---|---|---|
 | [Schneeblock](#block-qtcraft-snow_block) | [Schneeblock](#block-qtcraft-snow_block) | [Schneeblock](#block-qtcraft-snow_block) | 6 × [Schneeschicht](#block-qtcraft-snow_layer) |
 
-**Schneller mit**
+**Abbaubar mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
@@ -5537,7 +5548,7 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 **Wesen, die darauf erscheinen**
 
-[Schleim](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_pressure_plate"></a>Steindruckplatte
 
@@ -6285,7 +6296,7 @@ Weicher Block vom Schaf; jede Wolle lässt sich mit einem Farbstoff färben.
 
 **Droppt aus**
 
-[Schaf](creatures.md#mob-qtcraft-sheep)
+[Schaf](creatures.md#mob-qtcraft-sheep) (50 %)
 
 ### <a id="block-qtcraft-white_concrete"></a>Weißer Beton
 

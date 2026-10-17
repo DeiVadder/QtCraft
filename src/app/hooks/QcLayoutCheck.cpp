@@ -1,5 +1,6 @@
 #include "app/hooks/QcLayoutCheck.h"
 
+#include <QQmlListReference>
 #include <QQuickItem>
 
 using namespace Qt::StringLiterals;
@@ -39,6 +40,66 @@ void QcLayoutCheck::collect(const QQuickItem &item, const QRectF &bounds, QStrin
     for (const QQuickItem *child : children) {
         collect(*child, bounds, found);
     }
+}
+
+QStringList QcLayoutCheck::chatOverlaps(const QQuickItem &root)
+{
+    const QQuickItem *hud = findItem(root, u"hud"_s);
+    const QQuickItem *chat = findItem(root, u"hudChat"_s);
+    if (!hud || !chat || !shown(*hud) || !shown(*chat) || chat->height() <= 0.0) {
+        return {};
+    }
+
+    const QRectF chatRect = chat->mapRectToScene(QRectF(0.0, 0.0, chat->width(), chat->height()));
+    QStringList found;
+    const QList<const QQuickItem *> rows = statusRows(*hud);
+    for (const QQuickItem *row : rows) {
+        if (!shown(*row) || row->width() <= 0.0 || row->height() <= 0.0) {
+            continue;
+        }
+
+        const QRectF rect = row->mapRectToScene(QRectF(0.0, 0.0, row->width(), row->height()));
+        if (chatRect.adjusted(tolerance, tolerance, -tolerance, -tolerance).intersects(rect)) {
+            found.append(describe(*row, rect));
+        }
+    }
+    return found;
+}
+
+QList<const QQuickItem *> QcLayoutCheck::statusRows(const QQuickItem &hud)
+{
+    QList<const QQuickItem *> rows;
+    const QQmlListReference list(hud.property("statusRows"));
+    for (qsizetype index = 0; index < list.count(); ++index) {
+        if (const auto *item = qobject_cast<const QQuickItem *>(list.at(index))) {
+            rows.append(item);
+        }
+    }
+    return rows;
+}
+
+const QQuickItem *QcLayoutCheck::findItem(const QQuickItem &root, const QString &name)
+{
+    const QList<QQuickItem *> children = root.childItems();
+    for (const QQuickItem *child : children) {
+        if (child->objectName() == name) {
+            return child;
+        }
+        if (const QQuickItem *found = findItem(*child, name)) {
+            return found;
+        }
+    }
+    return nullptr;
+}
+
+bool QcLayoutCheck::shown(const QQuickItem &item)
+{
+    for (const QQuickItem *at = &item; at; at = at->parentItem()) {
+        if (!at->isVisible() || at->opacity() <= 0.0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QString QcLayoutCheck::describe(const QQuickItem &item, const QRectF &rect)

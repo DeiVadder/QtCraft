@@ -22,6 +22,9 @@ struct QcEntityPose
     QcPose body = QcPose::Standing;
     // 0..1 while the right arm swings (mining, attacking, using), negative otherwise.
     double swingProgress = -1.0;
+    // The power of a launcher being drawn (decision E-425), 0..1: both arms aim along the view;
+    // negative when not drawing.
+    double drawProgress = -1.0;
     // 0..1 while the entity recoils from a hit, negative otherwise.
     double hurtProgress = -1.0;
     // 0..1 while the entity falls over dying, negative otherwise.

@@ -12,7 +12,11 @@ std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &messag
     }
 
     if (std::holds_alternative<QcMsg::UseItem>(message) || std::holds_alternative<QcMsg::UseEntity>(message)
-        || std::holds_alternative<QcMsg::ConsumeItem>(message)) {
+        || std::holds_alternative<QcMsg::ConsumeItem>(message) || std::holds_alternative<QcMsg::ThrowItem>(message)) {
+        return Kind::Use;
+    }
+    // Only the press of a launcher pays; its release or cancel only ends a draw (isUnlimited).
+    if (const auto *draw = std::get_if<QcMsg::DrawLauncher>(&message); draw && draw->action == QcMsg::DrawLauncher::Action::Draw) {
         return Kind::Use;
     }
 
@@ -47,7 +51,9 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
 {
     return std::holds_alternative<QcMsg::Hello>(message) || std::holds_alternative<QcMsg::PlayerInput>(message)
            || std::holds_alternative<QcMsg::Respawn>(message) || std::holds_alternative<QcMsg::Disconnect>(message)
-           || std::holds_alternative<QcMsg::DebugSubscribe>(message) || std::holds_alternative<QcMsg::LoginResponse>(message);
+           || std::holds_alternative<QcMsg::DebugSubscribe>(message) || std::holds_alternative<QcMsg::LoginResponse>(message)
+           || (std::holds_alternative<QcMsg::DrawLauncher>(message)
+               && std::get<QcMsg::DrawLauncher>(message).action != QcMsg::DrawLauncher::Action::Draw);
 }
 
 const char *QcRateLimiter::name(Kind kind)

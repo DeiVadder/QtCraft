@@ -15,6 +15,7 @@ QcEntities::QcEntities(const std::shared_ptr<const QcContentRegistry> &content, 
     , m_falling(content)
     , m_carts(*content)
     , m_orbs(seed)
+    , m_projectiles(content)
 {
 }
 
@@ -32,6 +33,8 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));
     m_orbs.setLimit(qsizetype(limits.experienceOrbs));
+    m_projectiles.setLimit(qsizetype(limits.projectiles));
+    m_projectiles.setPerChunk(qsizetype(limits.projectilesPerChunk));
 }
 
 namespace {
@@ -70,6 +73,7 @@ QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64
     settleList(m_stands.editableStands());
     settleList(m_carts.editableAll());
     settleList(m_orbs.editableOrbs());
+    settleList(m_projectiles.editableAll());
     return strays;
 }
 
@@ -99,6 +103,12 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcMinecartManager::bodyOf(entity.as<QcMinecart>());
     case QcEntityKind::ExperienceOrb:
         return QcPhysics::boxAt(feet, QcExperienceOrbManager::size, QcExperienceOrbManager::size);
+    case QcEntityKind::Projectile: {
+        // Its position is its centre.
+        const QcProjectileDefinition *definition = m_content->projectile(entity.as<QcProjectile>().type);
+        const double half = definition ? definition->size * 0.5 : 0.25;
+        return QcAabb{feet - QcVec3{half, half, half}, feet + QcVec3{half, half, half}};
+    }
     case QcEntityKind::MovingBlock:
         break;
     }

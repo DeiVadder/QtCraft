@@ -1550,7 +1550,7 @@ Release (`RelWithDebInfo`), `QTCRAFT_EXPERIENCE_MEASURE=full build/release/tests
 
 Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `51e331d` in einem temporären Worktree gegen `feature/36-experience` `ffae444` (Nachbesserungen E-399 eingeschlossen). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` (`bench-headless.sh`, adaptiv, alle Szenarien nach 3 Runden fertig, 60 Spielsekunden, 03:46–03:48); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 03:49–04:02); das neue Szenario `orbs` headless (6 Runden, 20 Spielsekunden) und im Fenster (3 Runden à 10 s, 04:07–04:10). Last 2,3–9,5 (einmal 9,5 nach einem stand-Lauf), belastet markiert 7 von 48 Läufen der `@core`-Reihe, verteilt auf beide Stände; ohne sie ändert sich keine Aussage. Wanduhr samt Builds und Aufbau des Szenarios rund 30 min.
 
-**Neues Szenario `orbs`** (`scripts/bench-common.sh`): flache Welt, 15 Reihen zu 20 Öfen im Abstand von 3 m nördlich des Spielers, je ein Trichter darüber (4 Eisenerz) und daneben (1 Kohle), der Spieler wirft die Stapel per `/tp` und `/spawnitem` darauf (rund 2100 Zeilen); `/tick sprint 1000` schmilzt, nach 2 s räumt `/fill` die Reihen: jeder Ofen gibt seine Erfahrung (4 × 0,7) als Kugel frei und verschüttet seine Barren. Rund 300 Kugeln in 3 m Abstand (keine verschmilzt) und 300 Items; der Spieler schaut von einem Block 14 m hoch darauf (keine Kugel im Umkreis von 8 m, alle ruhen) und steigt nach der halben Laufzeit in die Mitte des Felds hinab, die Kugeln im Umkreis fliegen zu ihm (eine je 2 Ticks). Auf `dev` läuft dieselbe Szene ohne Kugeln (der Ofen sammelt dort keine Erfahrung); der Vergleich zeigt also die Kosten der Kugeln. Ein erster Entwurf mit Trichterketten (ein Trichterband je Reihe) bewegte keine Items und wurde verworfen; die Ursache ist nicht untersucht (Trichter-Budget oder Aufwecken bei rund 2300 Trichtern, kein Befund dieser Etappe).
+**Neues Szenario `orbs`** (`scripts/bench-common.sh`): flache Welt, 15 Reihen zu 20 Öfen im Abstand von 3 m nördlich des Spielers, je ein Trichter darüber (4 Eisenerz) und daneben (1 Kohle), der Spieler wirft die Stapel per `/tp` und `/spawnitem` darauf (rund 2100 Zeilen); `/tick sprint 1000` schmilzt, nach 2 s räumt `/fill` die Reihen: jeder Ofen gibt seine Erfahrung (4 × 0,7) als Kugel frei und verschüttet seine Barren. Rund 300 Kugeln in 3 m Abstand (keine verschmilzt) und 300 Items; der Spieler schaut von einem Block 14 m hoch darauf (keine Kugel im Umkreis von 8 m, alle ruhen) und steigt nach der halben Laufzeit in die Mitte des Felds hinab, die Kugeln im Umkreis fliegen zu ihm (eine je 2 Ticks). Auf `dev` läuft dieselbe Szene ohne Kugeln (der Ofen sammelt dort keine Erfahrung); der Vergleich zeigt also die Kosten der Kugeln. Ein erster Entwurf mit Trichterketten (ein Trichterband je Reihe) bewegte keine Items und wurde verworfen (nicht in git). Nachträglich untersucht (`test_hopper_lines`): Die Trichter sind nicht die Ursache. Gerade Linien, Kurven, Truhen in der Linie, Chunk-Grenzen, ein erst später geladener Ziel-Chunk und 15 Bänder mit zusammen 2310 Trichtern über 300 Öfen bewegen ein Item je 8 Ticks und Trichter, ohne Budget-Grenze (höchstens 75 handelnde je Tick) und ohne Verlust. Am Entwurf lag es: (1) Ein Item braucht 8 Ticks je Trichter, über ein Band von rund 150 Trichtern also rund 1200 Ticks (60 s Spielzeit), bevor am Ende etwas ankommt. (2) Ein Trichter unter dem Band zieht jedes Item, das über ihn läuft (der überholende Trichter ruht nach dem Empfang 8 Ticks, wie im Vorbild); ein Band über einer Reihe von Öfen füllt nur den ersten Ofen, die übrigen 19 der Reihe bekommen nichts. Ein Band zum Verteilen braucht gesperrte Trichter (Sortierer) oder einen eigenen Zweig je Ofen.
 
 ### Fenster: 36 gegen `51e331d` (`@core`, 6 Runden à 10 s)
 
@@ -2022,3 +2022,38 @@ Release, Apple M-Serie, Ticks von Hand (keine Echtzeit), Stand `52.0c` (E-424).
 ## 52.0 nach den Nachbesserungen headless (2026-10-17)
 
 `scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `0034999` gegen den Kandidaten nach den Nachbesserungen der Prüfung (E-422 bis E-424). Tick im Mittel −2,2 bis 0 %, p99 −8,4 bis +4,4 %, Spitzenspeicher ±0,5 MB. Keine Regression; der Umbau der Wesen-Architektur kostet nichts Messbares.
+
+## 52.1 (Geschosse, Bogen und Pfeile) headless (2026-10-17)
+
+`QTCRAFT_PROJECTILE_MEASURE=full build/release/tests/test_projectile_measure`, Release, Ticks von Hand so schnell der Server kann (E-425). 500 Pfeile mit 30 m/s steil nach oben (55–85°) aus 40 m über der Bühne, alle in geladenen Chunks (11 × 11 Chunks), 100 Schweine und ein Spieler als Körper; dann 500 Pfeile steckend in einer Steindecke. Je 60 Ticks, drei Läufe:
+
+| Szene | Phase `projectiles` Ø ms | Phase max ms | Tick Ø ms |
+|---|---|---|---|
+| 500 im Flug | 0,119–0,122 | 0,143–0,171 | 0,379–0,389 |
+| 500 steckend | 0,0085–0,0087 | 0,011–0,015 | 0,192–0,196 |
+
+**Bewertung:** Etwa 0,24 µs je fliegendem Pfeil und Tick (Raycast der 1,5-m-Strecke und Breitphase über 101 Körper), 0,02 µs je steckendem (ein Blick auf seinen Block). 500 fliegende Pfeile kosten 0,25 % eines 50-ms-Ticks; die Grenze von 1024 Geschossen hält auch eine Schießbude im Rahmen. Keine Messung gegen `dev`: die Phase ist neu, die anderen Phasen sind unverändert (ohne Geschosse kehrt sie nach dem Abholen der Schüsse der Wesen sofort zurück).
+
+## 52.1b (Skelett-Bogenschützen) headless (2026-10-17)
+
+`QTCRAFT_PROJECTILE_MEASURE=full build/release/tests/test_projectile_measure skeletonsShootAtAPlayer`, Release, Ticks von Hand so schnell der Server kann (E-426). 50 Skelette im Ring 7–11 m um einen Spieler auf einer freien Fläche bei Nacht, alle sehen ihn; der Spieler wird jeden Tick geheilt, damit geschossen wird. 200 Ticks (10 s Spielzeit), drei Läufe, Last 9–10 (andere Sitzungen):
+
+| Phase | Ø ms | max ms |
+|---|---|---|
+| Tick | 0,089–0,092 | 0,31–0,41 |
+| `mobs` (Gehirne, Sichtlinie, Zielen, Bewegung, Brennen) | 0,072–0,073 | – |
+| `projectiles` | 0,0042–0,0043 | – |
+
+172 Pfeile in 10 s (je Skelett etwa einer in 2 s nach dem ersten Blick; Pfeile, die ein anderes Skelett im Ring treffen, zählen mit).
+
+**Bewertung:** Etwa 1,5 µs je Skelett und Tick in der Phase der Wesen (Sichtlinie jeden Denk-Tick, Zielen nur beim Schuss) und 0,2 % eines 50-ms-Ticks für alle 50. Die Obergrenze der feindlichen Wesen je Spieler (`hostileCap`) liegt weit darunter. Keine Messung gegen `dev`: das Gehirn ist neu, die anderen Wesen sind unverändert.
+
+## 52.1 (Geschosse, Skelette, Munition, 52.P, HUD) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `f249fc8` gegen den Kandidaten `feature/52-1-projectiles` (52.1a–c samt Nachbesserungen, dazu 52.P und HUD/Trichter), Fenster auf dem eingebauten Display, verschränkt, 10 s je Lauf, Mediane. Last: andere Sitzungen bauten zeitweise (clangd-Index bis 400 % CPU, Tests anderer Pakete); Läufe mit Fremdlast sind markiert und auf beide Stände verteilt.
+
+**Headless** (`@server`, 3 Runden, 60 Spielsekunden): crowd Tick 0,177 → 0,158 ms (−11 %, aber 107 statt 123 Wesen: die Zombies der Tag-Szene verbrennen seit 52.1b), gravel-collapse, farm-seeds, explore unverändert, farm 0,007 → 0,008 ms (Rauschen), Signal-Stationen 0 bis +5 % (ein Wesen mehr: Skelett-Gehege der Showcase), Speicher +0 bis +1,5 MB. Nachts (`SCENE_TIME=night`, 6 Runden): horde 0,181 → 0,182 ms, crowd 0,165 → 0,167 ms bei gleicher Wesenzahl.
+
+**Fenster** (`@core horde village`, 6 Runden): stand, sprint, showcase, village bei GPU, Render-CPU, GUI-CPU und Speicher innerhalb ±4 %; p99 streut wie bisher mit VSync-Aussetzern von außen (sprint +25 %, horde −34 %). Auffällig bei Tag: crowd GPU 2,18 → 2,58 ms (+18 %, Spannen getrennt) und GUI-CPU +8 %, horde GUI-CPU +12 %. **Ursache:** die Zombies der Tag-Szenen brennen jetzt (Feuer an Körpern, E-393); bei Nacht (`SCENE_TIME=night`, 4 Runden) crowd GPU 2,19 → 2,20 ms (+0 %), GUI −2 %; horde GPU +3 %, GUI +9 % und Render-CPU +13 % mit überlappenden Spannen bei Fremdlast (Tests anderer Pakete). Inhalt der Etappe, keine Regression des Codes.
+
+**Ziele:** Frame-Kosten höchstens 2,58 ms (crowd, Tag) von 4 ms, Spitzenspeicher 8 Chunks höchstens 573 MB (sprint 10 s) erfüllt; p99 wie bisher von außen verfehlt. `crowd` und `horde` nehmen die Tageszeit jetzt aus `SCENE_TIME` (Standard Tag).

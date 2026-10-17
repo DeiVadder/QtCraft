@@ -1,0 +1,27 @@
+{
+    "name": "mob.skeleton.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.5,
+            "density": 30,
+            "attack": 0.01,
+            "curve": 2,
+            "highpass": 1200,
+            "lowpass": 5000,
+            "gain": 0.8
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.25,
+            "frequency": 420,
+            "endFrequency": 300,
+            "attack": 0.01,
+            "curve": 3,
+            "gain": 0.3
+        }
+    ]
+}

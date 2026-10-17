@@ -98,6 +98,10 @@
     "item.qtcraft.lava_bucket": "Lava bucket",
     "item.qtcraft.flint": "Flint",
     "item.qtcraft.flint_and_steel": "Flint and steel",
+    "item.qtcraft.bow": "Bow",
+    "item.qtcraft.arrow": "Arrow",
+    "item.qtcraft.snowball": "Snowball",
+    "item.qtcraft.feather": "Feather",
     "block.qtcraft.tall_grass": "Tall grass",
     "block.qtcraft.dandelion": "Dandelion",
     "block.qtcraft.poppy": "Poppy",
@@ -324,6 +328,7 @@
     "structure.qtcraft.liquid_flow": "Flowing water and lava",
     "structure.qtcraft.obsidian_demo": "Water meets lava",
     "structure.qtcraft.fire_station": "Fire pit on magma",
+    "structure.qtcraft.archery_range": "Archery range",
     "structure.qtcraft.falling_blocks": "Falling blocks",
     "structure.qtcraft.workshop": "Workshop",
     "structure.qtcraft.sugar_cane_shore": "Sugar cane by the water",
@@ -519,5 +524,9 @@
     "appearance.qtcraft.villager_fisher_hat": "Oilskin hat",
     "appearance.qtcraft.villager_headwrap": "Headwrap",
     "appearance.qtcraft.villager_fur_hat": "Fur hat",
-    "appearance.qtcraft.villager_reed_hat": "Reed hat"
+    "appearance.qtcraft.villager_reed_hat": "Reed hat",
+    "mob.qtcraft.skeleton": "Skeleton",
+    "appearance.qtcraft.skeleton": "Skeleton",
+    "item.qtcraft.bone": "Bone",
+    "item.qtcraft.bone_meal": "Bone meal"
 }

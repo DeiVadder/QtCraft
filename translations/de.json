@@ -632,5 +632,6 @@
     "Usage: /profession <profession> [level]": "Verwendung: /profession <Beruf> [Stufe]",
     "Gives the nearest villager a profession and trading level.": "Gibt dem nächsten Dorfbewohner einen Beruf und eine Handelsstufe.",
     "No villager within %1 blocks": "Kein Dorfbewohner im Umkreis von %1 Blöcken",
-    "Villager %1 is now %2 of level %3": "Dorfbewohner %1 ist jetzt %2 der Stufe %3"
+    "Villager %1 is now %2 of level %3": "Dorfbewohner %1 ist jetzt %2 der Stufe %3",
+    "Projectiles": "Geschosse"
 }

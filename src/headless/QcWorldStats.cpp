@@ -41,14 +41,6 @@ struct ChunkCounts
     QList<QcBlockPos> entrances;
 };
 
-// One generated chunk with the generator and content it is counted against.
-struct ChunkScan
-{
-    const QcTerrainGenerator &generator;
-    const QcContentRegistry &content;
-    const QcChunk &chunk;
-};
-
 QString percent(double part, double whole, int precision = 1)
 {
     return whole > 0.0 ? QString::number(100.0 * part / whole, 'f', precision) + u'%' : u"-"_s;
@@ -80,76 +72,93 @@ bool airBeside(const QcChunk &chunk, int lx, int y, int lz)
     return air(1, 0, 0) || air(-1, 0, 0) || air(0, 1, 0) || air(0, -1, 0) || air(0, 0, 1) || air(0, 0, -1);
 }
 
-// The blocks of a column from y 1 up to below `deepest`.
-void countUnderground(ChunkCounts &counts, const QcChunk &chunk, int lx, int lz, int deepest)
+// Counts one generated chunk against the generator and content it comes from: the blocks of each
+// column underground, and the ground and top block of its dry columns.
+class ChunkCounter
 {
-    for (int y = 1; y < deepest; ++y) {
-        const QcBlockId block = chunk.block(lx, y, lz);
-        for (std::size_t band = 0; band < bands.size(); ++band) {
-            if (inBand(y, band)) {
-                counts.cells[band] += 1;
-                counts.caveAir[band] += block == qcAirBlockId;
+public:
+    ChunkCounter(const QcTerrainGenerator &generator, const QcContentRegistry &content, QcChunkPos pos)
+        : m_generator(generator)
+        , m_content(content)
+        , m_pos(pos)
+        , m_chunk(generator.generate(pos))
+    {
+    }
+
+    ChunkCounts count()
+    {
+        for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
+            for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
+                const QcTerrainGenerator::Column column =
+                    m_generator.column(m_pos.x * QcWorld::chunkSize + lx, m_pos.z * QcWorld::chunkSize + lz);
+                // Below the dirt or sand layer of the deepest biome.
+                countUnderground(lx, lz, column.height - 6);
+                if (column.height - 1 >= m_generator.seaLevel()) {
+                    countSurface(column, lx, lz);
+                }
             }
         }
-        if (block == qcAirBlockId) {
-            continue;
-        }
+        return m_counts;
+    }
 
-        counts.underground[block] += 1;
-        for (std::size_t band = 0; band < bands.size(); ++band) {
-            if (inBand(y, band)) {
-                counts.perBand[band][block] += 1;
+private:
+    // The blocks of a column from y 1 up to below `deepest`.
+    void countUnderground(int lx, int lz, int deepest)
+    {
+        const QcChunk &chunk = *m_chunk;
+        for (int y = 1; y < deepest; ++y) {
+            const QcBlockId block = chunk.block(lx, y, lz);
+            for (std::size_t band = 0; band < bands.size(); ++band) {
+                if (inBand(y, band)) {
+                    m_counts.cells[band] += 1;
+                    m_counts.caveAir[band] += block == qcAirBlockId;
+                }
             }
-        }
-        if (airBeside(chunk, lx, y, lz)) {
-            counts.exposed[block] += 1;
-        }
-    }
-}
+            if (block == qcAirBlockId) {
+                continue;
+            }
 
-// The ground and top block of a dry column.
-void countSurface(ChunkCounts &counts, const ChunkScan &scan, const QcTerrainGenerator::Column &column, int lx, int lz)
-{
-    const QcChunk &chunk = scan.chunk;
-    const int x = chunk.pos().x * QcWorld::chunkSize + lx;
-    const int z = chunk.pos().z * QcWorld::chunkSize + lz;
-    counts.dryColumns += 1;
-    const int ground = scan.generator.groundTop(x, z, column);
-    if (chunk.block(lx, ground, lz) == qcAirBlockId) {
-        counts.openColumns += 1;
-        if (counts.entrances.isEmpty()) {
-            counts.entrances.append({x, ground, z});
-        }
-    }
-
-    const int top = chunk.highestNonAir(lx, lz);
-    if (counts.lavaLakes.isEmpty() && scan.content.block(chunk.block(lx, top, lz)).liquid && top >= scan.generator.seaLevel()
-        && scan.content.block(chunk.block(lx, top, lz)).name.endsWith(u"lava"_s)) {
-        counts.lavaLakes.append({x, top, z});
-    }
-    counts.surface[column.biome][chunk.block(lx, top, lz)] += 1;
-}
-
-ChunkCounts countChunk(const QcTerrainGenerator &generator, const QcContentRegistry &content, QcChunkPos pos)
-{
-    ChunkCounts counts;
-    const std::shared_ptr<QcChunk> chunk = generator.generate(pos);
-    const ChunkScan scan{generator, content, *chunk};
-
-    for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-        for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const QcTerrainGenerator::Column column =
-                generator.column(pos.x * QcWorld::chunkSize + lx, pos.z * QcWorld::chunkSize + lz);
-            // Below the dirt or sand layer of the deepest biome.
-            countUnderground(counts, *chunk, lx, lz, column.height - 6);
-            if (column.height - 1 >= generator.seaLevel()) {
-                countSurface(counts, scan, column, lx, lz);
+            m_counts.underground[block] += 1;
+            for (std::size_t band = 0; band < bands.size(); ++band) {
+                if (inBand(y, band)) {
+                    m_counts.perBand[band][block] += 1;
+                }
+            }
+            if (airBeside(chunk, lx, y, lz)) {
+                m_counts.exposed[block] += 1;
             }
         }
     }
 
-    return counts;
-}
+    // The ground and top block of a dry column.
+    void countSurface(const QcTerrainGenerator::Column &column, int lx, int lz)
+    {
+        const QcChunk &chunk = *m_chunk;
+        const int x = chunk.pos().x * QcWorld::chunkSize + lx;
+        const int z = chunk.pos().z * QcWorld::chunkSize + lz;
+        m_counts.dryColumns += 1;
+        const int ground = m_generator.groundTop(x, z, column);
+        if (chunk.block(lx, ground, lz) == qcAirBlockId) {
+            m_counts.openColumns += 1;
+            if (m_counts.entrances.isEmpty()) {
+                m_counts.entrances.append({x, ground, z});
+            }
+        }
+
+        const int top = chunk.highestNonAir(lx, lz);
+        if (m_counts.lavaLakes.isEmpty() && m_content.block(chunk.block(lx, top, lz)).liquid && top >= m_generator.seaLevel()
+            && m_content.block(chunk.block(lx, top, lz)).name.endsWith(u"lava"_s)) {
+            m_counts.lavaLakes.append({x, top, z});
+        }
+        m_counts.surface[column.biome][chunk.block(lx, top, lz)] += 1;
+    }
+
+    const QcTerrainGenerator &m_generator;
+    const QcContentRegistry &m_content;
+    QcChunkPos m_pos;
+    std::shared_ptr<QcChunk> m_chunk;
+    ChunkCounts m_counts;
+};
 
 void addCounts(ChunkCounts &sum, const ChunkCounts &part)
 {
@@ -456,7 +465,7 @@ QStringList report(const QcTerrainGenerator &generator, const QcContentRegistry 
         }
     }
     const ChunkCounts total = QtConcurrent::blockingMappedReduced<ChunkCounts>(
-        positions, [&](QcChunkPos pos) { return countChunk(generator, content, pos); },
+        positions, [&](QcChunkPos pos) { return ChunkCounter(generator, content, pos).count(); },
         [](ChunkCounts &sum, const ChunkCounts &part) { addCounts(sum, part); });
 
     QStringList lines = undergroundLines(total, content, positions.size());

@@ -181,4 +181,20 @@ struct PickBlock
     QcBlockPos pos;
 };
 
+// Client -> server: the use button pressed or released with a launcher in the hand, or the draw
+// given up (a screen opened, decision E-425). The server times the draw itself; a release shoots
+// when the draw was long enough, a cancel, a change of the hotbar slot or the item, or death lets
+// the draw go without a shot.
+struct DrawLauncher
+{
+    enum class Action : quint8 { Draw, Release, Cancel };
+    Action action = Action::Release;
+};
+
+// Client -> server: the use button pressed with a throwable item in the hand (a snowball, decision
+// E-427); the server throws it unless its cooldown runs.
+struct ThrowItem
+{
+};
+
 } // namespace QcMsg
