@@ -2,7 +2,10 @@
 #include "QcStoredWorld.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServer.h"
+#include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcEntityCodec.h"
+#include "server/storage/QcSaveFile.h"
+#include "server/storage/QcVillagerCodec.h"
 #include "server/storage/QcWorldLibrary.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -72,10 +75,47 @@ QStringList snapshot(const QString &directory)
 
 } // namespace
 
-// Saving entities per chunk (stages 31.2 and 31.3, decisions E-366, E-373): a blob per chunk in the
-// indexed region files of the entities, entries in their table's order, unknown content dropped with
-// a warning once per world, damaged and implausible data refused, only changed regions written,
-// worlds of the formats before refused.
+// A component of a hand-made entry: its id, version, payload and the length its frame claims
+// (default: the payload's).
+struct RawComponent
+{
+    quint16 id = 0;
+    quint16 version = 1;
+    QByteArray payload;
+    std::optional<quint32> length;
+};
+
+// Fields written into a payload with the stream version of the save files.
+template<typename Write>
+QByteArray payloadOf(Write write)
+{
+    QByteArray bytes;
+    QDataStream out(&bytes, QIODevice::WriteOnly);
+    out.setVersion(QcSaveFile::streamVersion);
+    write(out);
+    return bytes;
+}
+
+// The blob of chunk 0, 0 with one creature `type` at 8.5, 65, 8.5 made of `components` (decision
+// E-420), written by hand as an older or newer version or a damaged file would have it.
+QByteArray creatureBlob(const QString &type, quint64 uid, const QList<RawComponent> &components, quint16 count)
+{
+    return payloadOf([&](QDataStream &out) {
+        out << quint32(1) << type << 8.5 << 65.0 << 8.5 << 0.0 << 0.0 << 0.0 << 30.0f << quint64(0) << uid << count;
+        for (const RawComponent &component : components) {
+            out << component.id << component.version << component.length.value_or(quint32(component.payload.size()));
+            out.writeRawData(component.payload.constData(), int(component.payload.size()));
+        }
+        // No items, falling blocks, stands, carts or orbs; not populated.
+        out << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint8(0);
+    });
+}
+
+// Saving entities per chunk (stages 31.2 and 31.3, decisions E-366, E-373, E-420): a blob per chunk
+// in the indexed region files of the entities, entries in their table's order as a header and
+// versioned components, unknown components kept, unknown content dropped with a warning once per
+// world, damaged and implausible data refused, only changed regions written, worlds of the formats
+// before refused.
 class TestEntityStorage : public QObject
 {
     Q_OBJECT
@@ -98,7 +138,7 @@ private:
     QcEntityRecord::Ordered<QcMobManager::Stored> creature(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
                                                            quint32 order) const
     {
-        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt}, order};
+        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt, 1000 + quint64(order)}, order};
     }
 
     QcEntityRecord::Ordered<QcFallingBlock> falling(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
@@ -390,6 +430,118 @@ private slots:
         QVERIFY(store.commit({}).has_value());
         QCOMPARE(regionFiles(dir.path()), (QStringList{u"r.-4.0.qen"_s, u"r.0.0.qen"_s}));
         QVERIFY(folder.entryList({u"*.next"_s}, QDir::Files).isEmpty());
+    }
+
+    // Components of ids this version does not know, and the fields a newer version of a known
+    // component appends, come back as they were: saving again loses nothing (decision E-420).
+    void unknownComponentsAndNewerFieldsAreKept()
+    {
+        QcEntityRecord record;
+        record.chunk = {0, 0};
+        record.creatures = {creature(*m_content, u"qtcraft:pig"_s, {8.5, 65.0, 8.5}, 0)};
+        QcMobManager::Stored &pig = record.creatures.first().entry;
+        // In the order they come back: tails with their components, then unknown components.
+        pig.kept.components = {{quint16(QcEntityCodec::Component::Creature), 4, true, QByteArray("\1\2\3", 3)}, {900, 3, false, QByteArray("owner of a mod", 14)}};
+        record.stands = {stand(*m_content, {4.5, 63.0, 4.5}, 1)};
+        record.stands.first().entry.kept.components = {{901, 1, false, QByteArray(1000, 'x')}};
+        const QByteArray blob = QcEntityCodec::encode(record, *m_content);
+
+        QStringList warnings;
+        QSet<QString> reported;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QVERIFY2(back.has_value(), qcErrorText(back).constData());
+        QVERIFY(warnings.isEmpty());
+        QCOMPARE(back->creatures.size(), 1);
+        QVERIFY(back->creatures.first().entry == pig);
+        QCOMPARE(back->creatures.first().entry.health, 7.5);
+        QCOMPARE(back->stands.first().entry.kept, record.stands.first().entry.kept);
+        QCOMPARE(QcEntityCodec::encode(*back, *m_content), blob);
+    }
+
+    // An entry of an older version lacks fields: they get their defaults (decision E-420).
+    void olderComponentVersionsAreReadWithDefaults()
+    {
+        QcVillagerRecord villager;
+        villager.village = 77;
+        villager.profession = u"qtcraft:farmer"_s;
+        villager.level = 2;
+        villager.style = u"qtcraft:plains"_s;
+        QByteArray first = payloadOf([&villager](QDataStream &out) { QcVillagerCodec::write(out, villager); });
+        // Version 1 ends before the offers (their count, the restock time and count).
+        first.chop(4 + 8 + 4);
+        const quint16 villagerId = quint16(QcEntityCodec::Component::Villager);
+        const QByteArray blob = creatureBlob(u"qtcraft:villager"_s, 12, {{villagerId, 1, first, {}}}, 1);
+
+        QStringList warnings;
+        QSet<QString> reported;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QVERIFY2(back.has_value(), qcErrorText(back).constData());
+        const QcMobManager::Stored &mob = back->creatures.first().entry;
+        QCOMPARE(mob.uid, 12u);
+        QVERIFY(mob.villager);
+        QCOMPARE(mob.villager->profession, villager.profession);
+        QCOMPARE(mob.villager->level, 2);
+        QVERIFY(mob.villager->offers.isEmpty());
+        QCOMPARE(mob.villager->lastRestock, -1.0);
+        // Without its creature component it is grown up and at full health.
+        QCOMPARE(mob.health, m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)].maxHealth);
+        QCOMPARE(mob.growUp, 0.0);
+        QVERIFY(mob.kept.isEmpty());
+    }
+
+    void damagedComponentsAreRefused()
+    {
+        const quint16 body = quint16(QcEntityCodec::Component::Creature);
+        const QByteArray fields = payloadOf([](QDataStream &out) { out << 10.0 << 0.0 << 0.0 << false; });
+        const auto decodes = [this](const QByteArray &blob) {
+            QStringList warnings;
+            QSet<QString> reported;
+            return QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported).has_value();
+        };
+        QVERIFY(decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, {}}}, 1)));
+
+        // A length beyond the data (also one of 4 GB, never allocated), more than it holds.
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, quint32(fields.size() + 100)}}, 1)));
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, 0xffffffffu}}, 1)));
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, quint32(fields.size() - 1)}}, 1)));
+        // The current version with more than its fields; the same id twice; version 0.
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields + QByteArray(4, '\0'), {}}}, 1)));
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, {}}, {body, 1, fields, {}}}, 2)));
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 0, fields, {}}}, 1)));
+        // More components than allowed, a count beyond the data.
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {}, quint16(QcComponentFrames::maxComponents + 1))));
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, {}}}, 2)));
+        // A saved creature without its persistent id.
+        QVERIFY(!decodes(creatureBlob(u"qtcraft:pig"_s, 0, {{body, 1, fields, {}}}, 1)));
+    }
+
+    // An entry with as many unknown components as allowed keeps QcComponentFrames::maxKept of them
+    // and drops the rest with a warning: with its own known components written back it still fits,
+    // so saving never makes its chunk unreadable.
+    void unknownComponentsBeyondWhatAnEntryKeepsAreDropped()
+    {
+        QList<RawComponent> unknown;
+        for (quint16 id = 0; id < QcComponentFrames::maxComponents; ++id) {
+            unknown.append({quint16(1000 + id), 1, QByteArray(1, char(id)), {}});
+        }
+        const QByteArray blob = creatureBlob(u"qtcraft:pig"_s, 3, unknown, quint16(unknown.size()));
+
+        QStringList warnings;
+        QSet<QString> reported;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QVERIFY2(back.has_value(), qcErrorText(back).constData());
+        QCOMPARE(warnings.size(), 1);
+        QVERIFY(warnings.first().contains(u"16 of them dropped"_s));
+        const QcEntityComponents &kept = back->creatures.first().entry.kept.components;
+        QCOMPARE(kept.size(), qsizetype(QcComponentFrames::maxKept));
+        QCOMPARE(kept.last().id, quint16(1000 + QcComponentFrames::maxKept - 1));
+
+        const QByteArray again = QcEntityCodec::encode(*back, *m_content);
+        warnings.clear();
+        const QcResult<QcEntityRecord> twice = QcEntityCodec::decode(again, {0, 0}, *m_content, warnings, reported);
+        QVERIFY2(twice.has_value(), qcErrorText(twice).constData());
+        QVERIFY(warnings.isEmpty());
+        QCOMPARE(twice->creatures.first().entry.kept.components, kept);
     }
 
     void worldOfTheFormatBeforeChunkUnloadingIsRefused()

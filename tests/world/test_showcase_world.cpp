@@ -281,11 +281,11 @@ private slots:
     void worldsOfOtherFormatsAreRefused()
     {
         // world.json of format 1 (before the showcase), 2 (before stage 31.1), 3 (before stage
-        // 31.2), 9 (before the villages of stage 37.2), 10 (before the villagers of stage 37.2b) and 11
-        // (before the trading of stage 37.2c):
+        // 31.2), 9 (before the villages of stage 37.2), 10 (before the villagers of stage 37.2b), 11
+        // (before the trading of stage 37.2c) and 12 (before the entity components of package 37.R2):
         // a world of an older development version is refused, not converted (decision E-356), and
         // nothing is written.
-        for (const int version : {1, 2, 3, 9, 10, 11}) {
+        for (const int version : {1, 2, 3, 9, 10, 11, 12}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
@@ -438,7 +438,7 @@ private slots:
             const auto inRow = [&plan](const QcVillage::Spot &spot) { return plan->covers(spot.at.x, spot.at.z, 0); };
             QVERIFY(std::ranges::all_of(village->beds, inRow));
             QVERIFY(std::ranges::all_of(village->workstations, inRow));
-            QVERIFY(std::ranges::all_of(village->beds, [](const QcVillage::Spot &bed) { return !bed.claimedBy.isEmpty(); }));
+            QVERIFY(std::ranges::all_of(village->beds, [](const QcVillage::Spot &bed) { return bed.claimedBy != 0; }));
             const auto residents = std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
                 return mob.villager.village == plan->id && mob.villager.style == plan->style;
             });

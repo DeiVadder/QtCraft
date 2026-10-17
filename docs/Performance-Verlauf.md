@@ -1892,3 +1892,14 @@ Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, See
 ## 37.R1 (Plan-Zwischenspeicher, Leben nach Abgleich) headless (2026-10-17)
 
 `scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `ec53772` gegen den Kandidaten (E-416). Tick im Mittel −1,2 bis +2,8 %, p99 −4,8 bis +5,1 %, Spitzenspeicher ±0,6 MB. Keine Regression. Ein Dorf neu zu planen kostet rund 3,3 ms (Debug); gehaltene Dörfer zahlen das nicht mehr (`test_village_plan_cache`).
+
+## 37.R2 (Entity-Komponenten, dauerhafte Ids) headless (2026-10-17)
+
+`QTCRAFT_ENTITY_MEASURE=full QTCRAFT_ENTITY_MEASURE_TICKS=20 build/release/tests/test_entity_measure` (RelWithDebInfo, Apple M4 Max; 289 Chunks mit je zwei Schweinen, vier Items und einem Ständer, 2034 Entities), `dev` `d61da73` (A) gegen den Branch (B), 15 verschränkte Runden, Mediane in ms (E-420):
+
+| Stand von B | erstes Speichern | zweites Speichern | Öffnen | alle Chunks laden |
+|---|---|---|---|---|
+| nach der Prüfung, vor den Nachbesserungen (Komponente je Puffer, Leser als `std::function`) | 16,32 → 17,28 (+5,9 %) | 3,94 → 4,64 (+17,6 %) | 2,46 → 2,48 (+0,8 %) | 36,53 → 38,75 (+6,1 %) |
+| Komponenten an Ort und Stelle im Strom, Leser als `FieldReader`, Längen eingesetzt statt gesucht | 15,06 → 15,48 (+2,8 %) | 3,62 → 3,86 (+6,6 %) | 2,33 → 2,37 (+1,9 %) | 34,63 → 36,14 (+4,4 %) |
+
+**Bewertung:** Die Kosten vor den Nachbesserungen waren sichtbar (zweites Speichern +0,7 ms, rund 0,35 µs je Entity): ein `QDataStream` mit eigenem `QBuffer` und Puffer je Komponente beim Schreiben und Lesen, dazu `std::function` je bekanntem Leser. Jetzt schreibt `QcComponentFrames::Writer` direkt in den Strom des Chunks (Anzahl und Längen als Platzhalter, danach in den Puffer eingesetzt, ohne Suchen), und `QcComponentFrames::read` liest bekannte Komponenten an Ort und Stelle; nur unbekannte und Schwänze bekommen einen eigenen Puffer. Es bleiben rund 0,24 ms beim zweiten Speichern und 1,5 ms beim Laden aller Chunks (etwa 0,1 bzw. 0,7 µs je Entity): der größere Kopf (Typname, Geschwindigkeit, Reihenfolge und Id bei jeder Art) und die Rahmen je Komponente. Bei einigen tausend Entities je Welt und Speichern alle paar Minuten ist das vernachlässigbar.

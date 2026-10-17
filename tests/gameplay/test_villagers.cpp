@@ -6,6 +6,8 @@
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillageGenerator.h"
 
+#include <QDir>
+#include <QFile>
 #include <QScopeGuard>
 #include <QTemporaryDir>
 
@@ -117,7 +119,7 @@ private:
         const quint32 entity = m_server->entities().newId();
         m_server->mobs().spawn(villagerType(), at, entity);
         QcCreature *mob = m_server->mobs().find(entity);
-        mob->villager = QcVillagerHomes::settle(*village(), head, m_content->villagerSettings(), look);
+        mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, m_content->villagerSettings(), look);
         return *mob;
     }
 
@@ -186,19 +188,18 @@ private slots:
         ticks(30);
 
         // One workstation, one farmer; the bed belongs to the first, the second finds none.
-        const QString farmer = villager(first)->villager.profession == u"qtcraft:farmer"_s ? villager(first)->villager.name
-                                                                                         : villager(second)->villager.name;
+        const quint64 farmer = villager(first)->villager.profession == u"qtcraft:farmer"_s ? villager(first)->uid : villager(second)->uid;
         QCOMPARE(village()->workstations.size(), 1);
         QCOMPARE(village()->workstations.front().claimedBy, farmer);
         QCOMPARE(int(std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) {
                      return mob.villager.profession == u"qtcraft:farmer"_s;
                  })),
                  1);
-        QCOMPARE(village()->beds.front().claimedBy, villager(first)->villager.name);
+        QCOMPARE(village()->beds.front().claimedBy, villager(first)->uid);
         QVERIFY(!villager(second)->villager.home);
 
         // Clients get the farmer's look: the style's outfit with the apron, the straw hat.
-        const quint32 farmerId = villager(first)->villager.name == farmer ? first : second;
+        const quint32 farmerId = villager(first)->uid == farmer ? first : second;
         ticks(2);
         QVERIFY(m_client->spawns.contains(farmerId));
         QCOMPARE(m_client->spawns[farmerId].appearance.outfit, u"qtcraft:villager_tunic@qtcraft:farmer"_s);
@@ -516,6 +517,9 @@ private slots:
         const quint32 entity = settle(head, centreOf(m_feet.offset(5, 0, 0)), 4242).id;
         ticks(30);
         const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(villager(entity)->villager);
+        // Its persistent id stays across saving and loading (decision E-420), the entity id does not.
+        const quint64 uid = villager(entity)->uid;
+        QVERIFY(uid != 0);
         QCOMPARE(saved.profession, u"qtcraft:fisher"_s);
         QVERIFY(saved.work);
         const QList<QcVillage> villages = m_server->world().villages().villages();
@@ -525,11 +529,60 @@ private slots:
         join(config, std::make_unique<VillageTerrain>(m_content));
         loadAround(m_feet, 2);
         ticks(2);
-        const auto found = std::ranges::find_if(m_server->mobs().mobs(), [&saved](const QcCreature &mob) { return mob.villager.name == saved.name; });
+        const auto found = std::ranges::find_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; });
         QVERIFY(found != m_server->mobs().mobs().end());
         QCOMPARE(static_cast<const QcVillagerRecord &>(found->villager), saved);
+        QCOMPARE(village()->workstations.front().claimedBy, uid);
         QCOMPARE(m_server->world().villages().villages(), villages);
         QCOMPARE(village()->population, 1);
+    }
+
+    // The counter of persistent ids is saved with the chunks in one journal (decision E-420): after
+    // a crash, and with villages.json put back from the save before, new villagers get ids no saved
+    // one has, and every bed is claimed by a villager in the world.
+    void persistentIdsStayUniqueAfterACrash()
+    {
+        QTemporaryDir directory;
+        QcServerConfig config;
+        config.worldDirectory = directory.path();
+        start(0.1, config);
+        const quint64 first = settle(bed(m_feet.offset(4, 0, 0)), centreOf(m_feet.offset(5, 0, 0))).uid;
+        QVERIFY(m_server->save().has_value());
+        QFile villages(QDir(directory.path()).filePath(u"villages.json"_s));
+        QVERIFY(villages.open(QIODevice::ReadOnly));
+        const QByteArray before = villages.readAll();
+        villages.close();
+        const quint64 second = settle(bed(m_feet.offset(-4, 0, 0)), centreOf(m_feet.offset(-3, 0, 0))).uid;
+        QVERIFY(second > first);
+        QVERIFY(m_server->save().has_value());
+        QVERIFY(villages.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        villages.write(before);
+        villages.close();
+        // Settled after the last save, then the crash: never saved.
+        settle(bed(m_feet.offset(0, 0, 8)), centreOf(m_feet.offset(1, 0, 8)));
+        cleanup();
+
+        join(config, std::make_unique<VillageTerrain>(m_content));
+        loadAround(m_feet, 2);
+        ticks(30);
+        const quint64 third = settle(bed(m_feet.offset(0, 0, -6)), centreOf(m_feet.offset(1, 0, -6))).uid;
+        // The animals of the chunks have persistent ids too.
+        QSet<quint64> ids;
+        QSet<quint64> villagers;
+        for (const QcCreature &mob : m_server->mobs().mobs()) {
+            QVERIFY2(!ids.contains(mob.uid), qPrintable(QString::number(mob.uid)));
+            ids.insert(mob.uid);
+            if (!mob.villager.profession.isEmpty()) {
+                villagers.insert(mob.uid);
+            }
+        }
+        QVERIFY(!ids.contains(0));
+        QCOMPARE(villagers, (QSet<quint64>{first, second, third}));
+        QVERIFY(third > second);
+        ticks(30);
+        for (const QcVillage::Spot &spot : std::as_const(village()->beds)) {
+            QVERIFY(spot.claimedBy == 0 || ids.contains(spot.claimedBy));
+        }
     }
 
     // On its way home its chunk leaves the world as the player goes away: it is kept with the
@@ -547,9 +600,10 @@ private slots:
         config.worldDirectory = directory.path();
         start(0.7, config, 24);
         const QcBlockPos head = bed(m_feet.offset(18, 0, 0));
-        const QString name = settle(head, centreOf(m_feet.offset(-20, 0, 2))).villager.name;
-        const auto find = [this, &name]() -> const QcCreature * {
-            const auto found = std::ranges::find_if(m_server->mobs().mobs(), [&name](const QcCreature &mob) { return mob.villager.name == name; });
+        // Its persistent id stays across the unloading (decision E-420).
+        const quint64 uid = settle(head, centreOf(m_feet.offset(-20, 0, 2))).uid;
+        const auto find = [this, uid]() -> const QcCreature * {
+            const auto found = std::ranges::find_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; });
             return found == m_server->mobs().mobs().end() || found->dormant ? nullptr : &*found;
         };
 
@@ -570,7 +624,8 @@ private slots:
         QCOMPARE(find()->villager.home, std::optional<QcBlockPos>(head));
         QVERIFY(horizontalDistance(find()->motion.position, centreOf(m_feet.offset(18, 0, 0))) < 0.5);
         QCOMPARE(village()->population, 1);
-        QCOMPARE(std::ranges::count_if(m_server->mobs().mobs(), [&name](const QcCreature &mob) { return mob.villager.name == name; }), 1);
+        QCOMPARE(std::ranges::count_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; }), 1);
+        QCOMPARE(village()->beds.front().claimedBy, uid);
     }
 
     void aVillagerThatDiesFreesItsBedAndWorkstation()
@@ -580,11 +635,11 @@ private slots:
         m_server->world().setBlock(m_feet.offset(-5, 0, 4), id("qtcraft:furnace"));
         const quint32 entity = settle(head, centreOf(m_feet.offset(5, 0, 0))).id;
         ticks(30);
-        QVERIFY(!village()->workstations.front().claimedBy.isEmpty());
+        QCOMPARE(village()->workstations.front().claimedBy, villager(entity)->uid);
 
         QVERIFY(m_server->mobs().wound(entity, 100.0).has_value());
-        QVERIFY(village()->beds.front().claimedBy.isEmpty());
-        QVERIFY(village()->workstations.front().claimedBy.isEmpty());
+        QCOMPARE(village()->beds.front().claimedBy, 0u);
+        QCOMPARE(village()->workstations.front().claimedBy, 0u);
         QCOMPARE(village()->population, 0);
     }
 
@@ -597,7 +652,7 @@ private slots:
         villager(entity)->motion.position.y = -1000.0;
         ticks(1);
         QVERIFY(!villager(entity));
-        QVERIFY(village()->beds.front().claimedBy.isEmpty());
+        QCOMPARE(village()->beds.front().claimedBy, 0u);
         QCOMPARE(village()->population, 0);
     }
 

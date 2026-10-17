@@ -91,6 +91,32 @@ int animalGroundAt(const QcContentRegistry &content, const QcChunk &chunk, const
     return -1;
 }
 
+// The persistent ids of the creatures in the world.
+QSet<quint64> loadedUids(const QList<QcCreature> &mobs)
+{
+    QSet<quint64> uids;
+    for (const QcCreature &mob : mobs) {
+        if (mob.persistent) {
+            uids.insert(mob.uid);
+        }
+    }
+    return uids;
+}
+
+// The id a loaded creature keeps: its saved one, unless `taken` has it. A copied chunk (by hand or by
+// a tool) brings creatures whose ids are already in the world; the copy gets the next free one from
+// `next`, so every id names one creature.
+quint64 uniqueUid(quint64 saved, QSet<quint64> &taken, quint64 &next)
+{
+    quint64 uid = saved;
+    if (taken.contains(uid)) {
+        uid = next++;
+        qWarning().noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
+    }
+    taken.insert(uid);
+    return uid;
+}
+
 } // namespace
 
 QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
@@ -157,6 +183,10 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
         mob.villager.profession = m_content->villagerSettings().unemployed;
         mob.villager.look = quint32(qcMixSeed(m_seed, 4101 + quint64(id)));
         mob.persistent = true;
+    }
+    // Only creatures that are saved have a persistent id (decision E-420).
+    if (mob.persistent) {
+        mob.uid = m_nextUid++;
     }
     m_mobs.append(mob);
     return id;
@@ -660,7 +690,7 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     // Only villagers have a profession (QcMobManager::spawn).
     const std::optional<QcVillagerRecord> villager =
         mob.villager.profession.isEmpty() ? std::nullopt : std::optional<QcVillagerRecord>(mob.villager);
-    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager};
+    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager, mob.uid, mob.kept};
 }
 
 QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
@@ -677,6 +707,7 @@ QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
 void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &populated, const std::function<quint32()> &nextEntityId)
 {
     m_populated.unite(populated);
+    QSet<quint64> uids = loadedUids(m_mobs);
     for (const Stored &stored : mobs) {
         if (stored.type < 0 || stored.type >= m_content->mobs().size()) {
             continue;
@@ -693,16 +724,16 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.breedCooldown = std::max(0.0, stored.breedCooldown);
         mob.growUp = std::max(0.0, stored.growUp);
         mob.bred = stored.bred;
+        mob.kept = stored.kept;
+        // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this
+        // only guards against a world.json put back by hand.
+        m_nextUid = std::max(m_nextUid, stored.uid + 1);
+        mob.uid = uniqueUid(stored.uid, uids, m_nextUid);
         if (m_content->mobs()[stored.type].villager) {
             static_cast<QcVillagerRecord &>(mob.villager) = stored.villager.value_or(QcVillagerRecord{});
             // A profession the content no longer has (a mod was removed): unemployed.
             if (!m_content->villagerSettings().profession(mob.villager.profession)) {
                 mob.villager.profession = m_content->villagerSettings().unemployed;
-            }
-            // Its chunk may be newer than villages.json: no new villager gets its name.
-            QcVillage *village = m_villages && mob.villager.village != 0 ? m_villages->find(mob.villager.village) : nullptr;
-            if (village && QcVillagerHomes::noteName(*village, mob.villager.name)) {
-                m_villages->noteChanged();
             }
         }
         m_mobs.append(mob);

@@ -5,7 +5,6 @@
 #include <QJsonArray>
 
 #include <algorithm>
-#include <limits>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -42,8 +41,9 @@ QJsonArray spotsJson(const QList<QcVillage::Spot> &spots)
         if (!spot.kind.isEmpty()) {
             entry.insert(u"kind"_s, spot.kind);
         }
-        if (!spot.claimedBy.isEmpty()) {
-            entry.insert(u"claimedBy"_s, spot.claimedBy);
+        // As a string: JSON numbers cannot hold every 64-bit id exactly.
+        if (spot.claimedBy != 0) {
+            entry.insert(u"claimedBy"_s, QString::number(spot.claimedBy));
         }
         array.append(entry);
     }
@@ -60,7 +60,9 @@ QList<QcVillage::Spot> readSpots(const QJsonValue &value, const QcVillage &villa
         if (spots.size() >= maxSpots || !at || !village.contains(*at)) {
             continue;
         }
-        spots.append({*at, entry.toObject().value(u"kind"_s).toString().left(64), entry.toObject().value(u"claimedBy"_s).toString().left(64)});
+        // A claim that is no number is no claim (the spot is free).
+        const quint64 claimedBy = entry.toObject().value(u"claimedBy"_s).toString().toULongLong();
+        spots.append({*at, entry.toObject().value(u"kind"_s).toString().left(64), claimedBy});
     }
     return spots;
 }
@@ -69,7 +71,7 @@ QList<QcVillage::Spot> readSpots(const QJsonValue &value, const QcVillage &villa
 
 qsizetype QcVillage::freeBeds() const
 {
-    return std::ranges::count_if(beds, [](const Spot &bed) { return bed.claimedBy.isEmpty(); });
+    return std::ranges::count_if(beds, [](const Spot &bed) { return bed.claimedBy == 0; });
 }
 
 QJsonObject QcVillage::toJson() const
@@ -82,8 +84,7 @@ QJsonObject QcVillage::toJson() const
             {u"beds"_s, spotsJson(beds)},
             {u"workstations"_s, spotsJson(workstations)},
             {u"population"_s, population},
-            {u"golems"_s, golems},
-            {u"nextVillager"_s, nextVillager}};
+            {u"golems"_s, golems}};
     if (lastGolem >= 0.0) {
         json.insert(u"lastGolem"_s, lastGolem);
     }
@@ -115,7 +116,6 @@ std::optional<QcVillage> QcVillage::fromJson(const QJsonObject &json, const Read
     village.workstations = readSpots(json.value(u"workstations"_s), village, limits.workstations);
     village.population = std::clamp(json.value(u"population"_s).toInt(), 0, maxPopulation);
     village.golems = std::clamp(json.value(u"golems"_s).toInt(), 0, maxPopulation);
-    village.nextVillager = std::clamp(json.value(u"nextVillager"_s).toInt(1), 1, std::numeric_limits<int>::max() - 1);
     // A world time beyond about 30 million years of play counts as damaged: no golem yet.
     const double lastGolem = json.value(u"lastGolem"_s).toDouble(-1.0);
     village.lastGolem = std::isfinite(lastGolem) && lastGolem >= 0.0 && lastGolem <= maxWorldTime ? lastGolem : -1.0;

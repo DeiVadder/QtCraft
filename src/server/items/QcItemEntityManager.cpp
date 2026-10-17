@@ -41,10 +41,13 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     }
 
     // More than a stack (e.g. a generous block drop) becomes several items; the rest waits a tick.
+    // Only the first part keeps what its saved entry held for a newer version (decision E-420): a
+    // copy for every part would multiply it.
     const int maxStack = m_content->item(drop.stack.item).maxStack;
     if (drop.stack.count > maxStack) {
         Drop rest = drop;
         rest.stack.count = drop.stack.count - maxStack;
+        rest.kept = {};
         Drop first = drop;
         first.stack.count = maxStack;
 
@@ -69,6 +72,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     item.motion.velocity = drop.velocity;
     item.pickupDelay = drop.pickupDelay;
     item.age = drop.age;
+    item.kept = drop.kept;
     m_items.append(item);
     m_stirred.append(item.motion.position);
     ++m_activeCount;
@@ -404,6 +408,7 @@ void QcItemEntityManager::adopt(const QList<Drop> &drops, const std::function<qu
         item.motion.velocity = drop.velocity;
         item.pickupDelay = drop.pickupDelay;
         item.age = drop.age;
+        item.kept = drop.kept;
         m_items.append(item);
     }
 

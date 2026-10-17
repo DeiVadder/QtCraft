@@ -12,8 +12,6 @@
 #include <array>
 #include <limits>
 
-using namespace Qt::StringLiterals;
-
 namespace {
 
 // How far towards the head the pivot of a lying body sits from the foot block's centre: its feet
@@ -34,7 +32,7 @@ QcVillage::Spot *nearestFree(QList<QcVillage::Spot> &spots, const QcVec3 &near, 
     double bestDistance = std::numeric_limits<double>::max();
     for (QcVillage::Spot &spot : spots) {
         const double distance = distanceTo(spot.at, near);
-        if (spot.claimedBy.isEmpty() && fits(spot) && distance < bestDistance) {
+        if (spot.claimedBy == 0 && fits(spot) && distance < bestDistance) {
             best = &spot;
             bestDistance = distance;
         }
@@ -42,17 +40,17 @@ QcVillage::Spot *nearestFree(QList<QcVillage::Spot> &spots, const QcVec3 &near, 
     return best;
 }
 
-// Whether `spot` at `at` is still listed and held by `name`.
-bool holds(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, const QString &name)
+// Whether `spot` at `at` is still listed and held by `holder`.
+bool holds(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, quint64 holder)
 {
     const QcVillage::Spot *spot = at ? QcVillage::spotAt(spots, *at) : nullptr;
-    return spot && spot->claimedBy == name;
+    return spot && spot->claimedBy == holder;
 }
 
-void unclaim(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, const QString &name)
+void unclaim(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, quint64 holder)
 {
-    if (QcVillage::Spot *spot = at ? QcVillage::spotAt(spots, *at) : nullptr; spot && spot->claimedBy == name) {
-        spot->claimedBy.clear();
+    if (QcVillage::Spot *spot = at ? QcVillage::spotAt(spots, *at) : nullptr; spot && spot->claimedBy == holder) {
+        spot->claimedBy = 0;
     }
 }
 
@@ -60,16 +58,15 @@ void unclaim(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, const 
 
 namespace QcVillagerHomes {
 
-QcVillager settle(QcVillage &village, QcBlockPos bed, const QcVillagerSettings &settings, quint32 look)
+QcVillager settle(QcVillage &village, QcBlockPos bed, quint64 holder, const QcVillagerSettings &settings, quint32 look)
 {
     QcVillager villager;
     villager.village = village.id;
-    villager.name = freshName(village);
     villager.style = village.style;
     villager.look = look;
     villager.profession = settings.unemployed;
-    if (QcVillage::Spot *spot = QcVillage::spotAt(village.beds, bed); spot && spot->claimedBy.isEmpty()) {
-        spot->claimedBy = villager.name;
+    if (QcVillage::Spot *spot = QcVillage::spotAt(village.beds, bed); spot && spot->claimedBy == 0) {
+        spot->claimedBy = holder;
         villager.home = bed;
     }
     ++village.population;
@@ -80,7 +77,7 @@ QList<QcBlockPos> freeBedsIn(const QcVillage &village, QcChunkPos chunk)
 {
     QList<QcBlockPos> beds;
     for (const QcVillage::Spot &bed : village.beds) {
-        if (bed.claimedBy.isEmpty() && bed.at.chunk() == chunk) {
+        if (bed.claimedBy == 0 && bed.at.chunk() == chunk) {
             beds.append(bed.at);
         }
     }
@@ -139,12 +136,12 @@ std::optional<Lying> lyingIn(const QcBlockAccess &world, QcBlockPos head)
     return Lying{centre + towardsHead * lyingShift, QcMobSteering::yawTowards(towardsHead * -1.0)};
 }
 
-void keepClaims(QcVillage &village, QcVillager &villager, const QcVillagerSettings &settings)
+void keepClaims(QcVillage &village, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings)
 {
-    if (villager.home && !holds(village.beds, villager.home, villager.name)) {
+    if (villager.home && !holds(village.beds, villager.home, holder)) {
         villager.home.reset();
     }
-    if (villager.work && !holds(village.workstations, villager.work, villager.name)) {
+    if (villager.work && !holds(village.workstations, villager.work, holder)) {
         villager.work.reset();
         if (villager.experience == 0 && villager.profession != settings.unemployed) {
             villager.profession = settings.unemployed;
@@ -153,18 +150,18 @@ void keepClaims(QcVillage &village, QcVillager &villager, const QcVillagerSettin
     }
 }
 
-bool claimBed(QcVillage &village, QcVillager &villager, const QcVec3 &near)
+bool claimBed(QcVillage &village, QcVillager &villager, quint64 holder, const QcVec3 &near)
 {
     QcVillage::Spot *bed = nearestFree(village.beds, near, [](const QcVillage::Spot &) { return true; });
     if (!bed) {
         return false;
     }
-    bed->claimedBy = villager.name;
+    bed->claimedBy = holder;
     villager.home = bed->at;
     return true;
 }
 
-bool claimWorkstation(QcVillage &village, QcVillager &villager, const QcVillagerSettings &settings, const QcVec3 &near)
+bool claimWorkstation(QcVillage &village, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings, const QcVec3 &near)
 {
     const QcVillagerProfession *own = settings.profession(villager.profession);
     const bool unemployed = !own || own->workstation.isEmpty();
@@ -175,7 +172,7 @@ bool claimWorkstation(QcVillage &village, QcVillager &villager, const QcVillager
         return false;
     }
 
-    station->claimedBy = villager.name;
+    station->claimedBy = holder;
     villager.work = station->at;
     if (unemployed) {
         villager.profession = settings.forWorkstation(station->kind)->name;
@@ -184,57 +181,26 @@ bool claimWorkstation(QcVillage &village, QcVillager &villager, const QcVillager
     return true;
 }
 
-void release(QcVillages &villages, const QcVillager &villager)
+void release(QcVillages &villages, const QcVillager &villager, quint64 holder)
 {
     QcVillage *village = villager.village != 0 ? villages.find(villager.village) : nullptr;
     if (!village) {
         return;
     }
-    unclaim(village->beds, villager.home, villager.name);
-    unclaim(village->workstations, villager.work, villager.name);
+    unclaim(village->beds, villager.home, holder);
+    unclaim(village->workstations, villager.work, holder);
     village->population = std::max(0, village->population - 1);
     villages.noteChanged();
 }
 
-QString freshName(QcVillage &village)
+int dropLostClaims(QcVillage &village, const QSet<quint64> &present)
 {
-    const auto claimed = [&village](const QString &name) {
-        const auto held = [&name](const QcVillage::Spot &spot) { return spot.claimedBy == name; };
-        return std::ranges::any_of(village.beds, held) || std::ranges::any_of(village.workstations, held);
-    };
-    QString name;
-    do {
-        name = u"villager-%1"_s.arg(village.nextVillager++);
-    } while (claimed(name));
-    return name;
-}
-
-int numberOf(const QString &name)
-{
-    constexpr QStringView prefix = u"villager-";
-    bool ok = false;
-    const int number = name.startsWith(prefix) ? QStringView(name).sliced(prefix.size()).toInt(&ok) : 0;
-    return ok && number > 0 ? number : 0;
-}
-
-bool noteName(QcVillage &village, const QString &name)
-{
-    const int number = numberOf(name);
-    if (number < village.nextVillager || number >= std::numeric_limits<int>::max() - 1) {
-        return false;
-    }
-    village.nextVillager = number + 1;
-    return true;
-}
-
-int dropLostClaims(QcVillage &village, const QSet<QString> &present)
-{
-    QSet<QString> lost;
+    QSet<quint64> lost;
     for (QList<QcVillage::Spot> *spots : {&village.beds, &village.workstations}) {
         for (QcVillage::Spot &spot : *spots) {
-            if (!spot.claimedBy.isEmpty() && !present.contains(spot.claimedBy)) {
+            if (spot.claimedBy != 0 && !present.contains(spot.claimedBy)) {
                 lost.insert(spot.claimedBy);
-                spot.claimedBy.clear();
+                spot.claimedBy = 0;
             }
         }
     }

@@ -39,7 +39,7 @@ void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const st
         }
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4100), bed.x, bed.y, bed.z) * 4294967295.0);
         spawn(*type, *at, nextEntityId());
-        m_mobs.last().villager = QcVillagerHomes::settle(*village, bed, settings, look);
+        m_mobs.last().villager = QcVillagerHomes::settle(*village, bed, m_mobs.last().uid, settings, look);
         // A village always lived in (a row of the showcase world) shows a child in its last bed
         // (decision E-415); it grows up like any other.
         if (plan->alwaysLivedIn && bed == village->beds.constLast().at) {
@@ -103,22 +103,15 @@ void QcMobManager::reconcileClaims(QcServerWorld &world, QcVillage &village)
 {
     m_claimsChecked.insert(village.id);
 
-    // A name twice (a villager settled under a name villages.json had not kept yet): the later one
-    // gets a new name, and its claims lapse at its next decision.
-    QSet<QString> present;
-    bool changed = false;
-    for (QcCreature &mob : m_mobs) {
-        if (mob.villager.village != village.id || mob.villager.profession.isEmpty()) {
-            continue;
+    // Persistent ids are unique (decision E-420): who is there holds its claims, the others lapse.
+    QSet<quint64> present;
+    for (const QcCreature &mob : std::as_const(m_mobs)) {
+        if (mob.villager.village == village.id && !mob.villager.profession.isEmpty()) {
+            present.insert(mob.uid);
         }
-        if (present.contains(mob.villager.name)) {
-            mob.villager.name = QcVillagerHomes::freshName(village);
-            changed = true;
-        }
-        present.insert(mob.villager.name);
     }
     // Its population is who is there.
-    changed = changed || village.population != int(present.size());
+    const bool changed = village.population != int(present.size());
     village.population = int(present.size());
     if (QcVillagerHomes::dropLostClaims(village, present) > 0 || changed) {
         world.villages().noteChanged();
@@ -141,7 +134,7 @@ void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const 
         QcVillage *village = world.villages().find(birth.village);
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x, int(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
         spawn(*type, birth.position, nextEntityId());
-        m_mobs.last().villager = QcVillagerHomes::settle(*village, birth.bed, settings, look);
+        m_mobs.last().villager = QcVillagerHomes::settle(*village, birth.bed, m_mobs.last().uid, settings, look);
         m_mobs.last().growUp = settings.breeding.growUpSeconds;
         world.villages().noteChanged();
     }
@@ -170,7 +163,7 @@ void QcMobManager::depart(const QcCreature &mob)
     }
     m_behaviour->villagers().leave(mob);
     if (m_villages) {
-        QcVillagerHomes::release(*m_villages, mob.villager);
+        QcVillagerHomes::release(*m_villages, mob.villager, mob.uid);
     }
 }
 

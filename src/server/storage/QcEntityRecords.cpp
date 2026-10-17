@@ -42,7 +42,8 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
 {
     for (const QcItemEntity &item : entities.items().items()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(item); wanted(chunk)) {
-            recordOf(records, chunk).items.append({{item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age}, item.id});
+            recordOf(records, chunk).items.append(
+                {{item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age, item.kept}, item.id});
         }
     }
     // Waiting drops follow the items; on the next start they wait again if there is no room.

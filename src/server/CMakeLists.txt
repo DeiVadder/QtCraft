@@ -81,6 +81,7 @@ target_sources(qc_server PRIVATE
     entities/QcEntities.h entities/QcEntities.cpp
     entities/QcEntity.h
     entities/QcEntityChecks.h entities/QcEntityChecks.cpp
+    entities/QcEntityComponent.h
     entities/QcExperienceOrb.h
     entities/QcFallingBlock.h
     entities/QcItemEntity.h
@@ -182,6 +183,7 @@ target_sources(qc_server PRIVATE
     storage/QcChunkCodec.h storage/QcChunkCodec.cpp
     storage/QcChunkIo.h storage/QcChunkIo.cpp
     storage/QcChunkStore.h storage/QcChunkStore.cpp
+    storage/QcComponentFrames.h storage/QcComponentFrames.cpp
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp

@@ -286,7 +286,7 @@ private slots:
         QVERIFY(child);
         QCOMPARE(child->villager.profession, built.content->villagerSettings().unemployed);
         QVERIFY(child->villager.home);
-        QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager.home)->claimedBy, child->villager.name);
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager.home)->claimedBy, child->uid);
         QCOMPARE(child->villager.style, built.state().style);
         // The parents gave their food and rest.
         for (const quint32 id : parents) {
@@ -525,7 +525,7 @@ private slots:
         QcVillagerBreeding breeding(content);
         QcServerWorld world(content, std::make_unique<QcTerrainGenerator>(content, seed));
         QcVillage village;
-        village.beds = {{{0, 64, 0}, {}, u"villager-1"_s}, {{4, 64, 0}, {}, {}}};
+        village.beds = {{{0, 64, 0}, {}, 1}, {{4, 64, 0}, {}, 0}};
         village.population = 2;
         const QcVillagerBreeding::Context context{world, world.villages(), QcDayCycle::dayLength * (10.0 + workPhase), {}, {}};
         QCOMPARE(village.freeBeds(), 1);
@@ -624,7 +624,7 @@ private slots:
         meet(built, freeABed(built), workPhase);
         const QcCreature *child = youngest(built);
         QVERIFY(child);
-        const QString name = child->villager.name;
+        const quint64 uid = child->uid;
         const QcBlockPos home = *child->villager.home;
         const double growUp = child->growUp;
         const int population = built.state().population;
@@ -634,10 +634,10 @@ private slots:
         ticks(back, 2 * QcMobManager::villageLifeTicks);
         child = youngest(back);
         QVERIFY(child);
-        QCOMPARE(child->villager.name, name);
+        QCOMPARE(child->uid, uid);
         QCOMPARE(*child->villager.home, home);
         QVERIFY(child->growUp > growUp - 20.0 && child->growUp < growUp);
-        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, name);
+        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
         QCOMPARE(back.state().population, population);
 
         // Resting while its chunk is not loaded: it neither grows up nor loses its bed.
@@ -646,11 +646,11 @@ private slots:
         const double resting = back.mobs->find(id)->growUp;
         ticks(back, 2 * QcMobManager::villageLifeTicks);
         QCOMPARE(back.mobs->find(id)->growUp, resting);
-        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, name);
+        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
         back.mobs->find(id)->dormant = false;
         ticks(back, QcVillagerBehaviour::decideTicks);
         QVERIFY(back.mobs->find(id)->isYoung());
-        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, name);
+        QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
     }
 
     void golemsCountTowardsTheWorldInEveryVillage()

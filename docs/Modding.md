@@ -568,7 +568,7 @@ A mod's `textures/` are content: the server sends them to every client, and they
 
 ## Worlds and mods
 
-A saved world remembers the packs it was played with (`world.json`, `packs`). Opening it without one of them logs a warning; blocks of the missing mod become air and its items disappear from inventories. Adding a mod to an existing world is safe; new ores and biomes only appear in chunks generated afterwards.
+A saved world remembers the packs it was played with (`world.json`, `packs`). Opening it without one of them logs a warning; blocks of the missing mod become air and its items disappear from inventories. Adding a mod to an existing world is safe; new ores and biomes only appear in chunks generated afterwards. Creatures, dropped items and falling blocks of a missing mod are left out of their chunk with one warning per name. Saved entities are a header and versioned components (decision E-420): data a later version of the game stores with an entity (a component or the newer fields of one) is kept when this version saves the world again, and data an older version stored is read with defaults for what it lacks, so new entity fields need no new world format.
 
 ## The example mod `mods/rubies`
 

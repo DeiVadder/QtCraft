@@ -1,8 +1,7 @@
 #include "server/storage/QcVillagerCodec.h"
 
 #include "common/core/QcWorldConstants.h"
-
-#include <QtEndian>
+#include "server/storage/QcComponentFrames.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -37,40 +36,6 @@ bool readSpot(QDataStream &stream, std::optional<QcBlockPos> &spot)
     return pos.isInsideWorldHeight() && std::abs(qint64(x)) <= QcWorld::maxHorizontalBlock && std::abs(qint64(z)) <= QcWorld::maxHorizontalBlock;
 }
 
-// Reads a QString written by QDataStream (byte length, then UTF-16) after checking its length: a
-// damaged length of up to 4 GB is never allocated. False for a longer text (the stream turns
-// corrupt).
-bool readText(QDataStream &stream, QString &text)
-{
-    constexpr quint32 null = 0xffffffffu;
-    quint32 bytes = 0;
-    stream >> bytes;
-    if (stream.status() != QDataStream::Ok) {
-        return false;
-    }
-    if (bytes == null) {
-        text = QString();
-        return true;
-    }
-    if (bytes % 2 != 0 || bytes > quint32(maxText) * 2) {
-        stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
-    }
-
-    QByteArray raw(qsizetype(bytes), Qt::Uninitialized);
-    if (stream.readRawData(raw.data(), int(bytes)) != int(bytes)) {
-        stream.setStatus(QDataStream::ReadPastEnd);
-        return false;
-    }
-    text.resize(qsizetype(bytes / 2));
-    if (stream.byteOrder() == QDataStream::BigEndian) {
-        qFromBigEndian<char16_t>(raw.constData(), text.size(), text.data());
-    } else {
-        qFromLittleEndian<char16_t>(raw.constData(), text.size(), text.data());
-    }
-    return true;
-}
-
 void writeOffers(QDataStream &stream, const QcVillagerRecord &villager)
 {
     stream << quint32(villager.offers.size());
@@ -92,7 +57,7 @@ bool readOffers(QDataStream &stream, QcVillagerRecord &villager)
         QcVillagerOffer offer;
         qint32 uses = 0;
         qint32 demand = 0;
-        if (!readText(stream, offer.id)) {
+        if (!QcComponentFrames::readText(stream, offer.id, maxText)) {
             return false;
         }
         stream >> uses >> demand;
@@ -117,7 +82,7 @@ namespace QcVillagerCodec {
 
 void write(QDataStream &stream, const QcVillagerRecord &villager)
 {
-    stream << villager.village << villager.name;
+    stream << villager.village;
     writeSpot(stream, villager.home);
     writeSpot(stream, villager.work);
     stream << villager.profession << qint32(villager.level) << qint32(villager.experience) << villager.look << villager.style
@@ -125,27 +90,25 @@ void write(QDataStream &stream, const QcVillagerRecord &villager)
     writeOffers(stream, villager);
 }
 
-std::optional<QcVillagerRecord> read(QDataStream &stream)
+std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
 {
     QcVillagerRecord villager;
     qint32 level = 0;
     qint32 experience = 0;
     qint32 produce = 0;
-    // Texts are checked before they are read (readText), every other field after.
+    // Texts are checked before they are read (QcComponentFrames::readText), every other field after.
     stream >> villager.village;
-    if (!readText(stream, villager.name)) {
-        return std::nullopt;
-    }
     const bool spots = readSpot(stream, villager.home) && readSpot(stream, villager.work);
-    if (!readText(stream, villager.profession)) {
+    if (!QcComponentFrames::readText(stream, villager.profession, maxText)) {
         return std::nullopt;
     }
     stream >> level >> experience >> villager.look;
-    if (!readText(stream, villager.style)) {
+    if (!QcComponentFrames::readText(stream, villager.style, maxText)) {
         return std::nullopt;
     }
     stream >> produce;
-    if (!readOffers(stream, villager)) {
+    // Version 1 has no offers yet: none are traded, it never restocked.
+    if (version >= 2 && !readOffers(stream, villager)) {
         return std::nullopt;
     }
     if (stream.status() != QDataStream::Ok || !spots || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0

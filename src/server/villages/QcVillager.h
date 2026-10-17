@@ -21,9 +21,9 @@ struct QcVillagerOffer
     bool operator==(const QcVillagerOffer &) const = default;
 };
 
-// What is saved of a villager (decisions E-411, E-414): the village it lives in and its name there
-// (the `claimedBy` of its bed and workstation, QcVillage::Spot), its bed (head) and workstation, its
-// profession with level and experience, the state of its offers and when it last restocked, the
+// What is saved of a villager (decisions E-411, E-414): the village it lives in, its bed (head) and
+// workstation (claimed there under its creature's persistent id, QcCreature::uid, decision E-420),
+// its profession with level and experience, the state of its offers and when it last restocked, the
 // seed and village style of its look, and the crops it brought in (food for breeding, stage 37.3).
 struct QcVillagerRecord
 {
@@ -37,7 +37,6 @@ struct QcVillagerRecord
 
     // QcVillage::id; 0 for a villager without a village (summoned), which only strolls.
     qint64 village = 0;
-    QString name;
     std::optional<QcBlockPos> home;
     std::optional<QcBlockPos> work;
     QString profession;

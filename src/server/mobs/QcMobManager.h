@@ -6,6 +6,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerLimits.h"
 #include "server/entities/QcCreature.h"
+#include "server/entities/QcEntityComponent.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/villages/QcVillageGolems.h"
 #include "server/villages/QcVillagerBehaviour.h"
@@ -68,6 +69,10 @@ public:
         bool bred = false;
         // A villager's home, work and profession (decision E-411).
         std::optional<QcVillagerRecord> villager;
+        // Its persistent id (QcCreature::uid) and what its entry holds that this version does
+        // not use (decision E-420).
+        quint64 uid = 0;
+        QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
         bool operator==(const Stored &) const = default;
     };
@@ -157,6 +162,10 @@ public:
     QList<Stored> persistentMobs() const;
     static Stored storedOf(const QcCreature &mob);
     void restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &populated, const std::function<quint32()> &nextEntityId);
+    // The persistent id the next saved creature gets (QcCreature::uid); world.json keeps it. Setting
+    // never lowers it below an id already given.
+    quint64 nextUid() const { return m_nextUid; }
+    void setNextUid(quint64 next) { m_nextUid = std::max(m_nextUid, next); }
     // Mobs that are not dormant, all of them and those that came by /summon.
     qsizetype awakeCount() const;
     qsizetype awakeSummonedCount() const;
@@ -268,6 +277,7 @@ private:
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;
     QSet<QcChunkPos> m_populated;
+    quint64 m_nextUid = 1;
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;
     double m_spawnTimer = 0.0;

@@ -9,13 +9,35 @@
 #include <QStringList>
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
-// E-373): persistent creatures, dropped items and waiting drops, falling blocks, armour stands,
-// minecarts (E-382), experience orbs (E-398), and whether the chunk already got its animals. Items, blocks, creatures, armour
-// and capes are stored by name.
+// E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks, armour stands,
+// minecarts (E-382), experience orbs (E-398), and whether the chunk already got its animals. Items,
+// blocks, creatures, armour and capes are stored by name.
+//
+// Every entry is a header (type name, position, velocity, yaw, order, persistent id) and a list of
+// components (QcComponentFrames): the fields of its kind and, for a villager, its record. A new field
+// is a new version of its component or a new component, not a new world format.
 namespace QcEntityCodec {
 
 // Entries of one kind in one chunk at most; a valid world never comes close.
 inline constexpr quint32 maxPerChunk = 65536;
+
+// The ids of the components of entity entries; a mod or a later version adds ids, never reuses one.
+enum class Component : quint16 {
+    // Health, breeding timers, bred (version 1).
+    Creature = 1,
+    // QcVillagerRecord (QcVillagerCodec::version).
+    Villager = 2,
+    // Count, damage, age, pickup delay of a dropped stack (version 1).
+    Item = 3,
+    // Age of a falling block (version 1).
+    FallingBlock = 4,
+    // Pose, name, item, held item, armour, cape of an armour stand (version 1).
+    ArmourStand = 5,
+    // Item, slots and whether a hopper cart pulls (version 1).
+    Minecart = 6,
+    // Value, age, pickup delay of an experience orb (version 1).
+    ExperienceOrb = 7,
+};
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);
 // The record of `chunk`. Unknown items, blocks, creatures and capes and armour that no longer fits

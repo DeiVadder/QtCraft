@@ -39,6 +39,7 @@ qc_add_test(test_signal_showcase SOURCES world/test_signal_showcase.cpp QcServer
 qc_add_test(test_block_entity_storage SOURCES world/test_block_entity_storage.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_block_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
 qc_add_test(test_entity_storage SOURCES world/test_entity_storage.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_entity_components SOURCES world/test_entity_components.cpp LIBRARIES qc_server)
 qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_server)
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
 qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)

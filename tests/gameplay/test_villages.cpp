@@ -276,12 +276,14 @@ private slots:
         village.maxY = 80;
         village.minZ = 0;
         village.maxZ = 20;
-        village.beds = {{{5, 70, 5}, {}, u"villager-1"_s}, {{500, 70, 5}, {}, {}}};
+        // A persistent id beyond what a JSON number holds exactly (decision E-420).
+        constexpr quint64 holder = (quint64(1) << 60) + 7;
+        village.beds = {{{5, 70, 5}, {}, holder}, {{500, 70, 5}, {}, 0}};
         const std::optional<QcVillage> back = QcVillage::fromJson(village.toJson(), {});
         QVERIFY(back);
         // The bed far outside the village is dropped, the claim kept.
         QCOMPARE(back->beds.size(), 1);
-        QCOMPARE(back->beds.front().claimedBy, u"villager-1"_s);
+        QCOMPARE(back->beds.front().claimedBy, holder);
 
         QJsonObject wide = village.toJson();
         wide.insert(u"max"_s, QJsonArray{5000, 80, 20});

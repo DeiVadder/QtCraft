@@ -208,6 +208,9 @@ private slots:
         QCOMPARE(after.size(), qsizetype(1));
         QCOMPARE(after.first().type, marked.type);
         QCOMPARE(after.first().health, 3.5);
+        // Its persistent id stays (decision E-420).
+        QVERIFY(marked.uid != 0);
+        QCOMPARE(after.first().uid, marked.uid);
         QVERIFY(kinds.contains(m_content->mobs()[after.first().type].name));
     }
 

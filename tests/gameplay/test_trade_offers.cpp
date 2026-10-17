@@ -308,7 +308,6 @@ private slots:
     void theOfferStateIsSavedWithTheVillager()
     {
         QcVillagerRecord villager = villagerOf(u"qtcraft:fisher"_s, 3);
-        villager.name = u"villager-4"_s;
         villager.experience = 77;
         villager.offers = {{u"qtcraft:string>qtcraft:emerald"_s, 16, 2}, {u"b"_s, 0, 0}};
         villager.lastRestock = 6123.5;
@@ -319,7 +318,7 @@ private slots:
             QcVillagerCodec::write(out, villager);
         }
         QDataStream in(bytes);
-        QCOMPARE(QcVillagerCodec::read(in), std::optional(villager));
+        QCOMPARE(QcVillagerCodec::read(in, QcVillagerCodec::version), std::optional(villager));
 
         // Damaged: a restock time beyond any world time or before it began.
         for (const double time : {1e300, -5.0, qInf()}) {
@@ -329,7 +328,7 @@ private slots:
             QDataStream out(&damaged, QIODevice::WriteOnly);
             QcVillagerCodec::write(out, broken);
             QDataStream back(damaged);
-            QVERIFY(!QcVillagerCodec::read(back));
+            QVERIFY(!QcVillagerCodec::read(back, QcVillagerCodec::version));
         }
 
         // Damaged: too many offers, negative uses.
@@ -340,7 +339,7 @@ private slots:
             QDataStream out(&damaged, QIODevice::WriteOnly);
             QcVillagerCodec::write(out, broken);
             QDataStream back(damaged);
-            QVERIFY(!QcVillagerCodec::read(back));
+            QVERIFY(!QcVillagerCodec::read(back, QcVillagerCodec::version));
         }
     }
 

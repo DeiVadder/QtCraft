@@ -4,6 +4,7 @@
 #include "common/gameplay/QcItemStack.h"
 #include "common/physics/QcEntityMotion.h"
 #include "server/core/QcServerLimits.h"
+#include "server/entities/QcEntityComponent.h"
 #include "server/entities/QcItemEntity.h"
 
 #include <QList>
@@ -52,6 +53,8 @@ public:
         QcVec3 velocity;
         double pickupDelay = QcItemEntityManager::pickupDelay;
         double age = 0.0;
+        // What its saved entry holds that this version does not use (decision E-420).
+        QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
         bool operator==(const Drop &) const = default;
     };

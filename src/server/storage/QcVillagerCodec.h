@@ -7,13 +7,17 @@
 
 #include <optional>
 
-// A villager's record in the entity data of its chunk (decisions E-411, E-414; world format 12): its
-// home, workstation, profession, level, experience, the uses and demand of its offers and its last
-// restock.
+// A villager's record as the villager component of its creature's entry (decisions E-411, E-414,
+// E-420): its village, home, workstation, profession, level, experience, look, the crops it brought
+// in (version 1), then the uses and demand of its offers and its last restock (version 2).
 namespace QcVillagerCodec {
 
+inline constexpr quint16 version = 2;
+
+// Writes the fields of the current version.
 void write(QDataStream &stream, const QcVillagerRecord &villager);
-// std::nullopt for damaged data (a stream error, numbers out of range, a place outside the world).
-[[nodiscard]] std::optional<QcVillagerRecord> read(QDataStream &stream);
+// The fields of `version` (up to the current one), defaults for those it lacks; std::nullopt for
+// damaged data (a stream error, numbers out of range, a place outside the world).
+[[nodiscard]] std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version);
 
 } // namespace QcVillagerCodec

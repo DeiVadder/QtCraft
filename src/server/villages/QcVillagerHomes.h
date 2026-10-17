@@ -12,9 +12,9 @@ class QcVillages;
 struct QcVillagerSettings;
 
 // Beds and workstations of villagers in the village state (decision E-411): a villager claims a bed
-// and a workstation under its name (QcVillage::Spot::claimedBy) and counts in the village's
-// population. A claim on a spot that is gone or that someone else holds lapses; a villager that
-// dies frees its claims and leaves the population.
+// and a workstation under its creature's persistent id (`holder`, QcCreature::uid, decision E-420;
+// QcVillage::Spot::claimedBy) and counts in the village's population. A claim on a spot that is gone
+// or that someone else holds lapses; a villager that dies frees its claims and leaves the population.
 namespace QcVillagerHomes {
 
 // Villagers living in one village and in the world at most (QcServerLimits villagersPerVillage,
@@ -29,10 +29,10 @@ struct Limits
 // flight go home); with every chunk of that area loaded, every one of them is in the world.
 inline constexpr int strayReach = 16;
 
-// A new villager of `village` in its free bed `bed`: named, the bed claimed, the population counted.
-// Its name is one no spot of the village is claimed under. Its profession is the unemployed one
-// until it claims a workstation.
-QcVillager settle(QcVillage &village, QcBlockPos bed, const QcVillagerSettings &settings, quint32 look);
+// A new villager of `village` with the persistent id `holder` in its free bed `bed`: the bed
+// claimed, the population counted. Its profession is the unemployed one until it claims a
+// workstation.
+QcVillager settle(QcVillage &village, QcBlockPos bed, quint64 holder, const QcVillagerSettings &settings, quint32 look);
 // The free beds of the village whose heads lie in `chunk`, in the village's order.
 QList<QcBlockPos> freeBedsIn(const QcVillage &village, QcChunkPos chunk);
 
@@ -50,26 +50,19 @@ std::optional<Lying> lyingIn(const QcBlockAccess &world, QcBlockPos head);
 
 // Drops the villager's claims on spots of `village` that are gone or held by another; one that lost
 // its workstation before it gained any experience becomes unemployed again (its look changes).
-void keepClaims(QcVillage &village, QcVillager &villager, const QcVillagerSettings &settings);
+void keepClaims(QcVillage &village, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings);
 // Claims the free bed nearest to `near`; false when there is none.
-bool claimBed(QcVillage &village, QcVillager &villager, const QcVec3 &near);
+bool claimBed(QcVillage &village, QcVillager &villager, quint64 holder, const QcVec3 &near);
 // Claims the free workstation nearest to `near` that its profession works at, or, for an
 // unemployed villager, of any profession's kind (it takes that profession: its look changes).
 // False when there is none.
-bool claimWorkstation(QcVillage &village, QcVillager &villager, const QcVillagerSettings &settings, const QcVec3 &near);
+bool claimWorkstation(QcVillage &village, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings, const QcVec3 &near);
 // The villager died or was taken out of the world: its claims are freed, the population counts one
 // less.
-void release(QcVillages &villages, const QcVillager &villager);
+void release(QcVillages &villages, const QcVillager &villager, quint64 holder);
 
-// The next name for a villager of `village` (`villager-<n>`) that no spot of it is claimed under.
-QString freshName(QcVillage &village);
-// The number in a villager's name (`villager-<n>`), 0 for any other name.
-int numberOf(const QString &name);
-// A villager of `village` named `name` lives in the world: the next new villager gets a higher
-// number (the chunk it was saved with may be newer than villages.json). Whether that changed it.
-bool noteName(QcVillage &village, const QString &name);
-// Every villager of the village is in the world (`present`, by name): claims under other names
-// lapse. The number of their holders.
-int dropLostClaims(QcVillage &village, const QSet<QString> &present);
+// Every villager of the village is in the world (`present`, by persistent id): claims under other
+// ids lapse. The number of their holders.
+int dropLostClaims(QcVillage &village, const QSet<quint64> &present);
 
 } // namespace QcVillagerHomes

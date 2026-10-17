@@ -160,13 +160,13 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
     if (village) {
         const auto before = std::pair(villager.home, villager.work);
-        QcVillagerHomes::keepClaims(*village, villager, settings);
+        QcVillagerHomes::keepClaims(*village, villager, mob.uid, settings);
         if (!villager.home) {
-            QcVillagerHomes::claimBed(*village, villager, mob.motion.position);
+            QcVillagerHomes::claimBed(*village, villager, mob.uid, mob.motion.position);
         }
         // Children have no profession until they grow up (decision E-415).
         if (!villager.work && !mob.isYoung()) {
-            QcVillagerHomes::claimWorkstation(*village, villager, settings, villager.home ? centreOf(*villager.home) : mob.motion.position);
+            QcVillagerHomes::claimWorkstation(*village, villager, mob.uid, settings, villager.home ? centreOf(*villager.home) : mob.motion.position);
         }
         if (before != std::pair(villager.home, villager.work)) {
             context.world.villages().noteChanged();

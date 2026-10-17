@@ -294,7 +294,7 @@ void QcVillages::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
     // A workstation turned in place keeps its villager.
     const auto at = [pos](const QcVillage::Spot &spot) { return spot.at == pos; };
     const auto old = std::ranges::find_if(village->workstations, at);
-    const QString claimedBy = old != village->workstations.end() && old->kind == m_blocks.workstationKind(after) ? old->claimedBy : QString();
+    const quint64 claimedBy = old != village->workstations.end() && old->kind == m_blocks.workstationKind(after) ? old->claimedBy : 0;
     const qsizetype removed = village->beds.removeIf(at) + village->workstations.removeIf(at);
     if (m_blocks.matters(after)) {
         addSpot(*village, pos, after);

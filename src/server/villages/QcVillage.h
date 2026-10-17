@@ -16,13 +16,14 @@
 // QcVillageGolems), both bounded by QcServerLimits.
 struct QcVillage
 {
-    // A bed (its head) or workstation; `claimedBy` names the villager that uses it (empty: free).
+    // A bed (its head) or workstation; `claimedBy` is the persistent id (QcCreature::uid, decision
+    // E-420) of the villager that uses it (0: free).
     struct Spot
     {
         QcBlockPos at;
         // The kind of work of a workstation (QcVillageSettings::workstations); empty for a bed.
         QString kind;
-        QString claimedBy;
+        quint64 claimedBy = 0;
 
         bool operator==(const Spot &) const = default;
     };
@@ -59,8 +60,6 @@ struct QcVillage
     int population = 0;
     int golems = 0;
     double lastGolem = -1.0;
-    // The number in the name of the next villager (QcVillagerRecord::name), so names stay unique.
-    int nextVillager = 1;
 
     bool operator==(const QcVillage &) const = default;
 

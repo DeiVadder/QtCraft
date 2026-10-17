@@ -87,7 +87,7 @@ private:
 
         const quint32 entity = m_server->entities().newId();
         m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:villager"_s), QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 1.5}, entity);
-        villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), m_content->villagerSettings(), 7);
+        villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettings(), 7);
         ticks(30);
         return entity;
     }
@@ -491,6 +491,7 @@ private slots:
         send(QcMsg::Trade{farmer, index, true});
         send(QcMsg::CloseTrade{});
         const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(villager(farmer)->villager);
+        const quint64 uid = villager(farmer)->uid;
         QCOMPARE(saved.offers[index].uses, 2);
         QVERIFY(m_server->save().has_value());
         cleanup();
@@ -498,7 +499,7 @@ private slots:
         join(config, std::make_unique<TradingTerrain>(m_content));
         loadAround(m_feet, 2);
         ticks(2);
-        const auto found = std::ranges::find_if(m_server->mobs().mobs(), [&saved](const QcCreature &mob) { return mob.villager.name == saved.name; });
+        const auto found = std::ranges::find_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; });
         QVERIFY(found != m_server->mobs().mobs().end());
         QCOMPARE(found->villager.offers, saved.offers);
         QCOMPARE(found->villager.look, saved.look);

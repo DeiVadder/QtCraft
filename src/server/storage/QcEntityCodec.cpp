@@ -9,6 +9,7 @@
 #include "server/blocks/QcFallingBlockManager.h"
 #include "server/gameplay/QcArmourStandManager.h"
 #include "server/items/QcExperienceOrbManager.h"
+#include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
 #include "server/storage/QcVillagerCodec.h"
@@ -23,9 +24,15 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+using Component = QcEntityCodec::Component;
+
+// The current version of the components of each kind (QcVillagerCodec::version for villagers).
+constexpr quint16 kindVersion = 1;
 // Longer breeding timers than a day of seconds are damaged data.
 constexpr double maxBreedingSeconds = 86400.0;
 constexpr double maxSpeed = 60.0;
+// Type names (creatures, items, block states) longer than this are damaged data.
+constexpr qsizetype maxTypeName = 512;
 
 bool isFinite(const QcVec3 &v)
 {
@@ -45,6 +52,39 @@ void writeVec(QDataStream &stream, const QcVec3 &v)
 void readVec(QDataStream &stream, QcVec3 &v)
 {
     stream >> v.x >> v.y >> v.z;
+}
+
+// What every entry starts with (decision E-420): what it is by name (empty where the kind says it
+// all), where it is and how it moves, its place in the table of its kind (QcEntityRecord) and its
+// persistent id (creatures; 0 for the others). What a kind does not use is kept as read
+// (QcEntityKept), so a later version may fill it.
+struct Header
+{
+    QString type;
+    QcVec3 position;
+    QcVec3 velocity;
+    float yaw = 0.0f;
+    quint64 order = 0;
+    quint64 uid = 0;
+};
+
+// Writes an entry: its header, then its components, the known ones by `add(Writer &)`, then `kept`.
+template<typename Add>
+void writeEntry(QDataStream &stream, const Header &header, const QcEntityComponents &kept, Add add)
+{
+    stream << header.type;
+    writeVec(stream, header.position);
+    writeVec(stream, header.velocity);
+    stream << header.yaw << header.order << header.uid;
+    QcComponentFrames::Writer components(stream, kept);
+    add(components);
+    components.finish();
+}
+
+// A component this version reads, by its id, with its reader (`read(stream, version)`).
+QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames::FieldReader read)
+{
+    return {quint16(id), version, read};
 }
 
 // The warnings of one read: each unknown name is reported once per world, not once per chunk.
@@ -71,8 +111,9 @@ public:
 
     bool read()
     {
-        return entries([this] { return creature(); }) && entries([this] { return item(); }) && entries([this] { return falling(); })
-               && entries([this] { return stand(); }) && entries([this] { return minecart(); }) && entries([this] { return orb(); });
+        return entries([this](const Header &h) { return creature(h); }) && entries([this](const Header &h) { return item(h); })
+               && entries([this](const Header &h) { return falling(h); }) && entries([this](const Header &h) { return stand(h); })
+               && entries([this](const Header &h) { return minecart(h); }) && entries([this](const Header &h) { return orb(h); });
     }
 
 private:
@@ -84,11 +125,23 @@ private:
             return false;
         }
         for (quint32 i = 0; i < count; ++i) {
-            if (!read()) {
+            Header header;
+            if (!readHeader(header) || !read(header)) {
                 return false;
             }
         }
         return true;
+    }
+
+    bool readHeader(Header &header)
+    {
+        if (!QcComponentFrames::readText(m_stream, header.type, maxTypeName)) {
+            return false;
+        }
+        readVec(m_stream, header.position);
+        readVec(m_stream, header.velocity);
+        m_stream >> header.yaw >> header.order >> header.uid;
+        return m_stream.status() == QDataStream::Ok && inChunk(header.position) && isFinite(header.velocity) && std::isfinite(header.yaw);
     }
 
     // A finite place in this record's chunk, with room above and below the world.
@@ -96,6 +149,30 @@ private:
     {
         return isFinite(feet) && std::abs(feet.x) <= QcWorld::maxHorizontalBlock && std::abs(feet.z) <= QcWorld::maxHorizontalBlock
                && std::abs(feet.y) <= 4.0 * QcWorld::worldHeight && QcPhysics::blockContaining(feet).chunk() == m_record.chunk;
+    }
+
+    // Reads the known components of an entry and keeps the others, those beyond
+    // QcComponentFrames::maxKept dropped with a warning; false for damaged data.
+    bool readComponents(QcEntityComponents &kept, std::initializer_list<QcComponentFrames::Known> readers)
+    {
+        int dropped = 0;
+        if (!QcComponentFrames::read(m_stream, readers, kept, dropped)) {
+            return false;
+        }
+        if (dropped > 0) {
+            const QString text = u"%1: an entity with more than %2 unknown components; %3 of them dropped"_s;
+            m_warnings.append(text.arg(m_path).arg(QcComponentFrames::maxKept).arg(dropped));
+        }
+        return true;
+    }
+
+    // Keeps the header fields that the entries of a kind do not use in this version (decision E-420).
+    static void keepHeader(const Header &header, QcEntityKept &kept, bool withType)
+    {
+        kept.uid = header.uid;
+        if (withType) {
+            kept.type = header.type;
+        }
     }
 
     void warnOnce(const QString &kind, const QString &name)
@@ -106,59 +183,65 @@ private:
         }
     }
 
-    bool creature()
+    bool creature(const Header &header)
     {
-        QString name;
-        QcEntityRecord::Ordered<QcMobManager::Stored> entry;
+        QcEntityRecord::Ordered<QcMobManager::Stored> entry{{}, header.order};
         QcMobManager::Stored &mob = entry.entry;
-        m_stream >> name;
-        readVec(m_stream, mob.position);
-        bool villager = false;
-        m_stream >> mob.yaw >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred >> entry.order >> villager;
-        // A villager's home, work and profession (decision E-411).
-        if (villager) {
-            mob.villager = QcVillagerCodec::read(m_stream);
-            if (!mob.villager) {
-                return false;
-            }
+        mob.position = header.position;
+        mob.yaw = std::fmod(header.yaw, 360.0f);
+        mob.uid = header.uid;
+        const std::optional<int> type = m_content.mobIndex(header.type);
+        // Without its creature component it is a grown creature at full health.
+        mob.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
+        const auto body = [&mob](QDataStream &in, quint16) {
+            in >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred;
+            return true;
+        };
+        const auto villager = [&mob](QDataStream &in, quint16 version) {
+            mob.villager = QcVillagerCodec::read(in, version);
+            return mob.villager.has_value();
+        };
+        if (!readComponents(mob.kept.components,
+                            {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager)})) {
+            return false;
         }
-        const bool finite = std::isfinite(mob.yaw) && std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp);
-        if (m_stream.status() != QDataStream::Ok || !finite || !inChunk(mob.position) || mob.breedCooldown > maxBreedingSeconds
-            || mob.growUp > maxBreedingSeconds) {
+        const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp);
+        if (!finite || mob.uid == 0 || mob.breedCooldown > maxBreedingSeconds || mob.growUp > maxBreedingSeconds) {
             return false;
         }
 
-        const std::optional<int> type = m_content.mobIndex(name);
         if (!type) {
-            warnOnce(u"creature"_s, name);
+            warnOnce(u"creature"_s, header.type);
             return true;
         }
         mob.type = *type;
-        mob.yaw = std::fmod(mob.yaw, 360.0f);
         m_record.creatures.append(entry);
         return true;
     }
 
-    bool item()
+    bool item(const Header &header)
     {
-        QString name;
-        qint32 count = 0;
+        qint32 count = 1;
         qint32 damage = 0;
-        QcEntityRecord::Ordered<QcItemEntityManager::Drop> entry;
+        QcEntityRecord::Ordered<QcItemEntityManager::Drop> entry{{}, header.order};
         QcItemEntityManager::Drop &drop = entry.entry;
-        m_stream >> name >> count >> damage;
-        readVec(m_stream, drop.position);
-        readVec(m_stream, drop.velocity);
-        m_stream >> drop.age >> drop.pickupDelay >> entry.order;
-        if (m_stream.status() != QDataStream::Ok || !inChunk(drop.position) || !isFinite(drop.velocity) || !std::isfinite(drop.age)
+        drop.position = header.position;
+        drop.velocity = header.velocity;
+        drop.pickupDelay = 0.0;
+        const auto fields = [&](QDataStream &in, quint16) {
+            in >> count >> damage >> drop.age >> drop.pickupDelay;
+            return true;
+        };
+        keepHeader(header, drop.kept, false);
+        if (!readComponents(drop.kept.components, {known(Component::Item, kindVersion, fields)}) || !std::isfinite(drop.age)
             || !std::isfinite(drop.pickupDelay)) {
             return false;
         }
 
-        const std::optional<QcItemId> item = name.isEmpty() ? std::nullopt : m_content.itemId(name);
+        const std::optional<QcItemId> item = header.type.isEmpty() ? std::nullopt : m_content.itemId(header.type);
         if (!item) {
-            if (!name.isEmpty()) {
-                warnOnce(u"item"_s, name);
+            if (!header.type.isEmpty()) {
+                warnOnce(u"item"_s, header.type);
             }
             return true;
         }
@@ -166,7 +249,8 @@ private:
         return true;
     }
 
-    // A stack saved larger than the item allows now (a mod lowered maxStack) is split.
+    // A stack saved larger than the item allows now (a mod lowered maxStack) is split; only the first
+    // part keeps what this version does not use (as QcItemEntityManager::spawn splits).
     void addItem(const QcEntityRecord::Ordered<QcItemEntityManager::Drop> &read, QcItemId item, int count, int damage)
     {
         const QcItemDefinition &definition = m_content.item(item);
@@ -180,26 +264,29 @@ private:
             drop.stack = {item, std::min(left, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
             left -= drop.stack.count;
             m_record.items.append(entry);
+            drop.kept = {};
         }
     }
 
-    bool falling()
+    bool falling(const Header &header)
     {
-        QString name;
-        QcEntityRecord::Ordered<QcFallingBlock> entry;
+        QcEntityRecord::Ordered<QcFallingBlock> entry{{}, header.order};
         QcFallingBlock &block = entry.entry;
-        m_stream >> name;
-        readVec(m_stream, block.motion.position);
-        readVec(m_stream, block.motion.velocity);
-        m_stream >> block.age >> entry.order;
-        if (m_stream.status() != QDataStream::Ok || !inChunk(block.motion.position) || !isFinite(block.motion.velocity) || !std::isfinite(block.age)) {
+        block.motion.position = header.position;
+        block.motion.velocity = header.velocity;
+        const auto fields = [&block](QDataStream &in, quint16) {
+            in >> block.age;
+            return true;
+        };
+        keepHeader(header, block.kept, false);
+        if (!readComponents(block.kept.components, {known(Component::FallingBlock, kindVersion, fields)}) || !std::isfinite(block.age)) {
             return false;
         }
 
         QStringList problems;
-        const std::optional<QcBlockId> state = m_content.stateId(name, &problems);
+        const std::optional<QcBlockId> state = m_content.stateId(header.type, &problems);
         if (!state || *state == qcAirBlockId) {
-            warnOnce(u"falling block"_s, name);
+            warnOnce(u"falling block"_s, header.type);
             return true;
         }
         m_warnings.append(problems);
@@ -210,22 +297,26 @@ private:
         return true;
     }
 
-    bool stand()
+    bool stand(const Header &header)
     {
-        QcEntityRecord::Ordered<QcArmourStand> entry;
+        QcEntityRecord::Ordered<QcArmourStand> entry{{}, header.order};
         QcArmourStand &stand = entry.entry;
-        readVec(m_stream, stand.motion.position);
-        m_stream >> stand.yaw;
-        stand.pose = QcProtocolCodec::readStandPose(m_stream);
-        m_stream >> stand.name >> stand.item;
-        stand.held = standStack();
-        for (QcItemStack &stack : stand.equipment.stacks) {
-            stack = standStack();
-        }
-        m_stream >> stand.cape >> entry.order;
+        stand.motion.position = header.position;
+        stand.yaw = header.yaw;
+        const auto fields = [this, &stand](QDataStream &in, quint16) {
+            stand.pose = QcProtocolCodec::readStandPose(in);
+            in >> stand.name >> stand.item;
+            stand.held = standStack(in);
+            for (QcItemStack &stack : stand.equipment.stacks) {
+                stack = standStack(in);
+            }
+            in >> stand.cape;
+            return true;
+        };
         const double y = stand.motion.position.y;
-        if (m_stream.status() != QDataStream::Ok || !inChunk(stand.motion.position) || y < QcWorld::voidLimitY || y > QcWorld::worldHeight + 64.0
-            || !std::isfinite(stand.yaw)) {
+        keepHeader(header, stand.kept, true);
+        if (!readComponents(stand.kept.components, {known(Component::ArmourStand, kindVersion, fields)}) || y < QcWorld::voidLimitY
+            || y > QcWorld::worldHeight + 64.0) {
             return false;
         }
 
@@ -237,27 +328,32 @@ private:
         return true;
     }
 
-    bool minecart()
+    bool minecart(const Header &header)
     {
-        QcEntityRecord::Ordered<QcMinecart> entry;
+        QcEntityRecord::Ordered<QcMinecart> entry{{}, header.order};
         QcMinecart &cart = entry.entry;
-        readVec(m_stream, cart.motion.position);
-        readVec(m_stream, cart.motion.velocity);
-        m_stream >> cart.yaw >> cart.item >> entry.order;
+        cart.motion.position = header.position;
+        cart.motion.velocity = header.velocity;
+        cart.yaw = header.yaw;
         // A container cart's slots (decision E-386) and whether a hopper cart pulls.
-        quint32 slotCount = 0;
-        if (!QcStreamLimits::readCount(m_stream, QcBlockDefinition::maxContainerSlots, slotCount)) {
-            return false;
-        }
-        QcStackReader stacks(m_content, m_path, m_warnings, &m_unknown);
-        cart.stacks.resize(slotCount);
-        for (QcItemStack &stack : cart.stacks) {
-            stack = stacks.read(m_stream);
-        }
-        m_stream >> cart.enabled;
+        const auto fields = [this, &cart](QDataStream &in, quint16) {
+            quint32 slotCount = 0;
+            in >> cart.item;
+            if (!QcStreamLimits::readCount(in, QcBlockDefinition::maxContainerSlots, slotCount)) {
+                return false;
+            }
+            QcStackReader stacks(m_content, m_path, m_warnings, &m_unknown);
+            cart.stacks.resize(slotCount);
+            for (QcItemStack &stack : cart.stacks) {
+                stack = stacks.read(in);
+            }
+            in >> cart.enabled;
+            return true;
+        };
         const double y = cart.motion.position.y;
-        if (m_stream.status() != QDataStream::Ok || !inChunk(cart.motion.position) || !isFinite(cart.motion.velocity) || !std::isfinite(cart.yaw)
-            || y < QcWorld::voidLimitY || y > QcWorld::worldHeight + 64.0) {
+        keepHeader(header, cart.kept, true);
+        if (!readComponents(cart.kept.components, {known(Component::Minecart, kindVersion, fields)}) || y < QcWorld::voidLimitY
+            || y > QcWorld::worldHeight + 64.0) {
             return false;
         }
 
@@ -272,15 +368,19 @@ private:
         return true;
     }
 
-    bool orb()
+    bool orb(const Header &header)
     {
-        QcEntityRecord::Ordered<QcExperienceOrb> entry;
+        QcEntityRecord::Ordered<QcExperienceOrb> entry{{}, header.order};
         QcExperienceOrb &orb = entry.entry;
-        qint32 value = 0;
-        readVec(m_stream, orb.motion.position);
-        readVec(m_stream, orb.motion.velocity);
-        m_stream >> value >> orb.age >> orb.pickupDelay >> entry.order;
-        if (m_stream.status() != QDataStream::Ok || !inChunk(orb.motion.position) || !isFinite(orb.motion.velocity) || !std::isfinite(orb.age)
+        qint32 value = 1;
+        orb.motion.position = header.position;
+        orb.motion.velocity = header.velocity;
+        const auto fields = [&](QDataStream &in, quint16) {
+            in >> value >> orb.age >> orb.pickupDelay;
+            return true;
+        };
+        keepHeader(header, orb.kept, true);
+        if (!readComponents(orb.kept.components, {known(Component::ExperienceOrb, kindVersion, fields)}) || !std::isfinite(orb.age)
             || !std::isfinite(orb.pickupDelay) || value <= 0) {
             return false;
         }
@@ -294,12 +394,12 @@ private:
     }
 
     // What a stand wears or holds: one item, by name; unknown items are dropped with a warning.
-    QcItemStack standStack()
+    QcItemStack standStack(QDataStream &in)
     {
         QString name;
         qint32 count = 0;
         qint32 damage = 0;
-        m_stream >> name >> count >> damage;
+        in >> name >> count >> damage;
         if (name.isEmpty() || count <= 0) {
             return {};
         }
@@ -341,59 +441,93 @@ private:
     QcEntityRecord &m_record;
 };
 
-void writeRecord(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+// Writes the entries of one kind: their count, then each one's header and components.
+template<typename Entry, typename Write>
+void writeEntries(QDataStream &stream, const QList<QcEntityRecord::Ordered<Entry>> &entries, Write write)
 {
-    stream << quint32(record.creatures.size());
-    for (const auto &[mob, order] : record.creatures) {
-        stream << content.mobs()[mob.type].name;
-        writeVec(stream, mob.position);
-        stream << mob.yaw << mob.health << mob.breedCooldown << mob.growUp << mob.bred << order << mob.villager.has_value();
-        if (mob.villager) {
-            QcVillagerCodec::write(stream, *mob.villager);
-        }
+    stream << quint32(entries.size());
+    for (const auto &[entry, order] : entries) {
+        write(entry, order);
     }
-    stream << quint32(record.items.size());
-    for (const auto &[drop, order] : record.items) {
-        QcSaveFile::writeStack(stream, drop.stack, content);
-        writeVec(stream, drop.position);
-        writeVec(stream, drop.velocity);
-        stream << drop.age << drop.pickupDelay << order;
+}
+
+// The known components of each kind, added to the writer of its entry.
+void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stored &mob)
+{
+    components.add(quint16(Component::Creature), kindVersion, [&mob](QDataStream &out) { out << mob.health << mob.breedCooldown << mob.growUp << mob.bred; });
+    if (mob.villager) {
+        components.add(quint16(Component::Villager), QcVillagerCodec::version, [&mob](QDataStream &out) { QcVillagerCodec::write(out, *mob.villager); });
     }
-    stream << quint32(record.fallingBlocks.size());
-    for (const auto &[falling, order] : record.fallingBlocks) {
-        stream << content.stateName(falling.block);
-        writeVec(stream, falling.motion.position);
-        writeVec(stream, falling.motion.velocity);
-        stream << falling.age << order;
-    }
-    stream << quint32(record.stands.size());
-    for (const auto &[stand, order] : record.stands) {
-        writeVec(stream, stand.motion.position);
-        stream << stand.yaw;
-        QcProtocolCodec::writeStandPose(stream, stand.pose);
-        stream << stand.name << stand.item;
-        QcSaveFile::writeStack(stream, stand.held, content);
+}
+
+void addStand(QcComponentFrames::Writer &components, const QcArmourStand &stand, const QcContentRegistry &content)
+{
+    components.add(quint16(Component::ArmourStand), kindVersion, [&](QDataStream &out) {
+        QcProtocolCodec::writeStandPose(out, stand.pose);
+        out << stand.name << stand.item;
+        QcSaveFile::writeStack(out, stand.held, content);
         for (const QcItemStack &stack : stand.equipment.stacks) {
-            QcSaveFile::writeStack(stream, stack, content);
+            QcSaveFile::writeStack(out, stack, content);
         }
-        stream << stand.cape << order;
-    }
-    stream << quint32(record.minecarts.size());
-    for (const auto &[cart, order] : record.minecarts) {
-        writeVec(stream, cart.motion.position);
-        writeVec(stream, cart.motion.velocity);
-        stream << cart.yaw << cart.item << order << quint32(cart.stacks.size());
+        out << stand.cape;
+    });
+}
+
+void addMinecart(QcComponentFrames::Writer &components, const QcMinecart &cart, const QcContentRegistry &content)
+{
+    components.add(quint16(Component::Minecart), kindVersion, [&](QDataStream &out) {
+        out << cart.item << quint32(cart.stacks.size());
         for (const QcItemStack &stack : cart.stacks) {
-            QcSaveFile::writeStack(stream, stack, content);
+            QcSaveFile::writeStack(out, stack, content);
         }
-        stream << cart.enabled;
-    }
-    stream << quint32(record.orbs.size());
-    for (const auto &[orb, order] : record.orbs) {
-        writeVec(stream, orb.motion.position);
-        writeVec(stream, orb.motion.velocity);
-        stream << qint32(orb.value) << orb.age << orb.pickupDelay << order;
-    }
+        out << cart.enabled;
+    });
+}
+
+void writeCreatures(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+{
+    writeEntries(stream, record.creatures, [&](const QcMobManager::Stored &mob, quint64 order) {
+        const Header header{content.mobs()[mob.type].name, mob.position, {}, mob.yaw, order, mob.uid};
+        writeEntry(stream, header, mob.kept.components, [&mob](QcComponentFrames::Writer &components) { addCreature(components, mob); });
+    });
+}
+
+void writeItemsAndBlocks(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+{
+    writeEntries(stream, record.items, [&](const QcItemEntityManager::Drop &drop, quint64 order) {
+        const QString name = drop.stack.isEmpty() ? QString() : content.item(drop.stack.item).name;
+        const auto fields = [&drop](QDataStream &out) { out << qint32(drop.stack.count) << qint32(drop.stack.damage) << drop.age << drop.pickupDelay; };
+        writeEntry(stream, {name, drop.position, drop.velocity, 0.0f, order, drop.kept.uid}, drop.kept.components,
+                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::Item), kindVersion, fields); });
+    });
+    writeEntries(stream, record.fallingBlocks, [&](const QcFallingBlock &falling, quint64 order) {
+        const Header header{content.stateName(falling.block), falling.motion.position, falling.motion.velocity, 0.0f, order, falling.kept.uid};
+        const auto fields = [&falling](QDataStream &out) { out << falling.age; };
+        writeEntry(stream, header, falling.kept.components,
+                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::FallingBlock), kindVersion, fields); });
+    });
+}
+
+void writeStands(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+{
+    writeEntries(stream, record.stands, [&](const QcArmourStand &stand, quint64 order) {
+        const Header header{stand.kept.type, stand.motion.position, {}, stand.yaw, order, stand.kept.uid};
+        writeEntry(stream, header, stand.kept.components, [&](QcComponentFrames::Writer &components) { addStand(components, stand, content); });
+    });
+}
+
+void writeCartsAndOrbs(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
+{
+    writeEntries(stream, record.minecarts, [&](const QcMinecart &cart, quint64 order) {
+        const Header header{cart.kept.type, cart.motion.position, cart.motion.velocity, cart.yaw, order, cart.kept.uid};
+        writeEntry(stream, header, cart.kept.components, [&](QcComponentFrames::Writer &components) { addMinecart(components, cart, content); });
+    });
+    writeEntries(stream, record.orbs, [&](const QcExperienceOrb &orb, quint64 order) {
+        const Header header{orb.kept.type, orb.motion.position, orb.motion.velocity, 0.0f, order, orb.kept.uid};
+        const auto fields = [&orb](QDataStream &out) { out << qint32(orb.value) << orb.age << orb.pickupDelay; };
+        writeEntry(stream, header, orb.kept.components,
+                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::ExperienceOrb), kindVersion, fields); });
+    });
 }
 
 } // namespace
@@ -405,7 +539,10 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     QByteArray blob;
     QDataStream stream(&blob, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    writeRecord(stream, record, content);
+    writeCreatures(stream, record, content);
+    writeItemsAndBlocks(stream, record, content);
+    writeStands(stream, record, content);
+    writeCartsAndOrbs(stream, record, content);
     stream << quint8(record.populated ? 1 : 0);
     return blob;
 }

@@ -32,6 +32,11 @@ struct QcCreature : QcEntity
     bool underground = false;
     // Never despawns and is saved with the world (peaceful animals).
     bool persistent = false;
+    // The persistent id of a creature that is saved (decision E-420; 0 for the others): unique in its
+    // world and kept across saving, loading and unloading, unlike the entity id (QcEntity::id), which
+    // only holds while the world is open. Villages claim beds and workstations under it; other saved
+    // data refers to a creature by it (QcMobManager::nextUid gives them out).
+    quint64 uid = 0;
     // Spawned by a rule for the night only: leaves by day like night creatures.
     bool nightRule = false;
     // Entity id of the player it chases; 0 for none. It chases a player it sees and keeps chasing for

@@ -164,17 +164,18 @@ private slots:
         QCOMPARE(state.population, int(state.beds.size()));
 
         // Each bed has its own villager, who knows it as home, and stands beside it.
-        QSet<QString> names;
+        QSet<quint64> ids;
         const QList<const QcCreature *> settled = villagers(built);
         for (const QcCreature *villager : settled) {
-            names.insert(villager->villager.name);
+            ids.insert(villager->uid);
             QVERIFY(villager->villager.home);
-            QCOMPARE(QcVillage::spotAt(built.state().beds, *villager->villager.home)->claimedBy, villager->villager.name);
+            QCOMPARE(QcVillage::spotAt(built.state().beds, *villager->villager.home)->claimedBy, villager->uid);
             QVERIFY(horizontalDistance(villager->motion.position, *villager->villager.home) < 3.0);
             QCOMPARE(villager->villager.style, state.style);
             QVERIFY(villager->persistent);
         }
-        QCOMPARE(names.size(), state.beds.size());
+        QCOMPARE(ids.size(), state.beds.size());
+        QVERIFY(!ids.contains(0));
 
         // A chunk seen again brings nobody new.
         const qsizetype count = built.mobs->mobs().size();
@@ -206,44 +207,43 @@ private slots:
         const int population = built.state().population;
 
         QVERIFY(built.mobs->wound(first.id, 1000.0).has_value());
-        QVERIFY(QcVillage::spotAt(built.state().beds, *first.villager.home)->claimedBy.isEmpty());
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *first.villager.home)->claimedBy, 0u);
         QCOMPARE(built.state().population, population - 1);
         QVERIFY(built.mobs->remove(second.id));
-        QVERIFY(QcVillage::spotAt(built.state().beds, *second.villager.home)->claimedBy.isEmpty());
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *second.villager.home)->claimedBy, 0u);
         QCOMPARE(built.state().population, population - 2);
     }
 
-    // villages.json and the chunks may come from different saves (a crash between them): a claim
-    // whose villager is not in the world lapses once every chunk it could stand in is loaded, and a
-    // villager saved with its chunk keeps its name to itself.
-    void lostClaimsLapseAndNamesStayUnique()
+    // villages.json and the chunks may disagree (villages.json put back from another save): a claim
+    // whose villager is not in the world lapses once every chunk it could stand in is loaded, and new
+    // villagers get persistent ids no loaded one has (decision E-420).
+    void lostClaimsLapseAndIdsStayUnique()
     {
         Village built = village(any, false);
         QVERIFY(built.plan);
         QcVillage &state = built.state();
         QVERIFY(state.beds.size() >= 2);
         // villages.json knew a villager whose chunk was never written.
-        state.beds[0].claimedBy = u"villager-40"_s;
+        state.beds[0].claimedBy = 40;
         state.population = 1;
-        // A chunk knew villager-5, villages.json did not.
+        // A chunk knew villager 5, villages.json did not.
         QcMobManager::Stored stored;
+        stored.uid = 5;
         stored.type = *m_content->mobIndex(m_content->villagerSettings().mob);
         stored.position = {state.beds[1].at.x + 0.5, double(state.beds[1].at.y), state.beds[1].at.z + 0.5};
         stored.health = 20.0;
         QcVillagerRecord record;
         record.village = state.id;
-        record.name = u"villager-5"_s;
         record.profession = m_content->villagerSettings().unemployed;
         record.style = state.style;
         stored.villager = record;
-        // ... and was settled once more under that name before the crash (it is renamed).
-        built.mobs->restore({stored, stored}, {}, built.ids());
-        QCOMPARE(state.nextVillager, 6);
+        built.mobs->restore({stored}, {}, built.ids());
+        QCOMPARE(built.mobs->nextUid(), 6u);
 
         // Not every chunk around the village is loaded yet: the claim stays.
         const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*built.plan);
         built.mobs->populateChunk(*built.world, chunks.constFirst(), built.ids());
-        QCOMPARE(state.beds[0].claimedBy, u"villager-40"_s);
+        QCOMPARE(state.beds[0].claimedBy, 40u);
 
         const int around = QcVillage::reach + QcVillagerHomes::strayReach;
         const QcChunkPos low = QcBlockPos{state.minX - around, 0, state.minZ - around}.chunk();
@@ -256,36 +256,32 @@ private slots:
         for (const QcChunkPos &chunk : chunks) {
             built.mobs->populateChunk(*built.world, chunk, built.ids());
         }
-        QSet<QString> names;
+        QSet<quint64> ids;
         const QList<const QcCreature *> settled = villagers(built);
         for (const QcCreature *villager : settled) {
-            QVERIFY2(!names.contains(villager->villager.name), qPrintable(villager->villager.name));
-            names.insert(villager->villager.name);
+            QVERIFY2(!ids.contains(villager->uid), qPrintable(QString::number(villager->uid)));
+            ids.insert(villager->uid);
         }
-        QVERIFY(names.contains(u"villager-5"_s));
-        QVERIFY(!names.contains(u"villager-40"_s));
-        QVERIFY(std::ranges::none_of(state.beds, [](const QcVillage::Spot &bed) { return bed.claimedBy == u"villager-40"_s; }));
-        QCOMPARE(names.size(), settled.size());
-        // Every bed has its villager again, villager-40's too; villager-5 has none yet.
-        QVERIFY(std::ranges::all_of(state.beds, [&names](const QcVillage::Spot &bed) { return names.contains(bed.claimedBy); }));
+        QVERIFY(ids.contains(5));
+        QVERIFY(!ids.contains(40));
+        QVERIFY(std::ranges::none_of(state.beds, [](const QcVillage::Spot &bed) { return bed.claimedBy == 40; }));
+        // Every bed has its villager again, villager 40's too; villager 5 has none yet.
+        QVERIFY(std::ranges::all_of(state.beds, [&ids](const QcVillage::Spot &bed) { return ids.contains(bed.claimedBy); }));
         QCOMPARE(state.population, int(settled.size()));
-        QCOMPARE(settled.size(), state.beds.size() + 2);
+        QCOMPARE(settled.size(), state.beds.size() + 1);
     }
 
-    // Names and claims in the village state alone.
-    void namesStayUniqueAndLostClaimsLapse()
+    // Claims in the village state alone: those of villagers not in the world lapse.
+    void lostClaimsLapseById()
     {
         QcVillage village;
-        village.beds.append({{0, 64, 0}, {}, u"villager-3"_s});
-        village.nextVillager = 3;
-        QCOMPARE(QcVillagerHomes::freshName(village), u"villager-4"_s);
-        QVERIFY(QcVillagerHomes::noteName(village, u"villager-9"_s));
-        QCOMPARE(village.nextVillager, 10);
-        QVERIFY(!QcVillagerHomes::noteName(village, u"villager-2"_s));
-        QVERIFY(!QcVillagerHomes::noteName(village, u"someone"_s));
-        QCOMPARE(QcVillagerHomes::numberOf(u"villager-x"_s), 0);
-        QCOMPARE(QcVillagerHomes::dropLostClaims(village, {u"villager-1"_s}), 1);
-        QVERIFY(village.beds[0].claimedBy.isEmpty());
+        village.beds.append({{0, 64, 0}, {}, 3});
+        village.beds.append({{2, 64, 0}, {}, 1});
+        village.workstations.append({{4, 64, 0}, u"qtcraft:farmer"_s, 3});
+        QCOMPARE(QcVillagerHomes::dropLostClaims(village, {1}), 1);
+        QCOMPARE(village.beds[0].claimedBy, 0u);
+        QCOMPARE(village.beds[1].claimedBy, 1u);
+        QCOMPARE(village.workstations[0].claimedBy, 0u);
     }
 
     void longWalksGoInLegsOverTheBoardwalks()
@@ -315,7 +311,7 @@ private slots:
         QVERIFY(start);
         const quint32 id = built.mobs->spawn(*m_content->mobIndex(u"qtcraft:villager"_s), *start, built.nextId++);
         QcCreature *walker = built.mobs->find(id);
-        walker->villager = QcVillagerHomes::settle(built.state(), to, m_content->villagerSettings(), 1);
+        walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, m_content->villagerSettings(), 1);
         bool arrived = false;
         for (int tick = 0; tick < 4800 && !arrived; ++tick) {
             this->tick(built, 0.5);
@@ -344,9 +340,12 @@ private slots:
         QVERIFY(stored.villager);
         const QcVillagerRecord record = *stored.villager;
         built.mobs->editableMobs().removeIf([id](const QcCreature &mob) { return mob.id == id; });
-        // ... and was settled once more under that name before the crash (it is renamed).
+        // A copy of it comes along (a copied chunk): the copy gets a new id, the original goes on.
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"persistent id %1 of another one"_s.arg(stored.uid)));
         built.mobs->restore({stored, stored}, {}, built.ids());
-        QcCreature &back = built.mobs->editableMobs().last();
+        QcCreature &back = built.mobs->editableMobs()[built.mobs->mobs().size() - 2];
+        QCOMPARE(back.uid, stored.uid);
+        QVERIFY(built.mobs->mobs().last().uid != stored.uid);
         back.dormant = false;
         QCOMPARE(static_cast<const QcVillagerRecord &>(back.villager), record);
         const quint32 again = back.id;
@@ -371,7 +370,6 @@ private slots:
     {
         QcVillagerRecord record;
         record.village = (qint64(5) << 32) | 7;
-        record.name = u"villager-3"_s;
         record.home = QcBlockPos{100, 70, -20};
         record.work = QcBlockPos{104, 70, -18};
         record.profession = u"qtcraft:smith"_s;
@@ -386,7 +384,7 @@ private slots:
             QcVillagerCodec::write(out, record);
         }
         QDataStream in(bytes);
-        QCOMPARE(QcVillagerCodec::read(in), record);
+        QCOMPARE(QcVillagerCodec::read(in, QcVillagerCodec::version), record);
 
         // A level out of range is damaged data.
         record.level = 9;
@@ -396,7 +394,7 @@ private slots:
             QcVillagerCodec::write(out, record);
         }
         QDataStream bad(damaged);
-        QVERIFY(!QcVillagerCodec::read(bad));
+        QVERIFY(!QcVillagerCodec::read(bad, QcVillagerCodec::version));
 
         // In little endian as well.
         record.level = 2;
@@ -408,18 +406,38 @@ private slots:
         }
         QDataStream littleIn(little);
         littleIn.setByteOrder(QDataStream::LittleEndian);
-        QCOMPARE(QcVillagerCodec::read(littleIn), record);
+        QCOMPARE(QcVillagerCodec::read(littleIn, QcVillagerCodec::version), record);
 
-        // A name claiming 2 GB is refused before it is read, as is one just over the limit.
+        // Version 1 has no offers: read with none and no restock.
+        record.offers = {{u"x"_s, 1, 0}};
+        record.lastRestock = 50.0;
+        QByteArray older;
+        {
+            QDataStream out(&older, QIODevice::WriteOnly);
+            QcVillagerRecord first = record;
+            first.offers.clear();
+            QcVillagerCodec::write(out, first);
+        }
+        // The offers (a count of none), the restock time and count are the fields of version 2.
+        older.chop(4 + 8 + 4);
+        QDataStream olderIn(older);
+        QcVillagerRecord defaults = record;
+        defaults.offers.clear();
+        defaults.lastRestock = -1.0;
+        defaults.restocks = 0;
+        QCOMPARE(QcVillagerCodec::read(olderIn, 1), defaults);
+        QVERIFY(olderIn.atEnd());
+
+        // A profession claiming 2 GB is refused before it is read, as is one just over the limit.
         for (const quint32 length : {0x7ffffffeu, 2u * 129u}) {
             QByteArray huge;
             {
                 QDataStream out(&huge, QIODevice::WriteOnly);
-                out << record.village << length;
+                out << record.village << false << false << length;
                 out.writeRawData(QByteArray(int(length < 4096 ? length : 64), 'a').constData(), int(length < 4096 ? length : 64));
             }
             QDataStream hugeIn(huge);
-            QVERIFY(!QcVillagerCodec::read(hugeIn));
+            QVERIFY(!QcVillagerCodec::read(hugeIn, QcVillagerCodec::version));
             QVERIFY(hugeIn.status() != QDataStream::Ok);
         }
     }

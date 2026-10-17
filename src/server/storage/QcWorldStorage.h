@@ -27,12 +27,14 @@
 // with their chunk, the experience stored in furnaces and players' experience (decision E-398), format 10
 // (stage 37.2) generates villages and keeps their state in villages.json (decision E-403), format 11
 // (stage 37.2b) saves villagers with their home, workstation and profession (decision E-411), format 12
-// (stage 37.2c) also the state of their offers and their last restock (decision E-414). Worlds
-// of older development versions are refused, not converted (decision E-356, QtCraft has not been released).
+// (stage 37.2c) also the state of their offers and their last restock (decision E-414), format 13
+// (package 37.R2) saves every entity as a header and versioned components and gives saved creatures
+// a persistent id (decision E-420): new fields no longer need a new format. Worlds of older
+// development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 12;
-    static constexpr int oldestFormatVersion = 12;
+    static constexpr int formatVersion = 13;
+    static constexpr int oldestFormatVersion = 13;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -83,6 +85,9 @@ struct QcWorldInfo
     // as in the reference (0: never).
     int maxEntityCramming = 24;
     static constexpr int maxEntityCrammingLimit = 4096;
+    // The persistent id the next saved creature gets (QcMobManager::nextUid, decision E-420); saved
+    // with the chunks in one journal, so it lies beyond every id saved in them.
+    quint64 nextCreatureId = 1;
     // Chunks kept loaded by /forceload (decision E-377), in the order they were added.
     QList<QcChunkPos> forcedChunks;
     // Every chunk loader block of the world in the order they were placed (decision E-377).

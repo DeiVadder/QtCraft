@@ -119,6 +119,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.defaultGameMode = knownMode.value_or(QcGameMode::Survival);
     info.unknownGameMode = knownMode || gameMode.isEmpty() ? QString() : gameMode.left(64);
     info.limits = json.value(u"limits"_s).toObject();
+    bool idOk = false;
+    info.nextCreatureId = json.value(u"nextCreatureId"_s).toString().toULongLong(&idOk);
     readChunkLists(json, info);
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
@@ -129,8 +131,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         }
     }
 
-    if (!seedOk || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength) {
-        return qcError(u"%1 is damaged: missing name, seed or generator"_s.arg(path));
+    if (!seedOk || !idOk || info.nextCreatureId == 0 || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength) {
+        return qcError(u"%1 is damaged: missing name, seed, next creature id or generator"_s.arg(path));
     }
     return info;
 }
@@ -150,6 +152,8 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                            {u"created"_s, info.created.toString(Qt::ISODate)},
                            {u"lastPlayed"_s, info.lastPlayed.toString(Qt::ISODate)},
                            {u"worldTime"_s, info.worldTime},
+                           // As a string like the seed.
+                           {u"nextCreatureId"_s, QString::number(info.nextCreatureId)},
                            {u"defaultGameMode"_s, info.unknownGameMode.isEmpty() ? QString(QcGameModes::name(info.defaultGameMode)) : info.unknownGameMode},
                            {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
                            {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},

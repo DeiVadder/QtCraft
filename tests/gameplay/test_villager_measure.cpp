@@ -212,7 +212,7 @@ private slots:
         for (const QcCreature &mob : m_server->mobs().mobs()) {
             if (!mob.villager.sleeping) {
                 const auto cell = [](std::optional<QcBlockPos> pos) { return pos ? u"%1 %2 %3"_s.arg(pos->x).arg(pos->y).arg(pos->z) : u"none"_s; };
-                awake.append(u"%1 at %2 %3 %4 home %5 target %6 water %7"_s.arg(mob.villager.name)
+                awake.append(u"%1 at %2 %3 %4 home %5 target %6 water %7"_s.arg(mob.uid)
                                  .arg(mob.motion.position.x, 0, 'f', 1)
                                  .arg(mob.motion.position.y, 0, 'f', 1)
                                  .arg(mob.motion.position.z, 0, 'f', 1)

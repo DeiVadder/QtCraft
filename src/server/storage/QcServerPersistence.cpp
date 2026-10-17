@@ -181,6 +181,7 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
 
     m_state.info() = *info;
     m_state.world().loaders().restore(m_state.info().chunkLoaders);
+    m_state.entities().creatures().setNextUid(m_state.info().nextCreatureId);
     m_state.config().worldName = m_state.info().name;
     // A single-player world plays with its own limits; a dedicated server's server.json decides there.
     if (!m_state.config().limitsFromServer) {
@@ -291,6 +292,7 @@ std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
     QcStatus result;
     m_state.info().lastPlayed = QDateTime::currentDateTimeUtc();
     m_state.info().chunkLoaders = m_state.world().loaders().loaders();
+    m_state.info().nextCreatureId = m_state.entities().creatures().nextUid();
     QList<QcChunkStore::WholeFile> files{{QString::fromLatin1(QcWorldStorage::infoFileName), QcWorldStorage::infoBytes(m_state.info())}};
     // villages.json only after a change since it was last written.
     const quint64 villageChanges = m_state.world().villages().changes();

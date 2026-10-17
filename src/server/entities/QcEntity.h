@@ -3,6 +3,7 @@
 #include "common/core/QcChunkPos.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/world/QcEntityKind.h"
+#include "server/entities/QcEntityComponent.h"
 
 #include <QtGlobal>
 
@@ -32,6 +33,9 @@ struct QcEntity
     // when this changed or the loaded chunks did.
     QcChunkPos settledChunk;
     bool settled = false;
+    // What its saved entry holds that this version does not use (decision E-420), written back
+    // unchanged when it is saved again; empty for nearly every entity.
+    QcEntityKept kept;
 
     // The entity as its type (decision E-372): every type names its kind (`entityKind`), so a
     // mismatch between the kind field and the type asked for is caught in debug builds instead of
