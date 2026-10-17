@@ -1,4 +1,5 @@
 {
+    "formatVersion": 1,
     "name": "plains",
     "biomes": ["plains"],
     "fallback": true,
@@ -59,7 +60,7 @@
         },
         { "structure": "village_plains_tower", "max": 1, "minRoadLength": 200 }
     ],
-    "villagers": {
+    "look": {
         "outfit": "villager_tunic",
         "hair": [
             "short_hair",

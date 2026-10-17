@@ -1,0 +1,15 @@
+{
+    "formatVersion": 1,
+    "name": "farmer",
+    "workstations": [
+        "composter"
+    ],
+    "hat": "villager_straw_hat",
+    "tendsCrops": true,
+    "layers": {
+        "torso": {
+            "texture": "villager_farmer_apron",
+            "tint": "none"
+        }
+    }
+}

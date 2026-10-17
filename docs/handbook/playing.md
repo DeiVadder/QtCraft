@@ -324,7 +324,7 @@ The world remembers every village: its middle, its area, its beds and its workst
 
 **Villages in mods**
 
-A style is a file in `villages/`: the biomes it builds in, the well, the lamp post, the kinds of buildings with weights and maximum counts, each with one or several designs, the street plans (main street, cross, T, L, ring road, branching roads, winding or straight), the road surfaces for main roads and side roads (one chosen per village, with an optional slab for steps), the crops of the fields and the foundation block and a palette that swaps blocks of the houses. A kind can have rules: a chance per village, a smallest village size (the length of all its roads) or water within reach (then it gets a jetty). A style can stand over water on stilts, with boardwalks for roads and the swamp around it shaped into shallow water over mud. The houses are ordinary structures; `choices` (block swaps, one option per house) and optional `parts` with a chance (chimney, flowers, shed) make every house different. A mod can add a style for its own biome, a new style from the base game's houses with another palette, or new house designs.
+A style is a file in `villages/`: the biomes it builds in, the well, the lamp post, the kinds of buildings with weights and maximum counts, each with one or several designs, the street plans (main street, cross, T, L, ring road, branching roads, winding or straight), the road surfaces for main roads and side roads (one chosen per village, with an optional slab for steps), the crops of the fields and the foundation block and a palette that swaps blocks of the houses. A kind can have rules: a chance per village, a smallest village size (the length of all its roads) or water within reach (then it gets a jetty). A style can stand over water on stilts, with boardwalks for roads and the swamp around it shaped into shallow water over mud. The houses are ordinary structures; `choices` (block swaps, one option per house) and optional `parts` with a chance (chimney, flowers, shed) make every house different. A file with `extends` changes a style or makes a new one from it, and its `add` appends biomes, crops, kinds of buildings and street plans, so several mods can each add a crop to the plains. A mod can add a style for its own biome, a new style from the base game's houses with another palette, or new house designs.
 
 **See also**
 
@@ -358,7 +358,7 @@ Villagers open wooden doors on their way and close them behind them; iron doors 
 
 **Villagers in mods**
 
-`villagers.json` names the creature that lives in villages, the professions (the workstation kind from `worldgen/villages.json`, layers laid over the outfit, a hat, whether it tends crops), the daily routine as steps through the day (wander, work, meet, home, sleep) and the default look. A village style dresses its villagers with `villagers` in its file: an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours. `breeding` sets the food a parent needs, how farmers share, how long children take to grow up and parents rest; `golem` names the creature villages spawn as their golem and its thresholds.
+A creature kind lives in villages with `"villager": "<settings>"`, naming its species' file in `villagers/`: the daily routine as steps through the day (wander, work, meet, home, sleep), how far it flees, trading, `breeding` (the food a parent needs, how farmers share, how long children take to grow up and parents rest) and the default look. Each profession is its own file in `professions/`: the blocks it works at, layers laid over the outfit, a hat, whether it tends crops, and optionally its own routine; two mods each adding a profession keep both. A village style dresses its villagers with `look` in its file (an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours), may name its own villager kind and golems and lists other residents. `worldgen/villages.json` names the villagers and the golem of all other villages and its thresholds.
 
 **See also**
 
@@ -396,7 +396,7 @@ Emeralds are the villagers' money. You earn them by selling goods, or mine them:
 
 **Offers in mods**
 
-A file in `trades/` lists offers of one profession: for each the level from which it is offered, one or two costs and a result (item and count), how often it can be traded until the next restock (`maxUses`), the experience for the villager and for the player and the price rise for demand. A file of another name adds offers to the profession; one of the same name as an earlier pack's replaces it. The experience per level, the number of offers per level and the restocks per day are set under `trading` in `villagers.json`.
+A file in `trades/` lists offers of one profession: for each the level from which it is offered, one or two costs and a result (item and count), how often it can be traded until the next restock (`maxUses`), the experience for the villager and for the player and the price rise for demand. A file of another name adds offers to the profession; one of the same name as an earlier pack's replaces it. The experience per level, the number of offers per level and the restocks per day are set under `trading` in the villagers' species file in `villagers/`; a profession may set its own number of offers.
 
 **See also**
 

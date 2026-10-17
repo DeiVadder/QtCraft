@@ -1,6 +1,6 @@
 {
     "name": "villager",
-    "villager": true,
+    "villager": "villager",
     "sounds": {
         "ambient": "mob.villager.ambient",
         "hurt": "mob.villager.hurt",

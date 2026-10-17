@@ -118,7 +118,7 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         const auto &creature = entity.as<QcCreature>();
         spawn.creatureType = creature.type;
         if (m_state.content().mobs()[creature.type].villager) {
-            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.villager);
+            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.type, creature.villager);
         }
         break;
     }

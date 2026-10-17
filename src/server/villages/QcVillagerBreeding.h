@@ -37,6 +37,8 @@ public:
         qint64 village = 0;
         QcBlockPos bed;
         QcVec3 position;
+        // The creature kind of the parents.
+        int type = 0;
     };
 
     struct Context

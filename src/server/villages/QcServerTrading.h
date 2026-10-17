@@ -50,7 +50,8 @@ private:
     QcMsg::TradeState stateOf(const QcCreature &villager) const;
     void send(QcServerClient &client, const QcCreature &villager, bool force);
     bool inReach(const QcServerClient &client, const QcCreature &villager, double slack) const;
-    const QcVillagerTrades &trades() const;
+    // The offers of the villager's species.
+    const QcVillagerTrades &trades(const QcCreature &villager) const;
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

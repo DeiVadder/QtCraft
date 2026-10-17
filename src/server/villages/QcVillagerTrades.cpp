@@ -52,9 +52,15 @@ qint64 dayOf(double worldTime)
 
 } // namespace
 
-QcVillagerTrades::QcVillagerTrades(const QcContentRegistry &content)
-    : m_settings(content.villagerSettings().trading)
+QcVillagerTrades::QcVillagerTrades(const QcContentRegistry &content, const QcVillagerSettings &species)
+    : m_settings(species.trading)
 {
+    for (const QcVillagerProfession &profession : species.professions) {
+        if (profession.offersPerLevel > 0) {
+            m_offersPerLevel.insert(profession.name, profession.offersPerLevel);
+        }
+    }
+
     // Sets in load order; an offer whose id a later set repeats is replaced in place.
     for (const QcTradeSet &set : content.tradeSets()) {
         QList<Offer> &offers = m_offers[set.profession];
@@ -108,9 +114,10 @@ QList<const QcVillagerTrades::Offer *> QcVillagerTrades::drawn(const QcVillagerR
     const auto rank = [seed](const Offer *offer) { return qcMixSeed(seed, qcNameSalt(offer->definition.id)); };
 
     // Saved offers stay; the free places go to the best ranked of the others.
+    const int perLevel = m_offersPerLevel.value(villager.profession, m_settings.offersPerLevel);
     QList<const Offer *> picked;
     for (const Offer *offer : pool) {
-        if (saved(offer) && picked.size() < m_settings.offersPerLevel) {
+        if (saved(offer) && picked.size() < perLevel) {
             picked.append(offer);
         }
     }
@@ -121,7 +128,7 @@ QList<const QcVillagerTrades::Offer *> QcVillagerTrades::drawn(const QcVillagerR
         }
     }
     std::ranges::stable_sort(others, {}, rank);
-    picked += others.mid(0, std::max(0, m_settings.offersPerLevel - int(picked.size())));
+    picked += others.mid(0, std::max(0, perLevel - int(picked.size())));
 
     // In the content's order.
     QList<const Offer *> ordered;

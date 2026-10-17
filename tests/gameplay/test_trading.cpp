@@ -8,6 +8,7 @@
 #include "server/villages/QcVillagerTrades.h"
 #include "worldgen/villages/QcVillageGenerator.h"
 
+#include <QScopeGuard>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -61,9 +62,9 @@ private:
 
     void setPhase(double phase) { m_server->setWorldTime(QcDayCycle::dayLength * (10.0 + phase)); }
 
-    // A server with the village and a farmer living there, its composter claimed: the time stands at
-    // `phase`, no creatures spawn by themselves. Returns the farmer.
-    quint32 startWithFarmer(double phase, const QcServerConfig &config = {})
+    // A server with the village and a farmer of the creature kind `kind` living there, its composter
+    // claimed: the time stands at `phase`, no creatures spawn by themselves. Returns the farmer.
+    quint32 startWithFarmer(double phase, const QcServerConfig &config = {}, const QString &kind = u"qtcraft:villager"_s)
     {
         join(config, std::make_unique<TradingTerrain>(m_content));
         chat(u"/gamerule daylightCycle false"_s);
@@ -86,15 +87,16 @@ private:
         m_server->world().setBlock(m_feet.offset(2, 0, 2), id("qtcraft:composter"));
 
         const quint32 entity = m_server->entities().newId();
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:villager"_s), QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 1.5}, entity);
-        villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettings(), 7);
+        const int type = *m_content->mobIndex(kind);
+        m_server->mobs().spawn(type, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 1.5}, entity);
+        villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettingsOf(type), 7);
         ticks(30);
         return entity;
     }
 
     QcCreature *villager(quint32 entity) { return m_server->mobs().find(entity); }
 
-    const QcVillagerTrades &trades() const { return m_server->mobs().villagers().trades(); }
+    const QcVillagerTrades &trades() const { return m_server->mobs().villagers().trades(*m_content->mobIndex(u"qtcraft:villager"_s)); }
 
     // Holds the villager next to the player (the routine would walk it away between ticks), or
     // `dx` blocks east of the player.
@@ -506,11 +508,39 @@ private slots:
         QCOMPARE(trades().offersOf(found->villager), trades().offersOf(saved));
     }
 
+    void aSecondSpeciesTradesByItsOwnSettings()
+    {
+        // Gnomes: the villager under another name, living by a copy of its settings with one offer
+        // per level (decision E-421).
+        const std::shared_ptr<const QcContentRegistry> base = m_content;
+        const auto restore = qScopeGuard([this, base] { m_content = base; });
+        auto content = std::make_shared<QcContentRegistry>(*base);
+        QcVillagerSettings gnomes = *content->villagerSettings(u"qtcraft:villager"_s);
+        gnomes.name = u"test:gnome"_s;
+        gnomes.trading.offersPerLevel = 1;
+        content->registerVillagerSettings(gnomes);
+        QcMobDefinition gnome = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
+        gnome.name = u"test:gnome"_s;
+        gnome.villagerSettings = gnomes.name;
+        gnome.villagerSettingsIndex = -1;
+        content->registerMob(gnome);
+        m_content = content;
+
+        // Its screen shows the gnomes' number of offers, the villagers' stay at theirs.
+        const quint32 farmer = startWithFarmer(meetPhase, {}, u"test:gnome"_s);
+        holdNear(farmer);
+        send(QcMsg::UseEntity{farmer});
+        ticks(1);
+        QVERIFY(m_client->trade);
+        QCOMPARE(m_client->trade->offers.size(), 1);
+        QCOMPARE(trades().settings().offersPerLevel, 2);
+    }
+
     void aChildDoesNotTrade()
     {
         // Young with the farmer's offers all the same (a child is unemployed): it only looks up.
         const quint32 farmer = startWithWheatFarmer(meetPhase);
-        villager(farmer)->growUp = m_content->villagerSettings().breeding.growUpSeconds;
+        villager(farmer)->growUp = (*m_content->villagerSettings(u"qtcraft:villager"_s)).breeding.growUpSeconds;
         QCOMPARE(openWithWheat(farmer, 0), -1);
         QVERIFY(!m_client->trade);
         QCOMPARE(villager(farmer)->villager.trader, 0u);

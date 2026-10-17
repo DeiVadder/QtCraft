@@ -26,7 +26,7 @@ private:
         QStringList warnings;
         return *QcBaseContent::load(warnings);
     }();
-    QcVillagerTrades m_trades{*m_content};
+    QcVillagerTrades m_trades{*m_content, *m_content->villagerSettings(u"qtcraft:villager"_s)};
 
     static QcVillagerRecord villagerOf(const QString &profession, int level, quint32 look = 7)
     {
@@ -169,7 +169,7 @@ private slots:
         const QcTradeOffer replaced = m_trades.offersOfProfession(u"qtcraft:farmer"_s).constFirst().definition;
         set.offers.append({replaced.id, replaced.level, {{u"qtcraft:dirt"_s, 3}}, replaced.result, 5, 2, 1, 0});
         modded.registerTradeSet(set);
-        const QcVillagerTrades moddedTrades(modded);
+        const QcVillagerTrades moddedTrades(modded, *modded.villagerSettings(u"qtcraft:villager"_s));
 
         // At catalog level the replacement keeps its place, and the new offers are there.
         const QList<QcVillagerTrades::Offer> farmer = moddedTrades.offersOfProfession(u"qtcraft:farmer"_s);

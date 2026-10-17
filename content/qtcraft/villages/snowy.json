@@ -1,4 +1,5 @@
 {
+    "formatVersion": 1,
     "name": "snowy",
     "biomes": [
         "tundra"
@@ -43,7 +44,7 @@
         "white_wool_carpet": "brown_wool_carpet",
         "poppy": "fern"
     },
-    "villagers": {
+    "look": {
         "outfit": "villager_coat",
         "hair": [
             "villager_fur_hat",

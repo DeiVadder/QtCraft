@@ -70,9 +70,9 @@ private:
         golem.spawnWeight = 0.0;
         golem.extraSpawns.clear();
         content->registerMob(golem);
-        QcVillagerSettings settings = content->villagerSettings();
+        QcVillageSettings settings = content->villageSettings();
         settings.golem = {u"test:golem"_s, minVillagers, villagersPerGolem, cooldown, 8};
-        content->setVillagerSettings(settings);
+        content->setVillageSettings(settings);
         return content;
     }
 
@@ -284,7 +284,7 @@ private slots:
         QCOMPARE(built.state().population, int(before + 1));
         const QcCreature *child = youngest(built);
         QVERIFY(child);
-        QCOMPARE(child->villager.profession, built.content->villagerSettings().unemployed);
+        QCOMPARE(child->villager.profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QVERIFY(child->villager.home);
         QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager.home)->claimedBy, child->uid);
         QCOMPARE(child->villager.style, built.state().style);
@@ -344,12 +344,12 @@ private slots:
         QcVillagerBreeding breeding(content);
         QList<QcCreature> mobs(2);
         for (QcCreature &mob : mobs) {
-            mob.type = *content->mobIndex(content->villagerSettings().mob);
+            mob.type = *content->mobIndex(u"qtcraft:villager"_s);
             mob.villager.village = 7;
         }
         mobs[0].villager.profession = u"qtcraft:farmer"_s;
         mobs[0].villager.produce = 10;
-        mobs[1].villager.profession = content->villagerSettings().unemployed;
+        mobs[1].villager.profession = (*content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
         mobs[1].motion.position = {1.0, 0.0, 0.0};
 
         // No village of id 7 is known: no child, but the farmer shares all the same.
@@ -386,7 +386,7 @@ private slots:
         child = built.mobs->find(childId);
         QVERIFY(child->isYoung());
         QVERIFY(!child->villager.work);
-        QCOMPARE(child->villager.profession, built.content->villagerSettings().unemployed);
+        QCOMPARE(child->villager.profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QCOMPARE(child->villager.activity, QcVillagerActivity::Wander);
 
         // Grown up, it takes a workstation and its profession.
@@ -395,7 +395,7 @@ private slots:
         child = built.mobs->find(childId);
         QVERIFY(!child->isYoung());
         QVERIFY(child->villager.work);
-        QVERIFY(child->villager.profession != built.content->villagerSettings().unemployed);
+        QVERIFY(child->villager.profession != (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QCOMPARE(child->villager.activity, QcVillagerActivity::Work);
     }
 
@@ -406,9 +406,9 @@ private slots:
         QVERIFY(built.plan);
         setPhase(built, workPhase);
         const int population = built.state().population;
-        QcVillagerSettings settings = built.content->villagerSettings();
+        QcVillageSettings settings = built.content->villageSettings();
         settings.golem.minVillagers = population + 1;
-        built.content->setVillagerSettings(settings);
+        built.content->setVillageSettings(settings);
         const int golemType = *built.content->mobIndex(u"test:golem"_s);
         const auto golems = [&] {
             return std::ranges::count_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
@@ -419,7 +419,7 @@ private slots:
         // At it, one golem per `population` villagers: one, near the meeting point, counted.
         settings.golem.minVillagers = population;
         settings.golem.villagersPerGolem = population;
-        built.content->setVillagerSettings(settings);
+        built.content->setVillageSettings(settings);
         ticks(built, 3 * QcMobManager::villageLifeTicks + 1);
         QCOMPARE(golems(), 1);
         QCOMPARE(built.state().golems, 1);
@@ -474,12 +474,12 @@ private slots:
         // The base game names "iron_golem", which arrives later.
         Village built = village(loadContent());
         QVERIFY(built.plan);
-        QCOMPARE(built.content->villagerSettings().golem.mob, u"qtcraft:iron_golem"_s);
-        QVERIFY(!built.mobs->golems().kind());
-        QcVillagerSettings settings = built.content->villagerSettings();
+        QCOMPARE(built.content->golemOfStyle(built.state().style).mob, u"qtcraft:iron_golem"_s);
+        QVERIFY(!built.mobs->golems().kind(built.state().style));
+        QcVillageSettings settings = built.content->villageSettings();
         settings.golem.minVillagers = 1;
         settings.golem.villagersPerGolem = 1;
-        built.content->setVillagerSettings(settings);
+        built.content->setVillageSettings(settings);
         const qsizetype before = built.mobs->mobs().size();
         ticks(built, 2 * QcMobManager::villageLifeTicks + 1);
         QCOMPARE(built.mobs->mobs().size(), before);
@@ -491,7 +491,7 @@ private slots:
         // An igloo's bed has two blocks of air above it: a villager lying in it has its eyes inside
         // the bed's cells, not a standing height above it in the roof.
         std::shared_ptr<QcContentRegistry> content = loadContent();
-        const QcMobDefinition &definition = content->mobs()[*content->mobIndex(content->villagerSettings().mob)];
+        const QcMobDefinition &definition = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
         QcCreature mob;
         mob.motion.position = {10.5, 65.5625, 20.25};
         QVERIFY(QcEnvironmentDamage::eyesOf(mob, definition).y > 66.5);
@@ -667,17 +667,18 @@ private slots:
         village.golems = 3;
         world.villages().restore({village});
         const int type = *content->mobIndex(u"test:golem"_s);
+        const QcVillageGolems golems(content);
         QList<QcCreature> mobs(1);
         mobs[0].type = type;
         mobs[0].motion.position = {500.5, 64.0, 500.5};
-        QCOMPARE(QcVillageGolems::golemsInWorld(mobs, type, world.villages()), 4);
+        QCOMPARE(golems.golemsInWorld(mobs, type, world.villages()), 4);
         for (int i = 0; i < 5; ++i) {
             QcCreature golem;
             golem.type = type;
             golem.motion.position = {5.5 + i, 64.0, 5.5};
             mobs.append(golem);
         }
-        QCOMPARE(QcVillageGolems::golemsInWorld(mobs, type, world.villages()), 6);
+        QCOMPARE(golems.golemsInWorld(mobs, type, world.villages()), 6);
     }
 
     void theGolemCooldownSurvivesTimeGoingBack()
@@ -686,10 +687,10 @@ private slots:
         QVERIFY(built.plan);
         setPhase(built, workPhase);
         const int population = built.state().population;
-        QcVillagerSettings settings = built.content->villagerSettings();
+        QcVillageSettings settings = built.content->villageSettings();
         settings.golem.minVillagers = population;
         settings.golem.villagersPerGolem = population;
-        built.content->setVillagerSettings(settings);
+        built.content->setVillageSettings(settings);
         ticks(built, 3 * QcMobManager::villageLifeTicks + 1);
         QCOMPARE(golemCount(built), 1);
 

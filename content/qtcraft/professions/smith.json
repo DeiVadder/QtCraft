@@ -1,0 +1,13 @@
+{
+    "formatVersion": 1,
+    "name": "smith",
+    "workstations": [
+        "furnace"
+    ],
+    "layers": {
+        "torso": {
+            "texture": "villager_smith_apron",
+            "tint": "none"
+        }
+    }
+}

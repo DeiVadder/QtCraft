@@ -4,6 +4,7 @@
 
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_village_mods SOURCES content/test_village_mods.cpp LIBRARIES qc_base_content)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_base_content)
 qc_add_test(test_crafting SOURCES content/test_crafting.cpp LIBRARIES qc_common)
 qc_add_test(test_armour SOURCES content/test_armour.cpp LIBRARIES qc_server)

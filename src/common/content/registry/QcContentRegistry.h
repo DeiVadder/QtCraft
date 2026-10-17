@@ -165,15 +165,32 @@ public:
     // What the weather does to the world (server side only); a later pack replaces it.
     void setWeather(QcWeatherDefinition weather) { m_weather = std::move(weather); }
     const QcWeatherDefinition &weather() const { return m_weather; }
-    // Village styles and settings (decision E-403, server side only): styles replaced by name, the
-    // settings by a later pack.
+    // Village styles and settings (decision E-403, server side only): styles replaced by name (each
+    // registration counts QcVillageStyleDefinition::registered up), the settings by a later pack.
     void registerVillageStyle(QcVillageStyleDefinition style);
+    QList<QcVillageStyleDefinition> &villageStyles() { return m_villageStyles; }
     const QList<QcVillageStyleDefinition> &villageStyles() const { return m_villageStyles; }
+    const QcVillageStyleDefinition *villageStyle(const QString &name) const;
     void setVillageSettings(QcVillageSettings settings) { m_villageSettings = std::move(settings); }
     const QcVillageSettings &villageSettings() const { return m_villageSettings; }
-    // Villagers (decision E-411, server side only): professions, routine, default look.
-    void setVillagerSettings(QcVillagerSettings settings) { m_villagerSettings = std::move(settings); }
-    const QcVillagerSettings &villagerSettings() const { return m_villagerSettings; }
+    // The creature kind living in villages of `style` (its own or the settings'), when it is a
+    // villager; and the golems guarding them: the style's golem fields over the settings' (decision
+    // E-421).
+    std::optional<int> villagerOfStyle(const QString &style) const;
+    QcVillageGolemSettings golemOfStyle(const QString &style) const;
+    // Villager species and professions (decision E-411, E-421, server side only), replaced by name.
+    void registerVillagerSettings(QcVillagerSettings settings);
+    QList<QcVillagerSettings> &villagerSpecies() { return m_villagerSettings; }
+    const QList<QcVillagerSettings> &villagerSpecies() const { return m_villagerSettings; }
+    const QcVillagerSettings *villagerSettings(const QString &name) const;
+    // Removes the species `name` (QcVillageContent::resolveSpecies drops a broken one).
+    void removeVillagerSettings(const QString &name);
+    // The settings of the creature kind `mobType` (QcMobDefinition::villagerSettings, by the index
+    // finish() keeps on the creature); empty settings for a kind without them.
+    const QcVillagerSettings &villagerSettingsOf(int mobType) const;
+    void registerProfession(QcVillagerProfession profession);
+    const QList<QcVillagerProfession> &professions() const { return m_professions; }
+    const QcVillagerProfession *profession(const QString &name) const;
     // Offers of the professions (decision E-414, server side only): sets replaced by name.
     void registerTradeSet(QcTradeSet set);
     const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
@@ -245,7 +262,10 @@ private:
     QList<QcTradeSet> m_tradeSets;
     QHash<QString, qsizetype> m_tradeSetIndex;
     QcVillageSettings m_villageSettings;
-    QcVillagerSettings m_villagerSettings;
+    QList<QcVillagerSettings> m_villagerSettings;
+    QHash<QString, qsizetype> m_villagerSettingsIndex;
+    QList<QcVillagerProfession> m_professions;
+    QHash<QString, qsizetype> m_professionIndex;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

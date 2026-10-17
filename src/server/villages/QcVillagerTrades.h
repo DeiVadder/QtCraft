@@ -10,10 +10,14 @@
 #include <utility>
 
 class QcContentRegistry;
+struct QcVillagerSettings;
 
 // The offers of the villagers (decision E-414): the offers of each profession from the trade sets
 // of the content (QcTradeSet; offers naming an unknown item are left out with a warning), which of
 // them a villager has, their price, the villager's experience and level, and restocking.
+//
+// The trading settings are those of one villager species (QcVillagerSettings::trading, decision
+// E-421); a profession's own offersPerLevel takes the place of the species'.
 //
 // A villager has, for each level it reached, up to QcTradingSettings::offersPerLevel offers of that
 // level: those of its record that still exist, the free places drawn from its profession's other
@@ -35,7 +39,7 @@ public:
     };
 
     QcVillagerTrades() = default;
-    explicit QcVillagerTrades(const QcContentRegistry &content);
+    QcVillagerTrades(const QcContentRegistry &content, const QcVillagerSettings &species);
 
     const QcTradingSettings &settings() const { return m_settings; }
     // All offers of a profession, by level and then in the order of the content.
@@ -63,5 +67,7 @@ private:
     QList<const Offer *> drawn(const QcVillagerRecord &villager, int level, const QList<const Offer *> &pool) const;
 
     QcTradingSettings m_settings;
+    // Profession -> its own offers per level.
+    QHash<QString, int> m_offersPerLevel;
     QHash<QString, QList<Offer>> m_offers;
 };

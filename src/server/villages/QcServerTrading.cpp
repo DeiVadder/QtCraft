@@ -48,9 +48,9 @@ QcServerTrading::QcServerTrading(QcServerState &state, QcServerSounds &sounds, Q
 {
 }
 
-const QcVillagerTrades &QcServerTrading::trades() const
+const QcVillagerTrades &QcServerTrading::trades(const QcCreature &villager) const
 {
-    return m_state.entities().creatures().villagers().trades();
+    return m_state.entities().creatures().villagers().trades(villager.type);
 }
 
 bool QcServerTrading::inReach(const QcServerClient &client, const QcCreature &villager, double slack) const
@@ -73,8 +73,9 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
     // Asleep, on its way to bed, fleeing, trading with another player or a child: it only looks up.
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
     const bool busy = villager->villager.trader != 0 && villager->villager.trader != client.id;
-    const bool bedtime = m_state.content().villagerSettings().activityAt(QcDayCycle::phase(m_state.info().worldTime)) == QcVillagerActivity::Sleep;
-    trades().sync(villager->villager);
+    const QcVillagerSettings &species = m_state.content().villagerSettingsOf(villager->type);
+    const bool bedtime = species.activityAt(QcDayCycle::phase(m_state.info().worldTime), villager->villager.profession) == QcVillagerActivity::Sleep;
+    trades(*villager).sync(villager->villager);
     if (villager->villager.sleeping || bedtime || villager->fleeTimer > 0.0 || busy || client.dead || villager->isYoung()
         || villager->villager.offers.isEmpty()) {
         if (!villager->villager.sleeping) {
@@ -112,8 +113,8 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
         return;
     }
     // The saved state follows the offers first (a command may have changed the profession).
-    trades().sync(villager->villager);
-    const QList<const QcVillagerTrades::Offer *> offers = trades().offersOf(villager->villager);
+    trades(*villager).sync(villager->villager);
+    const QList<const QcVillagerTrades::Offer *> offers = trades(*villager).offersOf(villager->villager);
     if (message.offer >= offers.size()) {
         send(client, *villager, true);
         return;
@@ -133,7 +134,7 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
     hand(client, *villager, offer, traded);
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
     if (villager->villager.level > levelBefore) {
-        trades().sync(villager->villager);
+        trades(*villager).sync(villager->villager);
         m_sounds.play(QString::fromLatin1(QcSoundKeys::levelUp), centreOf(*villager, definition));
     } else if (!definition.ambientSound.isEmpty()) {
         m_sounds.play(definition.ambientSound, centreOf(*villager, definition));
@@ -149,7 +150,7 @@ bool QcServerTrading::tradeOnce(QcServerClient &client, QcCreature &villager, co
         return false;
     }
     QcVillagerOffer &state = record.offers[index];
-    const QList<QcItemStack> costs = trades().priceOf(offer, state);
+    const QList<QcItemStack> costs = trades(villager).priceOf(offer, state);
     if (state.uses >= offer.definition.maxUses || !canPay(client.inventory, costs)) {
         return false;
     }
@@ -159,7 +160,7 @@ bool QcServerTrading::tradeOnce(QcServerClient &client, QcCreature &villager, co
         Q_ASSERT(paid);
     }
     ++state.uses;
-    trades().addExperience(record, offer.definition.villagerExperience);
+    trades(villager).addExperience(record, offer.definition.villagerExperience);
     return true;
 }
 
@@ -228,16 +229,16 @@ void QcServerTrading::update()
 QcMsg::TradeState QcServerTrading::stateOf(const QcCreature &villager) const
 {
     const QcVillager &record = villager.villager;
-    const QcVillagerProfession *profession = m_state.content().villagerSettings().profession(record.profession);
-    const auto [start, end] = trades().levelRange(record.level);
+    const QcVillagerProfession *profession = m_state.content().profession(record.profession);
+    const auto [start, end] = trades(villager).levelRange(record.level);
     QcMsg::TradeState state{villager.id, profession ? profession->translationKey : QString(), record.level, record.experience, start, end, {}};
 
-    const QList<const QcVillagerTrades::Offer *> offers = trades().offersOf(record);
+    const QList<const QcVillagerTrades::Offer *> offers = trades(villager).offersOf(record);
     // Each offer with its state by id (a fresh one until sync adds it).
     for (qsizetype i = 0; i < offers.size() && i < QcMsg::TradeState::maxOffers; ++i) {
         const auto known = std::ranges::find(record.offers, offers[i]->definition.id, &QcVillagerOffer::id);
         const QcVillagerOffer offer = known != record.offers.cend() ? *known : QcVillagerOffer{offers[i]->definition.id, 0, 0};
-        state.offers.append({trades().priceOf(*offers[i], offer), offers[i]->result, offer.uses, offers[i]->definition.maxUses});
+        state.offers.append({trades(villager).priceOf(*offers[i], offer), offers[i]->result, offer.uses, offers[i]->definition.maxUses});
     }
     return state;
 }

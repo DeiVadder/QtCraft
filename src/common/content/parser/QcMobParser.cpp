@@ -382,7 +382,12 @@ namespace QcMobParser {
         parseBreeding(mob, nested, packNamespace);
     });
     parseMobModel(json, mob, reader, packNamespace);
-    mob.villager = reader.boolean(u"villager"_s, false);
+    // "villager" names the villager settings (decision E-421).
+    if (json.contains(u"villager"_s) && !json.value(u"villager"_s).isString()) {
+        reader.fail(u"'villager' names villager settings (villagers/<name>.json), e.g. \"villager\""_s);
+    }
+    mob.villagerSettings = reader.name(u"villager"_s, packNamespace);
+    mob.villager = !mob.villagerSettings.isEmpty();
     if (reader.ok() && mob.villager && (mob.skeleton.isEmpty() || mob.hostile || mob.flying || mob.ambient)) {
         reader.fail(u"villagers need a 'skeleton' and are peaceful walkers"_s);
     }

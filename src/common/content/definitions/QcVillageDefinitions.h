@@ -7,10 +7,12 @@
 #include <QString>
 #include <QStringList>
 
+#include <optional>
+
 // Villages in data (decision E-403): the styles (villages/*.json) say which pieces a village of a
 // biome is built from and how their blocks are swapped; the settings (worldgen/villages.json) say
-// how often and where villages are built and which blocks are workstations. Names are qualified
-// content names. Server side only (not synchronised).
+// how often and where villages are built, which creature kind lives in them and which golems guard
+// them. Names are qualified content names. Server side only (not synchronised).
 
 // One blueprint of a kind of building: a structure (structures/*.json) whose door side, the south
 // side of its first layer, faces the road it stands on.
@@ -156,6 +158,16 @@ struct QcVillagePiece
     bool hasRules() const { return chance < 1.0 || minRoadLength > 0 || water > 0; }
 };
 
+// Other creatures living in the villages of a style (decision E-421), such as cats: `mob` with
+// `min` to `max` of them per village. Data only for now: no code spawns them yet (the hook is
+// QcMobManager::spawnVillagers, beside the villagers).
+struct QcVillageResident
+{
+    QString mob;
+    int min = 1;
+    int max = 1;
+};
+
 struct QcVillageStyleDefinition
 {
     static constexpr int maxPieces = 32;
@@ -163,6 +175,8 @@ struct QcVillageStyleDefinition
     static constexpr int maxRoads = 8;
     static constexpr int maxCrops = 16;
     static constexpr int maxLayouts = 16;
+    static constexpr int maxBiomes = 64;
+    static constexpr int maxResidents = 8;
 
     // Where the villages of the style stand: on flat land, or over water on stilts (decision E-407).
     enum class Ground
@@ -199,8 +213,17 @@ struct QcVillageStyleDefinition
     // Block name -> block name, applied to every piece of the style (states keep their properties
     // where the new block has them), so a mod can add a style from the same houses.
     QHash<QString, QString> palette;
-    // What its villagers wear (decision E-411); unset: the default look of villagers.json.
-    QcVillagerLook villagers;
+    // What its villagers wear (decision E-411); unset: the default look of their species.
+    QcVillagerLook look;
+    // The creature kind living in its villages (a mob with "villager"); empty: the settings'.
+    QString villager;
+    // Its golems over the settings' (QcContentRegistry::golemOfStyle; an empty mob: none).
+    std::optional<QcVillageGolemPatch> golem;
+    QList<QcVillageResident> residents;
+    // When the style was last registered (QcContentRegistry::registerVillageStyle counts up): of two
+    // styles naming a biome or being the fallback, the later registered one keeps it
+    // (QcVillageContent::resolveStyles, decision E-421).
+    int registered = 0;
 };
 
 struct QcVillageSettings
@@ -219,8 +242,13 @@ struct QcVillageSettings
     int maxPieceSlope = 3;
     // Blocks between two lamps along a road.
     int lampSpacing = 12;
-    // Block name -> kind of work (farmer, smith, ...): the village state lists these blocks.
+    // Block name -> workstation kind (the name of the profession working there): the village state
+    // lists these blocks. Filled from the professions (QcContentRegistry::finish), not read.
     QHash<QString, QString> workstations;
+    // The creature kind living in villages whose style names none (a mob with "villager").
+    QString villager;
+    // The golems of villages whose style names none.
+    QcVillageGolemSettings golem;
     // The meeting point block (the bell).
     QString bell;
 };

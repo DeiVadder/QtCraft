@@ -73,9 +73,10 @@ public:
     void noteChanged() { ++m_changes; }
     // Villagers living in all villages (QcVillage::population).
     qsizetype population() const;
-    // Iron golems of all villages (QcVillage::golems as last counted), or as many as `loaded` (golems
-    // in the world now, by the village whose area holds them) says where that is more.
-    qsizetype golems(const QHash<qint64, int> &loaded) const;
+    // Golems of one kind in all villages: per village as many as `loaded` says (golems of the kind
+    // in the world now, by the village whose area holds them), or for a village whose golems are of
+    // that kind (`ofKind`) as many as it counted last (QcVillage::golems) where that is more.
+    qsizetype golems(const QHash<qint64, int> &loaded, const std::function<bool(const QcVillage &)> &ofKind) const;
 
 private:
     // `plan` is the village's generator plan if at hand (else asked of the generator when needed).

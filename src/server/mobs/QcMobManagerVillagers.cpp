@@ -14,13 +14,13 @@
 
 void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId, bool onlyAlwaysLivedIn)
 {
-    const QcVillagerSettings &settings = m_content->villagerSettings();
-    const std::optional<int> type = m_content->mobIndex(settings.mob);
     const std::shared_ptr<const QcVillagePlan> plan = world.generator().villageFor(pos);
     QcVillage *village = plan && (plan->alwaysLivedIn || !onlyAlwaysLivedIn) ? world.villages().find(plan->id) : nullptr;
-    if (!type || !m_content->mobs()[*type].villager || !village) {
+    const std::optional<int> type = village ? m_content->villagerOfStyle(village->style) : std::nullopt;
+    if (!type) {
         return;
     }
+    const QcVillagerSettings &settings = m_content->villagerSettingsOf(*type);
 
     // One villager beside each free bed, its look drawn from the bed's place: the same world gets
     // the same villagers.
@@ -120,12 +120,6 @@ void QcMobManager::reconcileClaims(QcServerWorld &world, QcVillage &village)
 
 void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId)
 {
-    const QcVillagerSettings &settings = m_content->villagerSettings();
-    const std::optional<int> type = m_content->mobIndex(settings.mob);
-    if (!type || !m_content->mobs()[*type].villager) {
-        return;
-    }
-
     const QcVillagerBehaviour &behaviour = villagers();
     const QcVillagerBreeding::Context breeding{world, world.villages(), worldTime, [&behaviour](QcBlockPos pos) { return behaviour.rainsAt(pos); },
                                                m_villagerLimits, &m_claimsChecked};
@@ -133,7 +127,8 @@ void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const 
     for (const QcVillagerBreeding::Birth &birth : births) {
         QcVillage *village = world.villages().find(birth.village);
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x, int(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
-        spawn(*type, birth.position, nextEntityId());
+        const QcVillagerSettings &settings = m_content->villagerSettingsOf(birth.type);
+        spawn(birth.type, birth.position, nextEntityId());
         m_mobs.last().villager = QcVillagerHomes::settle(*village, birth.bed, m_mobs.last().uid, settings, look);
         m_mobs.last().growUp = settings.breeding.growUpSeconds;
         world.villages().noteChanged();

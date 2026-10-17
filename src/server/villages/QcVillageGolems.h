@@ -22,8 +22,9 @@ struct QcVillage;
 // `villagersPerGolem` villagers and the last golem `cooldownSeconds` ago (QcVillage::lastGolem), it
 // spawns one where a golem stands within `spawnRadius` of its meeting point, below the golems of
 // the world (QcServerLimits villageGolems: those every village counted last, and those loaded
-// outside villages). The golem is the creature kind of
-// QcVillageGolemSettings::mob; while the content has no such kind the rule rests (logged once).
+// outside villages, counted per golem kind). The golem is the creature kind of the village style's
+// QcVillageGolemSettings::mob (decision E-421); while the content has no such kind the rule rests
+// (logged once).
 class QcVillageGolems
 {
 public:
@@ -50,8 +51,9 @@ public:
 
     explicit QcVillageGolems(std::shared_ptr<const QcContentRegistry> content);
 
-    // The golem's creature kind; none while the content lacks it (logged the first time).
-    std::optional<int> kind() const;
+    // The golems' creature kind in villages of `style` (QcContentRegistry::golemOfStyle); none
+    // while the content lacks it (logged the first time) or the style has no golems.
+    std::optional<int> kind(const QString &style) const;
     // Counts the golems of the villages in `villages` and the golems to spawn; the spawning
     // villages' lastGolem is set.
     QList<Spawn> check(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context) const;
@@ -66,7 +68,7 @@ public:
     std::optional<QcVec3> placeFor(const QcVillage &village, int type, const Context &context) const;
     // Golems of kind `type` in the world: outside villages those loaded, in each village those it
     // counted last or those loaded in its area, whichever is more (QcVillages::golems).
-    static qint64 golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages);
+    qint64 golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages) const;
 
 private:
     // Every chunk of the village's area and reach is loaded: its golems are all in the world.

@@ -2,6 +2,8 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -50,18 +52,20 @@ QString outfitName(const QString &outfit, const QcVillagerProfession &profession
 QStringList generate(QcContentRegistry &registry)
 {
     QStringList warnings;
-    const QcVillagerSettings &settings = registry.villagerSettings();
-    if (settings.mob.isEmpty()) {
+    if (registry.villagerSpecies().isEmpty()) {
         return warnings;
     }
 
-    QList<QPair<QString, QcVillagerLook>> looks{{u"villagers.json"_s, settings.look}};
-    for (const QcVillageStyleDefinition &style : registry.villageStyles()) {
-        if (style.villagers.isSet()) {
-            looks.append({u"style '%1'"_s.arg(style.name), style.villagers});
+    QList<QPair<QString, QcVillagerLook>> looks;
+    for (const QcVillagerSettings &species : std::as_const(registry).villagerSpecies()) {
+        looks.append({u"villager settings '%1'"_s.arg(species.name), species.look});
+    }
+    for (const QcVillageStyleDefinition &style : std::as_const(registry.villageStyles())) {
+        if (style.look.isSet()) {
+            looks.append({u"style '%1'"_s.arg(style.name), style.look});
         }
     }
-    for (const QcVillagerProfession &profession : settings.professions) {
+    for (const QcVillagerProfession &profession : registry.professions()) {
         if (!profession.hat.isEmpty() && !isKind(registry, profession.hat, QcAppearanceDefinition::Kind::Hair)) {
             warnings.append(u"profession '%1': hat '%2' is no hair style"_s.arg(profession.name, profession.hat));
         }
@@ -74,7 +78,7 @@ QStringList generate(QcContentRegistry &registry)
             continue;
         }
         const QcAppearanceDefinition outfit = *base;
-        for (const QcVillagerProfession &profession : settings.professions) {
+        for (const QcVillagerProfession &profession : registry.professions()) {
             if (!profession.layers.isEmpty() && !registry.appearance(outfitName(outfit.name, profession))) {
                 registry.registerAppearance(joined(outfit, profession));
             }

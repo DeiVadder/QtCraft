@@ -48,7 +48,7 @@ struct QcTradeSet
     QList<QcTradeOffer> offers;
 };
 
-// How villagers trade (villagers.json "trading", decision E-414): the experience a villager needs
+// How villagers trade (villagers/<name>.json "trading", decision E-414): the experience a villager needs
 // for each level (the first is 0, the fifth is master), how many offers of each level a villager
 // draws from its profession's pool, and how often a day it restocks at its workstation, at least
 // `restockGap` of a day apart.

@@ -62,9 +62,15 @@ struct QcMobDefinition
     // Skeleton mobs that walk with their arms stretched forward (zombies).
     bool armsForward = false;
     // A villager (decision E-411): lives in a village with a bed and a workstation, follows the
-    // routine of villagers.json and opens doors; it is drawn in the look the server sends with it
-    // (QcMsg::EntitySpawn::appearance) rather than in `outfit`.
+    // routine of its villager settings and opens doors; it is drawn in the look the server sends
+    // with it (QcMsg::EntitySpawn::appearance) rather than in `outfit`.
     bool villager = false;
+    // The villager settings it lives by (villagers/<name>.json, decision E-421); set exactly when
+    // `villager` is. Server side only.
+    QString villagerSettings;
+    // The index of those settings in QcContentRegistry::villagerSpecies (QcContentRegistry::finish),
+    // -1 before.
+    int villagerSettingsIndex = -1;
     QList<QcItemDrop> drops;
     // Experience points a creature killed by a player gives as orbs (decision E-398). Server side
     // only.

@@ -1,4 +1,5 @@
 {
+    "formatVersion": 1,
     "name": "desert",
     "biomes": ["desert"],
     "centre": "village_desert_well",
@@ -50,7 +51,7 @@
         },
         { "structure": "village_desert_tower", "max": 1, "minRoadLength": 200 }
     ],
-    "villagers": {
+    "look": {
         "outfit": "villager_robe",
         "hair": [
             "villager_headwrap",

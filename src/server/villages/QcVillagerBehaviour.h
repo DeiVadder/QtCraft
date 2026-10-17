@@ -24,10 +24,11 @@ struct QcVillagePlan;
 // What villagers do (decision E-411), called by QcMobBehaviour for creatures of a villager kind.
 // Every decideTicks ticks (staggered, at most `thoughtsPerTick` villagers per tick) a villager
 // checks its claims, claims a free bed and workstation, looks out for hostile creatures and picks
-// its goal from the routine of villagers.json by the time of day: its workstation (farmers tend the
-// ripe crops of the village fields around it), the meeting point, a stroll near home, its bed. In between it walks its
-// path there (QcMobNavigator), on long walks in legs along the village roads (QcVillagerRoads),
-// opens the wooden doors on its path and closes them behind it, and lies down in its bed at night.
+// its goal from the routine of its species or profession by the time of day: its workstation
+// (farmers tend the ripe crops of the village fields around it), the meeting point, a stroll near
+// home, its bed. In between it walks its path there (QcMobNavigator), on long walks in legs along
+// the village roads (QcVillagerRoads), opens the wooden doors on its path and closes them behind
+// it, and lies down in its bed at night.
 // It flees home from hostile creatures and whoever hurt it, and goes home when it rains. What it
 // does to the world (doors, crops) waits in actions() for QcServerVillagers.
 class QcVillagerBehaviour
@@ -84,7 +85,8 @@ public:
     bool rainsAt(QcBlockPos pos) const { return m_rains && m_rains(pos); }
     QcVillagerRoads &roads() { return m_roads; }
     // The offers of the villagers (decision E-414); they restock at their workstation during work.
-    const QcVillagerTrades &trades() const { return m_trades; }
+    // Those of villagers of the creature kind `mobType`, by their species (decision E-421).
+    const QcVillagerTrades &trades(int mobType) const;
 
     // A new tick: the budgets start again.
     void startTick();
@@ -109,7 +111,8 @@ private:
     bool trade(QcCreature &mob, const Context &context);
     // Flees from the nearest hostile creature within fleeDistance (hostiles()).
     void lookOut(QcCreature &mob, const Context &context);
-    std::optional<QcVec3> nearestHostile(const QcVec3 &at, const Context &context);
+    // The nearest awake hostile creature within `fleeDistance` of `at`.
+    std::optional<QcVec3> nearestHostile(const QcVec3 &at, double fleeDistance, const Context &context);
     // The awake hostile creatures of this tick by the column of 16 × 16 blocks they stand in,
     // gathered at the first look of the tick.
     const QHash<QcChunkPos, QList<QcVec3>> &hostiles(const Context &context);
@@ -122,9 +125,9 @@ private:
     };
     std::optional<Goal> goalOf(QcCreature &mob, const Context &context);
     std::optional<Goal> strollGoal(const QcCreature &mob, const Context &context);
-    // A farmer at work keeps its crop or looks for one (not after every decision while there is
-    // none); others drop it.
-    void lookForCrops(QcVillager &villager, const Context &context) const;
+    // A farmer at work (its `profession` tends crops) keeps its crop or looks for one (not after
+    // every decision while there is none); others drop it.
+    void lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const;
     // A ripe crop near the farmer's workstation on its village's fields (QcVillagePlan::fields), if
     // any; crops a player planted elsewhere in the village are not its to harvest.
     std::optional<QcBlockPos> ripeCropNear(const QcVillager &villager, const Context &context) const;
@@ -157,7 +160,9 @@ private:
     QRandomGenerator &m_random;
     QcPathPlanner &m_planner;
     QcVillagerRoads m_roads;
-    QcVillagerTrades m_trades;
+    // Villager species name -> its offers; m_noTrades for a creature kind without a species.
+    QHash<QString, QcVillagerTrades> m_trades;
+    QcVillagerTrades m_noTrades;
     Limits m_limits;
     std::function<bool(QcBlockPos)> m_rains;
     QList<Action> m_actions;

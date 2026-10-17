@@ -229,12 +229,12 @@ private slots:
         // A chunk knew villager 5, villages.json did not.
         QcMobManager::Stored stored;
         stored.uid = 5;
-        stored.type = *m_content->mobIndex(m_content->villagerSettings().mob);
+        stored.type = *m_content->mobIndex(u"qtcraft:villager"_s);
         stored.position = {state.beds[1].at.x + 0.5, double(state.beds[1].at.y), state.beds[1].at.z + 0.5};
         stored.health = 20.0;
         QcVillagerRecord record;
         record.village = state.id;
-        record.profession = m_content->villagerSettings().unemployed;
+        record.profession = (*m_content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
         record.style = state.style;
         stored.villager = record;
         built.mobs->restore({stored}, {}, built.ids());
@@ -311,7 +311,7 @@ private slots:
         QVERIFY(start);
         const quint32 id = built.mobs->spawn(*m_content->mobIndex(u"qtcraft:villager"_s), *start, built.nextId++);
         QcCreature *walker = built.mobs->find(id);
-        walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, m_content->villagerSettings(), 1);
+        walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), 1);
         bool arrived = false;
         for (int tick = 0; tick < 4800 && !arrived; ++tick) {
             this->tick(built, 0.5);
@@ -447,7 +447,7 @@ private slots:
         QcVillagerRecord farmer;
         farmer.style = u"qtcraft:desert"_s;
         farmer.profession = u"qtcraft:farmer"_s;
-        const QcAppearance look = QcVillagerLooks::appearanceOf(*m_content, farmer);
+        const QcAppearance look = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), farmer);
         QCOMPARE(look.outfit, u"qtcraft:villager_robe@qtcraft:farmer"_s);
         QCOMPARE(look.hair, u"qtcraft:villager_straw_hat"_s);
         const QcAppearanceDefinition *outfit = m_content->appearance(look.outfit);
@@ -463,7 +463,7 @@ private slots:
             unemployed.profession = u"qtcraft:unemployed"_s;
             unemployed.look = seed * 0x01010101u;
             unemployed.style = u"qtcraft:taiga"_s;
-            const QcAppearance taiga = QcVillagerLooks::appearanceOf(*m_content, unemployed);
+            const QcAppearance taiga = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), unemployed);
             QCOMPARE(taiga.outfit, u"qtcraft:villager_coat"_s);
             skins.insert(taiga.skinColor);
         }
@@ -471,33 +471,47 @@ private slots:
         QcVillagerRecord stranger;
         stranger.profession = u"qtcraft:smith"_s;
         stranger.style = u"mod:moon"_s;
-        QCOMPARE(QcVillagerLooks::appearanceOf(*m_content, stranger).outfit, u"qtcraft:villager_tunic@qtcraft:smith"_s);
+        QCOMPARE(QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), stranger).outfit, u"qtcraft:villager_tunic@qtcraft:smith"_s);
     }
 
     void theSettingsComeFromData()
     {
-        const QcVillagerSettings &settings = m_content->villagerSettings();
-        QCOMPARE(settings.mob, u"qtcraft:villager"_s);
+        // The base content in the files of decision E-421: the villager names its settings, the
+        // professions their workstation blocks, which become the village settings' workstations.
+        const int villager = *m_content->mobIndex(u"qtcraft:villager"_s);
+        QCOMPARE(m_content->mobs()[villager].villagerSettings, u"qtcraft:villager"_s);
+        const QcVillagerSettings &settings = m_content->villagerSettingsOf(villager);
+        QCOMPARE(settings.name, u"qtcraft:villager"_s);
+        QCOMPARE(settings.unemployed, u"qtcraft:unemployed"_s);
+        QCOMPARE(settings.professions.size(), 4);
         QCOMPARE(settings.forWorkstation(u"qtcraft:fisher"_s)->name, u"qtcraft:fisher"_s);
         QVERIFY(settings.profession(u"qtcraft:farmer"_s)->tendsCrops);
+        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:composter"_s), u"qtcraft:farmer"_s);
+        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:furnace"_s), u"qtcraft:smith"_s);
+        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:barrel"_s), u"qtcraft:fisher"_s);
+        QCOMPARE(m_content->villageSettings().workstations.size(), 3);
+        QCOMPARE(m_content->villagerOfStyle(u"qtcraft:plains"_s), villager);
+        QCOMPARE(m_content->golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
         QCOMPARE(settings.activityAt(0.75), QcVillagerActivity::Sleep);
         QCOMPARE(settings.activityAt(0.995), QcVillagerActivity::Home);
 
         const auto parse = [](const char *json) {
             return QcVillagerParser::parseVillagerSettings(QJsonDocument::fromJson(json).object(), u"mod"_s);
         };
-        const char *valid = R"({"mob": "v", "unemployed": "none", "professions": [{"name": "none"}],
+        const char *valid = R"({"name": "v", "unemployed": "none",
             "routine": [{"from": 0.5, "do": "sleep"}, {"from": 0.0, "do": "work"}], "look": {"outfit": "o", "skin": ["#102030"]}})";
         const QcResult<QcVillagerSettings> parsed = parse(valid);
         QVERIFY2(parsed, qPrintable(parsed ? QString() : parsed.error()));
+        QCOMPARE(parsed->name, u"mod:v"_s);
         QCOMPARE(parsed->routine.front().activity, QcVillagerActivity::Work);
         QCOMPARE(parsed->look.skin, QList<quint32>{0x102030});
-        QVERIFY(!parse(R"({"mob": "v", "unemployed": "none", "professions": [{"name": "none"}],
-            "routine": [{"from": 0.0, "do": "dance"}], "look": {"outfit": "o"}})"));
-        QVERIFY(!parse(R"({"mob": "v", "unemployed": "none", "professions": [{"name": "none"}],
-            "routine": [{"from": 0.0, "do": "work"}], "look": {"outfit": "o", "skin": ["red"]}})"));
-        QVERIFY(!parse(R"({"mob": "v", "unemployed": "farmer", "professions": [{"name": "farmer", "workstation": "farmer"}],
-            "routine": [{"from": 0.0, "do": "work"}], "look": {"outfit": "o"}})"));
+        QVERIFY(!parse(R"({"name": "v", "unemployed": "none", "routine": [{"from": 0.0, "do": "dance"}], "look": {"outfit": "o"}})"));
+        QVERIFY(!parse(R"({"name": "v", "unemployed": "none", "routine": [{"from": 0.0, "do": "work"}], "look": {"outfit": "o", "skin": ["red"]}})"));
+        // Fields of the earlier single villagers.json are refused with where they went.
+        const QcResult<QcVillagerSettings> old = parse(R"({"name": "v", "mob": "v", "unemployed": "none", "professions": [{"name": "none"}],
+            "routine": [{"from": 0.0, "do": "work"}], "look": {"outfit": "o"}})");
+        QVERIFY(!old);
+        QVERIFY2(old.error().contains(u"moved to"_s), qPrintable(old.error()));
     }
 };
 

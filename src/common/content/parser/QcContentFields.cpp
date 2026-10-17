@@ -155,4 +155,18 @@ QcExperienceDrop parseExperience(const QString &key, QcJsonFieldReader &reader, 
     return fallback;
 }
 
+void checkFormatVersion(int supported, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = reader.json.value(u"formatVersion"_s);
+    if (value.isUndefined()) {
+        return;
+    }
+    const double version = value.toDouble(-1.0);
+    if (!value.isDouble() || version < 1.0 || version != std::floor(version)) {
+        reader.fail(u"'formatVersion' must be a whole number from 1"_s);
+    } else if (version > supported) {
+        reader.fail(u"formatVersion %1 is newer than this game reads (up to %2); the file is left out"_s.arg(version).arg(supported));
+    }
+}
+
 } // namespace QcContentFields

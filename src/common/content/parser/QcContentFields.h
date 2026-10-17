@@ -41,4 +41,11 @@ QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonF
 inline constexpr int maxExperience = 100000;
 QcExperienceDrop parseExperience(const QString &key, QcJsonFieldReader &reader, QcExperienceDrop fallback = {});
 
+// The format of the village files (styles, worldgen/villages.json, villager settings, professions
+// and trades, decision E-421): their "formatVersion", 1 when missing.
+inline constexpr int villageFormatVersion = 1;
+// Fails the reader when "formatVersion" is no whole number from 1 or newer than `supported`, so a
+// file written for a later game is left out with a clear warning rather than read wrongly.
+void checkFormatVersion(int supported, QcJsonFieldReader &reader);
+
 } // namespace QcContentFields

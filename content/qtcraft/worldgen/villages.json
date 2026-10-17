@@ -1,4 +1,5 @@
 {
+    "formatVersion": 1,
     "spacing": 384,
     "chance": 0.65,
     "attempts": 6,
@@ -7,9 +8,12 @@
     "maxPieceSlope": 3,
     "lampSpacing": 12,
     "bell": "bell",
-    "workstations": {
-        "composter": "farmer",
-        "furnace": "smith",
-        "barrel": "fisher"
+    "villager": "villager",
+    "golem": {
+        "mob": "iron_golem",
+        "minVillagers": 10,
+        "villagersPerGolem": 10,
+        "cooldownSeconds": 300,
+        "spawnRadius": 8
     }
 }

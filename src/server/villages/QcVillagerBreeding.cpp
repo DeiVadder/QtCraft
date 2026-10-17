@@ -16,7 +16,6 @@ QcVillagerBreeding::QcVillagerBreeding(std::shared_ptr<const QcContentRegistry> 
 
 QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mobs, const Context &context) const
 {
-    const QcVillagerBreedingSettings &settings = m_content->villagerSettings().breeding;
     const Villagers byVillage = villagersByVillage(mobs);
     qsizetype population = context.villages.population();
     // By id, so the villages that breed at the world's limit do not depend on the hash's order.
@@ -39,6 +38,7 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
             continue;
         }
         auto [first, second] = *parents;
+        const QcVillagerBreedingSettings &settings = m_content->villagerSettingsOf(first->type).breeding;
         const QcVec3 between = (first->motion.position + second->motion.position) * 0.5;
         const std::optional<QcBlockPos> bed = nearestFreeBed(*village, between);
         if (!bed) {
@@ -48,7 +48,7 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
             parent->villager.produce -= settings.food;
             parent->breedCooldown = settings.cooldownSeconds;
         }
-        births.append({village->id, *bed, first->motion.position});
+        births.append({village->id, *bed, first->motion.position, first->type});
         ++population;
     }
     return births;
@@ -56,7 +56,8 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
 
 bool QcVillagerBreeding::breedsNow(const QcVillage &village, const Context &context, qsizetype worldPopulation) const
 {
-    const QcVillagerActivity activity = m_content->villagerSettings().activityAt(QcDayCycle::phase(context.worldTime));
+    const QcVillagerSettings &species = m_content->villagerSettingsOf(m_content->villagerOfStyle(village.style).value_or(-1));
+    const QcVillagerActivity activity = species.activityAt(QcDayCycle::phase(context.worldTime));
     const bool day = activity != QcVillagerActivity::Home && activity != QcVillagerActivity::Sleep;
     // A bed for the child beyond the villagers already living here: one whose bed was broken
     // claims the next free one.
@@ -68,7 +69,7 @@ bool QcVillagerBreeding::willing(const QcCreature &mob) const
 {
     const QcVillager &villager = mob.villager;
     return !mob.dormant && !mob.isYoung() && !villager.sleeping && villager.trader == 0 && mob.breedCooldown <= 0.0 && mob.fleeTimer <= 0.0
-           && villager.produce >= m_content->villagerSettings().breeding.food;
+           && villager.produce >= m_content->villagerSettingsOf(mob.type).breeding.food;
 }
 
 QcVillagerBreeding::Villagers QcVillagerBreeding::villagersByVillage(QList<QcCreature> &mobs)
@@ -84,8 +85,8 @@ QcVillagerBreeding::Villagers QcVillagerBreeding::villagersByVillage(QList<QcCre
 
 void QcVillagerBreeding::share(const QList<QcCreature *> &villagers) const
 {
-    const QcVillagerSettings &settings = m_content->villagerSettings();
     for (QcCreature *farmer : villagers) {
+        const QcVillagerSettings &settings = m_content->villagerSettingsOf(farmer->type);
         const QcVillagerProfession *profession = settings.profession(farmer->villager.profession);
         if (!profession || !profession->tendsCrops || farmer->villager.produce <= settings.breeding.shareAbove) {
             continue;
@@ -95,7 +96,7 @@ void QcVillagerBreeding::share(const QList<QcCreature *> &villagers) const
         double nearest = settings.breeding.shareDistance;
         for (QcCreature *other : villagers) {
             const double distance = (other->motion.position - farmer->motion.position).length();
-            if (other != farmer && !other->isYoung() && other->villager.produce < settings.breeding.food && distance <= nearest) {
+            if (other != farmer && other->type == farmer->type && !other->isYoung() && other->villager.produce < settings.breeding.food && distance <= nearest) {
                 hungry = other;
                 nearest = distance;
             }
@@ -111,7 +112,6 @@ void QcVillagerBreeding::share(const QList<QcCreature *> &villagers) const
 std::optional<std::pair<QcCreature *, QcCreature *>> QcVillagerBreeding::pairIn(const QList<QcCreature *> &villagers,
                                                                               const Context &context) const
 {
-    const QcVillagerBreedingSettings &settings = m_content->villagerSettings().breeding;
     for (qsizetype i = 0; i < villagers.size(); ++i) {
         QcCreature *first = villagers[i];
         if (!willing(*first)) {
@@ -119,10 +119,12 @@ std::optional<std::pair<QcCreature *, QcCreature *>> QcVillagerBreeding::pairIn(
         }
 
         const QcMobDefinition &definition = m_content->mobs()[first->type];
+        const double partnerDistance = m_content->villagerSettingsOf(first->type).breeding.partnerDistance;
         const QcVec3 eye = first->motion.position + QcVec3{0.0, definition.height * 0.85, 0.0};
         for (qsizetype j = i + 1; j < villagers.size(); ++j) {
             QcCreature *second = villagers[j];
-            if (!willing(*second) || (second->motion.position - first->motion.position).length() > settings.partnerDistance) {
+            // Partners are of one species.
+            if (second->type != first->type || !willing(*second) || (second->motion.position - first->motion.position).length() > partnerDistance) {
                 continue;
             }
             // No children through walls.

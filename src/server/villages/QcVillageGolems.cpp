@@ -28,9 +28,9 @@ QcVillageGolems::QcVillageGolems(std::shared_ptr<const QcContentRegistry> conten
 {
 }
 
-std::optional<int> QcVillageGolems::kind() const
+std::optional<int> QcVillageGolems::kind(const QString &style) const
 {
-    const QString &name = m_content->villagerSettings().golem.mob;
+    const QString name = m_content->golemOfStyle(style).mob;
     const std::optional<int> type = name.isEmpty() ? std::nullopt : m_content->mobIndex(name);
     if (!type && !name.isEmpty() && !m_missingLogged) {
         m_missingLogged = true;
@@ -41,35 +41,35 @@ std::optional<int> QcVillageGolems::kind() const
 
 QList<QcVillageGolems::Spawn> QcVillageGolems::check(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context) const
 {
-    const std::optional<int> type = kind();
-    if (!type) {
-        return {};
-    }
-
     // By id, so the villages that spawn at the world's limit do not depend on the set's order.
     QList<qint64> ids(villages.cbegin(), villages.cend());
     std::ranges::sort(ids);
-    QList<QcVillage *> counted;
+    QList<std::pair<QcVillage *, int>> counted;
     for (const qint64 id : std::as_const(ids)) {
         QcVillage *village = context.world.villages().find(id);
-        if (village && loaded(context.world, *village)) {
+        const std::optional<int> type = village ? kind(village->style) : std::nullopt;
+        if (type && loaded(context.world, *village)) {
             recount(*village, mobs, *type, context);
-            counted.append(village);
+            counted.append({village, *type});
         }
     }
 
-    qint64 inWorld = golemsInWorld(mobs, *type, context.world.villages());
+    // Golems in the world by kind.
+    QHash<int, qint64> inWorld;
     QList<Spawn> spawns;
-    for (QcVillage *village : std::as_const(counted)) {
-        if (inWorld >= context.worldLimit || !due(*village, village->golems, context.worldTime)) {
+    for (const auto &[village, type] : std::as_const(counted)) {
+        if (!inWorld.contains(type)) {
+            inWorld.insert(type, golemsInWorld(mobs, type, context.world.villages()));
+        }
+        if (inWorld.value(type) >= context.worldLimit || !due(*village, village->golems, context.worldTime)) {
             continue;
         }
-        if (const std::optional<QcVec3> at = placeFor(*village, *type, context)) {
-            spawns.append({village->id, *type, *at});
+        if (const std::optional<QcVec3> at = placeFor(*village, type, context)) {
+            spawns.append({village->id, type, *at});
             village->golems += 1;
             village->lastGolem = context.worldTime;
             context.world.villages().noteChanged();
-            ++inWorld;
+            ++inWorld[type];
         }
     }
     return spawns;
@@ -87,10 +87,12 @@ void QcVillageGolems::recount(QcVillage &village, const QList<QcCreature> &mobs,
     }
 }
 
-qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages)
+qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages) const
 {
-    // Golems outside every village, and per village those it counted last or those in its area
-    // now, whichever is more (its chunks may not all be loaded).
+    // Golems of `type` outside every village, and per village those in its area now or, for a
+    // village whose golems are of `type`, those it counted last where that is more (its chunks may
+    // not all be loaded). Golems of another kind that a village counted (its style changed) do not
+    // count.
     qint64 outside = 0;
     QHash<qint64, int> byVillage;
     for (const QcCreature &mob : mobs) {
@@ -103,7 +105,7 @@ qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, c
             ++outside;
         }
     }
-    return outside + villages.golems(byVillage);
+    return outside + villages.golems(byVillage, [this, type](const QcVillage &village) { return kind(village.style) == type; });
 }
 
 int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, int type)
@@ -115,7 +117,7 @@ int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> 
 
 bool QcVillageGolems::due(const QcVillage &village, int golems, double worldTime) const
 {
-    const QcVillageGolemSettings &settings = m_content->villagerSettings().golem;
+    const QcVillageGolemSettings settings = m_content->golemOfStyle(village.style);
     // A last golem in the future: the world time went back, so it is long ago.
     const bool rested = village.lastGolem < 0.0 || village.lastGolem > worldTime || worldTime - village.lastGolem >= settings.cooldownSeconds;
     return village.population >= settings.minVillagers && golems < village.population / settings.villagersPerGolem && rested;
@@ -137,7 +139,7 @@ bool QcVillageGolems::loaded(const QcServerWorld &world, const QcVillage &villag
 
 std::optional<QcVec3> QcVillageGolems::placeFor(const QcVillage &village, int type, const Context &context) const
 {
-    const int radius = m_content->villagerSettings().golem.spawnRadius;
+    const int radius = m_content->golemOfStyle(village.style).spawnRadius;
     const auto tick = int(std::fmod(context.worldTime * 20.0, 1e9));
     for (int attempt = 0; attempt < placeAttempts; ++attempt) {
         const quint64 seed = qcMixSeed(context.seed, placeSalt + quint64(attempt));

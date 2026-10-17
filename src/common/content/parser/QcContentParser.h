@@ -51,6 +51,7 @@ using QcWorldTypeParser::parseVoid;
 using QcWeatherParser::parseWeather;
 using QcVillageParser::parseVillageSettings;
 using QcVillageParser::parseVillageStyle;
+using QcVillagerParser::parseProfession;
 using QcVillagerParser::parseVillagerSettings;
 using QcTradeParser::parseTradeSet;
 

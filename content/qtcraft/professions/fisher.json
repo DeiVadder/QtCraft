@@ -1,0 +1,14 @@
+{
+    "formatVersion": 1,
+    "name": "fisher",
+    "workstations": [
+        "barrel"
+    ],
+    "hat": "villager_fisher_hat",
+    "layers": {
+        "torso": {
+            "texture": "villager_fisher_vest",
+            "tint": "none"
+        }
+    }
+}

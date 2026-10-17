@@ -34,11 +34,10 @@ void QcVillageCommands::addTo(QcCommandRegistry &registry)
 
 void QcVillageCommands::profession(const QcCommandContext &context)
 {
-    const QcVillagerSettings &settings = m_state.content().villagerSettings();
     const QString name = context.args[0].contains(u':') ? context.args[0] : u"qtcraft:"_s + context.args[0];
     bool numeric = context.args.size() < 2;
     const int level = context.args.size() < 2 ? 1 : context.args[1].toInt(&numeric);
-    if (!settings.profession(name) || !numeric || level < 1 || level > QcVillagerRecord::maxLevel || context.args.size() > 2) {
+    if (!m_state.content().profession(name) || !numeric || level < 1 || level > QcVillagerRecord::maxLevel || context.args.size() > 2) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /profession <profession> [level]"));
         return;
     }
@@ -59,13 +58,13 @@ void QcVillageCommands::profession(const QcCommandContext &context)
 
     // Experience at the level's start (at least 1: a villager with experience keeps its profession
     // without a workstation), so it levels on from there.
-    const QcTradingSettings &trading = settings.trading;
+    const QcTradingSettings &trading = m_state.content().villagerSettingsOf(nearest->type).trading;
     nearest->villager.profession = name;
     nearest->villager.level = level;
     nearest->villager.experience = std::max(1, trading.levels.value(level - 1));
     // Its offers follow at once; an open trading screen shows them with the next tick.
     nearest->villager.offers.clear();
-    m_state.entities().creatures().villagers().trades().sync(nearest->villager);
+    m_state.entities().creatures().villagers().trades(nearest->type).sync(nearest->villager);
     nearest->villager.lookChanged = true;
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Villager %1 is now %2 of level %3"),
                   {QString::number(nearest->id), name, QString::number(level)});

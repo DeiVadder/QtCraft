@@ -81,6 +81,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
+    content/registry/QcVillageContent.h content/registry/QcVillageContent.cpp
     content/registry/QcVillagerOutfits.h content/registry/QcVillagerOutfits.cpp
 )
 target_sources(qc_common PRIVATE

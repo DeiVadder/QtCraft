@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <utility>
 #include <type_traits>
 
 using namespace Qt::StringLiterals;
@@ -175,7 +176,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -186,7 +187,6 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
         }
     }
     files.append(root.filePath(u"weather.json"_s));
-    files.append(root.filePath(u"villagers.json"_s));
 
     // Only what exists as a regular file is read.
     files.removeIf([](const QString &path) {
@@ -265,6 +265,72 @@ void loadBlocks(const QDir &root, const QString &packId, QcContentRegistry &regi
     }
 }
 
+// The file among `extensions` after `index` that defines the style `name` (a named extension), or
+// an empty string.
+QString laterDefinition(const QList<std::pair<QString, QJsonObject>> &extensions, qsizetype index, const QString &name,
+                        const QString &packId)
+{
+    for (qsizetype later = index + 1; later < extensions.size(); ++later) {
+        const QJsonValue own = extensions[later].second.value(u"name"_s);
+        if (own.isString() && QcContentNames::qualify(own.toString(), packId) == name) {
+            return extensions[later].first;
+        }
+    }
+    return {};
+}
+
+// Applies the extensions of a pack in file-name order, each over the style as the earlier packs and
+// files left it. An extension of an unknown style is left out with a warning (which names the
+// later file of the pack that defines it, if one does).
+void applyStyleExtensions(const QList<std::pair<QString, QJsonObject>> &extensions, const QString &packId, QcContentRegistry &registry,
+                          QStringList &warnings)
+{
+    for (qsizetype index = 0; index < extensions.size(); ++index) {
+        const auto &[path, json] = extensions[index];
+        const QcResult<QString> baseName = QcVillageParser::extendedStyle(json, packId);
+        const QcVillageStyleDefinition *base = baseName ? registry.villageStyle(*baseName) : nullptr;
+        if (!baseName) {
+            warnings.append(u"%1: %2"_s.arg(path, baseName.error()));
+            continue;
+        }
+        if (!base) {
+            const QString later = laterDefinition(extensions, index, *baseName, packId);
+            warnings.append(later.isEmpty() ? u"%1: 'extends' names no village style: '%2'"_s.arg(path, json.value(u"extends"_s).toString())
+                                            : u"%1: 'extends' names '%2', which the later file %3 defines; rename this file to sort after it"_s
+                                                  .arg(path, *baseName, later));
+            continue;
+        }
+
+        QcResult<QcVillageStyleDefinition> style = QcVillageParser::extendVillageStyle(json, packId, *base);
+        if (!style) {
+            warnings.append(u"%1: %2"_s.arg(path, style.error()));
+            continue;
+        }
+        registry.registerVillageStyle(std::move(*style));
+    }
+}
+
+// The village styles of a pack (decision E-421): first the files without "extends" (each replaces a
+// style of the same name whole), then those with it (applyStyleExtensions).
+void loadVillageStyles(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+{
+    QList<std::pair<QString, QJsonObject>> extensions;
+    const QStringList files = filesIn(root.filePath(u"villages"_s), u"*.json"_s);
+    for (const QString &path : files) {
+        const QcResult<QJsonObject> json = readJsonObject(path);
+        if (!json) {
+            warnings.append(json.error());
+        } else if (json->contains(u"extends"_s)) {
+            extensions.append({path, *json});
+        } else if (QcResult<QcVillageStyleDefinition> style = QcVillageParser::parseVillageStyle(*json, packId)) {
+            registry.registerVillageStyle(std::move(*style));
+        } else {
+            warnings.append(u"%1: %2"_s.arg(path, style.error()));
+        }
+    }
+    applyStyleExtensions(extensions, packId, registry, warnings);
+}
+
 // Definition folders loaded after the blocks, in this order.
 void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
 {
@@ -302,8 +368,11 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
     loadDefinitions(root.filePath(u"structures"_s), packId, warnings, QcContentParser::parseStructure,
                     [&registry](QcStructureDefinition structure) { registry.registerStructure(std::move(structure)); });
-    loadDefinitions(root.filePath(u"villages"_s), packId, warnings, QcContentParser::parseVillageStyle,
-                    [&registry](QcVillageStyleDefinition style) { registry.registerVillageStyle(std::move(style)); });
+    loadVillageStyles(root, packId, registry, warnings);
+    loadDefinitions(root.filePath(u"professions"_s), packId, warnings, QcContentParser::parseProfession,
+                    [&registry](QcVillagerProfession profession) { registry.registerProfession(std::move(profession)); });
+    loadDefinitions(root.filePath(u"villagers"_s), packId, warnings, QcContentParser::parseVillagerSettings,
+                    [&registry](QcVillagerSettings settings) { registry.registerVillagerSettings(std::move(settings)); });
     loadDefinitions(root.filePath(u"trades"_s), packId, warnings, QcContentParser::parseTradeSet,
                     [&registry](QcTradeSet set) { registry.registerTradeSet(std::move(set)); });
     loadDefinitions(root.filePath(u"commands"_s), packId, warnings, QcContentParser::parseCommandMacro,
@@ -348,7 +417,11 @@ void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegi
     if (auto flat = readSettingsFile(root, u"worldgen/flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
         registry.setFlatWorld(std::move(*flat));
     }
-    if (auto villages = readSettingsFile(root, u"worldgen/villages.json"_s, packId, warnings, QcContentParser::parseVillageSettings)) {
+    // Read over the earlier packs' settings: a pack changes the fields it gives (decision E-421).
+    const auto villageSettings = [&registry](const QJsonObject &json, const QString &pack) {
+        return QcVillageParser::parseVillageSettings(json, pack, registry.villageSettings());
+    };
+    if (auto villages = readSettingsFile(root, u"worldgen/villages.json"_s, packId, warnings, villageSettings)) {
         registry.setVillageSettings(std::move(*villages));
     }
     if (auto empty = readSettingsFile(root, u"worldgen/void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
@@ -374,8 +447,8 @@ QString unfitSnowLayer(const QcContentRegistry &registry, const QString &name)
 
 void loadWeatherSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
 {
-    if (auto villagers = readSettingsFile(root, u"villagers.json"_s, packId, warnings, QcContentParser::parseVillagerSettings)) {
-        registry.setVillagerSettings(std::move(*villagers));
+    if (QFileInfo::exists(root.filePath(u"villagers.json"_s))) {
+        warnings.append(u"%1: moved to villagers/<name>.json and professions/<name>.json; the file is left out"_s.arg(root.filePath(u"villagers.json"_s)));
     }
     auto weather = readSettingsFile(root, u"weather.json"_s, packId, warnings, QcContentParser::parseWeather);
     if (!weather) {

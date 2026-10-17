@@ -6,9 +6,9 @@
 
 #include <QJsonObject>
 
-// Parses the offers of a profession (trades/<name>.json) and the trading settings of
-// villagers.json (decision E-414). All input is untrusted; item names are checked when the server
-// builds its trade catalog (QcTradeCatalog), where all packs are loaded.
+// Parses the offers of a profession (trades/<name>.json) and the trading settings of a villager
+// species, villagers/<name>.json (decision E-414). All input is untrusted; item names are checked
+// when the server builds its trade catalog (QcTradeCatalog), where all packs are loaded.
 namespace QcTradeParser {
 
 [[nodiscard]] QcResult<QcTradeSet> parseTradeSet(const QJsonObject &json, const QString &packNamespace);

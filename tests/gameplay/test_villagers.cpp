@@ -119,7 +119,7 @@ private:
         const quint32 entity = m_server->entities().newId();
         m_server->mobs().spawn(villagerType(), at, entity);
         QcCreature *mob = m_server->mobs().find(entity);
-        mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, m_content->villagerSettings(), look);
+        mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), look);
         return *mob;
     }
 

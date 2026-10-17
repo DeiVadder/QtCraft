@@ -14,24 +14,20 @@ T pick(const QList<T> &choices, const QList<T> &defaults, quint32 seed, int shif
     return list.isEmpty() ? fallback : list[qsizetype(((seed >> shift) & 0xffu) % quint32(list.size()))];
 }
 
-const QcVillagerLook &lookOf(const QcContentRegistry &content, const QString &style)
+const QcVillagerLook &lookOf(const QcContentRegistry &content, const QcVillagerSettings &species, const QString &style)
 {
-    for (const QcVillageStyleDefinition &definition : content.villageStyles()) {
-        if (definition.name == style && definition.villagers.isSet()) {
-            return definition.villagers;
-        }
-    }
-    return content.villagerSettings().look;
+    const QcVillageStyleDefinition *definition = content.villageStyle(style);
+    return definition && definition->look.isSet() ? definition->look : species.look;
 }
 
 } // namespace
 
 namespace QcVillagerLooks {
 
-QcAppearance appearanceOf(const QcContentRegistry &content, const QcVillagerRecord &villager)
+QcAppearance appearanceOf(const QcContentRegistry &content, int mobType, const QcVillagerRecord &villager)
 {
-    const QcVillagerSettings &settings = content.villagerSettings();
-    const QcVillagerLook &look = lookOf(content, villager.style);
+    const QcVillagerSettings &settings = content.villagerSettingsOf(mobType);
+    const QcVillagerLook &look = lookOf(content, settings, villager.style);
     const QcVillagerLook &defaults = settings.look;
     const QcVillagerProfession *profession = settings.profession(villager.profession);
 

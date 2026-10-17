@@ -477,7 +477,7 @@ private slots:
             server->tick();
         }
 
-        const QcVillagerTrades &trades = server->mobs().villagers().trades();
+        const QcVillagerTrades &trades = server->mobs().villagers().trades(*m_content->mobIndex(u"qtcraft:villager"_s));
         QSet<QString> trading;
         for (const QcCreature &mob : server->mobs().mobs()) {
             if (mob.villager.village != 0 && !trades.offersOf(mob.villager).isEmpty()) {

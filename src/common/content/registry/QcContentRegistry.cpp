@@ -1,5 +1,6 @@
 #include "common/content/registry/QcContentRegistry.h"
 
+#include "common/content/registry/QcVillageContent.h"
 #include "common/content/registry/QcVillagerOutfits.h"
 
 #include "common/content/registry/QcContentNames.h"
@@ -326,6 +327,19 @@ QStringList QcContentRegistry::finish()
         warnings.append(u"block '%1': %2; it takes no part in circuits"_s.arg(name, problem));
     }
     createBlockItems();
+    warnings.append(QcVillageContent::resolveSpecies(*this));
+    // A creature naming villager settings no pack has is no villager (decision E-421); the others
+    // keep the index of theirs.
+    for (QcMobDefinition &mob : m_mobs) {
+        const auto it = m_villagerSettingsIndex.constFind(mob.villagerSettings);
+        mob.villagerSettingsIndex = mob.villager && it != m_villagerSettingsIndex.constEnd() ? int(*it) : -1;
+        if (mob.villager && mob.villagerSettingsIndex < 0) {
+            warnings.append(u"mob '%1': no villager settings '%2'; it is no villager"_s.arg(mob.name, mob.villagerSettings));
+            mob.villager = false;
+            mob.villagerSettings.clear();
+        }
+    }
+    warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
     return warnings;
 }
@@ -432,7 +446,80 @@ void QcContentRegistry::registerOre(QcOreDefinition definition)
 
 void QcContentRegistry::registerVillageStyle(QcVillageStyleDefinition style)
 {
+    const auto latest = std::ranges::max_element(m_villageStyles, {}, &QcVillageStyleDefinition::registered);
+    style.registered = latest == m_villageStyles.end() ? 1 : latest->registered + 1;
     registerByName(m_villageStyles, m_villageStyleIndex, std::move(style));
+}
+
+const QcVillageStyleDefinition *QcContentRegistry::villageStyle(const QString &name) const
+{
+    const auto it = m_villageStyleIndex.constFind(name);
+    return it == m_villageStyleIndex.constEnd() ? nullptr : &m_villageStyles[*it];
+}
+
+std::optional<int> QcContentRegistry::villagerOfStyle(const QString &style) const
+{
+    const QcVillageStyleDefinition *definition = villageStyle(style);
+    const std::optional<int> type = mobIndex(definition && !definition->villager.isEmpty() ? definition->villager : m_villageSettings.villager);
+    return type && m_mobs[*type].villager ? type : std::nullopt;
+}
+
+QcVillageGolemSettings QcContentRegistry::golemOfStyle(const QString &style) const
+{
+    const QcVillageStyleDefinition *definition = villageStyle(style);
+    return definition && definition->golem ? definition->golem->over(m_villageSettings.golem) : m_villageSettings.golem;
+}
+
+void QcContentRegistry::registerVillagerSettings(QcVillagerSettings settings)
+{
+    registerByName(m_villagerSettings, m_villagerSettingsIndex, std::move(settings));
+}
+
+const QcVillagerSettings *QcContentRegistry::villagerSettings(const QString &name) const
+{
+    const auto it = m_villagerSettingsIndex.constFind(name);
+    return it == m_villagerSettingsIndex.constEnd() ? nullptr : &m_villagerSettings[*it];
+}
+
+void QcContentRegistry::removeVillagerSettings(const QString &name)
+{
+    const auto it = m_villagerSettingsIndex.constFind(name);
+    if (it == m_villagerSettingsIndex.constEnd()) {
+        return;
+    }
+    m_villagerSettings.removeAt(*it);
+    m_villagerSettingsIndex.clear();
+    for (qsizetype index = 0; index < m_villagerSettings.size(); ++index) {
+        m_villagerSettingsIndex.insert(m_villagerSettings[index].name, index);
+    }
+}
+
+const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) const
+{
+    static const QcVillagerSettings none;
+    if (mobType < 0 || mobType >= m_mobs.size()) {
+        return none;
+    }
+
+    // The index finish() keeps, while it still names these settings; else by name.
+    const QcMobDefinition &mob = m_mobs[mobType];
+    const qsizetype index = mob.villagerSettingsIndex;
+    if (index >= 0 && index < m_villagerSettings.size() && m_villagerSettings[index].name == mob.villagerSettings) {
+        return m_villagerSettings[index];
+    }
+    const QcVillagerSettings *settings = villagerSettings(mob.villagerSettings);
+    return settings ? *settings : none;
+}
+
+void QcContentRegistry::registerProfession(QcVillagerProfession profession)
+{
+    registerByName(m_professions, m_professionIndex, std::move(profession));
+}
+
+const QcVillagerProfession *QcContentRegistry::profession(const QString &name) const
+{
+    const auto it = m_professionIndex.constFind(name);
+    return it == m_professionIndex.constEnd() ? nullptr : &m_professions[*it];
 }
 
 void QcContentRegistry::registerTradeSet(QcTradeSet set)

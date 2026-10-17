@@ -86,11 +86,12 @@ qsizetype QcVillages::population() const
     return total;
 }
 
-qsizetype QcVillages::golems(const QHash<qint64, int> &loaded) const
+qsizetype QcVillages::golems(const QHash<qint64, int> &loaded, const std::function<bool(const QcVillage &)> &ofKind) const
 {
     qsizetype total = 0;
     for (const QcVillage &village : m_villages) {
-        total += std::max(village.golems, loaded.value(village.id));
+        const int now = loaded.value(village.id);
+        total += ofKind(village) ? std::max(village.golems, now) : now;
     }
     return total;
 }

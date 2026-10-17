@@ -45,13 +45,21 @@ QcBlockPos feetOf(const QcCreature &mob)
 
 } // namespace
 
+const QcVillagerTrades &QcVillagerBehaviour::trades(int mobType) const
+{
+    const auto it = m_trades.constFind(m_content->villagerSettingsOf(mobType).name);
+    return it == m_trades.constEnd() ? m_noTrades : *it;
+}
+
 QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry> content, QRandomGenerator &random, QcPathPlanner &planner)
     : m_content(std::move(content))
     , m_random(random)
     , m_planner(planner)
-    , m_trades(*m_content)
 {
     const QcContentRegistry &registry = *m_content;
+    for (const QcVillagerSettings &species : registry.villagerSpecies()) {
+        m_trades.insert(species.name, QcVillagerTrades(registry, species));
+    }
     m_ripe.assign(std::size_t(registry.stateCount()), false);
     for (qsizetype id = 0; id < registry.stateCount(); ++id) {
         const QcBlockDefinition &block = registry.block(QcBlockId(id));
@@ -82,7 +90,8 @@ std::shared_ptr<const QcVillagePlan> QcVillagerBehaviour::planOf(const QcVillage
 bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
 {
     QcVillager &villager = mob.villager;
-    const bool night = m_content->villagerSettings().activityAt(QcDayCycle::phase(context.worldTime)) == QcVillagerActivity::Sleep;
+    const double phase = QcDayCycle::phase(context.worldTime);
+    const bool night = m_content->villagerSettingsOf(mob.type).activityAt(phase, villager.profession) == QcVillagerActivity::Sleep;
     const bool inBed = villager.home && QcVillagerHomes::lyingIn(context.world, *villager.home);
     if (night && inBed && mob.hurtTimer <= 0.0) {
         mob.motion.velocity = {};
@@ -129,7 +138,8 @@ bool QcVillagerBehaviour::trade(QcCreature &mob, const Context &context)
         villager.decideIn = decideTicks;
         lookOut(mob, context);
     }
-    const bool bedtime = m_content->villagerSettings().activityAt(QcDayCycle::phase(context.worldTime)) == QcVillagerActivity::Sleep;
+    const double phase = QcDayCycle::phase(context.worldTime);
+    const bool bedtime = m_content->villagerSettingsOf(mob.type).activityAt(phase, villager.profession) == QcVillagerActivity::Sleep;
     if (mob.fleeTimer > 0.0 || bedtime) {
         villager.trader = 0;
         villager.decideIn = 0;
@@ -156,7 +166,7 @@ void QcVillagerBehaviour::leave(const QcCreature &mob)
 void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
 {
     QcVillager &villager = mob.villager;
-    const QcVillagerSettings &settings = m_content->villagerSettings();
+    const QcVillagerSettings &settings = m_content->villagerSettingsOf(mob.type);
     QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
     if (village) {
         const auto before = std::pair(villager.home, villager.work);
@@ -174,7 +184,9 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     }
     lookOut(mob, context);
 
-    QcVillagerActivity activity = settings.activityAt(QcDayCycle::phase(context.worldTime));
+    // Looked up once per decision: the routine and the crops follow it.
+    const QcVillagerProfession *profession = settings.profession(villager.profession);
+    QcVillagerActivity activity = settings.activityAt(QcDayCycle::phase(context.worldTime), profession);
     // Children play instead of working.
     if (mob.isYoung() && activity == QcVillagerActivity::Work) {
         activity = QcVillagerActivity::Wander;
@@ -185,7 +197,7 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     }
     villager.activity = activity;
 
-    lookForCrops(villager, context);
+    lookForCrops(villager, profession, context);
 
     // A stroll goes on until it ends; every other goal follows the routine.
     if (villager.strolling && villager.target && activity == QcVillagerActivity::Wander) {
@@ -203,9 +215,8 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     villager.strolling = goal && goal->purpose == QcMobPath::Purpose::Wander;
 }
 
-void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const Context &context) const
+void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const
 {
-    const QcVillagerProfession *profession = m_content->villagerSettings().profession(villager.profession);
     if (villager.activity != QcVillagerActivity::Work || !profession || !profession->tendsCrops) {
         villager.crop.reset();
     } else if (!villager.crop && --villager.cropLookIn <= 0) {
@@ -216,7 +227,7 @@ void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const Context &cont
 
 void QcVillagerBehaviour::lookOut(QcCreature &mob, const Context &context)
 {
-    if (const std::optional<QcVec3> threat = nearestHostile(mob.motion.position, context)) {
+    if (const std::optional<QcVec3> threat = nearestHostile(mob.motion.position, m_content->villagerSettingsOf(mob.type).fleeDistance, context)) {
         mob.villager.threat = threat;
         mob.fleeTimer = std::max(mob.fleeTimer, fleeSeconds);
     } else if (mob.fleeTimer <= 0.0) {
@@ -224,9 +235,8 @@ void QcVillagerBehaviour::lookOut(QcCreature &mob, const Context &context)
     }
 }
 
-std::optional<QcVec3> QcVillagerBehaviour::nearestHostile(const QcVec3 &at, const Context &context)
+std::optional<QcVec3> QcVillagerBehaviour::nearestHostile(const QcVec3 &at, double fleeDistance, const Context &context)
 {
-    const double fleeDistance = m_content->villagerSettings().fleeDistance;
     const QHash<QcChunkPos, QList<QcVec3>> &hostiles = this->hostiles(context);
     const QcChunkPos from = QcPhysics::blockContaining(at - QcVec3{fleeDistance, 0.0, fleeDistance}).chunk();
     const QcChunkPos to = QcPhysics::blockContaining(at + QcVec3{fleeDistance, 0.0, fleeDistance}).chunk();
@@ -345,7 +355,7 @@ QcPhysics::Steering QcVillagerBehaviour::walk(QcCreature &mob, const QcMobDefini
 {
     QcVillager &villager = mob.villager;
     // Children run about (decision E-415).
-    double speed = definition.walkSpeed * (mob.isYoung() ? m_content->villagerSettings().breeding.youngSpeed : 1.0);
+    double speed = definition.walkSpeed * (mob.isYoung() ? m_content->villagerSettingsOf(mob.type).breeding.youngSpeed : 1.0);
     if (mob.fleeTimer > 0.0) {
         // Home when it has one and is not there yet, otherwise away from the danger.
         speed = definition.chaseSpeed;
@@ -564,7 +574,7 @@ void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)
             mob.yaw = QcMobSteering::yawTowards({towards.x, 0.0, towards.z});
         }
         if (villager.activity == QcVillagerActivity::Work) {
-            m_trades.restock(villager, context.worldTime);
+            trades(mob.type).restock(villager, context.worldTime);
         }
     }
 }

@@ -311,6 +311,15 @@ private slots:
         QVERIFY(*QcContentFingerprint::hashOf(directory) != added);
         writeFile(QDir(directory).filePath(u"pack.json"_s), "{}");
         QVERIFY(*QcContentFingerprint::hashOf(directory) != added);
+
+        // The village files of decision E-421 count: a profession and a villager species.
+        writeFile(QDir(directory).filePath(u"professions/baker.json"_s), R"({"name": "baker"})");
+        const QString withProfession = *QcContentFingerprint::hashOf(directory);
+        writeFile(QDir(directory).filePath(u"professions/baker.json"_s), R"({"name": "baker", "offersPerLevel": 3})");
+        QVERIFY(*QcContentFingerprint::hashOf(directory) != withProfession);
+        const QString changedProfession = *QcContentFingerprint::hashOf(directory);
+        writeFile(QDir(directory).filePath(u"villagers/gnome.json"_s), R"({"name": "gnome"})");
+        QVERIFY(*QcContentFingerprint::hashOf(directory) != changedProfession);
     }
 };
 

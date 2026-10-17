@@ -1,5 +1,7 @@
 #include "common/content/parser/QcTradeParser.h"
 
+#include "common/content/parser/QcContentFields.h"
+
 #include <QJsonArray>
 
 #include <algorithm>
@@ -64,6 +66,7 @@ QcResult<QcTradeSet> parseTradeSet(const QJsonObject &json, const QString &packN
     set.name = reader.name(u"name"_s, packNamespace);
     set.profession = reader.name(u"profession"_s, packNamespace);
     reader.context = u"trades '%1'"_s.arg(set.name);
+    QcContentFields::checkFormatVersion(QcContentFields::villageFormatVersion, reader);
     if (set.name.isEmpty() || set.profession.isEmpty()) {
         reader.fail(u"needs a 'name' and a 'profession'"_s);
     }

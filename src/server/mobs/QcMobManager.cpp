@@ -180,7 +180,7 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     // on with the world. Its look comes from its id, not from the random sequence of the creatures
     // (one moving in beside a bed gets the bed's look, spawnVillagers).
     if (m_content->mobs()[type].villager) {
-        mob.villager.profession = m_content->villagerSettings().unemployed;
+        mob.villager.profession = m_content->villagerSettingsOf(type).unemployed;
         mob.villager.look = quint32(qcMixSeed(m_seed, 4101 + quint64(id)));
         mob.persistent = true;
     }
@@ -732,8 +732,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         if (m_content->mobs()[stored.type].villager) {
             static_cast<QcVillagerRecord &>(mob.villager) = stored.villager.value_or(QcVillagerRecord{});
             // A profession the content no longer has (a mod was removed): unemployed.
-            if (!m_content->villagerSettings().profession(mob.villager.profession)) {
-                mob.villager.profession = m_content->villagerSettings().unemployed;
+            const QcVillagerSettings &species = m_content->villagerSettingsOf(stored.type);
+            if (!species.profession(mob.villager.profession)) {
+                mob.villager.profession = species.unemployed;
             }
         }
         m_mobs.append(mob);

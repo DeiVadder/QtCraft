@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -112,44 +113,23 @@ QList<QcAppearanceLayer> readLayers(const QJsonObject &json, const QString &name
     return parsed->layers;
 }
 
-QcVillagerProfession readProfession(const QJsonValue &value, const QString &packNamespace, QcJsonFieldReader &reader)
+// Fails the reader for keys of an earlier format with where their content went (decision E-421).
+void refuseMoved(const QList<std::pair<QString, QString>> &moved, QcJsonFieldReader &reader)
 {
-    const QJsonObject json = value.toObject();
-    QcJsonFieldReader nested{json, reader.context + u" profession"_s, {}};
-    QcVillagerProfession profession;
-    profession.name = nested.name(u"name"_s, packNamespace);
-    if (!value.isObject() || profession.name.isEmpty()) {
-        nested.fail(u"every profession needs a 'name'"_s);
+    for (const auto &[key, where] : moved) {
+        if (reader.json.contains(key)) {
+            reader.fail(u"'%1' moved to %2"_s.arg(key, where));
+        }
     }
-    nested.context = u"%1 profession '%2'"_s.arg(reader.context, profession.name);
-    profession.translationKey = nested.string(u"translation"_s, QcContentFields::translationKey(u"profession"_s, profession.name));
-    profession.workstation = nested.name(u"workstation"_s, packNamespace);
-    profession.hat = nested.name(u"hat"_s, packNamespace);
-    profession.tendsCrops = nested.boolean(u"tendsCrops"_s, false);
-    profession.layers = readLayers(json, profession.name, packNamespace, nested);
-    reader.adopt(nested);
-    return profession;
 }
 
-QList<QcVillagerProfession> readProfessions(const QJsonObject &json, const QString &packNamespace, QcJsonFieldReader &reader)
+QStringList readWorkstationBlocks(const QString &packNamespace, QcJsonFieldReader &reader)
 {
-    QList<QcVillagerProfession> professions;
-    const QJsonArray array = json.value(u"professions"_s).toArray();
-    if (array.isEmpty() || array.size() > QcVillagerProfession::maxProfessions) {
-        reader.fail(u"'professions' needs 1 to %1 entries"_s.arg(QcVillagerProfession::maxProfessions));
-        return professions;
+    const QStringList blocks = QcContentFields::parseNames(u"workstations"_s, packNamespace, reader);
+    if (blocks.size() > QcVillagerProfession::maxWorkstationBlocks) {
+        reader.fail(u"'workstations' lists at most %1 blocks"_s.arg(QcVillagerProfession::maxWorkstationBlocks));
     }
-    for (const auto &entry : array) {
-        QcVillagerProfession profession = readProfession(entry, packNamespace, reader);
-        const bool twice = std::ranges::any_of(professions, [&profession](const QcVillagerProfession &other) {
-            return other.name == profession.name || (!profession.workstation.isEmpty() && other.workstation == profession.workstation);
-        });
-        if (twice) {
-            reader.fail(u"profession '%1' repeats a name or workstation"_s.arg(profession.name));
-        }
-        professions.append(std::move(profession));
-    }
-    return professions;
+    return blocks;
 }
 
 QcVillagerBreedingSettings readBreeding(QcJsonFieldReader &reader)
@@ -165,19 +145,6 @@ QcVillagerBreedingSettings readBreeding(QcJsonFieldReader &reader)
         breeding.youngSpeed = nested.number(u"youngSpeed"_s, breeding.youngSpeed, 0.5, 3.0);
     });
     return breeding;
-}
-
-QcVillageGolemSettings readGolem(const QString &packNamespace, QcJsonFieldReader &reader)
-{
-    QcVillageGolemSettings golem;
-    reader.nestedObject(u"golem"_s, [&golem, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        golem.mob = nested.name(u"mob"_s, packNamespace);
-        golem.minVillagers = nested.integer(u"minVillagers"_s, golem.minVillagers, 1, 1024);
-        golem.villagersPerGolem = nested.integer(u"villagersPerGolem"_s, golem.villagersPerGolem, 1, 1024);
-        golem.cooldownSeconds = nested.number(u"cooldownSeconds"_s, golem.cooldownSeconds, 0.0, 86400.0);
-        golem.spawnRadius = nested.integer(u"spawnRadius"_s, golem.spawnRadius, 2, 32);
-    });
-    return golem;
 }
 
 } // namespace
@@ -205,8 +172,17 @@ QcResult<QcVillagerSettings> parseVillagerSettings(const QJsonObject &json, cons
 {
     QcJsonFieldReader reader{json, u"villager settings"_s, {}};
     QcVillagerSettings settings;
-    settings.mob = reader.name(u"mob"_s, packNamespace);
-    settings.professions = readProfessions(json, packNamespace, reader);
+    settings.name = reader.name(u"name"_s, packNamespace);
+    if (settings.name.isEmpty()) {
+        return qcError(reader.ok() ? u"villager settings: 'name' is required"_s : reader.error);
+    }
+
+    reader.context = u"villager settings '%1'"_s.arg(settings.name);
+    QcContentFields::checkFormatVersion(QcContentFields::villageFormatVersion, reader);
+    refuseMoved({{u"mob"_s, u"the creature kind (\"villager\": \"<settings>\")"_s},
+                 {u"professions"_s, u"professions/<name>.json"_s},
+                 {u"golem"_s, u"worldgen/villages.json or the village style"_s}},
+                reader);
     settings.unemployed = reader.name(u"unemployed"_s, packNamespace);
     settings.routine = readRoutine(json, reader);
     settings.look = readLook(u"look"_s, packNamespace, reader);
@@ -214,18 +190,41 @@ QcResult<QcVillagerSettings> parseVillagerSettings(const QJsonObject &json, cons
     settings.shelterFromRain = reader.boolean(u"shelterFromRain"_s, settings.shelterFromRain);
     settings.trading = QcTradeParser::readTradingSettings(reader);
     settings.breeding = readBreeding(reader);
-    settings.golem = readGolem(packNamespace, reader);
-    if (reader.ok() && (settings.mob.isEmpty() || !settings.look.isSet())) {
-        reader.fail(u"needs a 'mob' and a 'look'"_s);
-    }
-    const QcVillagerProfession *unemployed = settings.profession(settings.unemployed);
-    if (reader.ok() && (!unemployed || !unemployed->workstation.isEmpty())) {
-        reader.fail(u"'unemployed' must name a profession without a workstation"_s);
+    if (reader.ok() && (settings.unemployed.isEmpty() || !settings.look.isSet())) {
+        reader.fail(u"needs 'unemployed' and a 'look'"_s);
     }
     if (!reader.ok()) {
         return qcError(reader.error);
     }
     return settings;
+}
+
+QcResult<QcVillagerProfession> parseProfession(const QJsonObject &json, const QString &packNamespace)
+{
+    QcJsonFieldReader reader{json, u"profession"_s, {}};
+    QcVillagerProfession profession;
+    profession.name = reader.name(u"name"_s, packNamespace);
+    if (profession.name.isEmpty()) {
+        return qcError(reader.ok() ? u"profession: 'name' is required"_s : reader.error);
+    }
+
+    reader.context = u"profession '%1'"_s.arg(profession.name);
+    QcContentFields::checkFormatVersion(QcContentFields::villageFormatVersion, reader);
+    refuseMoved({{u"workstation"_s, u"'workstations' (the blocks the profession works at)"_s}}, reader);
+    profession.translationKey = reader.string(u"translation"_s, QcContentFields::translationKey(u"profession"_s, profession.name));
+    profession.workstationBlocks = readWorkstationBlocks(packNamespace, reader);
+    profession.workstation = profession.workstationBlocks.isEmpty() ? QString() : profession.name;
+    profession.hat = reader.name(u"hat"_s, packNamespace);
+    profession.tendsCrops = reader.boolean(u"tendsCrops"_s, false);
+    profession.layers = readLayers(json, profession.name, packNamespace, reader);
+    if (json.contains(u"routine"_s)) {
+        profession.routine = readRoutine(json, reader);
+    }
+    profession.offersPerLevel = reader.integer(u"offersPerLevel"_s, 0, 1, 8);
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return profession;
 }
 
 } // namespace QcVillagerParser
