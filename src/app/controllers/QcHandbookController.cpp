@@ -1,9 +1,9 @@
 #include "app/controllers/QcHandbookController.h"
 
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/models/QcItemIcons.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/icons/QcBlockIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcGpuLimits.h"

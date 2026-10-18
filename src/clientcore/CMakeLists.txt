@@ -77,6 +77,18 @@ target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    player/QcClientGameMode.h player/QcClientGameMode.cpp
+    player/QcClientInventory.h player/QcClientInventory.cpp
+    player/QcClientRiding.h player/QcClientRiding.cpp
+    player/QcClientVitals.h player/QcClientVitals.cpp
+    player/QcFlightLatch.h player/QcFlightLatch.cpp
+    player/QcHandActions.h player/QcHandActions.cpp
+    player/QcHandTimers.h
+    player/QcLocalAnimation.h player/QcLocalAnimation.cpp
+    player/QcPrediction.h player/QcPrediction.cpp
+    player/QcSprintLatch.h player/QcSprintLatch.cpp
+)
+target_sources(qc_clientcore PRIVATE
     preview/QcPreviewActivity.h preview/QcPreviewActivity.cpp
     preview/QcPreviewCamera.h preview/QcPreviewCamera.cpp
     preview/QcPreviewHook.h preview/QcPreviewHook.cpp
@@ -88,22 +100,16 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h
-    session/QcClientGameMode.h session/QcClientGameMode.cpp
     session/QcClientLauncher.h session/QcClientLauncher.cpp
     session/QcClientLogin.h session/QcClientLogin.cpp
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
-    session/QcClientRiding.h session/QcClientRiding.cpp
-    session/QcClientSession.h session/QcClientSession.cpp session/QcClientSessionScreens.cpp
+    session/QcClientSession.h session/QcClientSession.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
-    session/QcClientVitals.h session/QcClientVitals.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
-    session/QcFlightLatch.h session/QcFlightLatch.cpp
-    session/QcHandTimers.h
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
-    session/QcSprintLatch.h session/QcSprintLatch.cpp
 )
 target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp

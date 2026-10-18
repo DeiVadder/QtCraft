@@ -1,4 +1,4 @@
-#include "app/rendering/QcPreviewAtlasCache.h"
+#include "app/preview/QcPreviewAtlasCache.h"
 
 #include "app/rendering/QcAtlasTexture.h"
 

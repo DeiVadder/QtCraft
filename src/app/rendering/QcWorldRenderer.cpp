@@ -6,7 +6,6 @@
 #include "app/rendering/QcRenderPipelines.h"
 #include "app/rendering/QcWorldView.h"
 #include "clientcore/camera/QcFrustum.h"
-#include "clientcore/meshing/QcIndexPacking.h"
 
 #include <QElapsedTimer>
 #include <QLoggingCategory>
@@ -14,7 +13,6 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
-#include <limits>
 
 using namespace Qt::StringLiterals;
 using QcRenderPipelines::FrameUniforms;
@@ -61,10 +59,8 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
 {
     Q_UNUSED(commandBuffer);
     if (m_rhi != rhi()) {
-        m_meshes.clear();
-        m_lightPool.reset();
         m_plan = QcFramePlan::selected();
-        m_sectionBytes = 0;
+        m_meshStore.reset(rhi(), m_plan.sectionLight);
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
         m_waterPipeline.reset();
@@ -127,13 +123,12 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     }
     if (view->m_clearAllMeshes) {
         view->m_clearAllMeshes = false;
-        m_clearAllMeshes = true;
-        m_meshUploads.clear();
+        m_meshStore.clearAll();
     }
 
     // A section updated several times since the last frame takes only its latest mesh.
     for (QcWorldView::MeshUpdate &update : view->m_pendingMeshUpdates) {
-        m_meshUploads.insert_or_assign(update.key, std::move(update.mesh));
+        m_meshStore.queue(update.key, std::move(update.mesh));
     }
     view->m_pendingMeshUpdates.clear();
 
@@ -306,7 +301,7 @@ void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
     m_uploadedSelection = m_selection;
 }
 
-void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers)
+void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, QcGpuBuffers &buffers)
 {
     buffers.indexCount = 0;
     if (!mesh || mesh->indices.isEmpty()) {
@@ -330,107 +325,6 @@ void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const Q
     updates->updateDynamicBuffer(buffers.indices.get(), 0, indexBytes, mesh->indices.constData());
     m_sample.uploadBytes += vertexBytes + indexBytes;
     buffers.indexCount = quint32(mesh->indices.size());
-}
-
-QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBatch *updates,
-                                                           const QList<QcBlockVertex> &vertices,
-                                                           const QList<quint32> &indices)
-{
-    GpuBuffers buffers;
-    if (indices.isEmpty()) {
-        return buffers;
-    }
-
-    const quint32 vertexBytes = quint32(vertices.size() * qsizetype(sizeof(QcBlockVertex)));
-    buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, vertexBytes));
-    buffers.vertices->create();
-    updates->uploadStaticBuffer(buffers.vertices.get(), vertices.constData());
-
-    // Almost every section has at most 65536 vertices; its indices then take two bytes each.
-    if (QcIndexPacking::fitsShortIndices(vertices.size())) {
-        const QByteArray shortIndices = QcIndexPacking::toShortIndices(indices);
-        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, quint32(shortIndices.size())));
-        buffers.indices->create();
-        updates->uploadStaticBuffer(buffers.indices.get(), shortIndices.constData());
-        buffers.indexFormat = QRhiCommandBuffer::IndexUInt16;
-    } else {
-        const quint32 indexBytes = quint32(indices.size() * qsizetype(sizeof(quint32)));
-        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, indexBytes));
-        buffers.indices->create();
-        updates->uploadStaticBuffer(buffers.indices.get(), indices.constData());
-    }
-
-    buffers.indexCount = quint32(indices.size());
-    return buffers;
-}
-
-void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
-{
-    if (m_clearAllMeshes) {
-        m_meshes.clear();
-        m_lightPool.reset();
-        m_sectionBytes = 0;
-        m_clearAllMeshes = false;
-    }
-
-    const auto release = [this](quint64 key) {
-        if (const auto found = m_meshes.find(key); found != m_meshes.end()) {
-            m_sectionBytes -= found->second.bytes();
-            m_meshes.erase(found);
-        }
-    };
-
-    for (auto &[key, mesh] : m_meshUploads) {
-        release(key);
-        uploadSectionLight(updates, key, mesh.get());
-        if (!mesh) {
-            continue;
-        }
-
-        GpuMesh gpuMesh;
-        gpuMesh.opaque = createBuffers(updates, mesh->opaqueVertices, mesh->opaqueIndices);
-        gpuMesh.translucent = createBuffers(updates, mesh->translucentVertices, mesh->translucentIndices);
-        gpuMesh.water = createBuffers(updates, mesh->waterVertices, mesh->waterIndices);
-        gpuMesh.underside = createBuffers(updates, mesh->undersideVertices, mesh->undersideIndices);
-        gpuMesh.translucentRuns = mesh->translucentRuns;
-
-        QVector3D low(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
-                      std::numeric_limits<float>::max());
-        QVector3D high = -low;
-        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices, &mesh->waterVertices, &mesh->undersideVertices}) {
-            for (const QcBlockVertex &vertex : *list) {
-                low = QVector3D(std::min(low.x(), vertex.x), std::min(low.y(), vertex.y), std::min(low.z(), vertex.z));
-                high = QVector3D(std::max(high.x(), vertex.x), std::max(high.y(), vertex.y), std::max(high.z(), vertex.z));
-            }
-        }
-
-        gpuMesh.boundsMin = low;
-        gpuMesh.boundsMax = high;
-        const quint64 bytes = gpuMesh.bytes();
-        m_sectionBytes += bytes;
-        m_sample.uploadBytes += bytes;
-        m_meshes.insert_or_assign(key, std::move(gpuMesh));
-    }
-
-    m_meshUploads.clear();
-}
-
-void QcWorldRenderer::uploadSectionLight(QRhiResourceUpdateBatch *updates, quint64 key, const QcChunkMesh *mesh)
-{
-    if (!m_plan.sectionLight || !QcSectionLightPool::isSupported(m_rhi)) {
-        return;
-    }
-    if (!mesh) {
-        m_lightPool.release(key);
-        return;
-    }
-
-    const int pages = m_lightPool.pageCount();
-    m_lightPool.update(m_rhi, updates, key, mesh->light);
-    if (m_lightPool.pageCount() != pages) {
-        qCInfo(lcRenderer).nospace() << "Section light: " << m_lightPool.pageCount() << " pages, " << m_lightPool.usedSlots()
-                                     << " slots used, " << m_lightPool.sections() << " sections, " << m_lightPool.bytes() / 1024 << " KiB";
-    }
 }
 
 void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
@@ -465,7 +359,7 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     uploadOutline(updates);
     uploadEntityMesh(updates, m_entityMesh.get(), m_entityBuffers);
     uploadEntityMesh(updates, m_handMesh.get(), m_handBuffers);
-    uploadPendingMeshes(updates);
+    m_sample.uploadBytes += m_meshStore.uploadQueued(updates);
     m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
 }
 
@@ -493,7 +387,7 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     updates->updateDynamicBuffer(m_frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
 
-void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers, quint32 firstIndex, quint32 count)
+void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuBuffers &buffers, quint32 firstIndex, quint32 count)
 {
     if (buffers.indexCount == 0) {
         return;
@@ -513,13 +407,13 @@ void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const Fr
     // the sections with translucent faces (or water, when it is drawn here) take part.
     const bool withWater = m_plan.waterWithTranslucent();
     const QVector3D eye = m_camera.position;
-    QList<std::pair<float, const GpuMesh *>> translucent;
-    for (const GpuMesh *mesh : view.visible) {
+    QList<std::pair<float, const QcGpuMesh *>> translucent;
+    for (const QcGpuMesh *mesh : view.visible) {
         if (mesh->translucent.indexCount > 0 || (withWater && mesh->water.indexCount > 0)) {
             translucent.append({(mesh->centre() - eye).lengthSquared(), mesh});
         }
     }
-    std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<float, const GpuMesh *>::first);
+    std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<float, const QcGpuMesh *>::first);
 
     // The pipeline changes only where a section's water and its other faces meet, and only while the
     // water pipeline differs from the translucent one; today they are alike, so the step binds one
@@ -549,7 +443,7 @@ void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const Fr
     }
 }
 
-void QcWorldRenderer::drawTranslucentRuns(const GpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
+void QcWorldRenderer::drawTranslucentRuns(const QcGpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
                                           QRhiCommandBuffer *commandBuffer)
 {
     // Runs alternate between water (even) and the other translucent faces (odd).
@@ -574,13 +468,13 @@ QRhiGraphicsPipeline *QcWorldRenderer::waterPipelineInTranslucent() const
 void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
     const QVector3D eye = m_camera.position;
-    QList<std::pair<float, const GpuMesh *>> water;
-    for (const GpuMesh *mesh : view.visible) {
+    QList<std::pair<float, const QcGpuMesh *>> water;
+    for (const QcGpuMesh *mesh : view.visible) {
         if (mesh->water.indexCount > 0) {
             water.append({(mesh->centre() - eye).lengthSquared(), mesh});
         }
     }
-    std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, const GpuMesh *>::first);
+    std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, const QcGpuMesh *>::first);
 
     commandBuffer->setGraphicsPipeline(m_waterPipeline.get());
     commandBuffer->setShaderResources();
@@ -612,8 +506,9 @@ QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjectio
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
     FrameView view;
     view.belowWorld = m_camera.position.y() < 0.0f;
-    view.visible.reserve(qsizetype(m_meshes.size()));
-    for (const auto &[key, mesh] : m_meshes) {
+    const QcGpuMeshStore::Meshes &meshes = m_meshStore.meshes();
+    view.visible.reserve(qsizetype(meshes.size()));
+    for (const auto &[key, mesh] : meshes) {
         const bool drawable = mesh.opaque.indexCount > 0 || mesh.translucent.indexCount > 0 || mesh.water.indexCount > 0 || view.belowWorld;
         if (drawable && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
             view.visible.append(&mesh);
@@ -626,7 +521,7 @@ void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameVi
 {
     commandBuffer->setGraphicsPipeline(m_opaquePipeline.get());
     commandBuffer->setShaderResources();
-    for (const GpuMesh *mesh : view.visible) {
+    for (const QcGpuMesh *mesh : view.visible) {
         drawBuffers(commandBuffer, mesh->opaque);
         if (view.belowWorld) {
             drawBuffers(commandBuffer, mesh->underside);
@@ -734,8 +629,8 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     drawPlan(commandBuffer, updates, view, outputSize);
 
     if (m_collectSamples) {
-        m_sample.sections = int(m_meshes.size());
-        m_sample.sectionBytes = m_sectionBytes;
+        m_sample.sections = int(m_meshStore.meshes().size());
+        m_sample.sectionBytes = m_meshStore.bytes();
         m_sample.worldRenderMs = double(renderTime.nsecsElapsed()) / 1e6;
         m_samples.append(m_sample);
     }

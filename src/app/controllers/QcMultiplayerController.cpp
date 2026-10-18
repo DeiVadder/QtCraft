@@ -2,12 +2,12 @@
 
 #include "app/controllers/QcCharacterSettings.h"
 #include "app/controllers/QcGameController.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/multiplayer/QcLanAddresses.h"
 #include "app/multiplayer/QcMultiplayerSettings.h"
 #include "app/multiplayer/QcPlayerList.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"

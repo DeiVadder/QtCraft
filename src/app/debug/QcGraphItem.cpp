@@ -1,4 +1,4 @@
-#include "app/rendering/QcGraphItem.h"
+#include "app/debug/QcGraphItem.h"
 
 #include <QSGFlatColorMaterial>
 #include <QSGGeometryNode>

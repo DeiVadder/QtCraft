@@ -1,4 +1,4 @@
-#include "clientcore/session/QcFlightLatch.h"
+#include "clientcore/player/QcFlightLatch.h"
 
 bool QcFlightLatch::jumpPressed(qint64 timestampMs)
 {

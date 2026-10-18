@@ -407,7 +407,7 @@ private slots:
     }
 
     // Other content (other textures) means other UVs: then the game makes a new render table and
-    // meshes (QcGameController::applyAtlas); the same content never does.
+    // meshes (QcWorldAtlas::apply); the same content never does.
     void otherContentChangesTheLayout()
     {
         QcContentRegistry more = smallContent();

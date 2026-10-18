@@ -1,7 +1,7 @@
-#include "app/controllers/QcDebugHud.h"
+#include "app/debug/QcDebugHud.h"
 
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/debug/QcDebugText.h"
 #include "clientcore/light/QcLightProbe.h"

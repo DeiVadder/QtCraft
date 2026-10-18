@@ -1,8 +1,8 @@
 #include "app/input/QcGameInput.h"
 
 #include "app/controllers/QcGameController.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/session/QcSessionParts.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/camera/QcMouseLook.h"
 #include "clientcore/session/QcClientSession.h"

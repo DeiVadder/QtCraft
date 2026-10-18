@@ -1,6 +1,6 @@
 #pragma once
 
-#include "app/controllers/QcDebugHud.h"
+#include "app/debug/QcDebugHud.h"
 #include "app/models/QcWorldLabelModel.h"
 #include "common/core/QcChunkPos.h"
 #include "common/core/QcVec3.h"

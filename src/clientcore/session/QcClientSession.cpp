@@ -1,66 +1,21 @@
 #include "clientcore/session/QcClientSession.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
-#include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
-#include "common/world/QcMinecartBody.h"
 
 #include <QLoggingCategory>
 #include <QTimer>
-#include <QtMath>
 
-#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-// The box the crosshair hits an entity in.
-QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entity)
-{
-    if (entity.isMinecart()) {
-        return QcPhysics::boxAt(entity.position, QcMinecartBody::width, QcMinecartBody::height);
-    }
-    if (entity.isArmourStand()) {
-        const double scale = entity.stand.small ? 0.5 : 1.0;
-        return QcPhysics::boxAt(entity.position, QcStandPose::bodyWidth * scale, QcStandPose::bodyHeight * scale);
-    }
-
-    // Young animals are drawn and aimed at half size (decision E-293).
-    const QcMobDefinition *creature = entity.creature(content);
-    const double scale = (entity.flags & QcMsg::Young) != 0 ? QcMsg::youngScale : 1.0;
-    const double width = creature ? creature->width : QcPhysics::playerWidth;
-    const double height = creature ? creature->height : QcPhysics::playerHeight;
-    // A villager in its bed is aimed at where it lies (decisions E-411, E-423).
-    return QcPoses::boxAt(QcMsg::poseOf(entity.flags), entity.position, entity.yaw, width * scale, height * scale);
-}
-
-// Whether using `item` on the entity is a use of the creature (UseEntity): food, armour, its
-// catching item, its milking item (decision E-500) or its breeding food (decision E-293).
-bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &entity, const QcItemDefinition &item)
-{
-    const QcMobDefinition *creature = entity.creature(content);
-    return creature && QcClientLauncher::usesOnCreature(*creature, item);
-}
-
-// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, a
-// villager (its trading screen, decision E-414) and a tameable creature (taming, sitting, healing,
-// its collar; decision E-480), the last two not while sneaking.
-bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entity, bool sneaking)
-{
-    const QcMobDefinition *creature = entity.creature(content);
-    return entity.isArmourStand() || entity.isMinecart() || (creature && (creature->villager || creature->tameable) && !sneaking);
-}
-
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
-
-// Unacknowledged inputs beyond this are dropped; the server would reject them anyway.
-constexpr qsizetype maxPendingInputs = 100;
 
 bool chunkUsesKnownBlocks(const QcChunk &chunk, const QcContentRegistry &content)
 {
@@ -72,15 +27,6 @@ bool chunkUsesKnownBlocks(const QcChunk &chunk, const QcContentRegistry &content
         }
     }
     return true;
-}
-
-// Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,
-// doors, levers, buttons, repeaters and crafting tables, unless the player sneaks.
-bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
-{
-    return block && !sneaking
-           && (block->opensCrafting || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
-               || block->signal.isUsable());
 }
 
 } // namespace
@@ -115,14 +61,7 @@ void QcClientSession::start(TickMode mode)
 
 void QcClientSession::setIntent(const QcPlayerInput &intent)
 {
-    const auto finiteOr = [](float value, float fallback) { return std::isfinite(value) ? value : fallback; };
-    m_intent = intent;
-    m_intent.forward = std::clamp(finiteOr(intent.forward, 0.0f), -1.0f, 1.0f);
-    m_intent.strafe = std::clamp(finiteOr(intent.strafe, 0.0f), -1.0f, 1.0f);
-    m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
-    const float yaw = std::fmod(finiteOr(intent.yaw, 0.0f), 360.0f);
-    m_intent.yaw = yaw < 0.0f ? yaw + 360.0f : yaw;
-
+    m_prediction.setIntent(intent);
     refreshTarget();
 }
 
@@ -223,7 +162,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
         m_weather.receive(*weather);
     } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
-        m_weather.lightning(*strike, m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, m_tickCount);
+        m_weather.lightning(*strike, playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, m_tickCount);
     } else {
         return false;
     }
@@ -237,7 +176,7 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
     case QcClientVitals::Change::Health:
         if (m_vitals.isDead()) {
             // A player comes back from death on the ground.
-            m_miningRequested = false;
+            m_hand.setMining(false);
             m_gameMode.setFlightWanted(false);
         }
         emit healthChanged();
@@ -261,7 +200,11 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
             setState(State::Playing);
         }
     } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
-        onInventoryState(*inventory);
+        if (!m_inventory.apply(*inventory, m_content.get())) {
+            closeWithError(u"Server sent an invalid inventory"_s);
+            return true;
+        }
+        emit inventoryChanged();
     } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
         emit craftingOpened(open->size);
     } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
@@ -303,7 +246,7 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
 
     m_entityId = welcome.playerEntityId;
     if (welcome.restoredView) {
-        QcPlayerInput intent = m_intent;
+        QcPlayerInput intent = m_prediction.intent();
         intent.yaw = welcome.yaw;
         intent.pitch = welcome.pitch;
         setIntent(intent);
@@ -346,62 +289,12 @@ void QcClientSession::onChunkData(const QcMsg::ChunkData &chunkData)
     emit chunkLoaded(pos);
 }
 
-void QcClientSession::onInventoryState(const QcMsg::InventoryState &inventory)
-{
-    if (inventory.stacks.size() != QcInventory::slotCount) {
-        closeWithError(u"Server sent an invalid inventory"_s);
-        return;
-    }
-
-    for (int i = 0; i < QcInventory::slotCount; ++i) {
-        m_inventory.setSlot(i, inventory.stacks[i]);
-    }
-    m_inventory.setSelectedHotbarSlot(inventory.selected);
-
-    if (inventory.craftingGrid.size() == 9 && (inventory.craftingSize == 2 || inventory.craftingSize == 3)) {
-        m_craftingGrid = inventory.craftingGrid;
-        m_craftingSize = inventory.craftingSize;
-        m_craftingResult = inventory.craftingResult;
-    }
-    // Only items of the content are ever drawn (decision E-232).
-    m_equipment = m_content ? inventory.equipment.knownTo(*m_content) : QcEquipment();
-
-    emit inventoryChanged();
-}
-
 void QcClientSession::reconcile(const QcMsg::PlayerState &state)
 {
-    // A state older than one already applied would roll the prediction back; ignore it.
-    if (m_hasServerState && state.lastInputSequence < m_lastAcknowledged) {
-        return;
-    }
-
-    // A player saved while flying flies on after joining (decision E-284). The first state places
-    // the player in the world: it corrects no prediction.
-    const bool placed = !m_hasServerState;
-    if (placed) {
+    // A player saved while flying flies on after joining (decision E-284).
+    if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().mayFly) == QcPrediction::Reconciled::Placed) {
         m_gameMode.setFlightWanted(state.motion.flying);
     }
-    m_lastAcknowledged = state.lastInputSequence;
-    m_hasServerState = true;
-    m_pendingInputs.removeIf([&state](const QcPlayerInput &input) { return input.sequence <= state.lastInputSequence; });
-    // A rider sits in the cart as the mirror shows it; getting in or out is a placement by the
-    // server, not a correction (decision E-382).
-    const bool gotInOrOut = m_riding.noteVehicle(state.vehicle);
-    if (m_riding.isRiding()) {
-        m_lastCorrection = 0.0;
-        return;
-    }
-
-    QcEntityMotion replayed = state.motion;
-    if (m_world) {
-        for (const QcPlayerInput &input : std::as_const(m_pendingInputs)) {
-            QcPhysics::stepPlayer(replayed, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
-        }
-    }
-    m_lastCorrection = gotInOrOut || placed ? 0.0 : (replayed.position - m_motion.position).length();
-    m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
-    m_motion = replayed;
 }
 
 void QcClientSession::tick()
@@ -417,35 +310,8 @@ void QcClientSession::tick()
     }
     m_entities.tick();
 
-    const auto advance = [](int &ticks, int length) {
-        if (ticks < 0) {
-            return;
-        }
-        ++ticks;
-        if (ticks >= length) {
-            ticks = -1;
-        }
-    };
-
-    advance(m_swingTicks, swingTicks);
-    advance(m_useTicks, QcHandTimers::useTicks);
-    advance(m_switchTicks, QcHandTimers::switchTicks);
-    advance(m_landingTicks, QcHandTimers::landingTicks);
-
-    const QcItemStack &held = m_inventory.selectedStack();
-    const QcItemId heldItem = held.isEmpty() ? qcNoItem : held.item;
-    if (heldItem != m_lastHeld) {
-        m_lastHeld = heldItem;
-        m_switchTicks = 0;
-    }
-    m_launcher.tick(heldItem != qcNoItem && m_content->isValidItem(heldItem) ? &m_content->item(heldItem) : nullptr,
-                    m_inventory.selectedHotbarSlot(), m_worldTime.speed);
-
-    // Keep swinging while a block is being mined.
-    if (m_miningPos && m_swingTicks < 0) {
-        m_swingTicks = 0;
-    }
-
+    m_animation.tick(m_inventory.heldItem(), m_hand.isMining());
+    m_hand.tickLauncher(*m_content, m_worldTime.speed);
     updateSounds();
 
     if (m_vitals.isDead()) {
@@ -454,40 +320,27 @@ void QcClientSession::tick()
         return;
     }
 
-    QcPlayerInput input = m_intent;
-    input.sequence = m_nextSequence++;
-    input.flying = m_gameMode.flightWanted();
-    m_previousMotion = m_motion;
-    if (m_riding.isRiding()) {
-        m_riding.follow(m_motion, m_entities);
-    } else {
-        stepOnFoot(input);
-    }
-
-    if (m_pendingInputs.size() >= maxPendingInputs) {
-        m_pendingInputs.removeFirst();
-    }
-    m_pendingInputs.append(input);
-    m_connection->send(QcMsg::PlayerInput{input});
-
-    updateTargetAndMining();
+    predict();
+    apply(m_hand.updateMining(*m_world, *m_content));
     emit ticked();
 }
 
-void QcClientSession::stepOnFoot(const QcPlayerInput &input)
+void QcClientSession::predict()
 {
-    QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
-    m_gameMode.stepped(m_motion.flying);
-    m_lastStep = std::hypot(m_motion.position.x - m_previousMotion.position.x, m_motion.position.z - m_previousMotion.position.z);
-    m_walkDistance += m_lastStep;
-    if (m_motion.onGround && !m_previousMotion.onGround) {
-        m_landingTicks = 0;
+    const QcPlayerInput input = m_prediction.predict(*m_world, m_entities, m_gameMode.flightWanted(), m_gameMode.rules().mayFly);
+    if (!m_prediction.riding().isRiding()) {
+        const QcEntityMotion &motion = m_prediction.motion();
+        const QcEntityMotion &previous = m_prediction.previousMotion();
+        m_gameMode.stepped(motion.flying);
+        m_animation.stepped(previous, motion);
+
+        const QList<QcSoundCue> steps = m_sounds.local().update(previous, motion, m_prediction.intent().sneak, *m_world);
+        for (const QcSoundCue &step : steps) {
+            cue(step);
+        }
     }
 
-    const QList<QcSoundCue> steps = m_sounds.local().update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
-    for (const QcSoundCue &step : steps) {
-        cue(step);
-    }
+    m_connection->send(QcMsg::PlayerInput{input});
 }
 
 void QcClientSession::cue(QcSoundCue cue)
@@ -500,7 +353,7 @@ void QcClientSession::cue(QcSoundCue cue)
 void QcClientSession::updateSounds()
 {
     m_entities.stepSounds(*m_world, [this](const QcSoundCue &step) { cue(step); });
-    const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const double rain = m_weather.rainAt(int(std::floor(eye.y)));
     m_sounds.updateAmbience(*m_world, eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
     const QList<QcSoundCue> thunder = m_weather.tick(m_tickCount);
@@ -511,47 +364,60 @@ void QcClientSession::updateSounds()
 
 void QcClientSession::refreshTarget()
 {
-    if (!m_world) {
-        m_target.reset();
-        return;
+    if (m_world) {
+        m_hand.refreshTarget(*m_world, *m_content);
+    } else {
+        m_hand.clearTarget();
     }
+}
 
-    const double yaw = qDegreesToRadians(double(m_intent.yaw));
-    const double pitch = qDegreesToRadians(double(m_intent.pitch));
-    const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
-    const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-
-    const QcItemStack &held = m_inventory.selectedStack();
-    const bool scoops = !held.isEmpty() && m_content->isValidItem(held.item)
-                        && (m_content->item(held.item).scoops || m_content->item(held.item).bottles);
-    m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach,
-                               scoops ? QcRaycast::Targets::VisibleAndLiquids : QcRaycast::Targets::Visible);
-
-    m_targetEntity.reset();
-    double nearest = m_target ? m_target->distance : attackReach;
-    for (const QcClientEntity &entity : m_entities.all()) {
-        if (entity.isItem() || entity.isExperienceOrb() || entity.isProjectile() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
-            continue;
-        }
-
-        const std::optional<double> distance =
-            QcRaycast::intersectBox(eye, direction, targetBoxOf(*m_content, entity), std::min(nearest, attackReach));
-
-        if (distance && *distance < nearest) {
-            nearest = *distance;
-            m_targetEntity = entity.id;
-        }
+bool QcClientSession::useItem()
+{
+    if (m_state != State::Playing || m_vitals.isDead()) {
+        return false;
     }
+    return apply(m_hand.use(*m_world, *m_content));
 }
 
 bool QcClientSession::attack()
 {
-    if (m_state != State::Playing || m_vitals.isDead() || !m_targetEntity) {
+    if (m_state != State::Playing || m_vitals.isDead()) {
         return false;
     }
+    return apply(m_hand.attack());
+}
 
-    m_connection->send(QcMsg::AttackEntity{*m_targetEntity});
-    m_swingTicks = 0;
+void QcClientSession::sendToServer(const QcMessage &message)
+{
+    m_connection->send(message);
+}
+
+bool QcClientSession::apply(QcHandActions::HandEffect effect)
+{
+    // The answers to the hand's requests arrive later (the transports deliver queued), so the
+    // screens are marked before the server can open one.
+    using HandEffect = QcHandActions::HandEffect;
+    switch (effect) {
+    case HandEffect::None:
+        return false;
+    case HandEffect::Handled:
+        break;
+    case HandEffect::Swing:
+        m_animation.swing();
+        break;
+    case HandEffect::UsedEntity:
+        m_machine.usedBlock();
+        m_trading.usedEntity();
+        m_animation.use();
+        break;
+    case HandEffect::UsedBlock:
+        m_machine.usedBlock();
+        m_animation.use();
+        break;
+    case HandEffect::Use:
+        m_animation.use();
+        break;
+    }
     return true;
 }
 
@@ -566,55 +432,9 @@ void QcClientSession::setAppearance(const QcAppearance &appearance)
     }
 }
 
-QcEntityPose QcClientSession::localPose(double alpha) const
-{
-    QcEntityPose pose;
-    pose.speed = m_lastStep * QcPhysics::tickRate;
-    pose.walkDistance = m_walkDistance - m_lastStep * (1.0 - alpha);
-    pose.onGround = m_motion.onGround;
-    pose.inWater = m_motion.inWater;
-    // Sneaking in flight is descending, not crouching (decision E-284).
-    pose.sneaking = m_intent.sneak && !m_motion.flying;
-    pose.sprinting = m_intent.sprint && m_intent.forward > 0.0f && !m_intent.sneak;
-    pose.flying = m_motion.flying;
-    pose.riding = m_riding.isRiding();
-    pose.sneaking = pose.sneaking && !pose.riding;
-    pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
-    pose.drawProgress = m_launcher.progress(alpha);
-    pose.headPitch = m_intent.pitch;
-    return pose;
-}
-
-QcHandTimers QcClientSession::handTimers(double alpha) const
-{
-    const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
-    return {progress(m_switchTicks, QcHandTimers::switchTicks), progress(m_landingTicks, QcHandTimers::landingTicks),
-            progress(m_useTicks, QcHandTimers::useTicks)};
-}
-
-QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
-{
-    QcEntityPose pose;
-    pose.speed = entity.speed;
-    pose.walkDistance = entity.walkDistance - entity.lastStep * (1.0 - alpha);
-    pose.onGround = (entity.flags & QcMsg::OnGround) != 0;
-    pose.inWater = (entity.flags & QcMsg::InWater) != 0;
-    pose.sneaking = (entity.flags & QcMsg::Sneaking) != 0;
-    pose.sprinting = (entity.flags & QcMsg::Sprinting) != 0;
-    pose.riding = (entity.flags & QcMsg::Riding) != 0;
-    pose.body = QcMsg::poseOf(entity.flags);
-    pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
-    pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
-    pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
-    pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * float(alpha);
-    // Others only tell that they draw (decision E-425): shown fully drawn.
-    pose.drawProgress = (entity.flags & QcMsg::Drawing) != 0 ? 1.0 : -1.0;
-    return pose;
-}
-
 bool QcClientSession::dropItem(bool wholeStack)
 {
-    if (m_state != State::Playing || m_vitals.isDead() || m_inventory.selectedStack().isEmpty()) {
+    if (m_state != State::Playing || m_vitals.isDead() || inventory().selectedStack().isEmpty()) {
         return false;
     }
     m_connection->send(QcMsg::DropItem{wholeStack});
@@ -628,151 +448,48 @@ void QcClientSession::respawn()
     }
 }
 
-void QcClientSession::updateTargetAndMining()
-{
-    refreshTarget();
-
-    const std::optional<QcBlockPos> aimed = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
-    // Creative mode: strikes break at once, a held button again every few ticks (decision E-282);
-    // a survival mining that still runs is cancelled below.
-    const bool instant = m_gameMode.rules().instantBreak;
-    if (const std::optional<QcBlockPos> broken = instant ? m_gameMode.nextInstantBreak(aimed) : std::nullopt) {
-        m_connection->send(QcMsg::StartMining{*broken});
-        m_connection->send(QcMsg::FinishMining{*broken});
-        m_swingTicks = 0;
-    }
-
-    const std::optional<QcBlockPos> wanted = instant ? std::nullopt : aimed;
-    if (wanted != m_miningPos) {
-        if (m_miningPos) {
-            m_connection->send(QcMsg::CancelMining{});
-        }
-        m_miningPos = wanted;
-        m_miningProgress = 0.0;
-        m_miningTicks = 0;
-        if (m_miningPos) {
-            m_connection->send(QcMsg::StartMining{*m_miningPos});
-        }
-    }
-
-    if (!m_miningPos) {
-        return;
-    }
-
-    const QcBlockPos mining = *m_miningPos;
-    const std::optional<QcBlockId> block = m_world->blockAt(mining);
-    const QcItemStack &held = m_inventory.selectedStack();
-    const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-
-    if (!block) {
-        return;
-    }
-
-    const QcBlockDefinition &definition = m_content->block(*block);
-    const double seconds = QcMining::breakSeconds(definition, item);
-    if (seconds <= 0.0) {
-        return;
-    }
-
-    if (m_miningTicks++ % miningHitTicks == 0) {
-        cue({QcSoundKeys::blockSound(definition, QcBlockSoundAction::Hit),
-             {mining.x + 0.5, mining.y + 0.5, mining.z + 0.5}, 0.35f, 1.0f, QcSoundCue::Origin::Local, 0});
-    }
-
-    m_miningProgress += QcPhysics::tickDuration / seconds;
-    if (m_miningProgress >= 1.0) {
-        // The server decides; its BlockUpdate removes the block (or restores it on rejection).
-        m_connection->send(QcMsg::FinishMining{mining});
-        m_miningPos.reset();
-        m_miningProgress = 0.0;
-    }
-}
-
-bool QcClientSession::useItem()
-{
-    if (m_state != State::Playing || m_vitals.isDead()) {
-        return false;
-    }
-
-    const QcItemStack &held = m_inventory.selectedStack();
-    const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-
-    // Machines, chests, doors, levers, buttons, repeaters and crafting tables react when used (unless sneaking);
-    // otherwise food without a block to place is eaten and everything else acts on the targeted block.
-    const std::optional<QcBlockId> targetBlock = m_target ? m_world->blockAt(m_target->block) : std::nullopt;
-    const QcBlockDefinition *targetDefinition = targetBlock ? &m_content->block(*targetBlock) : nullptr;
-    const bool opensScreen = reactsToUse(targetDefinition, m_intent.sneak);
-    // An armour stand takes or gives armour and items, also with an empty hand; a minecart takes the
-    // player in or opens its screen; a villager opens its trading screen (decision E-414).
-    const QcClientEntity targeted = m_targetEntity ? m_entities.all().value(*m_targetEntity) : QcClientEntity();
-    if (m_targetEntity && takesEveryUse(*m_content, targeted, m_intent.sneak)) {
-        m_machine.usedBlock();
-        m_trading.usedEntity();
-        m_connection->send(QcMsg::UseEntity{*m_targetEntity});
-        m_useTicks = 0;
-        return true;
-    }
-
-    // Food, armour and what a creature takes (its catching item, its breeding food) used on a creature
-    // go to the server, which feeds or catches it or else eats the food or puts on the armour
-    // (decisions E-057, E-293); other items act on the block behind it.
-    const auto creature = m_targetEntity ? m_entities.all().constFind(*m_targetEntity) : m_entities.all().constEnd();
-    if (item && creature != m_entities.all().constEnd() && usesOnCreature(*m_content, *creature, *item)) {
-        m_connection->send(QcMsg::UseEntity{creature.key()});
-        m_useTicks = 0;
-        return true;
-    }
-
-    // A launcher draws while the button is held (decision E-425), releaseUse shoots; a throwable
-    // item is thrown at once (decision E-427).
-    if (item && !opensScreen && QcClientLauncher::uses(*item)) {
-        const std::optional<QcMessage> message = m_launcher.use(held.item, *item, m_inventory, *m_content, m_gameMode.rules().infiniteItems);
-        if (message) {
-            m_connection->send(*message);
-        }
-        m_swingTicks = QcClientLauncher::swingAfter(message, m_swingTicks);
-        return true;
-    }
-
-    // Food is eaten, drinks drunk (decision E-500) and armour put on (all sent as ConsumeItem) unless
-    // the food plants a block and a block is aimed at: then the server plants it or, where it cannot,
-    // eats it (decision E-292).
-    if (item && QcClientLauncher::consumes(*item, m_target.has_value()) && !opensScreen) {
-        m_connection->send(QcMsg::ConsumeItem{});
-        m_useTicks = 0;
-        return true;
-    }
-
-    if (!m_target) {
-        return false;
-    }
-
-    m_machine.usedBlock();
-
-    const QcVec3 hit = m_target->point - QcVec3{double(m_target->block.x), double(m_target->block.y), double(m_target->block.z)};
-    const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
-    m_connection->send(QcMsg::UseItem{m_target->block, m_target->face, {clamp01(hit.x), clamp01(hit.y), clamp01(hit.z)}});
-    m_useTicks = 0;
-    return true;
-}
-
-void QcClientSession::releaseUse()
-{
-    if (m_launcher.release() && m_state == State::Playing) {
-        m_connection->send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Release});
-    }
-}
-
-void QcClientSession::cancelUse()
-{
-    if (m_launcher.release() && m_state == State::Playing) {
-        m_connection->send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
-    }
-}
-
 void QcClientSession::sendChat(const QString &text)
 {
     if (!text.trimmed().isEmpty()) {
         m_connection->send(QcMsg::ChatInput{text.trimmed()});
     }
+}
+
+bool QcClientSession::handleMachineMessage(const QcMessage &message)
+{
+    const std::optional<QcClientMachineScreen::Change> change = m_machine.handle(message, m_content.get());
+    if (!change) {
+        return false;
+    }
+
+    switch (*change) {
+    case QcClientMachineScreen::Change::Opened:
+        emit machineOpened();
+        break;
+    case QcClientMachineScreen::Change::Changed:
+        emit machineChanged();
+        break;
+    case QcClientMachineScreen::Change::Closed:
+        emit machineClosed();
+        break;
+    case QcClientMachineScreen::Change::None:
+        break;
+    }
+    return true;
+}
+
+void QcClientSession::closeMachine()
+{
+    if (!m_machine.closeLocally()) {
+        return;
+    }
+
+    m_connection->send(QcMsg::CloseMachine{});
+    emit machineClosed();
+}
+
+void QcClientSession::selectHotbarSlot(int slot)
+{
+    m_inventory.selectHotbarSlot(slot);
+    emit inventoryChanged();
 }

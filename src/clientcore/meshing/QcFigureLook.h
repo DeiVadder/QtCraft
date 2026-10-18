@@ -9,7 +9,7 @@
 
 class QcContentRegistry;
 
-// What players and items look like when drawn: shared by the world (QcRenderBridge) and the
+// What players and items look like when drawn: shared by the world (QcEntityFrameBuilder) and the
 // character preview, so the preview shows exactly what other players see.
 namespace QcFigureLook {
 

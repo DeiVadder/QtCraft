@@ -1,10 +1,10 @@
 #include "app/hooks/QcStartupHooks.h"
 
 #include "app/controllers/QcGameController.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/rendering/QcWorldView.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 

@@ -1,6 +1,6 @@
-#include "clientcore/session/QcClientGameMode.h"
+#include "clientcore/player/QcClientGameMode.h"
+#include "clientcore/player/QcFlightLatch.h"
 #include "clientcore/session/QcClientSession.h"
-#include "clientcore/session/QcFlightLatch.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"

@@ -1,10 +1,10 @@
 #include "app/hooks/QcBenchmarkRun.h"
 
 #include "app/controllers/QcGameController.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/input/QcGameInput.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/core/QcProcessMemory.h"

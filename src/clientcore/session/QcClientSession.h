@@ -2,18 +2,21 @@
 
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/player/QcClientGameMode.h"
+#include "clientcore/player/QcClientInventory.h"
+#include "clientcore/player/QcClientRiding.h"
+#include "clientcore/player/QcClientVitals.h"
+#include "clientcore/player/QcHandActions.h"
+#include "clientcore/player/QcHandTimers.h"
+#include "clientcore/player/QcLocalAnimation.h"
+#include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEntities.h"
-#include "clientcore/session/QcClientGameMode.h"
-#include "clientcore/session/QcClientLauncher.h"
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
-#include "clientcore/session/QcClientRiding.h"
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientTrading.h"
-#include "clientcore/session/QcClientVitals.h"
 #include "clientcore/session/QcClientWorld.h"
-#include "clientcore/session/QcHandTimers.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/physics/QcEntityMotion.h"
@@ -32,9 +35,10 @@ class QcConnection;
 class QcTransport;
 class QTimer;
 
-// Client side of one connection: mirrors the world the server sends, predicts the local player
-// with the shared physics and reconciles with authoritative server state. GUI-free; the renderer,
-// the UI and the control interface all observe a session.
+// Client side of one connection: mirrors the world the server sends and distributes its messages,
+// drives the local player's parts (clientcore/player: prediction, hand, animation, inventory) once
+// per tick and sends their requests. GUI-free; the renderer, the UI and the control interface all
+// observe a session. It stays their facade: the getters below forward to the parts (decision E-530).
 class QcClientSession : public QObject
 {
     Q_OBJECT
@@ -74,64 +78,64 @@ public:
     // Movement intent applied on every tick until changed. The sequence number is set by the session.
     // Non-finite values are replaced, ranges clamped and yaw wrapped into [0, 360).
     void setIntent(const QcPlayerInput &intent);
-    const QcPlayerInput &intent() const { return m_intent; }
+    const QcPlayerInput &intent() const { return m_prediction.intent(); }
 
     // The game mode the server reported, its rules and the wish to fly (decisions E-282, E-284).
     QcClientGameMode &gameMode() { return m_gameMode; }
     const QcClientGameMode &gameMode() const { return m_gameMode; }
 
     // Predicted state after the latest tick and the state one tick earlier, for interpolation.
-    const QcEntityMotion &playerMotion() const { return m_motion; }
-    const QcEntityMotion &previousPlayerMotion() const { return m_previousMotion; }
-    qsizetype pendingInputCount() const { return m_pendingInputs.size(); }
+    const QcEntityMotion &playerMotion() const { return m_prediction.motion(); }
+    const QcEntityMotion &previousPlayerMotion() const { return m_prediction.previousMotion(); }
+    qsizetype pendingInputCount() const { return m_prediction.pendingInputCount(); }
     // Metres the server moved the predicted player: latest reconcile, most since reset (E-257).
-    double lastCorrection() const { return m_lastCorrection; }
-    double largestCorrection() const { return m_largestCorrection; }
-    void resetCorrections() { m_largestCorrection = 0.0; }
-    bool hasServerState() const { return m_hasServerState; }
+    double lastCorrection() const { return m_prediction.lastCorrection(); }
+    double largestCorrection() const { return m_prediction.largestCorrection(); }
+    void resetCorrections() { m_prediction.resetCorrections(); }
+    bool hasServerState() const { return m_prediction.hasServerState(); }
     // The minecart the player rides (decision E-382): no prediction then, the player sits in the cart.
-    const QcClientRiding &riding() const { return m_riding; }
+    const QcClientRiding &riding() const { return m_prediction.riding(); }
 
     // Advances the client by one tick; normally driven by the internal timer.
     void tick();
 
     // Block the player looks at (within reach), updated every tick.
-    const std::optional<QcRaycastHit> &target() const { return m_target; }
+    const std::optional<QcRaycastHit> &target() const { return m_hand.target(); }
     // While true, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
-    void setMining(bool mining) { m_miningRequested = mining; }
-    double miningProgress() const { return m_miningProgress; }
+    void setMining(bool mining) { m_hand.setMining(mining); }
+    double miningProgress() const { return m_hand.miningProgress(); }
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();
     // The use button released: a drawn launcher shoots (decision E-425); cancelUse lets it go without one.
-    void releaseUse();
-    void cancelUse();
+    void releaseUse() { m_hand.endUse(QcMsg::DrawLauncher::Action::Release, m_state == State::Playing); }
+    void cancelUse() { m_hand.endUse(QcMsg::DrawLauncher::Action::Cancel, m_state == State::Playing); }
     void selectHotbarSlot(int slot);
     // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
-    void moveInventoryItem(int from, int to, int count = 0);
+    void moveInventoryItem(int from, int to, int count = 0) { m_inventory.moveItem(from, to, count); }
     // Shift-click: the server moves the stack to where it belongs; the crafting result
     // (QcMsg::QuickMoveItem::craftingResultSlot) is crafted as often as possible.
-    void quickMoveItem(int slot);
-    void takeCraftingResult();
-    void craftRecipe(const QString &recipe, int count = 1);
-    void closeCrafting();
+    void quickMoveItem(int slot) { m_inventory.quickMoveItem(slot); }
+    void takeCraftingResult() { m_inventory.takeCraftingResult(); }
+    void craftRecipe(const QString &recipe, int count = 1) { m_inventory.craftRecipe(recipe, count); }
+    void closeCrafting() { m_inventory.closeCrafting(); }
     // The machine or chest screen the server opened (position, category, slots, progress).
     const QcClientMachineScreen &machine() const { return m_machine; }
     void closeMachine();
     // The trading screen of a villager the server opened, and trading with it (decision E-414).
     QcClientTrading &trading() { return m_trading; }
     const QcClientTrading &trading() const { return m_trading; }
-    const QList<QcItemStack> &craftingGrid() const { return m_craftingGrid; }
-    int craftingSize() const { return m_craftingSize; }
-    QcItemStack craftingResult() const { return m_craftingResult; }
+    const QList<QcItemStack> &craftingGrid() const { return m_inventory.craftingGrid(); }
+    int craftingSize() const { return m_inventory.craftingSize(); }
+    QcItemStack craftingResult() const { return m_inventory.craftingResult(); }
     void sendChat(const QString &text);
-    const QcInventory &inventory() const { return m_inventory; }
-    const QcEquipment &equipment() const { return m_equipment; }
+    const QcInventory &inventory() const { return m_inventory.inventory(); }
+    const QcEquipment &equipment() const { return m_inventory.equipment(); }
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
     // The mirror itself: its snapshot clock and buffering (decision E-271).
     QcClientEntities &entityMirror() { return m_entities; }
     // Entity under the crosshair when it is closer than any targeted block.
-    [[nodiscard]] std::optional<quint32> targetEntity() const { return m_targetEntity; }
+    [[nodiscard]] std::optional<quint32> targetEntity() const { return m_hand.targetEntity(); }
     // Hits the targeted entity; returns false without one.
     bool attack();
     void respawn();
@@ -145,14 +149,14 @@ public:
     const QHash<quint32, QcClientEntity> &dyingEntities() const { return m_entities.dying(); }
 
     // Animation of the local player. `alpha` interpolates within the current tick.
-    QcEntityPose localPose(double alpha) const;
-    QcHandTimers handTimers(double alpha) const;
+    QcEntityPose localPose(double alpha) const { return m_animation.localPose(alpha, m_prediction, m_hand.drawProgress(alpha)); }
+    QcHandTimers handTimers(double alpha) const { return m_animation.handTimers(alpha); }
     // Pose of a mirrored entity from its server state and client timers.
-    static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
+    static QcEntityPose poseOf(const QcClientEntity &entity, double alpha) { return QcLocalAnimation::poseOf(entity, alpha); }
 
     // Animation lengths in ticks; those of the hand are QcHandTimers'.
-    static constexpr int swingTicks = QcClientEntities::swingTicks;
-    static constexpr int deathTicks = QcClientEntities::deathTicks;
+    static constexpr int swingTicks = QcLocalAnimation::swingTicks;
+    static constexpr int deathTicks = QcLocalAnimation::deathTicks;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
     // Health, food and experience as the server last reported them.
@@ -179,9 +183,9 @@ public:
     // Ambience loop levels around the player, faded towards the surroundings every tick.
     const QcAmbience::Levels &ambience() const { return m_sounds.ambience(); }
     // Mining strikes make a sound every this many ticks.
-    static constexpr int miningHitTicks = 4;
+    static constexpr int miningHitTicks = QcHandActions::miningHitTicks;
     // Melee reach of the player.
-    static constexpr double attackReach = 4.0;
+    static constexpr double attackReach = QcHandActions::attackReach;
 
 signals:
     void stateChanged(QcClientSession::State state);
@@ -219,19 +223,24 @@ private:
     void onWelcome(const QcMsg::Welcome &welcome);
     void onContentSync(const QcMsg::ContentSync &sync);
     void onChunkData(const QcMsg::ChunkData &chunkData);
-    void onInventoryState(const QcMsg::InventoryState &inventory);
     // Health, food or experience changed (QcClientVitals::apply).
     void onVitalsChanged(QcClientVitals::Change change);
     // Closes the connection; `reason` is reported as the disconnect reason.
     void closeWithError(const QString &reason);
     void setState(State state);
+    // The prediction took the server's state of the player.
     void reconcile(const QcMsg::PlayerState &state);
-    // Moves the player on foot (or flying) by one tick of prediction, with landing and step sounds.
-    void stepOnFoot(const QcPlayerInput &input);
+    // Predicts the player by one tick (QcPrediction) and sends the input; on foot (or flying) with
+    // the game mode's wish to fly, the stride, landing and step sounds.
+    void predict();
     void onClosed();
+    // Aims the hand again (no target before the world arrived).
     void refreshTarget();
-    void updateTargetAndMining();
+    // Applies what a hand action did to the arm and the screens; false when it did nothing.
+    bool apply(QcHandActions::HandEffect effect);
     void cue(QcSoundCue cue);
+    // Sends a request of a part (inventory, hand) over the connection.
+    void sendToServer(const QcMessage &message);
     void updateSounds();
 
     std::unique_ptr<QcConnection> m_connection;
@@ -250,43 +259,24 @@ private:
     QTimer *m_tickTimer = nullptr;
     quint64 m_tickCount = 0;
 
-    QcPlayerInput m_intent;
-    quint32 m_nextSequence = 1;
-    QList<QcPlayerInput> m_pendingInputs;
-    QcEntityMotion m_motion;
-    QcEntityMotion m_previousMotion;
-    bool m_hasServerState = false;
-    double m_lastCorrection = 0.0;
-    double m_largestCorrection = 0.0;
-    quint32 m_lastAcknowledged = 0;
-    QcInventory m_inventory;
-    QcEquipment m_equipment;
-    QList<QcItemStack> m_craftingGrid = QList<QcItemStack>(9);
-    int m_craftingSize = 2;
-    QcItemStack m_craftingResult;
-    std::optional<QcRaycastHit> m_target;
-    bool m_miningRequested = false;
-    std::optional<QcBlockPos> m_miningPos;
-    double m_miningProgress = 0.0;
-
+    // Parts in dependency order: the hand reads the parts declared before it; what its actions mean
+    // for the animation, the machine screen and the trading the session applies (apply()).
+    QcPrediction m_prediction;
+    QcClientInventory m_inventory{[this](const QcMessage &message) { sendToServer(message); }};
     QcClientEntities m_entities;
-    QcClientRiding m_riding;
+    QcClientGameMode m_gameMode;
+    QcLocalAnimation m_animation;
+    QcClientMachineScreen m_machine;
+    QcClientTrading m_trading;
+    QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
+                         m_gameMode,
+                         [this](const QcMessage &message) { sendToServer(message); },
+                         [this](const QcSoundCue &sound) { cue(sound); }};
+
     QcAppearance m_appearance;
     bool m_helloSent = false;
     bool m_appearancePending = false;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
-    // Local animation timers in ticks (negative: not running) and the distance walked.
-    int m_swingTicks = -1;
-    int m_useTicks = -1;
-    int m_switchTicks = -1;
-    int m_landingTicks = -1;
-    QcClientLauncher m_launcher;
-    double m_walkDistance = 0.0;
-    double m_lastStep = 0.0;
-    QcItemId m_lastHeld = qcNoItem;
-    std::optional<quint32> m_targetEntity;
-    QcClientMachineScreen m_machine;
-    QcClientTrading m_trading;
     QcClientVitals m_vitals;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
@@ -295,6 +285,4 @@ private:
     QcClientDebugSubscription m_debug;
     QcClientSounds m_sounds;
     QcClientWeather m_weather;
-    int m_miningTicks = 0;
-    QcClientGameMode m_gameMode;
 };

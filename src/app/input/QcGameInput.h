@@ -2,8 +2,8 @@
 
 #include "app/input/QcRelativeMouse.h"
 #include "clientcore/camera/QcMouseCapture.h"
-#include "clientcore/session/QcFlightLatch.h"
-#include "clientcore/session/QcSprintLatch.h"
+#include "clientcore/player/QcFlightLatch.h"
+#include "clientcore/player/QcSprintLatch.h"
 #include "common/gameplay/QcKeyBindings.h"
 
 #include <QObject>

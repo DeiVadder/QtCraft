@@ -7,20 +7,21 @@ qt_add_library(qc_app_core STATIC)
 target_sources(qc_app_core PRIVATE
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
-    controllers/QcDebugHud.h controllers/QcDebugHud.cpp
-    controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
-    controllers/QcDebugVisuals.h controllers/QcDebugVisuals.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
-    controllers/QcPreviewSource.h controllers/QcPreviewSource.cpp
-    controllers/QcSessionParts.h
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
+)
+target_sources(qc_app_core PRIVATE
+    debug/QcDebugHud.h debug/QcDebugHud.cpp
+    debug/QcDebugSettings.h debug/QcDebugSettings.cpp
+    debug/QcDebugVisuals.h debug/QcDebugVisuals.cpp
+    debug/QcGraphItem.h debug/QcGraphItem.cpp
 )
 target_sources(qc_app_core PRIVATE
     hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
@@ -59,14 +60,18 @@ target_sources(qc_app_core PRIVATE
     multiplayer/QcServerHistory.h multiplayer/QcServerHistory.cpp
 )
 target_sources(qc_app_core PRIVATE
+    preview/QcCharacterPreview.h preview/QcCharacterPreview.cpp
+    preview/QcCharacterPreviewRenderer.h preview/QcCharacterPreviewRenderer.cpp
+    preview/QcPreviewAtlasCache.h preview/QcPreviewAtlasCache.cpp
+    preview/QcPreviewSource.h preview/QcPreviewSource.cpp
+)
+target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
-    rendering/QcCharacterPreview.h rendering/QcCharacterPreview.cpp
-    rendering/QcCharacterPreviewRenderer.h rendering/QcCharacterPreviewRenderer.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
+    rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
     rendering/QcFramePlan.h
-    rendering/QcGraphItem.h rendering/QcGraphItem.cpp
+    rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
-    rendering/QcPreviewAtlasCache.h rendering/QcPreviewAtlasCache.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
     rendering/QcRenderPipelines.h rendering/QcRenderPipelines.cpp
     rendering/QcRenderSample.h
@@ -74,6 +79,13 @@ target_sources(qc_app_core PRIVATE
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
+)
+target_sources(qc_app_core PRIVATE
+    session/QcFrameDriver.h session/QcFrameDriver.cpp
+    session/QcSessionParts.h
+    session/QcSessionWiring.h session/QcSessionWiring.cpp
+    session/QcWorldAtlas.h session/QcWorldAtlas.cpp
+    session/QcWorldStarter.h session/QcWorldStarter.cpp
 )
 # The mouse capture talks to the platform (AppKit on macOS).
 if(APPLE)
@@ -147,12 +159,16 @@ qt_add_qml_module(qc_app_core
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qc_app_core_qmltyperegistrations.cpp
     TARGET_DIRECTORY qc_app_core
     PROPERTIES INCLUDE_DIRECTORIES
-        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
+        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/debug;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/preview;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
 
 # The executable: start-up (command line, hooks of a scripted run), shaders, translations, icon.
 qt_add_executable(qtcraft
     hooks/QcScriptedRun.h
-    main.cpp
+    startup/main.cpp
+    startup/QcAppLanguage.h startup/QcAppLanguage.cpp
+    startup/QcAppOptions.h startup/QcAppOptions.cpp
+    startup/QcAppStartup.h startup/QcAppStartup.cpp
+    startup/QcAppWindow.h startup/QcAppWindow.cpp
 )
 if(APPLE)
     target_sources(qtcraft PRIVATE hooks/QcScriptedRun_mac.mm)

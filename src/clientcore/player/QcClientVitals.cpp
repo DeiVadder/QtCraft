@@ -1,4 +1,4 @@
-#include "clientcore/session/QcClientVitals.h"
+#include "clientcore/player/QcClientVitals.h"
 
 QcClientVitals::Change QcClientVitals::apply(const QcMessage &message)
 {

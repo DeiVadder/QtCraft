@@ -1,4 +1,4 @@
-#include "clientcore/session/QcClientRiding.h"
+#include "clientcore/player/QcClientRiding.h"
 
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcMinecartBody.h"

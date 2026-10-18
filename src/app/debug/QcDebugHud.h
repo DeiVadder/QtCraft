@@ -1,6 +1,6 @@
 #pragma once
 
-#include "app/controllers/QcDebugVisuals.h"
+#include "app/debug/QcDebugVisuals.h"
 #include "app/hooks/QcFrameMonitor.h"
 #include "app/models/QcWorldLabelModel.h"
 #include "clientcore/debug/QcDebugSnapshot.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "app/controllers/QcPreviewSource.h"
+#include "app/preview/QcPreviewSource.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 #include "clientcore/preview/QcPreviewActivity.h"

@@ -14,6 +14,8 @@ qc_add_test(test_camera SOURCES client/test_camera.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES client/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_sky SOURCES client/test_sky.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+# The prediction of the local player on its own (decision E-530): reconciliation, pending inputs, riding.
+qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"
                                                   QTCRAFT_THEME_HEADER="${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")

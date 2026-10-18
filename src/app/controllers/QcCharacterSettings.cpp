@@ -1,8 +1,8 @@
 #include "app/controllers/QcCharacterSettings.h"
 
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcNameText.h"

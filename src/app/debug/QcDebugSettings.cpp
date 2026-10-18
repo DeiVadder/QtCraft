@@ -1,4 +1,4 @@
-#include "app/controllers/QcDebugSettings.h"
+#include "app/debug/QcDebugSettings.h"
 
 #include <algorithm>
 

@@ -4,21 +4,22 @@
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
 #include "app/controllers/QcPlayerController.h"
-#include "app/controllers/QcPreviewSource.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/models/QcItemIcons.h"
+#include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
+#include "app/session/QcFrameDriver.h"
+#include "app/session/QcSessionParts.h"
+#include "app/session/QcSessionWiring.h"
+#include "app/session/QcWorldAtlas.h"
+#include "app/session/QcWorldStarter.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/core/QcResult.h"
-#include "server/content/QcModStatus.h"
-#include "server/storage/QcServerPersistence.h"
 
-#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
@@ -28,11 +29,8 @@
 
 class QcAudioEngine;
 class QcBenchmarkRun;
-class QcBlockRenderTable;
 class QcContentRegistry;
 class QcItemIconProvider;
-class QcStatsLog;
-class QcTextureAtlas;
 class QQuickWindow;
 struct QcWorldInfo;
 
@@ -107,7 +105,7 @@ public:
     // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
     void startRemoteSession(std::unique_ptr<QcClientSession> session);
     // The mods that went into the content of the running world.
-    const QList<QcModStatus> &loadedMods() const { return m_loadedMods; }
+    const QList<QcModStatus> &loadedMods() const { return m_worlds.loadedMods(); }
 
     // A world that is not saved (test hooks --play and --showcase), made by the generator type
     // `generator` (QcWorldGenerators).
@@ -145,11 +143,6 @@ signals:
     void worldRefused(const QString &reason);
     void overlayChanged();
 
-public:
-    // The translated message for a world that a damaged per-region file kept from opening (decision
-    // E-366); empty when no such file was the reason.
-    static QString damagedFileMessage(const QcServerPersistence::DamagedFile &damaged);
-
 private:
     void setPhase(Phase phase, const QString &status = {});
     void attachWindow(QQuickWindow *window);
@@ -157,37 +150,23 @@ private:
     [[nodiscard]] QcStatus stopSession();
     // Name, seed, generator type and options of `world`; an empty directory runs it unsaved.
     void startWorld(const QString &directory, const QcWorldInfo &world);
-    // Base game plus enabled mods for a new world; null (and the error phase) when it cannot load.
-    std::shared_ptr<const QcContentRegistry> loadContent();
-    [[nodiscard]] bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
+    // The in-process server of `world` with base game and mods; false (and the error phase) when it
+    // cannot start.
+    [[nodiscard]] bool startServer(const QcWorldInfo &world);
     // Wires the new session (m_parts.session) to meshes, HUD, sounds and screens.
     void beginSession();
-    void connectSessionWorld();
-    void connectSessionPlayer();
-    void onSessionState(QcClientSession::State state);
-    void onContentReady();
-    // Draws the world, the item icons and the character previews with `atlas`.
-    void applyAtlas(const std::shared_ptr<const QcTextureAtlas> &atlas);
-    void onMachineOpened();
-    void onMachineClosed();
-    void onTradeOpened();
-    void onTradeClosed();
-    void onHealthChanged();
+    void onSessionDisconnected(const QString &reason);
     // Enabling or disabling a mod changes the outfits on offer and the icons.
     void onContentReset();
-    void onFrame();
-    // Seconds since the last frame (at most 0.1).
-    float advanceFrameClocks();
 
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.
     QcSessionParts m_parts;
     QcItemIcons m_icons;
-    // The atlas the world is drawn with (decision E-301).
-    std::shared_ptr<const QcTextureAtlas> m_atlas;
     std::unique_ptr<QcAudioEngine> m_audio;
     std::unique_ptr<QcWorldLibraryController> m_library;
     std::unique_ptr<QcSettingsController> m_settings;
+    QcWorldStarter m_worlds;
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcHudState> m_hud;
@@ -198,17 +177,13 @@ private:
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
     QcRenderBridge m_render;
+    QcWorldAtlas m_worldAtlas;
+    QcSessionWiring m_wiring;
+    QcFrameDriver m_frame;
     Phase m_phase = Phase::Menu;
     QString m_statusText;
     bool m_inputEnabled = true;
     QString m_overlay;
     QString m_chatStart;
     QString m_worldDirectory;
-    std::shared_ptr<const QcBlockRenderTable> m_renderTable;
-    QElapsedTimer m_sinceTick;
-    QElapsedTimer m_frameClock;
-    // The player's feet as drawn in the latest frame (interpolated between ticks).
-    QcVec3 m_drawnFeet;
-    QList<QcModStatus> m_loadedMods;
-    std::unique_ptr<QcStatsLog> m_statsLog;
 };

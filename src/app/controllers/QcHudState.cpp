@@ -1,7 +1,7 @@
 #include "app/controllers/QcHudState.h"
 
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"

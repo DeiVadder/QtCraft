@@ -1,9 +1,9 @@
-#include "app/controllers/QcPreviewSource.h"
+#include "app/preview/QcPreviewSource.h"
 
 #include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcSessionParts.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcGpuLimits.h"
 #include "clientcore/textures/QcTextureAtlas.h"

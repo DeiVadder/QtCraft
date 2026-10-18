@@ -371,7 +371,8 @@ private slots:
 
     void theClientsUseButtonThrowsOrDraws()
     {
-        // The session sends what use() gives and swings the arm by swingAfter (QcClientSession::useItem).
+        // The hand sends what use() gives and a throw swings the arm (QcHandActions::use, applied by
+        // QcClientSession::useItem).
         QcInventory inventory;
         inventory.setSlot(0, {item("qtcraft:snowball"), 4});
         inventory.setSlot(1, {item("qtcraft:bow"), 1});

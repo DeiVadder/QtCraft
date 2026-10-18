@@ -135,6 +135,7 @@
     "Cmd cannot be used on a Mac: macOS keeps Cmd+Q, Cmd+H, Cmd+Space and other Cmd shortcuts for itself.": "Cmd lässt sich am Mac nicht belegen: macOS behält Cmd+Q, Cmd+H, Cmd+Leertaste und andere Cmd-Kürzel für sich.",
     "Careful: on a Mac, Control with the arrow keys or Space switches desktops or the input source.": "Achtung: Am Mac wechselt Control mit den Pfeiltasten oder der Leertaste Schreibtische oder die Eingabequelle.",
     "It is already open in another QtCraft window or process. Close it there first.": "Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.",
+    "It was saved by an older development version of QtCraft and cannot be opened.": "Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.",
     "Unknown command: %1": "Unbekannter Befehl: %1",
     "Usage: /time set <day|night|seconds> or /time add <seconds>": "Verwendung: /time set <day|night|Sekunden> oder /time add <Sekunden>",
     "Time is now %1 s (night)": "Die Zeit ist jetzt %1 s (Nacht)",

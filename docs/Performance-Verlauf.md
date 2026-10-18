@@ -2210,3 +2210,13 @@ Release-Builds, `dev` `fc79639` (52.8) gegen `feature/52-4-cows-fish` nach Nachb
 ## 40.1 (Gamepad-Backend) gerendert (2026-10-18)
 
 Release-Builds, `dev` `6746290` gegen `feature/40-1-gamepad-backend`, `@core`, 8 Chunks, verschränkt, Mediane, ohne angeschlossenen Controller: GPU −3 bis +1 %, Bild Ø 8,33 ms, p99 9,4–9,9 ms (Ziel erfüllt), Speicher ±0 %; GUI- und Render-CPU streuen zwischen −19 und +11 % mit überlappenden Spannen. Das Abfragen ohne Controller alle 250 ms (E-540) kostet nichts Messbares.
+
+## 46.1 (Client-Struktur: Sitzungsteile, Bilder-Treiber, Entitäts-Bild) gerendert (2026-10-18)
+
+Release-Builds, `dev` gegen `feature/46-1-client-structure`, verschränkt, Mittelwerte.
+
+**Fenster** (`@core` mit horde und village, 8 Chunks, 6 Runden adaptiv): GPU −4 bis +6 %, Render-CPU −5 bis +1 %, GUI-CPU −11 bis +12 % mit überlappenden Spannen, p99 9,8–10,2 ms (Ziel erfüllt), Speicher ±0 %. explore (75 s, 3 Runden): Render-CPU −14 %, GUI-CPU −8 %, p99 −3 %, Speicher +2 %. Tick im Fenster streut wie immer (−31 bis +17 %).
+
+**16 Chunks** (sprint, village, 3 Runden): GPU +1 bis +3 %, p99 9,3–9,5 ms (−1 bis +2 %), Render-CPU −8 bis +4 %, Speicher 845–1253 MB (±0 %).
+
+**crowd nachgemessen** (8 Runden, Nacht): Der erste Lauf zeigte `entity_mesh` +34 % in zwei Gruppen; nachgemessen Median 0,675 → 0,688 ms (+2 %), p99 −3 %, GPU +1 %, GUI-CPU +1 %. Keine Regression.

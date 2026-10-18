@@ -1,6 +1,6 @@
-#include "app/controllers/QcDebugVisuals.h"
+#include "app/debug/QcDebugVisuals.h"
 
-#include "app/controllers/QcSessionParts.h"
+#include "app/session/QcSessionParts.h"
 #include "clientcore/debug/QcDebugLines.h"
 #include "clientcore/session/QcClientSession.h"
 

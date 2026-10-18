@@ -1,6 +1,6 @@
-#include "app/rendering/QcCharacterPreview.h"
+#include "app/preview/QcCharacterPreview.h"
 
-#include "app/rendering/QcCharacterPreviewRenderer.h"
+#include "app/preview/QcCharacterPreviewRenderer.h"
 #include "clientcore/preview/QcPreviewScene.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"

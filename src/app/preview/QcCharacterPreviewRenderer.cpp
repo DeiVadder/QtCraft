@@ -1,8 +1,8 @@
-#include "app/rendering/QcCharacterPreviewRenderer.h"
+#include "app/preview/QcCharacterPreviewRenderer.h"
 
+#include "app/preview/QcCharacterPreview.h"
+#include "app/preview/QcPreviewAtlasCache.h"
 #include "app/rendering/QcAtlasTexture.h"
-#include "app/rendering/QcCharacterPreview.h"
-#include "app/rendering/QcPreviewAtlasCache.h"
 #include "app/rendering/QcRenderPipelines.h"
 
 #include <QLoggingCategory>

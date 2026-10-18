@@ -2,8 +2,8 @@
 
 #include "app/controllers/QcAudioSettings.h"
 #include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcDebugSettings.h"
 #include "app/controllers/QcTexturePackController.h"
+#include "app/debug/QcDebugSettings.h"
 #include "app/input/QcKeyControlsForeign.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/settings/QcGameSettings.h"
