@@ -251,6 +251,76 @@ void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonF
     }
 }
 
+// The blocks, items and names of the mine shafts (decision E-570); the blocks are checked by the
+// generator, the creature and the loot table with the spawners (QcSpawnerContent).
+void parseMineshaftNames(QcMineshaftSettings &shafts, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    shafts.planks = reader.name(u"planks"_s, packNamespace);
+    shafts.post = reader.name(u"post"_s, packNamespace);
+    shafts.rail = reader.name(u"rail"_s, packNamespace);
+    shafts.cobweb = reader.name(u"cobweb"_s, packNamespace);
+    shafts.light = reader.name(u"light"_s, packNamespace);
+    shafts.ladder = reader.name(u"ladder"_s, packNamespace);
+    shafts.seal = reader.name(u"seal"_s, packNamespace);
+    shafts.spawner = reader.name(u"spawner"_s, packNamespace);
+    shafts.mob = reader.name(u"mob"_s, packNamespace);
+    shafts.cart = reader.name(u"cart"_s, packNamespace);
+    shafts.lootTable = reader.name(u"lootTable"_s, packNamespace);
+}
+
+// The mine shafts of the terrain (decision E-570).
+void parseMineshafts(const QJsonObject &json, QcMineshaftSettings &shafts, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    using Settings = QcMineshaftSettings;
+    shafts.enabled = reader.boolean(u"enabled"_s, true);
+    shafts.regionSize = reader.integer(u"regionSize"_s, shafts.regionSize, 32, Settings::maxRegionSize);
+    shafts.chance = reader.number(u"chance"_s, shafts.chance, 0.0, 1.0);
+    shafts.minY = reader.integer(u"minY"_s, shafts.minY, 2, QcWorld::worldHeight - 32);
+    shafts.maxY = reader.integer(u"maxY"_s, shafts.maxY, shafts.minY, QcWorld::worldHeight - 32);
+    shafts.attempts = reader.integer(u"attempts"_s, shafts.attempts, 1, 64);
+    shafts.minLevels = reader.integer(u"minLevels"_s, shafts.minLevels, 1, Settings::maxLevelCount);
+    shafts.maxLevels = reader.integer(u"maxLevels"_s, shafts.maxLevels, shafts.minLevels, Settings::maxLevelCount);
+    shafts.levelSpacing = reader.integer(u"levelSpacing"_s, shafts.levelSpacing, 5, 12);
+    shafts.radius = reader.integer(u"radius"_s, shafts.radius, 1, Settings::maxRadius);
+    shafts.minNodes = reader.integer(u"minNodes"_s, shafts.minNodes, 1, 80);
+    shafts.maxNodes = reader.integer(u"maxNodes"_s, shafts.maxNodes, shafts.minNodes, 80);
+    shafts.loopChance = reader.number(u"loopChance"_s, shafts.loopChance, 0.0, 1.0);
+    shafts.extraStairChance = reader.number(u"extraStairChance"_s, shafts.extraStairChance, 0.0, 1.0);
+    shafts.roomHalf = reader.integer(u"roomHalf"_s, shafts.roomHalf, 1, 4);
+    shafts.roomHeight = reader.integer(u"roomHeight"_s, shafts.roomHeight, 3, 8);
+    shafts.groundCover = reader.integer(u"groundCover"_s, shafts.groundCover, 1, 32);
+    shafts.maxPillar = reader.integer(u"maxPillar"_s, shafts.maxPillar, 1, 64);
+    shafts.supportSpacing = reader.integer(u"supportSpacing"_s, shafts.supportSpacing, 2, 16);
+    shafts.railChance = reader.number(u"railChance"_s, shafts.railChance, 0.0, 1.0);
+    shafts.cobwebChance = reader.number(u"cobwebChance"_s, shafts.cobwebChance, 0.0, 1.0);
+    shafts.lightChance = reader.number(u"lightChance"_s, shafts.lightChance, 0.0, 1.0);
+    shafts.lightDistance = reader.integer(u"lightDistance"_s, shafts.lightDistance, 0, 32);
+    shafts.minSpawners = reader.integer(u"minSpawners"_s, shafts.minSpawners, 0, 8);
+    shafts.maxSpawners = reader.integer(u"maxSpawners"_s, shafts.maxSpawners, shafts.minSpawners, 8);
+    shafts.cartChance = reader.number(u"cartChance"_s, shafts.cartChance, 0.0, 1.0);
+    shafts.entranceChance = reader.number(u"entranceChance"_s, shafts.entranceChance, 0.0, 1.0);
+    shafts.roomChance = reader.number(u"roomChance"_s, shafts.roomChance, 0.0, 1.0);
+    shafts.maxRooms = reader.integer(u"maxRooms"_s, shafts.maxRooms, 0, 16);
+    parseMineshaftNames(shafts, reader, packNamespace);
+    const QJsonObject biomes = json.value(u"entranceBiomes"_s).toObject();
+    for (auto it = biomes.begin(); it != biomes.end(); ++it) {
+        const double chance = it.value().toDouble(-1.0);
+        if (chance < 0.0 || chance > 1.0) {
+            reader.fail(u"'entranceBiomes' values are chances from 0 to 1"_s);
+            return;
+        }
+        shafts.entranceBiomes.append({QcContentNames::qualify(it.key(), packNamespace), chance});
+    }
+    const bool fits = shafts.regionSize >= 2 * shafts.extent() + 2 && shafts.maxY - (shafts.maxLevels - 1) * shafts.levelSpacing >= shafts.minY;
+    const bool named = !shafts.planks.isEmpty() && !shafts.post.isEmpty() && !shafts.rail.isEmpty() && !shafts.cobweb.isEmpty()
+                       && !shafts.light.isEmpty() && !shafts.ladder.isEmpty() && !shafts.seal.isEmpty() && !shafts.spawner.isEmpty()
+                       && !shafts.mob.isEmpty() && !shafts.cart.isEmpty();
+    if (reader.ok() && (!fits || !named)) {
+        reader.fail(u"needs a network that fits the region and the heights, and 'planks', 'post', 'rail', 'cobweb', 'light', "
+                    "'ladder', 'seal', 'spawner', 'mob' and 'cart'"_s);
+    }
+}
+
 } // namespace
 
 [[nodiscard]] QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace)
@@ -272,6 +342,9 @@ void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonF
     settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         parseDungeons(object, settings.dungeons, nested, packNamespace);
+    });
+    reader.nestedObject(u"mineshafts"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
+        parseMineshafts(object, settings.mineshafts, nested, packNamespace);
     });
 
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {

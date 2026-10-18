@@ -45,6 +45,41 @@ QStringList resolveDungeons(QcContentRegistry &content)
     return warnings;
 }
 
+// The mine shafts' creature, loot table and cart (decision E-570); a creature a spawner may not bring
+// forth leaves their spawners out.
+QStringList resolveMineshafts(QcContentRegistry &content)
+{
+    QStringList warnings;
+    QcTerrainSettings settings = content.terrainSettings();
+    QcMineshaftSettings &shafts = settings.mineshafts;
+    if (!shafts.enabled) {
+        return warnings;
+    }
+
+    if (const QString problem = problemWith(content, shafts.mob); !problem.isEmpty()) {
+        warnings.append(u"mineshafts: %1, no spawners"_s.arg(problem));
+        shafts.maxSpawners = 0;
+        shafts.minSpawners = 0;
+        content.setTerrainSettings(settings);
+    }
+    if (!shafts.lootTable.isEmpty() && !content.lootTables().find(shafts.lootTable)) {
+        warnings.append(u"mineshafts: unknown loot table '%1', the carts stay empty"_s.arg(shafts.lootTable));
+    }
+    const std::optional<QcItemId> cart = content.itemId(shafts.cart);
+    if (!cart || !content.item(*cart).placesCart) {
+        warnings.append(u"mineshafts: '%1' is no minecart item, no carts"_s.arg(shafts.cart));
+    }
+    for (const QcStructureDefinition &structure : content.structures()) {
+        const int most = QcMineshaftSettings::maxRoomFootprint;
+        if (structure.mineshaftWeight > 0 && !shafts.fitsRoom(structure.sizeX, structure.sizeY, structure.sizeZ)) {
+            warnings.append(u"structure '%1': a mine shaft room needs odd sides of at most %2 and a height below %3, it is left out"_s.arg(structure.name)
+                                .arg(most)
+                                .arg(shafts.levelSpacing));
+        }
+    }
+    return warnings;
+}
+
 QStringList checkStructures(const QcContentRegistry &content)
 {
     QStringList warnings;
@@ -115,6 +150,7 @@ QString refusal(const QcMobDefinition &mob)
 QStringList resolve(QcContentRegistry &content)
 {
     QStringList warnings = resolveDungeons(content);
+    warnings.append(resolveMineshafts(content));
     warnings.append(checkStructures(content));
     warnings.append(checkBlocks(content));
     warnings.append(checkLoot(content));

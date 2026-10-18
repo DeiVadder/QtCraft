@@ -19,6 +19,18 @@ target_sources(qc_worldgen PRIVATE
     generators/QcWorldSetup.h
 )
 target_sources(qc_worldgen PRIVATE
+    mineshafts/QcMineshaftAccess.h mineshafts/QcMineshaftAccess.cpp
+    mineshafts/QcMineshaftBlocks.h mineshafts/QcMineshaftBlocks.cpp
+    mineshafts/QcMineshaftBuilder.h mineshafts/QcMineshaftBuilder.cpp
+    mineshafts/QcMineshaftDetails.h mineshafts/QcMineshaftDetails.cpp
+    mineshafts/QcMineshaftFrame.h
+    mineshafts/QcMineshaftGenerator.h mineshafts/QcMineshaftGenerator.cpp
+    mineshafts/QcMineshaftNetwork.h mineshafts/QcMineshaftNetwork.cpp
+    mineshafts/QcMineshaftPlan.h
+    mineshafts/QcMineshaftPlanner.h mineshafts/QcMineshaftPlanner.cpp
+    mineshafts/QcMineshaftSite.h mineshafts/QcMineshaftSite.cpp
+)
+target_sources(qc_worldgen PRIVATE
     showcase/QcShowcaseArea.h
     showcase/QcShowcaseArmourArea.h showcase/QcShowcaseArmourArea.cpp
     showcase/QcShowcaseBlockArea.h showcase/QcShowcaseBlockArea.cpp

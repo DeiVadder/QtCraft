@@ -544,9 +544,13 @@ Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und 
 
 Eis, Packeis und blaues Eis sind rutschig. Darauf wirst du nur langsam schneller und rutschst weiter, wenn du loslässt, aus dem Gehen auf Eis etwa zwei Blöcke, auf blauem Eis etwas weiter; dein Höchsttempo bleibt gleich. Wesen und liegende Items rutschen auch, und Wesen gehen um Eis herum, wenn der Umweg kurz ist. Eine Lore ohne Schiene gleitet auf Eis weit, auf anderem Boden bleibt sie nach kurzem Rutschen stehen.
 
+**Minenschächte**
+
+Verlassene Minenschächte liegen tief unter der Erde: Gänge mit Holzstützen auf zwei oder drei Ebenen unter einem Hauptraum, verbunden durch Treppen. Auf manchen Gängen liegen Schienen, hin und wieder steht darauf eine Truhenlore mit Beute. Wo ein Gang eine Höhle kreuzt, führt er über eine Brücke aus Brettern auf Pfeilern. In den Ecken hängen Spinnennetze, am dichtesten um die Spawner der Höhlenspinnen. Sackgassen führen manchmal in einen Lagerraum. Manche Minenschächte reichen bis an die Oberfläche: Achte auf ein kleines Fördergerüst aus Holz mit einer Leiter nach unten, am häufigsten in den Bergen.
+
 **Siehe auch**
 
-[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice)
+[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail)
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 

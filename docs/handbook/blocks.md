@@ -1450,7 +1450,7 @@ What stone becomes when mined. Material for stone tools and the furnace.
 
 ### <a id="block-qtcraft-cobweb"></a>Cobweb
 
-Found in caves. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.
+Found in caves and mine shafts. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.
 
 | | |
 |---|---|
@@ -3835,7 +3835,7 @@ A lamp with a firefly inside: hangs from ceilings, walls or floors and glows wit
 
 ### <a id="block-qtcraft-spawner"></a>Monster spawner
 
-A cage of dark iron with a small creature spinning inside. While a player is within 16 blocks it brings forth up to four creatures of its kind every 10 to 40 seconds, on dark cells of the 9 x 3 x 9 blocks around it, until six of them are near. Breaking it gives experience but no item; it cannot be crafted. Dungeons deep underground hold one.
+A cage of dark iron with a small creature spinning inside. While a player is within 16 blocks it brings forth up to four creatures of its kind every 10 to 40 seconds, on dark cells of the 9 x 3 x 9 blocks around it, until six of them are near. Breaking it gives experience but no item; it cannot be crafted. Dungeons and mine shafts deep underground hold them.
 
 | | |
 |---|---|

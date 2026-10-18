@@ -15,6 +15,7 @@
 #include <optional>
 
 class QcDungeonGenerator;
+class QcMineshaftGenerator;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
 
@@ -41,9 +42,11 @@ public:
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
     const QcVillageGenerator &villages() const { return *m_villages; }
-    // Dungeons (decision E-522): their loot and spawner kinds, and the plans for tools and tests.
+    // Dungeons (decision E-522) and mine shafts (decision E-570): their loot, spawner kinds and
+    // carts, and the plans for tools and tests.
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
     const QcDungeonGenerator &dungeons() const { return *m_dungeons; }
+    const QcMineshaftGenerator &mineshafts() const { return *m_mineshafts; }
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -101,6 +104,8 @@ private:
     // Created in the constructor's body: it reads the terrain columns.
     std::unique_ptr<QcVillageGenerator> m_villages;
     std::unique_ptr<QcDungeonGenerator> m_dungeons;
+    // Created after the dungeons: its plans keep clear of them.
+    std::unique_ptr<QcMineshaftGenerator> m_mineshafts;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

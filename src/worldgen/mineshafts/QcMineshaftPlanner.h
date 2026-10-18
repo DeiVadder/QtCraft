@@ -1,0 +1,53 @@
+#pragma once
+
+#include "common/content/definitions/QcMineshaftDefinition.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "worldgen/mineshafts/QcMineshaftAccess.h"
+#include "worldgen/mineshafts/QcMineshaftBlocks.h"
+#include "worldgen/mineshafts/QcMineshaftDetails.h"
+#include "worldgen/mineshafts/QcMineshaftPlan.h"
+
+#include <memory>
+#include <optional>
+
+struct QcMineshaftFrame;
+class QcMineshaftNetwork;
+class QcMineshaftSite;
+class QcTerrainGenerator;
+
+// Plans the mine shaft of a region (decision E-570) from the seed and the terrain noise: whether
+// the region has one (`chance`), how many levels, a place for the central room deep enough with a
+// solid floor, the lattice network grown level by level (QcMineshaftNetwork, judged by
+// QcMineshaftSite), laid out as nodes and corridors (QcMineshaftFrame), then rooms from structures
+// and the surface entrance (QcMineshaftAccess) and the corridors' details (QcMineshaftDetails).
+// Thread-safe: plan() only reads immutable state.
+class QcMineshaftPlanner
+{
+public:
+    // Unresolvable blocks are reported in `warnings` and switch mine shafts off.
+    QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    ~QcMineshaftPlanner();
+
+    bool enabled() const { return m_enabled; }
+    const QcMineshaftSettings &settings() const { return m_settings; }
+    const QcMineshaftBlocks &blocks() const { return m_blocks; }
+    // The region's mine shaft; null without one.
+    [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> plan(int regionX, int regionZ) const;
+
+private:
+    [[nodiscard]] std::optional<QcBlockPos> findCentre(QcMineshaftSite &site, const QcMineshaftPlan &plan, int levels) const;
+    // Nodes and corridors of the network in the world.
+    static void layOut(QcMineshaftPlan &plan, const QcMineshaftNetwork &network, const QcMineshaftFrame &frame);
+    // The columns the plan touches, one more around.
+    static void bound(QcMineshaftPlan &plan);
+    // A random value in [0, 1) of the plan's region, a purpose and an index.
+    double random(const QcMineshaftPlan &plan, int purpose, int index) const;
+
+    const QcTerrainGenerator &m_terrain;
+    QcMineshaftSettings m_settings;
+    quint64 m_seed = 0;
+    bool m_enabled = false;
+    QcMineshaftBlocks m_blocks;
+    std::unique_ptr<QcMineshaftAccess> m_access;
+    std::unique_ptr<QcMineshaftDetails> m_details;
+};

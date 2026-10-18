@@ -146,6 +146,10 @@ struct QcStructureDefinition
     // Shown as a demo in the showcase world, in the order of `showcaseOrder` (then name).
     bool showcase = false;
     int showcaseOrder = 0;
+    // A room of the mine shafts with this weight (decision E-570; `"mineshaft": {"weight": 2}`), 0
+    // for none: placed at dead ends, its door (the middle of its north side, one block above its
+    // bottom layer) towards the corridor.
+    int mineshaftWeight = 0;
 
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(sizeX) * (z + qsizetype(sizeZ) * y); }
 };

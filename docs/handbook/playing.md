@@ -544,9 +544,13 @@ Water and lava flow from their sources; a bucket takes a source and pours it els
 
 Ice, packed ice and blue ice are slippery. On them you speed up slowly and keep sliding when you let go, about two blocks from a walk on ice and a little farther on blue ice; your top speed stays the same. Creatures and dropped items slide too, and creatures walk round ice where the way round is short. A minecart off the rails coasts far on ice, while on other ground it stops after a short slide.
 
+**Mine shafts**
+
+Abandoned mine shafts lie deep underground: corridors of wooden supports on two or three levels below a central room, joined by staircases. Some corridors carry rails, and now and then a chest minecart with loot stands on them. Where a corridor crosses a cave, it runs on a plank bridge held up by pillars. Cobwebs hang in the corners, thickest around the spawners of cave spiders. Dead ends sometimes lead to a storeroom. Some mine shafts come up to the surface: look for a small wooden headframe with a ladder going down, most often in the mountains.
+
 **See also**
 
-[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice)
+[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail)
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 

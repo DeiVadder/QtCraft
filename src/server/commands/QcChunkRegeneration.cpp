@@ -28,7 +28,9 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
         if (!m_state.world().regenerateChunk(chunk)) {
             continue;
         }
-        // The generated chests and spawners get their loot and kinds again (decision E-520).
+        // The generated chests, spawners and carts get their loot and kinds again (decisions E-520,
+        // E-571); the old carts go with the old blocks.
+        removeMinecarts(chunk);
         QcFurnishing::furnish(m_state, chunk);
 
         dropPendingChanges(chunk);
@@ -50,6 +52,19 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     m_state.circuits().forgetChunk(chunk);
     m_state.hoppers().forgetChunk(chunk);
     m_state.entities().fallingBlocks().removeInChunk(chunk);
+}
+
+void QcChunkRegeneration::removeMinecarts(QcChunkPos chunk)
+{
+    QList<quint32> gone;
+    for (const QcMinecart &cart : m_state.entities().minecarts().all()) {
+        if (cart.rider == 0 && QcChunkStreaming::chunkOf(cart.motion.position) == chunk) {
+            gone.append(cart.id);
+        }
+    }
+    for (const quint32 id : std::as_const(gone)) {
+        m_state.entities().minecarts().remove(id);
+    }
 }
 
 void QcChunkRegeneration::removeBuriedCreatures(const QList<QcChunkPos> &chunks)

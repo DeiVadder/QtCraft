@@ -5,6 +5,7 @@
 // feature references are content names resolved by the generator.
 
 #include "common/content/definitions/QcDungeonDefinition.h"
+#include "common/content/definitions/QcMineshaftDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -135,4 +136,6 @@ struct QcTerrainSettings
     int bedrockLayers = 3;
     // Dungeons with spawners and corridors to caves (decision E-522).
     QcDungeonSettings dungeons;
+    // Mine shafts with levels, staircases, bridges and surface entrances (decision E-570).
+    QcMineshaftSettings mineshafts;
 };

@@ -22,9 +22,14 @@ private:
     static constexpr qint64 seed = 381;
     static constexpr int regions = 5;
 
+    // Without mine shafts: they would only make every generated chunk slower (test_mineshafts).
     std::shared_ptr<const QcContentRegistry> m_content = []() {
         QStringList warnings;
-        return *QcBaseContent::load(warnings);
+        std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        QcTerrainSettings settings = content->terrainSettings();
+        settings.mineshafts.enabled = false;
+        content->setTerrainSettings(settings);
+        return std::shared_ptr<const QcContentRegistry>(std::move(content));
     }();
 
     QList<std::shared_ptr<const QcDungeonPlan>> plans(const QcTerrainGenerator &terrain) const

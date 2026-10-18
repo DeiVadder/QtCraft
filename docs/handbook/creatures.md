@@ -45,7 +45,7 @@ And in villages of biomes without a village style of their own.
 
 ### <a id="mob-qtcraft-cave_spider"></a>Cave spider
 
-A small, blue spider of caves and, later, mineshafts. It climbs walls like a spider, fits through gaps one block high and poisons you with its bite. Always hostile.
+A small, blue spider of caves and mine shafts, where spawners bring it forth. It climbs walls like a spider, fits through gaps one block high and poisons you with its bite. Always hostile.
 
 | | |
 |---|---|

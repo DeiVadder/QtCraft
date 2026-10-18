@@ -1,0 +1,160 @@
+#pragma once
+
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "worldgen/structures/QcStructurePlacement.h"
+
+#include <QList>
+#include <QString>
+
+#include <cstdlib>
+#include <optional>
+
+// One mine shaft as the terrain generator builds it (decision E-570): a pure function of the seed,
+// the region and the content, planned from the terrain noise alone (never from generated chunks),
+// so every chunk writes its own cells of it and a mine shaft spanning chunks comes out the same in
+// any generation order (QcMineshaftBuilder). Cells are world positions; a corridor's or a node's
+// "feet" cells are the lowest open cells, its floor lies one below.
+struct QcMineshaftPlan
+{
+    // A block placed at a cell.
+    struct Placed
+    {
+        QcBlockPos at;
+        QcBlockId block = qcAirBlockId;
+    };
+
+    // A crossing, corner or dead end of a level, or the central room (node 0): an open box of
+    // (2 half + 1)^2 cells, `height` high above its floor.
+    struct Node
+    {
+        // Lattice point and level (0 the top).
+        int x = 0;
+        int z = 0;
+        int level = 0;
+        QcBlockPos centre;
+        int half = 1;
+        int height = 3;
+        // Its floor crosses a cave somewhere: planks where it is open, a pillar under the centre.
+        bool bridge = false;
+
+        bool contains(QcBlockPos pos) const
+        {
+            return std::abs(pos.x - centre.x) <= half && std::abs(pos.z - centre.z) <= half && pos.y >= centre.y && pos.y < centre.y + height;
+        }
+    };
+
+    // A straight corridor three cells wide from node `from` to node `to`: `length` cells from
+    // `start` (feet, middle lane) along (dx, dz), each `rise` higher than the one before: 0 on a
+    // level, -1 for a staircase down to the next level (four cells high, so one can jump up).
+    struct Corridor
+    {
+        int from = 0;
+        int to = 0;
+        QcBlockPos start;
+        int dx = 0;
+        int dz = 0;
+        int length = 0;
+        int rise = 0;
+        // Its floor crosses a cave somewhere: planks where it is open, pillars under the supports.
+        bool bridge = false;
+        bool rails = false;
+        // Cells along it with a support (posts on both sides, a beam above).
+        QList<int> supports;
+
+        bool stairs() const { return rise != 0; }
+        int height() const { return stairs() ? 4 : 3; }
+        // The feet cell `along` cells from the start, `lateral` cells to the right of the middle
+        // lane (seen along the corridor).
+        QcBlockPos cell(int along, int lateral = 0) const { return start.offset(dx * along - dz * lateral, rise * along, dz * along + dx * lateral); }
+    };
+
+    // A room from a structure (QcMineshaftSettings rooms) at the dead end `node`.
+    struct Room
+    {
+        int node = 0;
+        QcStructurePlacement placement;
+    };
+
+    // The way up to the surface (QcMineshaftAccess): a ladder shaft from the central room through
+    // the ground under a headframe. The terrain generator builds it after its trees, cacti and
+    // surface pools (QcMineshaftBuilder::buildEntrance), so none of them blocks it.
+    struct Entrance
+    {
+        // The shaft's top cell, in the ground's top block.
+        QcBlockPos top;
+        // The shaft's open cells, from above the central room to two cells above `top`.
+        QList<QcBlockPos> shaft;
+        // Cells around the shaft that become planks where they are not solid.
+        QList<QcBlockPos> lining;
+        // The ladder from the room's floor up and the headframe.
+        QList<Placed> blocks;
+    };
+
+    // A spawner with its spawn area (inclusive corners).
+    struct Spawner
+    {
+        QcBlockPos at;
+        QcBlockPos areaLow;
+        QcBlockPos areaHigh;
+    };
+
+    // The region it was planned for.
+    int regionX = 0;
+    int regionZ = 0;
+    int levels = 0;
+    QList<Node> nodes;
+    QList<Corridor> corridors;
+    QList<Room> rooms;
+    QList<Spawner> spawners;
+    // Rail cells that hold a chest minecart.
+    QList<QcBlockPos> carts;
+    // Supports, rails, cobwebs, lights and spawners, placed after the corridors are open.
+    QList<Placed> blocks;
+    // Floor cells with a pillar down to the ground below them where the floor is open.
+    QList<QcBlockPos> pillars;
+    std::optional<Entrance> entrance;
+    // Columns touched by everything above and one more around (inclusive).
+    int minX = 0;
+    int minZ = 0;
+    int maxX = 0;
+    int maxZ = 0;
+
+    bool touches(int x0, int z0, int x1, int z1) const { return x1 >= minX && x0 <= maxX && z1 >= minZ && z0 <= maxZ; }
+    // Calls `visit` with every cell the plan opens: nodes, corridors and the entrance's shaft.
+    template<typename Visit>
+    void forEachOpenCell(Visit &&visit) const
+    {
+        for (const Node &node : nodes) {
+            forEachCell(node, visit);
+        }
+        for (const Corridor &corridor : corridors) {
+            forEachCell(corridor, visit);
+        }
+        if (!entrance) {
+            return;
+        }
+        for (const QcBlockPos &cell : entrance->shaft) {
+            visit(cell);
+        }
+    }
+    template<typename Visit>
+    static void forEachCell(const Node &node, Visit &visit)
+    {
+        const int side = 2 * node.half + 1;
+        for (int dy = 0; dy < node.height; ++dy) {
+            for (int i = 0; i < side * side; ++i) {
+                visit(node.centre.offset(i % side - node.half, dy, i / side - node.half));
+            }
+        }
+    }
+    template<typename Visit>
+    static void forEachCell(const Corridor &corridor, Visit &visit)
+    {
+        for (int along = 0; along < corridor.length; ++along) {
+            for (int i = 0; i < 3 * corridor.height(); ++i) {
+                visit(corridor.cell(along, i % 3 - 1).offset(0, i / 3, 0));
+            }
+        }
+    }
+};

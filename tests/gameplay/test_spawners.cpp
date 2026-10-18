@@ -7,6 +7,7 @@
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "worldgen/dungeons/QcDungeonGenerator.h"
+#include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -101,6 +102,28 @@ private:
                 }
             }
         }
+    }
+
+    // The rail of the first chest minecart of a mine shaft in the regions east of the origin.
+    static QcBlockPos mineshaftCartRail(const QcTerrainGenerator &terrain)
+    {
+        for (int r = 0; r <= 4; ++r) {
+            if (const std::shared_ptr<const QcMineshaftPlan> plan = terrain.mineshafts().planOf(r, 0); plan && !plan->carts.isEmpty()) {
+                return plan->carts.constFirst();
+            }
+        }
+        return {};
+    }
+
+    QList<QcMinecart *> cartsAt(QcBlockPos rail)
+    {
+        QList<QcMinecart *> found;
+        for (QcMinecart &cart : m_server->entities().minecarts().editableAll()) {
+            if (QcPhysics::blockContaining(cart.motion.position) == rail) {
+                found.append(&cart);
+            }
+        }
+        return found;
     }
 
     // A dungeon of the terrain with chests for seed 381.
@@ -491,9 +514,54 @@ private slots:
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);
     }
 
+    // A mine shaft's chest minecart is put on its rail with loot once (decision E-570): it is saved
+    // with its chunk, and a cart emptied since comes back empty, not a second time.
+    void mineshaftCartsAreFurnishedOnce()
+    {
+        m_unloadChunks = true;
+        auto terrain = std::make_unique<QcTerrainGenerator>(m_content, 381);
+        const QcBlockPos rail = mineshaftCartRail(*terrain);
+        QVERIFY(rail != QcBlockPos{});
+        join({}, std::move(terrain));
+        const auto cartsAtRail = [this, rail] { return cartsAt(rail); };
+        m_server->world().loadChunk(rail.chunk());
+        QVERIFY(m_server->world().isFurnished(rail.chunk()));
+        QCOMPARE(cartsAtRail().size(), 1);
+        QcMinecart &cart = *cartsAtRail().constFirst();
+        QCOMPARE(cart.item, u"qtcraft:chest_minecart"_s);
+        QVERIFY(std::ranges::any_of(cart.stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        std::ranges::fill(cart.stacks, QcItemStack{});
+
+        // Far from the player the chunk leaves the world and comes back with its cart.
+        ticks(200);
+        QVERIFY(!m_server->world().chunk(rail.chunk()));
+        QVERIFY(cartsAtRail().isEmpty());
+        m_server->world().loadChunk(rail.chunk());
+        QCOMPARE(cartsAtRail().size(), 1);
+        QVERIFY(std::ranges::all_of(cartsAtRail().constFirst()->stacks, [](QcItemStack stack) { return stack.isEmpty(); }));
+    }
+
+    // /regenerate puts a mine shaft's chest minecart on its rail again, filled, instead of a
+    // second one beside the old (the old carts go with the old blocks).
+    void regenerateKeepsOneMineshaftCart()
+    {
+        auto terrain = std::make_unique<QcTerrainGenerator>(m_content, 381);
+        const QcBlockPos rail = mineshaftCartRail(*terrain);
+        QVERIFY(rail != QcBlockPos{});
+        join({}, std::move(terrain));
+        m_server->world().loadChunk(rail.chunk());
+        QCOMPARE(cartsAt(rail).size(), 1);
+        std::ranges::fill(cartsAt(rail).constFirst()->stacks, QcItemStack{});
+
+        chat(u"/regenerate %1 %2"_s.arg(rail.x).arg(rail.z));
+        chat(u"/confirm"_s);
+        QCOMPARE(cartsAt(rail).size(), 1);
+        QVERIFY(std::ranges::any_of(cartsAt(rail).constFirst()->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+    }
+
     // Debug-relative cost of furnishing arriving chunks on the tick thread (decision E-520), printed,
     // not checked: asking the dungeons of every chunk with the regions in reach (as before) against
-    // asking only chunks with a spawner or storage, and only the regions they overlap.
+    // asking only chunks with a spawner, storage or a rail, and only the regions they overlap.
     void measureFurnishingCost()
     {
         auto terrain = std::make_unique<QcTerrainGenerator>(m_content, 381);
@@ -520,7 +588,8 @@ private slots:
         };
         const auto every = time([&](QcChunkPos pos) { return generator.dungeons().plansTouching(pos).size(); });
         const auto marked = time([&](QcChunkPos pos) -> qsizetype {
-            if (marks.sectionsOf(pos, QcBlockTrait::Spawner) == 0 && marks.sectionsOf(pos, QcBlockTrait::BlockEntity) == 0) {
+            if (marks.sectionsOf(pos, QcBlockTrait::Spawner) == 0 && marks.sectionsOf(pos, QcBlockTrait::BlockEntity) == 0
+                && marks.sectionsOf(pos, QcBlockTrait::Rail) == 0) {
                 return 0;
             }
             return generator.furnishingIn(pos).spawners.size() + 1;

@@ -24,6 +24,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcLootTableDefinition.h
     content/definitions/QcMachineDefinition.h
     content/definitions/QcMaterialDefinition.h
+    content/definitions/QcMineshaftDefinition.h
     content/definitions/QcMobDefinition.h
     content/definitions/QcMobTraits.h
     content/definitions/QcModelDefinition.h

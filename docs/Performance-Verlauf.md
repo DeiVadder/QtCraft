@@ -2241,3 +2241,7 @@ Release-Builds, `dev` gegen `feature/46-1-client-structure`, verschränkt, Mitte
 ## 46.1e und 40.1b (Bildschirmzustand, Gamepad-Steuerung) gerendert (2026-10-18)
 
 Release-Builds, `dev` `a512d8d` (46.1) gegen `feature/46-1e-40-controls` nach den Review-Fixes, `@core`, 8 Chunks, 6 Runden, verschränkt, ohne angeschlossenen Controller. Bild Ø 8,34–8,37 ms bei beiden Ständen, p99-Median 9,3–10,4 ms bei beiden (Ziel erfüllt), die Mittelwerte von p99 (−6 bis +11 %) kommen von einzelnen Ausreißern (sprint 15,7 ms in einem Lauf); GPU −6 bis +1 %, Render- und GUI-CPU −12 bis +4 % mit Streuung bis 90 % (parallel arbeitende Agenten), Speicher ±0 %. Keine Regression.
+
+## 38.2 (Minenschächte) headless, Release (2026-10-18)
+
+Release-Builds, `dev` `f68af5f` gegen `feature/38-2-mineshafts` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Tick −1 bis +3 % in allen Szenarien, explore +2 % (0,213 → 0,217 ms; die Schächte werden im Generierungs-Thread geplant), p99 −2 bis +5 %, Speicher −1 bis +1 %. Keine Regression. Die Debug-Messung der Generierung (−4 % insgesamt, −13 % in den Chunks eines Schachts) steht in E-570.

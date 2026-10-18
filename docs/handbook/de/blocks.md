@@ -3999,7 +3999,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 
 ### <a id="block-qtcraft-spawner"></a>Monster-Spawner
 
-Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein Spieler höchstens 16 Blöcke entfernt ist, bringt er alle 10 bis 40 Sekunden bis zu vier Wesen seiner Art hervor, auf dunklen Feldern der 9 × 3 × 9 Blöcke um ihn, bis sechs davon in der Nähe sind. Abgebaut gibt er Erfahrung, aber keinen Gegenstand; herstellen lässt er sich nicht. Verliese tief unter der Erde enthalten einen.
+Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein Spieler höchstens 16 Blöcke entfernt ist, bringt er alle 10 bis 40 Sekunden bis zu vier Wesen seiner Art hervor, auf dunklen Feldern der 9 × 3 × 9 Blöcke um ihn, bis sechs davon in der Nähe sind. Abgebaut gibt er Erfahrung, aber keinen Gegenstand; herstellen lässt er sich nicht. Verliese und Minenschächte tief unter der Erde enthalten welche.
 
 | | |
 |---|---|
@@ -5663,7 +5663,7 @@ Grüne Sprenkel in tiefem Stein, selten und in Adern zu ein oder zwei. Braucht e
 
 ### <a id="block-qtcraft-cobweb"></a>Spinnennetz
 
-Hängt in Höhlen. Wer darin steckt, bewegt sich mit einem Viertel des Tempos und sinkt langsam; abgebaut gibt es Faden.
+Hängt in Höhlen und Minenschächten. Wer darin steckt, bewegt sich mit einem Viertel des Tempos und sinkt langsam; abgebaut gibt es Faden.
 
 | | |
 |---|---|

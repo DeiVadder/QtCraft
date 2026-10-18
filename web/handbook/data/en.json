@@ -12996,7 +12996,7 @@
                     "title": "Found in"
                 }
             ],
-            "text": "Found in caves. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.",
+            "text": "Found in caves and mine shafts. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.",
             "title": "Cobweb"
         },
         "block:qtcraft:composter": {
@@ -45483,7 +45483,7 @@
                     "title": "Mined with"
                 }
             ],
-            "text": "A cage of dark iron with a small creature spinning inside. While a player is within 16 blocks it brings forth up to four creatures of its kind every 10 to 40 seconds, on dark cells of the 9 x 3 x 9 blocks around it, until six of them are near. Breaking it gives experience but no item; it cannot be crafted. Dungeons deep underground hold one.",
+            "text": "A cage of dark iron with a small creature spinning inside. While a player is within 16 blocks it brings forth up to four creatures of its kind every 10 to 40 seconds, on dark cells of the 9 x 3 x 9 blocks around it, until six of them are near. Breaking it gives experience but no item; it cannot be crafted. Dungeons and mine shafts deep underground hold them.",
             "title": "Monster spawner"
         },
         "block:qtcraft:spruce_door": {
@@ -55867,6 +55867,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Abandoned mine shafts lie deep underground: corridors of wooden supports on two or three levels below a central room, joined by staircases. Some corridors carry rails, and now and then a chest minecart with loot stands on them. Where a corridor crosses a cave, it runs on a plank bridge held up by pillars. Cobwebs hang in the corners, thickest around the spawners of cave spiders. Dead ends sometimes lead to a storeroom. Some mine shafts come up to the surface: look for a small wooden headframe with a ladder going down, most often in the mountains.",
+                    "title": "Mine shafts"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -55902,6 +55910,30 @@
                             "note": "",
                             "target": "block:qtcraft:blue_ice",
                             "text": "Blue ice"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:cobweb",
+                            "note": "",
+                            "target": "block:qtcraft:cobweb",
+                            "text": "Cobweb"
+                        },
+                        {
+                            "icon": "qtcraft:chest_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:chest_minecart",
+                            "text": "Minecart with Chest"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Rail"
                         }
                     ],
                     "recipes": [
@@ -74850,7 +74882,7 @@
                     "title": "Appears in biomes"
                 }
             ],
-            "text": "A small, blue spider of caves and, later, mineshafts. It climbs walls like a spider, fits through gaps one block high and poisons you with its bite. Always hostile.",
+            "text": "A small, blue spider of caves and mine shafts, where spawners bring it forth. It climbs walls like a spider, fits through gaps one block high and poisons you with its bite. Always hostile.",
             "title": "Cave spider"
         },
         "mob:qtcraft:chicken": {

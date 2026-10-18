@@ -1,0 +1,72 @@
+{
+    "name": "mineshaft_storeroom",
+    "mineshaft": {
+        "weight": 1
+    },
+    "palette": {
+        "P": "oak_planks",
+        "L": "oak_log",
+        "K": "chest[facing=north]",
+        "B": "barrel[facing=north]",
+        "T": "torch[attach=south]",
+        "W": "cobweb",
+        ".": "air"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "LPP.PPL",
+            "P.....P",
+            "P.....P",
+            "P.....P",
+            "P.....P",
+            "PK...BP",
+            "LPPPPPL"
+        ],
+        [
+            "LPP.PPL",
+            "P.....P",
+            "P.....P",
+            "P.....P",
+            "P.....P",
+            "PB.T..P",
+            "LPPPPPL"
+        ],
+        [
+            "LPPPPPL",
+            "PW....P",
+            "P.....P",
+            "P.....P",
+            "P.....P",
+            "P....WP",
+            "LPPPPPL"
+        ],
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ]
+    ],
+    "loot": [
+        {
+            "at": [
+                1,
+                1,
+                5
+            ],
+            "table": "mineshaft_cart"
+        }
+    ]
+}

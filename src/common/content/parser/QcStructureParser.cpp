@@ -330,6 +330,9 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
         structure.showcase = true;
         structure.showcaseOrder = nested.integer(u"order"_s, 0, -10000, 10000);
     });
+    reader.nestedObject(u"mineshaft"_s, [&structure](const QJsonObject &, QcJsonFieldReader &nested) {
+        structure.mineshaftWeight = nested.integer(u"weight"_s, 1, 1, 1000);
+    });
 
     const QHash<QChar, qint16> keys = parsePalette(json, structure, reader, packNamespace);
     if (reader.ok()) {

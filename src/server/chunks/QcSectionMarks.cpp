@@ -31,6 +31,9 @@ QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
     if (block.spawner.isSpawner) {
         traits |= bit(QcBlockTrait::Spawner);
     }
+    if (block.rail) {
+        traits |= bit(QcBlockTrait::Rail);
+    }
     return traits;
 }
 

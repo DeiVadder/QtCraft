@@ -1,0 +1,236 @@
+{
+    "name": "mineshaft_station",
+    "showcase": {
+        "order": 97
+    },
+    "palette": {
+        "S": "stone",
+        "G": "glass",
+        "L": "oak_log",
+        "P": "oak_planks",
+        "e": "rail[facing=east,shape=straight]",
+        "w": "torch[attach=west]",
+        "c": "cobweb",
+        "H": "ladder[attach=west]",
+        "B": "iron_bars",
+        "X": "spawner",
+        ".": "air"
+    },
+    "layers": [
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.L....L..SSSSSS.....L..L.B.c....S",
+            "SeeeeeeeeeeSSSSSS.eeeeeeeeeB...X.cS",
+            "S..L....L..SSSSSS.....L..L.B....c.S",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.L....L..SSSSS......L..L.B....c.S",
+            "S..........SSSSS...........B......S",
+            "S..L....L..SSSSS......L..L.Bc.c...S",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.P....Pc.SSSS.......P..P.B..c..cS",
+            "S..Pw...P..SSSS.......P..P.B.c....S",
+            "S..P..c.P..SSSS.......P.cP.B...c..S",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....L........SSSSSSSSSSSSSSSSSSSS",
+            "S..............SSSSSSSSSSSSSSSSSSSS",
+            "S.....L........SSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....L.......SSSSSSSSSSSSSSSSSSSSS",
+            "S.............SSSSSSSSSSSSSSSSSSSSS",
+            "S.....L.......SSSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....P...c..SSSSSSSSSSSSSSSSSSSSSS",
+            "S.....Pw.....SSSSSSSSSSSSSSSSSSSSSS",
+            "S..c..P......SSSSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+        ],
+        [
+            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "PHPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+        ],
+        [
+            "L L                                ",
+            "PH                                 ",
+            "L L                                ",
+            "                                   ",
+            "                                   "
+        ],
+        [
+            "L L                                ",
+            "PH                                 ",
+            "L L                                ",
+            "                                   ",
+            "                                   "
+        ],
+        [
+            "L L                                ",
+            "                                   ",
+            "L L                                ",
+            "                                   ",
+            "                                   "
+        ],
+        [
+            "PPP                                ",
+            "PPP                                ",
+            "PPP                                ",
+            "                                   ",
+            "                                   "
+        ]
+    ],
+    "minecarts": [
+        {
+            "at": [
+                5,
+                5,
+                2
+            ],
+            "item": "chest_minecart"
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                5,
+                5,
+                2
+            ],
+            "items": [
+                {
+                    "item": "rail",
+                    "count": 16
+                },
+                {
+                    "item": "torch",
+                    "count": 8
+                },
+                {
+                    "item": "iron_ingot",
+                    "count": 3
+                },
+                {
+                    "item": "bread",
+                    "count": 2
+                }
+            ]
+        }
+    ],
+    "spawners": [
+        {
+            "at": [
+                31,
+                5,
+                2
+            ],
+            "mob": "cave_spider",
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                1.5,
+                19.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.mineshaft_station.entrance"
+        },
+        {
+            "at": [
+                14.5,
+                14.5,
+                4.5
+            ],
+            "text": "structure.qtcraft.mineshaft_station.stairs"
+        },
+        {
+            "at": [
+                23.5,
+                8.6,
+                4.5
+            ],
+            "text": "structure.qtcraft.mineshaft_station.bridge"
+        },
+        {
+            "at": [
+                31.0,
+                8.6,
+                4.5
+            ],
+            "text": "mob.qtcraft.cave_spider"
+        }
+    ]
+}

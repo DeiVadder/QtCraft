@@ -27,8 +27,10 @@ enum class QcBlockTrait : quint8 {
     Fire,
     // A monster spawner (decision E-520): a chunk that arrives is searched for spawners only here.
     Spawner,
+    // A rail: a chunk that arrives without one gets no minecart from its generator (decision E-570).
+    Rail,
 };
-inline constexpr int qcBlockTraitCount = 7;
+inline constexpr int qcBlockTraitCount = 8;
 
 // Per loaded chunk and block trait, a bit for each section that may hold a block with that trait.
 // A bit is set when its chunk arrives or such a block is placed and only cleared when the chunk is

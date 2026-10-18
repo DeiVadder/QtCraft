@@ -12996,7 +12996,7 @@
                     "title": "Kommt vor in"
                 }
             ],
-            "text": "Hängt in Höhlen. Wer darin steckt, bewegt sich mit einem Viertel des Tempos und sinkt langsam; abgebaut gibt es Faden.",
+            "text": "Hängt in Höhlen und Minenschächten. Wer darin steckt, bewegt sich mit einem Viertel des Tempos und sinkt langsam; abgebaut gibt es Faden.",
             "title": "Spinnennetz"
         },
         "block:qtcraft:composter": {
@@ -45483,7 +45483,7 @@
                     "title": "Abbaubar mit"
                 }
             ],
-            "text": "Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein Spieler höchstens 16 Blöcke entfernt ist, bringt er alle 10 bis 40 Sekunden bis zu vier Wesen seiner Art hervor, auf dunklen Feldern der 9 × 3 × 9 Blöcke um ihn, bis sechs davon in der Nähe sind. Abgebaut gibt er Erfahrung, aber keinen Gegenstand; herstellen lässt er sich nicht. Verliese tief unter der Erde enthalten einen.",
+            "text": "Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein Spieler höchstens 16 Blöcke entfernt ist, bringt er alle 10 bis 40 Sekunden bis zu vier Wesen seiner Art hervor, auf dunklen Feldern der 9 × 3 × 9 Blöcke um ihn, bis sechs davon in der Nähe sind. Abgebaut gibt er Erfahrung, aber keinen Gegenstand; herstellen lässt er sich nicht. Verliese und Minenschächte tief unter der Erde enthalten welche.",
             "title": "Monster-Spawner"
         },
         "block:qtcraft:spruce_door": {
@@ -55867,6 +55867,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Verlassene Minenschächte liegen tief unter der Erde: Gänge mit Holzstützen auf zwei oder drei Ebenen unter einem Hauptraum, verbunden durch Treppen. Auf manchen Gängen liegen Schienen, hin und wieder steht darauf eine Truhenlore mit Beute. Wo ein Gang eine Höhle kreuzt, führt er über eine Brücke aus Brettern auf Pfeilern. In den Ecken hängen Spinnennetze, am dichtesten um die Spawner der Höhlenspinnen. Sackgassen führen manchmal in einen Lagerraum. Manche Minenschächte reichen bis an die Oberfläche: Achte auf ein kleines Fördergerüst aus Holz mit einer Leiter nach unten, am häufigsten in den Bergen.",
+                    "title": "Minenschächte"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -55902,6 +55910,30 @@
                             "note": "",
                             "target": "block:qtcraft:blue_ice",
                             "text": "Blaues Eis"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
+                        },
+                        {
+                            "icon": "qtcraft:cobweb",
+                            "note": "",
+                            "target": "block:qtcraft:cobweb",
+                            "text": "Spinnennetz"
+                        },
+                        {
+                            "icon": "qtcraft:chest_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:chest_minecart",
+                            "text": "Truhenlore"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Schiene"
                         }
                     ],
                     "recipes": [
@@ -74850,7 +74882,7 @@
                     "title": "Erscheint in Biomen"
                 }
             ],
-            "text": "Eine kleine, blaue Spinne der Höhlen und später der Minenschächte. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.",
+            "text": "Eine kleine, blaue Spinne der Höhlen und Minenschächte, wo Spawner sie hervorbringen. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.",
             "title": "Höhlenspinne"
         },
         "mob:qtcraft:chicken": {

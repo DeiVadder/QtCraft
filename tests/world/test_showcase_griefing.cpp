@@ -105,7 +105,8 @@ private slots:
         QList<Pen> pens;
         for (const QcStructurePlacement &placement : m_generator.plan().placements) {
             const QcStructure &structure = placement.structure();
-            // Pens: confined creatures, or a spawner whose creatures are confined (the dungeon station).
+            // Pens: confined creatures, or a spawner whose creatures are confined (the dungeon and mine
+            // shaft stations).
             if (std::ranges::none_of(structure.mobs, &QcStructure::Mob::confined)
                 && std::ranges::none_of(structure.spawners, &QcStructureDefinition::Spawner::confined)) {
                 continue;
@@ -123,7 +124,8 @@ private slots:
             }
             return list;
         }();
-        for (const char *expected : {"qtcraft:silverfish_wall", "qtcraft:spider_cave", "qtcraft:chicken_coop", "qtcraft:golem_farm", "qtcraft:dungeon_station", "showcase/creatures"}) {
+        for (const char *expected : {"qtcraft:silverfish_wall", "qtcraft:spider_cave", "qtcraft:chicken_coop", "qtcraft:golem_farm", "qtcraft:dungeon_station", "qtcraft:mineshaft_station",
+                                     "showcase/creatures"}) {
             QVERIFY2(names.contains(QString::fromLatin1(expected)), qPrintable(names.join(u' ')));
         }
 

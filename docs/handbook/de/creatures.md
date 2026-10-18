@@ -122,7 +122,7 @@ Jeder feste Block oder eine Flüssigkeitsoberfläche.
 
 ### <a id="mob-qtcraft-cave_spider"></a>Höhlenspinne
 
-Eine kleine, blaue Spinne der Höhlen und später der Minenschächte. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.
+Eine kleine, blaue Spinne der Höhlen und Minenschächte, wo Spawner sie hervorbringen. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.
 
 | | |
 |---|---|

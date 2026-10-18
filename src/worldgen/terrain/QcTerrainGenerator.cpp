@@ -1,6 +1,7 @@
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
+#include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainMath.h"
 #include "worldgen/terrain/QcTreeShape.h"
@@ -76,11 +77,14 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
 {
     m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed, warnings);
     m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed, warnings);
+    m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed, warnings);
 }
 
 QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
 {
-    return m_dungeons->furnishingIn(pos);
+    QcChunkFurnishing furnishing = m_dungeons->furnishingIn(pos);
+    m_mineshafts->addFurnishing(pos, furnishing);
+    return furnishing;
 }
 
 QcTerrainGenerator::~QcTerrainGenerator() = default;
@@ -501,14 +505,17 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     const QList<bool> carved = carvedColumns(*chunk, columns);
     placeOres(*chunk, columns);
     m_pools.placeInCaves(*chunk);
-    // Dungeons deep down after the cave pools, so their corridors open into finished caves.
+    // Dungeons and mine shafts after the cave pools, so their corridors open into finished caves.
     m_dungeons->build(*chunk);
+    m_mineshafts->build(*chunk);
     // The village of the chunk's region: no features or surface pools there, its pieces last.
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
     placeFeatures(*chunk, columns, carved, village.get());
     if (!village || !village->overlaps(pos, featureMargin)) {
         m_pools.placeOnSurface(*chunk, columns, *this);
     }
+    // Mine shaft entrances over the trees, cacti and pools (none lies near a village).
+    m_mineshafts->buildEntrances(*chunk);
     if (village) {
         m_villages->build(*chunk, *village);
     }
