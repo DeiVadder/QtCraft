@@ -70,6 +70,7 @@ QcVillager settle(QcVillage &village, QcBlockPos bed, quint64 holder, const QcVi
         villager.home = bed;
     }
     ++village.population;
+    village.residents.uids.insert(holder);
     return villager;
 }
 
@@ -189,8 +190,37 @@ void release(QcVillages &villages, const QcVillager &villager, quint64 holder)
     }
     unclaim(village->beds, villager.home, holder);
     unclaim(village->workstations, villager.work, holder);
-    village->population = std::max(0, village->population - 1);
+    // One the reconciled village no longer counts (away when it was reconciled) left its population
+    // then already.
+    const bool counted = !village->residents.known || village->residents.uids.remove(holder);
+    village->population = std::max(0, village->population - (counted ? 1 : 0));
     villages.noteChanged();
+    villages.dropIfEmpty(village->id);
+}
+
+void moveOut(QcVillages &villages, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings)
+{
+    release(villages, villager, holder);
+    villager.village = 0;
+    villager.home.reset();
+    villager.work.reset();
+    villager.target.reset();
+    villager.crop.reset();
+    if (villager.experience == 0 && villager.profession != settings.unemployed) {
+        villager.profession = settings.unemployed;
+        villager.lookChanged = true;
+    }
+}
+
+void moveIn(QcVillage &village, QcVillager &villager, quint64 holder, const QcVec3 &near)
+{
+    villager.village = village.id;
+    if (village.style.isEmpty()) {
+        village.style = villager.style;
+    }
+    ++village.population;
+    village.residents.uids.insert(holder);
+    claimBed(village, villager, holder, near);
 }
 
 int dropLostClaims(QcVillage &village, const QSet<quint64> &present)

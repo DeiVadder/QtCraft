@@ -28,7 +28,7 @@ struct QcVillagePlan;
 // Every decideTicks ticks (staggered, at most `thoughtsPerTick` villagers per tick) a villager
 // checks its claims, claims a free bed and workstation, looks out for hostile creatures and picks
 // its goal from the routine of its species or profession by the time of day: its workstation
-// (farmers tend the ripe crops of the village fields around it), the meeting point, a stroll near
+// (farmers tend the ripe crops of every field around it), the meeting point, a stroll near
 // home, its bed. In between it walks its path there (QcMobNavigator), on long walks in legs along
 // the village roads (QcVillagerRoads), opens the wooden doors on its path and closes them behind
 // it (QcDoorPassage), and lies down in its bed at night.
@@ -124,8 +124,8 @@ private:
     // A farmer at work (its `profession` tends crops) keeps its crop or looks for one (not after
     // every decision while there is none); others drop it.
     void lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const;
-    // A ripe crop near the farmer's workstation on its village's fields (QcVillagePlan::fields), if
-    // any; crops a player planted elsewhere in the village are not its to harvest.
+    // A ripe crop within cropRadius of the farmer's workstation, if any: on the village's fields or
+    // any other field, a player's too (decision E-490).
     std::optional<QcBlockPos> ripeCropNear(const QcVillager &villager, const Context &context) const;
     bool isRipe(QcBlockId block) const;
     // Walks to the goal, in legs when it lies far; flees when it must.
@@ -136,7 +136,6 @@ private:
     // Lies down, harvests or faces its workstation once there.
     void arrive(QcCreature &mob, const Context &context);
     void lieDown(QcCreature &mob, const Context &context);
-    std::shared_ptr<const QcVillagePlan> planOf(const QcVillager &villager, const Context &context) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QRandomGenerator &m_random;

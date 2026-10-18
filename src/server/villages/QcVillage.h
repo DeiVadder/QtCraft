@@ -6,15 +6,19 @@
 #include <QHash>
 #include <QJsonObject>
 #include <QList>
+#include <QSet>
 #include <QString>
 
 #include <optional>
 
 // A village as the server knows it (decision E-403): where it is, its beds and workstations and
-// who lives there. The generator's plan gives the first state; blocks placed and broken by players
-// keep it up to date (QcVillages). Villagers (decision E-411) claim a bed and a workstation and count
-// as population; children need free beds and golems enough population (QcVillagerBreeding,
-// QcVillageGolems), both bounded by QcServerLimits.
+// who lives there. A generated village starts from the generator's plan (its id is the plan's
+// region); a settlement (decision E-490) starts from a bed or workstation placed away from every
+// village, its id from that first spot, and has no plan. Blocks placed and broken keep both up to
+// date, and beds and workstations placed near a village make its area grow (QcVillages).
+// Villagers (decision E-411) claim a bed and a workstation and count as population; children need
+// free beds and golems enough population (QcVillagerBreeding, QcVillageGolems), both bounded by
+// QcServerLimits.
 struct QcVillage
 {
     // A bed (its head) or workstation; `claimedBy` is the persistent id (QcCreature::uid, decision
@@ -41,7 +45,8 @@ struct QcVillage
         qsizetype workstations = 64;
     };
 
-    // The region the generator planned it in (QcVillagePlan::id).
+    // The region the generator planned it in (QcVillagePlan::id), or for a settlement settlementId()
+    // of its first spot.
     qint64 id = 0;
     QString style;
     // The meeting point (the bell of the centre).
@@ -72,8 +77,34 @@ struct QcVillage
         bool operator==(const Grudges &) const { return true; }
     };
     Grudges grudges;
+    // The persistent ids of the villagers its population counts, known once its claims were
+    // reconciled in this run (QcVillagePopulation): a villager that was away then (its claims lapsed)
+    // is not among them, so it neither leaves the population again nor stays a villager here.
+    struct Residents
+    {
+        bool known = false;
+        QSet<quint64> uids;
+
+        // Passing state, neither saved nor compared.
+        bool operator==(const Residents &) const { return true; }
+    };
+    Residents residents;
 
     bool operator==(const QcVillage &) const = default;
+
+    // The id of a settlement founded at `first` (decision E-490): bit 62 set, bit 63 clear, the block
+    // position packed below (26 bits each for x and z, 10 for y). Region ids (QcVillagePlan::regionId:
+    // bit 61) never look so, and no id is 0 (no village).
+    static qint64 settlementId(QcBlockPos first)
+    {
+        constexpr qint64 horizontal = qint64(1) << 25;
+        const auto x = quint64(first.x + horizontal) & ((quint64(1) << 26) - 1);
+        const auto z = quint64(first.z + horizontal) & ((quint64(1) << 26) - 1);
+        const auto y = quint64(first.y) & ((quint64(1) << 10) - 1);
+        return qint64((quint64(1) << 62) | (x << 36) | (z << 10) | y);
+    }
+    static bool isSettlement(qint64 id) { return id > 0 && (id >> 62) == 1; }
+    bool settlement() const { return isSettlement(id); }
 
     bool contains(QcBlockPos pos) const
     {

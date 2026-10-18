@@ -119,7 +119,10 @@ private:
 
     static void addPlan(QCryptographicHash &hash, const QcVillagePlan &plan)
     {
-        addInts(hash, {plan.id, plan.minX, plan.minZ, plan.maxX, plan.maxZ, plan.roadLength, plan.winding ? 1 : 0});
+        // The region packed as before the ids had a tag (QcVillagePlan::regionId), so the hashes
+        // stay those of the same plans.
+        const qint64 region = (qint64(QcVillagePlan::regionX(plan.id)) << 32) | quint32(QcVillagePlan::regionZ(plan.id));
+        addInts(hash, {region, plan.minX, plan.minZ, plan.maxX, plan.maxZ, plan.roadLength, plan.winding ? 1 : 0});
         addString(hash, plan.style);
         addString(hash, plan.layout);
         addBlockPos(hash, plan.centre);

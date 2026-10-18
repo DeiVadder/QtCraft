@@ -51,31 +51,34 @@ void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, c
 
     findQueued(mobs);
 
-    // Path finding switched off: the waiting creatures walk straight (QcMobNavigator).
     if (!enabled()) {
-        for (const quint32 id : m_queue) {
-            if (const qsizetype index = queuedIndex(id); index >= 0) {
-                mobs[index].path.queued = false;
-            }
-        }
-        m_queue.clear();
+        walkStraight(mobs);
         return;
     }
 
+    // While other creatures wait, villagers' searches leave them a share of the budget (decision
+    // E-490): villagers past their share wait at the front of the queue for the next tick. The first
+    // villager's search of a tick always runs, so a share smaller than one search never starves them.
+    int othersWaiting = otherCreaturesQueued(mobs);
+    bool villagerSearched = false;
     int budget = m_nodesPerTick;
+    const int villagerBudget = m_nodesPerTick - m_nodesPerTick / otherCreaturesShare;
+    m_deferred.clear();
     while (!m_queue.empty()) {
         const qsizetype index = queuedIndex(m_queue.front());
-        // Gone, resting in an unloaded chunk or without a goal: the request lapses.
-        if (index < 0 || mobs[index].dormant || !mobs[index].path.hasGoal()) {
-            if (index >= 0) {
-                mobs[index].path.queued = false;
-            }
+        if (lapses(mobs, index)) {
+            othersWaiting -= index >= 0 && !mobs[index].isVillager() ? 1 : 0;
             m_queue.pop_front();
             continue;
         }
 
         QcCreature &mob = mobs[index];
         const int nodes = nodesFor(mob);
+        if (mob.isVillager() && villagerSearched && othersWaiting > 0 && m_villagerNodesLastTick + nodes > villagerBudget) {
+            m_deferred.push_back(m_queue.front());
+            m_queue.pop_front();
+            continue;
+        }
         if (nodes > budget) {
             break;
         }
@@ -90,9 +93,42 @@ void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, c
         budget -= result.nodes;
         m_nodesLastTick += result.nodes;
         m_villagerNodesLastTick += mob.isVillager() ? result.nodes : 0;
+        villagerSearched = villagerSearched || mob.isVillager();
+        othersWaiting -= mob.isVillager() ? 0 : 1;
         ++m_searchesLastTick;
         ++m_searches;
     }
+    m_queue.insert(m_queue.begin(), m_deferred.begin(), m_deferred.end());
+}
+
+void QcPathPlanner::walkStraight(QList<QcCreature> &mobs)
+{
+    for (const quint32 id : m_queue) {
+        if (const qsizetype index = queuedIndex(id); index >= 0) {
+            mobs[index].path.queued = false;
+        }
+    }
+    m_queue.clear();
+}
+
+bool QcPathPlanner::lapses(QList<QcCreature> &mobs, qsizetype index)
+{
+    if (index >= 0 && !mobs[index].dormant && mobs[index].path.hasGoal()) {
+        return false;
+    }
+    if (index >= 0) {
+        mobs[index].path.queued = false;
+    }
+    return true;
+}
+
+int QcPathPlanner::otherCreaturesQueued(const QList<QcCreature> &mobs) const
+{
+    int others = 0;
+    for (const auto &[id, index] : m_queued) {
+        others += index >= 0 && !mobs[index].isVillager() ? 1 : 0;
+    }
+    return others;
 }
 
 void QcPathPlanner::findQueued(const QList<QcCreature> &mobs)

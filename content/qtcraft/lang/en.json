@@ -482,6 +482,8 @@
     "block.qtcraft.bell": "Bell",
     "block.qtcraft.composter": "Composter",
     "showcase.area.villages": "Village styles",
+    "showcase.station.growth": "Growing village: a bed placed near the row",
+    "showcase.station.settlement": "Settlement: beds and a composter away from every village",
     "structure.qtcraft.village_plains_well": "Village well (plains)",
     "structure.qtcraft.village_plains_lamp": "Lamp post (plains)",
     "structure.qtcraft.village_plains_house_small": "Small house (plains)",

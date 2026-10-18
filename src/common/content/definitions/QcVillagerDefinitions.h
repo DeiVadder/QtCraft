@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcAppearanceDefinition.h"
 #include "common/content/definitions/QcTradeDefinitions.h"
 
+#include <QHash>
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -87,6 +88,11 @@ struct QcVillagerBreedingSettings
     double shareDistance = 4.0;
     // Children walk this much faster than adults (they run about).
     double youngSpeed = 1.3;
+    // Items adult villagers pick up as food (decision E-490), by qualified item name: the produce
+    // each is worth (a harvest is worth 1). They pick up food while they hold less than
+    // shareAbove + food, so players feed them by throwing it.
+    QHash<QString, int> foods;
+    static constexpr qsizetype maxFoods = 64;
 };
 
 // The golems villagers summon (worldgen/villages.json "golem" or a style's "golem", decisions E-421,

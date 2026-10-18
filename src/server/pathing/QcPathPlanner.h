@@ -18,13 +18,19 @@ struct QcCreature;
 // Path searches of all creatures within a budget per tick (decision E-400). Creatures ask for a
 // path (QcMobNavigator); at the start of the next tick the waiting searches run in the order they
 // were asked for until the next would overrun the tick's node budget (QcServerLimits
-// pathNodesPerTick); the rest wait for the next tick at the front of the queue, so every creature gets
-// its turn. A search expands at most pathNodesPerSearch nodes (a wanderer a quarter of that) and a
-// path keeps at most pathLength waypoints. A budget of 0 switches path finding off: creatures then
-// walk straight at their goals.
+// pathNodesPerTick); the rest wait for the next tick at the front of the queue, so every creature
+// gets its turn. While other creatures wait, villagers' searches use at most all but a quarter of
+// the budget (otherCreaturesShare, decision E-490), except the first villager search of a tick,
+// which always runs. A search expands at most pathNodesPerSearch nodes (a wanderer a quarter of
+// that) and a path keeps at most pathLength waypoints. A budget of 0 switches path finding off:
+// creatures then walk straight at their goals.
 class QcPathPlanner
 {
 public:
+    // One in this many nodes of the budget is kept for creatures other than villagers while any of
+    // them waits.
+    static constexpr int otherCreaturesShare = 4;
+
     explicit QcPathPlanner(const QcContentRegistry &content);
 
     void setLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength);
@@ -53,10 +59,19 @@ private:
     // index of one of them afterwards (-1: gone).
     void findQueued(const QList<QcCreature> &mobs);
     qsizetype queuedIndex(quint32 id) const;
+    // Path finding switched off: the waiting creatures walk straight (QcMobNavigator).
+    void walkStraight(QList<QcCreature> &mobs);
+    // Whether the request of the creature at `index` (-1: gone) lapses: gone, resting in an unloaded
+    // chunk or without a goal; it is no longer queued then.
+    static bool lapses(QList<QcCreature> &mobs, qsizetype index);
+    // The waiting creatures (found by findQueued) that are no villagers.
+    int otherCreaturesQueued(const QList<QcCreature> &mobs) const;
 
     QcPathCellTable m_cells;
     QcPathFinder m_finder;
     std::deque<quint32> m_queue;
+    // Villagers past their share in this tick, back to the front of the queue afterwards.
+    std::vector<quint32> m_deferred;
     // The waiting creatures as (id, index in the list), sorted by id.
     std::vector<std::pair<quint32, qsizetype>> m_queued;
     int m_nodesPerTick = int(QcServerLimits{}.pathNodesPerTick);

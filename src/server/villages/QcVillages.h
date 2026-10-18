@@ -18,9 +18,13 @@ struct QcVillagePlan;
 // known when the first chunk of it enters the world, with the beds and workstations of the
 // generator's plan; every chunk of it that enters later is scanned and its beds and workstations
 // replace those listed there, and every block set in the world updates the list (players place and
-// break beds). While a chunk of a village's area is loaded, the village's plan is held here
-// (decision E-416), so the generator's plan cache never plans it again on the server thread.
-// Lives in QcServerWorld, on the server thread.
+// break beds). A bed or workstation set outside every village area joins the nearest village within
+// joinDistance, whose area grows to hold it, or founds a settlement (decision E-490), unless the
+// grown or new area would meet another village's: a spot belongs to exactly one village (at()). A
+// bed set while a village holds `Limits::beds` beds is not listed, not even once one of its beds is
+// broken. A settlement without spots and villagers is gone. While a chunk of a village's area is
+// loaded, the village's plan is held here (decision E-416), so the generator's plan cache never
+// plans it again on the server thread. Lives in QcServerWorld, on the server thread.
 class QcVillages
 {
 public:
@@ -29,7 +33,12 @@ public:
         qsizetype villages = 4096;
         qsizetype beds = 64;
         qsizetype workstations = 64;
+        // A village grows (joinDistance) at most to a box this many blocks wide and deep.
+        int extent = 384;
     };
+
+    // A bed or workstation set at most this far (horizontally) from a village's box joins it.
+    static constexpr int joinDistance = 32;
 
     QcVillages(const QcContentRegistry &content, const QcWorldGenerator &generator);
 
@@ -44,8 +53,14 @@ public:
     void noteChunk(const QcChunk &chunk);
     // A chunk left the world: the plans of villages without loaded chunks are let go.
     void forgetChunk(QcChunkPos pos);
-    // A block was set in a loaded chunk.
+    // A block was set in a loaded chunk. Setting a bed or workstation where the village lists the
+    // same already changes nothing (its claim stays).
     void noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after);
+    // A bed or workstation the generator placed outside its village plans (decision E-490,
+    // QcWorldGenerator::pointsOfInterestIn) entered the world in its chunk: it counts as placed, after
+    // the generated villages within reach of it became known. Idempotent: a chunk entering again
+    // changes nothing.
+    void notePointOfInterest(QcBlockPos pos, QcBlockId block);
 
     qsizetype count() const { return m_villages.size(); }
     const QcVillage *find(qint64 id) const;
@@ -57,7 +72,8 @@ public:
     qsizetype heldPlans() const { return m_held.size(); }
     // The villages whose area (with `reach`) reaches into a chunk at most `chunks` chunks from `pos`.
     QList<qint64> near(QcChunkPos pos, int chunks) const;
-    // The village whose area holds `pos`, if any.
+    // The village whose area holds `pos`, if any; where areas overlap, the one whose box lies
+    // nearest (the lower id on a tie): every spot belongs to exactly one village.
     const QcVillage *at(QcBlockPos pos) const;
     // The village whose centre lies nearest to `pos` (horizontally), within `reach` blocks.
     const QcVillage *nearest(QcBlockPos pos, double reach) const;
@@ -67,6 +83,8 @@ public:
     void restore(const QList<QcVillage> &villages);
     // The village of a generator plan, its spots cut to the limits.
     QcVillage fromPlan(const QcVillagePlan &plan) const;
+    // A settlement without beds, workstations and villagers is forgotten (decision E-490).
+    void dropIfEmpty(qint64 id);
     // Counts every change (saving writes villages.json only after one); villagers claiming spots
     // or leaving (QcVillagerHomes) count theirs.
     quint64 changes() const { return m_changes; }
@@ -79,8 +97,37 @@ public:
     qsizetype golems(const QHash<qint64, int> &loaded, const std::function<bool(const QcVillage &)> &ofKind) const;
 
 private:
+    // A horizontal box of columns (inclusive).
+    struct Box
+    {
+        int minX = 0;
+        int minZ = 0;
+        int maxX = 0;
+        int maxZ = 0;
+    };
+
+    // How far `pos` lies from the village's box (horizontally, the larger of both axes; 0 inside).
+    static int boxDistance(const QcVillage &village, QcBlockPos pos);
+    // Whether the box with `reach` meets the area of a village other than `except`.
+    bool clashes(Box box, qint64 except) const;
+    // Whether the box with `reach` meets the area of one of the villages `ids` other than `except`.
+    bool meets(const QList<qint64> &ids, Box box, qint64 except) const;
     // `plan` is the village's generator plan if at hand (else asked of the generator when needed).
     void add(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan = nullptr);
+    // Lists the village's area by the chunks it reaches into (m_byChunk), or takes it out.
+    void index(const QcVillage &village);
+    void unindex(const QcVillage &village);
+    // The village a bed or workstation at `pos` outside every village area belongs to: the nearest
+    // one within joinDistance, grown to hold it, or a new settlement; null beyond the limits or where
+    // every such area would meet another village's.
+    QcVillage *homeFor(QcBlockPos pos);
+    // The generator's village of the chunk's region becomes known when it reaches into the chunk;
+    // returns that plan (null without one).
+    std::shared_ptr<const QcVillagePlan> learn(QcChunkPos pos);
+    // Whether the village lists the bed or workstation `block` at `pos` already.
+    bool listed(const QcVillage &village, QcBlockPos pos, QcBlockId block) const;
+    // Widens the village's box to hold `pos`.
+    void grow(QcVillage &village, QcBlockPos pos);
     // Holds the plan of a village that just became known for its chunks that are loaded already.
     void holdLoaded(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan);
     // Replaces the village's spots inside the chunk with those the chunk holds.

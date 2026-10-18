@@ -51,6 +51,15 @@ public:
         Q_UNUSED(reach);
         return nullptr;
     }
+    // Beds and workstations the generator places in a chunk outside every village plan that count
+    // as placed by a player (decision E-490): the server notes each one with the village state when
+    // the chunk enters the world (QcVillages::notePointOfInterest), so it joins a village near it or
+    // founds a settlement. The showcase's stations; empty for other generators.
+    virtual QList<QcBlockPos> pointsOfInterestIn(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return {};
+    }
     // Labels floating in a chunk (decision E-222); the server sends them with the chunk.
     virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const
     {

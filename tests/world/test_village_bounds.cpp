@@ -74,8 +74,8 @@ private:
         int checked = 0;
         const QList<std::shared_ptr<const QcVillagePlan>> plans = plansAround(generator, rings);
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
-            const int regionX = int(plan->id >> 32);
-            const int regionZ = int(qint32(quint32(plan->id & 0xffffffff)));
+            const int regionX = QcVillagePlan::regionX(plan->id);
+            const int regionZ = QcVillagePlan::regionZ(plan->id);
             const Box region{regionX * spacing, regionZ * spacing, regionX * spacing + spacing - 1, regionZ * spacing + spacing - 1};
             const Box box{plan->minX, plan->minZ, plan->maxX, plan->maxZ};
             const auto where = [&](const char *what) {

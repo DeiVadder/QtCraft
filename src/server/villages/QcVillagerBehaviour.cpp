@@ -102,11 +102,6 @@ bool QcVillagerBehaviour::isRipe(QcBlockId block) const
     return block < m_ripe.size() && m_ripe[block];
 }
 
-std::shared_ptr<const QcVillagePlan> QcVillagerBehaviour::planOf(const QcVillager &villager, const Context &context) const
-{
-    return villager.village != 0 ? context.world.villages().planOf(villager.village) : nullptr;
-}
-
 bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
 {
     QcVillager &villager = *mob.villager;
@@ -248,7 +243,8 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
 
 void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const
 {
-    if (villager.activity != QcVillagerActivity::Work || !profession || !profession->tendsCrops) {
+    // Without the game rule mobGriefing farmers leave crops alone (QcServerVillagers).
+    if (villager.activity != QcVillagerActivity::Work || !profession || !profession->tendsCrops || !context.griefing) {
         villager.crop.reset();
     } else if (!villager.crop && --villager.cropLookIn <= 0) {
         villager.crop = ripeCropNear(villager, context);
@@ -351,8 +347,7 @@ std::optional<QcVillagerBehaviour::Goal> QcVillagerBehaviour::strollGoal(const Q
 
 std::optional<QcBlockPos> QcVillagerBehaviour::ripeCropNear(const QcVillager &villager, const Context &context) const
 {
-    const std::shared_ptr<const QcVillagePlan> plan = planOf(villager, context);
-    if (!villager.work || !plan || plan->fields.isEmpty()) {
+    if (!villager.work) {
         return std::nullopt;
     }
     const QcBlockPos work = *villager.work;
@@ -363,7 +358,7 @@ std::optional<QcBlockPos> QcVillagerBehaviour::ripeCropNear(const QcVillager &vi
         for (int dy = -2; dy <= 1; ++dy) {
             const QcBlockPos pos = work.offset(dx, dy, dz);
             const std::optional<QcBlockId> block = context.world.blockAt(pos);
-            if (block && isRipe(*block) && plan->fields.contains(pos)) {
+            if (block && isRipe(*block)) {
                 return pos;
             }
         }

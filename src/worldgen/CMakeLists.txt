@@ -22,6 +22,7 @@ target_sources(qc_worldgen PRIVATE
     showcase/QcShowcaseItemArea.h showcase/QcShowcaseItemArea.cpp
     showcase/QcShowcasePlan.h
     showcase/QcShowcasePlanner.h showcase/QcShowcasePlanner.cpp
+    showcase/QcShowcaseSettlement.h showcase/QcShowcaseSettlement.cpp
     showcase/QcShowcaseTreeArea.h showcase/QcShowcaseTreeArea.cpp
     showcase/QcShowcaseVillageArea.h showcase/QcShowcaseVillageArea.cpp
 )

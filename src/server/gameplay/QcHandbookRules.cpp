@@ -32,6 +32,8 @@
 #include "server/plants/QcServerPlants.h"
 #include "server/villages/QcServerTrading.h"
 #include "server/villages/QcVillagePopulation.h"
+#include "server/villages/QcVillagerRelocation.h"
+#include "server/villages/QcVillages.h"
 #include "server/weather/QcServerWeather.h"
 #include "server/weather/QcWeatherCycle.h"
 
@@ -56,6 +58,11 @@ QMap<QString, double> villageValues()
         {u"villagers.growUpMinutes"_s, QcVillagerBreedingSettings{}.growUpSeconds / 60.0},
         {u"villagers.breedingRestMinutes"_s, QcVillagerBreedingSettings{}.cooldownSeconds / 60.0},
         {u"villagers.max"_s, double(QcServerLimits{}.villagers)},
+        {u"villagers.wantsFood"_s, double(QcVillagerBreedingSettings{}.shareAbove + QcVillagerBreedingSettings{}.food)},
+        {u"villagers.strayDistance"_s, double(QcVillage::reach + QcVillagerHomes::strayReach)},
+        {u"villagers.searchRadius"_s, double(QcVillagerRelocation::searchRadius)},
+        {u"villagers.cropRadius"_s, double(QcVillagerBehaviour::cropRadius)},
+        {u"village.joinDistance"_s, double(QcVillages::joinDistance)},
         {u"golems.minVillagers"_s, double(QcVillageGolemSettings{}.minVillagers)},
         {u"golems.gossipVillagers"_s, double(QcVillageGolemSettings{}.gossipVillagers)},
         {u"golems.gatherDistance"_s, QcVillageGolemSettings{}.gatherDistance},

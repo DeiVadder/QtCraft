@@ -255,6 +255,7 @@ target_sources(qc_server PRIVATE
     villages/QcVillagerBreeding.h villages/QcVillagerBreeding.cpp
     villages/QcVillagerHomes.h villages/QcVillagerHomes.cpp
     villages/QcVillagerLooks.h villages/QcVillagerLooks.cpp
+    villages/QcVillagerRelocation.h villages/QcVillagerRelocation.cpp
     villages/QcVillagerRoads.h villages/QcVillagerRoads.cpp
     villages/QcVillagerTrades.h villages/QcVillagerTrades.cpp
     villages/QcVillages.h villages/QcVillages.cpp

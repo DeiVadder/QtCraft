@@ -6,12 +6,14 @@
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
+#include <algorithm>
 #include <cmath>
 
 QcVillagePopulation::QcVillagePopulation(QcMobManager &mobs, std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_mobs(mobs)
     , m_content(std::move(content))
     , m_seed(seed)
+    , m_relocation(m_content)
     , m_breeding(m_content)
     , m_golems(m_content)
 {
@@ -145,13 +147,52 @@ void QcVillagePopulation::reconcileClaims(QcServerWorld &world, QcVillage &villa
     // Its population is who is there.
     const bool changed = village.population != int(present.size());
     village.population = int(present.size());
+    village.residents = {true, present};
     if (QcVillagerHomes::dropLostClaims(village, present) > 0 || changed) {
         world.villages().noteChanged();
     }
 }
 
+bool QcVillagePopulation::settled(QcServerWorld &world, QcVillage &village)
+{
+    if (m_claimsChecked.contains(village.id)) {
+        return true;
+    }
+    const auto claimed = [](const QcVillage::Spot &spot) { return spot.claimedBy != 0; };
+    if (village.population == 0 && std::ranges::none_of(village.beds, claimed) && std::ranges::none_of(village.workstations, claimed)) {
+        m_claimsChecked.insert(village.id);
+        return true;
+    }
+    if (claimHoldersLoaded(world, village)) {
+        reconcileClaims(world, village);
+        return true;
+    }
+    return false;
+}
+
+void QcVillagePopulation::relocate(QcServerWorld &world)
+{
+    QSet<qint64> unchecked;
+    for (const QcCreature &mob : m_mobs.mobs()) {
+        if (!mob.dormant && mob.isVillager() && mob.villager->village != 0 && !m_claimsChecked.contains(mob.villager->village)) {
+            unchecked.insert(mob.villager->village);
+        }
+    }
+    for (const qint64 id : std::as_const(unchecked)) {
+        if (QcVillage *village = world.villages().find(id)) {
+            settled(world, *village);
+        }
+    }
+
+    const QcVillagerRelocation::Context context{world.villages(), m_villagerLimits,
+                                                [this, &world](QcVillage &village) { return settled(world, village); }};
+    m_relocation.check(m_mobs.editableMobs(), context);
+}
+
 void QcVillagePopulation::liveInVillages(QcServerWorld &world, double worldTime, const NextId &nextEntityId)
 {
+    relocate(world);
+
     const QcVillagerBehaviour &behaviour = m_mobs.villagers();
     const QcVillagerBreeding::Context breeding{world, world.villages(), worldTime, [&behaviour](QcBlockPos pos) { return behaviour.rainsAt(pos); },
                                                m_villagerLimits, &m_claimsChecked};

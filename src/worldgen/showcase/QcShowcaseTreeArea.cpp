@@ -104,7 +104,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     }
 
     const QcBlockPos origin{anchor.x, anchor.y, anchor.z - depth + 1};
-    return {u"trees"_s, u"showcase.area.trees"_s, std::move(structure), origin, {}};
+    return {u"trees"_s, u"showcase.area.trees"_s, std::move(structure), origin, {}, {}};
 }
 
 } // namespace QcShowcaseTreeArea

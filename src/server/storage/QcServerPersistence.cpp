@@ -127,8 +127,9 @@ void QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
 {
     QcVillages &villages = m_state.world().villages();
     const QcVillages::Limits &limits = villages.limits();
-    // A plan never leaves its region, so no village is wider than a region.
-    const QcVillage::ReadLimits read{m_state.content().villageSettings().spacing, limits.beds, limits.workstations};
+    // A plan never leaves its region, and a village grows (decision E-490) at most to limits.extent.
+    const int extent = std::max(m_state.content().villageSettings().spacing, limits.extent);
+    const QcVillage::ReadLimits read{extent, limits.beds, limits.workstations};
     const QcResult<QList<QcVillage>> stored = storage.readVillages(read);
     if (stored) {
         villages.restore(*stored);

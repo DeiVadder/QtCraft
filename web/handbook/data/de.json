@@ -54942,7 +54942,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, helle Pelze und Pelzmützen im Schnee, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.",
+                    "text": "Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Ein Bewohner ohne Bett oder einer, der mehr als 32 Blöcke über die Gebäude seines Dorfs hinaus gebracht wird (in einer Lore, geschoben oder weggeführt), zieht in das Dorf mit dem freien Bett, das ihm am nächsten liegt, bis 48 Blöcke weit. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, helle Pelze und Pelzmützen im Schnee, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.",
                     "title": "Zuhause"
                 },
                 {
@@ -54950,7 +54950,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).",
+                    "text": "Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte jedes Felds bis 8 Blöcke um ihren Komposter, auch deiner, und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Mit der Spielregel `mobGriefing` aus lassen sie die Felder in Ruhe. Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).",
                     "title": "Berufe"
                 },
                 {
@@ -54966,7 +54966,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Dorf wächst in seine freien Betten hinein. Zwei erwachsene Dorfbewohner, die sich tagsüber bei trockenem Wetter begegnen und jeder genug zu essen haben (mindestens 3 Feldfrüchte), bekommen ein Kind, wenn ihr Dorf ein freies Bett hat: Das Kind zieht in das freie Bett, das ihnen am nächsten liegt. Das Essen bringen die Bauern ein: Was sie ernten, behalten sie, und ein Bauer mit mehr als 6 Früchten teilt mit den Bewohnern in seiner Nähe, die zu wenig haben. Danach ruhen die Eltern 5 Minuten. Ein Kind ist halb so groß, hat keinen Beruf, spielt im Dorf, statt zu arbeiten, und handelt nicht; nach 20 Minuten ist es erwachsen und nimmt sich einen freien Arbeitsplatz. Kein Kind kommt nachts, bei Regen, ohne freies Bett oder über 32 Bewohner in einem Dorf und 1024 in der Welt hinaus. Wer Betten in ein Dorf stellt, lässt es also wachsen, und das Bett eines gestorbenen Bewohners wird wieder bezogen.",
+                    "text": "Ein Dorf wächst in seine freien Betten hinein. Zwei erwachsene Dorfbewohner, die sich tagsüber bei trockenem Wetter begegnen und jeder genug zu essen haben (mindestens 3 Feldfrüchte), bekommen ein Kind, wenn ihr Dorf ein freies Bett hat: Das Kind zieht in das freie Bett, das ihnen am nächsten liegt. Das Essen bringen die Bauern ein: Was sie ernten, behalten sie, und ein Bauer mit mehr als 6 Früchten teilt mit den Bewohnern in seiner Nähe, die zu wenig haben. Danach ruhen die Eltern 5 Minuten. Ein Kind ist halb so groß, hat keinen Beruf, spielt im Dorf, statt zu arbeiten, und handelt nicht; nach 20 Minuten ist es erwachsen und nimmt sich einen freien Arbeitsplatz. Kein Kind kommt nachts, bei Regen, ohne freies Bett oder über 32 Bewohner in einem Dorf und 1024 in der Welt hinaus. Wirf ihnen Brot (so viel wie 3 Früchte), Karotten, Kartoffeln oder Weizen zu, und erwachsene Bewohner sammeln es als Essen auf, bis sie 9 Früchte haben (nicht mit der Spielregel `mobGriefing` aus). Wer Betten in ein Dorf stellt, lässt es also wachsen, und das Bett eines gestorbenen Bewohners wird wieder bezogen.",
                     "title": "Kinder"
                 },
                 {
@@ -55132,7 +55132,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.",
+                    "text": "Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort; einer bis 32 Blöcke von den Gebäuden eines Dorfs gehört zu ihm, und das Gebiet wächst, aber nie in das eines anderen Dorfs: Jedes Bett und jeder Arbeitsplatz gehört zu genau einem Dorf. Ein Bett oder Arbeitsplatz weiter weg von jedem Dorf gründet eine eigene Siedlung: Dorfbewohner ohne Zuhause ziehen ein, und sie lebt wie jedes Dorf (Kinder, Golems). Eine Siedlung ohne Betten, Arbeitsplätze und Bewohner wird vergessen. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze (eins, das darüber hinaus gesetzt wird, auch später nicht); die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.",
                     "title": "Betten und Arbeitsplätze"
                 },
                 {

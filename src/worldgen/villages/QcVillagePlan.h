@@ -83,7 +83,20 @@ struct QcVillagePlan
         bool confined = false;
     };
 
-    // Region coordinates packed into one number: x in the high 32 bits, z in the low (QcVillagePlanner::plan).
+    // The id of the village planned in region (x, z) (QcVillagePlanner::plan): bit 61 set, bits 62
+    // and 63 clear, the region's x in bits 24 to 47 and its z in bits 0 to 23 (each 24 bits, two's
+    // complement). Never 0, which stands for no village (QcVillager::village), and never a
+    // settlement's id (QcVillage::settlementId, bit 62).
+    static constexpr qint64 regionId(int x, int z)
+    {
+        constexpr quint64 mask = (quint64(1) << 24) - 1;
+        return qint64((quint64(1) << 61) | ((quint64(quint32(x)) & mask) << 24) | (quint64(quint32(z)) & mask));
+    }
+    // The region x and z of a regionId().
+    static constexpr int regionX(qint64 id) { return int(qint32(quint32((quint64(id) >> 24) & 0xffffff) << 8) >> 8); }
+    static constexpr int regionZ(qint64 id) { return int(qint32(quint32(quint64(id) & 0xffffff) << 8) >> 8); }
+
+    // regionId() of its region; the showcase and test fixtures number their villages from 1.
     qint64 id = 0;
     QString style;
     // The meeting point: the bell of the centre piece, else the centre's ground.

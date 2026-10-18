@@ -179,7 +179,7 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanner::plan(int regionX, int reg
 void QcVillagePlanner::startPlan(QcVillageDraft &draft)
 {
     QcVillagePlan &plan = draft.plan;
-    plan.id = (qint64(draft.region.x) << 32) | quint32(draft.region.z);
+    plan.id = QcVillagePlan::regionId(draft.region.x, draft.region.z);
     plan.style = draft.style->name;
     chooseRoads(draft);
     plan.foundation = draft.style->foundation;

@@ -8,6 +8,7 @@
 #include "server/villages/QcVillagerBehaviour.h"
 #include "server/villages/QcVillagerBreeding.h"
 #include "server/villages/QcVillagerHomes.h"
+#include "server/villages/QcVillagerRelocation.h"
 
 #include <QSet>
 
@@ -21,10 +22,11 @@ class QcVillages;
 // The villagers of the villages among the creatures (decisions E-411, E-415, E-422): one moves in
 // beside each free bed when a chunk of its village is seen for the first time, the claims of a
 // village are reconciled once per run when all its villagers' chunks are loaded, every
-// villageLifeTicks ticks villagers get children (QcVillagerBreeding) and summon iron golems
-// (QcVillageGolems, decision E-470), and a villager that leaves the world for good (QcMobManager::Departure: died,
-// removed, despawned, void) frees its claims. Part of QcMobManager, which owns the creatures and
-// tells it when one leaves.
+// villageLifeTicks ticks villagers move between villages (QcVillagerRelocation, decision E-490),
+// get children (QcVillagerBreeding) and summon iron golems (QcVillageGolems, decision E-470), and
+// a villager that leaves the world for good (QcMobManager::Departure: died, removed, despawned,
+// void) frees its claims. Part of QcMobManager, which owns the creatures and tells it when one
+// leaves.
 class QcVillagePopulation
 {
 public:
@@ -70,6 +72,13 @@ private:
     // Every chunk the villagers holding the village's claims may stand in is loaded.
     static bool claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village);
     void reconcileClaims(QcServerWorld &world, QcVillage &village);
+    // Whether the village's claims are known (decision E-490): reconciled in this run, now when
+    // every chunk its claim holders may stand in is loaded, or a village without claims and
+    // villagers (a settlement founded in this run).
+    bool settled(QcServerWorld &world, QcVillage &village);
+    // Villagers that strayed from their villages or have no bed move (QcVillagerRelocation); the
+    // villages of awake villagers are reconciled first where they can be.
+    void relocate(QcServerWorld &world);
     // Children and golems of the villages, every villageLifeTicks ticks.
     void liveInVillages(QcServerWorld &world, double worldTime, const NextId &nextEntityId);
     // A creature left the world: a villager that left for good frees its claims and closes its door;
@@ -85,6 +94,7 @@ private:
     QSet<QcChunkPos> m_bedsWaiting;
     // Villages whose claims checkVillageClaims() checked in this run.
     QSet<qint64> m_claimsChecked;
+    QcVillagerRelocation m_relocation;
     QcVillagerBreeding m_breeding;
     QcVillageGolems m_golems;
     qint64 m_golemLimit = QcServerLimits{}.villageGolems;

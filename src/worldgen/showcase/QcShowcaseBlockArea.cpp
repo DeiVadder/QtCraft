@@ -228,7 +228,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, const QcShowcaseCategory 
         const QcBlockDefinition &block = context.content.block(shows[i].state);
         structure->labels.append({{x + 0.5, labelY, z + 0.5}, block.translationKey, stateDetail(context.content, shows[i].state), false});
     }
-    return {u"blocks-"_s + category.name, category.translationKey, std::move(structure), origin, {}};
+    return {u"blocks-"_s + category.name, category.translationKey, std::move(structure), origin, {}, {}};
 }
 
 } // namespace QcShowcaseBlockArea

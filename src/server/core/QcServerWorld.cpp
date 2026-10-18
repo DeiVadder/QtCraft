@@ -186,6 +186,12 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     m_links.noteChunk(chunk);
     m_loaders.noteChunk(chunk);
     m_villages->noteChunk(chunk);
+    // The generator's beds and workstations outside its villages count as placed (decision E-490);
+    // one broken since is air and counts no more, one listed already stays as it is.
+    const QList<QcBlockPos> points = m_generator->pointsOfInterestIn(pos);
+    for (const QcBlockPos &point : points) {
+        m_villages->notePointOfInterest(point, chunk.block(point.localX(), point.y, point.localZ()));
+    }
     m_blockEntities.chunkArrived(chunk, m_marks.sectionsOf(pos, QcBlockTrait::BlockEntity));
     m_fires.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Fire));
 }

@@ -32,12 +32,14 @@
 // (package 37.R2) saves every entity as a header and versioned components and gives saved creatures
 // a persistent id (decision E-420): new fields no longer need a new format; format 14 adds the list
 // of projectiles to each chunk's entities (decision E-425), format 15 (package 37.R2b) saves the block
-// entities of a chunk as versioned tables of framed entries like the entities (decision E-440). Worlds of older
+// entities of a chunk as versioned tables of framed entries like the entities (decision E-440), format 16
+// (package 52.7) gives generated villages ids that are never 0 (QcVillagePlan::regionId, decision
+// E-490). Worlds of older
 // development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 15;
-    static constexpr int oldestFormatVersion = 15;
+    static constexpr int formatVersion = 16;
+    static constexpr int oldestFormatVersion = 16;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;

@@ -1,5 +1,6 @@
 #include "worldgen/showcase/QcShowcaseVillageArea.h"
 
+#include "worldgen/showcase/QcShowcaseSettlement.h"
 #include "worldgen/villages/QcVillageFields.h"
 #include "worldgen/villages/QcVillagePlan.h"
 #include "worldgen/villages/QcVillageStyles.h"
@@ -144,7 +145,9 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     // One row of ground behind the last row instead of a full gap.
     depth -= rows.isEmpty() ? 0 : rowGap - 1;
 
-    auto area = std::make_shared<QcStructure>(u"showcase/villages"_s, width, height, std::max(1, depth));
+    // The village station (decision E-490) east of the rows.
+    QcShowcaseSettlement::Frame station{width, std::max(1, depth) - 1 - frontGap, QcShowcaseSettlement::settlementX(width, anchor.x), 0};
+    auto area = std::make_shared<QcStructure>(u"showcase/villages"_s, QcShowcaseSettlement::areaWidth(station.x), height, std::max(1, depth));
     const QcBlockPos origin{anchor.x, anchor.y, anchor.z - area->sizeZ() + 1};
     QList<std::shared_ptr<const QcVillagePlan>> villages;
     // Rows from the south (the visitors' side) to the north; each road lies south of its row.
@@ -170,7 +173,13 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         road -= rowDepth(pieces) + 1 + rowGap;
     }
 
-    return {u"villages"_s, u"showcase.area.villages"_s, std::move(area), origin, std::move(villages)};
+    QList<QcBlockPos> points;
+    const std::optional<int> stationZ = QcShowcaseSettlement::settlementZ(area->sizeZ(), origin.z, frontGap);
+    if (!rows.isEmpty() && stationZ) {
+        station.z = *stationZ;
+        points = QcShowcaseSettlement::build(context, *area, origin, station);
+    }
+    return {u"villages"_s, u"showcase.area.villages"_s, std::move(area), origin, std::move(villages), std::move(points)};
 }
 
 } // namespace QcShowcaseVillageArea

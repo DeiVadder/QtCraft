@@ -123,7 +123,7 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders() const
         const QString name = u"demo-"_s + definition->name.mid(definition->name.indexOf(u':') + 1);
         const QString title = definition->translationKey;
         builders.append([shared, name, title](QcBlockPos anchor) {
-            return QcShowcaseArea{name, title, shared, {anchor.x, anchor.y, anchor.z - shared->sizeZ() + 1}, {}};
+            return QcShowcaseArea{name, title, shared, {anchor.x, anchor.y, anchor.z - shared->sizeZ() + 1}, {}, {}};
         });
     }
     return builders;
@@ -209,6 +209,9 @@ void QcShowcasePlanner::addArea(const QcShowcaseArea &area, int front)
     const QcStructure &structure = *area.structure;
     m_plan.areas.append({area.name, area.title, area.origin, structure.sizeX(), structure.sizeY(), structure.sizeZ()});
     m_plan.villages.append(area.villages);
+    for (const QcBlockPos &point : area.pointsOfInterest) {
+        m_plan.pointsOfInterestByChunk[point.chunk()].append(point);
+    }
     addLabel({{area.origin.x + 1.0, area.origin.y + titleHeight, front + 1.5}, area.title, {}, true});
     addLookout(area, front);
 

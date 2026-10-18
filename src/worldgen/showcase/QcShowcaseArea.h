@@ -36,6 +36,9 @@ struct QcShowcaseArea
     QcBlockPos origin;
     // The villages it shows, in world coordinates (the village area's rows, decision E-411).
     QList<std::shared_ptr<const QcVillagePlan>> villages;
+    // Beds (heads) and workstations outside its villages that count as placed (decision E-490,
+    // QcWorldGenerator::pointsOfInterestIn), in world coordinates.
+    QList<QcBlockPos> pointsOfInterest;
 };
 
 // Builds an area whose south west corner on the ground is `anchor` (x: west edge, y: ground top,

@@ -2155,3 +2155,27 @@ Release-Builds, `dev` `3599eb9` (52.2) gegen `feature/52-5-taming` nach dem Zusa
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, gravel-collapse, Felder −2 bis +6 %; explore unverändert bei 65 statt 57 Wesen (Wölfe in Wäldern); Signal-Stationen +11 bis +18 % (0,063 → 0,071 ms) bei 45 statt 36 Wesen: Haustier-Ecke der Showcase, etwa 0,9 µs je Wesen; Speicher −1 bis +3 %.
 
 **Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −3 bis +2 %, Render-CPU −5 bis +5 %, GUI-CPU −1 bis +3 %, Bild Ø 8,38–8,49 ms, Speicher +0–2 %; p99 16,0–16,7 ms bei beiden Ständen (Desktop am Tag belebt), showcase 10,4 ms. Keine Regression.
+
+## 52.7 (Dorf-Spielweisen, Wegbudget-Anteil) headless, Debug-relativ (2026-10-18)
+
+Verschränkte A/B-Messung im Debug-Build, je zwei Runden, `nice -n 10`, Ticks von Hand: Basis `dev` `3599eb9` (Haupt-Checkout) gegen `feature/52-7-village-gameplay`. Keine Release-Messung (paralleles Paket).
+
+**Langzeittest über 2 Spieltage** (`QTCRAFT_VILLAGE_SOAK_DAYS=2 test_village_soak`: vier Testdörfer, 39 Bewohner, 23 996 Ticks, 4 Kinder, alle 39 im Bett, Invarianten grün): Tick Ø Basis 0,612 / 0,608 ms, 52.7 0,617 / 0,610 ms; Wanduhr 14,6–14,8 s auf beiden Seiten. Umzug und Abgleich alle 100 Ticks kosten nichts Messbares.
+
+**Großes Dorfgebiet** (`QTCRAFT_VILLAGE_LIMITS_MEASURE=1 test_village_limits_measure`: 32 Testdörfer, 1024 Bewohner, rund 280 andere Wesen, 4 Spieler, 1123 Chunks; Abend, Nacht und Morgen bis Tagesanteil 1,10):
+
+| Abschnitt | Tick Ø ms Basis → 52.7 | Wartezeit andere Ø (max) Ticks Basis → 52.7 | Wartezeit Bewohner Ø (max) Ticks Basis → 52.7 | Budget ausgeschöpft |
+|---|---|---|---|---|
+| Abend (0,55–0,65) | 7,72 / 7,93 → 7,98 / 7,70 | 1,02 (10) → 1,00 (2) | 10,81 (20) → 8,55 (20) | 1,7 % → 1,4 % |
+| Nacht (0,65–0,80) | 7,55 / 7,71 → 7,73 / 7,26 | 1,00 (2) → 1,00 (2) | 1,71 (2) → 1,79 (2) | 0 % → 0 % |
+| Morgen (0,80–1,10) | 15,47 / 15,11 → 16,12 / 14,81 | 1,38 (40) → 1,00 (2) | 2,90 (48) → 2,57 (39) | 1,8 % → 0,5 % |
+
+**Bewertung:** Mit einem Viertel des Wegbudgets für andere Wesen (E-490) warten Feinde und Tiere auch im Morgengedränge höchstens 2 Ticks statt 40; die Bewohner selbst warten nicht länger (im Mittel sogar kürzer, weil das Budget seltener ganz ausgeschöpft ist). Tick-Zeiten gleich im Rahmen der Streuung (zwei Runden je Seite).
+
+## 52.7 (Dorf-Spielweisen, mit dev zusammengeführt) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `f88fbd7` (52.5) gegen `feature/52-7-village-gameplay` nach dem Zusammenführen, verschränkt, Mediane.
+
+**Headless** (`@server horde village village-night village-swamp`, 3 Runden, 60 Spielsekunden): Tick −2 bis +2 % in allen Szenarien bei gleicher Wesenzahl, p99 −7 bis +6 %, Speicher −2 bis +4 %. Siedlungen, Umzug, Ernte auf beliebigen Feldern und Aufsammeln von Essen kosten nichts Messbares.
+
+**Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −3 bis +4 %, Render-CPU −8 bis +4 %, GUI-CPU −4 bis +4 %, Bild Ø 8,39–8,47 ms, Speicher ±1 %; p99 10,4–16,2 ms bei beiden Ständen (Desktop am Tag). Keine Regression.

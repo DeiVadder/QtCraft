@@ -87,7 +87,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     }
 
     const QcBlockPos origin{anchor.x, anchor.y, anchor.z - depth + 1};
-    return {u"creatures"_s, u"showcase.area.creatures"_s, std::move(structure), origin, {}};
+    return {u"creatures"_s, u"showcase.area.creatures"_s, std::move(structure), origin, {}, {}};
 }
 
 } // namespace QcShowcaseCreatureArea

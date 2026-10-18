@@ -49,6 +49,8 @@ qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture
 qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_trading SOURCES gameplay/test_trading.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 150)
 qc_add_test(test_trade_offers SOURCES gameplay/test_trade_offers.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_settlement_storage SOURCES gameplay/test_settlement_storage.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_village_growth SOURCES gameplay/test_village_growth.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_village_life SOURCES gameplay/test_village_life.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_village_species SOURCES gameplay/test_village_species.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server)
 qc_add_test(test_golem_summons SOURCES gameplay/test_golem_summons.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server)

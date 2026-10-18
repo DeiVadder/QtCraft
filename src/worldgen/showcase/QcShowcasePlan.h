@@ -50,6 +50,8 @@ struct QcShowcasePlan
     QList<QcShowcaseTourStop> tour;
     // The rows of the village area, each a village of its own (decision E-411).
     QList<std::shared_ptr<const QcVillagePlan>> villages;
+    // The areas' points of interest (QcShowcaseArea::pointsOfInterest) by chunk, in their order.
+    QHash<QcChunkPos, QList<QcBlockPos>> pointsOfInterestByChunk;
 
     int groundTop() const { return int(groundColumn.size()) - 1; }
     qsizetype labelCount() const;

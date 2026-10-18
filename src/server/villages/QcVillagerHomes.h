@@ -58,8 +58,17 @@ bool claimBed(QcVillage &village, QcVillager &villager, quint64 holder, const Qc
 // False when there is none.
 bool claimWorkstation(QcVillage &village, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings, const QcVec3 &near);
 // The villager died or was taken out of the world: its claims are freed, the population counts one
-// less.
+// less unless the village was reconciled without it (QcVillage::Residents), and a settlement left
+// without spots and villagers is forgotten.
 void release(QcVillages &villages, const QcVillager &villager, quint64 holder);
+
+// The villager leaves its village for good while it lives (relocated, decision E-490): its claims
+// are freed, the village counts one less (a settlement left empty is forgotten) and it is homeless
+// (village 0); one without experience loses its profession with its workstation.
+void moveOut(QcVillages &villages, QcVillager &villager, quint64 holder, const QcVillagerSettings &settings);
+// The homeless villager moves into `village`: it counts there, a settlement without a style takes
+// its style, and it claims the free bed nearest to `near`.
+void moveIn(QcVillage &village, QcVillager &villager, quint64 holder, const QcVec3 &near);
 
 // Every villager of the village is in the world (`present`, by persistent id): claims under other
 // ids lapse. The number of their holders.

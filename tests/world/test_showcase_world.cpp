@@ -7,6 +7,7 @@
 #include "QcStoredWorld.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldLibrary.h"
+#include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerTrades.h"
 #include "server/villages/QcVillages.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -288,10 +289,10 @@ private slots:
         // world.json of format 1 (before the showcase), 2 (before stage 31.1), 3 (before stage
         // 31.2), 9 (before the villages of stage 37.2), 10 (before the villagers of stage 37.2b), 11
         // (before the trading of stage 37.2c), 12 (before the entity components of package 37.R2), 13
-        // (before the projectiles of package 52.1a) and 14 (before the block entity tables of package
-        // 37.R2b): a world of an older development version is refused, not converted (decision
-        // E-356), and nothing is written.
-        for (const int version : {1, 2, 3, 9, 10, 11, 12, 13, 14}) {
+        // (before the projectiles of package 52.1a), 14 (before the block entity tables of package
+        // 37.R2b) and 15 (before the village ids of package 52.7): a world of an older development
+        // version is refused, not converted (decision E-356), and nothing is written.
+        for (const int version : {1, 2, 3, 9, 10, 11, 12, 13, 14, 15}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
@@ -461,6 +462,65 @@ private slots:
                 QVERIFY2(m_content->block(*server->world().blockAt(field)).crop.isCrop(), qPrintable(plan->style));
             }
         }
+    }
+
+    // The village station (decision E-490): the bed beyond the first row makes that row's village
+    // grow, the beds and composter away from the rows found a settlement, and the two homeless
+    // villagers beside it move in and claim beds; noting the generated points again (a chunk that
+    // enters again) changes nothing.
+    void villageStationGrowsAVillageAndFoundsASettlement()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        const QcShowcaseGenerator generator(m_content);
+        QList<QcBlockPos> points;
+        for (const QList<QcBlockPos> &chunk : generator.plan().pointsOfInterestByChunk) {
+            points.append(chunk);
+        }
+        // The growth bed lies west of the settlement's three beds and composter.
+        QCOMPARE(points.size(), 5);
+        std::ranges::sort(points, {}, [](QcBlockPos pos) { return pos.x; });
+        const QcBlockPos growth = points.first();
+        const std::shared_ptr<const QcVillagePlan> firstRow = generator.plan().villages.first();
+        QVERIFY(growth.x > firstRow->maxX + QcVillage::reach);
+        QVERIFY(growth.x - firstRow->maxX <= QcVillages::joinDistance);
+        for (const QcBlockPos &point : std::as_const(points)) {
+            for (int dx = -3; dx <= 3; ++dx) {
+                for (int dz = -3; dz <= 3; ++dz) {
+                    server->world().loadChunk({point.chunk().x + dx, point.chunk().z + dz});
+                }
+            }
+        }
+        for (int tick = 0; tick < 2 * QcVillagePopulation::villageLifeTicks + 2; ++tick) {
+            server->tick();
+        }
+
+        const QcVillages &villages = server->world().villages();
+        const QcVillage *row = villages.find(firstRow->id);
+        QVERIFY(row);
+        QCOMPARE(row->maxX, growth.x);
+        QCOMPARE(villages.at(growth), row);
+        QVERIFY(std::ranges::any_of(row->beds, [growth](const QcVillage::Spot &bed) { return bed.at == growth; }));
+
+        const QcVillage *settlement = villages.at(points.at(1));
+        QVERIFY(settlement);
+        QVERIFY(settlement->settlement());
+        QCOMPARE(settlement->id, QcVillage::settlementId(points.at(1)));
+        QCOMPARE(settlement->beds.size(), 3);
+        QCOMPARE(settlement->workstations.size(), 1);
+        QCOMPARE(settlement->population, 2);
+        const auto settlers = std::ranges::count_if(server->mobs().mobs(), [settlement](const QcCreature &mob) {
+            return mob.isVillager() && mob.villager->village == settlement->id && mob.villager->home.has_value();
+        });
+        QCOMPARE(settlers, 2);
+        QCOMPARE(settlement->freeBeds(), 1);
+
+        const QList<QcVillage> before = villages.villages();
+        for (const QcBlockPos &point : std::as_const(points)) {
+            server->world().villages().notePointOfInterest(point, *server->world().blockAt(point));
+        }
+        QCOMPARE(server->world().villages().villages(), before);
     }
 
     // The rows serve as the trading station (decision E-414): their villagers take the professions

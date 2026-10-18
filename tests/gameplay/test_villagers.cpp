@@ -1,6 +1,7 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "server/mobs/QcMobSteering.h"
+#include "server/villages/QcServerVillagers.h"
 #include "server/villages/QcVillagerHomes.h"
 #include "server/weather/QcWeatherCycle.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -521,10 +522,15 @@ private slots:
             crops.append(crop);
             m_terrain->plan().fields.insert(crop);
         }
-        // A player's crop in the village, but not on its fields, stays.
+        // A player's field near the workstation is tended too (decision E-490); a crop beyond
+        // cropRadius of the workstation is not.
         const QcBlockPos playerCrop = m_feet.offset(1, 0, 3);
         m_server->world().setBlock(playerCrop.offset(0, -1, 0), id("qtcraft:farmland"));
         m_server->world().setBlock(playerCrop, state(u"qtcraft:wheat_crop[age=7]"_s));
+        crops.append(playerCrop);
+        const QcBlockPos farCrop = composter.offset(-(QcVillagerBehaviour::cropRadius + 2), 0, 0);
+        m_server->world().setBlock(farCrop.offset(0, -1, 0), id("qtcraft:farmland"));
+        m_server->world().setBlock(farCrop, state(u"qtcraft:wheat_crop[age=7]"_s));
         const quint32 entity = settle(head, centreOf(m_feet.offset(-5, 0, -5))).id;
 
         int ripe = ripeCrops(crops);
@@ -536,13 +542,77 @@ private slots:
         }
         QCOMPARE(ripe, 0);
         QCOMPARE(villager(entity)->villager->profession, u"qtcraft:farmer"_s);
-        QCOMPARE(villager(entity)->villager->produce, 8);
+        QCOMPARE(villager(entity)->villager->produce, 9);
         ticks(200);
-        QCOMPARE(ripeCrops({playerCrop}), 1);
-        QCOMPARE(villager(entity)->villager->produce, 8);
+        QCOMPARE(ripeCrops({farCrop}), 1);
+        QCOMPARE(villager(entity)->villager->produce, 9);
         for (const QcBlockPos &crop : std::as_const(crops)) {
             QVERIFY(m_content->block(*m_server->world().blockAt(crop)).crop.isCrop());
         }
+    }
+
+    void farmersLeaveCropsWithoutMobGriefing()
+    {
+        start(0.1);
+        chat(u"/gamerule mobGriefing false"_s);
+        const QcBlockPos head = bed(m_feet.offset(-6, 0, -6));
+        const QcBlockPos composter = m_feet.offset(0, 0, 4);
+        m_server->world().setBlock(composter, id("qtcraft:composter"));
+        const QcBlockPos crop = m_feet.offset(1, 0, 6);
+        m_server->world().setBlock(crop.offset(0, -1, 0), id("qtcraft:farmland"));
+        m_server->world().setBlock(crop, state(u"qtcraft:wheat_crop[age=7]"_s));
+        const quint32 entity = settle(head, centreOf(m_feet.offset(-5, 0, -5))).id;
+
+        ticks(400);
+        QCOMPARE(villager(entity)->villager->profession, u"qtcraft:farmer"_s);
+        QCOMPARE(ripeCrops({crop}), 1);
+        QCOMPARE(villager(entity)->villager->produce, 0);
+
+        // With the rule on again the farmer harvests it.
+        chat(u"/gamerule mobGriefing true"_s);
+        QVERIFY(tickUntil([&] { return ripeCrops({crop}) == 0; }, 600));
+    }
+
+    void villagersPickUpFoodThrownToThem()
+    {
+        start(0.1);
+        const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
+        const quint32 entity = settle(head, centreOf(m_feet.offset(5, 0, 0))).id;
+        ticks(2);
+        const QcVillagerBreedingSettings &breeding = m_content->villagerSettings(u"qtcraft:villager"_s)->breeding;
+        QVERIFY(breeding.foods.value(u"qtcraft:bread"_s) > 0);
+        const auto drop = [this](const char *name, int count, const QcVec3 &at) {
+            QcItemEntityManager::Drop item;
+            item.stack = {this->item(name), count, 0};
+            item.position = at;
+            item.pickupDelay = 0.0;
+            return m_server->items().spawn(item, m_server->entities().newId());
+        };
+        // Food it does not eat stays; bread at its feet is taken until it holds what it wants.
+        // Without the game rule mobGriefing nothing is picked up, like in the reference game.
+        chat(u"/gamerule mobGriefing false"_s);
+        const quint32 left = drop("qtcraft:bread", 16, villager(entity)->motion.position);
+        ticks(2 * QcServerVillagers::foodTicks);
+        QCOMPARE(villager(entity)->villager->produce, 0);
+        QVERIFY(m_server->items().take(left, 16));
+        chat(u"/gamerule mobGriefing true"_s);
+
+        const quint32 stone = drop("qtcraft:cobblestone", 1, villager(entity)->motion.position);
+        const quint32 bread = drop("qtcraft:bread", 16, villager(entity)->motion.position);
+        QVERIFY(stone != 0 && bread != 0);
+        QVERIFY(tickUntil([&] { return villager(entity)->villager->produce > 0; }, 100));
+        const int wants = breeding.shareAbove + breeding.food;
+        const int taken = (wants + breeding.foods.value(u"qtcraft:bread"_s) - 1) / breeding.foods.value(u"qtcraft:bread"_s);
+        QCOMPARE(villager(entity)->villager->produce, taken * breeding.foods.value(u"qtcraft:bread"_s));
+        const auto countOf = [this](quint32 id) {
+            const QList<QcItemEntity> &items = m_server->items().items();
+            const auto it = std::ranges::find(items, id, &QcItemEntity::id);
+            return it == items.end() ? 0 : it->stack.count;
+        };
+        QCOMPARE(countOf(bread), 16 - taken);
+        QCOMPARE(countOf(stone), 1);
+        ticks(40);
+        QCOMPARE(countOf(bread), 16 - taken);
     }
 
     void villagersAreSavedWithTheirHomeAndWork()

@@ -47,14 +47,57 @@ QcVillage *QcVillages::find(qint64 id)
 
 const QcVillage *QcVillages::at(QcBlockPos pos) const
 {
+    // Areas of generated villages may overlap by their reach: the spot belongs to the village whose
+    // box is nearest (horizontally), the lower id on a tie, so every spot has exactly one village.
+    const QcVillage *best = nullptr;
+    int bestDistance = 0;
     const QList<qint64> ids = m_byChunk.value(pos.chunk());
     for (const qint64 id : ids) {
         const QcVillage *village = find(id);
-        if (village && village->contains(pos)) {
-            return village;
+        if (!village || !village->contains(pos)) {
+            continue;
+        }
+        const int distance = boxDistance(*village, pos);
+        if (!best || distance < bestDistance || (distance == bestDistance && village->id < best->id)) {
+            best = village;
+            bestDistance = distance;
         }
     }
-    return nullptr;
+    return best;
+}
+
+int QcVillages::boxDistance(const QcVillage &village, QcBlockPos pos)
+{
+    const int dx = std::max({village.minX - pos.x, pos.x - village.maxX, 0});
+    const int dz = std::max({village.minZ - pos.z, pos.z - village.maxZ, 0});
+    return std::max(dx, dz);
+}
+
+bool QcVillages::clashes(Box box, qint64 except) const
+{
+    // The box with its reach against every other area: the chunks the box reaches into with twice
+    // the reach hold every village whose area it would meet.
+    const int around = 2 * QcVillage::reach;
+    const QcChunkPos low = QcBlockPos{box.minX - around, 0, box.minZ - around}.chunk();
+    const QcChunkPos high = QcBlockPos{box.maxX + around, 0, box.maxZ + around}.chunk();
+    for (int cz = low.z; cz <= high.z; ++cz) {
+        for (int cx = low.x; cx <= high.x; ++cx) {
+            if (meets(m_byChunk.value({cx, cz}), box, except)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool QcVillages::meets(const QList<qint64> &ids, Box box, qint64 except) const
+{
+    const int around = 2 * QcVillage::reach;
+    return std::ranges::any_of(ids, [&](qint64 id) {
+        const QcVillage *other = id != except ? find(id) : nullptr;
+        return other && box.minX - around <= other->maxX && box.maxX + around >= other->minX && box.minZ - around <= other->maxZ
+               && box.maxZ + around >= other->minZ;
+    });
 }
 
 QcVillage *QcVillages::villageAt(QcBlockPos pos)
@@ -123,6 +166,14 @@ void QcVillages::restore(const QList<QcVillage> &villages)
 
 void QcVillages::add(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan)
 {
+    index(village);
+    m_villages.insert(village.id, village);
+    ++m_changes;
+    holdLoaded(village, plan);
+}
+
+void QcVillages::index(const QcVillage &village)
+{
     const QcChunkPos low = QcBlockPos{village.minX - QcVillage::reach, 0, village.minZ - QcVillage::reach}.chunk();
     const QcChunkPos high = QcBlockPos{village.maxX + QcVillage::reach, 0, village.maxZ + QcVillage::reach}.chunk();
     for (int cz = low.z; cz <= high.z; ++cz) {
@@ -130,9 +181,20 @@ void QcVillages::add(const QcVillage &village, const std::shared_ptr<const QcVil
             m_byChunk[{cx, cz}].append(village.id);
         }
     }
-    m_villages.insert(village.id, village);
-    ++m_changes;
-    holdLoaded(village, plan);
+}
+
+void QcVillages::unindex(const QcVillage &village)
+{
+    const QcChunkPos low = QcBlockPos{village.minX - QcVillage::reach, 0, village.minZ - QcVillage::reach}.chunk();
+    const QcChunkPos high = QcBlockPos{village.maxX + QcVillage::reach, 0, village.maxZ + QcVillage::reach}.chunk();
+    for (int cz = low.z; cz <= high.z; ++cz) {
+        for (int cx = low.x; cx <= high.x; ++cx) {
+            const auto it = m_byChunk.find({cx, cz});
+            if (it != m_byChunk.end() && it->removeAll(village.id) > 0 && it->isEmpty()) {
+                m_byChunk.erase(it);
+            }
+        }
+    }
 }
 
 void QcVillages::holdLoaded(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan)
@@ -191,12 +253,18 @@ QcVillage QcVillages::fromPlan(const QcVillagePlan &plan) const
     return village;
 }
 
-void QcVillages::noteChunk(const QcChunk &chunk)
+std::shared_ptr<const QcVillagePlan> QcVillages::learn(QcChunkPos pos)
 {
-    const std::shared_ptr<const QcVillagePlan> plan = m_generator.villageFor(chunk.pos());
-    if (plan && plan->overlaps(chunk.pos(), 0) && !m_villages.contains(plan->id) && m_villages.size() < m_limits.villages) {
+    const std::shared_ptr<const QcVillagePlan> plan = m_generator.villageFor(pos);
+    if (plan && plan->overlaps(pos, 0) && !m_villages.contains(plan->id) && m_villages.size() < m_limits.villages) {
         add(fromPlan(*plan), plan);
     }
+    return plan;
+}
+
+void QcVillages::noteChunk(const QcChunk &chunk)
+{
+    const std::shared_ptr<const QcVillagePlan> plan = learn(chunk.pos());
 
     const QList<qint64> ids = m_byChunk.value(chunk.pos());
     for (const qint64 id : ids) {
@@ -209,6 +277,10 @@ void QcVillages::noteChunk(const QcChunk &chunk)
 
 void QcVillages::hold(const QcVillage &village, QcChunkPos pos, const std::shared_ptr<const QcVillagePlan> &regionPlan)
 {
+    // A settlement has no plan to hold.
+    if (village.settlement()) {
+        return;
+    }
     Held &held = m_held[village.id];
     if (!held.plan) {
         held.plan = regionPlan && regionPlan->id == village.id ? regionPlan : m_generator.villageFor(village.centre.chunk());
@@ -232,8 +304,13 @@ std::shared_ptr<const QcVillagePlan> QcVillages::planOf(qint64 id) const
     if (const auto it = m_held.constFind(id); it != m_held.cend() && it->plan) {
         return it->plan;
     }
+    // A settlement has no plan; a generated village's plan comes from the region of its centre.
     const QcVillage *village = find(id);
-    return village ? m_generator.villageFor(village->centre.chunk()) : nullptr;
+    if (!village || village->settlement()) {
+        return nullptr;
+    }
+    const std::shared_ptr<const QcVillagePlan> plan = m_generator.villageFor(village->centre.chunk());
+    return plan && plan->id == id ? plan : nullptr;
 }
 
 void QcVillages::rescan(QcVillage &village, const QcChunk &chunk)
@@ -263,12 +340,25 @@ void QcVillages::scan(QcVillage &village, const QcChunk &chunk)
         const int lz = column / QcWorld::chunkSize;
         for (int y = lowY; y <= highY; ++y) {
             const QcBlockId block = chunk.block(lx, y, lz);
-            const QcBlockPos at{pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz};
-            if (m_blocks.matters(block) && village.contains(at)) {
-                addSpot(village, at, block);
+            const QcBlockPos cell{pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz};
+            // A spot in the area of another village too is that one's if its box is nearer (at()).
+            if (m_blocks.matters(block) && village.contains(cell) && at(cell) == &village) {
+                addSpot(village, cell, block);
             }
         }
     }
+}
+
+bool QcVillages::listed(const QcVillage &village, QcBlockPos pos, QcBlockId block) const
+{
+    if (!m_blocks.matters(block)) {
+        return false;
+    }
+    if (m_blocks.isBedHead(block)) {
+        return std::ranges::any_of(village.beds, [pos](const QcVillage::Spot &spot) { return spot.at == pos; });
+    }
+    const QString kind = m_blocks.workstationKind(block);
+    return std::ranges::any_of(village.workstations, [pos, &kind](const QcVillage::Spot &spot) { return spot.at == pos && spot.kind == kind; });
 }
 
 void QcVillages::addSpot(QcVillage &village, QcBlockPos pos, QcBlockId block)
@@ -282,13 +372,33 @@ void QcVillages::addSpot(QcVillage &village, QcBlockPos pos, QcBlockId block)
     }
 }
 
-void QcVillages::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
+void QcVillages::notePointOfInterest(QcBlockPos pos, QcBlockId block)
 {
-    if ((!m_blocks.matters(before) && !m_blocks.matters(after)) || m_byChunk.isEmpty()) {
+    if (!m_blocks.matters(block)) {
         return;
     }
+    // The generated villages it may join become known first, whichever of their chunks entered.
+    const int chunks = (joinDistance + QcVillage::reach + QcWorld::chunkSize - 1) / QcWorld::chunkSize;
+    for (int dz = -chunks; dz <= chunks; ++dz) {
+        for (int dx = -chunks; dx <= chunks; ++dx) {
+            learn({pos.chunk().x + dx, pos.chunk().z + dz});
+        }
+    }
+    noteBlock(pos, qcAirBlockId, block);
+}
+
+void QcVillages::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
+{
+    if (!m_blocks.matters(before) && !m_blocks.matters(after)) {
+        return;
+    }
+    // A bed or workstation away from every village area joins a village near it or founds a
+    // settlement (decision E-490).
     QcVillage *village = villageAt(pos);
-    if (!village) {
+    if (!village && m_blocks.matters(after)) {
+        village = homeFor(pos);
+    }
+    if (!village || listed(*village, pos, after)) {
         return;
     }
 
@@ -306,4 +416,74 @@ void QcVillages::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
     if (removed > 0 || m_blocks.matters(after)) {
         ++m_changes;
     }
+    dropIfEmpty(village->id);
+}
+
+QcVillage *QcVillages::homeFor(QcBlockPos pos)
+{
+    // The village whose box lies nearest (horizontally, at most joinDistance) and may still grow
+    // to hold `pos`; its area reaches at most reach + joinDistance blocks into the chunks around.
+    // A village whose grown area would meet another's is passed over: every spot belongs to exactly
+    // one village.
+    QcVillage *best = nullptr;
+    int bestDistance = joinDistance + 1;
+    const QList<qint64> ids = near(pos.chunk(), (joinDistance - QcVillage::reach + QcWorld::chunkSize - 1) / QcWorld::chunkSize);
+    for (const qint64 id : ids) {
+        QcVillage *village = find(id);
+        const Box grown{std::min(village->minX, pos.x), std::min(village->minZ, pos.z), std::max(village->maxX, pos.x), std::max(village->maxZ, pos.z)};
+        const int distance = boxDistance(*village, pos);
+        if (distance < bestDistance && grown.maxX - grown.minX < m_limits.extent && grown.maxZ - grown.minZ < m_limits.extent
+            && !clashes(grown, id)) {
+            best = village;
+            bestDistance = distance;
+        }
+    }
+    if (best) {
+        grow(*best, pos);
+        return best;
+    }
+    // A settlement neither beyond the limit nor where its area would meet another's.
+    if (m_villages.size() >= m_limits.villages || clashes({pos.x, pos.z, pos.x, pos.z}, 0)) {
+        return nullptr;
+    }
+
+    // A settlement: its first spot is its centre and its box; it takes the style of its first
+    // villager (QcVillagerHomes::moveIn).
+    QcVillage settlement;
+    settlement.id = QcVillage::settlementId(pos);
+    if (QcVillage *same = find(settlement.id)) {
+        return same;
+    }
+    settlement.centre = pos;
+    settlement.minX = settlement.maxX = pos.x;
+    settlement.minY = settlement.maxY = pos.y;
+    settlement.minZ = settlement.maxZ = pos.z;
+    add(settlement);
+    return find(settlement.id);
+}
+
+void QcVillages::grow(QcVillage &village, QcBlockPos pos)
+{
+    unindex(village);
+    village.minX = std::min(village.minX, pos.x);
+    village.minY = std::min(village.minY, pos.y);
+    village.minZ = std::min(village.minZ, pos.z);
+    village.maxX = std::max(village.maxX, pos.x);
+    village.maxY = std::max(village.maxY, pos.y);
+    village.maxZ = std::max(village.maxZ, pos.z);
+    index(village);
+    holdLoaded(village, nullptr);
+    ++m_changes;
+}
+
+void QcVillages::dropIfEmpty(qint64 id)
+{
+    const QcVillage *village = find(id);
+    if (!village || !village->settlement() || !village->beds.isEmpty() || !village->workstations.isEmpty() || village->population > 0) {
+        return;
+    }
+    unindex(*village);
+    m_held.remove(id);
+    m_villages.remove(id);
+    ++m_changes;
 }

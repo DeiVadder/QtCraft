@@ -132,10 +132,31 @@ QStringList readWorkstationBlocks(const QString &packNamespace, QcJsonFieldReade
     return blocks;
 }
 
-QcVillagerBreedingSettings readBreeding(QcJsonFieldReader &reader)
+// "foods": {"bread": 3, …}, item names with the produce they are worth (1 to 64).
+QHash<QString, int> readFoods(const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    QHash<QString, int> foods;
+    reader.nestedObject(u"foods"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
+        if (object.size() > QcVillagerBreedingSettings::maxFoods) {
+            nested.fail(u"lists at most %1 foods"_s.arg(QcVillagerBreedingSettings::maxFoods));
+            return;
+        }
+        for (auto it = object.begin(); it != object.end(); ++it) {
+            const QString name = QcContentNames::qualify(it.key(), packNamespace);
+            if (name.isEmpty()) {
+                nested.fail(u"'%1' is no item name"_s.arg(it.key()));
+                continue;
+            }
+            foods.insert(name, nested.integer(it.key(), 1, 1, 64));
+        }
+    });
+    return foods;
+}
+
+QcVillagerBreedingSettings readBreeding(const QString &packNamespace, QcJsonFieldReader &reader)
 {
     QcVillagerBreedingSettings breeding;
-    reader.nestedObject(u"breeding"_s, [&breeding](const QJsonObject &, QcJsonFieldReader &nested) {
+    reader.nestedObject(u"breeding"_s, [&breeding, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         breeding.food = nested.integer(u"food"_s, breeding.food, 0, 64);
         breeding.growUpSeconds = nested.number(u"growUpSeconds"_s, breeding.growUpSeconds, 1.0, 86400.0);
         breeding.cooldownSeconds = nested.number(u"cooldownSeconds"_s, breeding.cooldownSeconds, 0.0, 86400.0);
@@ -143,6 +164,7 @@ QcVillagerBreedingSettings readBreeding(QcJsonFieldReader &reader)
         breeding.shareAbove = nested.integer(u"shareAbove"_s, breeding.shareAbove, 0, 1024);
         breeding.shareDistance = nested.number(u"shareDistance"_s, breeding.shareDistance, 0.0, 16.0);
         breeding.youngSpeed = nested.number(u"youngSpeed"_s, breeding.youngSpeed, 0.5, 3.0);
+        breeding.foods = readFoods(packNamespace, nested);
     });
     return breeding;
 }
@@ -189,7 +211,7 @@ QcResult<QcVillagerSettings> parseVillagerSettings(const QJsonObject &json, cons
     settings.fleeDistance = reader.number(u"fleeDistance"_s, settings.fleeDistance, 0.0, 32.0);
     settings.shelterFromRain = reader.boolean(u"shelterFromRain"_s, settings.shelterFromRain);
     settings.trading = QcTradeParser::readTradingSettings(reader);
-    settings.breeding = readBreeding(reader);
+    settings.breeding = readBreeding(packNamespace, reader);
     if (reader.ok() && (settings.unemployed.isEmpty() || !settings.look.isSet())) {
         reader.fail(u"needs 'unemployed' and a 'look'"_s);
     }

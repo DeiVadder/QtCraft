@@ -6,6 +6,7 @@
 #include "server/core/QcServerState.h"
 
 #include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -14,6 +15,17 @@ QcServerVillagers::QcServerVillagers(QcServerState &state, QcServerSounds &sound
     , m_sounds(sounds)
     , m_blocks(blocks)
 {
+    const QcContentRegistry &content = m_state.content();
+    for (int type = 0; type < content.mobs().size(); ++type) {
+        const QcVillagerSettings &species = content.villagerSettingsOf(type);
+        QHash<QcItemId, int> &worth = m_worth[type];
+        for (auto it = species.breeding.foods.cbegin(); it != species.breeding.foods.cend(); ++it) {
+            if (const std::optional<QcItemId> item = content.itemId(it.key()); item && it.value() > 0) {
+                worth.insert(*item, it.value());
+                m_foods.insert(*item);
+            }
+        }
+    }
 }
 
 void QcServerVillagers::door(const QcVillagerBehaviour::Action &action)
@@ -52,6 +64,11 @@ void QcServerVillagers::apply()
         }
     }
 
+    if (++m_foodTick >= foodTicks) {
+        m_foodTick = 0;
+        pickUpFood();
+    }
+
     for (QcCreature &mob : creatures.editableMobs()) {
         if (mob.isVillager() && mob.villager->lookChanged) {
             mob.villager->lookChanged = false;
@@ -76,6 +93,10 @@ bool QcServerVillagers::setDoor(QcBlockPos pos, bool open)
 
 void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
 {
+    // Without the game rule mobGriefing villagers leave crops alone, like in the reference game.
+    if (!m_state.info().mobGriefing) {
+        return;
+    }
     const QcContentRegistry &content = m_state.content();
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     const QcBlockDefinition *crop = block ? &content.block(*block) : nullptr;
@@ -89,5 +110,54 @@ void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
     if (QcCreature *farmer = m_state.entities().creatures().find(villager)) {
         farmer->villager->produce = std::min(farmer->villager->produce + 1, QcVillagerRecord::maxProduce);
         farmer->attackedThisTick = true;
+    }
+}
+
+void QcServerVillagers::pickUpFood()
+{
+    // Without the game rule mobGriefing villagers pick nothing up, like in the reference game.
+    if (!m_state.info().mobGriefing) {
+        return;
+    }
+
+    // The items lying in the world that some villager eats, gathered first: mostly there are none.
+    QcItemEntityManager &items = m_state.entities().items();
+    struct Food
+    {
+        quint32 id = 0;
+        QcVec3 at;
+        QcItemId item = 0;
+        int count = 0;
+    };
+    QList<Food> lying;
+    for (const QcItemEntity &item : items.items()) {
+        if (!item.surplus && item.pickupDelay <= 0.0 && !item.stack.isEmpty() && m_foods.contains(item.stack.item)) {
+            lying.append({item.id, item.motion.position, item.stack.item, item.stack.count});
+        }
+    }
+    if (lying.isEmpty()) {
+        return;
+    }
+
+    for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
+        if (mob.dormant || !mob.isVillager() || mob.isYoung() || mob.pose == QcPose::Lying) {
+            continue;
+        }
+        const QcVillagerBreedingSettings &breeding = m_state.content().villagerSettingsOf(mob.type).breeding;
+        const int wants = breeding.shareAbove + breeding.food;
+        const QHash<QcItemId, int> worths = m_worth.value(mob.type);
+        for (Food &food : lying) {
+            const int worth = worths.value(food.item);
+            const QcVec3 offset = food.at - mob.motion.position;
+            const bool near = std::hypot(offset.x, offset.z) <= foodReach && std::abs(offset.y) <= 1.0;
+            if (food.count <= 0 || worth <= 0 || !near || mob.villager->produce >= wants) {
+                continue;
+            }
+            const int taken = std::min(food.count, (wants - mob.villager->produce + worth - 1) / worth);
+            if (items.take(food.id, taken)) {
+                food.count -= taken;
+                mob.villager->produce = std::min(mob.villager->produce + taken * worth, QcVillagerRecord::maxProduce);
+            }
+        }
     }
 }
