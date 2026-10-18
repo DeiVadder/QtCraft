@@ -7,6 +7,7 @@
 #include "common/gameplay/QcGameMode.h"
 #include "common/world/QcChunk.h"
 #include "server/chunks/QcChunkLoaders.h"
+#include "server/entities/QcHurtWindow.h"
 #include "server/storage/QcPlayerStorage.h"
 #include "server/storage/QcRegionFile.h"
 #include "server/villages/QcVillage.h"
@@ -30,12 +31,13 @@
 // (stage 37.2c) also the state of their offers and their last restock (decision E-414), format 13
 // (package 37.R2) saves every entity as a header and versioned components and gives saved creatures
 // a persistent id (decision E-420): new fields no longer need a new format; format 14 adds the list
-// of projectiles to each chunk's entities (decision E-425). Worlds of older
+// of projectiles to each chunk's entities (decision E-425), format 15 (package 37.R2b) saves the block
+// entities of a chunk as versioned tables of framed entries like the entities (decision E-440). Worlds of older
 // development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 14;
-    static constexpr int oldestFormatVersion = 14;
+    static constexpr int formatVersion = 15;
+    static constexpr int oldestFormatVersion = 15;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -86,6 +88,10 @@ struct QcWorldInfo
     // as in the reference (0: never).
     int maxEntityCramming = 24;
     static constexpr int maxEntityCrammingLimit = 4096;
+    // Game rules (decision E-429): the game ticks a player or a creature stays invulnerable after a
+    // hurt, 0 to QcHurtWindow::maxTicks (0: every hit counts).
+    int playerInvulnerabilityTicks = QcHurtWindow::defaultTicks;
+    int mobInvulnerabilityTicks = QcHurtWindow::defaultTicks;
     // The persistent id the next saved creature gets (QcMobManager::nextUid, decision E-420); saved
     // with the chunks in one journal, so it lies beyond every id saved in them.
     quint64 nextCreatureId = 1;

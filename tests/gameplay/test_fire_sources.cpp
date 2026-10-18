@@ -109,7 +109,7 @@ private slots:
         strike(m_feet.offset(2, -1, 0), QcBlockFace::Up);
         QVERIFY(isFire(m_feet.offset(2, 0, 0)));
         QCOMPARE(heldWear(), 1);
-        QCOMPARE(m_server->fire().numbers().lit, 1u);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 1u);
 
         // The side of a stone block: the cell west of it, on the grass.
         set(m_feet.offset(-1, 0, 2), "qtcraft:stone");
@@ -128,7 +128,7 @@ private slots:
         strike(m_feet.offset(2, 2, 2), QcBlockFace::West);
         QVERIFY(isAir(m_feet.offset(1, 2, 2)));
         QCOMPARE(heldWear(), 3);
-        QCOMPARE(m_server->fire().numbers().lit, 3u);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 3u);
 
         // Fire is a spark of the queue, never an orphan waiting for adoption.
         QCOMPARE(m_server->fires().unplannedCount(), 0);
@@ -222,7 +222,7 @@ private slots:
         for (const auto &[round, cell] : lit) {
             QCOMPARE(cell, lava.offset(0, 1, 0));
         }
-        QCOMPARE(m_server->fire().numbers().lit, quint64(lit.size()));
+        QCOMPARE(m_server->systems().fire.numbers().lit, quint64(lit.size()));
         QCOMPARE(m_server->world().blockAt(lava.offset(1, 1, 0)), id("qtcraft:oak_planks"));
         QCOMPARE(m_server->world().blockAt(lava.offset(-1, 0, 0)), id("qtcraft:oak_log"));
     }
@@ -242,7 +242,7 @@ private slots:
         // The planks two cells east of the air above the lava: no cell right next to the lava
         // touches them.
         stirLava(lavaBesidePlanks(2), 200);
-        QCOMPARE(m_server->fire().numbers().lit, 0u);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 0u);
     }
 
     // Without fire spread (the game rule or a fireSpreadRadius of 0) lava lights nothing.
@@ -258,9 +258,9 @@ private slots:
                 chat(u"/gamerule fireSpread false"_s);
                 ticks(1);
             }
-            QVERIFY(!m_server->fire().spreads());
+            QVERIFY(!m_server->systems().fire.spreads());
             QVERIFY(stirLava(lava, 400).isEmpty());
-            QCOMPARE(m_server->fire().numbers().lit, 0u);
+            QCOMPARE(m_server->systems().fire.numbers().lit, 0u);
         }
     }
 
@@ -380,7 +380,7 @@ private slots:
         config.limits.fires = 1;
         join(config);
         holdFlintAndSteel();
-        QVERIFY(m_server->fire().ignite(m_feet.offset(2, 0, 0)));
+        QVERIFY(m_server->systems().fire.ignite(m_feet.offset(2, 0, 0)));
         QVERIFY(!m_server->fires().hasRoom(m_feet.chunk()));
 
         const QcBlockPos magma = m_feet.offset(-2, -1, 0);
@@ -391,8 +391,8 @@ private slots:
         QVERIFY(m_server->fires().entry(eternal)->eternal);
         QCOMPARE(m_server->fires().size(), 2);
         QCOMPARE(m_server->fires().counted(), 1);
-        QCOMPARE(m_server->fire().numbers().refused, 0u);
-        QVERIFY(!m_server->fire().ignite(m_feet.offset(0, 0, 2)));
+        QCOMPARE(m_server->systems().fire.numbers().refused, 0u);
+        QVERIFY(!m_server->systems().fire.ignite(m_feet.offset(0, 0, 2)));
 
         // Its ground turns to stone while the world is full: the fire goes out, not adopted anew.
         set(magma, "qtcraft:stone");
@@ -462,7 +462,7 @@ private slots:
         chat(u"/summon minecart"_s);
         ticks(1);
         QCOMPARE(m_server->carts().all().size(), 1);
-        QCOMPARE(m_server->carts().all().first().motion.position, *m_server->minecarts().restingPlace(rail));
+        QCOMPARE(m_server->carts().all().first().motion.position, *m_server->systems().minecarts.restingPlace(rail));
 
         chat(u"/summon chest_minecart 2"_s);
         chat(u"/summon qtcraft:hopper_minecart"_s);
@@ -482,7 +482,7 @@ private slots:
         // A hopper cart on a rail picks up an item lying in its cell.
         const QcBlockPos rail = m_feet.offset(2, 0, 2);
         set(rail, "qtcraft:rail");
-        QcMinecart *cart = m_server->minecarts().summon(u"qtcraft:hopper_minecart"_s, {rail.x + 0.5, double(rail.y), rail.z + 0.5}, 0.0f);
+        QcMinecart *cart = m_server->systems().minecarts.summon(u"qtcraft:hopper_minecart"_s, {rail.x + 0.5, double(rail.y), rail.z + 0.5}, 0.0f);
         QVERIFY(cart);
         const quint32 id = cart->id;
         QcItemEntityManager::Drop drop;
@@ -490,17 +490,17 @@ private slots:
         drop.position = {rail.x + 0.5, rail.y + 0.2, rail.z + 0.5};
         drop.pickupDelay = 0.0;
         m_server->items().spawn(drop, m_server->entities().newId());
-        for (int tick = 0; tick < 40 && m_server->minecarts().hoppers().lastTick().moved == 0; ++tick) {
+        for (int tick = 0; tick < 40 && m_server->systems().minecarts.hoppers().lastTick().moved == 0; ++tick) {
             ticks(1);
         }
-        QCOMPARE(m_server->minecarts().hoppers().lastTick().moved, 1);
-        QCOMPARE(m_server->minecarts().hoppers().lastTick().acting, 1);
+        QCOMPARE(m_server->systems().minecarts.hoppers().lastTick().moved, 1);
+        QCOMPARE(m_server->systems().minecarts.hoppers().lastTick().acting, 1);
 
         // The cart goes: the next tick reports nothing acting, as a tick over no carts would.
         QVERIFY(m_server->carts().remove(id).has_value());
         ticks(1);
-        QCOMPARE(m_server->minecarts().hoppers().lastTick().acting, 0);
-        QCOMPARE(m_server->minecarts().hoppers().lastTick().moved, 0);
+        QCOMPARE(m_server->systems().minecarts.hoppers().lastTick().acting, 0);
+        QCOMPARE(m_server->systems().minecarts.hoppers().lastTick().moved, 0);
         QVERIFY(m_server->carts().activated().isEmpty());
     }
 };

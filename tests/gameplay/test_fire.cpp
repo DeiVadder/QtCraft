@@ -149,7 +149,7 @@ private:
     qsizetype fireBlocksIn(QcBlockPos corner, int size, int height) const
     {
         const QList<QcBlockId> blocks = blocksOf(corner, size, height);
-        return std::ranges::count_if(blocks, [this](QcBlockId block) { return m_server->fire().table().of(block).fire; });
+        return std::ranges::count_if(blocks, [this](QcBlockId block) { return m_server->systems().fire.table().of(block).fire; });
     }
 
     // The fingerprint of a box after a forest fire with the world seed `seed`.
@@ -161,7 +161,7 @@ private:
         const int size = 40;
         const QcBlockPos corner = forestCorner(size);
         forest(corner, size);
-        if (!m_server->fire().ignite(sparkIn(corner, size))) {
+        if (!m_server->systems().fire.ignite(sparkIn(corner, size))) {
             return {};
         }
         burnOut(4000);
@@ -197,7 +197,7 @@ private slots:
         forest(corner, size);
         const QList<QcBlockId> before = blocksOf(corner, size, height);
         const QcBlockPos spark = sparkIn(corner, size);
-        QVERIFY(m_server->fire().ignite(spark));
+        QVERIFY(m_server->systems().fire.ignite(spark));
 
         qsizetype most = 0;
         const int taken = burnOut(4000, [&] { most = std::max(most, m_server->fires().size()); });
@@ -216,7 +216,7 @@ private slots:
         }
         QVERIFY(columns.size() <= qsizetype(2 * reach + 1) * qsizetype(2 * reach + 1));
         // The fire did burn: a fire that never spread would prove nothing.
-        const QcServerFire::Numbers &numbers = m_server->fire().numbers();
+        const QcServerFire::Numbers &numbers = m_server->systems().fire.numbers();
         QVERIFY2(numbers.burnt >= 20 && numbers.lit >= 40, qPrintable(u"burnt %1, lit %2"_s.arg(numbers.burnt).arg(numbers.lit)));
         QVERIFY(most >= 10);
         qInfo().noquote() << u"forest fire: %1 ticks, %2 lit, %3 burnt, %4 put out, at most %5 at once, %6 columns"_s.arg(taken)
@@ -234,7 +234,7 @@ private slots:
         const int size = 48;
         const QcBlockPos corner = forestCorner(size);
         forest(corner, size);
-        QVERIFY(m_server->fire().ignite(sparkIn(corner, size)));
+        QVERIFY(m_server->systems().fire.ignite(sparkIn(corner, size)));
 
         bool held = true;
         burnOut(4000, [&] {
@@ -245,7 +245,7 @@ private slots:
             }
         });
         QVERIFY(held);
-        QVERIFY(m_server->fire().numbers().refused > 0);
+        QVERIFY(m_server->systems().fire.numbers().refused > 0);
 
         // Thirty fires set straight into one chunk: eight stay, the rest go out at once.
         const QcChunkPos chunk = corner.offset(QcWorld::chunkSize, 0, QcWorld::chunkSize).chunk();
@@ -277,11 +277,11 @@ private slots:
         ticks(1);
         QCOMPARE(m_server->fires().size(), 512);
 
-        quint64 steps = m_server->fire().numbers().steps;
+        quint64 steps = m_server->systems().fire.numbers().steps;
         bool waited = false;
         bool withinBudget = true;
         const int taken = burnOut(1000, [&] {
-            const quint64 now = m_server->fire().numbers().steps;
+            const quint64 now = m_server->systems().fire.numbers().steps;
             withinBudget = withinBudget && now - steps <= 16;
             waited = waited || m_server->fires().dueCount(m_server->tickCount()) > 0;
             steps = now;
@@ -321,7 +321,7 @@ private slots:
             }
             // Sparks along the last column before the border.
             for (int z = 4; z < 12; ++z) {
-                QVERIFY(m_server->fire().ignite(corner.offset(QcWorld::chunkSize - 1, 1, z)));
+                QVERIFY(m_server->systems().fire.ignite(corner.offset(QcWorld::chunkSize - 1, 1, z)));
             }
             bool crossed = false;
             burnOut(4000, [&] {
@@ -403,12 +403,12 @@ private slots:
             forest(corner, size);
             const QList<QcBlockId> before = blocksOf(corner, size, trunkHeight + 3);
             const QcBlockPos spark = sparkIn(corner, size);
-            QVERIFY(m_server->fire().ignite(spark));
-            QVERIFY(!m_server->fire().spreads());
+            QVERIFY(m_server->systems().fire.ignite(spark));
+            QVERIFY(!m_server->systems().fire.spreads());
             const int taken = burnOut(4000);
             QVERIFY(taken <= QcFireQueue::maxAge * (QcFireRules::minStepTicks + QcFireRules::stepTicksSpread) + 2);
-            QCOMPARE(m_server->fire().numbers().lit, quint64(1));
-            QCOMPARE(m_server->fire().numbers().burnt, quint64(0));
+            QCOMPARE(m_server->systems().fire.numbers().lit, quint64(1));
+            QCOMPARE(m_server->systems().fire.numbers().burnt, quint64(0));
             QCOMPARE(changedCells(corner, size, trunkHeight + 3, before), QList<QcBlockPos>{});
             cleanup();
         }
@@ -422,7 +422,7 @@ private slots:
         set(base, "qtcraft:magma_block");
         set(base.offset(1, 1, 0), "qtcraft:oak_leaves");
         set(base.offset(1, 0, 0), "qtcraft:stone");
-        QVERIFY(m_server->fire().ignite(base.offset(0, 1, 0)));
+        QVERIFY(m_server->systems().fire.ignite(base.offset(0, 1, 0)));
         const QcBlockPos leaves = base.offset(1, 1, 0);
         for (int i = 0; i < 3000; ++i) {
             m_server->tick();
@@ -451,7 +451,7 @@ private slots:
         config.limits.fires = 1;
         join(config);
         const QcBlockPos held = m_feet.offset(3, 0, 0);
-        QVERIFY(m_server->fire().ignite(held));
+        QVERIFY(m_server->systems().fire.ignite(held));
 
         const QcBlockPos restored = m_feet.offset(-3, 0, 0);
         set(restored.offset(0, -1, 0), "qtcraft:stone");
@@ -469,7 +469,7 @@ private slots:
         m_server->tick();
         QCOMPARE(m_server->world().blockAt(restored), qcAirBlockId);
         QCOMPARE(m_server->fires().size(), 0);
-        QCOMPARE(m_server->fire().numbers().refused, 1u);
+        QCOMPARE(m_server->systems().fire.numbers().refused, 1u);
     }
 
     // Fire needs a solid block below or fuel next to it; on stone without fuel it goes out after a
@@ -478,15 +478,15 @@ private slots:
     {
         join();
         const QcBlockPos air = m_feet.offset(2, 2, 2);
-        QVERIFY(!m_server->fire().ignite(air));
+        QVERIFY(!m_server->systems().fire.ignite(air));
         const QcBlockPos onStone = m_feet.offset(-2, 0, -2);
-        QVERIFY(m_server->fire().ignite(onStone));
+        QVERIFY(m_server->systems().fire.ignite(onStone));
         const int taken = burnOut(1000);
         QVERIFY(taken <= (QcFireRules::ageWithoutFuel + 1) * (QcFireRules::minStepTicks + QcFireRules::stepTicksSpread));
         QCOMPARE(m_server->world().blockAt(onStone), qcAirBlockId);
 
         const QcBlockPos washed = m_feet.offset(2, 0, -2);
-        QVERIFY(m_server->fire().ignite(washed));
+        QVERIFY(m_server->systems().fire.ignite(washed));
         const QcBlockPos source = washed.offset(1, 0, 0);
         chat(u"/setblock %1 %2 %3 water"_s.arg(source.x).arg(source.y).arg(source.z));
         ticks(40);
@@ -519,7 +519,7 @@ private slots:
         int sparks = 0;
         for (int x = sparkSpacing / 2; x < size; x += sparkSpacing) {
             for (int z = sparkSpacing / 2; z < size; z += sparkSpacing) {
-                sparks += m_server->fire().ignite(sparkNear(corner, x, z)) ? 1 : 0;
+                sparks += m_server->systems().fire.ignite(sparkNear(corner, x, z)) ? 1 : 0;
             }
         }
         QVERIFY(sparks > 0);
@@ -542,7 +542,7 @@ private slots:
         QCOMPARE(m_server->fires().size(), 0);
         const auto mean = [](const QList<double> &values) { return std::accumulate(values.begin(), values.end(), 0.0) / double(values.size()); };
         const auto maximum = [](const QList<double> &values) { return *std::ranges::max_element(values); };
-        const QcServerFire::Numbers &numbers = m_server->fire().numbers();
+        const QcServerFire::Numbers &numbers = m_server->systems().fire.numbers();
         qInfo().noquote() << u"FIRE size %1 sparks %2 ticks %3 wall %4 ms: fire phase mean %5 ms max %6 ms, tick mean %7 ms max %8 ms; "
                              u"%9 steps, %10 lit, %11 burnt, at most %12 at once"_s
                                  .arg(size).arg(sparks).arg(firePhase.size()).arg(wall.elapsed())

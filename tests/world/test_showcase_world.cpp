@@ -158,8 +158,8 @@ private slots:
             server->tick();
             QCOMPARE(server->worldTime(), 150.0);
             // A clear sky that stays (decision E-395).
-            QCOMPARE(server->weather().state().kind, QcWeatherKind::Clear);
-            QCOMPARE(server->weather().state().rain, 0.0f);
+            QCOMPARE(server->systems().weather.state().kind, QcWeatherKind::Clear);
+            QCOMPARE(server->systems().weather.state().rain, 0.0f);
             // Besides them, residents of the village rows in the chunks loaded so far (decision E-411).
             residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.isVillager() && mob.villager->village != 0; });
             QCOMPARE(server->mobs().mobs().size() - residents, mobs);
@@ -282,10 +282,11 @@ private slots:
     {
         // world.json of format 1 (before the showcase), 2 (before stage 31.1), 3 (before stage
         // 31.2), 9 (before the villages of stage 37.2), 10 (before the villagers of stage 37.2b), 11
-        // (before the trading of stage 37.2c) and 12 (before the entity components of package 37.R2):
-        // a world of an older development version is refused, not converted (decision E-356), and
-        // nothing is written.
-        for (const int version : {1, 2, 3, 9, 10, 11, 12}) {
+        // (before the trading of stage 37.2c), 12 (before the entity components of package 37.R2), 13
+        // (before the projectiles of package 52.1a) and 14 (before the block entity tables of package
+        // 37.R2b): a world of an older development version is refused, not converted (decision
+        // E-356), and nothing is written.
+        for (const int version : {1, 2, 3, 9, 10, 11, 12, 13, 14}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};

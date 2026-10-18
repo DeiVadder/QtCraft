@@ -51,6 +51,7 @@
                 "block:qtcraft:blue_wool",
                 "block:qtcraft:blue_concrete",
                 "block:qtcraft:blue_concrete_powder",
+                "block:qtcraft:blue_ice",
                 "block:qtcraft:blue_stained_glass",
                 "block:qtcraft:brown_stained_glass_pane",
                 "block:qtcraft:brown_terracotta",
@@ -6676,6 +6677,203 @@
             ],
             "text": "Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.",
             "title": "Blaues Betonpulver"
+        },
+        "block:qtcraft:blue_ice": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Blue ice",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:blue_ice"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "2,8"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "4,2 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,35 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blaues Eis"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Rutschig: Tempo, das je Tick darauf bleibt",
+                    "links": [
+                    ],
+                    "value": "90 %"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Glas"
+                }
+            ],
+            "icon": "qtcraft:blue_ice",
+            "id": "block:qtcraft:blue_ice",
+            "name": "qtcraft:blue_ice",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packeis"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:blue_ice",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:blue_ice",
+                                "note": "",
+                                "target": "block:qtcraft:blue_ice",
+                                "text": "Blaues Eis"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Neun Packeis, zum rutschigsten Block gepresst: Körper, Items und Loren rutschen darauf noch weiter als auf Eis.",
+            "title": "Blaues Eis"
         },
         "block:qtcraft:blue_orchid": {
             "category": "blocks",
@@ -20789,6 +20987,12 @@
                     "value": "2 von 15"
                 },
                 {
+                    "label": "Rutschig: Tempo, das je Tick darauf bleibt",
+                    "links": [
+                    ],
+                    "value": "89,18 %"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -20874,7 +21078,7 @@
                     "title": "Kommt vor in"
                 }
             ],
-            "text": "Bedeckt das Wasser kalter Biome.",
+            "text": "Bedeckt das Wasser kalter Biome. Rutschig: Wer darauf läuft, rutscht weiter und bleibt erst langsam stehen.",
             "title": "Eis"
         },
         "block:qtcraft:iron_bars": {
@@ -33455,6 +33659,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Rutschig: Tempo, das je Tick darauf bleibt",
+                    "links": [
+                    ],
+                    "value": "89,18 %"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -33553,6 +33763,20 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blaues Eis"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:golden_pickaxe",
                             "note": "Stufe 1",
                             "target": "item:qtcraft:golden_pickaxe",
@@ -33589,7 +33813,7 @@
                     "title": "Schneller mit"
                 }
             ],
-            "text": "So fest gepresstes Eis, dass es weder Licht durchlässt noch schmilzt.",
+            "text": "So fest gepresstes Eis, dass es weder Licht durchlässt noch schmilzt. Rutschig wie Eis.",
             "title": "Packeis"
         },
         "block:qtcraft:packed_mud": {
@@ -52155,7 +52379,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -52845,7 +53069,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Du hast 20 Lebenspunkte, als Herzen angezeigt. Stürze tiefer als 3 m kosten einen Punkt pro weiterem Meter; Wasser und Leitern fangen dich auf. Feindliche Wesen, Lava und Hunger verletzen ebenfalls. Nach einem Treffer bist du 0,5 s lang unverwundbar.",
+                    "text": "Du hast 20 Lebenspunkte, als Herzen angezeigt. Stürze tiefer als 3 m kosten einen Punkt pro weiterem Meter; Wasser und Leitern fangen dich auf. Feindliche Wesen, Lava und Hunger verletzen ebenfalls. Nach einem Treffer bist du 0,5 s lang unverwundbar, außer gegen einen späteren Treffer, der stärker ist als der bisher stärkste: Er macht nur den Unterschied als Schaden. Wesen sind genauso geschützt.",
                     "title": "Gesundheit"
                 },
                 {
@@ -53101,7 +53325,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises bleibt sie stehen. Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter rutscht aus. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.",
+                    "text": "Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises hält sie vor einem Block und fliegt sonst weiter (siehe unten). Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter bleibt nach kurzem Rutschen stehen oder gleitet auf Eis weit. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.",
                     "title": "Loren"
                 },
                 {
@@ -53111,6 +53335,14 @@
                     ],
                     "text": "Benutze eine Lore, um einzusteigen, und schleiche, um auszusteigen; du landest neben ihr. Während der Fahrt schiebt die Vorwärtstaste die Lore in Blickrichtung an. Der Server bewegt Lore und Fahrer, so sehen alle dieselbe Fahrt.",
                     "title": "Fahren"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Lore, die das Ende eines Gleises vor einem Block erreicht, hält dort. An einem offenen Ende behält sie ihr Tempo und fliegt weiter: Sie fällt, und von der Spitze einer Rampe springt sie. Wo sie landet, bleibt sie nach kurzem Rutschen stehen, gleitet auf Eis weit oder rollt auf einer Schiene mit ihrem Tempo entlang des Gleises weiter (quer zum Gleis gelandet, steht sie, bis die nächste Lore sie anstößt). Ein Fahrer fliegt mit und nimmt keinen Fallschaden.",
+                    "title": "Gleisenden und Sprünge"
                 },
                 {
                     "links": [
@@ -53169,6 +53401,12 @@
                             "text": "Lore"
                         },
                         {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blaues Eis"
+                        },
+                        {
                             "icon": "qtcraft:chest_minecart",
                             "note": "",
                             "target": "item:qtcraft:chest_minecart",
@@ -53213,7 +53451,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
+                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
                     "title": "Spielregeln"
                 }
             ],
@@ -54064,6 +54302,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eis, Packeis und blaues Eis sind rutschig. Darauf wirst du nur langsam schneller und rutschst weiter, wenn du loslässt, aus dem Gehen auf Eis etwa zwei Blöcke, auf blauem Eis etwas weiter; dein Höchsttempo bleibt gleich. Wesen und liegende Items rutschen auch, und Wesen gehen um Eis herum, wenn der Umweg kurz ist. Eine Lore ohne Schiene gleitet auf Eis weit, auf anderem Boden bleibt sie nach kurzem Rutschen stehen.",
+                    "title": "Rutschiger Boden"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -54087,6 +54333,18 @@
                             "note": "",
                             "target": "block:qtcraft:obsidian",
                             "text": "Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "",
+                            "target": "block:qtcraft:ice",
+                            "text": "Eis"
+                        },
+                        {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blaues Eis"
                         }
                     ],
                     "recipes": [

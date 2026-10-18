@@ -26,7 +26,7 @@ set(qc_concurrency_tests
     test_interpolation test_client_server test_scenarios test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
-    test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_creative_client test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
@@ -62,6 +62,7 @@ set_tests_properties(test_village_swamp test_village_fields test_village_layouts
 set_tests_properties(test_mobs test_weather_effects test_block_light_engine PROPERTIES COST 80)
 set_tests_properties(test_world_details PROPERTIES COST 70)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
+set_tests_properties(test_signal_showcase PROPERTIES COST 60)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency
     test_creative_client test_multiplayer_bots PROPERTIES COST 30)
 
@@ -69,7 +70,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # CPU time is under a quarter of their wall time, and TSan slows them 1.2-3.5 x instead of 7-10 x.
 # The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
 # with a smaller factor. A new test that mostly waits belongs here.
-set_property(TEST test_interpolation test_latency test_creative_client test_void_client
+set_property(TEST test_interpolation test_latency test_creative_client test_void_client test_ice_client
     test_survival_scenario test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots APPEND PROPERTY LABELS realtime)
 

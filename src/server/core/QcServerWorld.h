@@ -70,6 +70,15 @@ public:
     // every block set here and every chunk that arrives, leaves or is generated again.
     QcFireQueue &fires() { return m_fires; }
     const QcFireQueue &fires() const { return m_fires; }
+    // What the saved block entities of the loaded chunks hold that this version does not read
+    // (decision E-440): unknown tables and tails of newer versions, by chunk, written back when the
+    // chunk is saved or leaves the world (QcChunkLoading) and forgotten with its block entities. The
+    // tail of an entry goes when a block set here ends the entry, so a block built anew at its place
+    // starts without it.
+    const QHash<QcChunkPos, QcBlockEntityKept> &blockEntityParts() const { return m_blockEntityParts; }
+    // Holds `parts` for a loaded chunk (nothing when they are empty).
+    void keepBlockEntityParts(QcChunkPos pos, QcBlockEntityKept parts);
+    QcBlockEntityKept takeBlockEntityParts(QcChunkPos pos) { return m_blockEntityParts.take(pos); }
     // Circuits across chunk borders (decision E-375).
     const QcChunkLinks &links() const { return m_links; }
     // Chunk loader blocks of the world, loaded or not (decision E-377).
@@ -167,6 +176,8 @@ private:
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
     // Forgets what was derived from a chunk that left the world or is generated again.
     void forgetSections(QcChunkPos pos);
+    // Drops the kept tails of the entries at `pos` that the block just set there ended.
+    void dropOrphanTails(QcBlockPos pos);
     // `light`: the chunk's own light prepared in the background (null: computed here).
     void insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk, const std::shared_ptr<QcLightEngine::Prepared> &light);
     void generateInBackground(QcChunkPos pos, Arrival kept);
@@ -181,6 +192,7 @@ private:
     std::unique_ptr<QcVillages> m_villages;
     QcBlockEntities m_blockEntities;
     QcFireQueue m_fires;
+    QHash<QcChunkPos, QcBlockEntityKept> m_blockEntityParts;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).
     QcLightEngine m_light;

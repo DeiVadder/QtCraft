@@ -4,6 +4,7 @@
 #include "common/physics/QcPose.h"
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
+#include "server/entities/QcHurtWindow.h"
 #include "server/mobs/QcArcherState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
@@ -23,7 +24,8 @@ struct QcCreature : QcEntity
     int type = 0;
     double health = 0.0;
     double attackCooldown = 0.0;
-    double hurtTimer = 0.0;
+    // The short invulnerability after a hurt (game rule mobInvulnerabilityTicks, decision E-429).
+    QcHurtWindow hurt;
     double wanderTimer = 0.0;
     QcVec3 wanderDirection;
     double fleeTimer = 0.0;

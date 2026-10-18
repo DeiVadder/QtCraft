@@ -14,6 +14,9 @@ namespace QcMinecartMotion {
 
 namespace {
 
+// Share of its horizontal speed a cart off the rails loses per tick in the air.
+constexpr double flightDrag = 0.02;
+
 // More rails than a cart can cross in one tick at its fastest (0.4 m per tick, curves are 0.71 m).
 constexpr int maxHops = 4;
 
@@ -65,17 +68,76 @@ float nearestYaw(const QcVec3 &direction, float previous)
     return distance(yaw) <= distance(turned) ? yaw : turned;
 }
 
-// Off the rails: falls, slides and stops like a body without a will of its own.
-void freeStep(QcMinecart &cart, const QcBlockAccess &world, double dt)
+// Whether the ground carries the middle of the cart: a thin column under its centre cannot move down a
+// little. A cart whose middle is beyond an edge (just off the end of a track) tips over without
+// braking on the edge; one on a block taller than a cell (a fence, a wall) stands on it; one just
+// loaded (onGround is not saved) knows at once that it lies on the ground.
+bool carriedAtCentre(const QcVec3 &feet, const QcBlockAccess &world)
 {
-    cart.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(cart.motion.position));
-    QcPhysics::stepEntity(cart.motion, {}, {QcMinecartBody::width, QcMinecartBody::height}, world, dt);
+    constexpr double probe = 0.01;
+    constexpr double columnWidth = 0.02;
+    const QcAabb column = QcPhysics::boxAt(feet, columnWidth, columnWidth);
+    return QcPhysics::moveBox(column, {0.0, -probe, 0.0}, world).applied.y > -probe * 0.5;
 }
 
-// Whether something solid stands beyond end `end` of the segment, level with the track.
+// Whether the columns of cells the cart would move through in this tick lie (partly) in a chunk that
+// is not loaded (chunks hold whole columns).
+bool headsIntoUnloaded(const QcMinecart &cart, const QcBlockAccess &world, double dt)
+{
+    const QcAabb from = QcPhysics::boxAt(cart.motion.position, QcMinecartBody::width, QcMinecartBody::height);
+    const QcVec3 way = cart.motion.velocity * dt;
+    const QcBlockPos first = QcPhysics::blockContaining({std::min(from.min.x, from.min.x + way.x), 0.0, std::min(from.min.z, from.min.z + way.z)});
+    const QcBlockPos last = QcPhysics::blockContaining({std::max(from.max.x, from.max.x + way.x), 0.0, std::max(from.max.z, from.max.z + way.z)});
+    const int y = QcPhysics::blockContaining(cart.motion.position).y;
+    for (int x = first.x; x <= last.x; ++x) {
+        for (int z = first.z; z <= last.z; ++z) {
+            if (!world.blockAt({x, y, z})) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Off the rails: falls and slides like a body without a will of its own (decision E-430). In the air
+// it keeps its momentum (flying off the end of a track): steering towards a slightly slower velocity
+// in its direction makes stepEntity's air control act as weak drag. On the ground it stops within a
+// few ticks where the ground grips and coasts far on slippery ground, and stands still below
+// `restSpeed`. Heading into a chunk that is not loaded, it waits there with its speed, as at the end
+// of a track.
+void freeStep(QcMinecart &cart, Result &result, const QcBlockAccess &world, double dt)
+{
+    if (headsIntoUnloaded(cart, world, dt)) {
+        result.waiting = true;
+        return;
+    }
+
+    cart.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(cart.motion.position));
+    QcPhysics::Steering coasting;
+    coasting.slideDrag = QcPhysics::coastDrag;
+    if (cart.motion.velocity.y <= 0.0) {
+        cart.motion.onGround = carriedAtCentre(cart.motion.position, world);
+    }
+    double horizontal = std::hypot(cart.motion.velocity.x, cart.motion.velocity.z);
+    if (cart.motion.onGround && horizontal < restSpeed) {
+        cart.motion.velocity.x = 0.0;
+        cart.motion.velocity.z = 0.0;
+        horizontal = 0.0;
+    }
+    if (!cart.motion.onGround && !cart.motion.inWater && horizontal > 0.0) {
+        const double blend = std::min(1.0, QcPhysics::airAcceleration * dt);
+        coasting.wish = {cart.motion.velocity.x / horizontal, 0.0, cart.motion.velocity.z / horizontal};
+        coasting.speed = horizontal * std::max(0.0, 1.0 - flightDrag * dt * QcPhysics::tickRate / blend);
+    }
+    QcPhysics::stepEntity(cart.motion, coasting, {QcMinecartBody::width, QcMinecartBody::height}, world, dt);
+}
+
+// Whether a block level with end `end` of the segment (where the cart would go on, one higher at a
+// raised end) stands in the cart's way: a buffer stop, also for a powered rail starting a cart.
 bool blockedBeyond(const Segment &segment, int end, const QcBlockAccess &world)
 {
-    const QcBlockPos beyond = qcNeighbour(segment.cell, segment.track.ends[std::size_t(end)].side);
+    const QcRails::End &at = segment.track.ends[std::size_t(end)];
+    const QcBlockPos beyond = qcNeighbour(segment.cell, at.side).offset(0, at.raised ? 1 : 0, 0);
     return world.blockAt(beyond) && !QcPhysics::collisionBoxesAt(world, beyond).isEmpty();
 }
 
@@ -130,21 +192,31 @@ void noteActivator(Result &result, const Segment &segment, const QcRails::Table 
     }
 }
 
-// Where a cart is on its way through a tick: the track, how far along it and its speed along it.
+// Where a cart is on its way through a tick: the track, how far along it and its speed along it;
+// after it left the track, how much of the tick's way it had left.
 struct Run
 {
     Segment segment;
     double along = 0.0;
     double speed = 0.0;
+    double overshoot = 0.0;
 };
 
 // The cart reached end `forward` of its track and no rail goes on there: it waits with its speed
-// while the chunk beyond is not loaded (the track may go on there), else it stops just inside the
-// last rail.
+// while the chunk beyond is not loaded (the track may go on there), it stops just inside the last
+// rail before a block level with the end, and else it leaves the track with its speed (decision
+// E-430).
 void reachEnd(Run &run, bool forward, Result &result, const QcBlockAccess &world)
 {
+    const int end = forward ? 1 : 0;
+    if (!beyondUnloaded(run.segment, end, world) && !blockedBeyond(run.segment, end, world)) {
+        run.along = forward ? run.segment.length : 0.0;
+        result.derailed = true;
+        return;
+    }
+
     run.along = forward ? run.segment.length - endInset : endInset;
-    if (beyondUnloaded(run.segment, forward ? 1 : 0, world)) {
+    if (beyondUnloaded(run.segment, end, world)) {
         result.waiting = true;
         return;
     }
@@ -167,6 +239,7 @@ void roll(Run &run, double distance, Result &result, const QcRails::Table &rails
         distance -= room;
         const std::optional<Continuation> next = continuation(run.segment, forward ? 1 : 0, rails, world);
         if (!next) {
+            run.overshoot = distance;
             reachEnd(run, forward, result, world);
             return;
         }
@@ -177,6 +250,37 @@ void roll(Run &run, double distance, Result &result, const QcRails::Table &rails
     }
 }
 
+// The velocity of a cart leaving its track at end `end`: horizontally straight out of the end (off a
+// curve along the side of that end, not diagonally) with the horizontal part of its speed along the
+// track, and up or down as the track ran. Off the top of a slope (45 degrees) it flies up, horizontally
+// and upwards each with cos 45 degrees (0.71) of the speed it rolled with; off a level track it keeps
+// all of it horizontally.
+QcVec3 exitVelocity(const Run &run, int end)
+{
+    const QcVec3 velocity = run.segment.direction * run.speed;
+    const QcFaceOffset out = qcFaceOffset(run.segment.track.ends[std::size_t(end)].side);
+    const double horizontal = std::hypot(velocity.x, velocity.z);
+    return {out.dx * horizontal, velocity.y, out.dz * horizontal};
+}
+
+// Puts a cart that left its track at the end and moves it on by the rest of the tick's way (at least
+// a little, so that it is beyond the rail's cell and no longer on it).
+void leaveTrack(QcMinecart &cart, const Run &run, const QcBlockAccess &world)
+{
+    constexpr double clearance = 1e-3;
+    const int end = run.speed >= 0.0 ? 1 : 0;
+    const QcVec3 velocity = exitVelocity(run, end);
+    const QcVec3 start = pointAt(run.segment, run.along);
+    const QcAabb box = QcPhysics::boxAt(start, QcMinecartBody::width, QcMinecartBody::height);
+    const QcVec3 way = velocity.normalized() * (run.overshoot + clearance);
+
+    cart.motion.position = start + QcPhysics::moveBox(box, way, world).applied;
+    cart.motion.velocity = velocity;
+    cart.yaw = nearestYaw({velocity.x, 0.0, velocity.z}, cart.yaw);
+    cart.motion.onGround = false;
+    cart.motion.inWater = false;
+}
+
 } // namespace
 
 float yawAlong(const QcVec3 &direction)
@@ -184,8 +288,10 @@ float yawAlong(const QcVec3 &direction)
     return qcNormalizedAngle(float(qRadiansToDegrees(std::atan2(direction.x, -direction.z))));
 }
 
-std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails, const QcBlockAccess &world)
+std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails, const QcBlockAccess &world, bool fromAbove)
 {
+    // A point on the track this much higher than the feet still counts as level (rounding).
+    constexpr double level = 1e-6;
     // Feet on the border of two cells (the end of a track) belong to the rails on both sides.
     constexpr double border = 1e-9;
     const QcBlockPos base = QcPhysics::blockContaining(feet);
@@ -204,7 +310,11 @@ std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails
                 continue;
             }
             const Segment segment = segmentOf(cell, *track);
-            const double distance = (pointAt(segment, alongOf(segment, feet)) - feet).length();
+            const QcVec3 nearestPoint = pointAt(segment, alongOf(segment, feet));
+            if (fromAbove && nearestPoint.y > feet.y + level) {
+                continue;
+            }
+            const double distance = (nearestPoint - feet).length();
             if (distance < nearestDistance || (!nearest && distance <= snapDistance)) {
                 nearest = segment;
                 nearestDistance = distance;
@@ -216,10 +326,12 @@ std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails
 
 Result step(QcMinecart &cart, const QcRails::Table &rails, const QcBlockAccess &world, double dt)
 {
-    const std::optional<Segment> start = segmentAt(cart.motion.position, rails, world);
+    // In the air it gets on a track only from above or level with it, not up onto one above it.
+    const std::optional<Segment> start = segmentAt(cart.motion.position, rails, world, !cart.motion.onGround);
     if (!start) {
-        freeStep(cart, world, dt);
-        return {};
+        Result result;
+        freeStep(cart, result, world, dt);
+        return result;
     }
 
     Run run{*start, alongOf(*start, cart.motion.position), nextSpeed(cart, *start, rails, world, dt)};
@@ -227,12 +339,17 @@ Result step(QcMinecart &cart, const QcRails::Table &rails, const QcBlockAccess &
     result.onRail = true;
     noteActivator(result, run.segment, rails, world);
     roll(run, std::abs(run.speed) * dt, result, rails, world);
+    if (result.derailed) {
+        leaveTrack(cart, run, world);
+        result.onRail = false;
+        return result;
+    }
 
+    cart.yaw = nearestYaw(run.segment.direction, cart.yaw);
     cart.motion.position = pointAt(run.segment, run.along);
     cart.motion.velocity = run.segment.direction * run.speed;
     cart.motion.onGround = true;
     cart.motion.inWater = false;
-    cart.yaw = nearestYaw(run.segment.direction, cart.yaw);
     result.segment = run.segment;
     return result;
 }

@@ -132,13 +132,13 @@ private slots:
         QCOMPARE(power(5, 0, 4), 13);
         QCOMPARE(power(5, 0, 5), 15);
 
-        QVERIFY(m_server->circuits().use(at(5, 0, 5)));
+        QVERIFY(m_server->systems().circuits.use(at(5, 0, 5)));
         ticks(4);
         QCOMPARE(property(5, 0, 5, u"mode"_s), u"subtract"_s);
         QCOMPARE(power(5, 0, 5), 2);
 
         // Compare mode with a stronger side: off.
-        QVERIFY(m_server->circuits().use(at(5, 0, 5)));
+        QVERIFY(m_server->systems().circuits.use(at(5, 0, 5)));
         QList<QcItemStack> half(27);
         std::fill_n(half.begin(), 14, stack("qtcraft:cobblestone", 64));
         fill(4, 0, 5, half);

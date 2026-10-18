@@ -88,7 +88,7 @@ private:
             const QcBlockPos outside = pos.offset(dx, 0, dz);
             QVERIFY(m_server->world().setBlock(outside.offset(0, -1, 0), id("qtcraft:stone")));
             QVERIFY(m_server->world().setBlock(outside, *m_content->stateId(u"qtcraft:lever[attach=floor,powered=true]"_s)));
-            m_server->circuits().noteBlock(outside);
+            m_server->systems().circuits.noteBlock(outside);
         }
     }
 
@@ -120,11 +120,11 @@ private:
             const QcBlockPos cell = m_loop[qsizetype(i) * m_loop.size() / count];
             const QString item = !containers ? u"qtcraft:minecart"_s : i % 2 == 0 ? u"qtcraft:chest_minecart"_s : u"qtcraft:hopper_minecart"_s;
             QcMinecart cart = m_server->carts().fromItem(item);
-            cart.motion.position = *m_server->minecarts().restingPlace(cell);
+            cart.motion.position = *m_server->systems().minecarts.restingPlace(cell);
             for (qsizetype slot = 0; i % 2 == 0 && slot < cart.stacks.size(); slot += 2) {
                 cart.stacks[slot] = {this->item("qtcraft:stick"), 64, 0};
             }
-            QVERIFY(m_server->minecarts().spawn(cart));
+            QVERIFY(m_server->systems().minecarts.spawn(cart));
         }
     }
 
@@ -224,7 +224,7 @@ private slots:
             times.phaseMeanMs += one.phaseMeanMs / measured.ticks;
             times.phaseMaxMs = std::max(times.phaseMaxMs, one.phaseMaxMs);
             times.tickMeanMs += one.tickMeanMs / measured.ticks;
-            moved += m_server->minecarts().hoppers().lastTick().moved;
+            moved += m_server->systems().minecarts.hoppers().lastTick().moved;
         }
         report("containers-powered", times, measured.carts);
         qInfo("MEASURE minecarts containers-powered items_moved=%lld", qlonglong(moved));

@@ -20,21 +20,31 @@ quint32 ticksLeft(quint64 due, quint64 now)
     return quint32(std::min(due - std::min(due, now), maxTicks));
 }
 
+using Table = QcBlockEntityRecord::Table;
+
+// Whether `parts` holds a tail of a newer version for the entry of `table` at `pos`: such an entry is
+// saved even when it holds nothing this version would save, so the tail goes back with it.
+bool hasTail(const QcBlockEntityKept *parts, Table table, QcBlockPos pos)
+{
+    return parts && parts->entryTail(quint16(table), pos);
+}
+
 // The entries of one chunk, read straight from the tables through the chunk's index.
-void collectEntries(const QcBlockEntities &entities, const QcBlockEntities::ChunkIndex &index, quint64 now, QcBlockEntityRecord &record)
+void collectEntries(const QcBlockEntities &entities, const QcBlockEntities::ChunkIndex &index, quint64 now, QcBlockEntityRecord &record,
+                    const QcBlockEntityKept *parts)
 {
     record.containers.reserve(index.containers.size());
     for (const QcBlockPos &pos : index.containers) {
         const QcBlockEntities::Container &container = *entities.container(pos);
         const bool filled = std::ranges::any_of(container.stacks, [](QcItemStack stack) { return !stack.isEmpty(); });
-        if (filled || container.readyAt > now) {
+        if (filled || container.readyAt > now || hasTail(parts, Table::Containers, pos)) {
             record.containers.append(container);
             record.containers.last().readyAt = ticksLeft(container.readyAt, now);
         }
     }
     record.machines.reserve(index.machines.size());
     for (const QcBlockPos &pos : index.machines) {
-        if (const QcBlockEntities::Machine &machine = *entities.machine(pos); !machine.isIdle()) {
+        if (const QcBlockEntities::Machine &machine = *entities.machine(pos); !machine.isIdle() || hasTail(parts, Table::Machines, pos)) {
             record.machines.append(machine);
         }
     }
@@ -48,7 +58,7 @@ void collectEntries(const QcBlockEntities &entities, const QcBlockEntities::Chun
         if (kept.extendingSince) {
             memory.extendingAge = quint32(std::min(now - std::min(now, *kept.extendingSince), maxTicks));
         }
-        if (memory.burntOutLeft > 0 || memory.powered || memory.extendingAge) {
+        if (memory.burntOutLeft > 0 || memory.powered || memory.extendingAge || hasTail(parts, Table::Memories, pos)) {
             record.memories.append(memory);
         }
     }
@@ -112,7 +122,8 @@ void sortByPos(QList<Entry> &entries)
 
 namespace QcBlockEntityRecords {
 
-QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCircuitState &circuits, quint64 now)
+QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCircuitState &circuits, quint64 now,
+                                   const QHash<QcChunkPos, QcBlockEntityKept> &kept)
 {
     const QHash<QcChunkPos, QcCircuitState::Pending> pending = circuits.pendingByChunk();
     QSet<QcChunkPos> chunks;
@@ -124,8 +135,9 @@ QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCirc
     for (const QcChunkPos &pos : std::as_const(chunks)) {
         QcBlockEntityRecord record;
         record.chunk = pos;
+        const auto parts = kept.constFind(pos);
         if (const QcBlockEntities::ChunkIndex *index = entities.chunkIndex(pos)) {
-            collectEntries(entities, *index, now, record);
+            collectEntries(entities, *index, now, record, parts != kept.constEnd() ? &*parts : nullptr);
         }
         const QList<QcSignalSchedule::Entry> scheduled = entities.schedule().entriesIn(pos);
         for (const QcSignalSchedule::Entry &entry : scheduled) {
@@ -148,12 +160,11 @@ QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCirc
     return records;
 }
 
-QcBlockEntityRecord take(QcChunkPos chunk, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers, quint64 now)
+void take(QcBlockEntityRecord &record, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers, quint64 now)
 {
-    QcBlockEntityRecord record;
-    record.chunk = chunk;
+    const QcChunkPos chunk = record.chunk;
     if (const QcBlockEntities::ChunkIndex *index = entities.chunkIndex(chunk)) {
-        collectEntries(entities, *index, now, record);
+        collectEntries(entities, *index, now, record, &record.kept);
     }
     const QList<QcSignalSchedule::Entry> scheduled = entities.schedule().entriesIn(chunk);
     for (const QcSignalSchedule::Entry &entry : scheduled) {
@@ -169,7 +180,33 @@ QcBlockEntityRecord take(QcChunkPos chunk, QcBlockEntities &entities, QcCircuitS
 
     entities.forgetChunk(chunk);
     hoppers.forgetChunk(chunk);
-    return record;
+}
+
+void pruneKept(QcBlockEntityRecord &record)
+{
+    QHash<QcBlockPos, QcEntityComponents> &entries = record.kept.entries;
+    if (entries.isEmpty()) {
+        return;
+    }
+    QHash<quint16, QSet<QcBlockPos>> present;
+    const auto note = [&present](Table table, const auto &list) {
+        QSet<QcBlockPos> &positions = present[quint16(table)];
+        for (const auto &entry : list) {
+            positions.insert(entry.pos);
+        }
+    };
+    note(Table::Containers, record.containers);
+    note(Table::Machines, record.machines);
+    note(Table::Saplings, record.saplings);
+    note(Table::Memories, record.memories);
+    note(Table::Scheduled, record.scheduled);
+    note(Table::Fires, record.fires);
+
+    for (auto it = entries.begin(); it != entries.end();) {
+        const QcBlockPos pos = it.key();
+        it->removeIf([&present, pos](const QcEntityComponent &tail) { return !present.value(tail.id).contains(pos); });
+        it = it->isEmpty() ? entries.erase(it) : std::next(it);
+    }
 }
 
 QStringList apply(const QList<QcBlockEntityRecord> &records, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers,

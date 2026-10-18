@@ -160,9 +160,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64(42) << QByteArray("56c40787b0cc53d6ae83801273b64e39b3a73ae489ca921c2643a555fcffd7ea") << 176;
-        QTest::newRow("seed 7") << qint64(7) << QByteArray("fabaaffdc6329f44040ba1d51c9885e793bd119e05bca4bfc3c336a16f55c899") << 171;
-        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("3b155dfe0d61ae1633ff1b4d4d6d82b54325a0c481df80c9ad71bffb22116629") << 169;
+        QTest::newRow("seed 42") << qint64(42) << QByteArray("8be23ea2fe091d4be44597a668b2f2647d82f8db350ae01c72f8734e237901f5") << 176;
+        QTest::newRow("seed 7") << qint64(7) << QByteArray("9f613a51a6d98c8dafdec2fc30879a5fc7aeec61ccacf626a02e5a4523ecfcd9") << 171;
+        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("c8054d23535971450f45cf2aea3b2cfa2fb5ee98adb556b89de73342494cb877") << 169;
     }
 
     void plansStayTheSame()

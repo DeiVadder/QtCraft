@@ -10,7 +10,7 @@ class QcContentRegistry;
 
 // What a block state is to a walking creature looking for a path (decisions E-400, E-402), one byte
 // per state, computed once from the content: the kind of cell, two flags and the height of a low
-// block. The path grid (QcPathGrid) reads only this table, never the block definitions.
+// block (or, for a solid block, whether it is slippery). The path grid (QcPathGrid) reads only this table, never the block definitions.
 namespace QcPathCell {
 
 enum class Kind : quint8 {
@@ -43,9 +43,11 @@ enum class Kind : quint8 {
 };
 
 // Flags beside the kind: the block hurts bodies touching it (a floor of magma), it slows bodies
-// inside (cobwebs).
+// inside (cobwebs). A solid block can also be slippery (ice, decision E-430): that flag shares its
+// bit with the height of low blocks, which solid ones do not have.
 inline constexpr quint8 hurtsFlag = 0x10;
 inline constexpr quint8 slowsFlag = 0x20;
+inline constexpr quint8 slipperyFlag = 0x40;
 inline constexpr quint8 kindMask = 0x0f;
 // The height of a low block's top in eighths of a block, minus one (0: a carpet, 3: a slab).
 inline constexpr int liftShift = 6;

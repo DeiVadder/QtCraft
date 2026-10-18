@@ -187,7 +187,7 @@ private slots:
         // Only the lever's chunk comes back; the dust at its edge waits for the door's chunk, which
         // gets a ticket and is read in the background.
         m_server->world().loadChunk(chunk);
-        QVERIFY(m_server->circuits().use(QcBlockPos{chunk.x * 16 + 8, m_origin.y, chunk.z * 16 + 8}));
+        QVERIFY(m_server->systems().circuits.use(QcBlockPos{chunk.x * 16 + 8, m_origin.y, chunk.z * 16 + 8}));
         for (int tick = 0; tick < 2000 && !isOpen(door) && (m_server->world().chunk(chunk) || m_server->world().chunk(door.chunk())); ++tick) {
             ticks(1);
         }

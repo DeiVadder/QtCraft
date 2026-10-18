@@ -9,7 +9,7 @@ using namespace Qt::StringLiterals;
 
 // Rails and minecarts on a running server (stage 32.1, decision E-382): the shape a rail takes from
 // the rails around it, the same in all four rotations; placing it; a cart rolling along straight
-// track, curves and slopes, stopping at the end of a track and trading speed with another cart, the
+// track, curves and slopes, stopping at the end of a track before a block and trading speed with another cart, the
 // same in all four rotations; a piston pushing a cart; a player placing, riding, steering, leaving
 // and breaking a cart; and a cart that leaves the world with its chunk and comes back.
 class TestMinecarts : public QcRailFixture
@@ -132,6 +132,8 @@ private slots:
                 line.append({x, 0, 8});
             }
             lay(line);
+            // A buffer stop at the end of the track.
+            put(13, 0, 8, u"stone"_s);
             const quint32 id = cartAt(2, 0, 8, 4.0, 0.0);
             ticks(10);
             const QcVec3 now = local(cart(id).motion.position);
@@ -139,7 +141,7 @@ private slots:
             QVERIFY(std::abs(now.z - 8.5) < 1e-9);
             QVERIFY(std::abs(now.y) < 1e-9);
 
-            // It runs into the end of the track and stops just inside the last rail.
+            // It runs into the end of the track before the block and stops just inside the last rail.
             m_server->carts().find(id)->motion.velocity = direction(8.0, 0.0);
             ticks(200);
             const QcVec3 stopped = local(cart(id).motion.position);
@@ -147,12 +149,15 @@ private slots:
             QCOMPARE(cart(id).motion.velocity.length(), 0.0);
             QVERIFY(entityProblems().isEmpty());
 
-            // At rest it is not stepped; taking its rail away wakes it, off the rails now.
+            // At rest it is not stepped; taking its rail away wakes it, and it rests again on the
+            // ground, off the rails now.
             ticks(2);
             QVERIFY(cart(id).rest.has_value());
+            QVERIFY(!cart(id).rest->offRails);
             putAt(at(12, 0, 8), qcAirBlockId);
             ticks(1);
-            QVERIFY(!cart(id).rest.has_value());
+            QVERIFY(cart(id).rest.has_value());
+            QVERIFY(cart(id).rest->offRails);
             QVERIFY(!QcMinecartMotion::segmentAt(cart(id).motion.position, m_server->carts().rails(), m_server->world()));
         }
     }
@@ -311,6 +316,8 @@ private slots:
         for (m_turns = 0; m_turns < 4; ++m_turns) {
             buildArea();
             put(1, 0, 9, u"stone"_s);
+            // A buffer stop at the foot of the slope.
+            put(3, 0, 9, u"stone"_s);
             lay({{1, 1, 9}, {2, 0, 9}});
             QCOMPARE(ends(2, 0, 9), u"east,west+"_s);
             const quint32 id = cartAt(1, 1, 9, 1.0, 0.0);
@@ -324,6 +331,7 @@ private slots:
             QVERIFY(cart(id).rest.has_value());
 
             // A rail laid below its end lets it roll on.
+            put(3, 0, 9, u"air"_s);
             put(3, -1, 9, u"air"_s);
             put(3, -2, 9, u"stone"_s);
             lay({{3, -1, 9}});

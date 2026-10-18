@@ -61,6 +61,7 @@
                 "block:qtcraft:lapis_block",
                 "block:qtcraft:blue_concrete",
                 "block:qtcraft:blue_concrete_powder",
+                "block:qtcraft:blue_ice",
                 "block:qtcraft:blue_orchid",
                 "block:qtcraft:blue_stained_glass",
                 "block:qtcraft:blue_stained_glass_pane",
@@ -6676,6 +6677,203 @@
             ],
             "text": "Falls like sand. Touching water on any side, it hardens into concrete.",
             "title": "Blue concrete powder"
+        },
+        "block:qtcraft:blue_ice": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Blue ice",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:blue_ice"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "2.8"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "4.2 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.35 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blue ice"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Slippery: speed kept per tick on top",
+                    "links": [
+                    ],
+                    "value": "90 %"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "glass"
+                }
+            ],
+            "icon": "qtcraft:blue_ice",
+            "id": "block:qtcraft:blue_ice",
+            "name": "qtcraft:blue_ice",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                },
+                                {
+                                    "icon": "qtcraft:packed_ice",
+                                    "note": "",
+                                    "target": "block:qtcraft:packed_ice",
+                                    "text": "Packed ice"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:blue_ice",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:blue_ice",
+                                "note": "",
+                                "target": "block:qtcraft:blue_ice",
+                                "text": "Blue ice"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "Nine packed ice pressed into the most slippery block: bodies, items and minecarts slide even farther on it than on ice.",
+            "title": "Blue ice"
         },
         "block:qtcraft:blue_orchid": {
             "category": "blocks",
@@ -20789,6 +20987,12 @@
                     "value": "2 of 15"
                 },
                 {
+                    "label": "Slippery: speed kept per tick on top",
+                    "links": [
+                    ],
+                    "value": "89.18 %"
+                },
+                {
                     "label": "Sound",
                     "links": [
                     ],
@@ -20874,7 +21078,7 @@
                     "title": "Found in"
                 }
             ],
-            "text": "Covers the water of cold biomes.",
+            "text": "Covers the water of cold biomes. Slippery: whoever walks on it keeps sliding, and stops only slowly.",
             "title": "Ice"
         },
         "block:qtcraft:iron_bars": {
@@ -33455,6 +33659,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Slippery: speed kept per tick on top",
+                    "links": [
+                    ],
+                    "value": "89.18 %"
+                },
+                {
                     "label": "Sound",
                     "links": [
                     ],
@@ -33553,6 +33763,20 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blue ice"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:golden_pickaxe",
                             "note": "level 1",
                             "target": "item:qtcraft:golden_pickaxe",
@@ -33589,7 +33813,7 @@
                     "title": "Faster with"
                 }
             ],
-            "text": "Ice pressed so hard that it no longer lets light through or melts.",
+            "text": "Ice pressed so hard that it no longer lets light through or melts. As slippery as ice.",
             "title": "Packed ice"
         },
         "block:qtcraft:packed_mud": {
@@ -52155,7 +52379,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<seconds>]`, `/time add <seconds>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never)\n- `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last\n- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players\n- `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on\n- `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs\n- `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)\n- `/tick query`: rate, measured rate, freezing and the time per tick phase\nRate and freezing are not saved; a world always opens normally.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: keeps chunks loaded although no player is near them (block coordinates of a chunk or of the corners of an area, at most 256 chunks at once and `forcedChunks` in the world), lets them go or lists them; circuits connected to a forced chunk stay loaded with it",
+                    "text": "- `/time [set day|night|<seconds>]`, `/time add <seconds>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)\n- `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last\n- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players\n- `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on\n- `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs\n- `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)\n- `/tick query`: rate, measured rate, freezing and the time per tick phase\nRate and freezing are not saved; a world always opens normally.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: keeps chunks loaded although no player is near them (block coordinates of a chunk or of the corners of an area, at most 256 chunks at once and `forcedChunks` in the world), lets them go or lists them; circuits connected to a forced chunk stay loaded with it",
                     "title": "Time and ticks"
                 },
                 {
@@ -52845,7 +53069,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "You have 20 health points, shown as hearts. Falls deeper than 3 m cost one point per further metre; landing in water or on a ladder is safe. Hostile creatures, lava and starving hurt as well. After a hit you cannot be hurt for 0.5 s.",
+                    "text": "You have 20 health points, shown as hearts. Falls deeper than 3 m cost one point per further metre; landing in water or on a ladder is safe. Hostile creatures, lava and starving hurt as well. After a hit you cannot be hurt for 0.5 s, unless a later hit is stronger than the strongest so far: it deals only the difference. Creatures are protected the same way.",
                     "title": "Health"
                 },
                 {
@@ -53101,7 +53325,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Use a minecart on a rail to set it down. A cart keeps rolling along the track, round curves and over slopes: downhill it speeds up, uphill it slows down and may roll back, and it slowly loses speed on the flat (a ridden cart much more slowly than an empty one). At the end of a track it stops. Carts that run into each other pass their speed on; walking into a cart pushes it. A cart without rails under it slides to a stop. One hit breaks a cart; it drops itself.",
+                    "text": "Use a minecart on a rail to set it down. A cart keeps rolling along the track, round curves and over slopes: downhill it speeds up, uphill it slows down and may roll back, and it slowly loses speed on the flat (a ridden cart much more slowly than an empty one). At the end of a track it stops in front of a block and flies on otherwise (see below). Carts that run into each other pass their speed on; walking into a cart pushes it. A cart without rails under it stops after a short slide, or coasts far on ice. One hit breaks a cart; it drops itself.",
                     "title": "Minecarts"
                 },
                 {
@@ -53111,6 +53335,14 @@
                     ],
                     "text": "Use a cart to get in and sneak to get out; you land beside it. While you ride, the forward key pushes the cart along the way you look. The server moves the cart and its rider, so everyone sees you ride the same way.",
                     "title": "Riding"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A cart that reaches the end of a track with a block in front of it stops there. At an open end it keeps its speed and flies on: it falls, and off the top of a ramp it jumps. Where it lands it stops after a short slide, coasts far on ice, or, landing on a rail, rolls on along it with its speed along the track (landing across the track it stands until the next cart bumps it on). A rider flies with the cart and takes no fall damage.",
+                    "title": "Track ends and jumps"
                 },
                 {
                     "links": [
@@ -53169,6 +53401,12 @@
                             "text": "Minecart"
                         },
                         {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blue ice"
+                        },
+                        {
                             "icon": "qtcraft:chest_minecart",
                             "note": "",
                             "target": "item:qtcraft:chest_minecart",
@@ -53213,7 +53451,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.",
+                    "text": "**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.",
                     "title": "Game rules"
                 }
             ],
@@ -54064,6 +54302,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Ice, packed ice and blue ice are slippery. On them you speed up slowly and keep sliding when you let go, about two blocks from a walk on ice and a little farther on blue ice; your top speed stays the same. Creatures and dropped items slide too, and creatures walk round ice where the way round is short. A minecart off the rails coasts far on ice, while on other ground it stops after a short slide.",
+                    "title": "Slippery ground"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -54087,6 +54333,18 @@
                             "note": "",
                             "target": "block:qtcraft:obsidian",
                             "text": "Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "",
+                            "target": "block:qtcraft:ice",
+                            "text": "Ice"
+                        },
+                        {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blue ice"
                         }
                     ],
                     "recipes": [

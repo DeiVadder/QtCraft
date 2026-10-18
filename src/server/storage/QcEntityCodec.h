@@ -21,7 +21,8 @@ namespace QcEntityCodec {
 // Entries of one kind in one chunk at most; a valid world never comes close.
 inline constexpr quint32 maxPerChunk = 65536;
 
-// The ids of the components of entity entries; a mod or a later version adds ids, never reuses one.
+// The ids of the components of entity entries; a later version adds ids below
+// QcComponentFrames::firstModId, a mod from it on; none is ever reused.
 enum class Component : quint16 {
     // Health, breeding timers, bred (version 1).
     Creature = 1,

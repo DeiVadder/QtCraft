@@ -1,0 +1,101 @@
+{
+    "name": "ice_slide",
+    "showcase": {
+        "order": 88
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "S": "stone",
+        "I": "packed_ice",
+        "B": "blue_ice",
+        "G": "glass",
+        "e": "rail[facing=east,shape=straight]",
+        "1": "rail[facing=east,shape=curve]",
+        "2": "rail[facing=south,shape=curve]",
+        "3": "rail[facing=west,shape=curve]",
+        "4": "rail[facing=north,shape=curve]",
+        "u": "rail[facing=east,shape=ascending]",
+        "w": "rail[facing=west,shape=ascending]",
+        "E": "powered_rail[facing=east,shape=straight,powered=true]",
+        "N": "powered_rail[facing=north,shape=straight,powered=true]",
+        "l": "lever[attach=floor,powered=true]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPP",
+            "PIIIIIIIIIIIIIIIIIIP",
+            "PIIIIIIIIIIIIIIIIIIP",
+            "PPPPPBBBBBBBBBBBBBBP",
+            "PIIIIIIIIIIIIIIIIIIP",
+            "PIIIIIIIIIIIIIIIIIIP",
+            "PPPPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "....l.........l.....",
+            ".1EEEEEuSSwEEEEEEE2.",
+            "lN................Nl",
+            ".N................N.",
+            ".4EEEEEEEEeeeSwEEE3.",
+            "......l.........l...",
+            "....................",
+            "....................",
+            "....................",
+            "SSweE..............G",
+            "....l...............",
+            "....................",
+            "...................."
+        ],
+        [
+            "....................",
+            "........ee..........",
+            "....................",
+            "....................",
+            "....................",
+            "....................",
+            "....................",
+            "....................",
+            "....................",
+            "Se..................",
+            "....................",
+            "....................",
+            "...................."
+        ]
+    ],
+    "minecarts": [
+        [
+            10,
+            1,
+            1
+        ],
+        [
+            2,
+            1,
+            9
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                9.5,
+                4.0,
+                2.5
+            ],
+            "text": "structure.qtcraft.ice_slide.jump"
+        },
+        {
+            "at": [
+                9.5,
+                3.0,
+                10.5
+            ],
+            "text": "structure.qtcraft.ice_slide.rink"
+        }
+    ]
+}

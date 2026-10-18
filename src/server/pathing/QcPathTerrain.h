@@ -44,8 +44,9 @@ struct QcPathStand
 {
     bool ok = false;
     bool water = false;
-    // The floor hurts (magma) or the feet cell slows (cobwebs).
+    // The floor hurts (magma) or is slippery (ice), or the feet cell slows (cobwebs).
     bool hurts = false;
+    bool slippery = false;
     bool slows = false;
     // Height of the feet above the cell's bottom.
     double height = 0.0;
@@ -129,6 +130,7 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
         stand.water = true;
     } else if (kind == QcPathCell::Kind::Ladder || QcPathCell::kindOf(below) == QcPathCell::Kind::Solid) {
         stand.hurts = (below & QcPathCell::hurtsFlag) != 0;
+        stand.slippery = QcPathCell::kindOf(below) == QcPathCell::Kind::Solid && (below & QcPathCell::slipperyFlag) != 0;
     } else {
         return stand;
     }

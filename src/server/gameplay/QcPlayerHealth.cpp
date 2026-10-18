@@ -31,19 +31,21 @@ void QcPlayerHealth::tick()
 
 void QcPlayerHealth::tickPlayer(QcServerClient &client, double dt)
 {
-    client.hurtTimer = std::max(0.0, client.hurtTimer - dt);
+    // A lowered game rule shortens an open window at once (decision E-429).
+    client.hurt.limit(m_state.info().playerInvulnerabilityTicks);
+    client.hurt.tick();
     client.attackCooldown = std::max(0.0, client.attackCooldown - dt);
 
     if (!client.dead) {
-        // Regeneration at high food, starvation at none (decision E-039).
+        // Regeneration at high food, starvation at none (decision E-039). Starving is a hurt like
+        // any other: it respects the invulnerability after a hurt and opens it, as in the reference
+        // (decision E-429).
         const double change = client.hunger.tick(dt, client.health, QcServerClient::maxHealth);
-        if (change != 0.0) {
-            client.health = std::clamp(client.health + change, 0.0, QcServerClient::maxHealth);
-            client.hurtThisTick = client.hurtThisTick || change < 0.0;
-            if (change < 0.0) {
-                m_sounds.play(QString::fromLatin1(QcSoundKeys::playerHurt), client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
-            }
+        if (change > 0.0) {
+            client.health = std::min(client.health + change, QcServerClient::maxHealth);
             sendHealth(client);
+        } else if (change < 0.0) {
+            damage(client, -change, {}, DamageKind::Unblockable);
         }
     }
 
@@ -64,29 +66,36 @@ void QcPlayerHealth::applyVoidDamage(QcServerClient &client)
     ++client.voidTicks;
 }
 
-void QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
+QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
 {
     const bool fromVoid = kind == DamageKind::Void;
-    if (client.dead || (client.hurtTimer > 0.0 && !fromVoid) || amount <= 0.0) {
-        return;
+    const QcHurtWindow::Take take = fromVoid ? QcHurtWindow::Take::Fresh : client.hurt.wouldTake(amount);
+    if (client.dead || take == QcHurtWindow::Take::Ignored || amount <= 0.0) {
+        return QcHurtWindow::Take::Ignored;
     }
     if (client.rules().invulnerable && kind != DamageKind::Command && !fromVoid) {
-        return;
+        return QcHurtWindow::Take::Ignored;
     }
 
+    // During the invulnerability a stronger hit deals the difference to the strongest hit of the
+    // window (before armour, as in the reference), without push, hurt sound or flash (decision E-429).
+    const int ticks = m_state.info().playerInvulnerabilityTicks;
+    amount = fromVoid ? client.hurt.force(amount, ticks) : client.hurt.take(amount, ticks);
     if (kind == DamageKind::Armoured) {
         amount = throughArmour(client, amount);
     }
     client.health = std::max(0.0, client.health - amount);
-    client.hurtTimer = QcMobManager::hurtInvulnerability;
-    client.hurtThisTick = true;
     client.hunger.hurt();
     client.hunger.exhaust(QcHunger::damageTaken);
 
-    m_sounds.play(QString::fromLatin1(client.health <= 0.0 ? QcSoundKeys::playerDeath : QcSoundKeys::playerHurt),
-                  client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
+    const bool fresh = take == QcHurtWindow::Take::Fresh;
+    client.hurtThisTick = client.hurtThisTick || fresh;
+    if (fresh || client.health <= 0.0) {
+        m_sounds.play(QString::fromLatin1(client.health <= 0.0 ? QcSoundKeys::playerDeath : QcSoundKeys::playerHurt),
+                      client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
+    }
 
-    if (knockback.length() > 0.0) {
+    if (fresh && knockback.length() > 0.0) {
         knock(client, knockback);
     }
 
@@ -95,6 +104,7 @@ void QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 
     }
 
     sendHealth(client);
+    return take;
 }
 
 void QcPlayerHealth::knock(QcServerClient &client, const QcVec3 &direction, double strength)
@@ -109,6 +119,8 @@ void QcPlayerHealth::knock(QcServerClient &client, const QcVec3 &direction, doub
 void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
 {
     client.dead = true;
+    // A respawned player starts without a window from the last life (decision E-429).
+    client.hurt.clear();
     client.mining.pos.reset();
     client.drawing = false;
     m_state.entities().noteDeath(client.id);
@@ -168,6 +180,7 @@ void QcPlayerHealth::respawn(QcServerClient &client)
 
     client.dead = false;
     client.health = QcServerClient::maxHealth;
+    client.hurt.clear();
     // Frozen hunger keeps the survival values for the return to survival (decision E-282).
     if (!client.hunger.frozen()) {
         client.hunger.reset();

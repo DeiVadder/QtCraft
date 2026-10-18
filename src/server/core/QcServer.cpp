@@ -76,6 +76,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_login(m_state, [this](Client &client) { m_join.join(client); })
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
+    , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits}
 {
     static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -507,6 +508,7 @@ void QcServer::tick()
         m_state.info().worldTime += QcPhysics::tickDuration;
     }
     m_state.entities().creatures().setNaturalSpawning(m_state.info().mobSpawning);
+    m_state.entities().creatures().setHurtTicks(m_state.info().mobInvulnerabilityTicks);
 
     m_login.expire();
     flushIdentitiesWhenDue();

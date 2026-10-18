@@ -9,6 +9,7 @@
 #include "common/protocol/QcMessages.h"
 #include "server/core/QcRateLimiter.h"
 #include "server/entities/QcEntity.h"
+#include "server/entities/QcHurtWindow.h"
 #include "server/gameplay/QcHunger.h"
 
 #include <QElapsedTimer>
@@ -172,7 +173,8 @@ struct QcServerClient : QcEntity
     QcHunger hunger;
     // Food points last sent to the client; -1 before the first message.
     int sentFood = -1;
-    double hurtTimer = 0.0;
+    // The short invulnerability after a hurt (game rule playerInvulnerabilityTicks, decision E-429).
+    QcHurtWindow hurt;
     double attackCooldown = 0.0;
     // Ticks spent below the void limit in a row (QcPlayerHealth::applyVoidDamage).
     int voidTicks = 0;

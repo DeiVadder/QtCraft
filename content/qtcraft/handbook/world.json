@@ -4,12 +4,15 @@
     "icon": "water_bucket",
     "sections": [
         "time",
-        "liquids"
+        "liquids",
+        "ice"
     ],
     "related": [
         "water",
         "lava",
         "bucket",
-        "obsidian"
+        "obsidian",
+        "ice",
+        "blue_ice"
     ]
 }

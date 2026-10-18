@@ -41,7 +41,6 @@ public:
     // Flying creatures keep between these heights above the ground below them.
     static constexpr double flyMinHeight = 1.2;
     static constexpr double flyMaxHeight = 3.0;
-    static constexpr double hurtInvulnerability = 0.5;
     static constexpr double knockbackSpeed = 6.0;
     // The upward speed of a blow's push at strength 1; a weaker push lifts less, a stronger one
     // only pushes further (decision E-427).
@@ -137,7 +136,9 @@ public:
     QList<QcProjectileManager::Launch> takeLaunches();
     // Applies damage from a player at `from`, pushing the mob away with `knockback` times a blow's
     // push (0: not at all); returns the mob's drops when it died. A hit without damage (a snowball)
-    // pushes and frightens but gives no invulnerability (decision E-427).
+    // pushes and frightens but gives no invulnerability (decision E-427). During the creature's
+    // invulnerability only a stronger hit takes, with the difference and without the push
+    // (QcHurtWindow, decision E-429).
     std::optional<QList<QcItemDrop>> damage(quint32 mobId, double amount, const QcVec3 &from, double knockback = 1.0);
     // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
     // was removed.
@@ -158,6 +159,10 @@ public:
     // with new chunks (decision E-221); /summon and world setups still add them.
     void setNaturalSpawning(bool on) { m_naturalSpawning = on; }
     bool naturalSpawning() const { return m_naturalSpawning; }
+    // Game rule mobInvulnerabilityTicks (decision E-429): the game ticks a creature stays
+    // invulnerable after a hurt (0: every hit counts). A lower value shortens the open windows at once.
+    void setHurtTicks(int ticks);
+    int hurtTicks() const { return m_hurtTicks; }
 
     // Gives a chunk seen for the first time the creatures of the village pieces in it (an animal
     // pen's pair, decision E-404), a villager for each free bed in it (decision E-411) and its group
@@ -205,6 +210,7 @@ private:
     QSet<QcChunkPos> m_populated;
     quint64 m_nextUid = 1;
     bool m_naturalSpawning = true;
+    int m_hurtTicks = QcHurtWindow::defaultTicks;
     QList<std::pair<DepartureToken, DepartureListener>> m_departureListeners;
     quint64 m_nextDepartureToken = 1;
     // Use m_random and subscribe to departures, so they come last.

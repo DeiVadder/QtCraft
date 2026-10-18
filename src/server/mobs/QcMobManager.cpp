@@ -124,20 +124,20 @@ QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength)
 std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amount, const QcVec3 &from, double knockback)
 {
     const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
-    if (it == m_mobs.end() || it->hurtTimer > 0.0) {
+    const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->hurt.wouldTake(amount);
+    if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
     }
 
+    // A stronger hit during the invulnerability deals the difference, without push or flash.
     QcCreature &mob = *it;
-    mob.health -= std::max(0.0, amount);
-    if (amount > 0.0) {
-        mob.hurtTimer = hurtInvulnerability;
-    }
-    mob.hurtThisTick = true;
-
+    mob.health -= mob.hurt.take(amount, m_hurtTicks);
     const QcVec3 away = QcVec3{mob.motion.position.x - from.x, 0.0, mob.motion.position.z - from.z}.normalized();
-    if (knockback > 0.0) {
-        mob.motion.velocity = knockbackVelocity(away, knockback);
+    if (take == QcHurtWindow::Take::Fresh) {
+        mob.hurtThisTick = true;
+        if (knockback > 0.0) {
+            mob.motion.velocity = knockbackVelocity(away, knockback);
+        }
     }
 
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
@@ -154,6 +154,16 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
     QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
     erase(it, Departure::Died);
     return drops;
+}
+
+void QcMobManager::setHurtTicks(int ticks)
+{
+    if (ticks < m_hurtTicks) {
+        for (QcCreature &mob : m_mobs) {
+            mob.hurt.limit(ticks);
+        }
+    }
+    m_hurtTicks = ticks;
 }
 
 bool QcMobManager::hurt(quint32 mobId, double amount)
@@ -173,12 +183,12 @@ std::optional<QList<QcItemDrop>> QcMobManager::wound(quint32 mobId, double amoun
 std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double amount)
 {
     const auto it = m_mobs.begin() + index;
-    if (it->hurtTimer > 0.0) {
+    const QcHurtWindow::Take take = it->hurt.wouldTake(amount);
+    if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
     }
-    it->health -= amount;
-    it->hurtTimer = hurtInvulnerability;
-    it->hurtThisTick = true;
+    it->health -= it->hurt.take(amount, m_hurtTicks);
+    it->hurtThisTick = it->hurtThisTick || take == QcHurtWindow::Take::Fresh;
     if (it->health > 0.0) {
         return std::nullopt;
     }

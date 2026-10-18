@@ -119,5 +119,5 @@ protected:
     }
 
     // Switches the lever at local (x, y, z) as a player would.
-    void flip(int x, int y, int z) { QVERIFY(m_server->circuits().use(at(x, y, z))); }
+    void flip(int x, int y, int z) { QVERIFY(m_server->systems().circuits.use(at(x, y, z))); }
 };

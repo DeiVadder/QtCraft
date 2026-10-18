@@ -140,8 +140,9 @@ void QcItemEntityManager::step(QcItemEntity &item, const QcBlockAccess &world, d
         speed = wish.length() > 0.0 ? driftSpeed : 0.0;
     }
 
-    QcPhysics::stepEntity(item.motion, QcPhysics::Steering{wish, speed, item.motion.inWater, false}, QcPhysics::BodySize{itemSize, itemSize},
-                          world, dt);
+    // On ice they slide farther than walkers (decision E-430).
+    const QcPhysics::Steering steering{wish, speed, item.motion.inWater, false, QcPhysics::itemDrag};
+    QcPhysics::stepEntity(item.motion, steering, QcPhysics::BodySize{itemSize, itemSize}, world, dt);
 
     item.resting = item.motion.onGround && !item.motion.inWater && item.motion.velocity.length() < restSpeed;
     m_stirred.append(item.motion.position);

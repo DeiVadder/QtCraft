@@ -220,11 +220,15 @@ Schienen brauchen einen festen Block darunter. Eine Schiene verbindet sich von s
 
 **Loren**
 
-Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises bleibt sie stehen. Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter rutscht aus. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.
+Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises hält sie vor einem Block und fliegt sonst weiter (siehe unten). Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter bleibt nach kurzem Rutschen stehen oder gleitet auf Eis weit. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.
 
 **Fahren**
 
 Benutze eine Lore, um einzusteigen, und schleiche, um auszusteigen; du landest neben ihr. Während der Fahrt schiebt die Vorwärtstaste die Lore in Blickrichtung an. Der Server bewegt Lore und Fahrer, so sehen alle dieselbe Fahrt.
+
+**Gleisenden und Sprünge**
+
+Eine Lore, die das Ende eines Gleises vor einem Block erreicht, hält dort. An einem offenen Ende behält sie ihr Tempo und fliegt weiter: Sie fällt, und von der Spitze einer Rampe springt sie. Wo sie landet, bleibt sie nach kurzem Rutschen stehen, gleitet auf Eis weit oder rollt auf einer Schiene mit ihrem Tempo entlang des Gleises weiter (quer zum Gleis gelandet, steht sie, bis die nächste Lore sie anstößt). Ein Fahrer fliegt mit und nimmt keinen Fallschaden.
 
 **Kolben und Loren**
 
@@ -240,13 +244,13 @@ Eine Truhenlore trägt eine Truhe: Benutze sie, um ihren Bildschirm wie bei eine
 
 **Siehe auch**
 
-[Schiene](blocks.md#block-qtcraft-rail), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Lore](items.md#item-qtcraft-minecart), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Trichterlore](items.md#item-qtcraft-hopper_minecart), [Signalkolben](blocks.md#block-qtcraft-signal_piston)
+[Schiene](blocks.md#block-qtcraft-rail), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Lore](items.md#item-qtcraft-minecart), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Trichterlore](items.md#item-qtcraft-hopper_minecart), [Signalkolben](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="chapter-qtcraft-health"></a>Gesundheit und Schaden
 
 **Gesundheit**
 
-Du hast 20 Lebenspunkte, als Herzen angezeigt. Stürze tiefer als 3 m kosten einen Punkt pro weiterem Meter; Wasser und Leitern fangen dich auf. Feindliche Wesen, Lava und Hunger verletzen ebenfalls. Nach einem Treffer bist du 0,5 s lang unverwundbar.
+Du hast 20 Lebenspunkte, als Herzen angezeigt. Stürze tiefer als 3 m kosten einen Punkt pro weiterem Meter; Wasser und Leitern fangen dich auf. Feindliche Wesen, Lava und Hunger verletzen ebenfalls. Nach einem Treffer bist du 0,5 s lang unverwundbar, außer gegen einen späteren Treffer, der stärker ist als der bisher stärkste: Er macht nur den Unterschied als Schaden. Wesen sind genauso geschützt.
 
 **Kämpfen**
 
@@ -488,9 +492,13 @@ Ein ganzer Tag dauert 600 s. Die Welt entsteht beim Erkunden aus ihrem Seed; ges
 
 Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und gießt sie anderswo aus. Wo Lava auf Wasser trifft, wird sie zu Obsidian oder Bruchstein. Lava erhellt ihre Umgebung, verbrennt Items und verletzt.
 
+**Rutschiger Boden**
+
+Eis, Packeis und blaues Eis sind rutschig. Darauf wirst du nur langsam schneller und rutschst weiter, wenn du loslässt, aus dem Gehen auf Eis etwa zwei Blöcke, auf blauem Eis etwas weiter; dein Höchsttempo bleibt gleich. Wesen und liegende Items rutschen auch, und Wesen gehen um Eis herum, wenn der Umweg kurz ist. Eine Lore ohne Schiene gleitet auf Eis weit, auf anderem Boden bleibt sie nach kurzem Rutschen stehen.
+
 **Siehe auch**
 
-[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
+[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice)
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 
@@ -525,7 +533,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -561,7 +569,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
 - `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen

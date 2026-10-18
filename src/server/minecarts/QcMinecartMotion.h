@@ -8,10 +8,12 @@
 
 // How a minecart moves in one tick (decision E-382), for one cart on its own: on a rail it follows
 // the track from end to end and on into the next rail whose end meets it (also up or down a slope),
-// keeps its momentum, speeds up downhill and slows uphill, loses speed to drag and stops at the end of
-// a track (or waits there with its speed while the chunk beyond is not loaded); off the rails it
-// falls and slides to a stop like any body. Deterministic: the same world and cart give the same
-// result at every place and in every rotation.
+// keeps its momentum, speeds up downhill and slows uphill and loses speed to drag. At the end of a
+// track it stops before a block level with the end (a buffer stop), waits with its speed while the
+// chunk beyond is not loaded, and else leaves the track with its velocity and flies on (decision
+// E-430); off the rails it falls and slides like any body, coasting far on ice, and gets on a rail
+// again that it comes close to. Deterministic: the same world and cart give the same result at every
+// place and in every rotation.
 namespace QcMinecartMotion {
 
 // Fastest speed along a track, metres per second (0.4 blocks per tick).
@@ -22,11 +24,11 @@ inline constexpr double slopeAcceleration = 3.125;
 // ridden one rolls far.
 inline constexpr double emptyDrag = 0.96;
 inline constexpr double riddenDrag = 0.997;
-// Slower than this on a level track, a cart stands still.
+// Slower than this on a level track or on the ground off the rails, a cart stands still.
 inline constexpr double restSpeed = 0.02;
 // A cart this close to a track (or closer) is on it.
 inline constexpr double snapDistance = 0.5;
-// A cart that stops at the end of a track stays this far inside the rail's cell.
+// A cart that stops at the end of a track (before a block) stays this far inside the rail's cell.
 inline constexpr double endInset = 0.02;
 // A powered rail adds this much speed per second along the way the cart rolls (0.06 blocks per tick
 // each tick, decision E-384) and starts a standing cart with `boostKick` away from a block at an end
@@ -50,13 +52,15 @@ struct Segment
 struct Result
 {
     bool onRail = false;
-    // The cart ran into the end of a track this tick and stopped there.
+    // The cart ran into the end of a track before a block this tick and stopped there.
     bool stoppedAtEnd = false;
+    // It left the end of a track with nothing in its way this tick and flies on off the rails.
+    bool derailed = false;
     // It stopped at the lower end of a slope that ends there: gravity holds it at that end, so it
     // stands like on a level track (QcMinecart::Rest).
     bool heldAtEnd = false;
-    // It reached the end of a track beyond which the chunk is not loaded: it waits there with its
-    // speed.
+    // It reached the end of a track beyond which the chunk is not loaded, or off the rails it would
+    // move into such a chunk: it waits there with its speed.
     bool waiting = false;
     // The rail it is on after the step; nothing off the rails.
     std::optional<Segment> segment;
@@ -65,8 +69,10 @@ struct Result
     bool deactivated = false;
 };
 
-// The track the feet are on (the rail in their cell, below or above it), if one is close enough.
-[[nodiscard]] std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails, const QcBlockAccess &world);
+// The track the feet are on (the rail in their cell, below or above it), if one is close enough;
+// `fromAbove` (a cart in the air) leaves out tracks whose nearest point lies higher than the feet.
+[[nodiscard]] std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails, const QcBlockAccess &world,
+                                               bool fromAbove = false);
 // Advances the cart by `dt` seconds.
 Result step(QcMinecart &cart, const QcRails::Table &rails, const QcBlockAccess &world, double dt);
 // The yaw (degrees, 0 looks north) of a cart moving along `direction`.

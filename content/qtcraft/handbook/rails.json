@@ -6,6 +6,7 @@
         "track",
         "carts",
         "riding",
+        "jumps",
         "pistons",
         "signal",
         "containers"
@@ -16,6 +17,7 @@
         "detector_rail",
         "activator_rail",
         "minecart",
+        "blue_ice",
         "chest_minecart",
         "hopper_minecart",
         "signal_piston"

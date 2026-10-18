@@ -69,7 +69,7 @@ private:
             m_server->tick();
             const double ms = double(timer.nsecsElapsed()) / 1e6;
             pump();
-            const qsizetype work = m_server->circuits().lastTickWork();
+            const qsizetype work = m_server->systems().circuits.lastTickWork();
             sample.meanMs += ms / count;
             sample.maxMs = std::max(sample.maxMs, ms);
             sample.meanWork += double(work) / count;
@@ -94,7 +94,7 @@ private:
         sample.ticks = measure(count, [&](int tick) {
             before(tick);
             if (tick > 0) {
-                const QcServerHoppers::Stats &stats = m_server->circuits().hoppers().lastTick();
+                const QcServerHoppers::Stats &stats = m_server->systems().circuits.hoppers().lastTick();
                 sample.meanActing += double(stats.acting) / count;
                 sample.meanSearches += double(stats.searches) / count;
                 sample.meanWoken += double(stats.woken) / count;
@@ -163,7 +163,7 @@ private:
               sample.maxMs, sample.meanWork, qint64(sample.maxWork));
     }
 
-    void toggleLever(QcBlockPos lever) { QVERIFY(m_server->circuits().use(lever)); }
+    void toggleLever(QcBlockPos lever) { QVERIFY(m_server->systems().circuits.use(lever)); }
 
     // One sorter unit (see test_signal_hoppers) at x below a hopper line at z = line, y = 3; the
     // filter holds 18 of `filter` and four stacks of 24 string.
@@ -333,7 +333,7 @@ private slots:
         hopperChains(count, u"stone"_s);
         // The first tick looks at every new hopper once, none of them searches.
         ticks(1);
-        QCOMPARE(m_server->circuits().hoppers().lastTick().searches, qsizetype(0));
+        QCOMPARE(m_server->systems().circuits.hoppers().lastTick().searches, qsizetype(0));
         settleBuild();
         const HopperSample sample = measureHoppers(100, [](int) {});
         reportHoppers("hoppers-covered", count, sample);

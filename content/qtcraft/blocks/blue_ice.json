@@ -1,0 +1,12 @@
+{
+    "name": "blue_ice",
+    "sound": "glass",
+    "hardness": 2.8,
+    "tool": "pickaxe",
+    "surface": {
+        "slipperiness": 0.989
+    },
+    "textures": {
+        "all": "blue_ice"
+    }
+}

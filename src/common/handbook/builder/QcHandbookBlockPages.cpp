@@ -346,6 +346,10 @@ void BlockPage::addMovementFacts()
     if (block.surfaceJump != 1.0) {
         addFact(u"surfaceJump"_s, m_text.percent(block.surfaceJump));
     }
+    // Slippery ground (decision E-430): the share of their speed walkers keep per tick on it.
+    if (block.slipperiness > QcPhysics::grippingSlipperiness) {
+        addFact(u"slipperiness"_s, m_text.percent(QcPhysics::slideKeep(block.slipperiness, QcPhysics::footDrag, QcPhysics::tickDuration)));
+    }
     if (!block.hardensWith.isEmpty()) {
         m_entry.facts.append({label(u"fact.hardens"_s).arg(m_links.itemTitle(block.hardensWith, m_text.language())), {},
                               {m_links.blockLink(block.hardensInto)}});

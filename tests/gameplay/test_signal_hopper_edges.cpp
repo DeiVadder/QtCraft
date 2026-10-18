@@ -40,7 +40,7 @@ private slots:
         qsizetype work = 0;
         for (int tick = 0; tick < 100; ++tick) {
             ticks(1);
-            work += m_server->circuits().lastTickWork();
+            work += m_server->systems().circuits.lastTickWork();
             QVERIFY(m_server->circuitState().changes.isEmpty());
         }
         QCOMPARE(work, 0);
@@ -53,7 +53,7 @@ private slots:
             ticks(1);
             // Noted at the end of a tick, looked at once at the start of the next.
             QVERIFY(m_server->circuitState().readers.size() <= 1);
-            QVERIFY2(m_server->circuits().lastTickWork() <= 8, qPrintable(QString::number(m_server->circuits().lastTickWork())));
+            QVERIFY2(m_server->systems().circuits.lastTickWork() <= 8, qPrintable(QString::number(m_server->systems().circuits.lastTickWork())));
         }
         QVERIFY(power(10, 0, 0) > 0);
     }

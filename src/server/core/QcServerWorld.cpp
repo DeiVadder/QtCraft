@@ -196,6 +196,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_hoppers.forgetChunk(pos);
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
+    m_blockEntityParts.remove(pos);
     m_villages->forgetChunk(pos);
 }
 
@@ -327,6 +328,9 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_villages->noteBlock(pos, before, block);
     m_blockEntities.placed(pos, before, block);
     m_fires.noteBlock(pos, before, block);
+    if (!m_blockEntityParts.isEmpty()) [[unlikely]] {
+        dropOrphanTails(pos);
+    }
 
     m_changed.insert(pos.chunk());
     m_differs.insert(pos.chunk());
@@ -356,6 +360,53 @@ void QcServerWorld::markChanged(QcChunkPos pos)
 {
     if (m_chunks.contains(pos)) {
         m_changed.insert(pos);
+    }
+}
+
+void QcServerWorld::keepBlockEntityParts(QcChunkPos pos, QcBlockEntityKept parts)
+{
+    if (parts.isEmpty()) {
+        m_blockEntityParts.remove(pos);
+    } else {
+        m_blockEntityParts[pos] = std::move(parts);
+    }
+}
+
+void QcServerWorld::dropOrphanTails(QcBlockPos pos)
+{
+    const auto parts = m_blockEntityParts.find(pos.chunk());
+    if (parts == m_blockEntityParts.end() || parts->entries.isEmpty()) {
+        return;
+    }
+    const auto tails = parts->entries.find(pos);
+    if (tails == parts->entries.end()) {
+        return;
+    }
+
+    // Scheduled ticks stay with a changed block (QcBlockEntities::placed); the backstop for them
+    // and for entries that end without a block change is QcBlockEntityRecords::pruneKept.
+    using Table = QcBlockEntityRecord::Table;
+    tails->removeIf([this, pos](const QcEntityComponent &tail) {
+        switch (Table(tail.id)) {
+        case Table::Containers:
+            return m_blockEntities.container(pos) == nullptr;
+        case Table::Machines:
+            return m_blockEntities.machine(pos) == nullptr;
+        case Table::Saplings:
+            return m_blockEntities.sapling(pos) == nullptr;
+        case Table::Memories:
+            return m_blockEntities.memory(pos) == nullptr;
+        case Table::Fires:
+            return !m_fires.contains(pos);
+        default:
+            return false;
+        }
+    });
+    if (tails->isEmpty()) {
+        parts->entries.erase(tails);
+    }
+    if (parts->isEmpty()) {
+        m_blockEntityParts.erase(parts);
     }
 }
 

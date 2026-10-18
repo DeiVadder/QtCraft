@@ -275,6 +275,27 @@ private slots:
         QVERIFY(villager(entity)->pose != QcPose::Lying);
     }
 
+    // A hit wakes a sleeper for the push alone, whatever the game rule mobInvulnerabilityTicks
+    // (decision E-429): with 0 it still wakes, with 200 it lies down again long before the window ends.
+    void aHitWakesASleeperWhateverTheRule()
+    {
+        start(0.7);
+        const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
+        const quint32 entity = settle(head, centreOf(m_feet.offset(-2, 0, 2))).id;
+        QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 1200));
+
+        for (const int rule : {0, 200}) {
+            chat(u"/gamerule mobInvulnerabilityTicks %1"_s.arg(rule));
+            ticks(1);
+            QVERIFY(villager(entity)->pose == QcPose::Lying);
+            QVERIFY(m_server->mobs().damage(entity, 1.0, villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}) == std::nullopt);
+            ticks(1);
+            QVERIFY2(villager(entity)->pose != QcPose::Lying, qPrintable(u"rule %1"_s.arg(rule)));
+            QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 150));
+            QVERIFY(m_server->mobs().find(entity)->hurt.active() == (rule == 200));
+        }
+    }
+
     // Thirty villagers meeting at the bell are a crowd that thinks in turns (decision E-401); they
     // still follow the routine when the meeting ends.
     void aCrowdAtTheBellStillFollowsTheRoutine()

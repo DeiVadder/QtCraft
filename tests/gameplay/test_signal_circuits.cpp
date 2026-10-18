@@ -399,8 +399,8 @@ private slots:
             m_server->circuitState().changes.append({at(i % 12, 0, 2), qcAirBlockId, qcAirBlockId});
         }
         ticks(1);
-        QVERIFY2(m_server->circuits().lastTickWork() <= 2 * QcServerLimits{}.signalBudget,
-                 qPrintable(QString::number(m_server->circuits().lastTickWork())));
+        QVERIFY2(m_server->systems().circuits.lastTickWork() <= 2 * QcServerLimits{}.signalBudget,
+                 qPrintable(QString::number(m_server->systems().circuits.lastTickWork())));
         QVERIFY(!m_server->circuitState().changes.isEmpty());
         QVERIFY(isBlock(6, 0, 8, "signal_torch"));
         ticks(1);

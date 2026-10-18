@@ -140,22 +140,47 @@ std::optional<QcMinecart::Rest> QcMinecartManager::restOf(QcBlockPos rail, const
     return rest;
 }
 
+QcMinecart::Rest QcMinecartManager::groundRestOf(const QcVec3 &position, const QcBlockAccess &world)
+{
+    const QcBlockPos cell = QcPhysics::blockContaining(position);
+    const QcAabb box = QcPhysics::boxAt(position, QcMinecartBody::width, QcMinecartBody::height);
+    const QcBlockPos low = QcPhysics::blockContaining(box.min);
+    const QcBlockPos high = QcPhysics::blockContaining(box.max);
+    QcMinecart::Rest rest{position, cell, qcAirBlockId, {}, {}, true};
+    // Cells beyond the body's columns, and those of a chunk that is not loaded, read as no block.
+    rest.around.fill(QcBlockId(~0u));
+    std::size_t next = 0;
+    for (int x = low.x; x <= std::min(high.x, low.x + 1); ++x) {
+        for (int z = low.z; z <= std::min(high.z, low.z + 1); ++z) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                rest.around[next++] = world.blockAt({x, cell.y + dy, z}).value_or(QcBlockId(~0u));
+            }
+        }
+    }
+    return rest;
+}
+
 bool QcMinecartManager::isResting(const QcMinecart &cart, const QcVec3 &push, const QcBlockAccess &world) const
 {
     // Anything that could move it (speed, a push, a piston, a changed rail or a rail or block laid
     // beyond its ends) wakes it.
-    return cart.rest && push.length() == 0.0 && cart.motion.velocity.length() == 0.0 && cart.motion.position == cart.rest->position
-           && restOf(cart.rest->rail, cart.rest->position, world) == cart.rest;
+    if (!cart.rest || push.length() != 0.0 || cart.motion.velocity.length() != 0.0 || cart.motion.position != cart.rest->position) {
+        return false;
+    }
+    if (cart.rest->offRails) {
+        return groundRestOf(cart.rest->position, world) == *cart.rest;
+    }
+    return restOf(cart.rest->rail, cart.rest->position, world) == cart.rest;
 }
 
 bool QcMinecartManager::canRest(const QcMinecart &cart, const QcMinecartMotion::Result &result, const QcBlockAccess &world) const
 {
     const std::optional<QcMinecartMotion::Segment> &segment = result.segment;
-    if (!segment) {
-        return false;
-    }
     if (cart.motion.velocity.length() != 0.0) {
         return false;
+    }
+    if (!segment) {
+        return !result.onRail && !result.waiting && cart.motion.onGround && !cart.motion.inWater;
     }
     // A powered rail that acts (boost, activate) acts on a standing cart too: a block laid at an end
     // starts it, a rider getting in is put out.
@@ -198,6 +223,12 @@ void QcMinecartManager::tick(const QcBlockAccess &world, const QList<QcAabb> &bo
             cart.enabled = true;
         }
         const std::optional<QcMinecartMotion::Segment> &segment = result.segment;
-        cart.rest = segment && canRest(cart, result, world) ? restOf(segment->cell, cart.motion.position, world) : std::nullopt;
+        if (!canRest(cart, result, world)) {
+            cart.rest.reset();
+        } else if (segment) {
+            cart.rest = restOf(segment->cell, cart.motion.position, world);
+        } else {
+            cart.rest = groundRestOf(cart.motion.position, world);
+        }
     }
 }

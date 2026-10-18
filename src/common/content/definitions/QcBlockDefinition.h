@@ -197,6 +197,10 @@ struct QcBlockDefinition
     // Factors on walking speed and jump of bodies standing on the block (mud). Reach the client.
     double surfaceSpeed = 1.0;
     double surfaceJump = 1.0;
+    // How slippery the block is to bodies on it, in the units of the original game (decision E-430):
+    // the default 0.6 grips, ice 0.98; above 0.6 bodies keep their momentum (QcPhysics::stepEntity).
+    // Reaches the client.
+    double slipperiness = grippingSlipperiness;
     // Touching a block named `hardensWith` (any state, e.g. water) turns this block into
     // `hardensInto` (concrete powder into concrete). Server side only.
     QString hardensWith;
@@ -238,6 +242,9 @@ struct QcBlockDefinition
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;
+    // Slipperiness of a block that grips (the default) and the most slippery a block may be.
+    static constexpr double grippingSlipperiness = 0.6;
+    static constexpr double maxSlipperiness = 0.995;
 
     // Whether the server gives the block random ticks (growing plants, crops, soil).
     bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }

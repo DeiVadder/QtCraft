@@ -89,5 +89,5 @@ protected:
         return m_server->items().spawn(entity, m_nextItemId++);
     }
 
-    const QcServerHoppers::Stats &hopperStats() const { return m_server->circuits().hoppers().lastTick(); }
+    const QcServerHoppers::Stats &hopperStats() const { return m_server->systems().circuits.hoppers().lastTick(); }
 };

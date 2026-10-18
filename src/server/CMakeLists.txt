@@ -72,6 +72,7 @@ target_sources(qc_server PRIVATE
     core/QcServerSetup.h core/QcServerSetup.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
+    core/QcServerSystems.h
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
 )
@@ -85,6 +86,7 @@ target_sources(qc_server PRIVATE
     entities/QcEntityComponent.h
     entities/QcExperienceOrb.h
     entities/QcFallingBlock.h
+    entities/QcHurtWindow.h entities/QcHurtWindow.cpp
     entities/QcItemEntity.h
     entities/QcMinecart.h
     entities/QcMovingBlock.h

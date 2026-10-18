@@ -81,7 +81,11 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
     if (thin) {
         return make(block.climbable ? Kind::Ladder : Kind::Wall, flags);
     }
-    return top <= 0.5 ? lowCell(top, flags) : make(Kind::Solid, flags);
+    if (top <= 0.5) {
+        return lowCell(top, flags);
+    }
+    // A slippery floor (ice, decision E-430) carries its flag where low cells keep their height.
+    return make(Kind::Solid, block.slipperiness > QcBlockDefinition::grippingSlipperiness ? quint8(flags | slipperyFlag) : flags);
 }
 
 } // namespace QcPathCell

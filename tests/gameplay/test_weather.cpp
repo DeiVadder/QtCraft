@@ -17,7 +17,7 @@ class TestWeather : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    const QcWeatherState &weather() const { return m_server->weather().state(); }
+    const QcWeatherState &weather() const { return m_server->systems().weather.state(); }
 
     // Ticks until the strengths of a newly set weather have fully faded in or out.
     void fade() { ticks(QcWeatherCycle::fadeTicks + 2); }
@@ -241,7 +241,7 @@ private slots:
         const QcTerrainGenerator generator(m_content, 42);
         for (int x = -2000; x <= 2000; x += 250) {
             const QcBiomeDefinition *biome = m_content->biome(generator.biomeAt(x, 300));
-            QCOMPARE(m_server->weather().climateAt(x, 300), QcWeather::climateOf(biome));
+            QCOMPARE(m_server->systems().weather.climateAt(x, 300), QcWeather::climateOf(biome));
         }
     }
 
@@ -249,28 +249,28 @@ private slots:
     {
         join();
         const QcBlockPos head = m_feet.offset(0, 1, 0);
-        QCOMPARE(m_server->weather().precipitationAt(head), QcPrecipitation::None);
+        QCOMPARE(m_server->systems().weather.precipitationAt(head), QcPrecipitation::None);
 
         chat(u"/weather rain"_s);
         ticks(QcWeatherCycle::fadeTicks / 10);
         // Below rainThreshold the sky darkens but nothing falls yet.
-        QCOMPARE(m_server->weather().precipitationAt(head), QcPrecipitation::None);
+        QCOMPARE(m_server->systems().weather.precipitationAt(head), QcPrecipitation::None);
         fade();
-        QVERIFY(m_server->weather().isRainingAt(head));
-        QVERIFY(m_server->weather().openToSky(m_feet));
+        QVERIFY(m_server->systems().weather.isRainingAt(head));
+        QVERIFY(m_server->systems().weather.openToSky(m_feet));
 
         // A roof three blocks up keeps it off everything below; above the roof it rains.
         QVERIFY(m_server->world().setBlock(m_feet.offset(0, 3, 0), id("qtcraft:stone")));
-        QVERIFY(!m_server->weather().isRainingAt(head));
-        QVERIFY(!m_server->weather().isRainingAt(m_feet));
-        QVERIFY(m_server->weather().isRainingAt(m_feet.offset(0, 4, 0)));
+        QVERIFY(!m_server->systems().weather.isRainingAt(head));
+        QVERIFY(!m_server->systems().weather.isRainingAt(m_feet));
+        QVERIFY(m_server->systems().weather.isRainingAt(m_feet.offset(0, 4, 0)));
         // Glass keeps rain out too; a torch (no sky stop) does not.
         QVERIFY(m_server->world().setBlock(m_feet.offset(0, 3, 0), id("qtcraft:glass")));
-        QVERIFY(!m_server->weather().isRainingAt(head));
+        QVERIFY(!m_server->systems().weather.isRainingAt(head));
         QVERIFY(m_server->world().setBlock(m_feet.offset(0, 3, 0), id("qtcraft:torch")));
-        QVERIFY(m_server->weather().isRainingAt(head));
+        QVERIFY(m_server->systems().weather.isRainingAt(head));
         // Columns that are not loaded are dry.
-        QVERIFY(!m_server->weather().openToSky({100000, 80, 100000}));
+        QVERIFY(!m_server->systems().weather.openToSky({100000, 80, 100000}));
     }
 
     void snowAboveTheSnowHeight()
@@ -279,8 +279,8 @@ private slots:
         chat(u"/weather rain"_s);
         fade();
         const QcBlockPos high{m_feet.x, QcWeather::snowHeight + 5, m_feet.z};
-        QVERIFY(m_server->weather().isSnowingAt(high));
-        QVERIFY(m_server->weather().isRainingAt(m_feet.offset(0, 1, 0)));
+        QVERIFY(m_server->systems().weather.isSnowingAt(high));
+        QVERIFY(m_server->systems().weather.isRainingAt(m_feet.offset(0, 1, 0)));
         QCOMPARE(m_client->weather->climate.snowFrom, QcWeather::snowHeight);
     }
 
@@ -288,43 +288,43 @@ private slots:
     void climateCacheKeepsAnsweringTheSame()
     {
         join();
-        const QcWeather::Climate here = m_server->weather().climateAt(m_feet.x, m_feet.z);
+        const QcWeather::Climate here = m_server->systems().weather.climateAt(m_feet.x, m_feet.z);
         for (int i = 0; i < 100'000; ++i) {
-            m_server->weather().climateAt(i % 400, i / 400);
+            m_server->systems().weather.climateAt(i % 400, i / 400);
             if (i % 10'000 == 0) {
-                QCOMPARE(m_server->weather().climateAt(m_feet.x, m_feet.z), here);
+                QCOMPARE(m_server->systems().weather.climateAt(m_feet.x, m_feet.z), here);
             }
         }
-        QCOMPARE(m_server->weather().climateAt(m_feet.x, m_feet.z), here);
+        QCOMPARE(m_server->systems().weather.climateAt(m_feet.x, m_feet.z), here);
     }
 
     void lightningOnlyInThunderAndIntoRain()
     {
         join();
         QList<QcBlockPos> struck;
-        m_server->weather().setStrikeHook([&struck](QcBlockPos pos) { struck.append(pos); });
+        m_server->systems().weather.setStrikeHook([&struck](QcBlockPos pos) { struck.append(pos); });
 
         chat(u"/gamerule weatherCycle false"_s);
         chat(u"/weather rain"_s);
         ticks(1000);
-        QCOMPARE(m_server->weather().strikes(), 0);
+        QCOMPARE(m_server->systems().weather.strikes(), 0);
 
         // Strikes fall only into the loaded columns around the player (about a fifth of the area in reach),
         // on average one in every 200 ticks of thunder: about a dozen in these ticks.
         chat(u"/weather thunder"_s);
         ticks(12000);
-        QVERIFY2(m_server->weather().strikes() >= 5, qPrintable(QString::number(m_server->weather().strikes())));
-        QCOMPARE(qsizetype(m_server->weather().strikes()), struck.size());
+        QVERIFY2(m_server->systems().weather.strikes() >= 5, qPrintable(QString::number(m_server->systems().weather.strikes())));
+        QCOMPARE(qsizetype(m_server->systems().weather.strikes()), struck.size());
         QCOMPARE(m_client->lightning.size(), struck.size());
         for (const QcBlockPos &pos : std::as_const(struck)) {
             QVERIFY(std::abs(pos.x - m_feet.x) <= QcServerWeather::strikeReach + 1);
             QVERIFY(std::abs(pos.z - m_feet.z) <= QcServerWeather::strikeReach + 1);
-            QVERIFY(m_server->weather().isRainingAt(pos));
-            QVERIFY(!m_server->weather().openToSky(pos.offset(0, -1, 0)));
+            QVERIFY(m_server->systems().weather.isRainingAt(pos));
+            QVERIFY(!m_server->systems().weather.openToSky(pos.offset(0, -1, 0)));
         }
 
         // A strike called directly reaches the player within hearing and the hook.
-        m_server->weather().strike(m_feet.offset(30, 0, 0));
+        m_server->systems().weather.strike(m_feet.offset(30, 0, 0));
         pump();
         QCOMPARE(struck.last(), m_feet.offset(30, 0, 0));
         QCOMPARE(m_client->lightning.last().x, m_feet.x + 30.5);
@@ -353,19 +353,19 @@ private slots:
 
         // A strike near one player reaches only that one.
         const QcBlockPos nearOther{int(std::floor(there.x)) + 10, int(std::floor(there.y)), int(std::floor(there.z))};
-        m_server->weather().strike(nearOther);
+        m_server->systems().weather.strike(nearOther);
         pump();
         QCOMPARE(other->lightning.size(), 1);
         QCOMPARE(m_client->lightning.size(), 0);
         const QcBlockPos nearRaw{int(std::floor(here.x)) - 10, int(std::floor(here.y)), int(std::floor(here.z))};
-        m_server->weather().strike(nearRaw);
+        m_server->systems().weather.strike(nearRaw);
         pump();
         QCOMPARE(other->lightning.size(), 1);
         QCOMPARE(m_client->lightning.size(), 1);
 
         // In a thunderstorm both players get strikes of their own, each within its reach.
         QList<QcBlockPos> struck;
-        m_server->weather().setStrikeHook([&struck](QcBlockPos pos) { struck.append(pos); });
+        m_server->systems().weather.setStrikeHook([&struck](QcBlockPos pos) { struck.append(pos); });
         chat(u"/gamerule weatherCycle false"_s);
         chat(u"/weather thunder"_s);
         ticks(6000);

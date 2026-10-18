@@ -189,7 +189,15 @@ SurfaceFactors surfaceUnder(const QcBlockAccess &world, const QcVec3 &feet)
     }
 
     const QcBlockDefinition &definition = content.block(*block);
-    return {definition.surfaceSpeed, definition.surfaceJump};
+    return {definition.surfaceSpeed, definition.surfaceJump, definition.slipperiness};
+}
+
+double slideKeep(double slipperiness, double drag, double dt)
+{
+    if (slipperiness <= grippingSlipperiness && drag < coastDrag) {
+        return 0.0;
+    }
+    return std::pow(slipperiness * drag, dt * tickRate);
 }
 
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos)
@@ -332,11 +340,13 @@ MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize
     const double inside = slowdownInside(world, body);
     motion.slowed = inside < 1.0;
     const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
-    const double blend = std::min(1.0, acceleration * dt);
+    const SurfaceFactors ground = motion.onGround ? surfaceUnder(world, motion.position) : SurfaceFactors{};
+    // On slippery ground (ice) the body keeps most of its velocity: it gains speed and stops slowly.
+    const double keep = motion.inWater ? 0.0 : slideKeep(ground.slipperiness, steering.slideDrag, dt);
+    const double blend = std::min(1.0, acceleration * dt) * (1.0 - keep);
     // Thick liquids (lava) slow every movement inside them, cobwebs too, and mud slows walking on it.
     const double liquid = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
-    const double surface = motion.onGround ? surfaceUnder(world, motion.position).speed : 1.0;
-    const double factor = liquid * inside * surface;
+    const double factor = liquid * inside * ground.speed;
     motion.velocity.x += (steering.wish.x * steering.speed * factor - motion.velocity.x) * blend;
     motion.velocity.z += (steering.wish.z * steering.speed * factor - motion.velocity.z) * blend;
 

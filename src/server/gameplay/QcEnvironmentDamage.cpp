@@ -43,7 +43,7 @@ void QcEnvironmentDamage::applyContactDamage()
     }
 
     for (const auto &client : m_state.clients()) {
-        if (client->state != QcServerClient::State::Playing || client->dead) {
+        if (client->state != QcServerClient::State::Playing || client->dead || !contactDue(*client)) {
             continue;
         }
 
@@ -56,6 +56,10 @@ void QcEnvironmentDamage::applyContactDamage()
     // Hurting may remove a mob, so the damage is collected before any is dealt.
     QList<std::pair<quint32, double>> touched;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
+        if (!contactDue(mob)) {
+            continue;
+        }
+
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
         if (const double damage = contactDamageOf(m_state, mob.motion.position, definition.width, definition.height);
             damage > 0.0) {
@@ -82,6 +86,11 @@ void QcEnvironmentDamage::applyContactDamage()
     m_state.entities().items().removeWhere([this](const QcItemEntity &item) {
         return m_state.contactDamage().in(m_state.world(), QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)) > 0.0;
     });
+}
+
+bool QcEnvironmentDamage::contactDue(const QcEntity &body) const
+{
+    return (m_state.clock().tick() + body.id) % quint64(contactIntervalTicks) == 0;
 }
 
 namespace {

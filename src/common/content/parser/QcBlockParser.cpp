@@ -443,7 +443,7 @@ void parseFireFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     }
 }
 
-// Slowing inside (cobweb), the walking surface (mud) and hardening next to another block
+// Slowing inside (cobweb), the walking surface (mud, ice) and hardening next to another block
 // (concrete powder), decisions E-207 and E-208.
 void parseMovementFields(QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
 {
@@ -455,6 +455,8 @@ void parseMovementFields(QcBlockDefinition &block, QcJsonFieldReader &reader, co
     reader.nestedObject(u"surface"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) {
         block.surfaceSpeed = nested.number(u"speed"_s, 1.0, 0.1, 2.0);
         block.surfaceJump = nested.number(u"jump"_s, 1.0, 0.1, 2.0);
+        block.slipperiness = nested.number(u"slipperiness"_s, QcBlockDefinition::grippingSlipperiness, QcBlockDefinition::grippingSlipperiness,
+                                           QcBlockDefinition::maxSlipperiness);
     });
     reader.nestedObject(u"hardens"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         block.hardensWith = nested.name(u"with"_s, packNamespace);

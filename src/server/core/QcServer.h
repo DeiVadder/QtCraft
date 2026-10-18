@@ -14,6 +14,7 @@
 #include "server/core/QcServerDebug.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/core/QcServerSystems.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -96,25 +97,15 @@ public:
     const QcMachineRules &machineRules() const { return m_state.machineRules(); }
     QcLiquidFlow &liquids() { return m_state.liquids(); }
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
-    // Fire (decision E-392): the queue of the burning fires and their step in the tick.
+    // Fire (decision E-392): the queue of the burning fires.
     QcFireQueue &fires() { return m_state.world().fires(); }
-    QcServerFire &fire() { return m_fire; }
-    // Flint and steel, dispensers and lava lighting fire (decision E-393).
-    QcFireIgnition &ignition() { return m_ignition; }
-    QcBodyBurning &burning() { return m_burning; }
-    // The weather, where it rains and snows, and lightning (decision E-395).
-    QcServerWeather &weather() { return m_weather; }
-    const QcLightningStrike &lightning() const { return m_lightning; }
-    const QcSnowfall &snowfall() const { return m_snowfall; }
+    // The gameplay systems: fire, burning, health, weather, minecarts, experience, projectiles and
+    // circuits.
+    QcServerSystems &systems() { return m_systems; }
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
     QcMinecartManager &carts() { return m_state.entities().minecarts(); }
-    QcServerMinecarts &minecarts() { return m_minecarts; }
-    // Experience orbs and the players' experience (decision E-398).
+    // Experience orbs (decision E-398).
     QcExperienceOrbManager &orbs() { return m_state.entities().orbs(); }
-    QcServerExperience &experience() { return m_experience; }
-    QcServerProjectiles &projectiles() { return m_projectiles; }
-    // Signal Dust circuits (decision E-335).
-    QcServerCircuits &circuits() { return m_circuits; }
     QcCircuitState &circuitState() { return m_state.circuits(); }
     QcHopperQueue &hopperQueue() { return m_state.hoppers(); }
     // The contents of the container or machine at `pos` changed (set by a test or tool): comparators
@@ -295,4 +286,5 @@ private:
     qint64 m_lastSprintSyncNs = 0;
     quint64 m_autosaves = 0;
     QcServerDebug m_debug;
+    QcServerSystems m_systems;
 };

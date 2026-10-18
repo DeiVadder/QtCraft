@@ -80,7 +80,7 @@ void QcChunkIo::store(const Departure &departure)
 
     // Removing what was never stored would only make the next save look at the region.
     if (!departure.blockEntities.isEmpty() || departure.marks != 0) {
-        m_store.put(Kind::BlockEntities, pos, QcBlockEntityCodec::encode(departure.blockEntities, *m_content), departure.marks);
+        storeBlockEntities(departure);
     } else if (m_store.has(Kind::BlockEntities, pos)) {
         m_store.put(Kind::BlockEntities, pos, std::nullopt);
     }
@@ -89,6 +89,22 @@ void QcChunkIo::store(const Departure &departure)
     } else if (m_store.has(Kind::Entities, pos)) {
         m_store.put(Kind::Entities, pos, std::nullopt);
     }
+}
+
+void QcChunkIo::storeBlockEntities(const Departure &departure)
+{
+    // A blob beyond what a region file reads would make the whole region unreadable on the next
+    // open (decision E-440): what was stored before stays instead, with a warning.
+    QStringList warnings;
+    const QcResult<QByteArray> blob = QcBlockEntityCodec::encodeWithin(departure.blockEntities, *m_content, warnings, m_blockEntityLimit);
+    for (const QString &warning : std::as_const(warnings)) {
+        qWarning("%s", qPrintable(warning));
+    }
+    if (!blob) {
+        qWarning("%s; the block entities saved before stay", qPrintable(blob.error()));
+        return;
+    }
+    m_store.put(QcChunkStore::Kind::BlockEntities, departure.pos, *blob, departure.marks);
 }
 
 void QcChunkIo::read(QcChunkPos pos, quint64 request)

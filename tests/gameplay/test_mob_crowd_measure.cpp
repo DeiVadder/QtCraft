@@ -84,7 +84,7 @@ private:
         const QList<QcMobCrowd::Crammed> crammed = mobs.crammed(m_cramming);
         for (const QcMobCrowd::Crammed &one : crammed) {
             const QcCreature *mob = mobs.find(one.id);
-            if ((tick + one.id) % QcServerCreatures::crammingPhases != 0 || !mob || mob->hurtTimer > 0.0
+            if ((tick + one.id) % QcServerCreatures::crammingPhases != 0 || !mob || mob->hurt.active()
                 || one.count - diedIn.value(one.cell) <= m_cramming) {
                 continue;
             }

@@ -40,17 +40,24 @@ struct QcMinecart : QcEntity
     // Hopper carts: they rest until this tick after moving an item (not saved).
     quint64 readyAt = 0;
 
-    // Where a cart came to rest on a level rail or at the lower end of a slope that ends there (not
-    // saved): while it stays there, without speed, pushes, a rider getting in or a change of that rail
-    // or of the cells beyond its track's ends, its tick has nothing to do.
+    // Where a cart came to rest on a level rail, at the lower end of a slope that ends there or on the
+    // ground off the rails (not saved): while it stays there, without speed, pushes, a rider getting in
+    // or a change of that rail or of the cells beyond its track's ends (off the rails: of the cells
+    // around it), its tick has nothing to do.
     struct Rest
     {
         QcVec3 position;
+        // On a rail: its cell and block. Off the rails: the cell of the cart's feet and air.
         QcBlockPos rail;
         QcBlockId block = qcAirBlockId;
         // The blocks beyond the first and the second end of the track, level with the rail, one
         // higher and one lower: a rail laid there carries a cart on down a slope.
         std::array<QcBlockId, 6> beyond{};
+        // Off the rails: the blocks of the columns its body overlaps (at most 2 x 2), from the cell
+        // under its feet to the one above them: the ground under it, what flows into it, a rail it
+        // would get on.
+        std::array<QcBlockId, 12> around{};
+        bool offRails = false;
 
         bool operator==(const Rest &) const = default;
     };

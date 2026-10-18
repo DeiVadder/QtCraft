@@ -67,13 +67,14 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     // removes a dead creature.
     const bool young = mob->isYoung();
 
-    // Hits during the short invulnerability after a hit do nothing, and make no sound.
-    const bool vulnerable = mob->hurtTimer <= 0.0;
+    // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
+    // are stronger: those deal the difference, silently (decision E-429).
+    const QcHurtWindow::Take take = mob->hurt.wouldTake(blow.damage);
     const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().damage(blow.creature, blow.damage, blow.from, blow.knockback);
     if (drops) {
         state.entities().noteDeath(blow.creature);
         sounds.play(definition.deathSound, lootPosition);
-    } else if (vulnerable) {
+    } else if (take == QcHurtWindow::Take::Fresh) {
         sounds.play(definition.hurtSound, lootPosition);
     }
 
@@ -85,7 +86,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
             QcServerExperience::drop(state, QcServerExperience::roll(state, definition.experience), lootPosition);
         }
     }
-    return vulnerable;
+    return take != QcHurtWindow::Take::Ignored;
 }
 
 void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)

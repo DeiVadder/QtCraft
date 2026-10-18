@@ -3,6 +3,9 @@
     "sound": "glass",
     "hardness": 0.5,
     "tool": "pickaxe",
+    "surface": {
+        "slipperiness": 0.98
+    },
     "textures": {
         "all": "packed_ice"
     }

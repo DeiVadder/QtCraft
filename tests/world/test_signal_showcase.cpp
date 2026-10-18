@@ -1,4 +1,6 @@
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "server/blocks/QcRails.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 
@@ -11,7 +13,10 @@ using namespace Qt::StringLiterals;
 // lit lamps, an opened door, dust shapes, a burnt-out clock, a waiting and an updated BUD piston, a
 // spat block, a closed and an open piston door, a pushed chest with its contents and armour stand,
 // a long wire; the rails station of stage 32.2 (a cart kept going by powered rails lights a lamp at
-// a detector rail, carts unloaded into chests by hoppers under the rails).
+// a detector rail, carts unloaded into chests by hoppers under the rails); the ice station of stage
+// 54 (a cart kept going by powered rails jumps a gap off a ramp and lands on the track again, round
+// after round; a cart rolls off its track onto blue ice and coasts far); the tracks of the stations
+// with carts end at a buffer stop except where a cart is meant to fly off (decision E-430).
 class TestSignalShowcase : public QcServerTestFixture
 {
     Q_OBJECT
@@ -91,7 +96,51 @@ private:
         return poured && block(demo, 2, 2, 2) == u"air"_s;
     }
 
+    // The ends of the tracks in a demo with no rail going on and no block level with them (a cart flies
+    // off there), as "x y z side" in the demo's coordinates.
+    QStringList openTrackEnds(const QString &demo)
+    {
+        static constexpr std::array<const char *, 6> sideNames{"east", "west", "up", "down", "south", "north"};
+        const QcShowcaseAreaInfo info = area(demo);
+        for (int x = 0; x < info.sizeX; x += QcWorld::chunkSize) {
+            for (int z = 0; z < info.sizeZ; z += QcWorld::chunkSize) {
+                m_server->world().loadChunk(info.origin.offset(x, 0, z).chunk());
+            }
+            m_server->world().loadChunk(info.origin.offset(x, 0, info.sizeZ - 1).chunk());
+        }
+        m_server->world().loadChunk(info.origin.offset(info.sizeX - 1, 0, info.sizeZ - 1).chunk());
+
+        const QcRails::Table &rails = m_server->carts().rails();
+        QStringList open;
+        for (int x = -1; x <= info.sizeX; ++x) {
+            for (int y = 0; y < info.sizeY; ++y) {
+                for (int z = -1; z <= info.sizeZ; ++z) {
+                    const QcBlockPos cell = info.origin.offset(x, y, z);
+                    const std::optional<QcRails::Track> &track = rails.trackOf(m_server->world().blockAt(cell).value_or(qcAirBlockId));
+                    for (int end = 0; track && end < 2; ++end) {
+                        const QcRails::End &at = track->ends[std::size_t(end)];
+                        const QcBlockPos beyond = qcNeighbour(cell, at.side).offset(0, at.raised ? 1 : 0, 0);
+                        if (!QcRails::joined(m_server->world(), rails, cell, *track, end)
+                            && QcPhysics::collisionBoxesAt(m_server->world(), beyond).isEmpty()) {
+                            open.append(u"%1 %2 %3 %4"_s.arg(x).arg(y).arg(z).arg(QLatin1StringView(sideNames[std::size_t(at.side)])));
+                        }
+                    }
+                }
+            }
+        }
+        return open;
+    }
+
 private slots:
+    void stationTracksEndAtBufferStops()
+    {
+        // The ice station's ramp, off whose top the loop cart jumps, and the track that sends a
+        // cart onto the blue ice are open on purpose.
+        QCOMPARE(openTrackEnds(u"demo-rails"_s), QStringList());
+        QCOMPARE(openTrackEnds(u"demo-rails_signal"_s), QStringList());
+        QCOMPARE(openTrackEnds(u"demo-ice_slide"_s), (QStringList{u"4 1 9 east"_s, u"14 1 4 west"_s}));
+    }
+
     void initTestCase()
     {
         // A world directory, so the showcase's setup runs; the player sees a whole demo.
@@ -264,6 +313,46 @@ private slots:
             }
             QVERIFY2(count > 5, qPrintable(u"chest at %1: %2"_s.arg(x).arg(count)));
         }
+    }
+
+    void iceStationJumpsAndSlides()
+    {
+        const QString demo = u"demo-ice_slide"_s;
+        visit(demo);
+        const QcBlockPos base = origin(demo);
+        const auto localOf = [&](const QcMinecart &cart) { return cart.motion.position - QcVec3{double(base.x), double(base.y), double(base.z)}; };
+        const auto cartIn = [&](double fromZ, double toZ) -> const QcMinecart * {
+            for (const QcMinecart &cart : m_server->carts().all()) {
+                const QcVec3 at = localOf(cart);
+                if (at.x >= 0.0 && at.x <= 20.0 && at.z >= fromZ && at.z <= toZ) {
+                    return &cart;
+                }
+            }
+            return nullptr;
+        };
+        QVERIFY(cartIn(0.0, 5.5));
+
+        // The player stands beside the loop, out of the carts' way (walking into one pushes it). The
+        // loop cart jumps the gap at x 13 (over it, higher than the track) and lands on the
+        // track behind it, round after round.
+        int jumps = 0;
+        bool over = false;
+        for (int tick = 0; tick < 600; ++tick) {
+            idle(1);
+            const QcMinecart *cart = cartIn(0.0, 5.5);
+            QVERIFY(cart);
+            const QcVec3 at = localOf(*cart);
+            const bool now = at.x > 12.6 && at.x < 13.4 && at.z > 4.0 && at.z < 5.0 && at.y > 1.2;
+            jumps += now && !over ? 1 : 0;
+            over = now;
+        }
+        QVERIFY2(jumps >= 2, qPrintable(QString::number(jumps)));
+
+        // The other cart left its track and coasted far along the blue ice, and stands there.
+        const QcMinecart *slid = cartIn(8.0, 11.0);
+        QVERIFY(slid);
+        QVERIFY2(localOf(*slid).x > 8.0, qPrintable(QString::number(localOf(*slid).x)));
+        QCOMPARE(slid->motion.velocity.length(), 0.0);
     }
 };
 

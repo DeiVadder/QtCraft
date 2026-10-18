@@ -109,7 +109,8 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
         }
     } else {
         for (const auto &client : m_state.clients()) {
-            if (client->id == hit.body && isPresent(*client) && client->hurtTimer <= 0.0 && !client->rules().invulnerable) {
+            if (client->id == hit.body && isPresent(*client) && client->hurt.wouldTake(impact.damage) != QcHurtWindow::Take::Ignored
+                && !client->rules().invulnerable) {
                 hitPlayer(*client, impact, along);
                 took = true;
             }
@@ -129,13 +130,17 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     client.burnTicks = std::max(client.burnTicks, impact.burnTicks);
 
     // The damage without its push, then the push of the knockback effects (also without damage).
+    // A stronger hit during the invulnerability does not push (decision E-429).
+    const QcHurtWindow::Take take = client.hurt.wouldTake(impact.damage);
     m_health.damage(client, impact.damage, {}, QcPlayerHealth::DamageKind::Armoured);
     if (client.dead) {
         client.burnTicks = 0;
         return;
     }
 
-    QcPlayerHealth::knock(client, along, impact.knockback);
+    if (take == QcHurtWindow::Take::Fresh) {
+        QcPlayerHealth::knock(client, along, impact.knockback);
+    }
     // A hit without damage sends no health by itself; the client still has to see the fire.
     if (alight && impact.damage <= 0.0) {
         m_health.sendHealth(client);

@@ -7,6 +7,9 @@
     "hardness": 0.5,
     "tool": "pickaxe",
     "drops": [],
+    "surface": {
+        "slipperiness": 0.98
+    },
     "textures": {
         "all": "ice"
     }

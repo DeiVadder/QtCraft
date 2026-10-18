@@ -90,23 +90,23 @@ private slots:
         set(open.offset(1, 0, 0), "qtcraft:oak_log");
         set(roofed.offset(-1, 0, 0), "qtcraft:oak_log");
         set(roofed.offset(0, 3, 0), "qtcraft:stone");
-        QVERIFY(m_server->weather().isRainingAt(open));
-        QVERIFY(!m_server->weather().isRainingAt(roofed));
-        QVERIFY(m_server->fire().ignite(open));
-        QVERIFY(m_server->fire().ignite(roofed));
+        QVERIFY(m_server->systems().weather.isRainingAt(open));
+        QVERIFY(!m_server->systems().weather.isRainingAt(roofed));
+        QVERIFY(m_server->systems().fire.ignite(open));
+        QVERIFY(m_server->systems().fire.ignite(roofed));
 
         // 30 steps at most; the roofed fire lives at least 45 steps of 30 ticks.
         ticks(30 * stepTicks);
         QVERIFY(!isFire(open));
         QVERIFY(isFire(roofed));
-        QCOMPARE(m_server->fire().numbers().rainedOut, 1u);
+        QCOMPARE(m_server->systems().fire.numbers().rainedOut, 1u);
 
         // Clear weather: a fire under the open sky burns on.
         setWeather(u"clear"_s);
-        QVERIFY(m_server->fire().ignite(open));
+        QVERIFY(m_server->systems().fire.ignite(open));
         ticks(10 * stepTicks);
         QVERIFY(isFire(open));
-        QCOMPARE(m_server->fire().numbers().rainedOut, 1u);
+        QCOMPARE(m_server->systems().fire.numbers().rainedOut, 1u);
     }
 
     void fireDoesNotSpreadIntoTheRain()
@@ -120,10 +120,10 @@ private slots:
                 set(m_feet.offset(dx, -1, dz), "qtcraft:oak_planks");
             }
         }
-        QVERIFY(m_server->fire().spreads());
-        QVERIFY(m_server->fire().ignite(m_feet.offset(0, 0, 2)));
+        QVERIFY(m_server->systems().fire.spreads());
+        QVERIFY(m_server->systems().fire.ignite(m_feet.offset(0, 0, 2)));
         ticks(60 * stepTicks);
-        QCOMPARE(m_server->fire().numbers().lit, 1u);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 1u);
         QVERIFY(!isFire(m_feet.offset(0, 0, 2)));
     }
 
@@ -132,11 +132,11 @@ private slots:
         join();
         setWeather(u"rain"_s);
         set(m_feet.offset(2, -1, 0), "qtcraft:magma_block");
-        QVERIFY(m_server->fire().ignite(m_feet.offset(2, 0, 0)));
-        QVERIFY(m_server->weather().isRainingAt(m_feet.offset(2, 0, 0)));
+        QVERIFY(m_server->systems().fire.ignite(m_feet.offset(2, 0, 0)));
+        QVERIFY(m_server->systems().weather.isRainingAt(m_feet.offset(2, 0, 0)));
         ticks(20 * stepTicks);
         QVERIFY(isFire(m_feet.offset(2, 0, 0)));
-        QCOMPARE(m_server->fire().numbers().rainedOut, 0u);
+        QCOMPARE(m_server->systems().fire.numbers().rainedOut, 0u);
     }
 
     void rainPutsOutBurningPlayersAndCreatures()
@@ -240,16 +240,16 @@ private slots:
         }
 
         setWeather(u"rain"_s);
-        const quint64 columnsBefore = m_server->snowfall().columns();
-        quint64 layers = m_server->snowfall().layers();
+        const quint64 columnsBefore = m_server->systems().snowfall.columns();
+        quint64 layers = m_server->systems().snowfall.layers();
         const int columnsPerTick = m_content->weather().snow.columnsPerTick;
         for (int tick = 0; tick < 3000; ++tick) {
             ticks(1);
             // Bounded per tick: columnsPerTick per player, each at most one layer.
-            QVERIFY(m_server->snowfall().layers() - layers <= quint64(columnsPerTick));
-            layers = m_server->snowfall().layers();
+            QVERIFY(m_server->systems().snowfall.layers() - layers <= quint64(columnsPerTick));
+            layers = m_server->systems().snowfall.layers();
         }
-        QCOMPARE(m_server->snowfall().columns() - columnsBefore, quint64(3000 * columnsPerTick));
+        QCOMPARE(m_server->systems().snowfall.columns() - columnsBefore, quint64(3000 * columnsPerTick));
         QVERIFY2(layers >= 10, qPrintable(QString::number(layers)));
 
         // Only on the open stone: not on the ground in the rain, not under the glass, not twice.
@@ -263,9 +263,9 @@ private slots:
 
         // No snow without snowfall.
         setWeather(u"clear"_s);
-        const quint64 clear = m_server->snowfall().layers();
+        const quint64 clear = m_server->systems().snowfall.layers();
         ticks(500);
-        QCOMPARE(m_server->snowfall().layers(), clear);
+        QCOMPARE(m_server->systems().snowfall.layers(), clear);
     }
 
     void snowLayersStayWithTheWorld()
@@ -301,27 +301,27 @@ private slots:
         const double pigHealth = m_server->mobs().find(near)->health;
         const double health = m_client->health;
 
-        m_server->weather().strike(m_feet.offset(1, 0, 0));
+        m_server->systems().weather.strike(m_feet.offset(1, 0, 0));
         pump();
         QCOMPARE(m_client->health, health - lightning.damage);
         QVERIFY(m_client->burning);
         QCOMPARE(m_server->mobs().find(near)->health, pigHealth - lightning.damage);
         QVERIFY(m_server->mobs().find(near)->burnTicks > 0);
         QCOMPARE(m_server->mobs().find(far)->health, pigHealth);
-        QCOMPARE(m_server->lightning().numbers().playersHit, 1u);
-        QCOMPARE(m_server->lightning().numbers().creaturesHit, 1u);
+        QCOMPARE(m_server->systems().lightning.numbers().playersHit, 1u);
+        QCOMPARE(m_server->systems().lightning.numbers().creaturesHit, 1u);
         // fireSpread off: no fire.
-        QCOMPARE(m_server->lightning().numbers().fires, 0u);
-        QCOMPARE(m_server->fire().numbers().lit, 0u);
+        QCOMPARE(m_server->systems().lightning.numbers().fires, 0u);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 0u);
 
         // Players in creative mode are spared.
         chat(u"/gamemode creative"_s);
         ticks(QcPhysics::tickRate * 2);
         const double creative = m_client->health;
-        m_server->weather().strike(m_feet);
+        m_server->systems().weather.strike(m_feet);
         pump();
         QCOMPARE(m_client->health, creative);
-        QCOMPARE(m_server->lightning().numbers().playersHit, 1u);
+        QCOMPARE(m_server->systems().lightning.numbers().playersHit, 1u);
     }
 
     void lightningLightsFireOnlyWithinTheGuarantees()
@@ -329,18 +329,18 @@ private slots:
         join();
         const int sparks = m_content->weather().lightning.sparks;
         // Fire spreads: the struck cell and at most sparks - 1 more catch, each as its own spark.
-        m_server->weather().strike(m_feet.offset(2, 0, 2));
+        m_server->systems().weather.strike(m_feet.offset(2, 0, 2));
         QVERIFY(isFire(m_feet.offset(2, 0, 2)));
-        QVERIFY(m_server->lightning().numbers().fires >= 1u);
-        QVERIFY(std::cmp_less_equal(m_server->lightning().numbers().fires, sparks));
-        QCOMPARE(m_server->fire().numbers().lit, m_server->lightning().numbers().fires);
+        QVERIFY(m_server->systems().lightning.numbers().fires >= 1u);
+        QVERIFY(std::cmp_less_equal(m_server->systems().lightning.numbers().fires, sparks));
+        QCOMPARE(m_server->systems().fire.numbers().lit, m_server->systems().lightning.numbers().fires);
 
         // Off: no fire.
         chat(u"/gamerule fireSpread false"_s);
-        const quint64 lit = m_server->fire().numbers().lit;
-        m_server->weather().strike(m_feet.offset(-2, 0, -2));
+        const quint64 lit = m_server->systems().fire.numbers().lit;
+        m_server->systems().weather.strike(m_feet.offset(-2, 0, -2));
         QVERIFY(!isFire(m_feet.offset(-2, 0, -2)));
-        QCOMPARE(m_server->fire().numbers().lit, lit);
+        QCOMPARE(m_server->systems().fire.numbers().lit, lit);
     }
 
     void lightningRespectsTheFireCaps()
@@ -352,8 +352,8 @@ private slots:
 
         // The chunk has its one fire: a strike in it lights nothing more.
         const QcBlockPos first = m_feet.offset(1, 0, 1);
-        QVERIFY(m_server->fire().ignite(first));
-        QCOMPARE(m_server->fire().numbers().lit, 1u);
+        QVERIFY(m_server->systems().fire.ignite(first));
+        QCOMPARE(m_server->systems().fire.numbers().lit, 1u);
         // The spawn lies at a chunk corner: a cell of the stage two blocks from the first fire.
         QcBlockPos struck = first;
         for (const QcBlockPos candidate : {first.offset(2, 0, 0), first.offset(-2, 0, 0), first.offset(0, 0, 2), first.offset(0, 0, -2)}) {
@@ -362,17 +362,17 @@ private slots:
             }
         }
         QVERIFY(struck != first);
-        m_server->weather().strike(struck);
-        QCOMPARE(m_server->fire().numbers().lit, 1u);
-        QVERIFY(m_server->fire().numbers().refused >= 1);
+        m_server->systems().weather.strike(struck);
+        QCOMPARE(m_server->systems().fire.numbers().lit, 1u);
+        QVERIFY(m_server->systems().fire.numbers().refused >= 1);
 
         // fireSpreadRadius 0 (server setting): no fire either.
         QcServerConfig still;
         still.limits.fireSpreadRadius = 0;
         still.limitsFromServer = true;
         join(still);
-        m_server->weather().strike(m_feet.offset(2, 0, 2));
-        QCOMPARE(m_server->fire().numbers().lit, 0u);
+        m_server->systems().weather.strike(m_feet.offset(2, 0, 2));
+        QCOMPARE(m_server->systems().fire.numbers().lit, 0u);
     }
 
     void strikesAsOftenAsTheContentSays()
@@ -380,21 +380,21 @@ private slots:
         QCOMPARE(m_content->weather().lightning.meanSeconds, 10.0);
         const auto strikesIn = [this](int ticksOfThunder) {
             join();
-            m_server->weather().setStrikeHook({});
+            m_server->systems().weather.setStrikeHook({});
             setWeather(u"thunder"_s);
-            const quint64 before = m_server->weather().strikes();
+            const quint64 before = m_server->systems().weather.strikes();
             ticks(ticksOfThunder);
-            return m_server->weather().strikes() - before;
+            return m_server->systems().weather.strikes() - before;
         };
 
         const quint64 often = [&] {
             changeWeather([](QcWeatherDefinition &weather) { weather.lightning.meanSeconds = 1.0; });
             return strikesIn(2000);
         }();
-        QCOMPARE(m_server->weather().meanStrikeTicks(), 20);
+        QCOMPARE(m_server->systems().weather.meanStrikeTicks(), 20);
         m_content = loadContent();
         const quint64 normal = strikesIn(2000);
-        QCOMPARE(m_server->weather().meanStrikeTicks(), 200);
+        QCOMPARE(m_server->systems().weather.meanStrikeTicks(), 200);
         QVERIFY2(often > 4 * normal && often >= 20, qPrintable(u"%1 %2"_s.arg(often).arg(normal)));
     }
 
@@ -404,9 +404,9 @@ private slots:
     {
         using Strikes = QMap<qint64, QcBlockPos>;
         const auto record = [this](Strikes &strikes, int count) {
-            m_server->weather().setStrikeHook([this, &strikes](QcBlockPos pos) { strikes.insert(m_server->weather().state().ticks, pos); });
+            m_server->systems().weather.setStrikeHook([this, &strikes](QcBlockPos pos) { strikes.insert(m_server->systems().weather.state().ticks, pos); });
             ticks(count);
-            m_server->weather().setStrikeHook({});
+            m_server->systems().weather.setStrikeHook({});
         };
         const auto restart = [this](const QcServerConfig &config) {
             QVERIFY(m_server->save().has_value());

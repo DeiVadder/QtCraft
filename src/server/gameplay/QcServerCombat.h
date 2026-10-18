@@ -36,7 +36,8 @@ public:
 
     void attack(QcServerClient &client, quint32 entityId);
     // Deals `blow` with the creature's sounds, its loot and experience when it dies; false when the
-    // creature was not hurt (unknown, or invulnerable for a moment after the last hit).
+    // creature was not hurt (unknown, or invulnerable for a moment after the last hit and the blow
+    // no stronger than the strongest of that moment, decision E-429).
     static bool hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow);
     // Drops the loot of a creature that died at `position`, each drop by its chance (also burn
     // deaths, QcBodyBurning).

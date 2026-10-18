@@ -35,10 +35,15 @@ inline constexpr quint32 maxKnown = 16;
 inline constexpr quint32 maxKept = maxComponents - maxKnown;
 // Bytes of one component at most; a valid world never comes close.
 inline constexpr quint32 maxLength = 1u << 20;
+// The ids of components (QcEntityCodec::Component) and of block-entity tables
+// (QcBlockEntityRecord::Table) from here on belong to mods, those below to the game (decision
+// E-440). Either kind of unknown id is kept as it is.
+inline constexpr quint16 firstModId = 0x8000;
 
 // The fields of a known component of `version` read from a stream (`read(QDataStream &, quint16
-// version)`, false for damaged data): a reference to a callable that outlives the read, without the
-// allocation of a std::function.
+// version)`, or `read(QDataStream &, quint16 version, quint32 length)` for a reader that needs the
+// component's length; false for damaged data): a reference to a callable that outlives the read,
+// without the allocation of a std::function.
 class FieldReader
 {
 public:
@@ -46,15 +51,22 @@ public:
         requires(!std::same_as<std::remove_cvref_t<Read>, FieldReader>)
     FieldReader(const Read &read) // NOLINT(google-explicit-constructor): taken from lambdas in lists of known components
         : m_read(&read)
-        , m_call([](const void *object, QDataStream &stream, quint16 version) { return (*static_cast<const Read *>(object))(stream, version); })
+        , m_call([](const void *object, QDataStream &stream, quint16 version, quint32 length) {
+            const Read &reader = *static_cast<const Read *>(object);
+            if constexpr (std::invocable<const Read &, QDataStream &, quint16, quint32>) {
+                return reader(stream, version, length);
+            } else {
+                return reader(stream, version);
+            }
+        })
     {
     }
 
-    bool operator()(QDataStream &stream, quint16 version) const { return m_call(m_read, stream, version); }
+    bool operator()(QDataStream &stream, quint16 version, quint32 length) const { return m_call(m_read, stream, version, length); }
 
 private:
     const void *m_read;
-    bool (*m_call)(const void *, QDataStream &, quint16);
+    bool (*m_call)(const void *, QDataStream &, quint16, quint32);
 };
 
 // A component this version reads: its id, the version it writes and its reader.
@@ -101,9 +113,6 @@ private:
     qint64 begin(quint16 id, quint16 version);
     // Fills in the length of the frame whose payload started at `start`.
     void end(qint64 start);
-    // Overwrites the placeholder at byte `at` of the stream with `value`.
-    template<typename Value>
-    void patch(qint64 at, Value value);
 
     QDataStream &m_stream;
     const QcEntityComponents &m_kept;
@@ -116,8 +125,18 @@ private:
 // a newer version of a known component the bytes after the known fields go to `kept` as its tail.
 // False for damaged data: more components or longer ones than allowed, a length beyond the data, an
 // id twice, version 0, a reader that fails or reads beyond its component, an older or the current
-// version that holds more than its fields.
-[[nodiscard]] bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped);
+// version that holds more than its fields. `lengthLimit` bounds one component (maxLength for entities;
+// the tables of a chunk's block entities allow more, QcBlockEntityCodec).
+[[nodiscard]] bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped,
+                        quint32 lengthLimit = maxLength);
+
+// Overwrites the placeholder length at byte `at` of `stream` (which writes to a seekable device)
+// with `length`: in place in the bytes of a QBuffer, else by seeking there and back.
+void patchLength(QDataStream &stream, qint64 at, quint32 length);
+
+// Reads the raw bytes of `length` that follow in `stream`, checked against the data left before
+// anything is allocated.
+[[nodiscard]] bool readRaw(QDataStream &stream, qint64 length, QByteArray &bytes);
 
 // Reads a QString written by QDataStream (byte length, then UTF-16) after checking its length: a
 // damaged length of up to 4 GB is never allocated. False for a text longer than `maxChars` (the

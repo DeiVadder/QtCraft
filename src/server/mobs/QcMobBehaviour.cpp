@@ -68,7 +68,7 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
 {
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     QcMobBrain &brain = brainOf(mob.type);
-    mob.hurtTimer = std::max(0.0, mob.hurtTimer - context.dt);
+    mob.hurt.tick();
     mob.attackCooldown = std::max(0.0, mob.attackCooldown - context.dt);
     mob.fleeTimer = std::max(0.0, mob.fleeTimer - context.dt);
     mob.targetMemory = std::max(0.0, mob.targetMemory - context.dt);
@@ -155,7 +155,7 @@ void QcMobBehaviour::steerApart(qsizetype index, const QcCreature &mob, const Qc
 void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering)
 {
     // While knocked back the mob does not steer.
-    if (mob.hurtTimer > QcMobManager::hurtInvulnerability * 0.5) {
+    if (mob.hurt.knockedBack()) {
         steering.wish = {};
     }
     const bool jump = mob.motion.inWater || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0);

@@ -32,11 +32,12 @@ struct KindFiles
     quint16 version = 0;
 };
 
-// Indexed region files (decision E-373): blocks version 3, block entities 4 (signal waits apart, fires), entities 3; the
-// files of older development versions are refused (decision E-356).
+// Indexed region files (decision E-373): blocks version 3, block entities 5 (signal waits apart,
+// fires, versioned tables of E-440), entities 3; the files of older development versions are
+// refused (decision E-356).
 constexpr std::array<KindFiles, QcChunkStore::kindCount> kinds{{
     {"regions", "qcr", "QCRG", 3},
-    {"blockentities", "qcb", "QCBE", 4},
+    {"blockentities", "qcb", "QCBE", 5},
     {"entities", "qen", "QCER", 3},
 }};
 

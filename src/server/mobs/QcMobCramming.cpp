@@ -38,7 +38,7 @@ QList<Hurt> apply(QcMobManager &mobs, int limit, quint64 tick)
     QHash<int, int> died;
     for (const QcMobCrowd::Crammed &one : std::as_const(due)) {
         const std::optional<qsizetype> index = indexOf(mobs, one);
-        if (!index || one.count - died.value(one.cell) <= limit || mobs.mobs()[*index].hurtTimer > 0.0) {
+        if (!index || one.count - died.value(one.cell) <= limit || mobs.mobs()[*index].hurt.wouldTake(damage) == QcHurtWindow::Take::Ignored) {
             continue;
         }
 

@@ -10,6 +10,35 @@
 
 namespace QcComponentFrames {
 
+namespace {
+
+// Overwrites the placeholder at byte `at` of the stream with `value`.
+template<typename Value>
+void patch(QDataStream &stream, qint64 at, Value value)
+{
+    // Into the bytes of the buffer the stream writes to, without seeking it back and forth.
+    if (auto *buffer = qobject_cast<QBuffer *>(stream.device())) {
+        if (stream.byteOrder() == QDataStream::BigEndian) {
+            qToBigEndian(value, buffer->buffer().data() + at);
+        } else {
+            qToLittleEndian(value, buffer->buffer().data() + at);
+        }
+        return;
+    }
+    QIODevice &device = *stream.device();
+    const qint64 end = device.pos();
+    device.seek(at);
+    stream << value;
+    device.seek(end);
+}
+
+} // namespace
+
+void patchLength(QDataStream &stream, qint64 at, quint32 length)
+{
+    patch(stream, at, length);
+}
+
 Writer::Writer(QDataStream &stream, const QcEntityComponents &kept)
     : m_stream(stream)
     , m_kept(kept)
@@ -33,26 +62,7 @@ qint64 Writer::begin(quint16 id, quint16 version)
 
 void Writer::end(qint64 start)
 {
-    patch(start - qint64(sizeof(quint32)), quint32(m_stream.device()->pos() - start));
-}
-
-template<typename Value>
-void Writer::patch(qint64 at, Value value)
-{
-    // Into the bytes of the buffer the stream writes to, without seeking it back and forth.
-    if (auto *buffer = qobject_cast<QBuffer *>(m_stream.device())) {
-        if (m_stream.byteOrder() == QDataStream::BigEndian) {
-            qToBigEndian(value, buffer->buffer().data() + at);
-        } else {
-            qToLittleEndian(value, buffer->buffer().data() + at);
-        }
-        return;
-    }
-    QIODevice &device = *m_stream.device();
-    const qint64 end = device.pos();
-    device.seek(at);
-    m_stream << value;
-    device.seek(end);
+    patchLength(m_stream, start - qint64(sizeof(quint32)), quint32(m_stream.device()->pos() - start));
 }
 
 void Writer::finish()
@@ -66,27 +76,25 @@ void Writer::finish()
     }
     Q_ASSERT(m_count <= maxComponents);
 
-    patch(m_countAt, m_count);
+    patch(m_stream, m_countAt, m_count);
 }
 
-namespace {
-
-// The raw bytes of `length` that follow in `stream`, checked against the data left before anything
-// is allocated.
 bool readRaw(QDataStream &stream, qint64 length, QByteArray &bytes)
 {
-    if (length > stream.device()->bytesAvailable()) {
+    if (length < 0 || length > stream.device()->bytesAvailable()) {
         return false;
     }
     bytes.resize(qsizetype(length));
     return stream.readRawData(bytes.data(), int(length)) == int(length);
 }
 
+namespace {
+
 // Reads the known component `known` of `version` and `length` in place; its newer fields go to `kept`.
 bool readKnown(QDataStream &stream, const Known &known, quint16 version, quint32 length, QcEntityComponents &kept)
 {
     const qint64 start = stream.device()->pos();
-    if (!known.read(stream, version) || stream.status() != QDataStream::Ok) {
+    if (!known.read(stream, version, length) || stream.status() != QDataStream::Ok) {
         return false;
     }
     const qint64 used = stream.device()->pos() - start;
@@ -106,7 +114,7 @@ bool readKnown(QDataStream &stream, const Known &known, quint16 version, quint32
 
 } // namespace
 
-bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped)
+bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped, quint32 lengthLimit)
 {
     quint16 count = 0;
     stream >> count;
@@ -121,7 +129,7 @@ bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityCompo
         quint32 length = 0;
         stream >> id >> version >> length;
         // The length is checked against the data left before anything is read.
-        if (stream.status() != QDataStream::Ok || version == 0 || length > maxLength || qint64(length) > stream.device()->bytesAvailable()
+        if (stream.status() != QDataStream::Ok || version == 0 || length > lengthLimit || qint64(length) > stream.device()->bytesAvailable()
             || std::find(seen.begin(), seen.begin() + i, id) != seen.begin() + i) {
             return false;
         }

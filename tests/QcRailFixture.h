@@ -103,14 +103,14 @@ protected:
 
     quint32 spawnCart(const QString &item, QcBlockPos cell, const QcVec3 &velocity)
     {
-        const std::optional<QcVec3> spot = m_server->minecarts().restingPlace(cell);
+        const std::optional<QcVec3> spot = m_server->systems().minecarts.restingPlace(cell);
         if (!spot) {
             qFatal("no rail for a cart");
         }
         QcMinecart cart = m_server->carts().fromItem(item);
         cart.motion.position = *spot;
         cart.motion.velocity = velocity;
-        const QcMinecart *spawned = m_server->minecarts().spawn(cart);
+        const QcMinecart *spawned = m_server->systems().minecarts.spawn(cart);
         if (!spawned) {
             qFatal("cart refused");
         }

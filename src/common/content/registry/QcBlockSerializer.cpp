@@ -241,7 +241,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     qint32 flowDistance = 0;
     stream >> containerSlots >> containerColumns >> flowDistance >> block.flow.movementFactor;
     quint8 signalKind = 0;
-    stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> signalKind >> block.fire.isFire;
+    stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> block.slipperiness >> signalKind >> block.fire.isFire;
     if (signalKind >= quint8(qcSignalKindCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
@@ -249,7 +249,8 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     block.signal.kind = QcSignalKind(signalKind);
     const auto factor = [](double value, double low, double high) { return std::isfinite(value) && value >= low && value <= high; };
     if (flowDistance < 0 || flowDistance > QcLiquidDefinition::maxDistance || !factor(block.flow.movementFactor, 0.05, 2.0)
-        || !factor(block.slowsInside, 0.01, 1.0) || !factor(block.surfaceSpeed, 0.1, 2.0) || !factor(block.surfaceJump, 0.1, 2.0)) {
+        || !factor(block.slowsInside, 0.01, 1.0) || !factor(block.surfaceSpeed, 0.1, 2.0) || !factor(block.surfaceJump, 0.1, 2.0)
+        || !factor(block.slipperiness, QcBlockDefinition::grippingSlipperiness, QcBlockDefinition::maxSlipperiness)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
     }
@@ -326,7 +327,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
         stream << group;
     }
     stream << qint32(block.containerSlots) << qint32(block.containerColumns) << qint32(block.flow.distance) << block.flow.movementFactor;
-    stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << quint8(block.signal.kind);
+    stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << block.slipperiness << quint8(block.signal.kind);
     // Whether it is fire: the client shows the default fire around burning bodies.
     stream << block.fire.isFire;
 }

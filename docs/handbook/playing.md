@@ -220,11 +220,15 @@ Rails need a solid block below them. A rail joins the rails beside it on its own
 
 **Minecarts**
 
-Use a minecart on a rail to set it down. A cart keeps rolling along the track, round curves and over slopes: downhill it speeds up, uphill it slows down and may roll back, and it slowly loses speed on the flat (a ridden cart much more slowly than an empty one). At the end of a track it stops. Carts that run into each other pass their speed on; walking into a cart pushes it. A cart without rails under it slides to a stop. One hit breaks a cart; it drops itself.
+Use a minecart on a rail to set it down. A cart keeps rolling along the track, round curves and over slopes: downhill it speeds up, uphill it slows down and may roll back, and it slowly loses speed on the flat (a ridden cart much more slowly than an empty one). At the end of a track it stops in front of a block and flies on otherwise (see below). Carts that run into each other pass their speed on; walking into a cart pushes it. A cart without rails under it stops after a short slide, or coasts far on ice. One hit breaks a cart; it drops itself.
 
 **Riding**
 
 Use a cart to get in and sneak to get out; you land beside it. While you ride, the forward key pushes the cart along the way you look. The server moves the cart and its rider, so everyone sees you ride the same way.
+
+**Track ends and jumps**
+
+A cart that reaches the end of a track with a block in front of it stops there. At an open end it keeps its speed and flies on: it falls, and off the top of a ramp it jumps. Where it lands it stops after a short slide, coasts far on ice, or, landing on a rail, rolls on along it with its speed along the track (landing across the track it stands until the next cart bumps it on). A rider flies with the cart and takes no fall damage.
 
 **Pistons and carts**
 
@@ -240,13 +244,13 @@ A chest cart carries a chest: use it to open its screen like a chest. A hopper c
 
 **See also**
 
-[Rail](blocks.md#block-qtcraft-rail), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Activator Rail](blocks.md#block-qtcraft-activator_rail), [Minecart](items.md#item-qtcraft-minecart), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Minecart with Signal Hopper](items.md#item-qtcraft-hopper_minecart), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
+[Rail](blocks.md#block-qtcraft-rail), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Activator Rail](blocks.md#block-qtcraft-activator_rail), [Minecart](items.md#item-qtcraft-minecart), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Minecart with Signal Hopper](items.md#item-qtcraft-hopper_minecart), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="chapter-qtcraft-health"></a>Health and damage
 
 **Health**
 
-You have 20 health points, shown as hearts. Falls deeper than 3 m cost one point per further metre; landing in water or on a ladder is safe. Hostile creatures, lava and starving hurt as well. After a hit you cannot be hurt for 0.5 s.
+You have 20 health points, shown as hearts. Falls deeper than 3 m cost one point per further metre; landing in water or on a ladder is safe. Hostile creatures, lava and starving hurt as well. After a hit you cannot be hurt for 0.5 s, unless a later hit is stronger than the strongest so far: it deals only the difference. Creatures are protected the same way.
 
 **Fighting**
 
@@ -488,9 +492,13 @@ A full day lasts 600 s. The world is generated from its seed while you explore i
 
 Water and lava flow from their sources; a bucket takes a source and pours it elsewhere. Where lava meets water it hardens into obsidian or cobblestone. Lava lights its surroundings, burns items and hurts.
 
+**Slippery ground**
+
+Ice, packed ice and blue ice are slippery. On them you speed up slowly and keep sliding when you let go, about two blocks from a walk on ice and a little farther on blue ice; your top speed stays the same. Creatures and dropped items slide too, and creatures walk round ice where the way round is short. A minecart off the rails coasts far on ice, while on other ground it stops after a short slide.
+
 **See also**
 
-[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
+[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice)
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 
@@ -525,7 +533,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -561,7 +569,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
 - `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on

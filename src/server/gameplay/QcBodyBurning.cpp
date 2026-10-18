@@ -119,17 +119,17 @@ void QcBodyBurning::tickCreatures()
         if (!mob) {
             continue;
         }
-        // Like a hit: the hurt sound when the damage takes (not while the creature is still
-        // invulnerable from the last), the death sound and the loot when it dies.
+        // Like a hit: the hurt sound when the damage takes as a fresh hit (not while the creature is
+        // still invulnerable from the last, decision E-429), the death sound and the loot when it dies.
         const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
         const QList<QcItemDrop> drops = mob->isYoung() ? QList<QcItemDrop>() : definition.drops;
         const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-        const bool vulnerable = mob->hurtTimer <= 0.0;
+        const bool fresh = mob->hurt.wouldTake(burnDamage) == QcHurtWindow::Take::Fresh;
         if (m_state.entities().creatures().hurt(id, burnDamage)) {
             m_sounds.play(definition.deathSound, centre);
             m_state.entities().noteDeath(id);
             QcServerCombat::dropLoot(m_state, drops, centre);
-        } else if (vulnerable) {
+        } else if (fresh) {
             m_sounds.play(definition.hurtSound, centre);
         }
     }

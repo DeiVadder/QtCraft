@@ -76,11 +76,24 @@ double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos);
 // Smallest movement factor of the blocks a box overlaps (cobwebs), 1 without any.
 double slowdownInside(const QcBlockAccess &world, const QcAabb &box);
 
-// Walking speed and jump factors of the block under a body's feet (mud).
+// Slippery ground (decision E-430): on a block whose slipperiness (QcBlockDefinition, units of the
+// original game) lies above `grippingSlipperiness`, a body on the ground keeps slipperiness x drag of
+// its horizontal velocity per tick (the original game's rule) instead of taking its wished velocity at
+// once. `footDrag` is the drag of walkers (ice 0.98 keeps 89 % per tick), `itemDrag` that of dropped
+// items (96 %). A body that coasts (`coastDrag`: a minecart off the rails) keeps the whole
+// slipperiness on any ground: 60 % per tick where the ground grips (it stops within a few ticks), 98 %
+// on ice. The value lives with the block data (QcBlockDefinition::grippingSlipperiness).
+inline constexpr double grippingSlipperiness = QcBlockDefinition::grippingSlipperiness;
+inline constexpr double footDrag = 0.91;
+inline constexpr double itemDrag = 0.98;
+inline constexpr double coastDrag = 1.0;
+
+// Walking speed and jump factors of the block under a body's feet (mud), and its slipperiness (ice).
 struct SurfaceFactors
 {
     double speed = 1.0;
     double jump = 1.0;
+    double slipperiness = grippingSlipperiness;
 };
 SurfaceFactors surfaceUnder(const QcBlockAccess &world, const QcVec3 &feet);
 QcBlockPos blockContaining(const QcVec3 &point);
@@ -90,14 +103,19 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
 
 // What an entity wants for one tick: `wish` is the horizontal movement direction (length <= 1),
 // `speed` its target speed, `jump` jumps on ground, swims up in water or climbs, `hold` keeps a
-// climber in place.
+// climber in place, `slideDrag` is how it slides on slippery ground (footDrag, itemDrag, coastDrag).
 struct Steering
 {
     QcVec3 wish;
     double speed = 0.0;
     bool jump = false;
     bool hold = false;
+    double slideDrag = footDrag;
 };
+
+// Share of its horizontal velocity a body on ground of `slipperiness` keeps per tick of `dt`
+// seconds: (slipperiness x drag) per 1/20 s on slippery ground or for a body that coasts, else 0.
+double slideKeep(double slipperiness, double drag, double dt);
 
 // Width and height of an entity's collision box.
 struct BodySize

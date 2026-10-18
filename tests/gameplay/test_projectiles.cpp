@@ -26,7 +26,7 @@ private:
     // An arrow shot by nobody from `from` with `velocity`.
     bool shoot(const QcVec3 &from, const QcVec3 &velocity, QcProjectilePickup pickup = QcProjectilePickup::Item)
     {
-        return m_server->projectiles().launch({0, u"qtcraft:arrow"_s, from, velocity, pickup});
+        return m_server->systems().projectiles.launch({0, u"qtcraft:arrow"_s, from, velocity, pickup});
     }
 
     // Flies an arrow over open air from height 0 until it falls below it again; the horizontal
@@ -209,7 +209,7 @@ private slots:
 
         // With a diamond chestplate (8 points: 32 % less) after the invulnerability.
         player().health = QcServerClient::maxHealth;
-        player().hurtTimer = 0.0;
+        player().hurt.clear();
         player().equipment.at(QcEquipmentSlot::Chest) = {item("qtcraft:diamond_chestplate"), 1, 0};
         player().motion.position = {m_feet.x + 0.5, double(m_feet.y), m_feet.z + 0.5};
         QVERIFY(shoot(from, {60.0, 0.0, 0.0}));
@@ -311,7 +311,7 @@ private slots:
         // In creative mode it shoots without arrows; its arrow is only removed when picked up.
         player().gameMode = QcGameMode::Creative;
         player().inventory.setSlot(slotHolding(item("qtcraft:arrow")), {});
-        QVERIFY(m_server->projectiles().launchers().shoot(player(), 1.0));
+        QVERIFY(m_server->systems().projectiles.launchers().shoot(player(), 1.0));
         QCOMPARE(projectiles().all().last().pickup, QcProjectilePickup::Remove);
         QCOMPARE(player().inventory.slot(bowSlot).damage, 1);
     }

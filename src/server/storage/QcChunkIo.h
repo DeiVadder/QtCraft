@@ -8,6 +8,7 @@
 #include "server/storage/QcBlockEntityRecord.h"
 #include "server/storage/QcChunkStore.h"
 #include "server/storage/QcEntityRecord.h"
+#include "server/storage/QcRegionFile.h"
 
 #include <QSet>
 #include <QStringList>
@@ -97,12 +98,16 @@ public:
     std::vector<Arrival> takeArrivals() { return m_arrivals.takeAll(); }
     // Finished saves; tick thread.
     std::vector<SaveResult> takeSaves();
-
+    // Test hook: the bytes a chunk's block entities may take (QcBlockEntityCodec::encodeWithin;
+    // QcRegionFile::maxBlobBytes otherwise). Set before the first request.
+    void setBlockEntityLimit(quint32 limit) { m_blockEntityLimit = limit; }
 private:
     Arrival readChunk(QcChunkPos pos);
     // Runs `job` on the I/O thread (before the queue with `first`) and waits for it alone.
     void runAndWait(std::function<void()> job, bool first);
     void store(const Departure &departure);
+    // Puts the block entities of `departure` within m_blockEntityLimit, or keeps what is stored.
+    void storeBlockEntities(const Departure &departure);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     Preparation m_prepare;
@@ -110,6 +115,7 @@ private:
     QcChunkStore m_store;
     // Unknown names reported so far (one warning per world and name).
     QSet<QString> m_reported;
+    quint32 m_blockEntityLimit = QcRegionFile::maxBlobBytes;
     QcMailbox<Arrival> m_arrivals;
     QcMailbox<SaveResult> m_saves;
     quint64 m_nextSave = 1;

@@ -86,7 +86,7 @@ private slots:
         for (int i = 0; i < measured.arrows; ++i) {
             const double yaw = 360.0 * i / measured.arrows;
             const double pitch = 55.0 + 30.0 * (i % 5) / 4.0;
-            QVERIFY(m_server->projectiles().launch({0, u"qtcraft:arrow"_s, from, QcProjectileFlight::direction(yaw, pitch) * 30.0}));
+            QVERIFY(m_server->systems().projectiles.launch({0, u"qtcraft:arrow"_s, from, QcProjectileFlight::direction(yaw, pitch) * 30.0}));
         }
         const Times flying = measure(measured.ticks);
         QCOMPARE(m_server->entities().projectiles().all().size(), measured.arrows);
@@ -102,7 +102,7 @@ private slots:
         }
         for (int i = 0; i < measured.arrows; ++i) {
             const QcVec3 below{m_feet.x - 2.5 + (i % 6), m_feet.y + 4.0, m_feet.z - 2.5 + (i / 6) % 6};
-            QVERIFY(m_server->projectiles().launch({0, u"qtcraft:arrow"_s, below, {0.0, 30.0, 0.0}}));
+            QVERIFY(m_server->systems().projectiles.launch({0, u"qtcraft:arrow"_s, below, {0.0, 30.0, 0.0}}));
         }
         ticks(5);
         QVERIFY(std::ranges::all_of(m_server->entities().projectiles().all(), &QcProjectile::stuck));

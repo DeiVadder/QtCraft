@@ -196,6 +196,8 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
     QStringList warnings = arrival.warnings;
     warnings.append(QcBlockEntityRecords::apply({arrival.blockEntities}, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(),
                                                 upcomingTick()));
+    // What this version does not read waits for the next save of the chunk (decision E-440).
+    m_state.world().keepBlockEntityParts(pos, std::move(arrival.blockEntities.kept));
     // What was kept is fitted to the blocks (a mod took a block away); spills drop in the next tick.
     if (const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(pos)) {
         m_state.blockEntities().reconcile(*chunk);
@@ -565,10 +567,13 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
     for (const QcChunkPos &pos : leaving) {
         QcChunkIo::Departure departure;
         departure.pos = pos;
-        departure.blockEntities = QcBlockEntityRecords::take(pos, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
+        departure.blockEntities.chunk = pos;
+        departure.blockEntities.kept = world.takeBlockEntityParts(pos);
+        QcBlockEntityRecords::take(departure.blockEntities, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
         departure.blockEntities.blockUpdates = updates.value(pos);
         departure.blockEntities.blockUpdates.append(flows.value(pos));
         departure.blockEntities.fires = world.fires().takeChunk(pos, now);
+        QcBlockEntityRecords::pruneKept(departure.blockEntities);
         departure.entities = entities.value(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);
@@ -614,7 +619,8 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
     QcServerWorld &world = m_state.world();
     QHash<QcChunkPos, QcEntityRecord> entities = QcEntityRecords::collect(m_state.entities());
     QHash<QcChunkPos, QcBlockEntityRecord> blockEntities;
-    const QList<QcBlockEntityRecord> records = QcBlockEntityRecords::collect(m_state.blockEntities(), m_state.circuits(), upcomingTick());
+    const QList<QcBlockEntityRecord> records =
+        QcBlockEntityRecords::collect(m_state.blockEntities(), m_state.circuits(), upcomingTick(), world.blockEntityParts());
     for (const QcBlockEntityRecord &record : records) {
         blockEntities.insert(record.chunk, record);
     }
@@ -632,6 +638,10 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blockEntities = blockEntities.take(pos);
         departure.blockEntities.chunk = pos;
         departure.blockEntities.fires = world.fires().savedOf(pos, upcomingTick());
+        // Kept parts go back with the record; tails of entries gone since are dropped for good.
+        departure.blockEntities.kept = world.blockEntityParts().value(pos);
+        QcBlockEntityRecords::pruneKept(departure.blockEntities);
+        world.keepBlockEntityParts(pos, departure.blockEntities.kept);
         departure.entities = entities.take(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);

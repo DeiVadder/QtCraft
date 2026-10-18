@@ -59,6 +59,26 @@ QcPhysics::Steering towards(const QcCreature &mob, const QcVec3 &point, double s
     return {delta.normalized(), speed};
 }
 
+// On slippery ground (decision E-430) a creature brakes towards the end of its path instead of
+// sliding past it and back again: its speed stays below the distance left times this share of the
+// rate at which its velocity follows its wish (a critically damped approach).
+constexpr double slideBrakeShare = 0.25;
+
+// The speed for a creature `remaining` metres from the end of its path: `speed`, or less on slippery
+// ground near the end.
+double brakedSpeed(const QcCreature &mob, double speed, double remaining, const QcBlockAccess &world)
+{
+    if (!mob.motion.onGround) {
+        return speed;
+    }
+    const double keep = QcPhysics::slideKeep(QcPhysics::surfaceUnder(world, mob.motion.position).slipperiness, QcPhysics::footDrag,
+                                             QcPhysics::tickDuration);
+    if (keep <= 0.0) {
+        return speed;
+    }
+    return std::min(speed, remaining * (1.0 - keep) * QcPhysics::tickRate * slideBrakeShare);
+}
+
 // Whether the path goes on straight down from its waypoint `index` (a ladder).
 bool downwards(const QcMobPath &path, std::size_t index)
 {
@@ -134,12 +154,16 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const QcPathGroun
         return {{}, speed};
     }
     if (path.next >= path.cells.size()) {
-        const QcPhysics::Steering last = path.reachesGoal ? towards(mob, path.goal, speed) : QcPhysics::Steering{{}, speed};
+        const double left = horizontalDistance(mob.motion.position, path.goal);
+        const QcPhysics::Steering last =
+            path.reachesGoal ? towards(mob, path.goal, brakedSpeed(mob, speed, left, ground.world)) : QcPhysics::Steering{{}, speed};
         return safeStep(mob, last.wish, ground) ? last : QcPhysics::Steering{{}, speed};
     }
 
     const QcBlockPos waypoint = path.cells[path.next];
-    QcPhysics::Steering steering = towards(mob, centreOf(waypoint), speed);
+    // The way left: to the waypoint, then about a metre per waypoint after it.
+    const double left = horizontalDistance(mob.motion.position, centreOf(waypoint)) + double(path.cells.size() - path.next - 1);
+    QcPhysics::Steering steering = towards(mob, centreOf(waypoint), brakedSpeed(mob, speed, left, ground.world));
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, floorSink, 0.0});
     steering.jump = waypoint.y > feet.y && horizontalDistance(mob.motion.position, centreOf(waypoint)) < jumpDistance;
 

@@ -75,10 +75,13 @@ public:
 private:
     // How a cart stands still at `position` on the rail at `rail`; nothing when no rail is there.
     std::optional<QcMinecart::Rest> restOf(QcBlockPos rail, const QcVec3 &position, const QcBlockAccess &world) const;
+    // How a cart stands still at `position` on the ground off the rails.
+    static QcMinecart::Rest groundRestOf(const QcVec3 &position, const QcBlockAccess &world);
     // Whether the cart rests where nothing changed since it came to rest (QcMinecart::Rest).
     bool isResting(const QcMinecart &cart, const QcVec3 &push, const QcBlockAccess &world) const;
     // Whether the cart, after its step, stands where it can rest: still on a level rail or held at
-    // the lower end of a slope, and not on a powered rail that acts on standing carts.
+    // the lower end of a slope, and not on a powered rail that acts on standing carts; or still on
+    // the ground off the rails, out of water.
     bool canRest(const QcMinecart &cart, const QcMinecartMotion::Result &result, const QcBlockAccess &world) const;
 
     QcRails::Table m_rails;

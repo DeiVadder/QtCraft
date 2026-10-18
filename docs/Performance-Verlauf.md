@@ -2048,6 +2048,20 @@ Release, Apple M-Serie, Ticks von Hand (keine Echtzeit), Stand `52.0c` (E-424).
 
 **Bewertung:** Etwa 1,5 µs je Skelett und Tick in der Phase der Wesen (Sichtlinie jeden Denk-Tick, Zielen nur beim Schuss) und 0,2 % eines 50-ms-Ticks für alle 50. Die Obergrenze der feindlichen Wesen je Spieler (`hostileCap`) liegt weit darunter. Keine Messung gegen `dev`: das Gehirn ist neu, die anderen Wesen sind unverändert.
 
+## 37.R2b (Block-Entities als versionierte Tabellen) headless (2026-10-17)
+
+`QTCRAFT_BLOCK_ENTITY_MEASURE=full build/release/tests/test_block_entity_measure` (RelWithDebInfo, Apple M4 Max; 441 Chunks mit je 5 gefüllten Truhen, 3 brennenden Öfen, 3 Trichtern unter Truhen und 3 Setzlingen, 200 Ticks, danach erstes Speichern, ein Tick, zweites Speichern, Öffnen, alle Chunks laden), Kandidat 52.1 `27220fe` (A, per `git archive` außerhalb von git gebaut) gegen den Branch (B), 10 verschränkte Runden (4 × A zuerst, 6 × B zuerst), Mediane in ms [Minimum] (E-440). Parallel liefen Builds und Tests anderer Sitzungen; die Streuung je Wert liegt bei ±20 %.
+
+| Wert | A | B | Änderung |
+|---|---|---|---|
+| Tick | 0,98 | 1,02 | +4 % (keine Änderung im Tick) |
+| erstes Speichern | 44,56 [41,4] | 44,25 [41,4] | −1 % |
+| zweites Speichern | 16,83 [14,74] | 18,21 [14,86] | +8 % [+1 %] |
+| Öffnen | 4,62 [3,23] | 4,88 [3,35] | +6 % [+4 %] |
+| alle Chunks laden | 185,1 | 185,9 | +0 % |
+
+**Bewertung:** Im Ziel (≤ +10 %); die Minima liegen beim zweiten Speichern und Öffnen 1–4 % auseinander, die Mediane im Rauschen der belasteten Maschine. Die Mehrarbeit sind 6 Bytes Rahmen je Eintrag (Version und Länge, Länge danach in den Puffer eingesetzt wie in `QcComponentFrames::Writer`) und 8 Bytes je nicht leerer Tabelle; leere Tabellen werden weggelassen. Ohne behaltene Teile kostet die Suche nach Schwänzen je Eintrag nur die Prüfung einer leeren Tabelle (`QcBlockEntityKept::entryTail`), `pruneKept` kehrt sofort zurück.
+
 ## 52.1 (Geschosse, Skelette, Munition, 52.P, HUD) gerendert und headless (2026-10-18)
 
 Release-Builds, `dev` `f249fc8` gegen den Kandidaten `feature/52-1-projectiles` (52.1a–c samt Nachbesserungen, dazu 52.P und HUD/Trichter), Fenster auf dem eingebauten Display, verschränkt, 10 s je Lauf, Mediane. Last: andere Sitzungen bauten zeitweise (clangd-Index bis 400 % CPU, Tests anderer Pakete); Läufe mit Fremdlast sind markiert und auf beide Stände verteilt.
@@ -2057,3 +2071,11 @@ Release-Builds, `dev` `f249fc8` gegen den Kandidaten `feature/52-1-projectiles` 
 **Fenster** (`@core horde village`, 6 Runden): stand, sprint, showcase, village bei GPU, Render-CPU, GUI-CPU und Speicher innerhalb ±4 %; p99 streut wie bisher mit VSync-Aussetzern von außen (sprint +25 %, horde −34 %). Auffällig bei Tag: crowd GPU 2,18 → 2,58 ms (+18 %, Spannen getrennt) und GUI-CPU +8 %, horde GUI-CPU +12 %. **Ursache:** die Zombies der Tag-Szenen brennen jetzt (Feuer an Körpern, E-393); bei Nacht (`SCENE_TIME=night`, 4 Runden) crowd GPU 2,19 → 2,20 ms (+0 %), GUI −2 %; horde GPU +3 %, GUI +9 % und Render-CPU +13 % mit überlappenden Spannen bei Fremdlast (Tests anderer Pakete). Inhalt der Etappe, keine Regression des Codes.
 
 **Ziele:** Frame-Kosten höchstens 2,58 ms (crowd, Tag) von 4 ms, Spitzenspeicher 8 Chunks höchstens 573 MB (sprint 10 s) erfüllt; p99 wie bisher von außen verfehlt. `crowd` und `horde` nehmen die Tageszeit jetzt aus `SCENE_TIME` (Standard Tag).
+
+## Zweiter Zug: 37.R2b, 52.H, 54 gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `30f30ea` (52.1) gegen den Zug `feature/37-r2b-block-entity-components` (Block-Entities als versionierte Tabellen, einstellbare Unverwundbarkeit, rutschige Blöcke und Loren-Schwung), verschränkt, Mediane. Ruhiger Desktop in der Nacht.
+
+**Headless** (`@server minecarts horde village`, 3 Runden, 60 Spielsekunden): Tick −9 bis 0 % in allen Szenarien (crowd 0,157 → 0,150, horde 0,140 → 0,128, village 0,084 → 0,083, minecarts 0,033 → 0,033 ms); Phase Loren in den Signal-Stationen 0,0021 → 0,0027 ms (Loren der neuen Station `ice_slide`); p99 ±10 % (absolut höchstens +0,04 ms); Spitzenspeicher −1 bis +2 %.
+
+**Fenster** (`@core minecarts village`, 8 Chunks, 6 Runden, 10 s): GPU −8 bis +1 %, Render-CPU −1 bis +7 % (showcase, 12 statt 14 Entities im Blick durch die neue Station), GUI-CPU −4 bis +5 %, Spitzenspeicher unverändert; p99 10,24–10,41 ms bei beiden Ständen (Ziel ≤ 12,5 ms erfüllt). Tick im Fenster streut wie immer (stand +28 %, minecarts −51 %, village −24 %); headless gleich. Keine Regression.

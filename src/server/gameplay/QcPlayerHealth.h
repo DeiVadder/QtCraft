@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcVec3.h"
+#include "server/entities/QcHurtWindow.h"
 
 #include <QtGlobal>
 
@@ -32,7 +33,10 @@ public:
 
     // Timers, hunger and the void for every playing player in a simulated tick.
     void tick();
-    void damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
+    // Hurts the player and returns how the hit took: during the invulnerability after a hurt (game
+    // rule playerInvulnerabilityTicks) only a stronger hit takes, with the difference, silent and
+    // without the push (QcHurtWindow, decision E-429).
+    QcHurtWindow::Take damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
     // Pushes the player along `direction` with `strength` times a blow's push (a projectile's
     // knockback, decision E-427, also without damage).
     static void knock(QcServerClient &client, const QcVec3 &direction, double strength = 1.0);

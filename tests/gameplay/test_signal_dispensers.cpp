@@ -285,7 +285,7 @@ private slots:
         QVERIFY(ensureEntity(dispenser));
         m_server->blockEntities().container(dispenser)->stacks[0] = stack("qtcraft:iron_boots", 1);
         ticks(2);
-        QVERIFY(m_server->circuits().use(dispenser.offset(0, 0, 1)));
+        QVERIFY(m_server->systems().circuits.use(dispenser.offset(0, 0, 1)));
         ticks(6);
         QCOMPARE(m_client->equipment.at(QcEquipmentSlot::Feet), stack("qtcraft:iron_boots", 1));
     }
@@ -357,7 +357,7 @@ private slots:
         QVERIFY(ensureEntity(dispenser));
         m_server->blockEntities().container(dispenser)->stacks[0] = stack("qtcraft:iron_helmet", 1);
         ticks(2);
-        QVERIFY(m_server->circuits().use(dispenser.offset(0, 0, 1)));
+        QVERIFY(m_server->systems().circuits.use(dispenser.offset(0, 0, 1)));
         ticks(6);
         QCOMPARE(m_client->equipment.at(QcEquipmentSlot::Head), stack("qtcraft:iron_helmet", 1));
     }

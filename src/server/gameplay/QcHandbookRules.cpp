@@ -17,7 +17,9 @@
 #include "server/core/QcRateLimiter.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerLimits.h"
+#include "server/entities/QcHurtWindow.h"
 #include "server/gameplay/QcBodyBurning.h"
+#include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcHunger.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/items/QcExperienceOrbManager.h"
@@ -81,6 +83,31 @@ QMap<QString, double> archeryValues()
     };
 }
 
+// The player's body: health, reach, movement and the invulnerability after a hit with the game
+// rules' default and highest length, and the rhythm of contact damage apart from them (decision E-429).
+QMap<QString, double> playerValues()
+{
+    return {
+        {u"player.maxHealth"_s, QcServer::playerMaxHealth},
+        {u"player.reach"_s, QcRaycast::playerReach},
+        {u"player.attackReach"_s, QcServer::attackReach},
+        {u"player.attackCooldown"_s, QcServer::playerAttackCooldown},
+        {u"player.fallDamageThreshold"_s, QcServer::fallDamageThreshold},
+        {u"player.walkSpeed"_s, QcPhysics::walkSpeed},
+        {u"player.sprintSpeed"_s, QcPhysics::sprintSpeed},
+        {u"player.flySpeed"_s, QcPhysics::flySpeed},
+        {u"player.flySprintSpeed"_s, QcPhysics::flySprintSpeed},
+        {u"player.sneakSpeed"_s, QcPhysics::sneakSpeed},
+        {u"player.swimSpeed"_s, QcPhysics::swimSpeed},
+        {u"player.climbSpeed"_s, QcPhysics::climbSpeed},
+        {u"player.stepHeight"_s, QcPhysics::stepHeight},
+        {u"player.hurtInvulnerability"_s, QcHurtWindow::defaultTicks * QcPhysics::tickDuration},
+        {u"rules.invulnerabilityTicks"_s, QcHurtWindow::defaultTicks},
+        {u"rules.maxInvulnerabilityTicks"_s, QcHurtWindow::maxTicks},
+        {u"rules.contactDamageInterval"_s, QcEnvironmentDamage::contactIntervalTicks * QcPhysics::tickDuration},
+    };
+}
+
 // The rules of the weather (decisions E-395, E-396).
 QMap<QString, double> weatherValues()
 {
@@ -109,20 +136,6 @@ QMap<QString, double> values()
     QMap<QString, double> rules{
         {u"day.length"_s, QcDayCycle::dayLength},
         {u"day.halfLength"_s, QcDayCycle::dayLength / 2.0},
-        {u"player.maxHealth"_s, QcServer::playerMaxHealth},
-        {u"player.reach"_s, QcRaycast::playerReach},
-        {u"player.attackReach"_s, QcServer::attackReach},
-        {u"player.attackCooldown"_s, QcServer::playerAttackCooldown},
-        {u"player.fallDamageThreshold"_s, QcServer::fallDamageThreshold},
-        {u"player.walkSpeed"_s, QcPhysics::walkSpeed},
-        {u"player.sprintSpeed"_s, QcPhysics::sprintSpeed},
-        {u"player.flySpeed"_s, QcPhysics::flySpeed},
-        {u"player.flySprintSpeed"_s, QcPhysics::flySprintSpeed},
-        {u"player.sneakSpeed"_s, QcPhysics::sneakSpeed},
-        {u"player.swimSpeed"_s, QcPhysics::swimSpeed},
-        {u"player.climbSpeed"_s, QcPhysics::climbSpeed},
-        {u"player.stepHeight"_s, QcPhysics::stepHeight},
-        {u"player.hurtInvulnerability"_s, QcMobManager::hurtInvulnerability},
         {u"inventory.slots"_s, QcInventory::slotCount},
         {u"inventory.hotbar"_s, QcInventory::hotbarSize},
         {u"crafting.tableReach"_s, QcServer::craftingTableReach},
@@ -180,6 +193,7 @@ QMap<QString, double> values()
         {u"commands.maxRegenerate"_s, double(QcChunkRegeneration::maxChunks)},
         {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
+    rules.insert(playerValues());
     rules.insert(weatherValues());
     rules.insert(archeryValues());
     rules.insert(villageValues());

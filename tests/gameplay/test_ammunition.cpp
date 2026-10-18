@@ -43,7 +43,7 @@ private:
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         const quint32 mob = m_server->entities().creatures().spawn(pig, {m_feet.x + 3.5, double(m_feet.y), m_feet.z - 2.5},
                                                                    m_server->entities().newId());
-        m_server->projectiles().launch({0, kind, {m_feet.x - 1.5, m_feet.y + 0.5, m_feet.z - 2.5}, {speed, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, kind, {m_feet.x - 1.5, m_feet.y + 0.5, m_feet.z - 2.5}, {speed, 0.0, 0.0}});
         return mob;
     }
 
@@ -214,18 +214,18 @@ private slots:
         // Snowballs only: no draw, nothing shot.
         send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Draw});
         QVERIFY(!player().drawing);
-        QVERIFY(!m_server->projectiles().launchers().shoot(player(), 1.0));
+        QVERIFY(!m_server->systems().projectiles.launchers().shoot(player(), 1.0));
 
         // With an arrow behind the snowballs the arrow goes.
         give("qtcraft:arrow", 1);
-        QVERIFY(m_server->projectiles().launchers().shoot(player(), 1.0));
+        QVERIFY(m_server->systems().projectiles.launchers().shoot(player(), 1.0));
         QCOMPARE(projectiles().all().last().type, u"qtcraft:arrow"_s);
         QCOMPARE(player().inventory.countOf(item("qtcraft:snowball")), 8);
         QCOMPARE(player().inventory.countOf(item("qtcraft:arrow")), 0);
 
         // Creative mode without arrows shoots the first kind the bow takes, never a snowball.
         player().gameMode = QcGameMode::Creative;
-        QVERIFY(m_server->projectiles().launchers().shoot(player(), 1.0));
+        QVERIFY(m_server->systems().projectiles.launchers().shoot(player(), 1.0));
         QCOMPARE(projectiles().all().last().type, u"qtcraft:arrow"_s);
     }
 
@@ -337,7 +337,7 @@ private slots:
         give("qtcraft:arrow", 1);
         select("qtcraft:arrow");
         const qsizetype before = projectiles().all().size();
-        QVERIFY(!m_server->projectiles().throws().throwHeld(player()));
+        QVERIFY(!m_server->systems().projectiles.throws().throwHeld(player()));
         QCOMPARE(projectiles().all().size(), before);
     }
 
@@ -411,35 +411,35 @@ private slots:
         QVERIFY(pig->motion.velocity.x > 0.0);
         QVERIFY(projectiles().all().isEmpty());
         // A hit without damage gives no invulnerability: an arrow right after it still hurts.
-        QCOMPARE(pig->hurtTimer, 0.0);
+        QVERIFY(!pig->hurt.active());
         const QcVec3 pushed = pig->motion.position;
-        m_server->projectiles().launch({0, u"qtcraft:arrow"_s, {pushed.x - 1.0, pushed.y + 0.5, pushed.z}, {30.0, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, u"qtcraft:arrow"_s, {pushed.x - 1.0, pushed.y + 0.5, pushed.z}, {30.0, 0.0, 0.0}});
         ticks(1);
         QVERIFY(projectiles().all().isEmpty());
         QVERIFY(m_server->entities().creatures().find(mob)->health < health);
 
         // During the pig's invulnerability after the arrow a snowball breaks too instead of bouncing.
-        QVERIFY(m_server->entities().creatures().find(mob)->hurtTimer > 0.0);
+        QVERIFY(m_server->entities().creatures().find(mob)->hurt.active());
         const QcVec3 hurt = m_server->entities().creatures().find(mob)->motion.position;
-        m_server->projectiles().launch({0, u"qtcraft:snowball"_s, {hurt.x - 1.0, hurt.y + 0.5, hurt.z}, {30.0, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, u"qtcraft:snowball"_s, {hurt.x - 1.0, hurt.y + 0.5, hurt.z}, {30.0, 0.0, 0.0}});
         ticks(1);
         QVERIFY(projectiles().all().isEmpty());
 
         // A block breaks it instead of holding it.
         const QcBlockPos wall = m_feet.offset(3, 1, 0);
         m_server->world().setBlock(wall, id("qtcraft:stone"));
-        m_server->projectiles().launch({0, u"qtcraft:snowball"_s, {m_feet.x + 0.5, wall.y + 0.5, m_feet.z + 0.5}, {30.0, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, u"qtcraft:snowball"_s, {m_feet.x + 0.5, wall.y + 0.5, m_feet.z + 0.5}, {30.0, 0.0, 0.0}});
         ticks(3);
         QVERIFY(projectiles().all().isEmpty());
 
         // A player is pushed and keeps his health.
         const double before = player().health;
         const QcVec3 at = player().motion.position;
-        m_server->projectiles().launch({0, u"qtcraft:snowball"_s, {at.x - 2.0, at.y + 1.0, at.z}, {30.0, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, u"qtcraft:snowball"_s, {at.x - 2.0, at.y + 1.0, at.z}, {30.0, 0.0, 0.0}});
         ticks(1);
         QCOMPARE(player().health, before);
         QVERIFY(player().motion.velocity.x > 0.0);
-        QCOMPARE(player().hurtTimer, 0.0);
+        QVERIFY(!player().hurt.active());
     }
 
     void igniteSetsABodyBurning()
@@ -462,7 +462,7 @@ private slots:
         QVERIFY(std::abs(pig->motion.velocity.x) < QcMobManager::knockbackSpeed * 0.5);
 
         const QcVec3 at = player().motion.position;
-        m_server->projectiles().launch({0, u"test:fire_dart"_s, {at.x - 2.0, at.y + 1.0, at.z}, {30.0, 0.0, 0.0}});
+        m_server->systems().projectiles.launch({0, u"test:fire_dart"_s, {at.x - 2.0, at.y + 1.0, at.z}, {30.0, 0.0, 0.0}});
         QVERIFY(!m_client->burning);
         ticks(1);
         QVERIFY(player().burnTicks >= 78);

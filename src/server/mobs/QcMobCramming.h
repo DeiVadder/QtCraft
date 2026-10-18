@@ -12,8 +12,9 @@
 // and the loot; the measurements call it on the creatures alone.
 namespace QcMobCramming {
 
-// Damage a crammed creature takes whenever it is not invulnerable from its last hurt
-// (QcMobManager::hurtInvulnerability), as in the reference.
+// Damage of one cramming hit, as in the reference. Like any hit it respects the creature's
+// invulnerability after a hurt (QcHurtWindow, game rule mobInvulnerabilityTicks): inside the window
+// it does nothing unless it is stronger than the strongest hit of the window.
 inline constexpr double damage = 6.0;
 // A crammed creature is hurt only in every this many ticks, staggered by its id: the reference's
 // chance of one in four per tick, made deterministic. Deaths spread over a few ticks, so a crowd

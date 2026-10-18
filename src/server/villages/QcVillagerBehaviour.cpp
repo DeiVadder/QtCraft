@@ -113,7 +113,9 @@ bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
     const double phase = QcDayCycle::phase(context.worldTime);
     const bool night = m_content->villagerSettingsOf(mob.type).activityAt(phase, villager.profession) == QcVillagerActivity::Sleep;
     const bool inBed = villager.home && QcVillagerHomes::lyingIn(context.world, *villager.home);
-    if (night && inBed && mob.pose == QcPose::Lying && mob.hurtTimer <= 0.0) {
+    // A fresh hit wakes it: the push lasts the fixed knockback ticks, whatever the game rule
+    // mobInvulnerabilityTicks (decision E-429).
+    if (night && inBed && mob.pose == QcPose::Lying && !mob.hurt.knockedBack()) {
         mob.motion.velocity = {};
         return true;
     }

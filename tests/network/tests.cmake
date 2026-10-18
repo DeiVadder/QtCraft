@@ -15,6 +15,7 @@ qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIE
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 240)
 qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_void_client SOURCES network/test_void_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_ice_client SOURCES network/test_ice_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 # Bot clients in their own processes on a dedicated server process (stage 25b, decision E-270).
 qc_add_test(test_multiplayer_bots SOURCES network/test_multiplayer_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_multiplayer_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")

@@ -16,6 +16,9 @@ constexpr float dropCostPerBlock = 0.4f;
 constexpr float waterCost = 8.0f;
 constexpr float hurtingFloorCost = 12.0f;
 constexpr float slowCellCost = 4.0f;
+// A creature slides on ice (decision E-430): it goes round a patch of ice that is not much wider than
+// the way around it.
+constexpr float slipperyFloorCost = 2.0f;
 // Per side of a cell that cannot be entered: paths keep off walls and edges where they can.
 constexpr float wallCost = 0.25f;
 // Per side of a cell with fire or lava beside or below it: a body that strays hurts itself.
@@ -39,6 +42,9 @@ float standCost(QcPathStand stand, QcPathRules rules)
     }
     if (stand.slows) {
         cost += slowCellCost;
+    }
+    if (stand.slippery) {
+        cost += slipperyFloorCost;
     }
     return cost;
 }
