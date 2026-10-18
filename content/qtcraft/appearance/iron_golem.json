@@ -1,0 +1,13 @@
+{
+    "name": "iron_golem",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {"texture": "iron_golem_skin", "tint": "none"},
+        "face": {"texture": "iron_golem_face", "tint": "none"},
+        "torso": {"texture": "iron_golem_skin", "tint": "none"},
+        "waist": {"texture": "iron_golem_skin", "tint": "none"},
+        "arm": {"texture": "iron_golem_skin", "tint": "none"},
+        "legs": {"texture": "iron_golem_skin", "tint": "none"}
+    }
+}

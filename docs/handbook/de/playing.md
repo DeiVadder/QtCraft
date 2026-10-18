@@ -358,7 +358,11 @@ Ein Dorf wächst in seine freien Betten hinein. Zwei erwachsene Dorfbewohner, di
 
 **Eisengolems**
 
-Ein Dorf mit mindestens 10 Bewohnern bekommt einen Eisengolem nahe seiner Glocke, einen je 10 Bewohner, höchstens einen alle 5 Minuten und nur, wenn Wesen von selbst erscheinen; ein Golem zählt für das Dorf, in dessen Bereich er steht, höchstens 256 in der Welt. Den Eisengolem selbst gibt es noch nicht im Spiel: Bis er kommt, warten die Dörfer auf ihn.
+Dorfbewohner rufen einen Eisengolem, wenn sie in Gefahr sind oder tratschen, aber nur solche, die in den letzten 10 Minuten in ihrem Bett geschlafen haben. Ein Bewohner gerät in Panik, wenn ein Monster näher als 10 Blöcke kommt, auch im Bett, und wacht davon auf. Hat ein Bewohner in Panik mindestens 3 Bewohner, die kürzlich geschlafen haben, höchstens 10 Blöcke um sich (sich selbst mitgezählt) und ist kein Eisengolem näher als 16 Blöcke, erscheint ein Golem irgendwo bis 8 Blöcke um ihn, auf festem Boden, wo er Platz hat; Glas, Scheiben, Laub und Eis tragen keinen Golem. Ohne Panik tratschen 5 solcher Bewohner zusammen ebenso einen Golem herbei, mit 10 % Chance alle 5 Sekunden. Ein Dorf ruft höchstens alle 30 Sekunden einen Golem, und über 256 Golems in der Welt rufen Bewohner keinen mehr. Das klappt schon mit wenigen Bewohnern: Ein kleines Gehege mit drei Betten und einem Monster hinter Glas ist eine Golemfarm. Bewohner rufen Golems auch, wenn Wesen nicht von selbst erscheinen. Ein Dorfgolem streift in seinem Dorf umher und kehrt zurück, wenn er sich entfernt.
+
+**Golems bauen und pflegen**
+
+Einen Eisengolem kann man auch selbst bauen: vier Eisenblöcke aufrecht als T (zwei übereinander, je einer links und rechts neben dem oberen) und darauf einen geschnitzten Kürbis, in beliebiger Richtung; neben Kopf und Fuß muss Luft sein. Aus den Blöcken wird der Golem. Einen Kürbis schnitzt man mit einer Schere; dabei fallen vier Kürbiskerne heraus. Eisengolems beschützen Dorfbewohner: Sie jagen Monster, die sie sehen, und schleudern sie mit ihren Schlägen in die Luft. Spieler lassen sie in Ruhe, doch wer einen Bewohner oder Golem eines Dorfs verletzt, ist 5 Minuten lang dessen Feind, und ein verletzter Golem zürnt dem Spieler 30 Sekunden lang; selbst gebaute Golems greifen nie Spieler an. Einen verletzten Golem repariert man, indem man einen Eisenbarren auf ihn anwendet. Ein Golem lässt Eisenbarren und manchmal Mohn fallen.
 
 **Türen und lange Wege**
 
@@ -370,7 +374,7 @@ Ein Wesen lebt in Dörfern mit `"villager": "<Einstellungen>"`, das die Datei se
 
 **Siehe auch**
 
-[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Bett](blocks.md#block-qtcraft-bed), [Glocke](blocks.md#block-qtcraft-bell), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Eichentür](blocks.md#block-qtcraft-oak_door), [Eisentür](blocks.md#block-qtcraft-iron_door), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop)
+[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Bett](blocks.md#block-qtcraft-bed), [Glocke](blocks.md#block-qtcraft-bell), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Eichentür](blocks.md#block-qtcraft-oak_door), [Eisentür](blocks.md#block-qtcraft-iron_door), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Eisengolem](creatures.md#mob-qtcraft-iron_golem), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Geschnitzter Kürbis](blocks.md#block-qtcraft-carved_pumpkin), [Schere](items.md#item-qtcraft-shears)
 
 ### <a id="chapter-qtcraft-trading"></a>Handel
 

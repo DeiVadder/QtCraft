@@ -99,6 +99,7 @@
                 "block:qtcraft:yellow_concrete_powder",
                 "block:qtcraft:yellow_stained_glass",
                 "block:qtcraft:cut_sandstone",
+                "block:qtcraft:carved_pumpkin",
                 "block:qtcraft:packed_mud",
                 "block:qtcraft:glass",
                 "block:qtcraft:glass_pane",
@@ -373,6 +374,7 @@
                 "item:qtcraft:pink_dye",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:armor_stand",
+                "item:qtcraft:shears",
                 "item:qtcraft:slimeball",
                 "item:qtcraft:snowball",
                 "item:qtcraft:bowl",
@@ -465,6 +467,7 @@
         {
             "entries": [
                 "mob:qtcraft:villager",
+                "mob:qtcraft:iron_golem",
                 "mob:qtcraft:enderman",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
@@ -10536,6 +10539,120 @@
             ],
             "text": "Wächst aus einer Karotte auf Ackerboden in vier Stufen. Reife Pflanzen geben zwei bis vier Karotten.",
             "title": "Karottenpflanze"
+        },
+        "block:qtcraft:carved_pumpkin": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Carved pumpkin",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:carved_pumpkin"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,5 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Axt (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Goldaxt"
+                        }
+                    ],
+                    "value": "0,13 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Geschnitzter Kürbis"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Holz"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:carved_pumpkin",
+            "id": "block:qtcraft:carved_pumpkin",
+            "name": "qtcraft:carved_pumpkin",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Goldaxt"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Holzaxt"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Steinaxt"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Eisenaxt"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamantaxt"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein Kürbis mit Gesicht, mit einer Schere geschnitzt. Auf vier Eisenblöcke in T-Form gesetzt, entsteht ein Eisengolem.",
+            "title": "Geschnitzter Kürbis"
         },
         "block:qtcraft:chest": {
             "category": "blocks",
@@ -35970,6 +36087,20 @@
                 {
                     "links": [
                         {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Eisengolem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "Mohn",
                             "target": "biome:qtcraft:plains",
@@ -36380,6 +36511,18 @@
                             "note": "",
                             "target": "block:qtcraft:pumpkin",
                             "text": "Kürbis"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Schere macht daraus",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Geschnitzter Kürbis"
                         }
                     ],
                     "value": ""
@@ -54051,8 +54194,16 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Dorf mit mindestens 10 Bewohnern bekommt einen Eisengolem nahe seiner Glocke, einen je 10 Bewohner, höchstens einen alle 5 Minuten und nur, wenn Wesen von selbst erscheinen; ein Golem zählt für das Dorf, in dessen Bereich er steht, höchstens 256 in der Welt. Den Eisengolem selbst gibt es noch nicht im Spiel: Bis er kommt, warten die Dörfer auf ihn.",
+                    "text": "Dorfbewohner rufen einen Eisengolem, wenn sie in Gefahr sind oder tratschen, aber nur solche, die in den letzten 10 Minuten in ihrem Bett geschlafen haben. Ein Bewohner gerät in Panik, wenn ein Monster näher als 10 Blöcke kommt, auch im Bett, und wacht davon auf. Hat ein Bewohner in Panik mindestens 3 Bewohner, die kürzlich geschlafen haben, höchstens 10 Blöcke um sich (sich selbst mitgezählt) und ist kein Eisengolem näher als 16 Blöcke, erscheint ein Golem irgendwo bis 8 Blöcke um ihn, auf festem Boden, wo er Platz hat; Glas, Scheiben, Laub und Eis tragen keinen Golem. Ohne Panik tratschen 5 solcher Bewohner zusammen ebenso einen Golem herbei, mit 10 % Chance alle 5 Sekunden. Ein Dorf ruft höchstens alle 30 Sekunden einen Golem, und über 256 Golems in der Welt rufen Bewohner keinen mehr. Das klappt schon mit wenigen Bewohnern: Ein kleines Gehege mit drei Betten und einem Monster hinter Glas ist eine Golemfarm. Bewohner rufen Golems auch, wenn Wesen nicht von selbst erscheinen. Ein Dorfgolem streift in seinem Dorf umher und kehrt zurück, wenn er sich entfernt.",
                     "title": "Eisengolems"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Einen Eisengolem kann man auch selbst bauen: vier Eisenblöcke aufrecht als T (zwei übereinander, je einer links und rechts neben dem oberen) und darauf einen geschnitzten Kürbis, in beliebiger Richtung; neben Kopf und Fuß muss Luft sein. Aus den Blöcken wird der Golem. Einen Kürbis schnitzt man mit einer Schere; dabei fallen vier Kürbiskerne heraus. Eisengolems beschützen Dorfbewohner: Sie jagen Monster, die sie sehen, und schleudern sie mit ihren Schlägen in die Luft. Spieler lassen sie in Ruhe, doch wer einen Bewohner oder Golem eines Dorfs verletzt, ist 5 Minuten lang dessen Feind, und ein verletzter Golem zürnt dem Spieler 30 Sekunden lang; selbst gebaute Golems greifen nie Spieler an. Einen verletzten Golem repariert man, indem man einen Eisenbarren auf ihn anwendet. Ein Golem lässt Eisenbarren und manchmal Mohn fallen.",
+                    "title": "Golems bauen und pflegen"
                 },
                 {
                     "links": [
@@ -54125,6 +54276,30 @@
                             "note": "",
                             "target": "block:qtcraft:wheat_crop",
                             "text": "Weizenpflanze"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Eisengolem"
+                        },
+                        {
+                            "icon": "qtcraft:iron_block",
+                            "note": "",
+                            "target": "block:qtcraft:iron_block",
+                            "text": "Eisenblock"
+                        },
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Geschnitzter Kürbis"
+                        },
+                        {
+                            "icon": "qtcraft:shears",
+                            "note": "",
+                            "target": "item:qtcraft:shears",
+                            "text": "Schere"
                         }
                     ],
                     "recipes": [
@@ -64315,6 +64490,12 @@
                             "text": "Lore"
                         },
                         {
+                            "icon": "qtcraft:shears",
+                            "note": "",
+                            "target": "item:qtcraft:shears",
+                            "text": "Schere"
+                        },
+                        {
                             "icon": "qtcraft:rail",
                             "note": "",
                             "target": "block:qtcraft:rail",
@@ -64343,6 +64524,20 @@
                     ],
                     "text": "",
                     "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "3×, 50 %",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Eisengolem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.",
@@ -68261,6 +68456,95 @@
             "text": "Fällt von Zombies. Kaum Nahrung.",
             "title": "Verrottetes Fleisch"
         },
+        "item:qtcraft:shears": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Shears",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:shears"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Haltbarkeit",
+                    "links": [
+                    ],
+                    "value": "238 Benutzungen"
+                },
+                {
+                    "label": "Schnitzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:pumpkin",
+                            "text": "Kürbis"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:shears",
+            "id": "item:qtcraft:shears",
+            "name": "qtcraft:shears",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:shears",
+                            "needsTable": false,
+                            "note": "Handwerksraster",
+                            "result": {
+                                "icon": "qtcraft:shears",
+                                "note": "",
+                                "target": "item:qtcraft:shears",
+                                "text": "Schere"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Schnitzt einen Kürbis zu einem geschnitzten Kürbis; dabei fallen vier Kürbiskerne heraus.",
+            "title": "Schere"
+        },
         "item:qtcraft:slimeball": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -72061,6 +72345,106 @@
             ],
             "text": "Leuchtet nachts über Sümpfen. Mit einer leeren Glasflasche fangbar.",
             "title": "Glühwürmchen"
+        },
+        "mob:qtcraft:iron_golem": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Iron golem",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:iron_golem"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "Beschützer: jagt Monster, greift Spieler nur an, wenn sie ihn reizen"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "100 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "1,4 m breit, 2,7 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "0,9 m/s beim Gehen, 2,4 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "15 Schaden bis 2,3 m, alle 1,25 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "3×",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Eisenbarren"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "50 %",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Eisenbarren"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "50 %",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Eisenbarren"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "50 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "50 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:iron_ingot",
+            "id": "mob:qtcraft:iron_golem",
+            "name": "qtcraft:iron_golem",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Ein großer, langsamer Beschützer aus Eisen. Dorfbewohner rufen ihn, wenn sie in Panik geraten oder tratschen, oder man baut ihn aus vier Eisenblöcken und einem geschnitzten Kürbis. Er jagt Monster und schleudert sie nach oben; Schläge stoßen ihn nicht zurück. Ein Eisenbarren repariert ihn.",
+            "title": "Eisengolem"
         },
         "mob:qtcraft:mannequin": {
             "category": "creatures",

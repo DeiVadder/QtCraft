@@ -488,6 +488,61 @@ private slots:
         QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s}));
     }
 
+    // The golem farm station (decision E-470): its three villagers come rested from the setup, panic
+    // at the zombie behind glass and summon an iron golem onto the floor of the pen within a few
+    // checks, although creatures do not spawn by themselves in the showcase. The workshop beside it shows the T of iron blocks.
+    void theGolemFarmSummonsAGolem()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        const QcShowcaseGenerator generator(m_content);
+        const QcShowcasePlan &plan = generator.plan();
+        const auto farm = std::ranges::find_if(plan.placements, [](const QcStructurePlacement &placement) {
+            return placement.structure().name().endsWith(u"golem_farm"_s);
+        });
+        QVERIFY(farm != plan.placements.end());
+        QVERIFY(std::ranges::any_of(plan.placements, [](const QcStructurePlacement &placement) {
+            return placement.structure().name().endsWith(u"golem_workshop"_s);
+        }));
+        const QcBlockPos low = farm->origin();
+        const QcBlockPos high = low.offset(farm->sizeX() - 1, 0, farm->sizeZ() - 1);
+        const int reach = 32;
+        for (int x = (low.x - reach) >> 4; x <= (high.x + reach) >> 4; ++x) {
+            for (int z = (low.z - reach) >> 4; z <= (high.z + reach) >> 4; ++z) {
+                server->world().loadChunk({x, z});
+            }
+        }
+
+        const int golemType = *m_content->mobIndex(u"qtcraft:iron_golem"_s);
+        const auto golemsInFarm = [&] {
+            return std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
+                const QcBlockPos at = QcPhysics::blockContaining(mob.motion.position);
+                return mob.type == golemType && at.x >= low.x - 8 && at.x <= high.x + 8 && at.z >= low.z - 8 && at.z <= high.z + 8;
+            });
+        };
+        // Villagers look out every second, villages live every five seconds: four checks at most.
+        int ticks = 0;
+        for (; ticks < 4 * 100 && golemsInFarm() == 0; ++ticks) {
+            server->tick();
+        }
+        // None at the start: the villagers summoned it.
+        QVERIFY(ticks > 0);
+        QVERIFY2(golemsInFarm() >= 1, qPrintable(QString::number(ticks)));
+
+        // It stands on the stone floor of the pen, not on the glass or the roof of the zombie's cell
+        // (golems of other stations aside).
+        for (const QcCreature &mob : server->mobs().mobs()) {
+            const QcBlockPos at = QcPhysics::blockContaining(mob.motion.position);
+            if (mob.type != golemType || at.x < low.x - 8 || at.x > high.x + 8 || at.z < low.z - 8 || at.z > high.z + 8) {
+                continue;
+            }
+            QVERIFY2(at.y == low.y + 1, qPrintable(QString::number(at.y - low.y)));
+            QVERIFY2(at.x > low.x && at.x < high.x && at.z > low.z && at.z < high.z,
+                     qPrintable(u"%1 %2 in %3..%4 %5..%6"_s.arg(at.x).arg(at.z).arg(low.x).arg(high.x).arg(low.z).arg(high.z)));
+        }
+    }
+
     void noCreatureSpawnsByItselfWithoutTheRule()
     {
         // The test terrain is grass: with spawning on, animals come with new chunks and around players.

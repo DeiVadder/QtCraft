@@ -47,8 +47,9 @@ public:
     // only pushes further (decision E-427).
     static constexpr double knockbackLift = 5.0;
 
-    // The velocity of a push along `away` (horizontal, normalized) with `strength` times a blow's push.
-    static QcVec3 knockbackVelocity(const QcVec3 &away, double strength);
+    // The velocity of a push along `away` (horizontal, normalized) with `strength` times a blow's
+    // push, lifting `lift` times a blow's lift (a golem's blow throws upwards, decision E-471).
+    static QcVec3 knockbackVelocity(const QcVec3 &away, double strength, double lift = 1.0);
 
     // A persistent mob as saved with the world.
     struct Stored
@@ -66,6 +67,8 @@ public:
         // not use (decision E-420).
         quint64 uid = 0;
         QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        // A golem a player built (decision E-471).
+        bool playerBuilt = false;
         // The block it carries, whether it is kept only for that block and whether it stays in its
         // enclosure (decision E-460).
         QcBlockId carried = qcAirBlockId;
@@ -86,6 +89,8 @@ public:
         // Where the player looks (a unit vector; zero for unknown): a look at a head provokes
         // neutral creatures with a gaze (decision E-460).
         QcVec3 look = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        // Villages hold their grudges by name (QcGolemGrudges).
+        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     };
 
     // A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
@@ -106,6 +111,20 @@ public:
         quint32 playerEntityId = 0;
         double damage = 0.0;
         QcVec3 knockback;
+        // Times a blow's usual lift (a golem's throws upwards, decision E-471).
+        double lift = 1.0;
+    };
+
+    // A blow of one creature at another (a golem at a hostile creature, decision E-471); the server
+    // deals it after the tick (QcServerCreatures).
+    struct CreatureHit
+    {
+        quint32 attacker = 0;
+        quint32 target = 0;
+        double damage = 0.0;
+        // Where the blow comes from (the push goes away from it) and how far it throws upwards.
+        QcVec3 from;
+        double lift = 1.0;
     };
 
     // Why a creature left the store: it died, was removed without a death (caught, commands),
@@ -156,6 +175,8 @@ public:
     // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425);
     // the server adds them as projectiles after the tick.
     QList<QcProjectileManager::Launch> takeLaunches();
+    // The blows of creatures at creatures since the last call (QcMobBrain::Context::creatureHits).
+    QList<CreatureHit> takeCreatureHits();
     // The blocks the creatures took or put down since the last call (decision E-460).
     QList<BlockAction> takeBlockActions();
     // Game rule mobGriefing (decision E-460): without it creatures take and place no blocks.
@@ -167,12 +188,14 @@ public:
     void keep(QcCreature &mob, bool kept);
     // Lets the creature carry the block state (qcAirBlockId: none) with its item in the hand.
     void carryBlock(QcCreature &mob, QcBlockId block) const;
-    // Applies the blow's damage from `blow.from` to `blow.creature`, pushing the mob away with
-    // `blow.knockback` times a blow's push (0: not at all); returns the mob's drops when it died. A hit without damage (a snowball)
-    // pushes and frightens but gives no invulnerability (decision E-427). During the creature's
-    // invulnerability only a stronger hit takes, with the difference and without the push
-    // (QcHurtWindow, decision E-429). `blow.attacker` is the player who dealt it (0: none, as for
-    // lightning): a neutral creature turns on that player (QcCreature::struckBy, decision E-460).
+    // Applies `blow` to its creature: damage from `blow.from`, pushing it away with `knockback` times
+    // a blow's push (0: not at all) and `lift` times its lift, less what the kind resists (a golem
+    // stands firm, decision E-471); returns the mob's drops when it died. A hit without damage (a
+    // snowball) pushes and frightens but gives no invulnerability (decision E-427). During the
+    // creature's invulnerability only a stronger hit takes, with the difference and without the
+    // push (QcHurtWindow, decision E-429). `blow.attacker` is the player who dealt it (0: none, as
+    // for lightning or a golem's blow): a neutral creature turns on that player
+    // (QcCreature::struckBy, decision E-460).
     std::optional<QList<QcItemDrop>> damage(const QcServerCombat::Blow &blow);
     // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
     // was removed.

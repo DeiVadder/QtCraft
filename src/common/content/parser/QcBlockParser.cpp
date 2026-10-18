@@ -514,6 +514,14 @@ void parseFarming(QcBlockDefinition &block, QcJsonFieldReader &reader, const QSt
     block.tillsInto = reader.name(u"tillsInto"_s, packNamespace);
     block.flattensInto = reader.name(u"flattensInto"_s, packNamespace);
     block.coveredInto = reader.name(u"coveredInto"_s, packNamespace);
+    reader.nestedObject(u"carving"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        block.carvesInto = nested.name(u"into"_s, packNamespace);
+        block.carveDrop = nested.name(u"drop"_s, packNamespace);
+        block.carveDropCount = nested.integer(u"count"_s, block.carveDrop.isEmpty() ? 0 : 1, 0, 64);
+        if (block.carvesInto.isEmpty()) {
+            nested.fail(u"'carving' needs the block it turns 'into'"_s);
+        }
+    });
     if (block.crop.isCrop() && block.growth.grows()) {
         reader.fail(u"a block grows either upwards ('growth') or in stages ('crop')"_s);
     }

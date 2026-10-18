@@ -19,6 +19,7 @@ void parseBlockUses(QcItemDefinition &item, QcJsonFieldReader &reader)
 {
     item.tills = reader.boolean(u"tills"_s, false);
     item.flattens = reader.boolean(u"flattens"_s, false);
+    item.carves = reader.boolean(u"carves"_s, false);
     item.ignites = reader.boolean(u"ignites"_s, false);
     if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.flattens || item.scoops || item.bottles)) {
         reader.fail(u"an item that 'ignites' neither places, tills, flattens, scoops nor bottles"_s);

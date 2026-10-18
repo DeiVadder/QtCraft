@@ -1,0 +1,14 @@
+{
+    "name": "shears",
+    "type": "shaped",
+    "pattern": [
+        " X",
+        "X "
+    ],
+    "key": {
+        "X": "iron_ingot"
+    },
+    "result": {
+        "item": "shears"
+    }
+}

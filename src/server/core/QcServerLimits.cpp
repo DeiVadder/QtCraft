@@ -78,7 +78,7 @@ constexpr std::array<QcServerLimits::Field, 63> table{{
     {"villagerThoughtsPerTick", "villagers deciding what to do per tick", 1, 65536, &QcServerLimits::villagerThoughtsPerTick},
     {"villagerRoutesPerTick", "legs of villagers' long walks planned per tick", 0, 4096, &QcServerLimits::villagerRoutesPerTick},
     {"villagerHarvestsPerTick", "crops villagers harvest per tick", 0, 4096, &QcServerLimits::villagerHarvestsPerTick},
-    {"villageGolems", "iron golems in the world beyond which villages spawn none", 0, 65536, &QcServerLimits::villageGolems},
+    {"villageGolems", "iron golems in the world beyond which villagers summon none", 0, 65536, &QcServerLimits::villageGolems},
 }};
 
 } // namespace

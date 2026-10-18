@@ -8,7 +8,11 @@
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
 
+#include <QHash>
+
 #include <array>
+
+using namespace Qt::StringLiterals;
 
 QcServerPlants::QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory)
     : m_state(state)
@@ -174,6 +178,37 @@ bool QcServerPlants::flatten(QcServerClient &client, QcBlockPos target, QcBlockF
 
     m_blocks.setAndBroadcast(target, *path);
     m_sounds.playBlock(content.block(*path), QcBlockSoundAction::Place, target);
+    m_inventory.wearHeld(client);
+    return true;
+}
+
+bool QcServerPlants::carve(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(target);
+    if (!held || !held->carves || !clicked || !content.isValidBlock(*clicked) || content.block(*clicked).carvesInto.isEmpty()
+        || !QcLineOfSight::isWithinReach(client, target)) {
+        return false;
+    }
+
+    const QcBlockDefinition &block = content.block(*clicked);
+    const std::optional<QcBlockId> carved = content.blockId(block.carvesInto);
+    if (!carved) {
+        return false;
+    }
+
+    // The face looks out of the clicked side; clicked on the top or bottom, towards the player.
+    const bool vertical = face == QcBlockFace::Up || face == QcBlockFace::Down;
+    const QHash<QString, QString> towardsPlayer{{u"north"_s, u"south"_s}, {u"south"_s, u"north"_s}, {u"east"_s, u"west"_s}, {u"west"_s, u"east"_s}};
+    const QString facing = vertical ? towardsPlayer.value(QcBlockRules::lookDirection(client.yaw), u"north"_s) : QcBlockRules::faceName(face);
+    m_blocks.setAndBroadcast(target, content.withProperty(*carved, u"facing"_s, facing));
+    m_sounds.playBlock(content.block(*carved), QcBlockSoundAction::Place, target);
+    const std::optional<QcItemId> drop = block.carveDrop.isEmpty() ? std::nullopt : content.itemId(block.carveDrop);
+    if (drop && block.carveDropCount > 0) {
+        const QcFaceOffset offset = qcFaceOffset(face);
+        const QcVec3 out{target.x + 0.5 + offset.dx * 0.7, target.y + 0.5 + offset.dy * 0.7, target.z + 0.5 + offset.dz * 0.7};
+        m_state.entities().items().spawnScattered({*drop, block.carveDropCount, 0}, out, m_state.entities().newId());
+    }
     m_inventory.wearHeld(client);
     return true;
 }

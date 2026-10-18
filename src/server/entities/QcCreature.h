@@ -7,6 +7,7 @@
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
 #include "server/entities/QcHurtWindow.h"
+#include "server/golems/QcGolemState.h"
 #include "server/mobs/QcArcherState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
@@ -100,6 +101,9 @@ struct QcCreature : QcEntity
     // a player such as lightning, fire or water): a neutral creature turns on that player when it
     // next thinks, which clears it (other brains leave it); not saved.
     quint32 struckBy = 0;
+    // Whether a player built it, its prey and its anger (QcMobDefinition::Ai::Golem, decision E-471):
+    // a component only creatures with the golem AI have.
+    QcComponent<QcGolemState> golem;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give

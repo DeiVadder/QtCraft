@@ -45,6 +45,8 @@ enum class Component : quint16 {
     Carried = 10,
     // A creature that stays in its enclosure (version 1, no fields; decision E-460).
     Confined = 11,
+    // Whether a player built the golem (version 1, decision E-471).
+    Golem = 12,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

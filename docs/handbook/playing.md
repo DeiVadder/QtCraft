@@ -358,7 +358,11 @@ A village grows into its free beds. Two grown-up villagers that meet by day, in 
 
 **Iron golems**
 
-A village of at least 10 villagers gets an iron golem near its bell, one for every 10 villagers, at most one every 5 minutes and only with creature spawning on; a golem counts for the village whose area it stands in, at most 256 in the world. The iron golem itself is not in the game yet: until it arrives, villages wait for it.
+Villagers call an iron golem when they are in danger or gossip, but only those that slept in their bed within the last 10 minutes. A villager panics when a monster comes within 10 blocks, even in its bed, which wakes it. When a panicking villager has at least 3 villagers that slept lately within 10 blocks of it (itself included) and no iron golem is within 16 blocks, a golem appears somewhere within 8 blocks of it, on solid ground where it fits; glass, panes, leaves and ice carry no golem. Without panic, 5 such villagers together gossip a golem up the same way, with a chance of 10 % every 5 seconds. A village summons at most one golem every 30 seconds, and villagers summon none beyond 256 golems in the world. This works with a handful of villagers, so a small pen with three beds and a monster kept behind glass is a golem farm. Villagers summon golems even when creatures do not spawn by themselves. A village golem strolls within its village and walks back when it strays.
+
+**Building and keeping golems**
+
+Build an iron golem yourself: stand four iron blocks upright in a T (two on top of each other, one on each side of the upper one) and put a carved pumpkin on top, facing any way; the blocks beside the head and the foot must be empty. The blocks turn into the golem. Carve a pumpkin by using shears on it; four pumpkin seeds fall out. Iron golems guard villagers: they hunt monsters they see and throw them into the air with their blows. They leave players alone, but a player who hurts a villager or a golem of a village is its enemy for 5 minutes, and a golem that is hurt is angry with the player for 30 seconds; golems you built never attack players. Repair a hurt golem by using an iron ingot on it. A golem drops iron ingots and sometimes poppies.
 
 **Doors and long ways**
 
@@ -370,7 +374,7 @@ A creature kind lives in villages with `"villager": "<settings>"`, naming its sp
 
 **See also**
 
-[Villager](creatures.md#mob-qtcraft-villager), [Bed](blocks.md#block-qtcraft-bed), [Bell](blocks.md#block-qtcraft-bell), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Oak door](blocks.md#block-qtcraft-oak_door), [Iron door](blocks.md#block-qtcraft-iron_door), [Wheat crop](blocks.md#block-qtcraft-wheat_crop)
+[Villager](creatures.md#mob-qtcraft-villager), [Bed](blocks.md#block-qtcraft-bed), [Bell](blocks.md#block-qtcraft-bell), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Oak door](blocks.md#block-qtcraft-oak_door), [Iron door](blocks.md#block-qtcraft-iron_door), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Iron golem](creatures.md#mob-qtcraft-iron_golem), [Block of iron](blocks.md#block-qtcraft-iron_block), [Carved pumpkin](blocks.md#block-qtcraft-carved_pumpkin), [Shears](items.md#item-qtcraft-shears)
 
 ### <a id="chapter-qtcraft-trading"></a>Trading
 

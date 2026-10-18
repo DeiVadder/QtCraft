@@ -6,7 +6,6 @@
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathPlanner.h"
-#include "server/villages/QcVillageGolems.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillages.h"
 #include "world/QcVillageFixture.h"
@@ -26,11 +25,9 @@ using namespace Qt::StringLiterals;
 // villagers get a child that moves into a free bed when two willing adults meet by day in dry
 // weather, none without a free bed, at night, in rain, without food or beyond the limits; farmers
 // share their produce; the child has no profession, plays instead of working and takes a
-// workstation once grown up. Villages spawn iron golems by their population with a cooldown and the
-// world's limit, and not at all while the content has no golem creature; they count the golems of
-// every village towards the world's limit, forget a last golem after the world time went back and
-// place one on the ground where its whole body fits. A villager asleep under a low roof breathes.
-// Children survive saving and resting. Neither children nor golems come before the village's claims
+// workstation once grown up (iron golems: test_golem_summons). A village keeps its last golem's time.
+// A villager asleep under a low roof breathes.
+// Children survive saving and resting. No children come before the village's claims
 // are reconciled, which happens when the last chunk around the village arrives, also when that
 // chunk lies in a neighbouring region (the one test on a generated world: regions come from the
 // world generator).
@@ -66,21 +63,6 @@ private:
     {
         QStringList warnings;
         return *QcBaseContent::load(warnings);
-    }
-
-    // The base content with a placeholder golem (a copy of the pig that never spawns by itself) named in the golem settings.
-    static std::shared_ptr<QcContentRegistry> contentWithGolem(int minVillagers, int villagersPerGolem, double cooldown)
-    {
-        std::shared_ptr<QcContentRegistry> content = loadContent();
-        QcMobDefinition golem = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)];
-        golem.name = u"test:golem"_s;
-        golem.spawnWeight = 0.0;
-        golem.extraSpawns.clear();
-        content->registerMob(golem);
-        QcVillageSettings settings = content->villageSettings();
-        settings.golem = {u"test:golem"_s, minVillagers, villagersPerGolem, cooldown, 8};
-        content->setVillageSettings(settings);
-        return content;
     }
 
     // Loads the chunks of the village's plan and `ring` chunks around them, then populates the plan's
@@ -197,12 +179,6 @@ private:
     }
 
     static QcBlockId block(const Village &village, const QString &name) { return *village.content->blockId(name); }
-
-    static qsizetype golemCount(const Village &village)
-    {
-        const int golemType = *village.content->mobIndex(u"test:golem"_s);
-        return std::ranges::count_if(village.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
-    }
 
     // The village saved and loaded into a new world: its villages.json (unless it was lost) and its
     // persistent mobs, with the chunks `ring` around the village loaded.
@@ -400,93 +376,6 @@ private slots:
         QCOMPARE(child->villager->activity, QcVillagerActivity::Work);
     }
 
-    void aVillageSpawnsGolemsByItsPopulation()
-    {
-        // The threshold: one villager short, no golem.
-        Village built = village(contentWithGolem(1, 1, 300.0));
-        QVERIFY(built.plan);
-        setPhase(built, workPhase);
-        const int population = built.state().population;
-        QcVillageSettings settings = built.content->villageSettings();
-        settings.golem.minVillagers = population + 1;
-        built.content->setVillageSettings(settings);
-        const int golemType = *built.content->mobIndex(u"test:golem"_s);
-        const auto golems = [&] {
-            return std::ranges::count_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
-        };
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 0);
-
-        // At it, one golem per `population` villagers: one, near the meeting point, counted.
-        settings.golem.minVillagers = population;
-        settings.golem.villagersPerGolem = population;
-        built.content->setVillageSettings(settings);
-        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 1);
-        QCOMPARE(built.state().golems, 1);
-        QVERIFY(built.state().lastGolem >= 0.0);
-        const QcCreature &golem = *std::ranges::find_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
-        const QcBlockPos centre = built.state().centre;
-        QVERIFY(std::hypot(golem.motion.position.x - centre.x, golem.motion.position.z - centre.z) <= 9.5);
-        QVERIFY(golem.persistent);
-
-        // A golem gone leaves room for the next one, after the cooldown.
-        built.mobs->remove(golem.id);
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 0);
-        QCOMPARE(built.state().golems, 0);
-        built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 1);
-    }
-
-    void golemsKeepToTheCooldownAndTheWorldLimit()
-    {
-        // One golem per villager, so the population allows many.
-        Village built = village(contentWithGolem(1, 1, 300.0));
-        QVERIFY(built.plan);
-        setPhase(built, workPhase);
-        const int golemType = *built.content->mobIndex(u"test:golem"_s);
-        const auto golems = [&] {
-            return std::ranges::count_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
-        };
-        ticks(built, 5 * QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 1);
-
-        built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 2);
-
-        built.mobs->population().setGolemLimit(2);
-        built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 2);
-
-        // Natural spawning off: no golems.
-        built.mobs->population().setGolemLimit(256);
-        built.mobs->setNaturalSpawning(false);
-        built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golems(), 2);
-    }
-
-    void withoutTheGolemCreatureTheRuleRests()
-    {
-        // The base game names "iron_golem", which arrives later.
-        Village built = village(loadContent());
-        QVERIFY(built.plan);
-        QCOMPARE(built.content->golemOfStyle(built.state().style).mob, u"qtcraft:iron_golem"_s);
-        QVERIFY(!built.mobs->population().golems().kind(built.state().style));
-        QcVillageSettings settings = built.content->villageSettings();
-        settings.golem.minVillagers = 1;
-        settings.golem.villagersPerGolem = 1;
-        built.content->setVillageSettings(settings);
-        const qsizetype before = built.mobs->mobs().size();
-        ticks(built, 2 * QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(built.mobs->mobs().size(), before);
-        QCOMPARE(built.state().golems, 0);
-    }
-
     void aSleepingVillagerBreathesUnderALowRoof()
     {
         // An igloo's bed has two blocks of air above it: a villager lying in it has its eyes inside
@@ -538,9 +427,9 @@ private slots:
     void noLifeBeforeTheClaimsAreReconciled()
     {
         // villages.json was lost: the village comes back from its plan without claims, and only the
-        // chunks of its box are loaded, so villagers beyond them could still hold beds. No child and
-        // no golem until every chunk around the village is there (decision E-416).
-        Village built = village(contentWithGolem(1, 1, 300.0));
+        // chunks of its box are loaded, so villagers beyond them could still hold beds. No child
+        // until every chunk around the village is there (decision E-416; golems: test_golem_summons).
+        Village built = village(loadContent());
         QVERIFY(built.plan);
         const QcVec3 spot = freeABed(built);
         const qsizetype before = villagersOf(built).size();
@@ -549,13 +438,10 @@ private slots:
         QCOMPARE(meet(lost, spot, workPhase), before);
         ticks(lost, 2 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(villagersOf(lost).size(), before);
-        QCOMPARE(golemCount(lost), 0);
 
         // The ring around it loads: the claims are reconciled, life goes on.
         loadAround(lost, 2);
         QCOMPARE(meet(lost, spot, workPhase), before + 1);
-        ticks(lost, 3 * QcVillagePopulation::villageLifeTicks + 1);
-        QVERIFY(golemCount(lost) >= 1);
     }
 
     void claimsAreReconciledWhenTheLastChunkLiesInANeighbouringRegion()
@@ -654,100 +540,6 @@ private slots:
         QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
     }
 
-    void golemsCountTowardsTheWorldInEveryVillage()
-    {
-        // A village not loaded holds three golems; one stands outside every village: four in the
-        // world. Five loaded in the village's area count instead of its three.
-        std::shared_ptr<QcContentRegistry> content = contentWithGolem(1, 1, 300.0);
-        QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
-        QcVillage village;
-        village.id = 3;
-        village.maxX = 10;
-        village.maxY = 80;
-        village.maxZ = 10;
-        village.golems = 3;
-        world.villages().restore({village});
-        const int type = *content->mobIndex(u"test:golem"_s);
-        const QcVillageGolems golems(content);
-        QList<QcCreature> mobs(1);
-        mobs[0].type = type;
-        mobs[0].motion.position = {500.5, 64.0, 500.5};
-        QCOMPARE(golems.golemsInWorld(mobs, type, world.villages()), 4);
-        for (int i = 0; i < 5; ++i) {
-            QcCreature golem;
-            golem.type = type;
-            golem.motion.position = {5.5 + i, 64.0, 5.5};
-            mobs.append(golem);
-        }
-        QCOMPARE(golems.golemsInWorld(mobs, type, world.villages()), 6);
-    }
-
-    void theGolemCooldownSurvivesTimeGoingBack()
-    {
-        Village built = village(contentWithGolem(1, 1, 300.0));
-        QVERIFY(built.plan);
-        setPhase(built, workPhase);
-        const int population = built.state().population;
-        QcVillageSettings settings = built.content->villageSettings();
-        settings.golem.minVillagers = population;
-        settings.golem.villagersPerGolem = population;
-        built.content->setVillageSettings(settings);
-        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golemCount(built), 1);
-
-        // /time set a day back: the last golem lies in the future, yet the next one comes.
-        const int golemType = *built.content->mobIndex(u"test:golem"_s);
-        built.mobs->remove(std::ranges::find_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; })->id);
-        built.worldTime -= QcDayCycle::dayLength;
-        QcVillage future = built.state();
-        future.lastGolem = built.worldTime + QcDayCycle::dayLength;
-        QVERIFY(built.mobs->population().golems().due(future, 0, built.worldTime));
-        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
-        QCOMPARE(golemCount(built), 1);
-        QVERIFY(built.state().lastGolem <= built.worldTime);
-    }
-
-    void aGolemStandsOnTheGroundWhereItsBodyFits()
-    {
-        // A wide golem (1.4 by 2.7) on an open stone floor around the meeting point.
-        std::shared_ptr<QcContentRegistry> content = contentWithGolem(1, 1, 300.0);
-        QcMobDefinition wide = content->mobs()[*content->mobIndex(u"test:golem"_s)];
-        wide.width = 1.4;
-        wide.height = 2.7;
-        content->registerMob(wide);
-        Village built = village(content);
-        QVERIFY(built.plan);
-        const int type = *content->mobIndex(u"test:golem"_s);
-        const QcBlockPos centre = built.state().centre;
-        const QcVillageGolems::Context context{*built.world, built.mobs->paths().cells(), built.worldTime, seed, 256};
-        const QcBlockId stone = block(built, u"qtcraft:stone"_s);
-        fill(built, centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
-        fill(built, centre.offset(-10, -1, -10), centre.offset(10, -1, 10), stone);
-
-        // Pillars on every other column, too high to stand on: each column between them is free,
-        // but the body does not fit.
-        for (int dx = -10; dx <= 10; ++dx) {
-            for (int dz = -10; dz <= 10; ++dz) {
-                if ((dx + dz) % 2 == 0) {
-                    fill(built, centre.offset(dx, 0, dz), centre.offset(dx, 9, dz), stone);
-                }
-            }
-        }
-        QVERIFY(!built.mobs->population().golems().placeFor(built.state(), type, context));
-
-        // Without them, under a roof: on the ground, not on the roof.
-        fill(built, centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
-        fill(built, centre.offset(-10, 4, -10), centre.offset(10, 4, 10), stone);
-        const std::optional<QcVec3> at = built.mobs->population().golems().placeFor(built.state(), type, context);
-        QVERIFY(at);
-        QCOMPARE(at->y, double(centre.y));
-        QVERIFY(!QcBodyFit::overlapsBlocks(*built.world, *at, {wide.width, wide.height}, QcBodyFit::Unloaded::Blocked));
-
-        // A floor of magma hurts: no place.
-        fill(built, centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
-        fill(built, centre.offset(-10, -1, -10), centre.offset(10, -1, 10), block(built, u"qtcraft:magma_block"_s));
-        QVERIFY(!built.mobs->population().golems().placeFor(built.state(), type, context));
-    }
 };
 
 QTEST_GUILESS_MAIN(TestVillageLife)

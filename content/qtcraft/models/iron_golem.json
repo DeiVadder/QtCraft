@@ -1,0 +1,56 @@
+{
+    "name": "iron_golem",
+    "bones": [
+        {
+            "name": "body",
+            "role": "body",
+            "pivot": [0, 1.4, 0],
+            "boxes": [
+                {"from": [-0.45, 1.3, -0.3], "to": [0.45, 2.15, 0.3], "slot": "torso"},
+                {"from": [-0.28, 0.85, -0.2], "to": [0.28, 1.3, 0.2], "slot": "waist"}
+            ]
+        },
+        {
+            "name": "head",
+            "role": "head",
+            "pivot": [0, 2.15, -0.1],
+            "boxes": [
+                {"from": [-0.25, 2.1, -0.45], "to": [0.25, 2.65, -0.05], "slot": "head"},
+                {"from": [-0.25, 2.1, -0.456], "to": [0.25, 2.65, -0.451], "slot": "face"},
+                {"from": [-0.06, 2.15, -0.53], "to": [0.06, 2.35, -0.45], "slot": "head"}
+            ]
+        },
+        {
+            "name": "right_arm",
+            "role": "right_arm",
+            "pivot": [0.6, 2.05, 0],
+            "boxes": [
+                {"from": [0.45, 0.4, -0.18], "to": [0.75, 2.15, 0.18], "slot": "arm"}
+            ]
+        },
+        {
+            "name": "left_arm",
+            "role": "left_arm",
+            "pivot": [-0.6, 2.05, 0],
+            "boxes": [
+                {"from": [-0.75, 0.4, -0.18], "to": [-0.45, 2.15, 0.18], "slot": "arm"}
+            ]
+        },
+        {
+            "name": "right_leg",
+            "role": "right_leg",
+            "pivot": [0.22, 0.9, 0],
+            "boxes": [
+                {"from": [0.08, 0.0, -0.15], "to": [0.36, 0.9, 0.15], "slot": "legs"}
+            ]
+        },
+        {
+            "name": "left_leg",
+            "role": "left_leg",
+            "pivot": [-0.22, 0.9, 0],
+            "boxes": [
+                {"from": [-0.36, 0.0, -0.15], "to": [-0.08, 0.9, 0.15], "slot": "legs"}
+            ]
+        }
+    ]
+}

@@ -167,9 +167,8 @@ void QcVillagePopulation::liveInVillages(QcServerWorld &world, double worldTime,
         world.villages().noteChanged();
     }
 
-    if (!m_mobs.naturalSpawning()) {
-        return;
-    }
+    // Villagers summon golems also without the game rule mobSpawning, like they have children
+    // (decision E-470); the server limit villageGolems (0: none) bounds them.
     QSet<qint64> lived;
     for (const QcCreature &mob : m_mobs.mobs()) {
         // Only villages whose claims were reconciled (decision E-416): before that, villagers in

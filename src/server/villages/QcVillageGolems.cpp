@@ -12,14 +12,27 @@
 
 #include <algorithm>
 #include <cmath>
-#include <numbers>
+#include <map>
 
 namespace {
 
 Q_LOGGING_CATEGORY(lcGolems, "qtcraft.server")
 
-// Salt of the draws that place a golem.
+// Salts of the draws that place a golem and decide whether gossip summons one.
 constexpr quint64 placeSalt = 4200;
+constexpr quint64 gossipSalt = 4300;
+
+// The tick of a world time, for the draws.
+int tickOf(double worldTime)
+{
+    return int(std::fmod(worldTime * 20.0, 1e9));
+}
+
+// Whether a moment lies within `seconds` before `now` (a moment after `now`: the time went back).
+bool within(double moment, double seconds, double now)
+{
+    return moment >= 0.0 && moment <= now && now - moment <= seconds;
+}
 
 } // namespace
 
@@ -34,45 +47,159 @@ std::optional<int> QcVillageGolems::kind(const QString &style) const
     const std::optional<int> type = name.isEmpty() ? std::nullopt : m_content->mobIndex(name);
     if (!type && !name.isEmpty() && !m_missingLogged) {
         m_missingLogged = true;
-        qCInfo(lcGolems) << "Villages spawn no golems: the content has no creature" << name;
+        qCInfo(lcGolems) << "Villagers summon no golems: the content has no creature" << name;
     }
     return type;
 }
 
-QList<QcVillageGolems::Spawn> QcVillageGolems::check(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context) const
+QcVillageGolems::Want QcVillageGolems::wants(const QcCreature &villager, const QcVillageGolemSettings &settings, double worldTime)
 {
-    // By id, so the villages that spawn at the world's limit do not depend on the set's order.
-    QList<qint64> ids(villages.cbegin(), villages.cend());
-    std::ranges::sort(ids);
-    QList<std::pair<QcVillage *, int>> counted;
-    for (const qint64 id : std::as_const(ids)) {
+    if (!villager.isVillager() || villager.dormant || villager.isYoung()) {
+        return Want::None;
+    }
+    // Only a villager that slept in its bed lately wants one; panic makes it summon at once.
+    const QcVillager &state = *villager.villager;
+    if (!within(state.sleptAt, settings.sleptSeconds, worldTime)) {
+        return Want::None;
+    }
+    return within(state.panickedAt, settings.panicSeconds, worldTime) ? Want::Panic : Want::Gossip;
+}
+
+QList<QcVillageGolems::Spawn> QcVillageGolems::check(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context)
+{
+    // Every reconciled, loaded village counts its golems, wanted or not.
+    for (const qint64 id : villages) {
         QcVillage *village = context.world.villages().find(id);
         const std::optional<int> type = village ? kind(village->style) : std::nullopt;
         if (type && loaded(context.world, *village)) {
             recount(*village, mobs, *type, context);
-            counted.append({village, *type});
         }
     }
 
-    // Golems in the world by kind.
+    forgetRestedChunks(context.worldTime);
     QHash<int, qint64> inWorld;
     QList<Spawn> spawns;
-    for (const auto &[village, type] : std::as_const(counted)) {
-        if (!inWorld.contains(type)) {
-            inWorld.insert(type, golemsInWorld(mobs, type, context.world.villages()));
-        }
-        if (inWorld.value(type) >= context.worldLimit || !due(*village, village->golems, context.worldTime)) {
+    for (Group &group : groups(mobs, villages, context)) {
+        const QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
+        const std::optional<int> type = kind(village ? village->style : QString());
+        if (!type) {
             continue;
         }
-        if (const std::optional<QcVec3> at = placeFor(*village, type, context)) {
-            spawns.append({village->id, type, *at});
+        if (!inWorld.contains(*type)) {
+            inWorld.insert(*type, golemsInWorld(mobs, *type, context.world.villages()));
+        }
+        std::ranges::sort(group.wanting, {}, &QcCreature::id);
+        const QList<Spawn> summoned = summon(group, *type, mobs, context, context.worldLimit - inWorld.value(*type));
+        spawns.append(summoned);
+        inWorld[*type] += summoned.size();
+    }
+    return spawns;
+}
+
+QList<QcVillageGolems::Group> QcVillageGolems::groups(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context) const
+{
+    // By village id (std::map), so the villages that summon at the world's limit do not depend on a
+    // hash.
+    std::map<qint64, Group> byVillage;
+    for (const QcCreature &mob : mobs) {
+        const qint64 id = mob.isVillager() ? mob.villager->village : 0;
+        const QcVillage *village = id != 0 ? context.world.villages().find(id) : nullptr;
+        if (!mob.isVillager() || (id != 0 && (!villages.contains(id) || !village))) {
+            continue;
+        }
+        if (wants(mob, m_content->golemOfStyle(village ? village->style : QString()), context.worldTime) != Want::None) {
+            Group &group = byVillage[id];
+            group.village = id;
+            group.wanting.append(&mob);
+        }
+    }
+
+    QList<Group> list;
+    for (auto &entry : byVillage) {
+        list.append(std::move(entry.second));
+    }
+    return list;
+}
+
+QList<QcVillageGolems::Spawn> QcVillageGolems::summon(const Group &group, int type, const QList<QcCreature> &mobs, const Context &context,
+                                                     qint64 allowed)
+{
+    QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
+    const QcVillageGolemSettings settings = m_content->golemOfStyle(village ? village->style : QString());
+    // Gossip summons with its chance once per check and village.
+    const double roll = qcPositionRandom(qcMixSeed(context.seed, gossipSalt), int(group.village % 1000003), tickOf(context.worldTime), 0);
+    QList<Spawn> spawns;
+    for (const QcCreature *summoner : group.wanting) {
+        if (spawns.size() >= allowed || (village && !spawns.isEmpty())) {
+            break;
+        }
+        const QcVec3 at = summoner->motion.position;
+        if (!calls(*summoner, group, settings, context.worldTime, roll) || !rested(village, settings, at, context.worldTime)) {
+            continue;
+        }
+
+        // No golem of the kind near it (also none summoned in this check), and all of its
+        // surroundings loaded (a golem may rest there).
+        const auto near = [&](const QcVec3 &golem) { return (golem - at).length() <= settings.golemDistance; };
+        const bool golemNear = std::ranges::any_of(mobs, [&](const QcCreature &mob) { return mob.type == type && near(mob.motion.position); })
+                               || std::ranges::any_of(spawns, [&](const Spawn &spawn) { return near(spawn.position); });
+        if (golemNear || !loadedAround(context.world, at, settings.golemDistance + settings.spawnRadius)) {
+            continue;
+        }
+        const std::optional<QcVec3> place = placeNear(at, type, settings.spawnRadius, context, summoner->id);
+        if (!place) {
+            continue;
+        }
+
+        if (village) {
             village->golems += 1;
             village->lastGolem = context.worldTime;
             context.world.villages().noteChanged();
-            ++inWorld[type];
+        } else {
+            m_lastWithoutVillage.insert(QcPhysics::blockContaining(at).chunk(), context.worldTime);
         }
+        spawns.append(Spawn{group.village, type, *place});
     }
     return spawns;
+}
+
+bool QcVillageGolems::calls(const QcCreature &summoner, const Group &group, const QcVillageGolemSettings &settings, double worldTime,
+                            double roll)
+{
+    // Those of the group near it that slept lately, itself included (every one of the group did).
+    const qsizetype gathered = std::ranges::count_if(group.wanting, [&](const QcCreature *other) {
+        return (other->motion.position - summoner.motion.position).length() <= settings.gatherDistance;
+    });
+    const bool panic = wants(summoner, settings, worldTime) == Want::Panic && gathered >= settings.minVillagers;
+    const bool gossip = gathered >= settings.gossipVillagers && roll < settings.gossipChance;
+    return panic || gossip;
+}
+
+void QcVillageGolems::forgetRestedChunks(double worldTime)
+{
+    const double cooldown = m_content->golemOfStyle(QString()).cooldownSeconds;
+    m_lastWithoutVillage.removeIf([&](const auto &entry) { return entry.value() > worldTime || worldTime - entry.value() >= cooldown; });
+}
+
+bool QcVillageGolems::rested(const QcVillage *village, const QcVillageGolemSettings &settings, const QcVec3 &at, double worldTime) const
+{
+    if (village) {
+        // A last golem after the world time: the time went back, so it is long ago.
+        const double last = village->lastGolem;
+        return last < 0.0 || last > worldTime || worldTime - last >= settings.cooldownSeconds;
+    }
+
+    // Without a village: no golem summoned from this chunk or one next to it within the pause.
+    const QcChunkPos chunk = QcPhysics::blockContaining(at).chunk();
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dz = -1; dz <= 1; ++dz) {
+            const double last = m_lastWithoutVillage.value({chunk.x + dx, chunk.z + dz}, -1.0);
+            if (last >= 0.0 && last <= worldTime && worldTime - last < settings.cooldownSeconds) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void QcVillageGolems::recount(QcVillage &village, const QList<QcCreature> &mobs, int type, const Context &context)
@@ -115,14 +242,6 @@ int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> 
     }));
 }
 
-bool QcVillageGolems::due(const QcVillage &village, int golems, double worldTime) const
-{
-    const QcVillageGolemSettings settings = m_content->golemOfStyle(village.style);
-    // A last golem in the future: the world time went back, so it is long ago.
-    const bool rested = village.lastGolem < 0.0 || village.lastGolem > worldTime || worldTime - village.lastGolem >= settings.cooldownSeconds;
-    return village.population >= settings.minVillagers && golems < village.population / settings.villagersPerGolem && rested;
-}
-
 bool QcVillageGolems::loaded(const QcServerWorld &world, const QcVillage &village)
 {
     const QcChunkPos low = QcBlockPos{village.minX - QcVillage::reach, 0, village.minZ - QcVillage::reach}.chunk();
@@ -137,20 +256,32 @@ bool QcVillageGolems::loaded(const QcServerWorld &world, const QcVillage &villag
     return true;
 }
 
-std::optional<QcVec3> QcVillageGolems::placeFor(const QcVillage &village, int type, const Context &context) const
+bool QcVillageGolems::loadedAround(const QcServerWorld &world, const QcVec3 &at, double distance)
 {
-    const int radius = m_content->golemOfStyle(village.style).spawnRadius;
-    const auto tick = int(std::fmod(context.worldTime * 20.0, 1e9));
+    const QcChunkPos low = QcPhysics::blockContaining(at - QcVec3{distance, 0.0, distance}).chunk();
+    const QcChunkPos high = QcPhysics::blockContaining(at + QcVec3{distance, 0.0, distance}).chunk();
+    for (int x = low.x; x <= high.x; ++x) {
+        for (int z = low.z; z <= high.z; ++z) {
+            if (!world.chunk({x, z})) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+std::optional<QcVec3> QcVillageGolems::placeNear(const QcVec3 &around, int type, int radius, const Context &context, quint64 draw) const
+{
+    const QcBlockPos centre = QcPhysics::blockContaining(around);
+    const int tick = tickOf(context.worldTime);
+    const int span = 2 * radius + 1;
     for (int attempt = 0; attempt < placeAttempts; ++attempt) {
-        const quint64 seed = qcMixSeed(context.seed, placeSalt + quint64(attempt));
-        const double angle = qcPositionRandom(seed, village.centre.x, tick, village.centre.z) * 2.0 * std::numbers::pi;
-        const double distance = 2.0 + qcPositionRandom(seed, village.centre.z, tick, village.centre.x) * (radius - 2.0);
-        const int x = village.centre.x + int(std::lround(std::sin(angle) * distance));
-        const int z = village.centre.z + int(std::lround(std::cos(angle) * distance));
-        // From the meeting point's height outwards (0, +1, -1, +2, ...): the ground before roofs.
-        for (int step = 0; step <= 2 * placeHeight; ++step) {
-            const int dy = step % 2 == 1 ? (step + 1) / 2 : -step / 2;
-            if (const std::optional<QcVec3> at = standsAt({x, village.centre.y + dy, z}, type, context)) {
+        const quint64 seed = qcMixSeed(qcMixSeed(context.seed, placeSalt + quint64(attempt)), draw);
+        const int x = centre.x - radius + std::min(span - 1, int(qcPositionRandom(seed, centre.x, tick, centre.z) * span));
+        const int z = centre.z - radius + std::min(span - 1, int(qcPositionRandom(seed, centre.z, tick, centre.x) * span));
+        // From the top down, like the reference: the highest place of the column within reach.
+        for (int dy = QcVillageGolemSettings::spawnHeight; dy >= -QcVillageGolemSettings::spawnHeight; --dy) {
+            if (const std::optional<QcVec3> at = standsAt({x, centre.y + dy, z}, type, context)) {
                 return at;
             }
         }
@@ -164,6 +295,14 @@ std::optional<QcVec3> QcVillageGolems::standsAt(QcBlockPos feet, int type, const
     const QcPathDirectCells cells(context.world, context.cells);
     const QcPathStand stand = QcPathTerrain::standAt(cells, feet, QcPathRules::of(definition));
     if (!stand.ok || stand.water || stand.hurts) {
+        return std::nullopt;
+    }
+
+    // Not on glass, panes, leaves or ice: only on a floor of the opaque render layer (a block the
+    // feet stand in when they are lifted, a slab, else the one below).
+    const QcBlockPos floor = stand.lift() > 0.0 ? feet : feet.offset(0, -1, 0);
+    const std::optional<QcBlockId> floorBlock = context.world.blockAt(floor);
+    if (!floorBlock || m_content->block(*floorBlock).renderLayer != QcRenderLayer::Opaque) {
         return std::nullopt;
     }
 

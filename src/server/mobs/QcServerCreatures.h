@@ -29,6 +29,11 @@ public:
 
 private:
     void playAmbientSounds(double dt);
+    // The blows creatures dealt each other (a golem's, decision E-471), with the attacker's sound;
+    // those that die leave their loot (no experience).
+    void applyCreatureHits();
+    // The blows creatures dealt players, a golem's throwing them upwards.
+    void applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits);
     // Crammed creatures get hurt (QcMobCramming) with their sounds; those that die leave their loot
     // (no experience: no player killed them).
     void applyCramming();

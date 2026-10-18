@@ -18,11 +18,15 @@ QString kindOf(const QcMobDefinition &mob)
 }
 
 // The behaviour label: the category, "archer" for hostile creatures that shoot (decision E-426) or
-// "neutral" for those a player has to provoke (decision E-460).
+// "neutral" for those a player has to provoke (decision E-460) or "golem" for guardians
+// (decision E-471).
 QString behaviourOf(const QcMobDefinition &mob)
 {
     if (mob.ai == QcMobDefinition::Ai::Neutral) {
         return u"neutral"_s;
+    }
+    if (mob.ai == QcMobDefinition::Ai::Golem) {
+        return u"golem"_s;
     }
     return mob.ai == QcMobDefinition::Ai::Archer ? u"archer"_s : kindOf(mob);
 }
@@ -34,13 +38,13 @@ void addBodyFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<
     facts.append({text.label(u"fact.health"_s), text.healthPoints(mob.maxHealth), {}});
     facts.append({text.label(u"fact.size"_s), text.label(u"unit.size"_s).arg(text.number(mob.width), text.number(mob.height)), {}});
 
-    // Hostile creatures run at chaseSpeed after players, the others when they flee.
+    // Hostile creatures and golems run at chaseSpeed after their targets, the others when they flee.
     const QString speeds = mob.chaseSpeed == mob.walkSpeed
                                ? text.label(u"unit.metresPerSecond"_s).arg(text.number(mob.walkSpeed))
-                               : text.label(mob.hostile ? u"unit.speeds"_s : u"unit.speedsFleeing"_s)
+                               : text.label(mob.hostile || mob.ai == QcMobDefinition::Ai::Golem ? u"unit.speeds"_s : u"unit.speedsFleeing"_s)
                                      .arg(text.number(mob.walkSpeed), text.number(mob.chaseSpeed));
     facts.append({text.label(u"fact.speed"_s), speeds, {}});
-    if (mob.hostile) {
+    if (mob.hostile || mob.ai == QcMobDefinition::Ai::Golem) {
         facts.append({text.label(u"fact.attack"_s),
                       text.label(u"value.attack"_s)
                           .arg(text.number(mob.attackDamage), text.number(mob.attackRange), text.number(mob.attackCooldown)),

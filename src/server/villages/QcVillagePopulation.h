@@ -21,8 +21,8 @@ class QcVillages;
 // The villagers of the villages among the creatures (decisions E-411, E-415, E-422): one moves in
 // beside each free bed when a chunk of its village is seen for the first time, the claims of a
 // village are reconciled once per run when all its villagers' chunks are loaded, every
-// villageLifeTicks ticks villagers get children (QcVillagerBreeding) and villages iron golems
-// (QcVillageGolems), and a villager that leaves the world for good (QcMobManager::Departure: died,
+// villageLifeTicks ticks villagers get children (QcVillagerBreeding) and summon iron golems
+// (QcVillageGolems, decision E-470), and a villager that leaves the world for good (QcMobManager::Departure: died,
 // removed, despawned, void) frees its claims. Part of QcMobManager, which owns the creatures and
 // tells it when one leaves.
 class QcVillagePopulation
@@ -40,8 +40,8 @@ public:
     // claims there), how many may live and their budgets per tick.
     void setVillages(QcVillages *villages) { m_villages = villages; }
     void setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour);
-    // At most `golems` iron golems in the world (QcServerLimits villageGolems, only with natural
-    // spawning).
+    // At most `golems` iron golems in the world (QcServerLimits villageGolems; 0: villagers summon
+    // none).
     void setGolemLimit(qint64 golems) { m_golemLimit = golems; }
     const QcVillageGolems &golems() const { return m_golems; }
 

@@ -1,0 +1,82 @@
+{
+    "name": "golem_workshop",
+    "showcase": {
+        "order": 92
+    },
+    "palette": {
+        "S": "polished_stone",
+        "I": "iron_block",
+        "P": "carved_pumpkin[facing=south]",
+        "C": "chest[facing=south]"
+    },
+    "layers": [
+        [
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS",
+            "SSSSSSSSS"
+        ],
+        [
+            "         ",
+            "         ",
+            "         ",
+            "    I  P ",
+            "         ",
+            " C       ",
+            "         "
+        ],
+        [
+            "         ",
+            "         ",
+            "         ",
+            "   III   ",
+            "         ",
+            "         ",
+            "         "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                1,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "iron_block",
+                    "count": 16
+                },
+                {
+                    "item": "carved_pumpkin",
+                    "count": 4
+                },
+                {
+                    "item": "pumpkin",
+                    "count": 4
+                },
+                {
+                    "item": "shears",
+                    "count": 1
+                },
+                {
+                    "item": "iron_ingot",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                4.0,
+                3.5
+            ],
+            "text": "structure.qtcraft.golem_workshop"
+        }
+    ]
+}

@@ -23,8 +23,12 @@ void QcServerCreatures::tick()
     QList<QcMobManager::PlayerView> players;
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing) {
-            players.append({client->id, client->motion.position, !client->dead, !client->rules().invulnerable,
-                            QcProjectileFlight::direction(client->yaw, client->pitch)});
+            players.append({.entityId = client->id,
+                            .position = client->motion.position,
+                            .alive = !client->dead,
+                            .targetable = !client->rules().invulnerable,
+                            .look = QcProjectileFlight::direction(client->yaw, client->pitch),
+                            .name = client->name});
         }
     }
 
@@ -34,13 +38,41 @@ void QcServerCreatures::tick()
     m_villagers.apply();
     m_traits.apply();
     playAmbientSounds(dt);
+    applyCreatureHits();
     applyCramming();
+    applyPlayerHits(hits);
+}
 
+void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits)
+{
     for (const QcMobManager::PlayerHit &hit : hits) {
         for (const auto &client : m_state.clients()) {
-            if (client->id == hit.playerEntityId) {
-                m_health.damage(*client, hit.damage, hit.knockback, QcPlayerHealth::DamageKind::Armoured);
+            if (client->id != hit.playerEntityId) {
+                continue;
             }
+            const QcHurtWindow::Take take = m_health.damage(*client, hit.damage, hit.knockback, QcPlayerHealth::DamageKind::Armoured);
+            // A golem's blow throws higher than the usual push lifts.
+            if (take == QcHurtWindow::Take::Fresh && hit.lift != 1.0 && hit.knockback.length() > 0.0) {
+                client->motion.velocity.y = QcMobManager::knockbackLift * hit.lift;
+                client->stateDirty = true;
+            }
+        }
+    }
+}
+
+void QcServerCreatures::applyCreatureHits()
+{
+    const QList<QcMobManager::CreatureHit> hits = m_state.entities().creatures().takeCreatureHits();
+    for (const QcMobManager::CreatureHit &hit : hits) {
+        const QcCreature *attacker = m_state.entities().creatures().find(hit.attacker);
+        const QcCreature *target = m_state.entities().creatures().find(hit.target);
+        if (!attacker || !target) {
+            continue;
+        }
+        const QString sound = m_state.content().mobs()[attacker->type].golem.attackSound;
+        const QcVec3 at = target->motion.position + QcVec3{0.0, m_state.content().mobs()[target->type].height * 0.5, 0.0};
+        if (QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = hit.target, .damage = hit.damage, .from = hit.from, .lift = hit.lift}) && !sound.isEmpty()) {
+            m_sounds.play(sound, at);
         }
     }
 }

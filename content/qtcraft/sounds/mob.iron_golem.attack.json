@@ -1,0 +1,25 @@
+{
+    "name": "mob.iron_golem.attack",
+    "volume": 1.0,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.35,
+            "attack": 0.002,
+            "curve": 2.5,
+            "lowpass": 900,
+            "gain": 0.8
+        },
+        {
+            "wave": "sine",
+            "duration": 0.3,
+            "frequency": 90,
+            "endFrequency": 45,
+            "attack": 0.002,
+            "curve": 2,
+            "gain": 0.6
+        }
+    ]
+}

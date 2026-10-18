@@ -232,14 +232,55 @@ QStringList readBiomes(const QJsonObject &json, const QString &packNamespace, Qc
     return biomes;
 }
 
-// The golem fields of `nested` over `golem` (decision E-415).
+// The ranges of the golem fields (decisions E-415, E-470).
+constexpr int maxGolemVillagers = 1024;
+constexpr double maxGolemDistance = 64.0;
+constexpr double maxGolemSeconds = 86400.0;
+
+// The golem fields of `nested` over `golem` (decisions E-415, E-470).
 void readGolemFields(QcVillageGolemSettings &golem, const QString &packNamespace, QcJsonFieldReader &nested)
 {
     golem.mob = nested.name(u"mob"_s, packNamespace, golem.mob);
-    golem.minVillagers = nested.integer(u"minVillagers"_s, golem.minVillagers, 1, 1024);
-    golem.villagersPerGolem = nested.integer(u"villagersPerGolem"_s, golem.villagersPerGolem, 1, 1024);
-    golem.cooldownSeconds = nested.number(u"cooldownSeconds"_s, golem.cooldownSeconds, 0.0, 86400.0);
+    golem.minVillagers = nested.integer(u"minVillagers"_s, golem.minVillagers, 1, maxGolemVillagers);
+    golem.gossipVillagers = nested.integer(u"gossipVillagers"_s, golem.gossipVillagers, 1, maxGolemVillagers);
+    golem.gatherDistance = nested.number(u"gatherDistance"_s, golem.gatherDistance, 1.0, maxGolemDistance);
+    golem.golemDistance = nested.number(u"golemDistance"_s, golem.golemDistance, 0.0, maxGolemDistance);
+    golem.panicSeconds = nested.number(u"panicSeconds"_s, golem.panicSeconds, 0.0, maxGolemSeconds);
+    golem.sleptSeconds = nested.number(u"sleptSeconds"_s, golem.sleptSeconds, 0.0, maxGolemSeconds);
+    golem.gossipChance = nested.number(u"gossipChance"_s, golem.gossipChance, 0.0, 1.0);
+    golem.cooldownSeconds = nested.number(u"cooldownSeconds"_s, golem.cooldownSeconds, 0.0, maxGolemSeconds);
     golem.spawnRadius = nested.integer(u"spawnRadius"_s, golem.spawnRadius, 2, 32);
+    golem.grudgeSeconds = nested.number(u"grudgeSeconds"_s, golem.grudgeSeconds, 0.0, maxGolemSeconds);
+}
+
+// The fields of a style's "golem" object that it gives (decision E-421): each over the settings'.
+void readGolemPatch(const QJsonObject &object, QcVillageGolemPatch &patch, const QString &packNamespace, QcJsonFieldReader &nested)
+{
+    const QcVillageGolemSettings defaults;
+    const auto number = [&](const QString &key, std::optional<double> &field, double fallback, double low, double high) {
+        if (object.contains(key)) {
+            field = nested.number(key, fallback, low, high);
+        }
+    };
+    if (object.contains(u"mob"_s)) {
+        patch.mob = nested.name(u"mob"_s, packNamespace);
+    }
+    if (object.contains(u"minVillagers"_s)) {
+        patch.minVillagers = nested.integer(u"minVillagers"_s, defaults.minVillagers, 1, maxGolemVillagers);
+    }
+    if (object.contains(u"gossipVillagers"_s)) {
+        patch.gossipVillagers = nested.integer(u"gossipVillagers"_s, defaults.gossipVillagers, 1, maxGolemVillagers);
+    }
+    if (object.contains(u"spawnRadius"_s)) {
+        patch.spawnRadius = nested.integer(u"spawnRadius"_s, defaults.spawnRadius, 2, 32);
+    }
+    number(u"gatherDistance"_s, patch.gatherDistance, defaults.gatherDistance, 1.0, maxGolemDistance);
+    number(u"golemDistance"_s, patch.golemDistance, defaults.golemDistance, 0.0, maxGolemDistance);
+    number(u"panicSeconds"_s, patch.panicSeconds, defaults.panicSeconds, 0.0, maxGolemSeconds);
+    number(u"sleptSeconds"_s, patch.sleptSeconds, defaults.sleptSeconds, 0.0, maxGolemSeconds);
+    number(u"gossipChance"_s, patch.gossipChance, defaults.gossipChance, 0.0, 1.0);
+    number(u"cooldownSeconds"_s, patch.cooldownSeconds, defaults.cooldownSeconds, 0.0, maxGolemSeconds);
+    number(u"grudgeSeconds"_s, patch.grudgeSeconds, defaults.grudgeSeconds, 0.0, maxGolemSeconds);
 }
 
 // A style's own golems (decision E-421): false for none, or an object of the fields it gives over
@@ -260,22 +301,7 @@ std::optional<QcVillageGolemPatch> readStyleGolem(const QJsonObject &json, const
 
     QcVillageGolemPatch patch = golem.value_or(QcVillageGolemPatch{});
     reader.nestedObject(u"golem"_s, [&patch, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        const QcVillageGolemSettings defaults;
-        if (object.contains(u"mob"_s)) {
-            patch.mob = nested.name(u"mob"_s, packNamespace);
-        }
-        if (object.contains(u"minVillagers"_s)) {
-            patch.minVillagers = nested.integer(u"minVillagers"_s, defaults.minVillagers, 1, 1024);
-        }
-        if (object.contains(u"villagersPerGolem"_s)) {
-            patch.villagersPerGolem = nested.integer(u"villagersPerGolem"_s, defaults.villagersPerGolem, 1, 1024);
-        }
-        if (object.contains(u"cooldownSeconds"_s)) {
-            patch.cooldownSeconds = nested.number(u"cooldownSeconds"_s, defaults.cooldownSeconds, 0.0, 86400.0);
-        }
-        if (object.contains(u"spawnRadius"_s)) {
-            patch.spawnRadius = nested.integer(u"spawnRadius"_s, defaults.spawnRadius, 2, 32);
-        }
+        readGolemPatch(object, patch, packNamespace, nested);
     });
     return patch;
 }

@@ -49,7 +49,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_animals(m_state, m_sounds, m_inventory)
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits, m_ignition})
+    , m_golems(m_state, m_sounds, m_blocks, m_inventory)
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits,
+                              m_ignition, m_golems})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)

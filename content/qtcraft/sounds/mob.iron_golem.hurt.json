@@ -1,0 +1,27 @@
+{
+    "name": "mob.iron_golem.hurt",
+    "volume": 0.9,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.25,
+            "frequency": 180,
+            "endFrequency": 120,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1200,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.2,
+            "attack": 0.005,
+            "curve": 2,
+            "highpass": 2000,
+            "lowpass": 7000,
+            "gain": 0.3
+        }
+    ]
+}

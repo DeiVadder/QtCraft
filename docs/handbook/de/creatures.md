@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -19,6 +19,22 @@ Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm
 | Geschwindigkeit | 1,4 m/s beim Gehen, 3 m/s auf der Flucht |
 | Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Beute | nichts |
+
+### <a id="mob-qtcraft-iron_golem"></a>Eisengolem
+
+Ein großer, langsamer Beschützer aus Eisen. Dorfbewohner rufen ihn, wenn sie in Panik geraten oder tratschen, oder man baut ihn aus vier Eisenblöcken und einem geschnitzten Kürbis. Er jagt Monster und schleudert sie nach oben; Schläge stoßen ihn nicht zurück. Ein Eisenbarren repariert ihn.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_golem` |
+| Verhalten | Beschützer: jagt Monster, greift Spieler nur an, wenn sie ihn reizen |
+| Gesundheit | 100 Lebenspunkte |
+| Größe | 1,4 m breit, 2,7 m hoch |
+| Geschwindigkeit | 0,9 m/s beim Gehen, 2,4 m/s beim Verfolgen |
+| Angriff | 15 Schaden bis 2,3 m, alle 1,25 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Eisenbarren](items.md#item-qtcraft-iron_ingot) (3×), [Eisenbarren](items.md#item-qtcraft-iron_ingot) (50 %), [Eisenbarren](items.md#item-qtcraft-iron_ingot) (50 %), [Mohn](blocks.md#block-qtcraft-poppy) (50 %), [Mohn](blocks.md#block-qtcraft-poppy) (50 %) |
 
 ### <a id="mob-qtcraft-enderman"></a>Enderman
 

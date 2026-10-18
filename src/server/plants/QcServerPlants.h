@@ -16,8 +16,8 @@ class QcServerState;
 // Plants in the server tick: growing saplings and decaying leaves (QcPlantManager), random ticks of
 // plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth), items that plant
 // themselves (despawning saplings, seeds lying on free soil; decision E-294), and players tilling
-// soil with a hoe (decision E-290), making paths with a shovel (decision E-406) and bone meal on crops
-// and saplings (decision E-426).
+// soil with a hoe (decision E-290), making paths with a shovel (decision E-406), bone meal on crops
+// and saplings (decision E-426) and carving pumpkins with shears (decision E-472).
 class QcServerPlants
 {
 public:
@@ -43,6 +43,11 @@ public:
     // `flattensInto` (decision E-406): only on its top face, with air above, within reach. False when
     // the click is no flattening.
     bool flatten(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
+    // Carves the clicked block when the held item `carves` (shears) and the block has `carvesInto` (a
+    // pumpkin, decision E-472): the carved block faces the clicked side (on the top or bottom: the
+    // player), its `carveDrop` falls out of the clicked face and the shears wear by one. False when
+    // the click is no carving.
+    bool carve(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
     // Bone meal (an item that `fertilizes`, decision E-426) on the clicked block within reach: a crop
     // that is not ripe grows fertilizeStagesMin..Max stages at once, a sapling grows into its tree on
     // the next tick with QcItemDefinition::fertilizeSaplingChance; either takes one item (not in

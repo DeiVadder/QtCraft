@@ -22,6 +22,7 @@
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcHunger.h"
 #include "server/gameplay/QcPlayerHealth.h"
+#include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobBreeding.h"
@@ -30,6 +31,7 @@
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcServerPlants.h"
 #include "server/villages/QcServerTrading.h"
+#include "server/villages/QcVillagePopulation.h"
 #include "server/weather/QcServerWeather.h"
 #include "server/weather/QcWeatherCycle.h"
 
@@ -55,8 +57,16 @@ QMap<QString, double> villageValues()
         {u"villagers.breedingRestMinutes"_s, QcVillagerBreedingSettings{}.cooldownSeconds / 60.0},
         {u"villagers.max"_s, double(QcServerLimits{}.villagers)},
         {u"golems.minVillagers"_s, double(QcVillageGolemSettings{}.minVillagers)},
-        {u"golems.villagersPerGolem"_s, double(QcVillageGolemSettings{}.villagersPerGolem)},
-        {u"golems.cooldownMinutes"_s, QcVillageGolemSettings{}.cooldownSeconds / 60.0},
+        {u"golems.gossipVillagers"_s, double(QcVillageGolemSettings{}.gossipVillagers)},
+        {u"golems.gatherDistance"_s, QcVillageGolemSettings{}.gatherDistance},
+        {u"golems.golemDistance"_s, QcVillageGolemSettings{}.golemDistance},
+        {u"golems.sleptMinutes"_s, QcVillageGolemSettings{}.sleptSeconds / 60.0},
+        {u"golems.gossipPercent"_s, QcVillageGolemSettings{}.gossipChance * 100.0},
+        {u"golems.checkSeconds"_s, QcVillagePopulation::villageLifeTicks * QcPhysics::tickDuration},
+        {u"golems.cooldownSeconds"_s, QcVillageGolemSettings{}.cooldownSeconds},
+        {u"golems.spawnRadius"_s, double(QcVillageGolemSettings{}.spawnRadius)},
+        {u"golems.grudgeMinutes"_s, QcVillageGolemSettings{}.grudgeSeconds / 60.0},
+        {u"golems.angerSeconds"_s, QcGolemGrudges::angerSeconds},
         {u"golems.max"_s, double(QcServerLimits{}.villageGolems)},
         {u"trading.restocksPerDay"_s, double(QcTradingSettings{}.restocksPerDay)},
         {u"trading.offersPerLevel"_s, double(QcTradingSettings{}.offersPerLevel)},

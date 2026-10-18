@@ -67,6 +67,29 @@ struct QcArcherDefinition
     bool operator==(const QcArcherDefinition &) const = default;
 };
 
+// How a creature with the golem AI fights, is repaired and built (decision E-471), from its data
+// (`golem`). Server side only.
+struct QcGolemDefinition
+{
+    // Share of a blow's push it shrugs off (1: it stands firm).
+    double knockbackResistance = 0.0;
+    // Its blows throw what they strike upwards this many times a blow's usual lift.
+    double lift = 1.0;
+    // Played where a blow of it lands; empty for none.
+    QString attackSound;
+    // Used on it (one of the held stack), this item heals `repairHealth` with `repairSound`; empty:
+    // it is not repaired.
+    QString repairItem;
+    double repairHealth = 25.0;
+    QString repairSound;
+    // Players build it from four blocks of `buildBody` in a T standing upright with `buildHead`
+    // placed on the T's middle last; empty: it is not built.
+    QString buildBody;
+    QString buildHead;
+
+    bool operator==(const QcGolemDefinition &) const = default;
+};
+
 // Data definition of a creature: stats, behaviour, spawning, model and drops.
 struct QcMobDefinition
 {
@@ -89,12 +112,15 @@ struct QcMobDefinition
     // by their villager settings (only with `villager`), archers keep their distance and shoot
     // (only with `hostile` and `archer`, decision E-426), neutral ones wander like passive ones until a
     // player provokes them (hurts them, or looks at their head with `gaze`) and then chase that player
-    // (decision E-460). Server side only.
-    enum class Ai : quint8 { Passive, Hostile, Villager, Archer, Neutral };
+    // (decision E-460), golems guard villagers against hostile creatures (only without `hostile`, with
+    // `golem`, decision E-471). Server side only.
+    enum class Ai : quint8 { Passive, Hostile, Villager, Archer, Neutral, Golem };
     Ai ai = Ai::Passive;
     QcMobAbilities abilities;
     // How an archer shoots (Ai::Archer).
     QcArcherDefinition archer;
+    // How a golem fights, is repaired and built (Ai::Golem).
+    QcGolemDefinition golem;
     // Provoked by a player's look at its head (Ai::Neutral, decision E-460).
     std::optional<QcGazeDefinition> gaze;
     // Teleports away (decision E-460).

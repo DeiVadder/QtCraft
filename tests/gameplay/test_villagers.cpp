@@ -296,6 +296,24 @@ private slots:
         }
     }
 
+    // A sleeper keeps an eye out (decision E-470): a zombie beside its bed wakes it in a panic, and
+    // it notes the panic (a golem summon may follow).
+    void aZombieWakesASleeperInAPanic()
+    {
+        start(0.7);
+        const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
+        const quint32 entity = settle(head, centreOf(m_feet.offset(-2, 0, 2))).id;
+        QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 1200));
+        QVERIFY(villager(entity)->villager->sleptAt >= 0.0);
+        QCOMPARE(villager(entity)->villager->panickedAt, -1.0);
+
+        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{0.0, 0.0, 3.0},
+                               m_server->entities().newId());
+        QVERIFY(tickUntil([&] { return villager(entity)->pose != QcPose::Lying; }, 2 * QcVillagerBehaviour::decideTicks + 1));
+        QVERIFY(villager(entity)->villager->panickedAt >= 0.0);
+        QVERIFY(villager(entity)->villager->threat.has_value());
+    }
+
     // Thirty villagers meeting at the bell are a crowd that thinks in turns (decision E-401); they
     // still follow the routine when the meeting ends.
     void aCrowdAtTheBellStillFollowsTheRoutine()

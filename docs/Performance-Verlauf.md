@@ -2098,3 +2098,23 @@ Release-Builds, `dev` `7d71ee6` gegen `feature/52-3-enderman` nach der Nachbesse
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): Tick −1 bis +8 % (Signal-Stationen +1 Wesen: Enderman-Gehege der Showcase; village 59 → 67 Wesen bei +1 % Tick, Endermen in der Nacht-Spawnliste), p99 −5 bis +6 % (horde +19 %, absolut +0,08 ms bei gleicher Wesenzahl), Speicher ±1 %.
 
 **Fenster** (`@core horde`, 8 Chunks, 6 Runden): GPU −5 bis +2 %, Render-CPU −8 bis +4 % (sprint +19 %) und GUI-CPU −12 bis +2 % (sprint +24 %) mit überlappenden Spannen und gleicher Entity-Zahl, Speicher +0–1 %, p99 10,0–10,4 ms (Ziel erfüllt); Tick im Fenster streut wie immer. Keine wiederholte Regression.
+
+## 52.6 (Eisengolem, Golems aus Panik und Tratsch) headless, Debug-relativ (2026-10-18)
+
+`QTCRAFT_GOLEM_MEASURE=2 build/debug/tests/test_golem_measure` (Debug, Apple M4 Max, `nice -n 10`, andere Sitzungen bauten parallel: Lastmittel 4–14). Ein Testdorf im Ebenen-Stil mit jedem Haus doppelt (32 Bewohner) auf einem Server ohne Spieler, zwei Spieltage ab dem Abend, Ticks von Hand so schnell wie möglich; abwechselnd mit `villageGolems` 0 (keine Golems) und 256, je 3 Runden, Mediane.
+
+| Wert | ohne Golems | mit Golems |
+|---|---|---|
+| Tick (ms, Debug) | 0,545 | 0,652 |
+| Golems nach 2 Tagen | 0 | 6 |
+| Wesen am Ende | 37 | 43 |
+
+**Bewertung:** Die Bewohner rufen nach Schlaf und Arbeit von selbst Golems (der erste am ersten Mittag beim Treffen an der Glocke), danach einen je Ecke des Dorfs, in der kein Golem näher als 16 Blöcke steht. Die Mehrkosten (+0,1 ms je Tick im Debug-Build, +20 %) sind die sechs Golems selbst (Gehirn mit Blick über alle Wesen alle 10 Ticks, Wege, Physik eines breiten Körpers), etwa 0,018 ms je Golem; die Prüfung des Rufens alle 100 Ticks fällt darin nicht auf. Debug-relativ, keine Release-Messung (paralleler Betrieb); bei vielen Golems ist der Blick über alle Wesen (`QcGolemBrain::prey`) der erste Kandidat für einen räumlichen Index.
+
+## 52.6 (Eisengolem, mit 52.3 zusammengeführt) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `506cab9` (52.3) gegen `feature/52-6-iron-golem` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
+
+**Headless** (`@server horde village village-night`, 3 Runden, 60 Spielsekunden): crowd, horde, village, village-night, explore, farm −5 bis +4 % bei gleicher Wesenzahl; Signal-Stationen +20 bis +26 % (0,040 → 0,049 ms) bei 22 statt 16 Wesen: Dorfbewohner, Zombie und Golems der neuen Stationen `golem_farm` und `golem_workshop`, etwa 1,5 µs je Wesen; Speicher 0 bis +3 %.
+
+**Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −2 bis +4 %, Render-CPU −6 bis +6 %, GUI-CPU −7 bis +0 %; sprint Render-CPU +14 % und GUI-CPU +20 % mit überlappenden Spannen und gleicher Entity-Zahl (wie in der Messung von 52.3: das Szenario streut); showcase 16 statt 12 Entities im Blick bei GPU +4 %; p99 10,3–10,4 ms, Speicher +0–1 %. Keine Regression.

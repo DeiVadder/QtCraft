@@ -65,6 +65,7 @@ using namespace Qt::StringLiterals;
         {u"minecart"_s, Pattern::Minecart}, {u"bow"_s, Pattern::Bow},
         {u"arrow"_s, Pattern::Arrow},       {u"feather"_s, Pattern::Feather},
         {u"bone"_s, Pattern::Bone},
+        {u"carved_pumpkin"_s, Pattern::CarvedPumpkin}, {u"shears"_s, Pattern::Shears},
     };
 
     const auto it = patterns.constFind(name);

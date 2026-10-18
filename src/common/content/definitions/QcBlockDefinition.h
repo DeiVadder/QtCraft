@@ -233,6 +233,12 @@ struct QcBlockDefinition
     // Block it turns into when an item that `flattens` (a shovel) is used on its top, empty for none
     // (decision E-406). Server side only.
     QString flattensInto;
+    // Block it turns into when an item that `carves` (shears) is used on it, facing the clicked side,
+    // dropping `carveDropCount` of the item `carveDrop` (a pumpkin carved into a head, decision E-472);
+    // empty for none. Server side only.
+    QString carvesInto;
+    QString carveDrop;
+    int carveDropCount = 0;
     // Block it turns into at its next block update while an opaque full block lies on it (a dirt path
     // becoming dirt, decision E-406), empty for none. Server side only.
     QString coveredInto;

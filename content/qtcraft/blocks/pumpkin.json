@@ -7,5 +7,10 @@
         "top": "pumpkin_top",
         "bottom": "pumpkin_top",
         "side": "pumpkin_side"
+    },
+    "carving": {
+        "into": "carved_pumpkin",
+        "drop": "pumpkin_seeds",
+        "count": 4
     }
 }

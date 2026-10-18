@@ -89,18 +89,30 @@ struct QcVillagerBreedingSettings
     double youngSpeed = 1.3;
 };
 
-// The golems villages spawn (worldgen/villages.json "golem" or a style's "golem", decision E-415,
-// E-421): a village with at least
-// `minVillagers` villagers and fewer golems in its area than one per `villagersPerGolem` villagers
-// spawns one of the creature kind `mob` within `spawnRadius` of its meeting point, at most once per
-// `cooldownSeconds`. Without that creature kind in the content the rule rests.
+// The golems villagers summon (worldgen/villages.json "golem" or a style's "golem", decisions E-421,
+// E-470), like in the reference game: a villager wants a golem while it slept in its bed within
+// `sleptSeconds`. A panicking one (it panicked at a hostile creature within `panicSeconds`) with at
+// least `minVillagers` such villagers within `gatherDistance` (itself included) always summons one;
+// otherwise `gossipVillagers` such villagers together summon one with `gossipChance` per check. No
+// golem of the creature kind `mob` may stand within `golemDistance`; the golem appears within
+// `spawnRadius` (horizontally; spawnHeight up and down) of the summoner. A village summons at most
+// once per `cooldownSeconds`. A player who hurts its villagers or golems is its enemy for
+// `grudgeSeconds` (decision E-471). Without that creature kind in the content the rule rests.
 struct QcVillageGolemSettings
 {
+    static constexpr int spawnHeight = 6;
+
     QString mob;
-    int minVillagers = 10;
-    int villagersPerGolem = 10;
-    double cooldownSeconds = 300.0;
+    int minVillagers = 3;
+    int gossipVillagers = 5;
+    double gatherDistance = 10.0;
+    double golemDistance = 16.0;
+    double panicSeconds = 10.0;
+    double sleptSeconds = 600.0;
+    double gossipChance = 0.1;
+    double cooldownSeconds = 30.0;
     int spawnRadius = 8;
+    double grudgeSeconds = 300.0;
 };
 
 // A style's own golems (its "golem", decision E-421): the fields it gives, each over the settings'
@@ -110,18 +122,30 @@ struct QcVillageGolemPatch
 {
     std::optional<QString> mob;
     std::optional<int> minVillagers;
-    std::optional<int> villagersPerGolem;
+    std::optional<int> gossipVillagers;
+    std::optional<double> gatherDistance;
+    std::optional<double> golemDistance;
+    std::optional<double> panicSeconds;
+    std::optional<double> sleptSeconds;
+    std::optional<double> gossipChance;
     std::optional<double> cooldownSeconds;
     std::optional<int> spawnRadius;
+    std::optional<double> grudgeSeconds;
 
     // `base` with the given fields replaced.
     QcVillageGolemSettings over(QcVillageGolemSettings base) const
     {
         base.mob = mob.value_or(base.mob);
         base.minVillagers = minVillagers.value_or(base.minVillagers);
-        base.villagersPerGolem = villagersPerGolem.value_or(base.villagersPerGolem);
+        base.gossipVillagers = gossipVillagers.value_or(base.gossipVillagers);
+        base.gatherDistance = gatherDistance.value_or(base.gatherDistance);
+        base.golemDistance = golemDistance.value_or(base.golemDistance);
+        base.panicSeconds = panicSeconds.value_or(base.panicSeconds);
+        base.sleptSeconds = sleptSeconds.value_or(base.sleptSeconds);
+        base.gossipChance = gossipChance.value_or(base.gossipChance);
         base.cooldownSeconds = cooldownSeconds.value_or(base.cooldownSeconds);
         base.spawnRadius = spawnRadius.value_or(base.spawnRadius);
+        base.grudgeSeconds = grudgeSeconds.value_or(base.grudgeSeconds);
         return base;
     }
 };

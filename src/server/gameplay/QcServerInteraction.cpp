@@ -16,6 +16,7 @@
 #include "server/gameplay/QcServerCrafting.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcServerStands.h"
+#include "server/golems/QcServerGolems.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
@@ -111,7 +112,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
 
     const bool reshaped = m_parts.plants.till(client, message.target, message.face, held)
                           || m_parts.plants.flatten(client, message.target, message.face, held)
-                          || m_parts.plants.fertilize(client, message.target, held);
+                          || m_parts.plants.fertilize(client, message.target, held)
+                          || m_parts.plants.carve(client, message.target, message.face, held);
     if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)) {
         return;
     }
@@ -236,6 +238,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     // loader belongs to the player who placed it.
     m_state.world().loaders().setOwner(target, client.name);
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
+    // A golem's head on its body brings it to life (decision E-471).
+    m_parts.golems.build(target);
 
     const bool pours = !held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo);
     if (pours) {
@@ -309,7 +313,7 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
 
     const QcCreature *mob = m_state.entities().creatures().find(entityId);
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (!mob || !held) {
+    if (!mob || !held || m_parts.golems.repair(client, entityId, held)) {
         return;
     }
 

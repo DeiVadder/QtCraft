@@ -1,0 +1,7 @@
+{
+    "name": "shears",
+    "texture": "shears",
+    "maxStack": 1,
+    "durability": 238,
+    "carves": true
+}

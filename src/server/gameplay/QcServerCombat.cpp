@@ -5,6 +5,7 @@
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcServerExperience.h"
 
 QcServerCombat::QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
@@ -57,7 +58,7 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
 
 bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow)
 {
-    const QcCreature *mob = state.entities().creatures().find(blow.creature);
+    QcCreature *mob = state.entities().creatures().find(blow.creature);
     if (!mob) {
         return false;
     }
@@ -71,6 +72,11 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
     // are stronger: those deal the difference, silently (decision E-429).
     const QcHurtWindow::Take take = mob->hurt.wouldTake(blow.damage);
+    if (take != QcHurtWindow::Take::Ignored) {
+        const auto attacker = std::ranges::find_if(state.clients(), [&](const auto &client) { return client->id == blow.attacker; });
+        const QString name = attacker != state.clients().end() ? (*attacker)->name : QString();
+        QcGolemGrudges::noteBlow(state.world(), *mob, blow.attacker, name, state.info().worldTime);
+    }
     const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().damage(blow);
     if (drops) {
         state.entities().noteDeath(blow.creature);

@@ -98,11 +98,11 @@ void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
         {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
-        {u"neutral"_s, Ai::Neutral}};
+        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}};
     const Ai fallback = mob.villager ? Ai::Villager : mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        reader.fail(u"'ai' must be passive, hostile, villager, archer or neutral"_s);
+        reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral or golem"_s);
         return;
     }
 
@@ -111,6 +111,8 @@ void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
         reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
     } else if ((mob.ai == Ai::Hostile || mob.ai == Ai::Archer) && !mob.hostile) {
         reader.fail(u"the hostile and archer AIs need 'hostile': true"_s);
+    } else if (mob.ai == Ai::Golem && (mob.hostile || mob.flying)) {
+        reader.fail(u"the golem AI is for peaceful walkers"_s);
     }
     if (mob.ai == Ai::Villager) {
         mob.abilities = {true, QcMobAbilities::Climbing::Ladders, false, false};
@@ -135,6 +137,27 @@ void parseArcher(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString 
     } else if (archer.minDistance >= archer.keepDistance || archer.keepDistance > archer.range) {
         reader.fail(u"needs 'minDistance' < 'keepDistance' <= 'range'"_s);
     }
+}
+
+// How a golem fights, is repaired and built (decision E-471): "golem" with its push resistance,
+// lift, attack sound, repair item and health, and the blocks it is built from; it goes with the
+// golem AI.
+void parseGolem(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcGolemDefinition &golem = mob.golem;
+    golem.knockbackResistance = reader.number(u"knockbackResistance"_s, golem.knockbackResistance, 0.0, 1.0);
+    golem.lift = reader.number(u"lift"_s, golem.lift, 0.0, 4.0);
+    golem.attackSound = reader.name(u"attackSound"_s, packNamespace);
+    golem.repairItem = reader.name(u"repairItem"_s, packNamespace);
+    golem.repairHealth = reader.number(u"repairHealth"_s, golem.repairHealth, 0.0, 1000.0);
+    golem.repairSound = reader.name(u"repairSound"_s, packNamespace);
+    reader.nestedObject(u"build"_s, [&golem, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        golem.buildBody = nested.name(u"body"_s, packNamespace);
+        golem.buildHead = nested.name(u"head"_s, packNamespace);
+        if (golem.buildBody.isEmpty() || golem.buildHead.isEmpty() || golem.buildBody == golem.buildHead) {
+            nested.fail(u"needs a 'body' and another 'head' block"_s);
+        }
+    });
 }
 
 void parseAbilities(QcMobDefinition &mob, QcJsonFieldReader &reader)
@@ -467,6 +490,12 @@ namespace QcMobParser {
     });
     if (reader.ok() && json.contains(u"archer"_s) != (mob.ai == QcMobDefinition::Ai::Archer)) {
         reader.fail(u"the archer AI goes with 'archer' settings, and they with it"_s);
+    }
+    reader.nestedObject(u"golem"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseGolem(mob, nested, packNamespace);
+    });
+    if (reader.ok() && json.contains(u"golem"_s) != (mob.ai == QcMobDefinition::Ai::Golem)) {
+        reader.fail(u"the golem AI goes with 'golem' settings, and they with it"_s);
     }
     QcMobTraitsParser::parseTraits(json, mob, reader, packNamespace);
     mob.burnsInDaylight = reader.boolean(u"burnsInDaylight"_s, false);

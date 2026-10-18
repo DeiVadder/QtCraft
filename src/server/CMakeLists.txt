@@ -110,6 +110,12 @@ target_sources(qc_server PRIVATE
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
 )
 target_sources(qc_server PRIVATE
+    golems/QcGolemBrain.h golems/QcGolemBrain.cpp
+    golems/QcGolemGrudges.h golems/QcGolemGrudges.cpp
+    golems/QcGolemState.h
+    golems/QcServerGolems.h golems/QcServerGolems.cpp
+)
+target_sources(qc_server PRIVATE
     items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
     items/QcItemEntityManager.h items/QcItemEntityManager.cpp
     items/QcServerExperience.h items/QcServerExperience.cpp

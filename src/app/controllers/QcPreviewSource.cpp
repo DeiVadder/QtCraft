@@ -31,7 +31,12 @@ QcPreviewSource::QcPreviewSource(const QcSessionParts &parts, const QcWorldLibra
     connect(&m_atlasBuild, &AtlasWatcher::finished, this, &QcPreviewSource::onMenuAtlasBuilt);
 }
 
-QcPreviewSource::~QcPreviewSource() = default;
+// A menu atlas still being built in the thread pool writes its result into the future; the watcher
+// waits for it so that the result is not freed while the worker still stores it.
+QcPreviewSource::~QcPreviewSource()
+{
+    m_atlasBuild.waitForFinished();
+}
 
 void QcPreviewSource::useWorld(std::shared_ptr<const QcContentRegistry> content, std::shared_ptr<const QcTextureAtlas> atlas)
 {

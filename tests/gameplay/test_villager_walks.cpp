@@ -470,6 +470,27 @@ private slots:
         QVERIFY(horizontalDistance(built.mobs->find(again)->motion.position, *record.home) < 1.5);
     }
 
+    // Version 2 knew no sleep (decision E-470): the rest of the record reads as before, it never
+    // slept.
+    void aRecordOfVersionTwoNeverSlept()
+    {
+        QcVillagerRecord record;
+        record.produce = 3;
+        record.sleptAt = 1234.5;
+        QByteArray bytes;
+        {
+            QDataStream out(&bytes, QIODevice::WriteOnly);
+            QcVillagerCodec::write(out, record);
+        }
+        bytes.chop(8);
+        QDataStream previous(bytes);
+        const std::optional<QcVillagerRecord> before = QcVillagerCodec::read(previous, 2);
+        QVERIFY(before.has_value());
+        QCOMPARE(before->sleptAt, -1.0);
+        QCOMPARE(before->produce, record.produce);
+        QVERIFY(previous.atEnd());
+    }
+
     void theRecordIsSavedWithItsChunk()
     {
         QcVillagerRecord record;
@@ -482,6 +503,7 @@ private slots:
         record.look = 0xdeadbeef;
         record.style = u"qtcraft:desert"_s;
         record.produce = 3;
+        record.sleptAt = 1234.5;
         QByteArray bytes;
         {
             QDataStream out(&bytes, QIODevice::WriteOnly);
@@ -522,13 +544,15 @@ private slots:
             first.offers.clear();
             QcVillagerCodec::write(out, first);
         }
-        // The offers (a count of none), the restock time and count are the fields of version 2.
-        older.chop(4 + 8 + 4);
+        // The offers (a count of none), the restock time and count are the fields of version 2, the
+        // time it slept that of version 3.
+        older.chop(4 + 8 + 4 + 8);
         QDataStream olderIn(older);
         QcVillagerRecord defaults = record;
         defaults.offers.clear();
         defaults.lastRestock = -1.0;
         defaults.restocks = 0;
+        defaults.sleptAt = -1.0;
         QCOMPARE(QcVillagerCodec::read(olderIn, 1), defaults);
         QVERIFY(olderIn.atEnd());
 

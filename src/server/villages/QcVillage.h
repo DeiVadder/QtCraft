@@ -3,6 +3,7 @@
 #include "common/core/QcBlockPos.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
+#include <QHash>
 #include <QJsonObject>
 #include <QList>
 #include <QString>
@@ -60,6 +61,17 @@ struct QcVillage
     int population = 0;
     int golems = 0;
     double lastGolem = -1.0;
+    // Players who hurt its villagers or golems and the world time the grudge ends: its golems attack
+    // them (QcGolemGrudges, decision E-471).
+    struct Grudges
+    {
+        // By player name, so leaving and joining again keeps it.
+        QHash<QString, double> until;
+
+        // Passing state, neither saved nor compared: villages that differ only in grudges are equal.
+        bool operator==(const Grudges &) const { return true; }
+    };
+    Grudges grudges;
 
     bool operator==(const QcVillage &) const = default;
 

@@ -109,6 +109,9 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Archer) {
         mob.archer.emplace();
     }
+    if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Golem) {
+        mob.golem.emplace();
+    }
     // Only creatures that are saved have a persistent id (decision E-420).
     if (mob.persistent) {
         mob.uid = m_nextUid++;
@@ -117,19 +120,15 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     return id;
 }
 
-QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength)
+QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength, double lift)
 {
-    return away * (knockbackSpeed * strength) + QcVec3{0.0, knockbackLift * std::min(strength, 1.0), 0.0};
+    return away * (knockbackSpeed * strength) + QcVec3{0.0, knockbackLift * std::min(strength, 1.0) * lift, 0.0};
 }
 
 std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow &blow)
 {
-    const quint32 mobId = blow.creature;
     const double amount = blow.damage;
-    const QcVec3 &from = blow.from;
-    const double knockback = blow.knockback;
-    const quint32 attacker = blow.attacker;
-    const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
+    const auto it = std::ranges::find(m_mobs, blow.creature, &QcCreature::id);
     const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->hurt.wouldTake(amount);
     if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
@@ -137,20 +136,22 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
 
     // A stronger hit during the invulnerability deals the difference, without push or flash.
     QcCreature &mob = *it;
+    const QcMobDefinition &definition = m_content->mobs()[mob.type];
     mob.health -= mob.hurt.take(amount, m_hurtTicks);
-    const QcVec3 away = QcVec3{mob.motion.position.x - from.x, 0.0, mob.motion.position.z - from.z}.normalized();
-    if (attacker != 0) {
-        mob.struckBy = attacker;
+    const QcVec3 away = QcVec3{mob.motion.position.x - blow.from.x, 0.0, mob.motion.position.z - blow.from.z}.normalized();
+    const double resisted = 1.0 - definition.golem.knockbackResistance;
+    if (blow.attacker != 0) {
+        mob.struckBy = blow.attacker;
     }
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
-        if (knockback > 0.0) {
-            mob.motion.velocity = knockbackVelocity(away, knockback);
+        if (blow.knockback > 0.0 && resisted > 0.0) {
+            mob.motion.velocity = knockbackVelocity(away, blow.knockback * resisted, blow.lift);
         }
     }
 
-    const QcMobDefinition &definition = m_content->mobs()[mob.type];
-    if (!definition.hostile) {
+    // Golems do not run from blows; they strike back (QcGolemGrudges).
+    if (!definition.hostile && definition.ai != QcMobDefinition::Ai::Golem) {
         mob.fleeTimer = QcPassiveBrain::fleeSeconds;
         mob.wanderDirection = away;
     }
@@ -293,6 +294,11 @@ QList<QcProjectileManager::Launch> QcMobManager::takeLaunches()
     return m_behaviour->takeLaunches();
 }
 
+QList<QcMobManager::CreatureHit> QcMobManager::takeCreatureHits()
+{
+    return m_behaviour->takeCreatureHits();
+}
+
 QList<QcMobManager::BlockAction> QcMobManager::takeBlockActions()
 {
     return m_behaviour->takeBlockActions();
@@ -381,7 +387,18 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
 {
     const std::optional<QcVillagerRecord> villager =
         mob.isVillager() ? std::optional<QcVillagerRecord>(*mob.villager) : std::nullopt;
-    Stored stored{mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager, mob.uid, mob.kept};
+    Stored stored;
+    stored.type = mob.type;
+    stored.position = mob.motion.position;
+    stored.yaw = mob.yaw;
+    stored.health = mob.health;
+    stored.breedCooldown = mob.breedCooldown;
+    stored.growUp = mob.growUp;
+    stored.bred = mob.bred;
+    stored.villager = villager;
+    stored.uid = mob.uid;
+    stored.kept = mob.kept;
+    stored.playerBuilt = mob.golem && mob.golem->playerBuilt;
     stored.carried = mob.carried;
     stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
     stored.confined = mob.confined;
@@ -429,6 +446,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.uid = uniqueUid(stored.uid, uids, m_nextUid);
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {
             mob.archer.emplace();
+        }
+        if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Golem) {
+            mob.golem.emplace().playerBuilt = stored.playerBuilt;
         }
         if (m_content->mobs()[stored.type].villager) {
             static_cast<QcVillagerRecord &>(mob.villager.emplace()) = stored.villager.value_or(QcVillagerRecord{});

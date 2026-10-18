@@ -24,6 +24,7 @@
 #include "server/gameplay/QcServerInteraction.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcServerStands.h"
+#include "server/golems/QcServerGolems.h"
 #include "server/items/QcServerExperience.h"
 #include "server/items/QcServerItems.h"
 #include "server/login/QcPlayerJoin.h"
@@ -257,6 +258,7 @@ private:
     QcServerMinecarts m_minecarts;
     QcServerAnimals m_animals;
     QcServerPlants m_plants;
+    QcServerGolems m_golems;
     QcServerInteraction m_interaction;
     QcServerItems m_items;
     QcServerExperience m_experience;

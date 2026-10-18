@@ -1,5 +1,6 @@
 #pragma once
 
+#include "server/golems/QcGolemBrain.h"
 #include "server/mobs/QcArcherBrain.h"
 #include "server/mobs/QcCreatureBrains.h"
 #include "server/mobs/QcMobCrowd.h"
@@ -16,10 +17,10 @@
 
 // What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
 // of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the villagers'
-// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain); flyers drift above the ground. Walkers follow their paths
-// (QcMobNavigator) with the shared physics and are pushed apart by their crowd (QcMobCrowd), whose
-// density also decides how much they think (QcMobCrowd::Tier); the path searches of all of them
-// share a budget per tick (QcPathPlanner).
+// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain); flyers drift above the ground.
+// Walkers follow their paths (QcMobNavigator) with the shared physics and are pushed apart by their
+// crowd (QcMobCrowd), whose density also decides how much they think (QcMobCrowd::Tier); the path
+// searches of all of them share a budget per tick (QcPathPlanner).
 class QcMobBehaviour
 {
 public:
@@ -59,6 +60,8 @@ public:
                                         Clock clock);
     // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425).
     QList<QcProjectileManager::Launch> takeLaunches() { return std::exchange(m_launches, {}); }
+    // The blows of creatures at creatures since the last call (QcMobBrain::Context::creatureHits).
+    QList<QcMobManager::CreatureHit> takeCreatureHits() { return std::exchange(m_creatureHits, {}); }
     // The blocks the creatures took and put down since the last call (decision E-460).
     QList<QcMobManager::BlockAction> takeBlockActions() { return std::exchange(m_blockActions, {}); }
     // Game rule mobGriefing (QcMobBrain::Context::griefing).
@@ -90,6 +93,7 @@ private:
     QcPassiveBrain m_passive;
     QcHostileBrain m_hostile;
     QcArcherBrain m_archers;
+    QcGolemBrain m_golems;
     QcNeutralBrain m_neutral;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
@@ -97,6 +101,7 @@ private:
     QcMobCrowd m_crowd;
     TierCounts m_tiers;
     QList<QcProjectileManager::Launch> m_launches;
+    QList<QcMobManager::CreatureHit> m_creatureHits;
     QList<QcMobManager::BlockAction> m_blockActions;
     bool m_griefing = true;
     // Ticks since the start: when creatures look for players and throttled ones think (by their ids).

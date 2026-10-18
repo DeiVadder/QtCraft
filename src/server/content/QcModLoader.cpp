@@ -78,6 +78,19 @@ void checkRecipeReferences(const QcContentRegistry &content, QStringList &warnin
     }
 }
 
+// A golem's repair item and blocks (decision E-471): unknown ones leave it unrepaired, unbuilt.
+void checkGolemReferences(const QcContentRegistry &content, const QcMobDefinition &mob, QStringList &warnings)
+{
+    if (!mob.golem.repairItem.isEmpty() && !knowsItem(content, mob.golem.repairItem)) {
+        warnings.append(u"mob %1: unknown repair item '%2'"_s.arg(mob.name, mob.golem.repairItem));
+    }
+    for (const QString &block : {mob.golem.buildBody, mob.golem.buildHead}) {
+        if (!block.isEmpty() && !content.blockId(block)) {
+            warnings.append(u"mob %1: unknown building block '%2'"_s.arg(mob.name, block));
+        }
+    }
+}
+
 void checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob, QStringList &warnings)
 {
     for (const QcItemDrop &drop : mob.drops) {
@@ -105,7 +118,8 @@ void checkMobReferences(const QcContentRegistry &content, const QcMobDefinition 
         warnings.append(u"mob %1: unknown cape '%2'"_s.arg(mob.name, mob.cape));
     }
 
-    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
+    checkGolemReferences(content, mob, warnings);
+    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound, mob.golem.attackSound, mob.golem.repairSound}) {
         if (!knowsSound(content, name)) {
             warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
         }
@@ -142,7 +156,7 @@ void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinit
     // tilled or flattened.
     for (const auto &[field, name] : {std::pair{u"fruit"_s, block.crop.fruit}, std::pair{u"soil revertsTo"_s, block.soil.revertsTo},
                                       std::pair{u"tillsInto"_s, block.tillsInto}, std::pair{u"flattensInto"_s, block.flattensInto},
-                                      std::pair{u"coveredInto"_s, block.coveredInto}}) {
+                                      std::pair{u"coveredInto"_s, block.coveredInto}, std::pair{u"carving into"_s, block.carvesInto}}) {
         if (!name.isEmpty() && !content.blockId(name)) {
             warnings.append(u"block %1: unknown %2 '%3'"_s.arg(block.name, field, name));
         }

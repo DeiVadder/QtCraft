@@ -214,9 +214,14 @@ private:
             mob.confined = true;
             return true;
         };
+        const auto golem = [&mob](QDataStream &in, quint16) {
+            in >> mob.playerBuilt;
+            return true;
+        };
         if (!readComponents(mob.kept.components,
                             {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
-                             known(Component::Carried, kindVersion, carriedBlock), known(Component::Confined, kindVersion, confined)})) {
+                             known(Component::Carried, kindVersion, carriedBlock), known(Component::Confined, kindVersion, confined),
+                             known(Component::Golem, kindVersion, golem)})) {
             return false;
         }
         // A carried block the content no longer has is lost with a warning.
@@ -522,6 +527,9 @@ void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stor
     }
     if (mob.confined) {
         components.add(quint16(Component::Confined), kindVersion, [](QDataStream &) {});
+    }
+    if (mob.playerBuilt) {
+        components.add(quint16(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
     }
 }
 

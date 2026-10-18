@@ -303,7 +303,7 @@ private slots:
         QTemporaryDir dir;
         const QString first = writePack(dir.path(), u"first"_s,
                                         {{u"worldgen/villages.json"_s, R"({"spacing": 512, "golem": {"cooldownSeconds": 60}})"},
-                                         {u"villages/guarded.json"_s, R"({"extends": "qtcraft:plains", "name": "guarded", "golem": {"minVillagers": 5}})"}});
+                                         {u"villages/guarded.json"_s, R"({"extends": "qtcraft:plains", "name": "guarded", "golem": {"minVillagers": 5, "grudgeSeconds": 90}})"}});
         const QString second = writePack(dir.path(), u"second"_s,
                                          {{u"mobs/golem.json"_s, QByteArray(gnomeMob).replace(R"("villager": "gnome", )", "")},
                                           {u"worldgen/villages.json"_s, R"({"golem": {"mob": "gnome"}})"}});
@@ -318,14 +318,16 @@ private slots:
         QCOMPARE(settings.bell, u"qtcraft:bell"_s);
         QCOMPARE(settings.golem.mob, u"second:gnome"_s);
         QCOMPARE(settings.golem.cooldownSeconds, 60.0);
-        QCOMPARE(settings.golem.villagersPerGolem, 10);
+        QCOMPARE(settings.golem.gossipChance, 0.1);
 
         // A style's golem fields go over the settings' as they end up.
         const QcVillageGolemSettings guarded = content.golemOfStyle(u"first:guarded"_s);
         QCOMPARE(guarded.mob, u"second:gnome"_s);
         QCOMPARE(guarded.minVillagers, 5);
         QCOMPARE(guarded.cooldownSeconds, 60.0);
-        QCOMPARE(content.golemOfStyle(u"qtcraft:plains"_s).minVillagers, 10);
+        QCOMPARE(guarded.grudgeSeconds, 90.0);
+        QCOMPARE(guarded.gatherDistance, 10.0);
+        QCOMPARE(content.golemOfStyle(u"qtcraft:plains"_s).minVillagers, 3);
     }
 
     void namesTheContentLacksAreWarnedAbout()

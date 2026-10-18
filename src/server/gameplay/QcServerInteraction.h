@@ -11,6 +11,7 @@ class QcServerAnimals;
 class QcServerBlocks;
 class QcServerCircuits;
 class QcServerCrafting;
+class QcServerGolems;
 class QcServerInventory;
 class QcServerMinecarts;
 class QcServerPlants;
@@ -20,8 +21,8 @@ struct QcServerClient;
 class QcServerState;
 
 // What players do to the world: mining blocks, using blocks and items (opening machines, toggling
-// doors, switching levers, tilling, lighting fire, placing blocks, scooping liquids) and using creatures (feeding,
-// catching).
+// doors, switching levers, tilling, carving, lighting fire, placing blocks and building golems from
+// them, scooping liquids) and using creatures (feeding, repairing golems, catching).
 class QcServerInteraction
 {
 public:
@@ -46,6 +47,7 @@ public:
         QcPlayerHealth &health;
         QcServerCircuits &circuits;
         QcFireIgnition &ignition;
+        QcServerGolems &golems;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);

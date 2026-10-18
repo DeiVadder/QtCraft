@@ -143,6 +143,8 @@ struct QcTextureSpec
         HaySide,
         HayTop,
         FlintAndSteel,
+        CarvedPumpkin,
+        Shears,
         // Patterns of QcTextureArmourPatterns (decision E-235): item icons in the material
         // (primary) with a light upper edge (secondary) ...
         Helmet,

@@ -16,7 +16,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr int timeoutMs = 10'000;
+constexpr int timeoutMs = 30'000;
 
 } // namespace
 

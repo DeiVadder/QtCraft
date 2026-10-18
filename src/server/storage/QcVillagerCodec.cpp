@@ -88,6 +88,7 @@ void write(QDataStream &stream, const QcVillagerRecord &villager)
     stream << villager.profession << qint32(villager.level) << qint32(villager.experience) << villager.look << villager.style
            << qint32(villager.produce);
     writeOffers(stream, villager);
+    stream << villager.sleptAt;
 }
 
 std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
@@ -111,8 +112,13 @@ std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
     if (version >= 2 && !readOffers(stream, villager)) {
         return std::nullopt;
     }
+    // Version 3 knows when it last slept (decision E-470); older ones never slept.
+    if (version >= 3) {
+        stream >> villager.sleptAt;
+    }
     if (stream.status() != QDataStream::Ok || !spots || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0
-        || experience > QcVillagerRecord::maxExperience || produce < 0 || produce > QcVillagerRecord::maxProduce) {
+        || experience > QcVillagerRecord::maxExperience || produce < 0 || produce > QcVillagerRecord::maxProduce
+        || !(villager.sleptAt <= QcVillagerRecord::maxRestockTime)) {
         return std::nullopt;
     }
     villager.level = level;

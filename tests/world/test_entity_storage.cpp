@@ -467,8 +467,9 @@ private slots:
         villager.level = 2;
         villager.style = u"qtcraft:plains"_s;
         QByteArray first = payloadOf([&villager](QDataStream &out) { QcVillagerCodec::write(out, villager); });
-        // Version 1 ends before the offers (their count, the restock time and count).
-        first.chop(4 + 8 + 4);
+        // Version 1 ends before the offers (their count, the restock time and count) and the time it
+        // last slept (version 3).
+        first.chop(4 + 8 + 4 + 8);
         const quint16 villagerId = quint16(QcEntityCodec::Component::Villager);
         const QByteArray blob = creatureBlob(u"qtcraft:villager"_s, 12, {{villagerId, 1, first, {}}}, 1);
 

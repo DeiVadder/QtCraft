@@ -25,7 +25,8 @@ struct QcVillagerOffer
 // What is saved of a villager (decisions E-411, E-414): the village it lives in, its bed (head) and
 // workstation (claimed there under its creature's persistent id, QcCreature::uid, decision E-420),
 // its profession with level and experience, the state of its offers and when it last restocked, the
-// seed and village style of its look, and the crops it brought in (food for breeding, stage 37.3).
+// seed and village style of its look, the crops it brought in (food for breeding, stage 37.3) and
+// when it last slept (decision E-470).
 struct QcVillagerRecord
 {
     static constexpr int maxLevel = 5;
@@ -51,6 +52,9 @@ struct QcVillagerRecord
     quint32 look = 0;
     QString style;
     int produce = 0;
+    // World time it last lay in its bed (negative: never): villagers that slept within a day summon
+    // iron golems (QcVillageGolems, decision E-470).
+    double sleptAt = -1.0;
 
     bool operator==(const QcVillagerRecord &) const = default;
 };
@@ -80,6 +84,10 @@ struct QcVillager : QcVillagerRecord
     std::optional<QcBlockPos> crop;
     // The place it runs from (a hostile creature) while the creature's fleeTimer runs.
     std::optional<QcVec3> threat;
+    // When it last panicked at a hostile creature nearby (world time, negative: not since it was
+    // loaded; not saved; decision E-470): a panicking villager among villagers that slept lately
+    // summons an iron golem (QcVillageGolems).
+    double panickedAt = -1.0;
     // The player (entity id) whose trading screen it has open, 0 for none (QcServerTrading), and
     // where that player stands: it stands facing them while the screen is open.
     quint32 trader = 0;

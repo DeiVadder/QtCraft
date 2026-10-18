@@ -1,0 +1,58 @@
+{
+    "name": "iron_golem",
+    "ai": "golem",
+    "sounds": {
+        "ambient": "mob.iron_golem.ambient",
+        "hurt": "mob.iron_golem.hurt",
+        "death": "mob.iron_golem.death"
+    },
+    "health": 100,
+    "width": 1.4,
+    "height": 2.7,
+    "walkSpeed": 0.9,
+    "chaseSpeed": 2.4,
+    "hostile": false,
+    "attackDamage": 15,
+    "attackRange": 2.3,
+    "attackCooldown": 1.25,
+    "sightRange": 16,
+    "spawn": {
+        "weight": 0
+    },
+    "skeleton": "iron_golem",
+    "outfit": "iron_golem",
+    "golem": {
+        "knockbackResistance": 1.0,
+        "lift": 1.8,
+        "attackSound": "mob.iron_golem.attack",
+        "repairItem": "iron_ingot",
+        "repairHealth": 25,
+        "repairSound": "mob.iron_golem.repair",
+        "build": {
+            "body": "iron_block",
+            "head": "carved_pumpkin"
+        }
+    },
+    "drops": [
+        {
+            "item": "iron_ingot",
+            "count": 3
+        },
+        {
+            "item": "iron_ingot",
+            "chance": 0.5
+        },
+        {
+            "item": "iron_ingot",
+            "chance": 0.5
+        },
+        {
+            "item": "poppy",
+            "chance": 0.5
+        },
+        {
+            "item": "poppy",
+            "chance": 0.5
+        }
+    ]
+}

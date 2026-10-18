@@ -78,6 +78,7 @@
                 "block:qtcraft:brown_wool",
                 "block:qtcraft:cactus",
                 "block:qtcraft:carrot_crop",
+                "block:qtcraft:carved_pumpkin",
                 "block:qtcraft:chest",
                 "block:qtcraft:chunk_loader",
                 "block:qtcraft:clay",
@@ -380,6 +381,7 @@
                 "item:qtcraft:pumpkin_seeds",
                 "item:qtcraft:purple_dye",
                 "item:qtcraft:red_dye",
+                "item:qtcraft:shears",
                 "item:qtcraft:slimeball",
                 "item:qtcraft:snowball",
                 "item:qtcraft:stick",
@@ -467,6 +469,7 @@
                 "mob:qtcraft:caped_mannequin",
                 "mob:qtcraft:enderman",
                 "mob:qtcraft:firefly",
+                "mob:qtcraft:iron_golem",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:sheep",
@@ -10536,6 +10539,120 @@
             ],
             "text": "Grows from a carrot on farmland in four stages. Ripe plants give two to four carrots.",
             "title": "Carrot crop"
+        },
+        "block:qtcraft:carved_pumpkin": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Carved pumpkin",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:carved_pumpkin"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.5 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.13 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Carved pumpkin"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:carved_pumpkin",
+            "id": "block:qtcraft:carved_pumpkin",
+            "name": "qtcraft:carved_pumpkin",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A pumpkin with a face, carved with shears. Put it on four iron blocks in a T to build an iron golem.",
+            "title": "Carved pumpkin"
         },
         "block:qtcraft:chest": {
             "category": "blocks",
@@ -35970,6 +36087,20 @@
                 {
                     "links": [
                         {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Iron golem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "Poppies",
                             "target": "biome:qtcraft:forest",
@@ -36380,6 +36511,18 @@
                             "note": "",
                             "target": "block:qtcraft:pumpkin",
                             "text": "Pumpkin"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Shears make",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Carved pumpkin"
                         }
                     ],
                     "value": ""
@@ -54051,8 +54194,16 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "A village of at least 10 villagers gets an iron golem near its bell, one for every 10 villagers, at most one every 5 minutes and only with creature spawning on; a golem counts for the village whose area it stands in, at most 256 in the world. The iron golem itself is not in the game yet: until it arrives, villages wait for it.",
+                    "text": "Villagers call an iron golem when they are in danger or gossip, but only those that slept in their bed within the last 10 minutes. A villager panics when a monster comes within 10 blocks, even in its bed, which wakes it. When a panicking villager has at least 3 villagers that slept lately within 10 blocks of it (itself included) and no iron golem is within 16 blocks, a golem appears somewhere within 8 blocks of it, on solid ground where it fits; glass, panes, leaves and ice carry no golem. Without panic, 5 such villagers together gossip a golem up the same way, with a chance of 10 % every 5 seconds. A village summons at most one golem every 30 seconds, and villagers summon none beyond 256 golems in the world. This works with a handful of villagers, so a small pen with three beds and a monster kept behind glass is a golem farm. Villagers summon golems even when creatures do not spawn by themselves. A village golem strolls within its village and walks back when it strays.",
                     "title": "Iron golems"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Build an iron golem yourself: stand four iron blocks upright in a T (two on top of each other, one on each side of the upper one) and put a carved pumpkin on top, facing any way; the blocks beside the head and the foot must be empty. The blocks turn into the golem. Carve a pumpkin by using shears on it; four pumpkin seeds fall out. Iron golems guard villagers: they hunt monsters they see and throw them into the air with their blows. They leave players alone, but a player who hurts a villager or a golem of a village is its enemy for 5 minutes, and a golem that is hurt is angry with the player for 30 seconds; golems you built never attack players. Repair a hurt golem by using an iron ingot on it. A golem drops iron ingots and sometimes poppies.",
+                    "title": "Building and keeping golems"
                 },
                 {
                     "links": [
@@ -54125,6 +54276,30 @@
                             "note": "",
                             "target": "block:qtcraft:wheat_crop",
                             "text": "Wheat crop"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Iron golem"
+                        },
+                        {
+                            "icon": "qtcraft:iron_block",
+                            "note": "",
+                            "target": "block:qtcraft:iron_block",
+                            "text": "Block of iron"
+                        },
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Carved pumpkin"
+                        },
+                        {
+                            "icon": "qtcraft:shears",
+                            "note": "",
+                            "target": "item:qtcraft:shears",
+                            "text": "Shears"
                         }
                     ],
                     "recipes": [
@@ -64327,6 +64502,12 @@
                             "text": "Rail"
                         },
                         {
+                            "icon": "qtcraft:shears",
+                            "note": "",
+                            "target": "item:qtcraft:shears",
+                            "text": "Shears"
+                        },
+                        {
                             "icon": "qtcraft:signal_hopper",
                             "note": "",
                             "target": "block:qtcraft:signal_hopper",
@@ -64343,6 +64524,20 @@
                     ],
                     "text": "",
                     "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "3×, 50 %",
+                            "target": "mob:qtcraft:iron_golem",
+                            "text": "Iron golem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
                 }
             ],
             "text": "Smelted iron for tools, buckets and more.",
@@ -68261,6 +68456,95 @@
             "text": "Dropped by zombies. Barely food.",
             "title": "Rotten flesh"
         },
+        "item:qtcraft:shears": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Shears",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:shears"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Durability",
+                    "links": [
+                    ],
+                    "value": "238 uses"
+                },
+                {
+                    "label": "Carves",
+                    "links": [
+                        {
+                            "icon": "qtcraft:pumpkin",
+                            "note": "",
+                            "target": "block:qtcraft:pumpkin",
+                            "text": "Pumpkin"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:shears",
+            "id": "item:qtcraft:shears",
+            "name": "qtcraft:shears",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:shears",
+                            "needsTable": false,
+                            "note": "Crafting grid",
+                            "result": {
+                                "icon": "qtcraft:shears",
+                                "note": "",
+                                "target": "item:qtcraft:shears",
+                                "text": "Shears"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Carves a pumpkin into a carved pumpkin; four pumpkin seeds fall out.",
+            "title": "Shears"
+        },
         "item:qtcraft:slimeball": {
             "category": "items",
             "categoryTitle": "Items",
@@ -72061,6 +72345,106 @@
             ],
             "text": "Glows over swamps at night. Catch it with an empty glass bottle.",
             "title": "Firefly"
+        },
+        "mob:qtcraft:iron_golem": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Iron golem",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:iron_golem"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "guardian: hunts monsters, attacks players only when provoked"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "100 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "1.4 m wide, 2.7 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "0.9 m/s walking, 2.4 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "15 damage within 2.3 m, every 1.25 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself (/summon, showcase world)"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "3×",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Iron ingot"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "50 %",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Iron ingot"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "50 %",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Iron ingot"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "50 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "50 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:iron_ingot",
+            "id": "mob:qtcraft:iron_golem",
+            "name": "qtcraft:iron_golem",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A big, slow guardian of iron. Villagers summon it when they panic or gossip, or you build it from four iron blocks and a carved pumpkin. It hunts monsters and throws them upwards; it is not pushed back by blows. Use an iron ingot on it to repair it.",
+            "title": "Iron golem"
         },
         "mob:qtcraft:mannequin": {
             "category": "creatures",

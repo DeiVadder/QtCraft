@@ -258,6 +258,9 @@ void BlockPage::addFarmingFacts()
     if (!m_block.coveredInto.isEmpty()) {
         addFact(u"coveredInto"_s, {}, {m_links.blockLink(m_block.coveredInto)});
     }
+    if (!m_block.carvesInto.isEmpty()) {
+        addFact(u"carvesInto"_s, {}, {m_links.blockLink(m_block.carvesInto)});
+    }
 }
 
 void BlockPage::addSoilFacts()

@@ -136,7 +136,14 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
             const quint32 id = state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
-            state.entities().creatures().find(id)->confined = mob.confined;
+            // Villagers of a station come rested, as if they had just slept: a golem farm of the
+            // showcase summons at once although its fixed time of day never brings a night
+            // (decision E-470).
+            QcCreature *placed = state.entities().creatures().find(id);
+            placed->confined = mob.confined;
+            if (placed->isVillager()) {
+                placed->villager->sleptAt = state.info().worldTime;
+            }
         } else {
             qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;
         }

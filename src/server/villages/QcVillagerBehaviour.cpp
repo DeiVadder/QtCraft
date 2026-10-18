@@ -113,10 +113,17 @@ bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
     const double phase = QcDayCycle::phase(context.worldTime);
     const bool night = m_content->villagerSettingsOf(mob.type).activityAt(phase, villager.profession) == QcVillagerActivity::Sleep;
     const bool inBed = villager.home && QcVillagerHomes::lyingIn(context.world, *villager.home);
-    // A fresh hit wakes it: the push lasts the fixed knockback ticks, whatever the game rule
-    // mobInvulnerabilityTicks (decision E-429).
-    if (night && inBed && mob.pose == QcPose::Lying && !mob.hurt.knockedBack()) {
+    // Asleep it still keeps an eye out at its usual pace: a hostile creature nearby wakes it in a
+    // panic (decision E-470).
+    if (night && inBed && mob.pose == QcPose::Lying && --villager.decideIn <= 0) {
+        villager.decideIn = decideTicks;
+        lookOut(mob, context);
+    }
+    // A fresh hit or danger wakes it: the push lasts the fixed knockback ticks, whatever the game
+    // rule mobInvulnerabilityTicks (decision E-429).
+    if (night && inBed && mob.pose == QcPose::Lying && !mob.hurt.knockedBack() && !villager.threat) {
         mob.motion.velocity = {};
+        villager.sleptAt = context.worldTime;
         return true;
     }
 
@@ -253,6 +260,7 @@ void QcVillagerBehaviour::lookOut(QcCreature &mob, const Context &context)
 {
     if (const std::optional<QcVec3> threat = nearestHostile(mob.motion.position, m_content->villagerSettingsOf(mob.type).fleeDistance, context)) {
         mob.villager->threat = threat;
+        mob.villager->panickedAt = context.worldTime;
         mob.fleeTimer = std::max(mob.fleeTimer, fleeSeconds);
     } else if (mob.fleeTimer <= 0.0) {
         mob.villager->threat.reset();
@@ -492,6 +500,7 @@ void QcVillagerBehaviour::lieDown(QcCreature &mob, const Context &context)
         villager.openedDoor.reset();
     }
     mob.pose = QcPose::Lying;
+    villager.sleptAt = context.worldTime;
     villager.legs.leg.reset();
     mob.path.clear();
     mob.motion.position = lying->position;

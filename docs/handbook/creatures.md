@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -75,6 +75,22 @@ Any solid block or the surface of a liquid.
 **Appears in biomes**
 
 [Swamp](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-iron_golem"></a>Iron golem
+
+A big, slow guardian of iron. Villagers summon it when they panic or gossip, or you build it from four iron blocks and a carved pumpkin. It hunts monsters and throws them upwards; it is not pushed back by blows. Use an iron ingot on it to repair it.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_golem` |
+| Behaviour | guardian: hunts monsters, attacks players only when provoked |
+| Health | 100 health points |
+| Size | 1.4 m wide, 2.7 m tall |
+| Speed | 0.9 m/s walking, 2.4 m/s chasing |
+| Attack | 15 damage within 2.3 m, every 1.25 s |
+| Sees players within | 16 m |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | [Iron ingot](items.md#item-qtcraft-iron_ingot) (3×), [Iron ingot](items.md#item-qtcraft-iron_ingot) (50 %), [Iron ingot](items.md#item-qtcraft-iron_ingot) (50 %), [Poppy](blocks.md#block-qtcraft-poppy) (50 %), [Poppy](blocks.md#block-qtcraft-poppy) (50 %) |
 
 ### <a id="mob-qtcraft-mannequin"></a>Mannequin
 

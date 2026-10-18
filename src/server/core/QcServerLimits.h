@@ -131,7 +131,7 @@ struct QcServerLimits
     qint64 villagerThoughtsPerTick = 64;
     qint64 villagerRoutesPerTick = 8;
     qint64 villagerHarvestsPerTick = 4;
-    // Iron golems in the world beyond which villages spawn no more (decision E-415).
+    // Iron golems in the world beyond which villagers summon no more (decisions E-415, E-470; 0: none).
     qint64 villageGolems = 256;
 
     static std::span<const Field> fields();

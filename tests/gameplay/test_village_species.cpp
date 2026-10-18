@@ -71,7 +71,10 @@ private:
         addKind(content, u"qtcraft:pig"_s, u"test:golem_a"_s);
         addKind(content, u"qtcraft:pig"_s, u"test:golem_b"_s);
         QcVillageSettings settings = content.villageSettings();
-        settings.golem = {u"test:golem_a"_s, 1, 1, 300.0, 8};
+        // Every villager that panics summons a golem on its own (decision E-470).
+        settings.golem.mob = u"test:golem_a"_s;
+        settings.golem.minVillagers = 1;
+        settings.golem.cooldownSeconds = 300.0;
         content.setVillageSettings(settings);
 
         result.plan = QcVillageFixture::plan(content, {});
@@ -192,7 +195,12 @@ private slots:
         // as allowed, yet the village spawns its own kind, one, as the limit is per kind.
         const QcBlockPos centre = built.plan->centre;
         built.mobs->spawn(built.type(u"test:golem_a"_s), QcVec3{centre.x + 0.5, centre.y + 1.0, centre.z + 0.5}, built.nextId++);
-        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
+        const QList<QcCreature *> villagers = villagersOf(built);
+        for (QcCreature *villager : villagers) {
+            villager->villager->sleptAt = built.worldTime;
+            villager->villager->panickedAt = built.worldTime;
+        }
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(countOf(built, u"test:golem_b"_s), 1);
         QCOMPARE(countOf(built, u"test:golem_a"_s), 1);
         QCOMPARE(built.state().golems, 1);

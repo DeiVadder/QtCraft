@@ -43,9 +43,11 @@ constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1
 
 // Peaceful walkers: the persistent kind (flying creatures stay ordinary; villagers live in their
 // villages, decision E-411).
+// Villagers and golems belong to villages (decision E-470): they are not animals.
 bool isAnimal(const QcMobDefinition &definition)
 {
-    return !definition.hostile && !definition.ambient && !definition.flying && !definition.villager;
+    return !definition.hostile && !definition.ambient && !definition.flying && !definition.villager
+           && definition.ai != QcMobDefinition::Ai::Golem;
 }
 
 bool nearAnyPlayer(const QcVec3 &position, const QList<QcNaturalSpawner::PlayerView> &players)
@@ -155,8 +157,9 @@ QcNaturalSpawner::NearbyCounts QcNaturalSpawner::countNear(const QcVec3 &centre)
     NearbyCounts counts;
     for (const QcCreature &mob : m_mobs.mobs()) {
         const QcMobDefinition &kind = m_content->mobs()[mob.type];
-        // Villagers live in their villages and take no room from the creatures around players.
-        if (mob.dormant || kind.villager) {
+        // Villagers and golems live in their villages and take no room from the creatures around
+        // players.
+        if (mob.dormant || kind.villager || kind.ai == QcMobDefinition::Ai::Golem) {
             continue;
         }
         counts.animalsNear = counts.animalsNear || (isAnimal(kind) && (mob.motion.position - centre).length() < animalSearchDistance);

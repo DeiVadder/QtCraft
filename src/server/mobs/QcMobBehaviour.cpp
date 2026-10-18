@@ -17,6 +17,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_passive(m_random, m_paths)
     , m_hostile(m_random, m_paths)
     , m_archers(*m_content, m_random, m_paths)
+    , m_golems(m_random, m_paths)
     , m_neutral(m_random, m_paths)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
@@ -33,6 +34,9 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
             break;
         case QcMobDefinition::Ai::Archer:
             m_brains.push_back(&m_archers);
+            break;
+        case QcMobDefinition::Ai::Golem:
+            m_brains.push_back(&m_golems);
             break;
         case QcMobDefinition::Ai::Neutral:
             m_brains.push_back(&m_neutral);
@@ -60,9 +64,18 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcS
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
         if (!mobs[i].dormant) {
-            const QcMobBrain::Context context{world,  mobs,   clock.worldTime, clock.dt,         m_rules[std::size_t(mobs[i].type)],
-                                              &players, &hits, m_tick,          &m_launches, &m_blockActions,
-                                              m_griefing};
+            const QcMobBrain::Context context{.world = world,
+                                              .mobs = mobs,
+                                              .worldTime = clock.worldTime,
+                                              .dt = clock.dt,
+                                              .rules = m_rules[std::size_t(mobs[i].type)],
+                                              .players = &players,
+                                              .hits = &hits,
+                                              .tick = m_tick,
+                                              .launches = &m_launches,
+                                              .creatureHits = &m_creatureHits,
+                                              .blockActions = &m_blockActions,
+                                              .griefing = m_griefing};
             update(i, mobs[i], context);
         }
     }

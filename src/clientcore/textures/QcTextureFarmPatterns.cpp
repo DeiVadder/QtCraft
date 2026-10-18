@@ -208,7 +208,40 @@ QColor paintFlintAndSteel(const QcTextureSpec &spec, int x, int y, QColor color)
     return clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
+// The ribs of a pumpkin's side with a carved face (secondary): two triangular eyes and a jagged mouth.
+QColor paintCarvedPumpkin(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const int fromCentre = std::abs(2 * x - 15);
+    const bool eye = y >= 4 && y <= 7 && fromCentre >= 3 && fromCentre <= 11 && std::abs(fromCentre - 7) <= y - 4;
+    const bool mouth = y >= 10 && y <= 12 && fromCentre <= 11 && !(y == 10 && x % 4 == 1) && !(y == 12 && x % 4 == 3);
+    if (eye || mouth) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    return paintPumpkinSide(spec, x, y, color);
+}
+
+// Whether (x, y) lies on a ring around (cx, cy) between the squared radii `inner` and `outer`.
+bool onRing(int x, int y, int cx, int cy, std::pair<int, int> radii)
+{
+    const int distance = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+    return distance >= radii.first && distance <= radii.second;
+}
+
+// A pair of blades (primary) from the top right down to two dark handle rings (secondary) at the
+// bottom left.
+QColor paintShears(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    if (onRing(x, y, 4, 11, {3, 7}) || onRing(x, y, 8, 13, {2, 5})) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    const int diagonal = x + y;
+    if (x >= 7 && y >= 1 && (diagonal == 15 || diagonal == 16)) {
+        return diagonal == 15 ? scaled(color, 1.15) : color;
+    }
+    return clear();
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
     {Pattern::Crop, paintCrop},
     {Pattern::RootCrop, paintRootCrop},
     {Pattern::Stem, paintStem},
@@ -224,6 +257,8 @@ constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
     {Pattern::HaySide, paintHaySide},
     {Pattern::HayTop, paintHayTop},
     {Pattern::FlintAndSteel, paintFlintAndSteel},
+    {Pattern::CarvedPumpkin, paintCarvedPumpkin},
+    {Pattern::Shears, paintShears},
 }};
 
 } // namespace

@@ -8,6 +8,7 @@
         "routine",
         "children",
         "golems",
+        "golem_building",
         "ways",
         "mods"
     ],
@@ -20,6 +21,10 @@
         "barrel",
         "oak_door",
         "iron_door",
-        "wheat_crop"
+        "wheat_crop",
+        "iron_golem",
+        "iron_block",
+        "carved_pumpkin",
+        "shears"
     ]
 }

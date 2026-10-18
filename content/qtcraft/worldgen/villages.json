@@ -11,9 +11,15 @@
     "villager": "villager",
     "golem": {
         "mob": "iron_golem",
-        "minVillagers": 10,
-        "villagersPerGolem": 10,
-        "cooldownSeconds": 300,
-        "spawnRadius": 8
+        "minVillagers": 3,
+        "gossipVillagers": 5,
+        "gatherDistance": 10,
+        "golemDistance": 16,
+        "panicSeconds": 10,
+        "sleptSeconds": 600,
+        "gossipChance": 0.1,
+        "cooldownSeconds": 30,
+        "spawnRadius": 8,
+        "grudgeSeconds": 300
     }
 }

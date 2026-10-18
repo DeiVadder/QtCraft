@@ -87,6 +87,9 @@ void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item
     if (item.flattens) {
         facts.append(blocksTurnedBy(context, u"fact.flattens"_s, &QcBlockDefinition::flattensInto));
     }
+    if (item.carves) {
+        facts.append(blocksTurnedBy(context, u"fact.carves"_s, &QcBlockDefinition::carvesInto));
+    }
 
     if (item.scoops) {
         Fact scoops{text.label(u"fact.scoops"_s), {}, {}};
