@@ -2,6 +2,7 @@
 
 #include "clientcore/control/QcControlCommandTable.h"
 #include "clientcore/control/QcControlContext.h"
+#include "clientcore/input/QcGamepadControls.h"
 
 #include <QJsonObject>
 #include <QObject>
@@ -15,7 +16,8 @@ class QIODevice;
 
 // Machine-readable control of a client session: newline-delimited JSON requests in, one JSON
 // response line per request out. Acts only through the session (i.e. through the protocol), exactly
-// like a player would. Commands are documented in docs/Steuerschnittstelle.md.
+// like a player would. Commands are documented in docs/Steuerschnittstelle.md. The virtual pads
+// steer the player like a real one in the game (QcGamepadControls, applied once per session tick).
 class QcControlInterface : public QObject
 {
     Q_OBJECT
@@ -38,8 +40,9 @@ public:
     void feed(const QByteArray &data);
     bool isIdle() const { return !m_context.isActive() && m_queue.isEmpty(); }
     int failedRequests() const { return m_context.failedRequests(); }
-    // The pads of the gamepad commands, for the input mapping of the client (decision E-540).
+    // The pads of the gamepad commands (decision E-540); they steer the player (E-541).
     QcVirtualGamepadSource &virtualGamepads() { return m_commands.virtualGamepads(); }
+    QcGamepadControls &gamepadControls() { return m_gamepad; }
 
 signals:
     void quitRequested();
@@ -59,6 +62,8 @@ private:
 
     QcControlContext m_context;
     QcControlCommandTable m_commands;
+    // Follows the pads of m_commands, so it is declared after it.
+    QcGamepadControls m_gamepad;
     QPointer<QIODevice> m_input;
     ExtensionHandler m_extension;
     QQueue<QJsonObject> m_queue;

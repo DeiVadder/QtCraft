@@ -669,6 +669,8 @@ private slots:
         const QString german = m_german.entry(u"chapter:qtcraft:controls"_s)->sections.first().text;
         QVERIFY2(german.contains(u"**Leertaste**: springen"_s), qPrintable(german));
         QVERIFY(m_english.entry(u"chapter:qtcraft:controls"_s)->sections[1].text.contains(u"hold fn"_s));
+        // The gamepad follows the keyboards (decision E-541).
+        QVERIFY(m_english.entry(u"chapter:qtcraft:controls"_s)->sections[2].text.contains(u"**Left stick**: walk"_s));
         QCOMPARE(m_english.label(u"intro"_s).contains(u"(H / F1)"_s), true);
         QVERIFY2(keys.contains(u"**Ctrl**: sprint"_s) && keys.contains(u"**Ctrl+Q**: the whole stack"_s), qPrintable(keys));
 

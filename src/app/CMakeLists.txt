@@ -12,6 +12,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
+    controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp

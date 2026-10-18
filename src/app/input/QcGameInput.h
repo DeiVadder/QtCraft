@@ -12,7 +12,8 @@
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QcAudioEngine;
-class QcGameController;
+class QcHandbookController;
+class QcScreenState;
 class QcSettingsController;
 class QKeyEvent;
 class QMouseEvent;
@@ -21,7 +22,8 @@ struct QcSessionParts;
 
 // Keyboard and mouse of the world (GameController.input): world keys, keys held for moving and
 // looking, mouse capture and mouse look, mining and using with the buttons, the hotbar wheel, and
-// the click sound of UI buttons. Filters the application's events.
+// the click sound of UI buttons. Filters the application's events. Follows the screen state's
+// signals (held keys forgotten, mouse freed, capture synced) and opens screens through it.
 class QcGameInput : public QObject
 {
     Q_OBJECT
@@ -33,7 +35,14 @@ class QcGameInput : public QObject
 public:
     static constexpr float keyboardLookSpeed = 120.0f;
 
-    QcGameInput(QcGameController &game, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
+    // The screens the world keys open; all of them outlive this object.
+    struct Screens
+    {
+        QcScreenState &state;
+        QcHandbookController &handbook;
+    };
+
+    QcGameInput(Screens screens, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
                 QObject *parent = nullptr);
     ~QcGameInput() override;
 
@@ -58,12 +67,18 @@ public:
     QPointF takeMouseDelta();
     // Turns the view by the mouse motion and applies the held keys to the player's intent.
     void applyFrame(QPointF mouseDelta, float frameSeconds);
+    // The world takes the input and its window has the focus: a gamepad may steer (decision E-541;
+    // SDL reports pads also while the window is in the background).
+    bool worldFocused() const;
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 signals:
     void mouseCapturedChanged();
     void playerListHeldChanged();
+    // The handbook key was pressed in the world: the handbook opens at what the crosshair points
+    // at, else at the page shown last (the game knows the target from the HUD).
+    void handbookRequested();
 
 private:
     // The world takes keyboard and mouse: playing, no screen open, alive.
@@ -89,7 +104,7 @@ private:
     // Plays the click sound when the mouse is released over a button or an inventory slot.
     void clickIfButton(QPointF scenePosition) const;
 
-    QcGameController &m_game;
+    Screens m_screens;
     const QcSessionParts &m_parts;
     QcSettingsController &m_settings;
     QcAudioEngine *m_audio = nullptr;

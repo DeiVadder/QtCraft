@@ -12,11 +12,13 @@
 #include <QStringList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
+#include <memory>
 #include <optional>
 
-class QcGameController;
+class QcClientSession;
 class QcSettingsController;
 class QcWorldLibraryController;
+class QcWorldStarter;
 struct QcSessionParts;
 
 // Network games for QML (GameController.multiplayer, decisions E-251, E-258 to E-261): joining a server by
@@ -42,8 +44,11 @@ class QcMultiplayerController : public QObject
 public:
     static constexpr int defaultPort = 25600;
 
-    QcMultiplayerController(QcGameController &game, QcSessionParts &parts, const QcSettingsController &settings,
+    // `worlds` knows the mods of the running world, announced to players joining it; all
+    // references outlive this object.
+    QcMultiplayerController(QcSessionParts &parts, const QcWorldStarter &worlds, const QcSettingsController &settings,
                             const QcWorldLibraryController &library, QObject *parent = nullptr);
+    ~QcMultiplayerController() override;
 
     bool joining() const;
     QcNetworkClient::Stage joinStage() const;
@@ -67,26 +72,36 @@ public:
     // "address:port" for every address other computers may reach this one at while it hosts.
     Q_INVOKABLE QStringList lanAddresses() const;
 
+    // A session started (single-player or joined): the world is not open to the network yet.
+    void sessionStarted();
+    // Back in the menu: the players and the network game are forgotten.
+    void forget();
+    // The logged-in session of the server joined last (sessionJoined()), once; nullptr afterwards.
+    [[nodiscard]] std::unique_ptr<QcClientSession> takeJoinedSession();
+
 signals:
     void joiningChanged();
     void lanPortChanged();
     void networkGameChanged();
+    // A join succeeded: the game takes the session (takeJoinedSession()) and plays its world;
+    // joined() follows.
+    void sessionJoined();
     void joined();
     void joinFailed(const QString &reason);
     void lanFailed(const QString &reason);
 
 private:
     void onJoined();
-    void onSessionStarted();
     void setNetworkGame(bool networkGame);
     // Id, version and hash of the packs this game would load, cached (decision E-277).
     [[nodiscard]] QcResult<QList<QcPackFingerprint>> contentPacks();
 
-    QcGameController &m_game;
     QcSessionParts &m_parts;
+    const QcWorldStarter &m_worlds;
     const QcSettingsController &m_gameSettings;
     const QcWorldLibraryController &m_library;
     QcNetworkClient *m_client = nullptr;
+    std::unique_ptr<QcClientSession> m_joinedSession;
     QcPlayerList *m_players = nullptr;
     QcMultiplayerSettings *m_settings = nullptr;
     int m_lanPort = 0;

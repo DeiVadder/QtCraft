@@ -3,6 +3,7 @@
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/settings/QcCharacterProfile.h"
 #include "clientcore/settings/QcDebugOptions.h"
+#include "clientcore/settings/QcGamepadSettings.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcKeyBindings.h"
@@ -56,6 +57,8 @@ struct QcGameSettings
     // "" for no key. A missing or unknown name gives that slot's default; keys an earlier action
     // already uses are dropped. The pause key (Esc) is fixed.
     QcKeyBindings keys = QcKeyBindings::defaults();
+    // Dead zones, curve and look speed of the gamepad (decision E-541), stored as gamepad/<key>.
+    QcGamepadSettings gamepad;
     // Active texture packs by id, the highest priority first (decision E-297); empty: the game's own
     // textures. Stored as the INI array "texturePacks/<n>/id"; at most maxTexturePacks, duplicates dropped.
     QStringList texturePacks;

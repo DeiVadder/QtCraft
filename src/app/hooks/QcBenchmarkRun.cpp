@@ -1,6 +1,6 @@
 #include "app/hooks/QcBenchmarkRun.h"
 
-#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/input/QcGameInput.h"
@@ -40,10 +40,10 @@ QString tickPhasePairs(const QcTickStats::Summary &ticks)
 
 } // namespace
 
-QcBenchmarkRun::QcBenchmarkRun(QcGameController &game, const QcSessionParts &parts, QcGameInput &input,
+QcBenchmarkRun::QcBenchmarkRun(QcScreenState &screens, const QcSessionParts &parts, QcGameInput &input,
                                const QcSettingsController &settings, QObject *parent)
     : QObject(parent)
-    , m_game(game)
+    , m_screens(screens)
     , m_parts(parts)
     , m_input(input)
     , m_settings(settings)
@@ -202,7 +202,7 @@ void QcBenchmarkRun::startLiquidRing()
 
 void QcBenchmarkRun::startWalking()
 {
-    m_game.setInputEnabled(true);
+    m_screens.setInputEnabled(true);
     using A = QcKeyBindings::Action;
     const QcKeyBindings &keys = m_settings.keys()->bindings();
     QSet<int> held{keys.key(A::Forward, 0)};

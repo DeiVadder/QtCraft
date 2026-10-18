@@ -1,13 +1,13 @@
 #include "app/controllers/QcMultiplayerController.h"
 
 #include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcGameController.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/multiplayer/QcLanAddresses.h"
 #include "app/multiplayer/QcMultiplayerSettings.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/session/QcSessionParts.h"
+#include "app/session/QcWorldStarter.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"
@@ -26,11 +26,11 @@ Q_LOGGING_CATEGORY(lcMultiplayer, "qtcraft.game")
 
 } // namespace
 
-QcMultiplayerController::QcMultiplayerController(QcGameController &game, QcSessionParts &parts, const QcSettingsController &settings,
+QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const QcWorldStarter &worlds, const QcSettingsController &settings,
                                                  const QcWorldLibraryController &library, QObject *parent)
     : QObject(parent)
-    , m_game(game)
     , m_parts(parts)
+    , m_worlds(worlds)
     , m_gameSettings(settings)
     , m_library(library)
     , m_client(new QcNetworkClient(this))
@@ -43,16 +43,22 @@ QcMultiplayerController::QcMultiplayerController(QcGameController &game, QcSessi
         qCInfo(lcMultiplayer).noquote() << u"Joining failed: %1"_s.arg(reason);
         emit joinFailed(reason);
     });
-    connect(&game, &QcGameController::sessionStarted, this, &QcMultiplayerController::onSessionStarted);
-    connect(&game, &QcGameController::phaseChanged, this, [this] {
-        if (m_game.phase() == QcGameController::Phase::Menu) {
-            m_players->follow(nullptr);
-            setNetworkGame(false);
-        }
-    });
 }
 
-void QcMultiplayerController::onSessionStarted()
+QcMultiplayerController::~QcMultiplayerController() = default;
+
+void QcMultiplayerController::forget()
+{
+    m_players->follow(nullptr);
+    setNetworkGame(false);
+}
+
+std::unique_ptr<QcClientSession> QcMultiplayerController::takeJoinedSession()
+{
+    return std::move(m_joinedSession);
+}
+
+void QcMultiplayerController::sessionStarted()
 {
     m_lanPort = 0;
     emit lanPortChanged();
@@ -158,7 +164,8 @@ void QcMultiplayerController::onJoined()
 {
     if (std::unique_ptr<QcClientSession> session = m_client->takeSession()) {
         m_settings->rememberServer(m_lastAddress, session->login().serverName());
-        m_game.startRemoteSession(std::move(session));
+        m_joinedSession = std::move(session);
+        emit sessionJoined();
         emit joined();
     }
 }
@@ -180,7 +187,7 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     QcLoginSettings login;
     login.password = password;
     login.maxPlayers = std::max(1, maxPlayers);
-    login.contentPacks = QcContentFingerprint::of(*m_parts.session->content(), m_game.loadedMods());
+    login.contentPacks = QcContentFingerprint::of(*m_parts.session->content(), m_worlds.loadedMods());
     const QcResult<quint16> listening = m_parts.server->listen(network, login);
     if (!listening) {
         emit lanFailed(listening.error());

@@ -71,6 +71,7 @@ public:
 
     // While requested, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
     void setMining(bool mining) { m_miningRequested = mining; }
+    bool miningRequested() const { return m_miningRequested; }
     double miningProgress() const { return m_miningProgress; }
     // Whether a block is being mined (survival) right now.
     bool isMining() const { return m_miningPos.has_value(); }

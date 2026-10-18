@@ -44,6 +44,11 @@ qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_
 # The gamepad model (dead zone, curve, types, virtual pads) and the SDL3 backend with its cache
 # (decision E-540).
 qc_add_test(test_gamepad_input SOURCES client/test_gamepad_input.cpp LIBRARIES qc_clientcore)
+# The gamepad controls: walking, looking, triggers, hotbar steps and their settings (decision E-541).
+qc_add_test(test_gamepad_mapping SOURCES client/test_gamepad_mapping.cpp LIBRARIES qc_clientcore)
+# The gamepad controls behind the keyboard in the game's frame order: focus, screens, background
+# presses, the lead between pads (decision E-541).
+qc_add_test(test_gamepad_controls SOURCES client/test_gamepad_controls.cpp LIBRARIES qc_app_core qc_server)
 qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)
 target_compile_definitions(test_gamepad_sdl PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
     QTCRAFT_SDL3_DIR="${SDL3_DIR}" QTCRAFT_SDL_ARCH="${QC_SDL_ARCH}" QTCRAFT_CMAKE_COMMAND="${CMAKE_COMMAND}"

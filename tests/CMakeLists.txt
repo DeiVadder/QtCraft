@@ -23,7 +23,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/tests.cmake)
 # A new test that starts threads, a server host or a process belongs in this list.
 set(qc_concurrency_tests
     test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
-    test_interpolation test_client_server test_scenarios test_survival_scenario test_persistence
+    test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
     test_creative_client test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
@@ -71,7 +71,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
 # with a smaller factor. A new test that mostly waits belongs here.
 set_property(TEST test_interpolation test_latency test_creative_client test_void_client test_ice_client
-    test_survival_scenario test_multiplayer_bots test_creative_bots test_signal_bots
+    test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test

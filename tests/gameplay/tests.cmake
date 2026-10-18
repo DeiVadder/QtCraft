@@ -7,6 +7,9 @@ qc_add_test(test_entity_protocol SOURCES gameplay/test_entity_protocol.cpp LIBRA
 qc_add_test(test_game_mode_protocol SOURCES gameplay/test_game_mode_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 750)
+# A virtual gamepad steering the player through the control interface (decision E-541); the client
+# ticks by hand, only the flight case and the waits for the server run in real time (label realtime).
+qc_add_test(test_gamepad_scenarios SOURCES gameplay/test_gamepad_scenarios.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 800)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                     QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")

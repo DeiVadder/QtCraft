@@ -5,12 +5,10 @@
 #include <QObject>
 #include <QString>
 
-#include <functional>
-
 class QcAudioEngine;
-class QcGameInput;
 class QcHudState;
 class QcPlayerController;
+class QcScreenState;
 class QcStartupHooks;
 class QcTradeController;
 class QcWorldAtlas;
@@ -19,8 +17,9 @@ struct QcSessionParts;
 // The one place where the signals of a new client session reach the GUI (decision E-530): chunks
 // and blocks go to the mesh scheduler and its meshes to the world view, sounds and ambience to the
 // audio engine, chat to the HUD, inventory, machines, trading and health to the player and trade
-// controllers, and the screens they open or close to the in-game screen. Lives in the GUI thread
-// beside QcGameController, which owns it; it refers only to parts declared before it.
+// controllers, and the screens they open or close and the player's death to the screen state.
+// Lives in the GUI thread beside QcGameController, which owns it; it refers only to parts
+// declared before it.
 class QcSessionWiring : public QObject
 {
     Q_OBJECT
@@ -33,19 +32,12 @@ public:
         QcHudState &hud;
         QcPlayerController &player;
         QcTradeController &trade;
-        QcGameInput &input;
+        QcScreenState &screens;
         QcStartupHooks &startup;
         QcWorldAtlas &atlas;
     };
 
-    // The in-game screen on top of the world (QcGameController::overlay): read and set.
-    struct Overlay
-    {
-        std::function<QString()> get;
-        std::function<void(const QString &)> set;
-    };
-
-    QcSessionWiring(QcSessionParts &parts, const Targets &targets, Overlay overlay);
+    QcSessionWiring(QcSessionParts &parts, const Targets &targets);
 
     // Wires the new session (parts.session) and its mesh scheduler (parts.meshes).
     void connectSession();
@@ -67,9 +59,7 @@ private:
     void onMachineClosed();
     void onTradeOpened();
     void onTradeClosed();
-    void onHealthChanged();
 
     QcSessionParts &m_parts;
     Targets m_targets;
-    Overlay m_overlay;
 };

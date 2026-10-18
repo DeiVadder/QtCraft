@@ -11,7 +11,9 @@
 #include <optional>
 
 class QcBenchmarkRun;
-class QcGameController;
+class QcGameInput;
+class QcHandbookController;
+class QcScreenState;
 class QcScreenshotHook;
 struct QcSessionParts;
 
@@ -23,7 +25,15 @@ class QcStartupHooks : public QObject
     Q_OBJECT
 
 public:
-    QcStartupHooks(QcGameController &game, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
+    // What the script opens: screens, the handbook and the player list; all of them outlive this object.
+    struct Screens
+    {
+        QcScreenState &state;
+        QcHandbookController &handbook;
+        QcGameInput &input;
+    };
+
+    QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
 
     void setInitialLook(float yaw, float pitch);
     // The player's view direction when a world starts.
@@ -73,7 +83,7 @@ private:
     void holdScreenshot() const;
     void releaseScreenshot() const;
 
-    QcGameController &m_game;
+    Screens m_screens;
     const QcSessionParts &m_parts;
     QcBenchmarkRun *m_benchmark = nullptr;
     float m_initialYaw = 0.0f;

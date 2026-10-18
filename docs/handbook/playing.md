@@ -46,6 +46,18 @@ Press H / F1 at any time. Every block, item, creature and biome has a page with 
 
 On a Mac the keys F1–F12 control the brightness, Mission Control, the search and other system features, so the game does not receive them. Every action therefore has a letter key, for example **V** for the camera view and **H** for the handbook pages. To use the function keys in the game, hold fn or switch on “Use F1, F2, etc. keys as standard function keys” in the system settings (Keyboard → Keyboard Shortcuts → Function Keys). No key of the game uses Cmd, and keys pressed with Cmd do nothing in the game, because macOS keeps Cmd+Q, Cmd+H, Cmd+W, Cmd+Space and Cmd+Tab for itself: sprint is Option on a Mac, and Control+Q throws the whole stack. If you put an action on Control, note that Control with the arrow keys or Space switches desktops or the input source. Option+E, U, N and I are dead keys only while typing text; in the world they work as sprint plus that key.
 
+**Gamepad**
+
+A gamepad (Xbox, PlayStation, Switch Pro and most others) steers the player while the game window has the focus, together with keyboard and mouse: a pushed stick moves you, otherwise the keys do. Buttons are named by their place, so the lower face button is A on an Xbox pad, Cross on a PlayStation pad and B on a Switch pad.
+- **Left stick**: walk; the further you push it, the faster you walk
+- **Right stick**: look around
+- **Right trigger**: mine, attack a creature; **left trigger**: place, use, eat
+- **Lower face button**: jump or swim up; press it twice quickly in creative mode to fly or land
+- **Press the left stick**: sprint while walking forward
+- **Press the right stick**: sneak on or off; while flying, hold it to descend
+- **Left and right shoulder buttons**: previous and next hotbar slot
+- Menus, the inventory and the other screens are still used with mouse and keyboard.
+
 **Moving**
 
 You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you from falling off edges. To sprint, press **Ctrl** while walking forward or tap **W** twice; the sprint lasts as long as you keep walking forward. The view widens a little while you sprint (Settings → FOV effects). Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.

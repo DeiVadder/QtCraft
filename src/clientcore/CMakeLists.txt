@@ -41,6 +41,8 @@ target_sources(qc_clientcore PRIVATE
     icons/QcWebHandbookAssets.h icons/QcWebHandbookAssets.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    input/QcGamepadControls.h input/QcGamepadControls.cpp
+    input/QcGamepadMapping.h input/QcGamepadMapping.cpp
     input/QcGamepadResponse.h input/QcGamepadResponse.cpp
     input/QcGamepadSource.h input/QcGamepadSource.cpp
     input/QcGamepadState.h input/QcGamepadState.cpp
@@ -116,6 +118,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
+    settings/QcGamepadSettings.h settings/QcGamepadSettings.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp
     settings/QcKeyControls.h settings/QcKeyControls.cpp
     settings/QcKeyLabels.h settings/QcKeyLabels.cpp

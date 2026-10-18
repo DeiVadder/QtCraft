@@ -2,6 +2,7 @@
 
 #include "clientcore/control/QcControlArguments.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QIODevice>
 #include <QJsonDocument>
@@ -30,6 +31,7 @@ QcControlInterface::QcControlInterface(QcClientSession *session, QIODevice *inpu
         connect(m_input, &QIODevice::readyRead, this, &QcControlInterface::readInput);
     }
 
+    m_gamepad.setSource(&m_commands.virtualGamepads());
     setSession(session);
 
     auto *poll = new QTimer(this);
@@ -45,8 +47,16 @@ void QcControlInterface::setSession(QcClientSession *session)
     }
 
     m_context.setSession(session);
+    m_gamepad.reset();
     if (session) {
         connect(session, &QcClientSession::chatReceived, this, [this](const QString &text) { m_context.appendChat(text); });
+        // Without a window the pads act once per tick, while the player is in the world, alive and
+        // without a machine or trading screen open (like the game, where they are overlays).
+        connect(session, &QcClientSession::ticked, this, [this, session] {
+            const bool active = session->state() == QcClientSession::State::Playing && !session->isDead() && !session->machine().isOpen()
+                                && !session->trading().isOpen();
+            m_gamepad.applyFrame(*session, float(QcPhysics::tickDuration), active);
+        });
     }
 }
 

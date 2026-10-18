@@ -4,6 +4,7 @@
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
 #include "app/controllers/QcPlayerController.h"
+#include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
@@ -17,6 +18,7 @@
 #include "app/session/QcSessionWiring.h"
 #include "app/session/QcWorldAtlas.h"
 #include "app/session/QcWorldStarter.h"
+#include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/core/QcResult.h"
 
@@ -30,6 +32,7 @@
 class QcAudioEngine;
 class QcBenchmarkRun;
 class QcContentRegistry;
+class QcGamepadSource;
 class QcItemIconProvider;
 class QQuickWindow;
 struct QcWorldInfo;
@@ -43,9 +46,11 @@ class QcGameController : public QObject
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(GameController)
+    // GameController.Phase in QML: the enumeration lives in the screen state.
+    QML_EXTENDED_NAMESPACE(QcScreenState)
 
     Q_PROPERTY(QcWorldView *view READ view WRITE setView NOTIFY viewChanged FINAL)
-    Q_PROPERTY(QcGameController::Phase phase READ phase NOTIFY phaseChanged FINAL)
+    Q_PROPERTY(QcScreenState::Phase phase READ phase NOTIFY phaseChanged FINAL)
     Q_PROPERTY(QString statusText READ statusText NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
     Q_PROPERTY(QString overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
@@ -64,30 +69,25 @@ class QcGameController : public QObject
     Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
 
 public:
-    // What the window shows: the main menu, the loading screen, the world, the error screen (a
-    // world that could not start or save; statusText says why) or the disconnect screen (the
-    // session ended, statusText says why). QML compares against GameController.Phase.Playing etc.
-    enum class Phase { Menu, Loading, Playing, Error, Disconnected };
-    Q_ENUM(Phase)
+    // What the window shows (QcScreenState::Phase); QML compares against GameController.Phase.Playing etc.
+    using Phase = QcScreenState::Phase;
 
     explicit QcGameController(QObject *parent = nullptr);
     ~QcGameController() override;
 
     QcWorldView *view() const { return m_parts.view; }
     void setView(QcWorldView *view);
-    Phase phase() const { return m_phase; }
-    QString statusText() const { return m_statusText; }
-    bool inputEnabled() const { return m_inputEnabled; }
-    void setInputEnabled(bool enabled);
-    // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
-    // "chest", "trade" (a villager's trading screen), "pause", "settings", "controls" (settings at
-    // the key table), "debug" (settings at the debug options), "texturepacks" (settings at the
-    // texture packs), "character" or "chat".
-    QString overlay() const { return m_overlay; }
-    void setOverlay(const QString &overlay);
-    QString chatStart() const { return m_chatStart; }
+    Phase phase() const { return m_screens.phase(); }
+    QString statusText() const { return m_screens.statusText(); }
+    bool inputEnabled() const { return m_screens.inputEnabled(); }
+    void setInputEnabled(bool enabled) { m_screens.setInputEnabled(enabled); }
+    // In-game screen on top of the world (QcScreenState::overlay).
+    QString overlay() const { return m_screens.overlay(); }
+    void setOverlay(const QString &overlay) { m_screens.setOverlay(overlay); }
+    QString chatStart() const { return m_screens.chatStart(); }
     // Opens the chat line with `start` already typed.
-    void openChat(const QString &start);
+    void openChat(const QString &start) { m_screens.openChat(start); }
+
     bool persistent() const { return !m_worldDirectory.isEmpty(); }
 
     QcSettingsController *settings() const { return m_settings.get(); }
@@ -129,6 +129,9 @@ public:
     // Opens the audio output (or stays silent when `enabled` is false, e.g. for screenshots) and
     // prepares the menu sounds from the base content.
     void startAudio(bool enabled);
+    // Starts the gamepad backend (SDL3 when the build has it, decision E-540); without `enabled`
+    // (screenshot runs, benchmarks, QTCRAFT_GAMEPAD=0) the game has no pads.
+    void startGamepads(bool enabled);
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` while a
     // world runs (decision E-225); 0 leaves it off.
     void startStatsLog(int intervalMs);
@@ -144,7 +147,7 @@ signals:
     void overlayChanged();
 
 private:
-    void setPhase(Phase phase, const QString &status = {});
+    void setPhase(Phase phase, const QString &status = {}) { m_screens.setPhase(phase, status); }
     void attachWindow(QQuickWindow *window);
     // Ends the session and the server; returns the result of the final save.
     [[nodiscard]] QcStatus stopSession();
@@ -155,13 +158,13 @@ private:
     [[nodiscard]] bool startServer(const QcWorldInfo &world);
     // Wires the new session (m_parts.session) to meshes, HUD, sounds and screens.
     void beginSession();
-    void onSessionDisconnected(const QString &reason);
     // Enabling or disabling a mod changes the outfits on offer and the icons.
     void onContentReset();
 
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.
     QcSessionParts m_parts;
+    QcScreenState m_screens;
     QcItemIcons m_icons;
     std::unique_ptr<QcAudioEngine> m_audio;
     std::unique_ptr<QcWorldLibraryController> m_library;
@@ -176,14 +179,11 @@ private:
     std::unique_ptr<QcBenchmarkRun> m_benchmark;
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
+    std::unique_ptr<QcGamepadSource> m_gamepadSource;
+    QcGamepadControls m_gamepad;
     QcRenderBridge m_render;
     QcWorldAtlas m_worldAtlas;
     QcSessionWiring m_wiring;
     QcFrameDriver m_frame;
-    Phase m_phase = Phase::Menu;
-    QString m_statusText;
-    bool m_inputEnabled = true;
-    QString m_overlay;
-    QString m_chatStart;
     QString m_worldDirectory;
 };

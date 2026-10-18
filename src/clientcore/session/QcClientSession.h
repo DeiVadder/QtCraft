@@ -104,6 +104,7 @@ public:
     const std::optional<QcRaycastHit> &target() const { return m_hand.target(); }
     // While true, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
     void setMining(bool mining) { m_hand.setMining(mining); }
+    bool miningRequested() const { return m_hand.miningRequested(); }
     double miningProgress() const { return m_hand.miningProgress(); }
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();

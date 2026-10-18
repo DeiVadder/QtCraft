@@ -12,8 +12,8 @@
 
 #include <array>
 
-class QcGameController;
 class QcGameInput;
+class QcScreenState;
 class QcSettingsController;
 class QTimer;
 struct QcSessionParts;
@@ -31,7 +31,7 @@ class QcBenchmarkRun : public QObject
     Q_OBJECT
 
 public:
-    QcBenchmarkRun(QcGameController &game, const QcSessionParts &parts, QcGameInput &input, const QcSettingsController &settings,
+    QcBenchmarkRun(QcScreenState &screens, const QcSessionParts &parts, QcGameInput &input, const QcSettingsController &settings,
                    QObject *parent = nullptr);
 
     // `packSwitch`: the texture packs switched on and off during the run (none: no switch).
@@ -70,7 +70,7 @@ private:
     QString entityPairs() const;
     void logReport(const QList<qint64> &sorted, double p99Ms) const;
 
-    QcGameController &m_game;
+    QcScreenState &m_screens;
     const QcSessionParts &m_parts;
     QcGameInput &m_input;
     const QcSettingsController &m_settings;

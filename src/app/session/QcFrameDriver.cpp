@@ -10,6 +10,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
+#include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
@@ -82,6 +83,8 @@ void QcFrameDriver::onFrame()
         m_parts.window->update();
     }
     m_targets.input.applyFrame(mouseDelta, frameSeconds);
+    // After the keyboard: a deflected stick wins over the held keys, a centred one leaves them.
+    m_targets.gamepad.applyFrame(*m_parts.session, frameSeconds, m_targets.input.worldFocused());
 
     const double alpha = std::clamp(double(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
     const QcVec3 feet = lerp(m_parts.session->previousPlayerMotion().position, m_parts.session->playerMotion().position, alpha);

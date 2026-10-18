@@ -5,6 +5,7 @@
     "sections": [
         "keys",
         "mac",
+        "gamepad",
         "moving",
         "screens"
     ]

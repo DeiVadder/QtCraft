@@ -1,9 +1,11 @@
 #include "app/controllers/QcGameController.h"
 
 #include "app/hooks/QcBenchmarkRun.h"
+#include "app/input/QcGamepadBackend.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/rendering/QcFramePlan.h"
 #include "audio/QcAudioEngine.h"
+#include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "server/core/QcLocalServerHost.h"
@@ -42,6 +44,7 @@ qint64 seedFromText(const QString &text)
 
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
+    , m_screens(m_parts)
     , m_audio(std::make_unique<QcAudioEngine>())
     , m_library(std::make_unique<QcWorldLibraryController>())
     , m_settings(std::make_unique<QcSettingsController>(m_parts, *m_library, m_audio.get()))
@@ -50,16 +53,15 @@ QcGameController::QcGameController(QObject *parent)
     , m_trade(std::make_unique<QcTradeController>(m_parts, *m_settings))
     , m_hud(std::make_unique<QcHudState>(m_parts, *m_settings))
     , m_handbook(std::make_unique<QcHandbookController>(m_parts, *m_settings, *m_library, m_icons))
-    , m_input(std::make_unique<QcGameInput>(*this, m_parts, *m_settings, m_audio.get()))
+    , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
-    , m_benchmark(std::make_unique<QcBenchmarkRun>(*this, m_parts, *m_input, *m_settings))
-    , m_startup(std::make_unique<QcStartupHooks>(*this, m_parts, m_benchmark.get()))
-    , m_multiplayer(std::make_unique<QcMultiplayerController>(*this, m_parts, *m_settings, *m_library))
+    , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
+    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get()))
+    , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render})
-    , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, *m_input, *m_startup, m_worldAtlas},
-               {[this] { return m_overlay; }, [this](const QString &overlay) { setOverlay(overlay); }})
-    , m_frame(m_parts, {*m_settings, *m_input, *m_preview, m_render, *m_hud, *m_benchmark, *m_startup}, [this] { return m_phase == Phase::Playing; })
+    , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, m_screens, *m_startup, m_worldAtlas})
+    , m_frame(m_parts, {*m_settings, *m_input, m_gamepad, *m_preview, m_render, *m_hud, *m_benchmark, *m_startup}, [this] { return m_screens.playing(); })
 {
     connect(m_handbook.get(), &QcHandbookController::opening, this, [this] {
         m_input->clearKeys();
@@ -69,8 +71,12 @@ QcGameController::QcGameController(QObject *parent)
         }
         m_input->releaseMouse();
     });
+    // The page of what the crosshair points at, else the page shown last.
+    connect(m_input.get(), &QcGameInput::handbookRequested, this, [this] { m_handbook->open(m_hud->targetName()); });
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
+    m_gamepad.setSettings(m_settings->gamepad());
+    connect(m_settings.get(), &QcSettingsController::settingsChanged, this, [this] { m_gamepad.setSettings(m_settings->gamepad()); });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
     // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
     // menu draws its icons and previews again.
@@ -84,8 +90,25 @@ QcGameController::QcGameController(QObject *parent)
     });
     // Players joining and leaving appear in the chat (decision E-259).
     connect(m_multiplayer->players(), &QcPlayerList::announced, m_hud.get(), &QcHudState::addChatLine);
+    // Back in the menu, the players and the network game are forgotten.
+    connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
+        if (m_screens.phase() == QcScreenState::Phase::Menu) {
+            m_multiplayer->forget();
+        }
+    });
+    connect(&m_screens, &QcScreenState::phaseChanged, this, &QcGameController::phaseChanged);
+    connect(&m_screens, &QcScreenState::statusChanged, this, &QcGameController::statusChanged);
+    connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
+    connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
+    connect(this, &QcGameController::sessionStarted, m_multiplayer.get(), &QcMultiplayerController::sessionStarted);
+    // Before QML hears joined(): the joined server's world is played.
+    connect(m_multiplayer.get(), &QcMultiplayerController::sessionJoined, this, [this] {
+        if (std::unique_ptr<QcClientSession> session = m_multiplayer->takeJoinedSession()) {
+            startRemoteSession(std::move(session));
+        }
+    });
     connect(&m_wiring, &QcSessionWiring::playing, this, [this] { setPhase(Phase::Playing); });
-    connect(&m_wiring, &QcSessionWiring::disconnected, this, &QcGameController::onSessionDisconnected);
+    connect(&m_wiring, &QcSessionWiring::disconnected, &m_screens, &QcScreenState::sessionDisconnected);
     connect(&m_wiring, &QcSessionWiring::ticked, this, [this] { m_frame.restartTickClock(); });
 }
 
@@ -133,37 +156,12 @@ void QcGameController::attachWindow(QQuickWindow *window)
             if (!m_parts.window->isActive()) {
                 m_input->clearKeys();
                 m_input->releaseMouse();
+                // A minimised window draws no frames: the pad lets go now, and SDL's presses in the
+                // background are not queued for the window's return.
+                m_gamepad.suspend(m_parts.session.get());
             }
         });
     }
-}
-
-void QcGameController::setPhase(Phase phase, const QString &status)
-{
-    if (m_statusText != status) {
-        m_statusText = status;
-        emit statusChanged();
-    }
-    if (m_phase != phase) {
-        m_phase = phase;
-        emit phaseChanged();
-        m_input->syncCapture();
-    }
-}
-
-void QcGameController::setInputEnabled(bool enabled)
-{
-    if (m_inputEnabled == enabled) {
-        return;
-    }
-
-    m_inputEnabled = enabled;
-    if (!enabled) {
-        m_input->clearKeys();
-        m_input->releaseMouse();
-    }
-    emit inputEnabledChanged();
-    m_input->syncCapture();
 }
 
 void QcGameController::startAudio(bool enabled)
@@ -174,6 +172,14 @@ void QcGameController::startAudio(bool enabled)
         // Menu clicks come from the content as well; the base game and mods are loaded once here.
         m_library->content();
         m_audio->setContent(m_library->loadedContent());
+    }
+}
+
+void QcGameController::startGamepads(bool enabled)
+{
+    if (enabled && !m_gamepadSource) {
+        m_gamepadSource = QcGamepadBackend::create();
+        m_gamepad.setSource(m_gamepadSource.get());
     }
 }
 
@@ -261,44 +267,6 @@ void QcGameController::sendChat(const QString &text) const
     }
 }
 
-void QcGameController::setOverlay(const QString &overlay)
-{
-    if (m_overlay == overlay) {
-        return;
-    }
-
-    m_overlay = overlay;
-    m_input->clearKeys();
-    if (m_overlay != u"chat"_s) {
-        m_chatStart.clear();
-    }
-    if (m_parts.session) {
-        m_parts.session->setMining(false);
-        // A screen opening or closing lets a drawn bow go without a shot.
-        m_parts.session->cancelUse();
-        // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
-        // the furnace or chest screen closes the block.
-        if (m_overlay != u"inventory"_s) {
-            m_parts.session->closeCrafting();
-        }
-        if (m_overlay != u"furnace"_s && m_overlay != u"chest"_s) {
-            m_parts.session->closeMachine();
-        }
-        if (m_overlay != u"trade"_s) {
-            m_parts.session->trading().close();
-        }
-    }
-    emit overlayChanged();
-    // Opening a screen frees the mouse; closing the last one captures it again without a click.
-    m_input->syncCapture();
-}
-
-void QcGameController::openChat(const QString &start)
-{
-    m_chatStart = start;
-    setOverlay(u"chat"_s);
-}
-
 void QcGameController::startWorld(const QString &directory, const QcWorldInfo &world)
 {
     if (const QcStatus saved = stopSession(); !saved) {
@@ -376,15 +344,6 @@ bool QcGameController::startServer(const QcWorldInfo &world)
     return true;
 }
 
-void QcGameController::onSessionDisconnected(const QString &reason)
-{
-    if (m_phase != Phase::Menu) {
-        // The disconnect screen shows the reason (translated, E-094) and leads back to the menu.
-        m_input->releaseMouse();
-        setPhase(Phase::Disconnected, reason);
-    }
-}
-
 void QcGameController::onContentReset()
 {
     if (!m_parts.session) {
@@ -425,6 +384,7 @@ QcStatus QcGameController::stopSession()
         m_audio->setContent(m_library->loadedContent());
     }
     m_input->clearKeys();
+    m_gamepad.reset();
     return saved;
 }
 

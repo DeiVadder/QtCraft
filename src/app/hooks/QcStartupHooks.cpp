@@ -1,8 +1,10 @@
 #include "app/hooks/QcStartupHooks.h"
 
-#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcHandbookController.h"
+#include "app/controllers/QcScreenState.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
+#include "app/input/QcGameInput.h"
 #include "app/rendering/QcWorldView.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
@@ -36,9 +38,9 @@ Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 } // namespace
 
-QcStartupHooks::QcStartupHooks(QcGameController &game, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent)
+QcStartupHooks::QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent)
     : QObject(parent)
-    , m_game(game)
+    , m_screens(screens)
     , m_parts(parts)
     , m_benchmark(benchmark)
 {
@@ -135,12 +137,12 @@ void QcStartupHooks::openStartupOverlay()
     if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s) {
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
-        m_game.handbook()->open(m_startupHandbook);
+        m_screens.handbook.open(m_startupHandbook);
     } else if (m_startupOverlay == u"players"_s) {
         // As if the player list key were held.
-        m_game.input()->setPlayerListHeld(true);
+        m_screens.input.setPlayerListHeld(true);
     } else if (!m_startupOverlay.isEmpty()) {
-        m_game.setOverlay(m_startupOverlay);
+        m_screens.state.setOverlay(m_startupOverlay);
     }
 }
 
@@ -194,9 +196,9 @@ void QcStartupHooks::runOverlayStep(const QString &step)
     } else if (step.startsWith(u"hover:"_s)) {
         hoverAt(QStringView(step).mid(6));
     } else if (step == u"handbook"_s) {
-        m_game.handbook()->open({});
+        m_screens.handbook.open({});
     } else if (step == u"players"_s) {
-        m_game.input()->setPlayerListHeld(true);
+        m_screens.input.setPlayerListHeld(true);
     } else if (step == u"fly"_s) {
         // Creative flight as after a double tap of jump (decision E-284).
         m_parts.session->gameMode().setFlightWanted(true);
@@ -204,9 +206,9 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         setText(step.mid(5));
     } else {
         // "@<ms> " closes the screen and the handbook.
-        m_game.setOverlay(step);
+        m_screens.state.setOverlay(step);
         if (step.isEmpty()) {
-            m_game.handbook()->close();
+            m_screens.handbook.close();
         }
     }
 }
@@ -233,7 +235,7 @@ void QcStartupHooks::hoverAt(QStringView position) const
     bool validY = false;
     const QPointF point(position.left(comma).toDouble(&validX), position.mid(comma + 1).toDouble(&validY));
     // The window that renders the view: the offscreen window when the content moved there.
-    QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
     if (comma < 0 || !validX || !validY || !window) {
         qCWarning(lcGame) << "--overlay hover:" << position << ": expected 'hover:<x>,<y>' in window coordinates";
         return;
@@ -247,7 +249,7 @@ void QcStartupHooks::hoverAt(QStringView position) const
 void QcStartupHooks::setText(const QString &assignment) const
 {
     const qsizetype equals = assignment.indexOf(u'=');
-    const QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    const QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
     QObject *control = window && equals > 0 ? window->contentItem()->findChild<QObject *>(assignment.left(equals)) : nullptr;
     if (!control) {
         qCWarning(lcGame) << "--overlay text:" << assignment << ": expected 'text:<objectName>=<text>' of a shown field";
@@ -258,7 +260,7 @@ void QcStartupHooks::setText(const QString &assignment) const
 
 void QcStartupHooks::openPopup(const QString &objectName) const
 {
-    const QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    const QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
     // An empty name would find the first unnamed object.
     QObject *control = window && !objectName.isEmpty() ? window->contentItem()->findChild<QObject *>(objectName) : nullptr;
     if (!control) {

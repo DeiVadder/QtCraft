@@ -66,6 +66,8 @@ public:
     void setMouseSensitivity(double sensitivity);
     bool invertMouse() const { return m_invertMouse; }
     void setInvertMouse(bool invert);
+    // Dead zones, curve and look speed of the gamepad (decision E-541; no screen yet).
+    const QcGamepadSettings &gamepad() const { return m_gamepad; }
     // Labels floating in the world (decision E-222); the label key switches them.
     bool showLabels() const { return m_showLabels; }
     void setShowLabels(bool show);
@@ -104,6 +106,7 @@ private:
     double m_fovEffects = QcGameSettings::defaultFovEffects;
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
+    QcGamepadSettings m_gamepad;
     bool m_showLabels = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;

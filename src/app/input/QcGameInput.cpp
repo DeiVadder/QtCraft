@@ -1,6 +1,7 @@
 #include "app/input/QcGameInput.h"
 
-#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcHandbookController.h"
+#include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
 #include "audio/QcAudioEngine.h"
@@ -44,10 +45,10 @@ QQuickItem *topmostItemAt(QQuickItem *item, QPointF scenePosition)
 
 } // namespace
 
-QcGameInput::QcGameInput(QcGameController &game, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
+QcGameInput::QcGameInput(Screens screens, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
                          QObject *parent)
     : QObject(parent)
-    , m_game(game)
+    , m_screens(screens)
     , m_parts(parts)
     , m_settings(settings)
     , m_audio(audio)
@@ -56,6 +57,10 @@ QcGameInput::QcGameInput(QcGameController &game, const QcSessionParts &parts, Qc
     if (QCoreApplication *application = QCoreApplication::instance()) {
         application->installEventFilter(this);
     }
+    // Connected first, so a change of the screens reaches the input before anything else.
+    connect(&m_screens.state, &QcScreenState::interrupted, this, &QcGameInput::clearKeys);
+    connect(&m_screens.state, &QcScreenState::mouseFreed, this, &QcGameInput::releaseMouse);
+    connect(&m_screens.state, &QcScreenState::worldInputChanged, this, &QcGameInput::syncCapture);
 }
 
 QcGameInput::~QcGameInput()
@@ -119,7 +124,7 @@ void QcGameInput::applyFrame(QPointF mouseDelta, float frameSeconds)
     if (m_capture.captured() && !mouseDelta.isNull()) {
         m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), mouseDelta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
     }
-    if (m_game.inputEnabled() && m_game.phase() == QcGameController::Phase::Playing) {
+    if (m_screens.state.inputEnabled() && m_screens.state.playing()) {
         updateIntentFromKeys(frameSeconds);
     }
 }
@@ -288,8 +293,13 @@ bool QcGameInput::worldInput() const
 {
     // Overlays (inventory, pause menu, chat), the handbook and the death screen are QML items that
     // take keyboard and mouse themselves.
-    return m_parts.session && m_game.phase() == QcGameController::Phase::Playing && m_game.inputEnabled() && m_game.overlay().isEmpty()
-           && !m_game.handbook()->isOpen() && !m_parts.session->isDead();
+    return m_parts.session && m_screens.state.playing() && m_screens.state.inputEnabled() && m_screens.state.overlay().isEmpty()
+           && !m_screens.handbook.isOpen() && !m_parts.session->isDead();
+}
+
+bool QcGameInput::worldFocused() const
+{
+    return worldInput() && m_parts.window && m_parts.window->isActive();
 }
 
 bool QcGameInput::keyDown(QcKeyBindings::Action action) const
@@ -317,21 +327,20 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     }
     switch (*action) {
     case A::Pause:
-        m_game.setOverlay(u"pause"_s);
+        m_screens.state.setOverlay(u"pause"_s);
         return;
     case A::Inventory:
         // Creative mode opens the item catalogue; its tab leads on to crafting and armour.
-        m_game.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? u"creative"_s : u"inventory"_s);
+        m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? u"creative"_s : u"inventory"_s);
         return;
     case A::Chat:
-        m_game.setOverlay(u"chat"_s);
+        m_screens.state.setOverlay(u"chat"_s);
         return;
     case A::Command:
-        m_game.openChat(u"/"_s);
+        m_screens.state.openChat(u"/"_s);
         return;
     case A::Handbook:
-        // The page of what the crosshair points at, else the page shown last.
-        m_game.handbook()->open(m_game.hud()->targetName());
+        emit handbookRequested();
         return;
     case A::CameraView: {
         // Cycles first person, behind, front; the choice is kept in the settings.
@@ -347,7 +356,7 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
         m_settings.saveSettings();
         return;
     case A::DebugOptions:
-        m_game.setOverlay(u"debug"_s);
+        m_screens.state.setOverlay(u"debug"_s);
         return;
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());

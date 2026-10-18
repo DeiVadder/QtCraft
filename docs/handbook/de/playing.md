@@ -46,6 +46,18 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 
 Auf einem Mac steuern die Tasten F1–F12 Helligkeit, Mission Control, die Suche und andere Systemfunktionen; das Spiel bekommt sie deshalb nicht. Jede Aktion hat darum eine Buchstabentaste, zum Beispiel **V** für die Kameraansicht und **H** für das Handbuch. Um die Funktionstasten im Spiel zu nutzen, halte fn gedrückt oder schalte in den Systemeinstellungen „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ ein (Tastatur → Tastaturkurzbefehle → Funktionstasten). Keine Taste des Spiels nutzt Cmd, und mit Cmd gedrückte Tasten tun im Spiel nichts, weil macOS Cmd+Q, Cmd+H, Cmd+W, Cmd+Leertaste und Cmd+Tab für sich behält: Rennen ist am Mac Option, und Control+Q wirft den ganzen Stapel. Wer eine Aktion auf Control legt: Control mit den Pfeiltasten oder der Leertaste wechselt Schreibtische oder die Eingabequelle. Option+E, U, N und I sind nur beim Tippen von Text Tottasten; in der Welt wirken sie als Rennen plus diese Taste.
 
+**Gamepad**
+
+Ein Gamepad (Xbox, PlayStation, Switch Pro und die meisten anderen) steuert die Figur, solange das Spielfenster den Fokus hat, zusammen mit Tastatur und Maus: Ein ausgelenkter Stick bewegt dich, sonst tun es die Tasten. Die Tasten heißen nach ihrer Lage, die untere Aktionstaste ist also A an einem Xbox-Pad, Kreuz an einem PlayStation-Pad und B an einem Switch-Pad.
+- **Linker Stick**: gehen; je weiter du ihn drückst, desto schneller gehst du
+- **Rechter Stick**: umsehen
+- **Rechter Trigger**: abbauen, Wesen angreifen; **linker Trigger**: setzen, benutzen, essen
+- **Untere Aktionstaste**: springen oder aufwärts schwimmen; im Kreativmodus zweimal schnell gedrückt: fliegen oder landen
+- **Linken Stick drücken**: beim Vorwärtsgehen rennen
+- **Rechten Stick drücken**: Schleichen ein oder aus; im Flug gedrückt halten, um zu sinken
+- **Linke und rechte Schultertaste**: vorheriges und nächstes Feld der Schnellleiste
+- Menüs, Inventar und die anderen Bildschirme bedienst du weiter mit Maus und Tastatur.
+
 **Bewegen**
 
 Du gehst mit 4,3 m/s, rennst mit 5,6 m/s und schleichst mit 1,3 m/s; beim Schleichen fällst du nicht über Kanten. Zum Rennen drückst du beim Vorwärtsgehen **Strg** oder tippst zweimal **W**; du rennst, solange du vorwärts gehst. Beim Rennen weitet sich die Sicht ein wenig (Einstellungen → Sichtfeld-Effekte). Stufen bis 0,5 m steigst du ohne Springen. Im Wasser schwimmst du mit 2,2 m/s.

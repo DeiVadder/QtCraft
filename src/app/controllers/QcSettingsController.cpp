@@ -50,6 +50,7 @@ void QcSettingsController::loadSettings()
     setFovEffects(m_storedSettings.fovEffects);
     setMouseSensitivity(m_storedSettings.mouseSensitivity);
     setInvertMouse(m_storedSettings.invertMouse);
+    m_gamepad = m_storedSettings.gamepad;
     m_debug->load(m_storedSettings.debug);
     setShowLabels(m_storedSettings.showLabels);
     m_languageSetting = m_storedSettings.language;
@@ -76,6 +77,7 @@ void QcSettingsController::saveSettings()
     settings.fovEffects = m_fovEffects;
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
+    settings.gamepad = m_gamepad;
     settings.debug = m_debug->options();
     settings.showLabels = m_showLabels;
     settings.language = m_languageSetting;

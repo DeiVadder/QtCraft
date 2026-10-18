@@ -8,6 +8,7 @@
 #include <memory>
 
 class QcBenchmarkRun;
+class QcGamepadControls;
 class QcGameInput;
 class QcHudState;
 class QcPreviewSource;
@@ -18,10 +19,11 @@ class QcStatsLog;
 struct QcSessionParts;
 
 // The frame clock of the running world (decision E-530): every frame of the window it takes the
-// input of the frame, interpolates the player between the last two ticks, hands camera, entities,
-// hand, sky, weather and selection to the render bridge, updates the HUD, focuses and pumps the mesh
-// scheduler and records the frame for the debug display, the benchmark and the statistics log. The
-// one place that reads the session's state once per frame. Lives in the GUI thread beside
+// input of the frame (keyboard and mouse, then the gamepad), interpolates the player between the
+// last two ticks, hands camera, entities, hand, sky, weather and selection to the render bridge,
+// updates the HUD, focuses and pumps the mesh scheduler and records the frame for the debug
+// display, the benchmark and the statistics log. The one place that reads the session's state
+// once per frame. Lives in the GUI thread beside
 // QcGameController, which owns it; it refers only to parts declared before it.
 class QcFrameDriver
 {
@@ -31,6 +33,7 @@ public:
     {
         QcSettingsController &settings;
         QcGameInput &input;
+        QcGamepadControls &gamepad;
         QcPreviewSource &preview;
         QcRenderBridge &render;
         QcHudState &hud;

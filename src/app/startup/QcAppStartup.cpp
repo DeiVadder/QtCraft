@@ -141,6 +141,10 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
     const QString audioSetting = qEnvironmentVariable("QTCRAFT_AUDIO");
     const bool audio = !options.noAudio && audioSetting != u"0"_s && (screenshot == nullptr || audioSetting == u"1"_s);
     game.startAudio(audio);
+    // Screenshot runs take no input and a benchmark walks by itself, so a pad lying on the desk
+    // cannot steer it; QTCRAFT_GAMEPAD=0 keeps the pads out of any run.
+    const bool benchmark = qEnvironmentVariableIsSet("QTCRAFT_BENCHMARK");
+    game.startGamepads(screenshot == nullptr && !benchmark && qEnvironmentVariable("QTCRAFT_GAMEPAD") != u"0"_s);
     game.startup()->setStartupScript(options.chat, options.overlays);
     game.startup()->setStartupHandbook(options.handbook.value_or(QString()));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).

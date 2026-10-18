@@ -53794,6 +53794,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "A gamepad (Xbox, PlayStation, Switch Pro and most others) steers the player while the game window has the focus, together with keyboard and mouse: a pushed stick moves you, otherwise the keys do. Buttons are named by their place, so the lower face button is A on an Xbox pad, Cross on a PlayStation pad and B on a Switch pad.\n- **Left stick**: walk; the further you push it, the faster you walk\n- **Right stick**: look around\n- **Right trigger**: mine, attack a creature; **left trigger**: place, use, eat\n- **Lower face button**: jump or swim up; press it twice quickly in creative mode to fly or land\n- **Press the left stick**: sprint while walking forward\n- **Press the right stick**: sneak on or off; while flying, hold it to descend\n- **Left and right shoulder buttons**: previous and next hotbar slot\n- Menus, the inventory and the other screens are still used with mouse and keyboard.",
+                    "title": "Gamepad"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you from falling off edges. To sprint, press **Ctrl** while walking forward or tap **W** twice; the sprint lasts as long as you keep walking forward. The view widens a little while you sprint (Settings → FOV effects). Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.",
                     "title": "Moving"
                 },

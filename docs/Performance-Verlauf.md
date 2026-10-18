@@ -2237,3 +2237,7 @@ Release-Builds, `dev` gegen `feature/46-1-client-structure`, verschränkt, Mitte
 **16 Chunks** (sprint, village, 3 Runden): GPU +1 bis +3 %, p99 9,3–9,5 ms (−1 bis +2 %), Render-CPU −8 bis +4 %, Speicher 845–1253 MB (±0 %).
 
 **crowd nachgemessen** (8 Runden, Nacht): Der erste Lauf zeigte `entity_mesh` +34 % in zwei Gruppen; nachgemessen Median 0,675 → 0,688 ms (+2 %), p99 −3 %, GPU +1 %, GUI-CPU +1 %. Keine Regression.
+
+## 46.1e und 40.1b (Bildschirmzustand, Gamepad-Steuerung) gerendert (2026-10-18)
+
+Release-Builds, `dev` `a512d8d` (46.1) gegen `feature/46-1e-40-controls` nach den Review-Fixes, `@core`, 8 Chunks, 6 Runden, verschränkt, ohne angeschlossenen Controller. Bild Ø 8,34–8,37 ms bei beiden Ständen, p99-Median 9,3–10,4 ms bei beiden (Ziel erfüllt), die Mittelwerte von p99 (−6 bis +11 %) kommen von einzelnen Ausreißern (sprint 15,7 ms in einem Lauf); GPU −6 bis +1 %, Render- und GUI-CPU −12 bis +4 % mit Streuung bis 90 % (parallel arbeitende Agenten), Speicher ±0 %. Keine Regression.
