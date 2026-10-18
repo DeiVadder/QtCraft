@@ -2,6 +2,10 @@
 
 QtCraft currently contains no third-party assets. The game's textures are generated procedurally at runtime from the content definitions (`content/*/textures/*.json`); the only image files are the project's own texture pack files below (exported from those textures and hand-tuned). All sounds are synthesized from `content/*/sounds/*.json` and the music is composed algorithmically at runtime; the repository contains no audio files.
 
+## Third-party code
+
+Code of other projects (currently SDL3 for gamepads, zlib licence, with HIDAPI under its BSD option and SunPro's maths routines, decision E-540) is listed in `THIRD_PARTY.md` in the project root, with version, licence and where the licence text is shipped.
+
 ## Texture packs (stage 28)
 
 The built-in texture packs are made by the project itself, without downloads. They are licensed like the code, GPL-3.0-or-later (decided by the human on 2026-10-12, E-303); the manifests carry the SPDX id `GPL-3.0-or-later`:

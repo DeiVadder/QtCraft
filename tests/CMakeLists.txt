@@ -86,3 +86,5 @@ set_tests_properties(test_headless_cli test_dedicated_server test_multiplayer_bo
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
+set_tests_properties(test_gamepad_sdl PROPERTIES
+    REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/build-sdl.sh;${PROJECT_SOURCE_DIR}/3rdparty/sdl3-tag.txt;${PROJECT_SOURCE_DIR}/cmake/QcGamepad.cmake")

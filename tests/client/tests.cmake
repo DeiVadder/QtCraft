@@ -39,6 +39,17 @@ qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp L
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
+# The gamepad model (dead zone, curve, types, virtual pads) and the SDL3 backend with its cache
+# (decision E-540).
+qc_add_test(test_gamepad_input SOURCES client/test_gamepad_input.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)
+target_compile_definitions(test_gamepad_sdl PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+    QTCRAFT_SDL3_DIR="${SDL3_DIR}" QTCRAFT_SDL_ARCH="${QC_SDL_ARCH}" QTCRAFT_CMAKE_COMMAND="${CMAKE_COMMAND}"
+    QC_HAVE_SDL_GAMEPAD=$<BOOL:${QC_GAMEPAD_ENABLED}>)
+# The test drives SDL's virtual joysticks itself.
+if(QC_GAMEPAD_ENABLED)
+    target_link_libraries(test_gamepad_sdl PRIVATE SDL3::SDL3-static)
+endif()
 # Field of view while sprinting and the sprint latch (decision E-280).
 qc_add_test(test_sprint_feel SOURCES client/test_sprint_feel.cpp LIBRARIES qc_clientcore)
 # The control palette of the windows (decision E-279).

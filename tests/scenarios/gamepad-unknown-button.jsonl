@@ -1,0 +1,3 @@
+# An unknown button name must fail the request (and the script).
+{"cmd":"gamepadConnect"}
+{"cmd":"gamepadSet","pad":1,"buttons":{"jump":true}}

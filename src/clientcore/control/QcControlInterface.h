@@ -38,6 +38,8 @@ public:
     void feed(const QByteArray &data);
     bool isIdle() const { return !m_context.isActive() && m_queue.isEmpty(); }
     int failedRequests() const { return m_context.failedRequests(); }
+    // The pads of the gamepad commands, for the input mapping of the client (decision E-540).
+    QcVirtualGamepadSource &virtualGamepads() { return m_commands.virtualGamepads(); }
 
 signals:
     void quitRequested();

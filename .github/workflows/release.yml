@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Version matches the tag
         if: startsWith(github.ref, 'refs/tags/v')
@@ -46,6 +48,15 @@ jobs:
           version: ${{ env.QT_VERSION }}
           modules: ${{ env.QT_MODULES }}
           cache: true
+
+      # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
+      # follows the tag and the build script (whose CONFIG_VERSION names the build options).
+      - name: SDL3 cache
+        if: runner.os != 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/sdl3
+          key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
 
       # Tag pushes do not run the CI workflow; the release runs the same tests first.
       - name: Test

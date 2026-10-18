@@ -44,6 +44,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Xcode (newest stable)
         if: runner.os == 'macOS'
@@ -74,6 +76,15 @@ jobs:
           version: ${{ env.QT_VERSION }}
           modules: ${{ env.QT_MODULES }}
           cache: true
+
+      # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
+      # follows the tag and the build script (whose CONFIG_VERSION names the build options).
+      - name: SDL3 cache
+        if: runner.os != 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/sdl3
+          key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
 
       - name: Configure
         run: cmake --preset ci-debug

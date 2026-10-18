@@ -11,3 +11,12 @@ QtCraft's textures, sounds and music are made by the project itself (procedurall
 | Rubies HD (example mod) | QtCraft | GPL-3.0-or-later | – |
 
 Third-party packs added later are listed here with the attribution their licence asks for; the game also shows each pack's `license` and `credits` in Settings → Texture packs.
+
+## Libraries
+
+| Library | Author | Licence | Use |
+|---------|--------|---------|-----|
+| SDL3 | Sam Lantinga and the SDL contributors | zlib | Gamepad input, statically linked (see `THIRD_PARTY.md`) |
+| HIDAPI (in SDL3) | Alan Ott, Signal 11 Software | BSD | Gamepad access over USB and Bluetooth, inside SDL3 (see `THIRD_PARTY.md`) |
+| fdlibm maths routines (in SDL3) | Sun Microsystems (SunPro) | permissive notice | SDL's maths functions (see `THIRD_PARTY.md`) |
+| Qt 6 | The Qt Company and the Qt contributors | LGPL-3.0 | Everything else, shipped as shared libraries |

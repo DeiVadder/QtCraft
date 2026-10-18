@@ -1,0 +1,8 @@
+# Virtual gamepads through the control interface (decision E-540): connect, press, move, list,
+# disconnect. Every request must succeed; the test checks the reported state.
+{"id":"connect","cmd":"gamepadConnect","type":"playstation","name":"Test pad"}
+{"id":"press","cmd":"gamepadSet","pad":1,"buttons":{"south":true,"leftShoulder":true}}
+{"id":"move","cmd":"gamepadSet","pad":1,"buttons":{"leftShoulder":false},"axes":{"leftX":0.5,"leftY":-3,"rightTrigger":1}}
+{"id":"list","cmd":"gamepads"}
+{"id":"release","cmd":"gamepadSet","pad":1,"release":true,"buttons":{"start":true}}
+{"id":"gone","cmd":"gamepadDisconnect","pad":1}

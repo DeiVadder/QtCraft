@@ -2206,3 +2206,7 @@ Release-Builds, `dev` `fc79639` (52.8) gegen `feature/52-4-cows-fish` nach Nachb
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd +7 % (0,149 → 0,160 ms, gleiche Wesenzahl, unter der 10-%-Schwelle), horde, village, explore, Felder 0 bis +5 %; Signal-Stationen +20 bis +26 % (0,073 → 0,091 ms) bei 61 statt 45 Wesen: Kuhweide, Aquarium und Angelsteg der Showcase, etwa 1,1 µs je Wesen; Speicher 0 bis +4 %.
 
 **Fenster** (`@core`, 8 Chunks, 6 Runden): GPU −4 bis +3 %, Render-CPU −6 bis +1 %, GUI-CPU −5 bis +0 %, Bild Ø 8,39–8,46 ms, Speicher ±0 %; p99 15,9–16,5 ms bei beiden Ständen (Desktop am Tag), showcase 9,9 → 12,1 ms bei Frame-Kosten unverändert. Keine Regression.
+
+## 40.1 (Gamepad-Backend) gerendert (2026-10-18)
+
+Release-Builds, `dev` `6746290` gegen `feature/40-1-gamepad-backend`, `@core`, 8 Chunks, verschränkt, Mediane, ohne angeschlossenen Controller: GPU −3 bis +1 %, Bild Ø 8,33 ms, p99 9,4–9,9 ms (Ziel erfüllt), Speicher ±0 %; GUI- und Render-CPU streuen zwischen −19 und +11 % mit überlappenden Spannen. Das Abfragen ohne Controller alle 250 ms (E-540) kostet nichts Messbares.

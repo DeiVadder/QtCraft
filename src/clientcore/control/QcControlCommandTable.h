@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/control/QcControlEntityCommands.h"
+#include "clientcore/control/QcControlGamepadCommands.h"
 #include "clientcore/control/QcControlInventoryCommands.h"
 #include "clientcore/control/QcControlMachineCommands.h"
 #include "clientcore/control/QcControlMovementCommands.h"
@@ -29,6 +30,8 @@ public:
     void add(const QString &name, const Handler &handler);
     // nullptr for an unknown command.
     const Handler *find(const QString &name) const;
+    // The virtual gamepads of the gamepad commands (decision E-540).
+    QcVirtualGamepadSource &virtualGamepads() { return m_gamepads.source(); }
 
 private:
     QHash<QString, Handler> m_handlers;
@@ -39,4 +42,5 @@ private:
     QcControlInventoryCommands m_inventory;
     QcControlMachineCommands m_machines;
     QcControlTradeCommands m_trades;
+    QcControlGamepadCommands m_gamepads;
 };

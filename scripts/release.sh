@@ -11,6 +11,9 @@
 #   - required parts are present (Info.plist keys, icon, qt.conf, frameworks, plugins, QML modules,
 #     FFmpeg libraries, example mod) and the signature verifies (codesign --verify --strict)
 #   - the game and the dedicated server are universal (arm64 and x86_64)
+#   - with gamepad support (QC_GAMEPAD, decision E-540): SDL3 is linked statically into the game for
+#     both architectures, the bundle contains no SDL library and carries the licence texts of SDL,
+#     HIDAPI and SDL's libm (THIRD_PARTY.md)
 #   - the dedicated server of a copy starts (--server --port 0 --bind 127.0.0.1, temporary data
 #     directory), reports "Listening on port", loads only libraries from the copy or the system
 #     (DYLD_PRINT_LIBRARIES) and stops with exit code 0 on SIGTERM
@@ -91,6 +94,10 @@ echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 
 echo "== build (preset $PRESET, $BUILD_DIR)"
 "$PROJECT_DIR/scripts/ensure-user-presets.sh" || abort "CMakeUserPresets.json missing and not created"
+# The universal SDL3 for gamepads comes from its own cache entry, built once (decision E-540).
+limited 1200 "$PROJECT_DIR/scripts/build-sdl.sh" --universal >"$WORK/build-sdl.txt" 2>"$WORK/build-sdl.log" ||
+    abort "SDL3 build failed, see $WORK/build-sdl.log"
+SDL_PREFIX=$(tail -1 "$WORK/build-sdl.txt")
 limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
 limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
     abort "build failed, see $WORK/build.log"
@@ -123,6 +130,14 @@ fi
 for driver in libqsqlmimer libqsqlodbc libqsqlpsql; do
     rm -f "$APP/Contents/PlugIns/sqldrivers/$driver.dylib"
 done
+GAMEPAD=$(sed -n 's/^QC_GAMEPAD:BOOL=//p' "$BUILD_DIR/CMakeCache.txt")
+if [ "$GAMEPAD" = ON ]; then
+    LICENSES="$APP/Contents/Resources/licenses"
+    mkdir -p "$LICENSES" && cp "$SDL_PREFIX/LICENSE.txt" "$LICENSES/SDL3-LICENSE.txt" &&
+        cp "$SDL_PREFIX/HIDAPI-LICENSE.txt" "$LICENSES/HIDAPI-LICENSE.txt" &&
+        cp "$SDL_PREFIX/LIBM-NOTICE.txt" "$LICENSES/SDL3-LIBM-NOTICE.txt" ||
+        abort "cannot copy the licence texts of SDL3"
+fi
 
 echo "== ad-hoc signature (inside out)"
 # Loose libraries and plugins first, then each framework as a whole, then the app.
@@ -187,6 +202,30 @@ for executable in "$APP/Contents/MacOS/qtcraft" "$SERVER"; do
         problem "$(basename "$executable") is not universal ($architectures)"
     fi
 done
+
+# SDL3 is linked into the game itself (static, both halves), never shipped as a library. The
+# executable is stripped, so the check looks for a text of SDL's gamepad code instead of a symbol.
+if [ "$GAMEPAD" = ON ]; then
+    for arch in arm64 x86_64; do
+        if lipo -thin "$arch" "$APP/Contents/MacOS/qtcraft" -output "$WORK/qtcraft-$arch" 2>/dev/null &&
+            grep -q -a 'SDL_GAMECONTROLLERCONFIG' "$WORK/qtcraft-$arch"; then
+            ok "SDL3 linked statically ($arch)"
+        else
+            problem "SDL3 is not linked into the $arch game"
+        fi
+    done
+    sdl_files=$(find "$APP" -iname '*SDL*' ! -path "$APP/Contents/Resources/licenses/SDL3-*.txt")
+    if [ -n "$sdl_files" ]; then
+        problem "the bundle contains SDL files: $(echo "$sdl_files" | head -3)"
+    else
+        ok "no SDL library in the bundle"
+    fi
+    for licence in SDL3-LICENSE.txt HIDAPI-LICENSE.txt SDL3-LIBM-NOTICE.txt; do
+        [ -s "$APP/Contents/Resources/licenses/$licence" ] && ok "contains $licence" || problem "missing $licence"
+    done
+else
+    ok "built without gamepad support (QC_GAMEPAD=$GAMEPAD), no SDL checks"
+fi
 
 plist="$APP/Contents/Info.plist"
 for key in CFBundleIdentifier CFBundleShortVersionString CFBundleVersion CFBundleIconFile LSMinimumSystemVersion \

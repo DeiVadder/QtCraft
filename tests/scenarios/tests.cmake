@@ -20,3 +20,19 @@ add_test(NAME scenario_headless_failure_then_quit
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90
     ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/scenario_headless_failure_then_quit")
+# Virtual gamepads through the control interface (decision E-540).
+add_test(NAME scenario_headless_gamepad_virtual
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft-headless>;--script;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/gamepad-virtual.jsonl;--time-limit;60"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_OUTPUT=\"id\":\"list\"[^\n]*\"leftX\":0\\.5,\"leftY\":-1,[^\n]*\"pressed\":\\[\"south\"\\]"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME scenario_headless_gamepad_unknown_button
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft-headless>;--script;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/gamepad-unknown-button.jsonl;--time-limit;60"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_OUTPUT=Button 'jump' unknown"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+foreach(test scenario_headless_gamepad_virtual scenario_headless_gamepad_unknown_button)
+    set_tests_properties(${test} PROPERTIES TIMEOUT 90 ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${test}")
+endforeach()

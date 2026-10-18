@@ -128,4 +128,4 @@ GitHub Actions (`.github/workflows/`), all against open-source Qt 6.8.3 installe
 
 ## Licence
 
-QtCraft – code, textures, sounds and music – is licensed under the GNU General Public License version 3 or later (GPL-3.0-or-later), see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md). The release packages contain Qt, used under the GNU LGPL version 3.
+QtCraft – code, textures, sounds and music – is licensed under the GNU General Public License version 3 or later (GPL-3.0-or-later), see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md). The release packages contain Qt, used under the GNU LGPL version 3, and SDL3 for gamepads (zlib licence, statically linked; see [THIRD_PARTY.md](THIRD_PARTY.md)).

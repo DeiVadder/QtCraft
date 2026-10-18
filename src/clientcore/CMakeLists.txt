@@ -17,6 +17,7 @@ target_sources(qc_clientcore PRIVATE
     control/QcControlCommandTable.h control/QcControlCommandTable.cpp
     control/QcControlContext.h control/QcControlContext.cpp
     control/QcControlEntityCommands.h control/QcControlEntityCommands.cpp
+    control/QcControlGamepadCommands.h control/QcControlGamepadCommands.cpp
     control/QcControlInterface.h control/QcControlInterface.cpp
     control/QcControlInventoryCommands.h control/QcControlInventoryCommands.cpp
     control/QcControlMachineCommands.h control/QcControlMachineCommands.cpp
@@ -38,6 +39,13 @@ target_sources(qc_clientcore PRIVATE
     icons/QcBlockIcon.h icons/QcBlockIcon.cpp
     icons/QcItemIconSet.h icons/QcItemIconSet.cpp
     icons/QcWebHandbookAssets.h icons/QcWebHandbookAssets.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    input/QcGamepadResponse.h input/QcGamepadResponse.cpp
+    input/QcGamepadSource.h input/QcGamepadSource.cpp
+    input/QcGamepadState.h input/QcGamepadState.cpp
+    input/QcGamepadTypeDetection.h input/QcGamepadTypeDetection.cpp
+    input/QcVirtualGamepadSource.h input/QcVirtualGamepadSource.cpp
 )
 target_sources(qc_clientcore PRIVATE
     light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp

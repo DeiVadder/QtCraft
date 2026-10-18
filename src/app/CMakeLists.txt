@@ -35,6 +35,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     input/QcGameInput.h input/QcGameInput.cpp
+    input/QcGamepadBackend.h input/QcGamepadBackend.cpp
     input/QcKeyControlsForeign.h
     input/QcRelativeMouse.h
 )
@@ -81,6 +82,12 @@ if(APPLE)
 else()
     target_sources(qc_app_core PRIVATE input/QcRelativeMouse_other.cpp)
 endif()
+# The SDL3 gamepad backend, statically linked, only with QC_GAMEPAD (cmake/QcGamepad.cmake, E-540).
+if(QC_GAMEPAD_ENABLED)
+    target_sources(qc_app_core PRIVATE input/QcSdlGamepadSource.h input/QcSdlGamepadSource.cpp)
+    target_link_libraries(qc_app_core PRIVATE SDL3::SDL3-static)
+endif()
+target_compile_definitions(qc_app_core PRIVATE QC_HAVE_SDL_GAMEPAD=$<BOOL:${QC_GAMEPAD_ENABLED}>)
 qc_configure_target(qc_app_core)
 # Includes name the header by its path below src/ ("app/rendering/QcFramePlan.h", decision E-418).
 # The include directory is a target of its own: a test that uses only headers of the app
