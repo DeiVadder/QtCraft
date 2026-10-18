@@ -89,7 +89,7 @@ add_library(qc_app_core_headers INTERFACE)
 target_include_directories(qc_app_core_headers INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_app_core PUBLIC
     qc_app_core_headers qc_common qc_server qc_clientcore qc_audio
-    Qt::Concurrent Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
+    Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
 
 qt_add_qml_module(qc_app_core
     URI QtCraft

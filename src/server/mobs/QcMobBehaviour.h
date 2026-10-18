@@ -6,6 +6,7 @@
 #include "server/mobs/QcMobCrowd.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/mobs/QcNeutralBrain.h"
+#include "server/mobs/QcTameBrain.h"
 #include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/pathing/QcPathTerrain.h"
@@ -95,6 +96,9 @@ private:
     QcArcherBrain m_archers;
     QcGolemBrain m_golems;
     QcNeutralBrain m_neutral;
+    // Tameable kinds think with these (decision E-480); wild ones through the brain of their AI.
+    QcTameBrain m_tamePassive;
+    QcTameBrain m_tameNeutral;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;

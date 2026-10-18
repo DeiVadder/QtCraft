@@ -1,0 +1,133 @@
+{
+    "name": "pet_corner",
+    "showcase": {
+        "order": 92
+    },
+    "palette": {
+        ".": "air",
+        "g": "grass_block",
+        "G": "glass",
+        "L": "spruce_log",
+        "S": "spruce_leaves",
+        "f": "fern",
+        "E": "oak_leaves",
+        "t": "tall_grass",
+        "P": "oak_planks",
+        "W": "glass"
+    },
+    "layers": [
+        [
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg"
+        ],
+        [
+            "GGGGGGGGGGGGGPPPP",
+            "G.....GGE..EGP..P",
+            "G.L.f.GG....GP..P",
+            "G.....GG..t.GP..P",
+            "G.....GG.t..GPPPP",
+            "G.f...GG....G....",
+            "G...L.GG....G....",
+            "G.....GGE..EG....",
+            "GGGGGGGGGGGGG...."
+        ],
+        [
+            "GGGGGGGGGGGGGPPPP",
+            "G.....GG....GP..P",
+            "G.L...GG....GW..W",
+            "G.....GG....GP..P",
+            "G.....GG....GPWWP",
+            "G.....GG....G....",
+            "G...L.GG....G....",
+            "G.....GG....G....",
+            "GGGGGGGGGGGGG...."
+        ],
+        [
+            "GGGGGGGGGGGGGPPPP",
+            "G.....GG....GP..P",
+            "G.S...GG....GP..P",
+            "G.....GG....GP..P",
+            "G.....GG....GPPPP",
+            "G.....GG....G....",
+            "G...S.GG....G....",
+            "G.....GG....G....",
+            "GGGGGGGGGGGGG...."
+        ],
+        [
+            "GGGGGGGGGGGGGPPPP",
+            "GGGGGGGGGGGGGPPPP",
+            "GGGGGGGGGGGGGPPPP",
+            "GGGGGGGGGGGGGPPPP",
+            "GGGGGGGGGGGGGPPPP",
+            "GGGGGGGGGGGGG....",
+            "GGGGGGGGGGGGG....",
+            "GGGGGGGGGGGGG....",
+            "GGGGGGGGGGGGG...."
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "wolf",
+            "at": [
+                2.5,
+                1.0,
+                4.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "wolf",
+            "at": [
+                4.5,
+                1.0,
+                4.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "ocelot",
+            "at": [
+                9.5,
+                1.0,
+                5.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "dog",
+            "at": [
+                14.5,
+                1.0,
+                7.5
+            ],
+            "owner": "showcase",
+            "sitting": true
+        },
+        {
+            "mob": "cat",
+            "at": [
+                14.5,
+                1.0,
+                2.5
+            ],
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                8.5,
+                5.6,
+                0.5
+            ],
+            "text": "structure.qtcraft.pet_corner"
+        }
+    ]
+}

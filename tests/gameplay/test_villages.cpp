@@ -148,15 +148,22 @@ private slots:
         // The pair of a village's animal pen (decision E-404) appears, persistent, when its chunk is
         // seen for the first time, and not again.
         auto generator = std::make_unique<QcTerrainGenerator>(m_content, 42);
+        // Besides the pair, a cat lives in each large house (decision E-480).
+        const auto pairOf = [](const QcVillagePlan &plan) {
+            QList<QcVillagePlan::Mob> pair;
+            std::ranges::copy_if(plan.mobs, std::back_inserter(pair), [](const QcVillagePlan::Mob &mob) { return mob.mob != u"qtcraft:cat"_s; });
+            return pair;
+        };
         std::shared_ptr<const QcVillagePlan> plan;
         for (int r = 0; r < 64 && !plan; ++r) {
             std::shared_ptr<const QcVillagePlan> candidate = generator->villages().regionPlan(r % 8 - 4, r / 8 - 4);
-            plan = candidate && !candidate->mobs.isEmpty() ? candidate : nullptr;
+            plan = candidate && !pairOf(*candidate).isEmpty() ? candidate : nullptr;
         }
         QVERIFY(plan);
-        QCOMPARE(plan->mobs.size(), 2);
+        const QList<QcVillagePlan::Mob> pair = pairOf(*plan);
+        QCOMPARE(pair.size(), 2);
         QcServerWorld world(m_content, std::move(generator));
-        const QcChunkPos chunk = QcBlockPos{int(plan->mobs[0].at.x), 0, int(plan->mobs[0].at.z)}.chunk();
+        const QcChunkPos chunk = QcBlockPos{int(pair[0].at.x), 0, int(pair[0].at.z)}.chunk();
         world.loadChunk(chunk);
 
         QcMobManager mobs(m_content, 42);

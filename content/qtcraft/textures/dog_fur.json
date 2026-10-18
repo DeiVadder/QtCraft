@@ -1,0 +1,8 @@
+{
+    "name": "dog_fur",
+    "pattern": "speckle",
+    "primary": "#d8d4cc",
+    "secondary": "#b8b4ac",
+    "variation": 0.06,
+    "seed": 5203
+}

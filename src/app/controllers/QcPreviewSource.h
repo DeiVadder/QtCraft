@@ -3,10 +3,10 @@
 #include "clientcore/preview/QcPreviewHook.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/content/definitions/QcItemDefinition.h"
+#include "common/core/QcMailbox.h"
 #include "common/gameplay/QcEquipment.h"
 
 #include <QElapsedTimer>
-#include <QFutureWatcher>
 #include <QObject>
 #include <QtQmlIntegration/qqmlintegration.h>
 
@@ -17,6 +17,7 @@ class QcCharacterSettings;
 class QcContentRegistry;
 class QcTexturePackController;
 class QcTextureAtlas;
+class QcWorkerPool;
 class QcWorldLibraryController;
 struct QcSessionParts;
 
@@ -77,7 +78,12 @@ public:
     qint64 takeBuildNs() { return std::exchange(m_buildNs, 0); }
 
 private:
-    using AtlasWatcher = QFutureWatcher<std::shared_ptr<const QcTextureAtlas>>;
+    // A menu atlas from the worker, tagged with the build it belongs to.
+    struct BuiltAtlas
+    {
+        quint64 build = 0;
+        std::shared_ptr<const QcTextureAtlas> atlas;
+    };
 
     void ensureMenuAtlas();
     void onMenuAtlasBuilt();
@@ -93,7 +99,11 @@ private:
     int m_menuGeneration = -1;
     // The content of the atlas being built, and how long that takes.
     std::shared_ptr<const QcContentRegistry> m_pendingContent;
-    AtlasWatcher m_atlasBuild;
+    // Number of the latest atlas build; results of older builds are dropped.
+    quint64 m_atlasBuild = 0;
+    // Finished builds; the worker hands them over under a std::mutex and only wakes this object
+    // with a queued call (ThreadSanitizer cannot see the synchronisation inside QtCore, E-231).
+    QcMailbox<BuiltAtlas> m_builtAtlases;
     QElapsedTimer m_atlasTimer;
     bool m_offscreen = false;
     bool m_forceActive = false;
@@ -102,4 +112,7 @@ private:
     QcPreviewHook m_hook;
     int m_hookVersion = 0;
     qint64 m_buildNs = 0;
+    // One worker thread, started with the first menu atlas. Declared last: destroyed first, it
+    // drops queued builds and joins a running one before the mailbox and this object go away.
+    std::unique_ptr<QcWorkerPool> m_atlasWorker;
 };

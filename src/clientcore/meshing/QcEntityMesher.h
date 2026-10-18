@@ -126,8 +126,16 @@ struct HandView
     QcEntityLight light = 1.0f;
 };
 
+// How a creature of static boxes looks this frame (decision E-480): sitting (each part moves by its
+// QcMobPart::sitOffset) and the colours its tinted parts take (the collar: QcTint::Collar).
+struct PartLook
+{
+    bool sitting = false;
+    QcAppearance colors;
+};
+
 // Static boxes from a mob definition, facing north and turned by the yaw.
-void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv);
+void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv, const PartLook &look = {});
 
 // An animated skeleton model with its held item in the right hand.
 void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::BodyPose &pose, const Placement &placement, const UvLookup &uv);

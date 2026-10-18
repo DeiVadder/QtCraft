@@ -1,0 +1,17 @@
+{
+    "name": "mob.wolf.hurt",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.22,
+            "frequency": 620,
+            "endFrequency": 380,
+            "attack": 0.01,
+            "curve": 1.8,
+            "lowpass": 1600
+        }
+    ]
+}

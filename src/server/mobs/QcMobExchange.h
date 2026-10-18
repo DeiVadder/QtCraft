@@ -1,10 +1,12 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "server/entities/QcEntityComponent.h"
+#include "server/mobs/QcTameState.h"
 #include "server/villages/QcVillager.h"
 
 #include <QList>
@@ -45,6 +47,8 @@ struct Stored
     QcBlockId carried = qcAirBlockId;
     bool keptForBlock = false;
     bool confined = false;
+    // Owner, sitting and collar of a tame one (decision E-480; its target is not saved).
+    std::optional<QcTameState> tame = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const Stored &) const = default;
 };
@@ -62,6 +66,20 @@ struct PlayerView
     QcVec3 look = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     // Villages hold their grudges by name (QcGolemGrudges).
     QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // The persistent identity of the player (QcPetOwners::keyOf): tame creatures know their owner
+    // by it (decision E-480).
+    QString identity = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // Entity ids of the creature that hurt the player and of the one the player struck lately (0:
+    // none): pets that defend attack them.
+    quint32 hurtBy = 0;
+    quint32 struck = 0;
+    // The item in the player's hand and the player's horizontal speed in m/s (shy creatures).
+    QcItemId held = qcNoItem;
+    double speed = 0.0;
+    // Server ticks at which hurtBy and struck happened: a pet keeps its target unless its owner
+    // fights a foe anew (decision E-480).
+    quint64 hurtTick = 0;
+    quint64 struckTick = 0;
 };
 
 // A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
@@ -86,10 +104,13 @@ struct PlayerHit
     double lift = 1.0;
     // The kind of the creature that struck; its blow effects go with the hit (decision E-450).
     int mobType = -1;
+    // Entity id of the creature that struck (0: unknown); the player's pets turn on it (decision
+    // E-480).
+    quint32 mob = 0;
 };
 
-// A blow of one creature at another (a golem at a hostile creature, decision E-471); the server
-// deals it after the tick (QcServerCreatures).
+// A blow of one creature at another (a golem at a hostile creature, decision E-471; a pet at its
+// owner's foe, decision E-480); the server deals it after the tick (QcServerCreatures).
 struct CreatureHit
 {
     quint32 attacker = 0;

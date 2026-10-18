@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Katze](#mob-qtcraft-cat) · [Ozelot](#mob-qtcraft-ocelot) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -179,6 +179,76 @@ Ein kleiner Vogel der Wiesen. Statt zu fallen, flattert es sanft hinab, und alle
 
 Alle Biome.
 
+### <a id="mob-qtcraft-dog"></a>Hund
+
+Ein gezähmter Wolf mit rotem Halsband. Er gehört dir, auch wenn du nicht im Spiel bist: Er folgt dir, teleportiert sich zu dir, wenn du weit weg bist (nur an einen sicheren Ort in geladenen Chunks), und kämpft gegen das, was dich verletzt oder was du schlägst, nie gegen dich oder deine anderen Tiere. Benutze ihn, damit er sich setzt oder aufsteht; Fleisch heilt ihn, ein Farbstoff färbt sein Halsband.
+
+| | |
+|---|---|
+| ID | `qtcraft:dog` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 0,85 m hoch |
+| Geschwindigkeit | 1,6 m/s beim Gehen, 4,5 m/s auf der Flucht |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | nichts |
+| Gezähmt mit | 100 % je Stück: [Knochen](items.md#item-qtcraft-bone) |
+| Als Haustier | folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, teleportiert sich aus der Ferne zum Besitzer und kämpft gegen das, was den Besitzer verletzt oder was er schlägt |
+| Geheilt durch | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop), [Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton), [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton), [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh) |
+| Halsband | zuerst in der Farbe dieses Farbstoffs; ein Farbstoff, den der Besitzer darauf benutzt, färbt es: [Roter Farbstoff](items.md#item-qtcraft-red_dye) |
+
+### <a id="mob-qtcraft-cat"></a>Katze
+
+Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: Jeder Fisch zähmt sie mit einer Chance von eins zu drei. Eine zahme Katze folgt dir, setzt sich, wenn du sie benutzt, und teleportiert sich wie ein Hund zu dir, kämpft aber nicht. Wesen, die Angst vor Katzen haben, halten Abstand.
+
+| | |
+|---|---|
+| ID | `qtcraft:cat` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 0,6 m breit, 0,7 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 4 m/s auf der Flucht |
+| Erscheint | nie von selbst, lebt aber in Dörfern (auch /summon, Showcase-Welt) |
+| Beute | [Faden](items.md#item-qtcraft-string) (50 %) |
+| Gezähmt mit | 33,33 % je Stück: [Roher Kabeljau](food.md#item-qtcraft-raw_cod) |
+| Als Haustier | folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, und teleportiert sich aus der Ferne zum Besitzer |
+| Geheilt durch | [Roher Kabeljau](food.md#item-qtcraft-raw_cod), [Gebratener Kabeljau](food.md#item-qtcraft-cooked_cod) |
+
+**Lebt in Dörfern von**
+
+Und in Dörfern von Biomen ohne eigenen Dorfstil.
+
+[Ebene](biomes.md#biome-qtcraft-plains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wüste](biomes.md#biome-qtcraft-desert)
+
+### <a id="mob-qtcraft-ocelot"></a>Ozelot
+
+Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe). Sie läuft vor jedem weg, der ihr nahe kommt, außer du hältst rohen Kabeljau und schleichst dich langsam an. Sie lässt sich nicht zähmen; zwei mit rohem Kabeljau gefütterte bekommen ein Junges.
+
+| | |
+|---|---|
+| ID | `qtcraft:ocelot` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 0,6 m breit, 0,7 m hoch |
+| Geschwindigkeit | 1,6 m/s beim Gehen, 5 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 0,6 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Vermehrt sich mit | [Roher Kabeljau](food.md#item-qtcraft-raw_cod) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Beute | nichts |
+| Scheu | läuft vor Spielern weg, die näher als 8 m kommen, außer sie halten dies und bewegen sich langsam: [Roher Kabeljau](food.md#item-qtcraft-raw_cod) |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp)
+
 ### <a id="mob-qtcraft-sheep"></a>Schaf
 
 Friedliches Tier des Graslands; lässt Wolle fallen.
@@ -272,6 +342,12 @@ Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
 
 Alle Biome.
 
+**Lebt in Dörfern von**
+
+Und in Dörfern von Biomen ohne eigenen Dorfstil.
+
+[Ebene](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wüste](biomes.md#biome-qtcraft-desert)
+
 ### <a id="mob-qtcraft-silverfish"></a>Silberfischchen
 
 Ein kleiner grauer Schädling, der im Stein lebt. Es kommt heraus, wenn du einen befallenen Block abbaust, beißt, und wenn du es verletzt, ruft es seinesgleichen aus den befallenen Blöcken ringsum. In Ruhe gelassen, schlüpft es wieder in einen Steinblock neben sich.
@@ -345,6 +421,37 @@ Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an.
 **Erscheint in Biomen**
 
 Alle Biome.
+
+### <a id="mob-qtcraft-wolf"></a>Wolf
+
+Ein grauer Jäger der Wälder, der Taiga und der Tundra, der im Rudel lebt. Er lässt dich in Ruhe, bis du einen schlägst; dann jagt dich das ganze Rudel in der Nähe. Füttere ihn mit Knochen: Jeder Knochen zähmt ihn mit einer Chance von eins zu drei, und er wird dein Hund.
+
+| | |
+|---|---|
+| ID | `qtcraft:wolf` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 8 Lebenspunkte |
+| Größe | 0,6 m breit, 0,85 m hoch |
+| Geschwindigkeit | 1,6 m/s beim Gehen, 4 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 1 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Beute | nichts |
+| Gezähmt mit | 33,33 % je Stück: [Knochen](items.md#item-qtcraft-bone) |
+| Wird zu | [Hund](#mob-qtcraft-dog) |
+| Als Haustier | folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, teleportiert sich aus der Ferne zum Besitzer und kämpft gegen das, was den Besitzer verletzt oder was er schlägt |
+| Halsband | zuerst in der Farbe dieses Farbstoffs; ein Farbstoff, den der Besitzer darauf benutzt, färbt es: [Roter Farbstoff](items.md#item-qtcraft-red_dye) |
+| Rudel | schlägst du einen, jagen dich auch die anderen im Umkreis von 16 m |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block), [Schneeblock](blocks.md#block-qtcraft-snow_block)
+
+**Erscheint in Biomen**
+
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wald](biomes.md#biome-qtcraft-forest)
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 

@@ -1,5 +1,8 @@
 {
     "name": "village_desert_house_large",
+    "mobs": [
+        { "mob": "cat", "at": [2.5, 1.0, 3.5] }
+    ],
     "palette": {
         ".": "air",
         "C": "cut_sandstone",

@@ -142,6 +142,12 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     const double resisted = 1.0 - definition.golem.knockbackResistance;
     if (blow.attacker != 0) {
         mob.struckBy = blow.attacker;
+        angerPack(mob, blow.attacker);
+    }
+    // A hurt pet stands up (like the reference, decision E-480).
+    if (mob.isTame() && mob.tame->sitting) {
+        mob.tame->sitting = false;
+        mob.pose = QcPose::Standing;
     }
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
@@ -163,6 +169,21 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
     erase(it, Departure::Died);
     return drops;
+}
+
+void QcMobManager::angerPack(const QcCreature &mob, quint32 attacker)
+{
+    const double range = m_content->mobs()[mob.type].packRange;
+    if (range <= 0.0 || mob.isTame()) {
+        return;
+    }
+    // Its wild pack turns on the player as if each had been struck (QcNeutralBrain).
+    for (QcCreature &other : m_mobs) {
+        if (other.type == mob.type && other.id != mob.id && !other.dormant && !other.isTame()
+            && (other.motion.position - mob.motion.position).length() <= range) {
+            other.struckBy = attacker;
+        }
+    }
 }
 
 void QcMobManager::setHurtTicks(int ticks)
@@ -405,6 +426,9 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.carried = mob.carried;
     stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
     stored.confined = mob.confined;
+    if (mob.isTame()) {
+        stored.tame = QcTameState{.owner = mob.tame->owner, .sitting = mob.tame->sitting, .collar = mob.tame->collar};
+    }
     return stored;
 }
 
@@ -445,6 +469,10 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         }
         mob.layTimer = stored.layTimer;
         mob.confined = stored.confined;
+        if (stored.tame && !stored.tame->owner.isEmpty()) {
+            mob.tame.emplace(QcTameState{.owner = stored.tame->owner, .sitting = stored.tame->sitting, .collar = stored.tame->collar});
+            mob.pose = stored.tame->sitting ? QcPose::Sitting : QcPose::Standing;
+        }
         carryBlock(mob, stored.carried);
         mob.keptForBlock = stored.keptForBlock && mob.carried != qcAirBlockId;
         // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this

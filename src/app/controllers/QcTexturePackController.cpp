@@ -5,12 +5,12 @@
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/textures/QcGpuLimits.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/core/QcWorkerPool.h"
 
 #include <QDesktopServices>
 #include <QDir>
 #include <QLoggingCategory>
 #include <QUrl>
-#include <QtConcurrent/QtConcurrentRun>
 
 using namespace Qt::StringLiterals;
 
@@ -52,14 +52,11 @@ QcTexturePackController::QcTexturePackController(std::function<QString()> modsDi
     : QObject(parent)
     , m_modsDirectory(std::move(modsDirectory))
 {
-    connect(&m_atlasBuild, &QFutureWatcher<QcTextureStackBuild::Result>::finished, this, &QcTexturePackController::onBuilt);
 }
 
-QcTexturePackController::~QcTexturePackController()
-{
-    // The job only holds its own copies, but no thread may outlive the application.
-    m_atlasBuild.waitForFinished();
-}
+// m_atlasWorker is destroyed first (declared last): no thread outlives the application, and a
+// running build's last access to the mailbox and to this object happens before the join.
+QcTexturePackController::~QcTexturePackController() = default;
 
 void QcTexturePackController::overrideSelection(const QStringList &ids)
 {
@@ -180,20 +177,32 @@ QcTextureStackBuild::Request QcTexturePackController::request() const
 
 void QcTexturePackController::startBuild()
 {
-    if (m_atlasBuild.isRunning()) {
+    if (m_building) {
         m_buildAgain = true;
         emit statusChanged();
         return;
     }
 
     m_building = true;
-    m_atlasBuild.setFuture(QtConcurrent::run(&QcTextureStackBuild::run, request()));
+    if (!m_atlasWorker) {
+        m_atlasWorker = std::make_unique<QcWorkerPool>(1);
+    }
+    m_atlasWorker->submit([this, request = request()] {
+        if (m_builtResults.push(QcTextureStackBuild::run(request))) {
+            QMetaObject::invokeMethod(this, &QcTexturePackController::onBuilt, Qt::QueuedConnection);
+        }
+    });
     emit statusChanged();
 }
 
 void QcTexturePackController::onBuilt()
 {
-    const QcTextureStackBuild::Result result = m_atlasBuild.result();
+    // Only one build runs at a time, so the mailbox holds exactly its result.
+    std::vector<QcTextureStackBuild::Result> results = m_builtResults.takeAll();
+    if (results.empty()) {
+        return;
+    }
+    const QcTextureStackBuild::Result result = std::move(results.back());
     m_building = false;
     if (m_buildAgain) {
         m_buildAgain = false;

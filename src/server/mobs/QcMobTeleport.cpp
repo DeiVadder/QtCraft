@@ -22,18 +22,22 @@ bool teleport(QcCreature &mob, const QcMobDefinition &definition, const QcBlockA
     if (!target) {
         return false;
     }
+    land(mob, *target);
+    mob.teleportCooldown = int(std::lround(rules.cooldownSeconds / QcPhysics::tickDuration));
+    return true;
+}
 
+void land(QcCreature &mob, const QcVec3 &target)
+{
     // The first place of the tick is the one the clients last saw.
     if (!mob.teleportedFrom) {
         mob.teleportedFrom = mob.motion.position;
     }
-    mob.motion.position = *target;
+    mob.motion.position = target;
     mob.motion.velocity = {};
     mob.motion.onGround = true;
     mob.motion.inWater = false;
     mob.path.clear();
-    mob.teleportCooldown = int(std::lround(rules.cooldownSeconds / QcPhysics::tickDuration));
-    return true;
 }
 
 } // namespace QcMobTeleport

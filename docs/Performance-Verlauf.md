@@ -2137,3 +2137,21 @@ Release-Builds, `dev` `4063175` (52.6) gegen `feature/52-2-spiders` nach dem Zus
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, explore −5 bis 0 %, gravel-collapse und Felder ±0 %; Signal-Stationen +26 bis +33 % (0,046 → 0,058 ms) bei 36 statt 22 Wesen: Spinnenhöhle, Silberfisch-Wand und Hühnerstall der Showcase, etwa 0,9 µs je Wesen; Speicher +1 bis +2 %.
 
 **Fenster** (`@core horde`, 8 Chunks, 6 Runden): GPU −8 bis +2 %, Render-CPU −10 bis +2 %, GUI-CPU −4 bis +5 %, Speicher ±0 %; showcase 18 statt 16 Entities im Blick (neue Gehege) bei GPU −3 %. p99 bei beiden Ständen 15,8–16,8 ms (Desktop am Morgen belebt, verpasste VSyncs von außen wie früher). Keine Regression.
+
+## 52.5 (Zähmen: Wölfe, Hunde, Katzen, Ozelots) headless, Debug-relativ (2026-10-18)
+
+`test_pet_rules`, Fall `twentyDogsFollowAMovingPlayer` (E-480): ebene Arena, ein Spieler läuft ein Quadrat von 16 m mit 4 m/s ab, Ticks von Hand (400 Ticks je Teil), erst allein, dann mit 20 Hunden, die folgen (Wegsuche zum Besitzer, Teleport ab 12 m). Debug-Build, drei Läufe, andere Pakete bauten zeitweise.
+
+| Messung (Debug) | Tick Ø ms allein | Tick Ø ms mit 20 Hunden | je Hund und Tick µs |
+|---|---|---|---|
+| 3 Läufe | 0,145–0,148 | 0,486–0,493 | 17 |
+
+**Bewertung:** Ein folgender Hund kostet im Debug-Build etwa 17 µs je Tick, ein Drittel eines Endermans oder Skeletts (45–70 µs, 52.3); alle 20 bleiben in der Teleport-Entfernung. Kein Handlungsbedarf; die Release-Messung (`@server`) gehört zum Abschluss der Etappe.
+
+## 52.5 (Zähmen, mit dev zusammengeführt) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `3599eb9` (52.2) gegen `feature/52-5-taming` nach dem Zusammenführen, verschränkt, Mediane.
+
+**Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, gravel-collapse, Felder −2 bis +6 %; explore unverändert bei 65 statt 57 Wesen (Wölfe in Wäldern); Signal-Stationen +11 bis +18 % (0,063 → 0,071 ms) bei 45 statt 36 Wesen: Haustier-Ecke der Showcase, etwa 0,9 µs je Wesen; Speicher −1 bis +3 %.
+
+**Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −3 bis +2 %, Render-CPU −5 bis +5 %, GUI-CPU −1 bis +3 %, Bild Ø 8,38–8,49 ms, Speicher +0–2 %; p99 16,0–16,7 ms bei beiden Ständen (Desktop am Tag belebt), showcase 10,4 ms. Keine Regression.

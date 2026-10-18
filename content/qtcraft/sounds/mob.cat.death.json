@@ -1,0 +1,17 @@
+{
+    "name": "mob.cat.death",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.5,
+            "frequency": 700,
+            "endFrequency": 260,
+            "attack": 0.01,
+            "curve": 1.8,
+            "lowpass": 1600
+        }
+    ]
+}

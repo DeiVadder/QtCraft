@@ -367,6 +367,7 @@ QStringList QcContentRegistry::finish()
         warnings.append(resolveArcher(mob));
         warnings.append(QcMobTraitsContent::resolve(*this, mob));
     }
+    warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));

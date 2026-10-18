@@ -236,11 +236,20 @@ private:
             in >> mob.playerBuilt;
             return true;
         };
+        const auto tame = [&mob](QDataStream &in, quint16) {
+            QcTameState &state = mob.tame.emplace();
+            if (!QcComponentFrames::readText(in, state.owner, maxTypeName)) {
+                return false;
+            }
+            in >> state.sitting >> state.collar;
+            // A tame creature without an owner cannot be.
+            return !state.owner.isEmpty();
+        };
         if (!readComponents(mob.kept.components,
                             {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
                              known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
                              known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
-                             known(Component::Laying, layingVersion, laying)})) {
+                             known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame)})) {
             return false;
         }
         // A carried block the content no longer has is lost with a warning.
@@ -557,6 +566,10 @@ void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stor
     // Only a creature whose laying timer runs (a timer below 0 is chosen anew when it wakes).
     if (mob.layTimer >= 0.0) {
         components.add(quint16(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
+    }
+    if (mob.tame) {
+        const QcTameState &tame = *mob.tame;
+        components.add(quint16(Component::Tame), kindVersion, [&tame](QDataStream &out) { out << tame.owner << tame.sitting << tame.collar; });
     }
 }
 

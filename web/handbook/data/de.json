@@ -454,6 +454,7 @@
             "entries": [
                 "item:qtcraft:apple",
                 "item:qtcraft:bread",
+                "item:qtcraft:cooked_cod",
                 "item:qtcraft:cooked_mutton",
                 "item:qtcraft:cooked_chicken",
                 "item:qtcraft:cooked_porkchop",
@@ -463,6 +464,7 @@
                 "item:qtcraft:melon_slice",
                 "item:qtcraft:baked_potato",
                 "item:qtcraft:mushroom_stew",
+                "item:qtcraft:raw_cod",
                 "item:qtcraft:raw_mutton",
                 "item:qtcraft:raw_chicken",
                 "item:qtcraft:raw_porkchop",
@@ -481,12 +483,16 @@
                 "mob:qtcraft:firefly",
                 "mob:qtcraft:cave_spider",
                 "mob:qtcraft:chicken",
+                "mob:qtcraft:dog",
+                "mob:qtcraft:cat",
+                "mob:qtcraft:ocelot",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:silverfish",
                 "mob:qtcraft:skeleton",
                 "mob:qtcraft:spider",
+                "mob:qtcraft:wolf",
                 "mob:qtcraft:zombie"
             ],
             "id": "creatures",
@@ -745,6 +751,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -1139,6 +1151,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -1713,6 +1731,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ozelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1955,6 +1979,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -2121,6 +2151,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -17076,6 +17112,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Roher Kabeljau"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Gebratener Kabeljau"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:raw_mutton",
                                     "note": "",
                                     "target": "item:qtcraft:raw_mutton",
@@ -18399,6 +18468,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ozelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -18425,6 +18500,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -44777,6 +44858,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -53459,6 +53546,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Wölfe streifen im Rudel durch Wälder, Taiga und Tundra: Schlägst du einen, jagt dich jeder Wolf des Rudels in der Nähe. Füttere einen Wolf mit Knochen, um ihn zu zähmen; jeder Knochen wirkt mit einer Chance von eins zu drei, und der gezähmte Wolf wird dein Hund mit rotem Halsband. Katzen leben in Dörfern und werden ebenso mit rohem Kabeljau gezähmt. Ein Haustier gehört dir, nicht deiner Spielfigur einer Anmeldung: Es bleibt deins, wenn du gehst, und wartet stehend oder sitzend, bis du zurückkommst. Benutze dein Tier mit leerer Hand oder einem anderen Gegenstand, damit es sich setzt oder aufsteht. Ein Tier, das nicht sitzt, folgt dir, wenn du weggehst, und teleportiert sich neben dich, wenn du weiter als 12 m entfernt bist, aber nur auf sicheren Boden in geladenen Chunks. Ein Hund kämpft gegen das, was dich verletzt oder was du schlägst, nie gegen dich und nie gegen deine anderen Tiere. Fleisch heilt einen Hund, Fisch eine Katze; ein Farbstoff färbt das Halsband eines Hundes. Ozelots sind scheu und laufen vor jedem weg, der ihnen nahe kommt, außer du hältst rohen Kabeljau und schleichst dich langsam an.",
+                    "title": "Wölfe, Hunde und Katzen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.",
                     "title": "Obergrenzen"
                 },
@@ -53505,6 +53600,30 @@
                             "note": "",
                             "target": "mob:qtcraft:firefly",
                             "text": "Glühwürmchen"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:dog",
+                            "text": "Hund"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cat",
+                            "text": "Katze"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ozelot"
                         },
                         {
                             "icon": "",
@@ -59477,6 +59596,87 @@
             ],
             "text": "Im Ofen gebratenes Hühnchen; gutes Essen.",
             "title": "Gebratenes Hühnchen"
+        },
+        "item:qtcraft:cooked_cod": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Cooked cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cooked_cod"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "5 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:cooked_cod",
+            "id": "item:qtcraft:cooked_cod",
+            "name": "qtcraft:cooked_cod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Roher Kabeljau"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Gebratener Kabeljau"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Im Ofen hergestellt"
+                }
+            ],
+            "text": "Im Ofen gebratener Kabeljau; gutes Essen, und er heilt eine zahme Katze.",
+            "title": "Gebratener Kabeljau"
         },
         "item:qtcraft:cooked_mutton": {
             "category": "food",
@@ -68911,6 +69111,87 @@
             "text": "Fleisch eines Huhns; im Ofen gebraten besser.",
             "title": "Rohes Hühnchen"
         },
+        "item:qtcraft:raw_cod": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Raw cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_cod"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "2 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:raw_cod",
+            "id": "item:qtcraft:raw_cod",
+            "name": "qtcraft:raw_cod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Roher Kabeljau"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Gebratener Kabeljau"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Wird im Ofen zu"
+                }
+            ],
+            "text": "Ein Fisch; zähmt Katzen und lässt dich an Ozelots heran. Besser im Ofen gebraten.",
+            "title": "Roher Kabeljau"
+        },
         "item:qtcraft:raw_mutton": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -71115,6 +71396,12 @@
                         {
                             "icon": "",
                             "note": "50 %",
+                            "target": "mob:qtcraft:cat",
+                            "text": "Katze"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
                             "target": "mob:qtcraft:spider",
                             "text": "Spinne"
                         },
@@ -72997,6 +73284,144 @@
             "text": "Eine Gliederpuppe mit dem grünen Umhang. Sie geht langsam umher, damit der Umhang schwingt; sie erscheint nie von selbst, die Showcase-Welt hat eine am Charakter-Stand.",
             "title": "Gliederpuppe mit Umhang"
         },
+        "mob:qtcraft:cat": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Cat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cat"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "10 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 0,7 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,4 m/s beim Gehen, 4 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst, lebt aber in Dörfern (auch /summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:string",
+                            "note": "50 %",
+                            "target": "item:qtcraft:string",
+                            "text": "Faden"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Gezähmt mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Roher Kabeljau"
+                        }
+                    ],
+                    "value": "33,33 % je Stück"
+                },
+                {
+                    "label": "Als Haustier",
+                    "links": [
+                    ],
+                    "value": "folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, und teleportiert sich aus der Ferne zum Besitzer"
+                },
+                {
+                    "label": "Geheilt durch",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Roher Kabeljau"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_cod",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_cod",
+                            "text": "Gebratener Kabeljau"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:string",
+            "id": "mob:qtcraft:cat",
+            "name": "qtcraft:cat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Ebene"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Sumpf"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Wüste"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Und in Dörfern von Biomen ohne eigenen Dorfstil.",
+                    "title": "Lebt in Dörfern von"
+                }
+            ],
+            "text": "Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: Jeder Fisch zähmt sie mit einer Chance von eins zu drei. Eine zahme Katze folgt dir, setzt sich, wenn du sie benutzt, und teleportiert sich wie ein Hund zu dir, kämpft aber nicht. Wesen, die Angst vor Katzen haben, halten Abstand.",
+            "title": "Katze"
+        },
         "mob:qtcraft:cave_spider": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -73300,6 +73725,130 @@
             ],
             "text": "Ein kleiner Vogel der Wiesen. Statt zu fallen, flattert es sanft hinab, und alle fünf bis zehn Minuten legt es ein Ei. Samen jeder Art machen es verliebt. Lässt Federn und rohes Hühnchen fallen.",
             "title": "Huhn"
+        },
+        "mob:qtcraft:dog": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Dog",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:dog"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "20 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 0,85 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,6 m/s beim Gehen, 4,5 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Gezähmt mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Knochen"
+                        }
+                    ],
+                    "value": "100 % je Stück"
+                },
+                {
+                    "label": "Als Haustier",
+                    "links": [
+                    ],
+                    "value": "folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, teleportiert sich aus der Ferne zum Besitzer und kämpft gegen das, was den Besitzer verletzt oder was er schlägt"
+                },
+                {
+                    "label": "Geheilt durch",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_porkchop",
+                            "note": "",
+                            "target": "item:qtcraft:raw_porkchop",
+                            "text": "Rohes Schweinefleisch"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_porkchop",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_porkchop",
+                            "text": "Gebratenes Schweinefleisch"
+                        },
+                        {
+                            "icon": "qtcraft:raw_mutton",
+                            "note": "",
+                            "target": "item:qtcraft:raw_mutton",
+                            "text": "Rohes Hammelfleisch"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_mutton",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_mutton",
+                            "text": "Gebratenes Hammelfleisch"
+                        },
+                        {
+                            "icon": "qtcraft:rotten_flesh",
+                            "note": "",
+                            "target": "item:qtcraft:rotten_flesh",
+                            "text": "Verrottetes Fleisch"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Halsband",
+                    "links": [
+                        {
+                            "icon": "qtcraft:red_dye",
+                            "note": "",
+                            "target": "item:qtcraft:red_dye",
+                            "text": "Roter Farbstoff"
+                        }
+                    ],
+                    "value": "zuerst in der Farbe dieses Farbstoffs; ein Farbstoff, den der Besitzer darauf benutzt, färbt es"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:dog",
+            "name": "qtcraft:dog",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Ein gezähmter Wolf mit rotem Halsband. Er gehört dir, auch wenn du nicht im Spiel bist: Er folgt dir, teleportiert sich zu dir, wenn du weit weg bist (nur an einen sicheren Ort in geladenen Chunks), und kämpft gegen das, was dich verletzt oder was du schlägst, nie gegen dich oder deine anderen Tiere. Benutze ihn, damit er sich setzt oder aufsteht; Fleisch heilt ihn, ein Farbstoff färbt sein Halsband.",
+            "title": "Hund"
         },
         "mob:qtcraft:enderman": {
             "category": "creatures",
@@ -73733,6 +74282,146 @@
             "text": "Eine Figur mit dem Charaktermodell, die langsam umhergeht. Sie erscheint nie von selbst; die Showcase-Welt hat einige, /summon erzeugt weitere.",
             "title": "Gliederpuppe"
         },
+        "mob:qtcraft:ocelot": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Ocelot",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:ocelot"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "10 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 0,7 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,6 m/s beim Gehen, 5 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "bei Tag"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 2"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "0,6"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Vermehrt sich mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Roher Kabeljau"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Nachwuchs",
+                    "links": [
+                    ],
+                    "value": "wieder nach 5 min, Junge wachsen in 20 min heran"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Scheu",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Roher Kabeljau"
+                        }
+                    ],
+                    "value": "läuft vor Spielern weg, die näher als 8 m kommen, außer sie halten dies und bewegen sich langsam"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:ocelot",
+            "name": "qtcraft:ocelot",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Sumpf"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe). Sie läuft vor jedem weg, der ihr nahe kommt, außer du hältst rohen Kabeljau und schleichst dich langsam an. Sie lässt sich nicht zähmen; zwei mit rohem Kabeljau gefütterte bekommen ein Junges.",
+            "title": "Ozelot"
+        },
         "mob:qtcraft:pig": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -73862,6 +74551,38 @@
                     ],
                     "text": "Alle Biome.",
                     "title": "Erscheint in Biomen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Ebene"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Wüste"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Und in Dörfern von Biomen ohne eigenen Dorfstil.",
+                    "title": "Lebt in Dörfern von"
                 }
             ],
             "text": "Friedliches Tier des Graslands; lässt Schweinefleisch fallen.",
@@ -74652,6 +75373,188 @@
             ],
             "text": "Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm seinen Beruf gibt. Tagsüber arbeitet er, trifft die anderen an der Glocke, geht abends nach Hause und schläft nachts in seinem Bett. Er öffnet Holztüren und schließt sie hinter sich, flieht vor Monstern nach Hause und kämpft nie.",
             "title": "Dorfbewohner"
+        },
+        "mob:qtcraft:wolf": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Wolf",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:wolf"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "neutral: lässt Spieler in Ruhe, bis einer es verletzt, dann verfolgt und greift es ihn an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "8 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 0,85 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,6 m/s beim Gehen, 4 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "bei Tag"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 4"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Gezähmt mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Knochen"
+                        }
+                    ],
+                    "value": "33,33 % je Stück"
+                },
+                {
+                    "label": "Wird zu",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:dog",
+                            "text": "Hund"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Als Haustier",
+                    "links": [
+                    ],
+                    "value": "folgt seinem Besitzer, setzt sich, wenn der Besitzer es benutzt, teleportiert sich aus der Ferne zum Besitzer und kämpft gegen das, was den Besitzer verletzt oder was er schlägt"
+                },
+                {
+                    "label": "Halsband",
+                    "links": [
+                        {
+                            "icon": "qtcraft:red_dye",
+                            "note": "",
+                            "target": "item:qtcraft:red_dye",
+                            "text": "Roter Farbstoff"
+                        }
+                    ],
+                    "value": "zuerst in der Farbe dieses Farbstoffs; ein Farbstoff, den der Besitzer darauf benutzt, färbt es"
+                },
+                {
+                    "label": "Rudel",
+                    "links": [
+                    ],
+                    "value": "schlägst du einen, jagen dich auch die anderen im Umkreis von 16 m"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:wolf",
+            "name": "qtcraft:wolf",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:birch_forest",
+                            "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest",
+                            "text": "Wald"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein grauer Jäger der Wälder, der Taiga und der Tundra, der im Rudel lebt. Er lässt dich in Ruhe, bis du einen schlägst; dann jagt dich das ganze Rudel in der Nähe. Füttere ihn mit Knochen: Jeder Knochen zähmt ihn mit einer Chance von eins zu drei, und er wird dein Hund.",
+            "title": "Wolf"
         },
         "mob:qtcraft:zombie": {
             "category": "creatures",
@@ -76316,6 +77219,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:fired_lamp_shell",
                                 "text": "Gebranntes Lampengehäuse"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Roher Kabeljau"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Gebratener Kabeljau"
                             },
                             "seconds": 10,
                             "shapeless": false,

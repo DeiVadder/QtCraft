@@ -8,9 +8,9 @@
 #include "clientcore/textures/QcGpuLimits.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcWorkerPool.h"
 
 #include <QLoggingCategory>
-#include <QtConcurrent/QtConcurrentRun>
 
 using namespace Qt::StringLiterals;
 
@@ -28,15 +28,11 @@ QcPreviewSource::QcPreviewSource(const QcSessionParts &parts, const QcWorldLibra
     , m_character(character)
     , m_texturePacks(texturePacks)
 {
-    connect(&m_atlasBuild, &AtlasWatcher::finished, this, &QcPreviewSource::onMenuAtlasBuilt);
 }
 
-// A menu atlas still being built in the thread pool writes its result into the future; the watcher
-// waits for it so that the result is not freed while the worker still stores it.
-QcPreviewSource::~QcPreviewSource()
-{
-    m_atlasBuild.waitForFinished();
-}
+// m_atlasWorker is destroyed first (declared last): it joins a running build, whose last access to
+// the mailbox and to this object (posting the queued call) happens before the join.
+QcPreviewSource::~QcPreviewSource() = default;
 
 void QcPreviewSource::useWorld(std::shared_ptr<const QcContentRegistry> content, std::shared_ptr<const QcTextureAtlas> atlas)
 {
@@ -78,20 +74,37 @@ void QcPreviewSource::ensureMenuAtlas()
     m_atlasTimer.start();
     QcTextureAtlas::Options options;
     options.maxExtent = QcGpuLimits::maxTextureSize();
-    m_atlasBuild.setFuture(QtConcurrent::run([content = m_pendingContent, packs = m_texturePacks.stack(), options] {
-        return std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*content, packs, options));
-    }));
+    if (!m_atlasWorker) {
+        m_atlasWorker = std::make_unique<QcWorkerPool>(1);
+    }
+    // A build for older content that has not started yet is not needed any more.
+    m_atlasWorker->discardQueued();
+    const quint64 build = ++m_atlasBuild;
+    m_atlasWorker->submit([this, build, content = m_pendingContent, packs = m_texturePacks.stack(), options] {
+        auto atlas = std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*content, packs, options));
+        if (m_builtAtlases.push({build, std::move(atlas)})) {
+            QMetaObject::invokeMethod(this, &QcPreviewSource::onMenuAtlasBuilt, Qt::QueuedConnection);
+        }
+    });
 }
 
 void QcPreviewSource::onMenuAtlasBuilt()
 {
-    // Built for content that is no longer shown (a world started, mods switched): dropped.
-    if (m_inWorld || !m_pendingContent || m_menuGeneration != m_library.contentGeneration()) {
+    std::shared_ptr<const QcTextureAtlas> latest;
+    for (BuiltAtlas &built : m_builtAtlases.takeAll()) {
+        if (built.build == m_atlasBuild) {
+            latest = std::move(built.atlas);
+        }
+    }
+
+    // Built for content that is no longer shown (a world started, mods switched, a newer build
+    // started): dropped.
+    if (!latest || m_inWorld || !m_pendingContent || m_menuGeneration != m_library.contentGeneration()) {
         return;
     }
 
     m_content = std::exchange(m_pendingContent, nullptr);
-    m_atlas = m_atlasBuild.result();
+    m_atlas = std::move(latest);
     ++m_version;
     qCInfo(lcPreview) << "Character preview: menu atlas ready" << m_atlasTimer.elapsed() << "ms after the request (built in the background)";
 }

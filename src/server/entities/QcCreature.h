@@ -10,6 +10,7 @@
 #include "server/entities/QcHurtWindow.h"
 #include "server/golems/QcGolemState.h"
 #include "server/mobs/QcArcherState.h"
+#include "server/mobs/QcTameState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
 
@@ -112,6 +113,9 @@ struct QcCreature : QcEntity
     // next thinks, a creature neutral by day before it thinks (QcMobSteering::provoke); both clear
     // it (other brains leave it). Not saved.
     quint32 struckBy = 0;
+    // Owner, sitting and collar of a creature of a tameable kind (QcMobDefinition::tameable, decision
+    // E-480): a component only tamed creatures have. Saved with it.
+    QcComponent<QcTameState> tame;
     // Whether a player built it, its prey and its anger (QcMobDefinition::Ai::Golem, decision E-471):
     // a component only creatures with the golem AI have.
     QcComponent<QcGolemState> golem;
@@ -123,4 +127,8 @@ struct QcCreature : QcEntity
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give
     // it to every creature of a villager kind).
     bool isVillager() const { return villager.has(); }
+    // Whether a player tamed it (it has an owner).
+    bool isTame() const { return tame.has() && !tame->owner.isEmpty(); }
+    // Whether it sits for its owner.
+    bool sits() const { return isTame() && tame->sitting; }
 };

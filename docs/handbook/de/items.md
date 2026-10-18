@@ -249,7 +249,7 @@ Faden aus einem Spinnennetz; vier ergeben weiße Wolle.
 
 **Droppt aus**
 
-[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Spinne](creatures.md#mob-qtcraft-spider) (50 %), [Spinnennetz](blocks.md#block-qtcraft-cobweb)
+[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Katze](creatures.md#mob-qtcraft-cat) (50 %), [Spinne](creatures.md#mob-qtcraft-spider) (50 %), [Spinnennetz](blocks.md#block-qtcraft-cobweb)
 
 ### <a id="item-qtcraft-feather"></a>Feder
 

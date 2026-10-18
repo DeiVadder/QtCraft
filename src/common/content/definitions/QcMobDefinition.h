@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/content/definitions/QcAppearanceDefinition.h"
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/definitions/QcMobTraits.h"
@@ -19,6 +20,12 @@ struct QcMobPart
     QcVec3 from;
     QcVec3 to;
     QString texture;
+    // Tinted with a colour of the creature (QcTint::Collar: the collar of a tame one, decision E-480);
+    // None for the texture as it is.
+    QcTint tint = QcTint::None;
+    // Where the box moves while the creature sits (QcPose::Sitting): a sitting dog lowers its back
+    // and folds its hind legs.
+    QcVec3 sitOffset = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 // How a creature finds its way (decision E-423), from its data (`abilities`); the path rules
@@ -131,6 +138,18 @@ struct QcMobDefinition
     // Damage it takes every QcBodyBurning::wetIntervalTicks in water or rain (decision E-460); 0 for
     // none. Server side only.
     double waterDamage = 0.0;
+    // Players tame it (decision E-480).
+    std::optional<QcTameDefinition> tameable;
+    // It flees from players who come close (decision E-480).
+    std::optional<QcShyDefinition> shy;
+    // A neutral creature struck by a player angers the creatures of its kind within this many metres
+    // at that player (a wolf pack, decision E-480); 0 for none. Server side only.
+    double packRange = 0.0;
+    // Creatures with `scaredOfCats` flee from creatures that `frighten` (cats, decision E-480). No
+    // creature of the base game is scared of cats yet (the reference's creeper is missing). Server side
+    // only.
+    bool frightens = false;
+    bool scaredOfCats = false;
     // Catches fire in direct sunlight (decision E-426): by day, with the open sky above its head,
     // neither in water nor in the rain. Server side only.
     bool burnsInDaylight = false;

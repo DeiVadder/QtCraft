@@ -1,0 +1,8 @@
+{
+    "name": "cat_head",
+    "pattern": "speckle",
+    "primary": "#e09848",
+    "secondary": "#7a4820",
+    "variation": 0.12,
+    "seed": 5207
+}

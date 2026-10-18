@@ -1,6 +1,7 @@
 #include "common/content/parser/QcMobTraitsParser.h"
 
 #include "common/content/parser/QcContentFields.h"
+#include "common/content/registry/QcContentNames.h"
 
 using namespace Qt::StringLiterals;
 
@@ -35,6 +36,78 @@ void parseCarry(QcCarryDefinition &carry, QcJsonFieldReader &reader, const QStri
     }
 }
 
+// "collar": {"default": dye, "dyes": {dye: "#rrggbb", ...}}.
+void parseCollar(QcTameDefinition &tame, const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    const QJsonObject dyes = json.value(u"dyes"_s).toObject();
+    if (dyes.isEmpty() || dyes.size() > QcTameDefinition::maxItems) {
+        reader.fail(u"'dyes' maps 1 to %1 dyes to colours"_s.arg(QcTameDefinition::maxItems));
+        return;
+    }
+    for (auto it = dyes.begin(); it != dyes.end(); ++it) {
+        const QString text = it.value().toString();
+        bool ok = text.size() == 7 && text.startsWith(u'#');
+        const quint32 rgb = ok ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
+        if (!ok) {
+            reader.fail(u"the colour of dye '%1' must be \"#rrggbb\""_s.arg(it.key()));
+            return;
+        }
+        tame.collarDyes.append(QcContentNames::qualify(it.key(), packNamespace));
+        tame.collarColors.append(rgb);
+    }
+    tame.collarDefault = reader.name(u"default"_s, packNamespace);
+    if (!tame.collarDyes.contains(tame.collarDefault)) {
+        reader.fail(u"'default' must be one of the 'dyes'"_s);
+    }
+}
+
+void parseTame(QcTameDefinition &tame, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    tame.items = QcContentFields::parseNames(u"items"_s, packNamespace, reader);
+    tame.chance = reader.number(u"chance"_s, tame.chance, 0.0, 1.0);
+    tame.becomes = reader.name(u"becomes"_s, packNamespace);
+    tame.healItems = QcContentFields::parseNames(u"healItems"_s, packNamespace, reader);
+    tame.healAmount = reader.number(u"healAmount"_s, tame.healAmount, 0.0, 1000.0);
+    tame.followDistance = reader.number(u"followDistance"_s, tame.followDistance, 1.0, 32.0);
+    tame.stopDistance = reader.number(u"stopDistance"_s, tame.stopDistance, 0.5, 16.0);
+    tame.teleportDistance = reader.number(u"teleportDistance"_s, tame.teleportDistance, 4.0, 64.0);
+    tame.defends = reader.boolean(u"defends"_s, tame.defends);
+    reader.nestedObject(u"collar"_s, [&tame, &packNamespace](const QJsonObject &json, QcJsonFieldReader &nested) {
+        parseCollar(tame, json, nested, packNamespace);
+    });
+    if (reader.ok() && (tame.stopDistance >= tame.followDistance || tame.followDistance >= tame.teleportDistance)) {
+        reader.fail(u"'stopDistance' < 'followDistance' < 'teleportDistance'"_s);
+    }
+}
+
+void parseShy(QcShyDefinition &shy, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    shy.distance = reader.number(u"distance"_s, shy.distance, 1.0, 32.0);
+    shy.calmItems = QcContentFields::parseNames(u"calmItems"_s, packNamespace, reader);
+    shy.calmSpeed = reader.number(u"calmSpeed"_s, shy.calmSpeed, 0.0, 10.0);
+}
+
+// Taming, shyness, packs and cats (decision E-480).
+void parseCompanions(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"tameable"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseTame(mob.tameable.emplace(), nested, packNamespace);
+    });
+    reader.nestedObject(u"shy"_s,
+                        [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) { parseShy(mob.shy.emplace(), nested, packNamespace); });
+    mob.packRange = reader.number(u"packRange"_s, 0.0, 0.0, 64.0);
+    mob.frightens = reader.boolean(u"frightens"_s, false);
+    mob.scaredOfCats = reader.boolean(u"scaredOfCats"_s, false);
+
+    if (reader.ok() && mob.packRange > 0.0 && mob.ai != QcMobDefinition::Ai::Neutral) {
+        reader.fail(u"'packRange' goes with the neutral AI"_s);
+    }
+    const bool walks = mob.ai == QcMobDefinition::Ai::Passive || mob.ai == QcMobDefinition::Ai::Neutral;
+    if (reader.ok() && (mob.tameable || mob.shy) && (!walks || mob.flying || mob.hostile)) {
+        reader.fail(u"'tameable' and 'shy' go with the passive or neutral AI of a creature that walks and is not hostile"_s);
+    }
+}
+
 } // namespace
 
 namespace QcMobTraitsParser {
@@ -48,6 +121,7 @@ void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReade
         parseCarry(mob.carries.emplace(), nested, packNamespace);
     });
     mob.waterDamage = reader.number(u"waterDamage"_s, 0.0, 0.0, 100.0);
+    parseCompanions(mob, reader, packNamespace);
 
     // Being provoked by a look and carrying blocks are what the neutral AI does.
     if (reader.ok() && (json.contains(u"gaze"_s) || json.contains(u"carries"_s)) && mob.ai != QcMobDefinition::Ai::Neutral) {

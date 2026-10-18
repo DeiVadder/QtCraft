@@ -7,7 +7,10 @@
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerEffects.h"
 #include "server/mobs/QcMobCramming.h"
+#include "server/mobs/QcPetOwners.h"
 #include "server/projectiles/QcProjectileFlight.h"
+
+#include <cmath>
 
 QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks)
     : m_state(state)
@@ -19,21 +22,38 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
 {
 }
 
-void QcServerCreatures::tick()
+QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
 {
-    const double dt = QcPhysics::tickDuration;
+    // Only fresh foes count: a pet takes up what its owner fought in the last few seconds.
+    const quint64 now = m_state.clock().tick();
+    const auto fresh = [now](quint32 foe, quint64 tick) { return now - tick <= foeTicks ? foe : 0; };
     QList<QcMobManager::PlayerView> players;
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing) {
+            const QcItemStack &held = client->inventory.slot(client->inventory.selectedHotbarSlot());
+            const QcVec3 velocity = client->motion.velocity;
             players.append({.entityId = client->id,
                             .position = client->motion.position,
                             .alive = !client->dead,
                             .targetable = !client->rules().invulnerable,
                             .look = QcProjectileFlight::direction(client->yaw, client->pitch),
-                            .name = client->name});
+                            .name = client->name,
+                            .identity = QcPetOwners::keyOf(*client),
+                            .hurtBy = fresh(client->foes.hurtBy, client->foes.hurtTick),
+                            .struck = fresh(client->foes.struck, client->foes.struckTick),
+                            .held = held.isEmpty() ? qcNoItem : held.item,
+                            .speed = std::hypot(velocity.x, velocity.z),
+                            .hurtTick = client->foes.hurtTick,
+                            .struckTick = client->foes.struckTick});
         }
     }
+    return players;
+}
 
+void QcServerCreatures::tick()
+{
+    const double dt = QcPhysics::tickDuration;
+    const QList<QcMobManager::PlayerView> players = playerViews();
     m_state.entities().creatures().setGriefing(m_state.info().mobGriefing);
     // Before the creatures move, which forgets who was hurt.
     m_infestation.tick();
@@ -51,8 +71,14 @@ void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hi
 {
     for (const QcMobManager::PlayerHit &hit : hits) {
         for (const auto &client : m_state.clients()) {
-            if (client->id == hit.playerEntityId) {
-                strike(*client, hit);
+            if (client->id != hit.playerEntityId) {
+                continue;
+            }
+            strike(*client, hit);
+            // The player's pets turn on the creature (decision E-480).
+            if (hit.mob != 0) {
+                client->foes.hurtBy = hit.mob;
+                client->foes.hurtTick = m_state.clock().tick();
             }
         }
     }

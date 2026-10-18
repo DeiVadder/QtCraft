@@ -1,0 +1,27 @@
+{
+    "name": "mob.wolf.ambient",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.12,
+            "frequency": 420,
+            "endFrequency": 300,
+            "attack": 0.01,
+            "curve": 1.8,
+            "lowpass": 1600
+        },
+        {
+            "wave": "square",
+            "duration": 0.1,
+            "frequency": 400,
+            "endFrequency": 280,
+            "start": 0.2,
+            "attack": 0.01,
+            "curve": 1.8,
+            "lowpass": 1400
+        }
+    ]
+}

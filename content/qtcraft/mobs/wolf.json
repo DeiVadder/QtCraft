@@ -1,0 +1,191 @@
+{
+    "name": "wolf",
+    "sounds": {
+        "ambient": "mob.wolf.ambient",
+        "hurt": "mob.wolf.hurt",
+        "death": "mob.wolf.death"
+    },
+    "health": 8,
+    "width": 0.6,
+    "height": 0.85,
+    "walkSpeed": 1.6,
+    "chaseSpeed": 4.0,
+    "hostile": false,
+    "ai": "neutral",
+    "attackDamage": 4,
+    "attackRange": 1.4,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "packRange": 16,
+    "tameable": {
+        "items": [
+            "bone"
+        ],
+        "chance": 0.3333,
+        "becomes": "dog"
+    },
+    "spawn": {
+        "time": "day",
+        "blocks": [
+            "grass_block",
+            "snow_block"
+        ],
+        "biomes": [
+            "forest",
+            "birch_forest",
+            "taiga",
+            "tundra"
+        ],
+        "maxGroup": 4,
+        "weight": 1
+    },
+    "model": [
+        {
+            "from": [
+                -0.22,
+                0.4,
+                -0.45
+            ],
+            "to": [
+                0.22,
+                0.75,
+                -0.05
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.2,
+                0.42,
+                -0.05
+            ],
+            "to": [
+                0.2,
+                0.72,
+                0.35
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.18,
+                0.5,
+                -0.75
+            ],
+            "to": [
+                0.18,
+                0.85,
+                -0.45
+            ],
+            "texture": "wolf_head"
+        },
+        {
+            "from": [
+                -0.08,
+                0.52,
+                -0.88
+            ],
+            "to": [
+                0.08,
+                0.64,
+                -0.75
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.16,
+                0.85,
+                -0.62
+            ],
+            "to": [
+                -0.06,
+                0.97,
+                -0.54
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                0.06,
+                0.85,
+                -0.62
+            ],
+            "to": [
+                0.16,
+                0.97,
+                -0.54
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.18,
+                0.0,
+                -0.4
+            ],
+            "to": [
+                -0.07,
+                0.4,
+                -0.29
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                0.07,
+                0.0,
+                -0.4
+            ],
+            "to": [
+                0.18,
+                0.4,
+                -0.29
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.17,
+                0.0,
+                0.2
+            ],
+            "to": [
+                -0.07,
+                0.42,
+                0.3
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                0.07,
+                0.0,
+                0.2
+            ],
+            "to": [
+                0.17,
+                0.42,
+                0.3
+            ],
+            "texture": "wolf_fur"
+        },
+        {
+            "from": [
+                -0.05,
+                0.5,
+                0.35
+            ],
+            "to": [
+                0.05,
+                0.62,
+                0.68
+            ],
+            "texture": "wolf_fur"
+        }
+    ],
+    "experience": [
+        1,
+        3
+    ]
+}

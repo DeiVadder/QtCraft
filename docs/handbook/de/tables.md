@@ -90,6 +90,14 @@ Alles, was Maschinen herstellen, mit der Zeit pro Stück.
 
 | 1 | → |
 |---|---|
+| [Roher Kabeljau](food.md#item-qtcraft-raw_cod) | [Gebratener Kabeljau](food.md#item-qtcraft-cooked_cod) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)

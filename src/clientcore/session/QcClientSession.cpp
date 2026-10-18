@@ -48,6 +48,15 @@ bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &enti
     return creature && (item.food > 0 || item.armour || creature->catchWith == item.name || creature->breeding.food.contains(item.name));
 }
 
+// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, a
+// villager (its trading screen, decision E-414) and a tameable creature (taming, sitting, healing,
+// its collar; decision E-480), the last two not while sneaking.
+bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entity, bool sneaking)
+{
+    const QcMobDefinition *creature = entity.creature(content);
+    return entity.isArmourStand() || entity.isMinecart() || (creature && (creature->villager || creature->tameable) && !sneaking);
+}
+
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
 
 // Unacknowledged inputs beyond this are dropped; the server would reject them anyway.
@@ -696,9 +705,7 @@ bool QcClientSession::useItem()
     // An armour stand takes or gives armour and items, also with an empty hand; a minecart takes the
     // player in or opens its screen; a villager opens its trading screen (decision E-414).
     const QcClientEntity targeted = m_targetEntity ? m_entities.all().value(*m_targetEntity) : QcClientEntity();
-    const QcMobDefinition *targetedCreature = m_targetEntity ? targeted.creature(*m_content) : nullptr;
-    const bool trades = targetedCreature && targetedCreature->villager && !m_intent.sneak;
-    if (m_targetEntity && (targeted.isArmourStand() || targeted.isMinecart() || trades)) {
+    if (m_targetEntity && takesEveryUse(*m_content, targeted, m_intent.sneak)) {
         m_machine.usedBlock();
         m_trading.usedEntity();
         m_connection->send(QcMsg::UseEntity{*m_targetEntity});

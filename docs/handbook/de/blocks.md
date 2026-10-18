@@ -2291,7 +2291,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Wesen, die darauf erscheinen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
@@ -4086,6 +4086,14 @@ Schmilzt Erze, Sand, Ton und Essen, solange Brennstoff brennt: oben das Material
 
 | 1 | → |
 |---|---|
+| [Roher Kabeljau](food.md#item-qtcraft-raw_cod) | [Gebratener Kabeljau](food.md#item-qtcraft-cooked_cod) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton) |
 
 [Ofen](#block-qtcraft-furnace)
@@ -4963,7 +4971,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Wesen, die darauf erscheinen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Schneeschicht
 

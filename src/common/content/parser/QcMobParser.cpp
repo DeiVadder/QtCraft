@@ -40,6 +40,27 @@ QList<QcModelBox> parseBoxes(const QJsonValue &value, int limit, QcJsonFieldRead
     return boxes;
 }
 
+// The tint and the sitting offset of a model part (decision E-480): "tint" none or collar,
+// "sitOffset" three numbers within 1 m.
+[[nodiscard]] std::optional<QcMobPart> partLook(QcMobPart part, const QJsonObject &json, QcJsonFieldReader &reader)
+{
+    const QString tint = json.value(u"tint"_s).toString(u"none"_s);
+    if (tint != u"none"_s && tint != u"collar"_s) {
+        reader.fail(u"a model part's 'tint' must be none or collar"_s);
+        return std::nullopt;
+    }
+    part.tint = tint == u"collar"_s ? QcTint::Collar : QcTint::None;
+    if (json.contains(u"sitOffset"_s)) {
+        const std::optional<QcVec3> offset = QcContentFields::vectorField(json.value(u"sitOffset"_s));
+        if (!offset || offset->length() > 1.0) {
+            reader.fail(u"a model part's 'sitOffset' must be three numbers within 1 m"_s);
+            return std::nullopt;
+        }
+        part.sitOffset = *offset;
+    }
+    return part;
+}
+
 [[nodiscard]] std::optional<QcTint> tintFromName(const QString &name)
 {
     static const QHash<QString, QcTint> tints = {
@@ -407,7 +428,11 @@ void parseMobModel(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldRea
             reader.fail(u"model parts need 'from' < 'to' (three numbers within 8 m) and a 'texture'"_s);
             break;
         }
-        mob.parts.append({*from, *to, texture});
+        const std::optional<QcMobPart> part = partLook({*from, *to, texture}, partJson, reader);
+        if (!part) {
+            break;
+        }
+        mob.parts.append(*part);
     }
 
     if (mob.parts.isEmpty() && mob.skeleton.isEmpty()) {

@@ -122,6 +122,14 @@ Everything machines make, with the time per item.
 
 | 1 | → |
 |---|---|
+| [Raw cod](food.md#item-qtcraft-raw_cod) | [Cooked cod](food.md#item-qtcraft-cooked_cod) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Raw mutton](food.md#item-qtcraft-raw_mutton) | [Cooked mutton](food.md#item-qtcraft-cooked_mutton) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)

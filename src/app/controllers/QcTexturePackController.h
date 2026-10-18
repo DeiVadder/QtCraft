@@ -2,8 +2,8 @@
 
 #include "clientcore/texturepacks/QcTexturePackLibrary.h"
 #include "clientcore/texturepacks/QcTextureStackBuild.h"
+#include "common/core/QcMailbox.h"
 
-#include <QFutureWatcher>
 #include <QObject>
 #include <QVariantList>
 #include <QtQmlIntegration/qqmlintegration.h>
@@ -14,6 +14,7 @@
 class QcContentRegistry;
 class QcTextureAtlas;
 class QcTexturePackPreviewProvider;
+class QcWorkerPool;
 
 // The texture packs of the settings (GameController.settings.texturePacks, decisions E-297 and
 // E-301): which packs exist, which are active in which order, their problems, previews and the
@@ -111,13 +112,19 @@ private:
     QHash<QString, QcTextureStackBuild::Preview> m_previews;
     QcTexturePackStack m_stack;
     std::shared_ptr<const QcContentRegistry> m_content;
-    QFutureWatcher<QcTextureStackBuild::Result> m_atlasBuild;
+    // The finished build; the worker hands it over under a std::mutex and only wakes this object
+    // with a queued call (ThreadSanitizer cannot see the synchronisation inside QtCore, E-297).
+    QcMailbox<QcTextureStackBuild::Result> m_builtResults;
     quint64 m_generation = 1;
     // A change arrived while a build was running: build again when it ends.
     bool m_buildAgain = false;
+    // A build runs on the worker; its result has not been taken yet.
     bool m_building = false;
     QString m_status;
     QStringList m_notices;
     QStringList m_selectionNotices;
     int m_previewGeneration = 0;
+    // One worker thread, started with the first background build. Declared last: destroyed first,
+    // it joins a running build before the mailbox and this object go away.
+    std::unique_ptr<QcWorkerPool> m_atlasWorker;
 };

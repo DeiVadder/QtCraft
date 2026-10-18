@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratener Kabeljau](#item-qtcraft-cooked_cod) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Roher Kabeljau](#item-qtcraft-raw_cod) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -37,6 +37,28 @@ Aus drei Weizen gebacken; eine gute Mahlzeit.
 | 1 | 2 | 3 | → |
 |---|---|---|---|
 | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Brot](#item-qtcraft-bread) |
+
+### <a id="item-qtcraft-cooked_cod"></a>Gebratener Kabeljau
+
+Im Ofen gebratener Kabeljau; gutes Essen, und er heilt eine zahme Katze.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_cod` |
+| Stapelgröße | 64 |
+| Nahrung | 5 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roher Kabeljau](#item-qtcraft-raw_cod) | [Gebratener Kabeljau](#item-qtcraft-cooked_cod) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-cooked_mutton"></a>Gebratenes Hammelfleisch
 
@@ -224,6 +246,28 @@ Eine sättigende Suppe aus beiden Pilzen; die Schüssel bleibt.
 |---|---|---|
 | [Brauner Pilz](blocks.md#block-qtcraft-brown_mushroom) | [Roter Pilz](blocks.md#block-qtcraft-red_mushroom) | [Pilzsuppe](#item-qtcraft-mushroom_stew) |
 | [Schüssel](items.md#item-qtcraft-bowl) | · |  |
+
+### <a id="item-qtcraft-raw_cod"></a>Roher Kabeljau
+
+Ein Fisch; zähmt Katzen und lässt dich an Ozelots heran. Besser im Ofen gebraten.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_cod` |
+| Stapelgröße | 64 |
+| Nahrung | 2 Nahrungspunkte |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roher Kabeljau](#item-qtcraft-raw_cod) | [Gebratener Kabeljau](#item-qtcraft-cooked_cod) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-raw_mutton"></a>Rohes Hammelfleisch
 

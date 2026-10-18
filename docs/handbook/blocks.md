@@ -2097,6 +2097,14 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
+| [Raw cod](food.md#item-qtcraft-raw_cod) | [Cooked cod](food.md#item-qtcraft-cooked_cod) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Raw mutton](food.md#item-qtcraft-raw_mutton) | [Cooked mutton](food.md#item-qtcraft-cooked_mutton) |
 
 [Furnace](#block-qtcraft-furnace)
@@ -2311,7 +2319,7 @@ Earth covered with grass, the surface of most land.
 
 **Creatures appearing on it**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
@@ -5720,7 +5728,7 @@ Packed snow of cold mountains and tundra.
 
 **Creatures appearing on it**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Snow layer
 

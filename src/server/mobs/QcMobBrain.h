@@ -33,7 +33,8 @@ public:
         // Shots of this tick (an archer's arrow, decision E-425): QcMobManager::takeLaunches hands
         // them to the server, which adds them as projectiles in the phase of the creatures.
         QList<QcProjectileManager::Launch> *launches = nullptr;
-        // Blows at other creatures this tick (a golem's, decision E-471): QcMobManager::takeCreatureHits
+        // Blows at other creatures this tick (a golem's, decision E-471; a pet's for its owner, decision
+        // E-480): QcMobManager::takeCreatureHits
         // hands them to the server, which deals them after the tick.
         QList<QcMobManager::CreatureHit> *creatureHits = nullptr;
         // Blocks taken and put down in this tick (an enderman, decision E-460): QcMobManager::

@@ -218,7 +218,8 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
     if (!look.isValid()) {
         // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
         const bool ownParts = creature && !creature->parts.isEmpty();
-        QcEntityMesher::appendParts(mesh, ownParts ? creature->parts : QcEntityMesher::playerParts(), placement, frame.uv);
+        const QcEntityMesher::PartLook parts{QcMsg::poseOf(entity.flags) == QcPose::Sitting, entity.appearance};
+        QcEntityMesher::appendParts(mesh, ownParts ? creature->parts : QcEntityMesher::playerParts(), placement, frame.uv, parts);
         return;
     }
 

@@ -37,6 +37,10 @@ private:
     // Deals the effects of the projectile's onHit (decision E-427) to the body hit.
     bool hit(const QcProjectileManager::Hit &hit);
     void hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along);
+    // The foes of the players' pets (decision E-480): a player's shot at a creature names it as the
+    // player's target (true when a player shot); a creature's shot at a player names the shooter.
+    bool noteShot(quint32 shooter, quint32 creature);
+    void noteShot(quint32 shooter, QcServerClient &player);
     bool pickUp(quint32 player, const QcProjectile &projectile);
     // A projectile with a teleport effect broke (an ender pearl, decision E-460): its thrower comes
     // to the nearest safe place there and takes the effect's fall damage.

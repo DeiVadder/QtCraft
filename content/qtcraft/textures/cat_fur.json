@@ -1,0 +1,8 @@
+{
+    "name": "cat_fur",
+    "pattern": "speckle",
+    "primary": "#d88c3c",
+    "secondary": "#a8602a",
+    "variation": 0.12,
+    "seed": 5206
+}

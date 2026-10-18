@@ -1284,7 +1284,7 @@ Thread from a cobweb; four make white wool.
 
 **Dropped by**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Cobweb](blocks.md#block-qtcraft-cobweb), [Spider](creatures.md#mob-qtcraft-spider) (50 %)
+[Cat](creatures.md#mob-qtcraft-cat) (50 %), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Cobweb](blocks.md#block-qtcraft-cobweb), [Spider](creatures.md#mob-qtcraft-spider) (50 %)
 
 ### <a id="item-qtcraft-sugar"></a>Sugar
 

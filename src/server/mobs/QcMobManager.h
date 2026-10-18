@@ -182,6 +182,9 @@ public:
     QcCreature *find(quint32 id);
 
 private:
+    // A wild creature of a pack (QcMobDefinition::packRange, decision E-480) struck by `attacker`:
+    // the wild ones of its kind within the range turn on that player too.
+    void angerPack(const QcCreature &mob, quint32 attacker);
     // Tells the listeners that `mob` leaves the store.
     void depart(const QcCreature &mob, Departure why);
     // Erases the mob at `it` after its departure.

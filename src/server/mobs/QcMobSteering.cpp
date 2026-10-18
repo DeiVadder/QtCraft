@@ -100,7 +100,7 @@ void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManag
 
     if (mob.attackCooldown <= 0.0) {
         mob.attackCooldown = definition.attackCooldown;
-        hits.append({.playerEntityId = target.entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .mobType = mob.type});
+        hits.append({.playerEntityId = target.entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .mobType = mob.type, .mob = mob.id});
         mob.attackedThisTick = true;
     }
 }

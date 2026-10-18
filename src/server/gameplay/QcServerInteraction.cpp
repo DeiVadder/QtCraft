@@ -306,6 +306,10 @@ bool QcServerInteraction::fillBottle(QcServerClient &client, QcBlockPos pos)
 void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
 {
     client.swung = true;
+    // Tameable creatures first: taming, healing, collars and sitting (decision E-480).
+    if (m_parts.animals.tend(client, entityId)) {
+        return;
+    }
     // Food the animal eats is never eaten by the player instead, even when the animal refuses it now.
     if (m_parts.animals.feed(client, entityId) != QcServerAnimals::Feeding::NotItsFood) {
         return;

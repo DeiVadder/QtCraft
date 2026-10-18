@@ -244,7 +244,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         addLabel({placement.toWorld(label.at), label.text, label.detail, label.heading});
     }
     for (const QcStructure::Mob &mob : structure.mobs) {
-        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined});
+        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting});
     }
     for (const QcStructure::Stand &stand : structure.stands) {
         m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * float(placement.turns()), stand.properties});

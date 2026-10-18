@@ -9,6 +9,7 @@
         "silverfish",
         "chickens",
         "endermen",
+        "pets",
         "limits"
     ],
     "related": [
@@ -19,6 +20,10 @@
         "pig",
         "sheep",
         "firefly",
+        "wolf",
+        "dog",
+        "cat",
+        "ocelot",
         "spider",
         "cave_spider",
         "silverfish",

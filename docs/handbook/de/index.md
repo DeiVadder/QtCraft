@@ -12,8 +12,8 @@ Alles, was das Spiel enthält, erzeugt aus den Inhaltsdaten des Spiels mit `qtcr
 - [Flüssigkeiten](liquids.md) – 2 Einträge
 - [Gegenstände](items.md) – 65 Einträge
 - [Werkzeuge und Rüstung](tools.md) – 41 Einträge
-- [Nahrung](food.md) – 15 Einträge
-- [Wesen](creatures.md) – 15 Einträge
+- [Nahrung](food.md) – 17 Einträge
+- [Wesen](creatures.md) – 19 Einträge
 - [Biome](biomes.md) – 8 Einträge
 - [Weltgenerierung](worldgen.md) – 37 Einträge
 - [Item-Gruppen](tags.md) – 7 Einträge

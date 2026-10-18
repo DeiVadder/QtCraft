@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked cod](#item-qtcraft-cooked_cod) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw cod](#item-qtcraft-raw_cod) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -92,6 +92,28 @@ Chicken cooked in a furnace; good food.
 | 1 | → |
 |---|---|
 | [Raw chicken](#item-qtcraft-raw_chicken) | [Cooked chicken](#item-qtcraft-cooked_chicken) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+### <a id="item-qtcraft-cooked_cod"></a>Cooked cod
+
+Cod cooked in a furnace; good food, and it heals a tame cat.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_cod` |
+| Stack size | 64 |
+| Food | 5 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw cod](#item-qtcraft-raw_cod) | [Cooked cod](#item-qtcraft-cooked_cod) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
 
@@ -250,6 +272,28 @@ Meat of a chicken; better cooked in a furnace.
 **Dropped by**
 
 [Chicken](creatures.md#mob-qtcraft-chicken)
+
+### <a id="item-qtcraft-raw_cod"></a>Raw cod
+
+A fish; tames cats and lets you get close to ocelots. Better cooked in a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_cod` |
+| Stack size | 64 |
+| Food | 2 food points |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw cod](#item-qtcraft-raw_cod) | [Cooked cod](#item-qtcraft-cooked_cod) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-raw_mutton"></a>Raw mutton
 

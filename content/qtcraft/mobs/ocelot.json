@@ -1,0 +1,182 @@
+{
+    "name": "ocelot",
+    "sounds": {
+        "ambient": "mob.cat.ambient",
+        "hurt": "mob.cat.hurt",
+        "death": "mob.cat.death"
+    },
+    "health": 10,
+    "width": 0.6,
+    "height": 0.7,
+    "walkSpeed": 1.6,
+    "chaseSpeed": 5.0,
+    "hostile": false,
+    "frightens": true,
+    "shy": {
+        "distance": 8,
+        "calmItems": [
+            "raw_cod"
+        ],
+        "calmSpeed": 1.5
+    },
+    "spawn": {
+        "time": "day",
+        "blocks": [
+            "grass_block"
+        ],
+        "biomes": [
+            "jungle",
+            "swamp"
+        ],
+        "maxGroup": 2,
+        "weight": 0.6
+    },
+    "model": [
+        {
+            "from": [
+                -0.13,
+                0.3,
+                -0.38
+            ],
+            "to": [
+                0.13,
+                0.52,
+                0.32
+            ],
+            "texture": "ocelot_fur",
+            "sitOffset": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "from": [
+                -0.14,
+                0.38,
+                -0.62
+            ],
+            "to": [
+                0.14,
+                0.64,
+                -0.38
+            ],
+            "texture": "ocelot_head"
+        },
+        {
+            "from": [
+                -0.12,
+                0.64,
+                -0.55
+            ],
+            "to": [
+                -0.04,
+                0.72,
+                -0.47
+            ],
+            "texture": "ocelot_fur"
+        },
+        {
+            "from": [
+                0.04,
+                0.64,
+                -0.55
+            ],
+            "to": [
+                0.12,
+                0.72,
+                -0.47
+            ],
+            "texture": "ocelot_fur"
+        },
+        {
+            "from": [
+                -0.12,
+                0.0,
+                -0.34
+            ],
+            "to": [
+                -0.04,
+                0.3,
+                -0.26
+            ],
+            "texture": "ocelot_fur"
+        },
+        {
+            "from": [
+                0.04,
+                0.0,
+                -0.34
+            ],
+            "to": [
+                0.12,
+                0.3,
+                -0.26
+            ],
+            "texture": "ocelot_fur"
+        },
+        {
+            "from": [
+                -0.12,
+                0.0,
+                0.2
+            ],
+            "to": [
+                -0.04,
+                0.3,
+                0.28
+            ],
+            "texture": "ocelot_fur",
+            "sitOffset": [
+                0,
+                0,
+                -0.1
+            ]
+        },
+        {
+            "from": [
+                0.04,
+                0.0,
+                0.2
+            ],
+            "to": [
+                0.12,
+                0.3,
+                0.28
+            ],
+            "texture": "ocelot_fur",
+            "sitOffset": [
+                0,
+                0,
+                -0.1
+            ]
+        },
+        {
+            "from": [
+                -0.03,
+                0.4,
+                0.32
+            ],
+            "to": [
+                0.03,
+                0.48,
+                0.72
+            ],
+            "texture": "ocelot_fur",
+            "sitOffset": [
+                0,
+                -0.38,
+                -0.05
+            ]
+        }
+    ],
+    "experience": [
+        1,
+        3
+    ],
+    "breeding": {
+        "food": [
+            "raw_cod"
+        ]
+    }
+}

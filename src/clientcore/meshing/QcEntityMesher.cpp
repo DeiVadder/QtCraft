@@ -53,6 +53,9 @@ Tint tintFor(QcTint tint, const QcAppearance &colors)
         return fromRgb(colors.shirtColor);
     case QcTint::Pants:
         return fromRgb(colors.pantsColor);
+    case QcTint::Collar:
+        // A tame creature's collar travels in its appearance's shirt colour (decision E-480).
+        return fromRgb(colors.shirtColor);
     case QcTint::None:
         break;
     }
@@ -474,12 +477,14 @@ const QList<QcMobPart> &minecartParts()
     return model;
 }
 
-void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv)
+void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv, const PartLook &look)
 {
     const Turn turn(placement.yaw);
     const auto place = [&placement, &turn](const QcVec3 &p) { return placement.position + turn(p * placement.scale); };
+    const Tint overlay = placement.hurt ? hurtTint : white;
     for (const QcMobPart &part : parts) {
-        emitBox(mesh, {part.from, part.to}, place, {uv(part.texture), placement.hurt ? hurtTint : white, placement.light});
+        const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
+        emitBox(mesh, {part.from + offset, part.to + offset}, place, {uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light});
     }
 }
 

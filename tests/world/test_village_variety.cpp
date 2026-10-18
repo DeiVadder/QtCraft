@@ -227,20 +227,32 @@ private slots:
     {
         int villages = 0;
         int pens = 0;
+        int cats = 0;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
             const QList<const QcStructurePlacement *> found = piecesNamed(*plan, u"_pen"_s);
             QVERIFY(found.size() <= 1);
             ++villages;
             pens += int(found.size());
-            // The creatures of a village are its pen's pair, two of one kind inside the fence.
-            QCOMPARE(plan->mobs.size(), 2 * found.size());
+            // The creatures of a village are its pen's pair, two of one kind inside the fence, and a cat in
+            // each large house (decision E-480).
+            QList<QcVillagePlan::Mob> pair;
+            std::ranges::copy_if(plan->mobs, std::back_inserter(pair), [](const QcVillagePlan::Mob &mob) { return mob.mob != u"qtcraft:cat"_s; });
+            QCOMPARE(pair.size(), 2 * found.size());
+            // Every large house with a cat in its structure (the first blueprint of each style) brings it.
+            qsizetype catHouses = 0;
+            const QList<const QcStructurePlacement *> houses = piecesNamed(*plan, u"_house_large"_s);
+            for (const QcStructurePlacement *house : houses) {
+                catHouses += std::ranges::count(house->structure().mobs, u"qtcraft:cat"_s, &QcStructure::Mob::mob);
+            }
+            QCOMPARE(plan->mobs.size() - pair.size(), catHouses);
+            cats += int(catHouses);
             if (found.isEmpty()) {
                 continue;
             }
             const QcStructurePlacement &pen = *found.front();
-            QCOMPARE(plan->mobs[0].mob, plan->mobs[1].mob);
-            QVERIFY(plan->mobs[0].mob == u"qtcraft:pig"_s || plan->mobs[0].mob == u"qtcraft:sheep"_s);
-            for (const QcVillagePlan::Mob &mob : plan->mobs) {
+            QCOMPARE(pair[0].mob, pair[1].mob);
+            QVERIFY(pair[0].mob == u"qtcraft:pig"_s || pair[0].mob == u"qtcraft:sheep"_s);
+            for (const QcVillagePlan::Mob &mob : std::as_const(pair)) {
                 QVERIFY(mob.at.x > pen.origin().x + 1 && mob.at.x < pen.origin().x + pen.sizeX() - 1);
                 QVERIFY(mob.at.z > pen.origin().z + 1 && mob.at.z < pen.origin().z + pen.sizeZ() - 1);
                 QCOMPARE(mob.at.y, pen.origin().y + 1.0);
@@ -251,7 +263,8 @@ private slots:
         // deviation of the share among 96 villages is about 0.05; the bounds lie three to four of
         // them around it.
         const double share = double(pens) / villages;
-        qInfo("%d pens in %d villages", pens, villages);
+        qInfo("%d pens and %d cats in %d villages", pens, cats, villages);
+        QVERIFY(cats > 0);
         QVERIFY2(share > 0.2 && share < 0.6, qPrintable(u"%1 pens in %2 villages"_s.arg(pens).arg(villages)));
     }
 

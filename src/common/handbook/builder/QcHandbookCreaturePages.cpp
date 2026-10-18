@@ -5,6 +5,8 @@
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbookLinks.h"
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 using Fact = QcHandbookEntry::Fact;
 using Section = QcHandbookEntry::Section;
@@ -18,12 +20,12 @@ QString kindOf(const QcMobDefinition &mob)
 }
 
 // The behaviour label: the category, "archer" for hostile creatures that shoot (decision E-426) or
-// "neutral" for those a player has to provoke (decision E-460) or "golem" for guardians
-// (decision E-471).
+// "neutral" for those a player has to provoke (decision E-460; "neutralGaze" for those a look at
+// their head provokes too) or "golem" for guardians (decision E-471).
 QString behaviourOf(const QcMobDefinition &mob)
 {
     if (mob.ai == QcMobDefinition::Ai::Neutral) {
-        return u"neutral"_s;
+        return mob.gaze ? u"neutralGaze"_s : u"neutral"_s;
     }
     if (mob.ai == QcMobDefinition::Ai::Golem) {
         return u"golem"_s;
@@ -66,11 +68,41 @@ void addCapFact(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fa
     }
 }
 
-// When, where, how many and how often it spawns.
-void addSpawnFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fact> &facts)
+// Whether the pieces of the village style place the creature or the style names it among its residents.
+bool placesIn(const QcContentRegistry &content, const QcVillageStyleDefinition &style, const QcMobDefinition &mob)
 {
+    const std::optional<int> self = content.mobIndex(mob.name);
+    const auto isSelf = [&](const QString &name) { return content.mobIndex(name) == self; };
+    for (const QcVillagePiece &piece : style.pieces) {
+        for (const QcVillageBlueprint &blueprint : piece.blueprints) {
+            const QcStructureDefinition *structure = content.structure(blueprint.structure);
+            if (structure && std::ranges::any_of(structure->mobs, isSelf, &QcStructureDefinition::Mob::mob)) {
+                return true;
+            }
+        }
+    }
+    return std::ranges::any_of(style.residents, isSelf, &QcVillageResident::mob);
+}
+
+// The village styles that place the creature (placesIn).
+QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    QList<const QcVillageStyleDefinition *> styles;
+    for (const QcVillageStyleDefinition &style : content.villageStyles()) {
+        if (placesIn(content, style, mob)) {
+            styles.append(&style);
+        }
+    }
+    return styles;
+}
+
+// When, where, how many and how often it spawns.
+void addSpawnFacts(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Fact> &facts)
+{
+    const QcHandbookText &text = context.text;
     if (!mob.spawnsNaturally()) {
-        facts.append({text.label(u"fact.spawnTime"_s), text.label(u"value.time.never"_s), {}});
+        const bool villages = !villageStylesOf(context.content, mob).isEmpty();
+        facts.append({text.label(u"fact.spawnTime"_s), text.label(villages ? u"value.time.villages"_s : u"value.time.never"_s), {}});
         return;
     }
 
@@ -142,6 +174,49 @@ void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
     facts.append(std::move(drops));
 }
 
+// Taming, what a pet does, shyness and packs (decision E-480).
+void addCompanionFacts(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Fact> &facts)
+{
+    const QcHandbookText &text = context.text;
+    if (mob.tameable) {
+        const QcTameDefinition &tame = *mob.tameable;
+        if (!tame.items.isEmpty()) {
+            Fact tamedWith{text.label(u"fact.tamedWith"_s), text.label(u"value.tameChance"_s).arg(text.number(100.0 * tame.chance)), {}};
+            for (const QString &item : tame.items) {
+                tamedWith.links.append(context.links.itemLink(item));
+            }
+            facts.append(std::move(tamedWith));
+        }
+        // What a pet does is the kind's it becomes (a wolf becomes a dog).
+        const QcMobDefinition &petKind = tame.becomesType >= 0 ? context.content.mobs()[tame.becomesType] : mob;
+        const QcTameDefinition &pet = petKind.tameable ? *petKind.tameable : tame;
+        if (tame.becomesType >= 0) {
+            facts.append({text.label(u"fact.becomes"_s), {}, {context.links.mobLink(petKind)}});
+        }
+        facts.append({text.label(u"fact.pet"_s), text.label(pet.defends ? u"value.pet.defends"_s : u"value.pet.follows"_s), {}});
+        if (!tame.healItems.isEmpty()) {
+            Fact heals{text.label(u"fact.healedBy"_s), {}, {}};
+            for (const QString &item : tame.healItems) {
+                heals.links.append(context.links.itemLink(item));
+            }
+            facts.append(std::move(heals));
+        }
+        if (pet.hasCollar()) {
+            facts.append({text.label(u"fact.collar"_s), text.label(u"value.collar"_s), {context.links.itemLink(pet.collarDefault)}});
+        }
+    }
+    if (mob.shy) {
+        Fact shy{text.label(u"fact.shy"_s), text.label(u"value.shy"_s).arg(text.number(mob.shy->distance)), {}};
+        for (const QString &item : mob.shy->calmItems) {
+            shy.links.append(context.links.itemLink(item));
+        }
+        facts.append(std::move(shy));
+    }
+    if (mob.packRange > 0.0) {
+        facts.append({text.label(u"fact.pack"_s), text.label(u"value.pack"_s).arg(text.number(mob.packRange)), {}});
+    }
+}
+
 // The blocks and biomes it spawns on.
 void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Section> &sections)
 {
@@ -171,6 +246,27 @@ void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &m
         biomes.text = text.label(u"value.allBiomes"_s);
     }
     sections.append(std::move(biomes));
+}
+
+// The biomes of the village styles that place it (a cat in the large houses).
+void addVillageSection(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Section> &sections)
+{
+    const QList<const QcVillageStyleDefinition *> styles = villageStylesOf(context.content, mob);
+    if (styles.isEmpty()) {
+        return;
+    }
+
+    Section villages{context.text.label(u"section.villages"_s), {}, {}, {}};
+    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+        if (std::ranges::any_of(styles, [&](const QcVillageStyleDefinition *style) { return style->biomes.contains(biome.name); })) {
+            villages.links.append(context.links.biomeLink(biome));
+        }
+    }
+    QcHandbookLinks::sortLinks(villages.links);
+    if (std::ranges::any_of(styles, &QcVillageStyleDefinition::fallback)) {
+        villages.text = context.text.label(u"value.villageFallback"_s);
+    }
+    sections.append(std::move(villages));
 }
 
 // Further places and times (slimes on swamp surfaces at night): conditions as text, biomes and
@@ -227,10 +323,12 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.facts.append({text.label(u"fact.id"_s), mob.name, {}});
 
     addBodyFacts(text, mob, entry.facts);
-    addSpawnFacts(text, mob, entry.facts);
+    addSpawnFacts(context, mob, entry.facts);
     addTraitFacts(context, mob, entry.facts);
+    addCompanionFacts(context, mob, entry.facts);
 
     addSpawnSections(context, mob, entry.sections);
+    addVillageSection(context, mob, entry.sections);
     for (const QcMobDefinition::SpawnRule &rule : mob.extraSpawns) {
         entry.sections.append(extraSpawnSection(context, rule));
     }

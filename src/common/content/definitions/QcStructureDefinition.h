@@ -35,6 +35,10 @@ struct QcStructureDefinition
         // Stays in its enclosure (decision E-460): it neither teleports nor takes or places blocks
         // (the showcase's pens; `"confined": true` in structure data).
         bool confined = false;
+        // A tame creature of the owner key (decision E-480; the showcase's pets belong to a made-up
+        // owner, "showcase"), sitting unless `sitting` is false; empty: wild.
+        QString owner = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        bool sitting = true;
     };
 
     // An armour stand (decision E-238): where it stands, turned by `yaw` degrees (0 faces north),

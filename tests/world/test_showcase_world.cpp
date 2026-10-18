@@ -163,6 +163,10 @@ private slots:
             QCOMPARE(server->systems().weather.state().rain, 0.0f);
             // Besides them, residents of the village rows in the chunks loaded so far (decision E-411).
             residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.isVillager() && mob.villager->village != 0; });
+            // The cats of the village rows' houses (decision E-480) live there too.
+            const int cat = *m_content->mobIndex(u"qtcraft:cat"_s);
+            const auto setupCats = std::ranges::count(QcShowcaseGenerator(m_content).setup().mobs, u"qtcraft:cat"_s, &QcWorldSetup::Mob::mob);
+            residents += std::ranges::count(server->mobs().mobs(), cat, &QcCreature::type) - setupCats;
             QCOMPARE(server->mobs().mobs().size() - residents, mobs);
             QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcCreature::persistent));
             QVERIFY(!server->mobs().naturalSpawning());
@@ -488,6 +492,33 @@ private slots:
             }
         }
         QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s}));
+    }
+
+    void thePetCornerHasItsPets()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        server->tick();
+
+        // The dog of a made-up owner sits; wolves and the ocelot stay in their pens (decision E-480).
+        const int dog = *m_content->mobIndex(u"qtcraft:dog"_s);
+        const auto pet = std::ranges::find_if(server->mobs().mobs(), [dog](const QcCreature &mob) { return mob.type == dog && mob.isTame(); });
+        QVERIFY(pet != server->mobs().mobs().end());
+        QCOMPARE(pet->tame->owner, u"showcase"_s);
+        QVERIFY(pet->sits());
+        QCOMPARE(pet->pose, QcPose::Sitting);
+        const QcVec3 sat = pet->motion.position;
+        for (int i = 0; i < 40; ++i) {
+            server->tick();
+        }
+        const auto still = std::ranges::find_if(server->mobs().mobs(), [dog](const QcCreature &mob) { return mob.type == dog && mob.isTame(); });
+        QVERIFY((still->motion.position - sat).length() < 0.1);
+        for (const char *name : {"wolf", "ocelot", "cat"}) {
+            const int type = *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name));
+            QVERIFY2(std::ranges::count_if(server->mobs().mobs(), [type](const QcCreature &mob) { return mob.type == type && mob.confined; }) >= 1, name);
+        }
+        QVERIFY(server->stop());
     }
 
     // The golem farm station (decision E-470): its three villagers come rested from the setup, panic

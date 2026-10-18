@@ -23,5 +23,8 @@ inline constexpr double towardsRange = 4.0;
 // it is confined, still cooling down or finds no safe place.
 bool teleport(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, QRandomGenerator &random,
               const std::optional<QcVec3> &around = std::nullopt);
+// Puts `mob` at `target` at rest without a path, to be announced as a teleport (QcCreature::
+// teleportedFrom), whatever its kind (also a pet next to its owner, decision E-480).
+void land(QcCreature &mob, const QcVec3 &target);
 
 } // namespace QcMobTeleport

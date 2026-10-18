@@ -9,6 +9,7 @@
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/mobs/QcPetOwners.h"
 #include "server/mobs/QcServerAnimals.h"
 
 namespace {
@@ -109,11 +110,15 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
         // A creature that dodges projectiles (an enderman, decision E-460) teleports away unhurt;
         // the projectile bounces off.
         const QcMobDefinition &definition = m_state.content().mobs()[target->type];
+        // A player's arrow leaves the pets of other players unhurt (decision E-480).
+        if (QcPetOwners::isOthersPet(m_state, *target, projectile.shooter)) {
+            return false;
+        }
         if (definition.teleport && definition.teleport->dodgesProjectiles) {
             m_state.entities().creatures().teleport(hit.body, m_state.world());
             return false;
         }
-        const bool byPlayer = std::ranges::any_of(m_state.clients(), [&](const auto &client) { return client->id == projectile.shooter; });
+        const bool byPlayer = noteShot(projectile.shooter, hit.body);
         took = QcServerCombat::hurtCreature(m_state, m_sounds,
                                             {.creature = hit.body,
                                              .damage = impact.damage,
@@ -133,6 +138,7 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
             if (client->id == hit.body && isPresent(*client) && client->hurt.wouldTake(impact.damage) != QcHurtWindow::Take::Ignored
                 && !client->rules().invulnerable) {
                 hitPlayer(*client, impact, along);
+                noteShot(projectile.shooter, *client);
                 took = true;
             }
         }
@@ -142,6 +148,25 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
         m_sounds.play(hit.definition.hitSound, projectile.motion.position);
     }
     return took;
+}
+
+bool QcServerProjectiles::noteShot(quint32 shooter, quint32 creature)
+{
+    const auto player = std::ranges::find_if(m_state.clients(), [&](const auto &client) { return client->id == shooter; });
+    if (player == m_state.clients().end()) {
+        return false;
+    }
+    (*player)->foes.struck = creature;
+    (*player)->foes.struckTick = m_state.clock().tick();
+    return true;
+}
+
+void QcServerProjectiles::noteShot(quint32 shooter, QcServerClient &player)
+{
+    if (m_state.entities().creatures().find(shooter)) {
+        player.foes.hurtBy = shooter;
+        player.foes.hurtTick = m_state.clock().tick();
+    }
 }
 
 void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along)

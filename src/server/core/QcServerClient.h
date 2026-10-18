@@ -187,6 +187,17 @@ struct QcServerClient : QcEntity
     // the first message.
     QcExperience experience;
     std::optional<QcExperience> sentExperience;
+    // The creatures this player fought lately (decision E-480): the last that hurt them and the last
+    // they struck (entity ids, 0: none) with the tick it happened; their pets defend them
+    // (QcMobManager::PlayerView::hurtBy and struck).
+    struct Foes
+    {
+        quint32 hurtBy = 0;
+        quint64 hurtTick = 0;
+        quint32 struck = 0;
+        quint64 struckTick = 0;
+    };
+    Foes foes;
     // Status effects (QcServerEffects, decision E-450) and those last sent with the health, counted
     // down in step with them: the two differ only when an effect came, went, changed its level or
     // was given again for longer.

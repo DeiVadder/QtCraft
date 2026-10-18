@@ -1,5 +1,8 @@
 {
     "name": "village_swamp_house_large",
+    "mobs": [
+        { "mob": "cat", "at": [3.5, 1.0, 2.5] }
+    ],
     "palette": {
         ".": "air",
         "P": "spruce_planks",

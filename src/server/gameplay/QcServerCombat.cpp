@@ -7,6 +7,7 @@
 #include "server/gameplay/QcServerInventory.h"
 #include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcServerExperience.h"
+#include "server/mobs/QcPetOwners.h"
 
 QcServerCombat::QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)
@@ -21,8 +22,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
         return;
     }
 
+    // The pets of other players are spared (decision E-480).
     const QcCreature *mob = m_state.entities().creatures().find(entityId);
-    if (!mob) {
+    if (!mob || QcPetOwners::isOthersPet(m_state, *mob, client.id)) {
         return;
     }
 
@@ -38,6 +40,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
 
     client.attackCooldown = playerAttackCooldown;
     client.swung = true;
+    // The player's pets attack it too (decision E-480).
+    client.foes.struck = entityId;
+    client.foes.struckTick = m_state.clock().tick();
     client.hunger.exhaust(QcHunger::attack);
 
     const QcItemDefinition *held = m_state.heldItem(client);
@@ -59,7 +64,7 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
 bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow)
 {
     QcCreature *mob = state.entities().creatures().find(blow.creature);
-    if (!mob) {
+    if (!mob || QcPetOwners::isOthersPet(state, *mob, blow.attacker)) {
         return false;
     }
 

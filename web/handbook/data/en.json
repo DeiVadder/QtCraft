@@ -457,6 +457,7 @@
                 "item:qtcraft:bread",
                 "item:qtcraft:carrot",
                 "item:qtcraft:cooked_chicken",
+                "item:qtcraft:cooked_cod",
                 "item:qtcraft:cooked_mutton",
                 "item:qtcraft:cooked_porkchop",
                 "item:qtcraft:melon_slice",
@@ -464,6 +465,7 @@
                 "item:qtcraft:potato",
                 "item:qtcraft:pumpkin_pie",
                 "item:qtcraft:raw_chicken",
+                "item:qtcraft:raw_cod",
                 "item:qtcraft:raw_mutton",
                 "item:qtcraft:raw_porkchop",
                 "item:qtcraft:rotten_flesh"
@@ -474,12 +476,15 @@
         {
             "entries": [
                 "mob:qtcraft:caped_mannequin",
+                "mob:qtcraft:cat",
                 "mob:qtcraft:cave_spider",
                 "mob:qtcraft:chicken",
+                "mob:qtcraft:dog",
                 "mob:qtcraft:enderman",
                 "mob:qtcraft:firefly",
                 "mob:qtcraft:iron_golem",
                 "mob:qtcraft:mannequin",
+                "mob:qtcraft:ocelot",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:silverfish",
@@ -487,6 +492,7 @@
                 "mob:qtcraft:slime",
                 "mob:qtcraft:spider",
                 "mob:qtcraft:villager",
+                "mob:qtcraft:wolf",
                 "mob:qtcraft:zombie"
             ],
             "id": "creatures",
@@ -745,6 +751,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -1139,6 +1151,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -1713,6 +1731,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ocelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1955,6 +1979,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -2121,6 +2151,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -17076,6 +17112,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Raw cod"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Cooked cod"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:raw_mutton",
                                     "note": "",
                                     "target": "item:qtcraft:raw_mutton",
@@ -18399,6 +18468,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ocelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -18425,6 +18500,12 @@
                             "note": "",
                             "target": "mob:qtcraft:spider",
                             "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
                         },
                         {
                             "icon": "",
@@ -44777,6 +44858,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -53459,6 +53546,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Wolves roam forests, taiga and tundra in packs: strike one, and every wolf of the pack nearby chases you. Feed a wolf bones to tame it; each bone works with a chance of one in three, and the tamed wolf becomes your dog with a red collar. Cats live in villages and are tamed the same way with raw cod. A pet belongs to you, not to your character on one login: it stays yours when you leave and waits, standing or sitting, until you come back. Use your pet with an empty hand or any other item to make it sit or stand up. A pet that does not sit follows you when you walk away and, when you are farther than 12 m, teleports next to you, but only onto safe ground in loaded chunks. A dog fights what hurts you and what you hit, never you and never your other pets. Meat heals a dog, fish a cat; a dye colours a dog's collar. Ocelots are shy and run from anyone who comes close, unless you hold raw cod and sneak up slowly.",
+                    "title": "Wolves, dogs and cats"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.",
                     "title": "Limits"
                 },
@@ -53505,6 +53600,30 @@
                             "note": "",
                             "target": "mob:qtcraft:firefly",
                             "text": "Firefly"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:dog",
+                            "text": "Dog"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cat",
+                            "text": "Cat"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ocelot"
                         },
                         {
                             "icon": "",
@@ -59477,6 +59596,87 @@
             ],
             "text": "Chicken cooked in a furnace; good food.",
             "title": "Cooked chicken"
+        },
+        "item:qtcraft:cooked_cod": {
+            "category": "food",
+            "categoryTitle": "Food",
+            "englishTitle": "Cooked cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cooked_cod"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Food",
+                    "links": [
+                    ],
+                    "value": "5 food points"
+                }
+            ],
+            "icon": "qtcraft:cooked_cod",
+            "id": "item:qtcraft:cooked_cod",
+            "name": "qtcraft:cooked_cod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Raw cod"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Cooked cod"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Made in a furnace"
+                }
+            ],
+            "text": "Cod cooked in a furnace; good food, and it heals a tame cat.",
+            "title": "Cooked cod"
         },
         "item:qtcraft:cooked_mutton": {
             "category": "food",
@@ -68911,6 +69111,87 @@
             "text": "Meat of a chicken; better cooked in a furnace.",
             "title": "Raw chicken"
         },
+        "item:qtcraft:raw_cod": {
+            "category": "food",
+            "categoryTitle": "Food",
+            "englishTitle": "Raw cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_cod"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Food",
+                    "links": [
+                    ],
+                    "value": "2 food points"
+                }
+            ],
+            "icon": "qtcraft:raw_cod",
+            "id": "item:qtcraft:raw_cod",
+            "name": "qtcraft:raw_cod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Raw cod"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Cooked cod"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Smelts into"
+                }
+            ],
+            "text": "A fish; tames cats and lets you get close to ocelots. Better cooked in a furnace.",
+            "title": "Raw cod"
+        },
         "item:qtcraft:raw_mutton": {
             "category": "food",
             "categoryTitle": "Food",
@@ -71108,6 +71389,12 @@
                     "links": [
                         {
                             "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:cat",
+                            "text": "Cat"
+                        },
+                        {
+                            "icon": "",
                             "note": "",
                             "target": "mob:qtcraft:cave_spider",
                             "text": "Cave spider"
@@ -72997,6 +73284,144 @@
             "text": "A mannequin wearing the green cape. It walks about slowly, so the cape swings; it never appears by itself, the showcase world has one at the character stand.",
             "title": "Caped mannequin"
         },
+        "mob:qtcraft:cat": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Cat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cat"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "peaceful: wanders, flees when hurt"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "10 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 0.7 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.4 m/s walking, 4 m/s fleeing"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself, but lives in villages (also /summon, showcase world)"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:string",
+                            "note": "50 %",
+                            "target": "item:qtcraft:string",
+                            "text": "String"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Tamed with",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Raw cod"
+                        }
+                    ],
+                    "value": "33.33 % per item"
+                },
+                {
+                    "label": "As a pet",
+                    "links": [
+                    ],
+                    "value": "follows its owner, sits when its owner uses it and teleports to its owner from afar"
+                },
+                {
+                    "label": "Healed by",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Raw cod"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_cod",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_cod",
+                            "text": "Cooked cod"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:string",
+            "id": "mob:qtcraft:cat",
+            "name": "qtcraft:cat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Swamp"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "And in villages of biomes without a village style of their own.",
+                    "title": "Lives in villages of"
+                }
+            ],
+            "text": "A cat of the villages, a few in every village. Feed it raw cod: each fish tames it with a chance of one in three. A tame cat follows you, sits when you use it and teleports to you like a dog, but does not fight. Creatures that are scared of cats keep away from it.",
+            "title": "Cat"
+        },
         "mob:qtcraft:cave_spider": {
             "category": "creatures",
             "categoryTitle": "Creatures",
@@ -73300,6 +73725,130 @@
             ],
             "text": "A small bird of the meadows. It flutters down gently instead of falling and lays an egg every five to ten minutes. Seeds of any kind make it fall in love. Drops feathers and raw chicken.",
             "title": "Chicken"
+        },
+        "mob:qtcraft:dog": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Dog",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:dog"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "neutral: leaves players alone until one hurts it, then chases and attacks them"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 0.85 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.6 m/s walking, 4.5 m/s fleeing"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself (/summon, showcase world)"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Tamed with",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        }
+                    ],
+                    "value": "100 % per item"
+                },
+                {
+                    "label": "As a pet",
+                    "links": [
+                    ],
+                    "value": "follows its owner, sits when its owner uses it, teleports to its owner from afar and fights what hurts its owner or what its owner hits"
+                },
+                {
+                    "label": "Healed by",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_porkchop",
+                            "note": "",
+                            "target": "item:qtcraft:raw_porkchop",
+                            "text": "Raw porkchop"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_porkchop",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_porkchop",
+                            "text": "Cooked porkchop"
+                        },
+                        {
+                            "icon": "qtcraft:raw_mutton",
+                            "note": "",
+                            "target": "item:qtcraft:raw_mutton",
+                            "text": "Raw mutton"
+                        },
+                        {
+                            "icon": "qtcraft:cooked_mutton",
+                            "note": "",
+                            "target": "item:qtcraft:cooked_mutton",
+                            "text": "Cooked mutton"
+                        },
+                        {
+                            "icon": "qtcraft:rotten_flesh",
+                            "note": "",
+                            "target": "item:qtcraft:rotten_flesh",
+                            "text": "Rotten flesh"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Collar",
+                    "links": [
+                        {
+                            "icon": "qtcraft:red_dye",
+                            "note": "",
+                            "target": "item:qtcraft:red_dye",
+                            "text": "Red dye"
+                        }
+                    ],
+                    "value": "the colour of this dye at first; a dye used on it by its owner colours it"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:dog",
+            "name": "qtcraft:dog",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A tamed wolf with a red collar. It belongs to you, also when you are offline: it follows you, teleports to you when you are far away (only to a safe place in loaded chunks) and fights what hurts you and what you hit, never you or your other pets. Use it to make it sit or stand up; meat heals it, a dye colours its collar.",
+            "title": "Dog"
         },
         "mob:qtcraft:enderman": {
             "category": "creatures",
@@ -73733,6 +74282,146 @@
             "text": "A figure with the character model that walks about slowly. It never appears by itself; the showcase world has some, /summon makes more.",
             "title": "Mannequin"
         },
+        "mob:qtcraft:ocelot": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Ocelot",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:ocelot"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "peaceful: wanders, flees when hurt"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "10 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 0.7 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.6 m/s walking, 5 m/s fleeing"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "by day"
+                },
+                {
+                    "label": "Stays",
+                    "links": [
+                    ],
+                    "value": "never despawns and is saved with the world"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 2"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "0.6"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all peaceful creatures together: 6 per player"
+                },
+                {
+                    "label": "Breeds when fed",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Raw cod"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Breeding",
+                    "links": [
+                    ],
+                    "value": "again after 5 min, young grow up in 20 min"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Shy",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Raw cod"
+                        }
+                    ],
+                    "value": "runs from players closer than 8 m, unless they hold this and move slowly"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:ocelot",
+            "name": "qtcraft:ocelot",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Swamp"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "A shy spotted cat of the jungle (until there is one, of swamps). It runs away from anyone who comes close, unless you hold raw cod and sneak up slowly. It cannot be tamed; two fed with raw cod get a young one.",
+            "title": "Ocelot"
+        },
         "mob:qtcraft:pig": {
             "category": "creatures",
             "categoryTitle": "Creatures",
@@ -73862,6 +74551,38 @@
                     ],
                     "text": "All biomes.",
                     "title": "Appears in biomes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "And in villages of biomes without a village style of their own.",
+                    "title": "Lives in villages of"
                 }
             ],
             "text": "Peaceful farm animal of grassy land; drops porkchops.",
@@ -74652,6 +75373,188 @@
             ],
             "text": "Lives in a village with a bed of its own and, with luck, a workstation that gives it its profession. It works by day, meets the others at the bell, goes home in the evening and sleeps in its bed at night. It opens wooden doors and shuts them behind it, runs home from monsters and never fights.",
             "title": "Villager"
+        },
+        "mob:qtcraft:wolf": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Wolf",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:wolf"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "neutral: leaves players alone until one hurts it, then chases and attacks them"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "8 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 0.85 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.6 m/s walking, 4 m/s fleeing"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "by day"
+                },
+                {
+                    "label": "Stays",
+                    "links": [
+                    ],
+                    "value": "never despawns and is saved with the world"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 4"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all peaceful creatures together: 6 per player"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Tamed with",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        }
+                    ],
+                    "value": "33.33 % per item"
+                },
+                {
+                    "label": "Becomes",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:dog",
+                            "text": "Dog"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "As a pet",
+                    "links": [
+                    ],
+                    "value": "follows its owner, sits when its owner uses it, teleports to its owner from afar and fights what hurts its owner or what its owner hits"
+                },
+                {
+                    "label": "Collar",
+                    "links": [
+                        {
+                            "icon": "qtcraft:red_dye",
+                            "note": "",
+                            "target": "item:qtcraft:red_dye",
+                            "text": "Red dye"
+                        }
+                    ],
+                    "value": "the colour of this dye at first; a dye used on it by its owner colours it"
+                },
+                {
+                    "label": "Pack",
+                    "links": [
+                    ],
+                    "value": "strike one and the others within 16 m chase you too"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:wolf",
+            "name": "qtcraft:wolf",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:birch_forest",
+                            "text": "Birch Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest",
+                            "text": "Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "A grey hunter of forests, taiga and tundra that roams in packs. It leaves you alone until you hit one; then the whole pack nearby chases you. Feed it bones: each bone tames it with a chance of one in three, and it becomes your dog.",
+            "title": "Wolf"
         },
         "mob:qtcraft:zombie": {
             "category": "creatures",
@@ -76448,6 +77351,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:cooked_chicken",
                                 "text": "Cooked chicken"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_cod",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_cod",
+                                    "text": "Raw cod"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_cod",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:cooked_cod",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_cod",
+                                "text": "Cooked cod"
                             },
                             "seconds": 10,
                             "shapeless": false,

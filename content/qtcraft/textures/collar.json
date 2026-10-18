@@ -1,0 +1,8 @@
+{
+    "name": "collar",
+    "pattern": "noise",
+    "primary": "#f4f4f4",
+    "secondary": "#d0d0d0",
+    "variation": 0.05,
+    "seed": 5205
+}

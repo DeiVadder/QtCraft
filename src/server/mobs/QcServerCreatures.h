@@ -23,6 +23,8 @@ public:
     static constexpr double ambientSeconds = 10.0;
     // Hurt and death sounds of cramming per tick at most (a farm crams hundreds at once).
     static constexpr int crammingSoundsPerTick = 8;
+    // How long what a player fought counts for the player's pets (QcServerClient::Foes), in ticks.
+    static constexpr quint64 foeTicks = 100;
 
     QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
 
@@ -32,13 +34,16 @@ public:
     void announceTeleports();
 
 private:
+    // What the creatures know about the players this tick.
+    QList<QcMobManager::PlayerView> playerViews() const;
     // A creature's blow at a player, with the effects of its kind's blows.
     void strike(QcServerClient &client, const QcMobManager::PlayerHit &hit);
     void playAmbientSounds(double dt);
-    // The blows creatures dealt each other (a golem's, decision E-471), with the attacker's sound;
-    // those that die leave their loot (no experience).
+    // The blows creatures dealt each other (a golem's, decision E-471; a pet's, decision E-480), with
+    // the attacker's sound; those that die leave their loot (no experience).
     void applyCreatureHits();
-    // The blows creatures dealt players, a golem's throwing them upwards.
+    // The blows creatures dealt players, a golem's throwing them upwards, with the striker as the
+    // player's foe (pets defend, decision E-480).
     void applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits);
     // Crammed creatures get hurt (QcMobCramming) with their sounds; those that die leave their loot
     // (no experience: no player killed them).

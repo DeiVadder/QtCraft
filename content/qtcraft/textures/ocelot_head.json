@@ -1,0 +1,8 @@
+{
+    "name": "ocelot_head",
+    "pattern": "speckle",
+    "primary": "#ecd070",
+    "secondary": "#4a3418",
+    "variation": 0.16,
+    "seed": 5209
+}

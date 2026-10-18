@@ -142,6 +142,13 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         if (creature.isVillager()) {
             spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.type, *creature.villager);
         }
+        // A tame creature's collar is drawn in the shirt colour (QcTint::Collar, decision E-480); a
+        // wild one of a kind with a collar (a summoned dog) wears its kind's default colour.
+        if (creature.isTame()) {
+            spawn.appearance.shirtColor = creature.tame->collar;
+        } else if (const auto &tameable = m_state.content().mobs()[creature.type].tameable; tameable && tameable->hasCollar()) {
+            spawn.appearance.shirtColor = tameable->collarColor(tameable->collarDefault).value_or(0);
+        }
         break;
     }
     case QcEntityKind::ExperienceOrb:

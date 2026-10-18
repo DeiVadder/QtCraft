@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -19,6 +19,29 @@ A mannequin wearing the green cape. It walks about slowly, so the cape swings; i
 | Speed | 1.4 m/s walking, 1.5 m/s fleeing |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | nothing |
+
+### <a id="mob-qtcraft-cat"></a>Cat
+
+A cat of the villages, a few in every village. Feed it raw cod: each fish tames it with a chance of one in three. A tame cat follows you, sits when you use it and teleports to you like a dog, but does not fight. Creatures that are scared of cats keep away from it.
+
+| | |
+|---|---|
+| ID | `qtcraft:cat` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 10 health points |
+| Size | 0.6 m wide, 0.7 m tall |
+| Speed | 1.4 m/s walking, 4 m/s fleeing |
+| Appears | never by itself, but lives in villages (also /summon, showcase world) |
+| Drops | [String](items.md#item-qtcraft-string) (50 %) |
+| Tamed with | 33.33 % per item: [Raw cod](food.md#item-qtcraft-raw_cod) |
+| As a pet | follows its owner, sits when its owner uses it and teleports to its owner from afar |
+| Healed by | [Raw cod](food.md#item-qtcraft-raw_cod), [Cooked cod](food.md#item-qtcraft-cooked_cod) |
+
+**Lives in villages of**
+
+And in villages of biomes without a village style of their own.
+
+[Desert](biomes.md#biome-qtcraft-desert), [Plains](biomes.md#biome-qtcraft-plains), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-cave_spider"></a>Cave spider
 
@@ -78,6 +101,24 @@ A small bird of the meadows. It flutters down gently instead of falling and lays
 **Appears in biomes**
 
 All biomes.
+
+### <a id="mob-qtcraft-dog"></a>Dog
+
+A tamed wolf with a red collar. It belongs to you, also when you are offline: it follows you, teleports to you when you are far away (only to a safe place in loaded chunks) and fights what hurts you and what you hit, never you or your other pets. Use it to make it sit or stand up; meat heals it, a dye colours its collar.
+
+| | |
+|---|---|
+| ID | `qtcraft:dog` |
+| Behaviour | neutral: leaves players alone until one hurts it, then chases and attacks them |
+| Health | 20 health points |
+| Size | 0.6 m wide, 0.85 m tall |
+| Speed | 1.6 m/s walking, 4.5 m/s fleeing |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | nothing |
+| Tamed with | 100 % per item: [Bone](items.md#item-qtcraft-bone) |
+| As a pet | follows its owner, sits when its owner uses it, teleports to its owner from afar and fights what hurts its owner or what its owner hits |
+| Healed by | [Raw porkchop](food.md#item-qtcraft-raw_porkchop), [Cooked porkchop](food.md#item-qtcraft-cooked_porkchop), [Raw mutton](food.md#item-qtcraft-raw_mutton), [Cooked mutton](food.md#item-qtcraft-cooked_mutton), [Rotten flesh](food.md#item-qtcraft-rotten_flesh) |
+| Collar | the colour of this dye at first; a dye used on it by its owner colours it: [Red dye](items.md#item-qtcraft-red_dye) |
 
 ### <a id="mob-qtcraft-enderman"></a>Enderman
 
@@ -165,6 +206,35 @@ A figure with the character model that walks about slowly. It never appears by i
 | Appears | never by itself (/summon, showcase world) |
 | Drops | nothing |
 
+### <a id="mob-qtcraft-ocelot"></a>Ocelot
+
+A shy spotted cat of the jungle (until there is one, of swamps). It runs away from anyone who comes close, unless you hold raw cod and sneak up slowly. It cannot be tamed; two fed with raw cod get a young one.
+
+| | |
+|---|---|
+| ID | `qtcraft:ocelot` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 10 health points |
+| Size | 0.6 m wide, 0.7 m tall |
+| Speed | 1.6 m/s walking, 5 m/s fleeing |
+| Appears | by day |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 2 |
+| Spawn weight | 0.6 |
+| Limit | all peaceful creatures together: 6 per player |
+| Breeds when fed | [Raw cod](food.md#item-qtcraft-raw_cod) |
+| Breeding | again after 5 min, young grow up in 20 min |
+| Drops | nothing |
+| Shy | runs from players closer than 8 m, unless they hold this and move slowly: [Raw cod](food.md#item-qtcraft-raw_cod) |
+
+**Appears on**
+
+[Grass block](blocks.md#block-qtcraft-grass_block)
+
+**Appears in biomes**
+
+[Swamp](biomes.md#biome-qtcraft-swamp)
+
 ### <a id="mob-qtcraft-pig"></a>Pig
 
 Peaceful farm animal of grassy land; drops porkchops.
@@ -192,6 +262,12 @@ Peaceful farm animal of grassy land; drops porkchops.
 **Appears in biomes**
 
 All biomes.
+
+**Lives in villages of**
+
+And in villages of biomes without a village style of their own.
+
+[Desert](biomes.md#biome-qtcraft-desert), [Plains](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-sheep"></a>Sheep
 
@@ -345,6 +421,37 @@ Lives in a village with a bed of its own and, with luck, a workstation that give
 | Speed | 1.4 m/s walking, 3 m/s fleeing |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | nothing |
+
+### <a id="mob-qtcraft-wolf"></a>Wolf
+
+A grey hunter of forests, taiga and tundra that roams in packs. It leaves you alone until you hit one; then the whole pack nearby chases you. Feed it bones: each bone tames it with a chance of one in three, and it becomes your dog.
+
+| | |
+|---|---|
+| ID | `qtcraft:wolf` |
+| Behaviour | neutral: leaves players alone until one hurts it, then chases and attacks them |
+| Health | 8 health points |
+| Size | 0.6 m wide, 0.85 m tall |
+| Speed | 1.6 m/s walking, 4 m/s fleeing |
+| Appears | by day |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 4 |
+| Spawn weight | 1 |
+| Limit | all peaceful creatures together: 6 per player |
+| Drops | nothing |
+| Tamed with | 33.33 % per item: [Bone](items.md#item-qtcraft-bone) |
+| Becomes | [Dog](#mob-qtcraft-dog) |
+| As a pet | follows its owner, sits when its owner uses it, teleports to its owner from afar and fights what hurts its owner or what its owner hits |
+| Collar | the colour of this dye at first; a dye used on it by its owner colours it: [Red dye](items.md#item-qtcraft-red_dye) |
+| Pack | strike one and the others within 16 m chase you too |
+
+**Appears on**
+
+[Grass block](blocks.md#block-qtcraft-grass_block), [Snow block](blocks.md#block-qtcraft-snow_block)
+
+**Appears in biomes**
+
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Forest](biomes.md#biome-qtcraft-forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 

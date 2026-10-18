@@ -2,6 +2,7 @@
 
 #include "common/core/QcAabb.h"
 #include "server/mobs/QcMobBreeding.h"
+#include "server/mobs/QcPetCare.h"
 
 class QcServerInventory;
 class QcServerSounds;
@@ -26,6 +27,9 @@ public:
 
     // Feeds the creature with the held item when it eats that (in love or growing up).
     Feeding feed(QcServerClient &client, quint32 mobId);
+    // Taming, sitting, healing and collars of tameable creatures (QcPetCare, decision E-480); false
+    // when the use is none of these.
+    bool tend(QcServerClient &client, quint32 mobId) { return m_pets.use(client, mobId); }
     // The box players see and aim at: young animals at QcMsg::youngScale (collision stays adult).
     static QcAabb shownBox(const QcMobDefinition &definition, const QcCreature &mob);
     // Breeding timers, births and laid eggs of one simulated tick.
@@ -43,4 +47,5 @@ private:
     QcServerSounds &m_sounds;
     QcServerInventory &m_inventory;
     QcMobBreeding m_breeding;
+    QcPetCare m_pets;
 };

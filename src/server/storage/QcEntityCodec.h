@@ -53,6 +53,8 @@ enum class Component : quint16 {
     // Seconds until a laying creature lays next (version 1, decision E-452); only while its timer
     // runs.
     Laying = 13,
+    // Owner identity, sitting and collar colour of a tame creature (version 1; decision E-480).
+    Tame = 14,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

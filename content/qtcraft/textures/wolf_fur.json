@@ -1,0 +1,8 @@
+{
+    "name": "wolf_fur",
+    "pattern": "speckle",
+    "primary": "#c8c4bc",
+    "secondary": "#a8a49c",
+    "variation": 0.08,
+    "seed": 5201
+}

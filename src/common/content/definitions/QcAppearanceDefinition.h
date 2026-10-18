@@ -5,13 +5,16 @@
 #include <QList>
 #include <QString>
 
-// Colour a texture is multiplied with: one of the player's chosen colours, or none.
+// Colour a texture is multiplied with: one of the player's chosen colours, or none. Collar is the
+// collar of a tame creature (only on creature model parts, QcMobPart::tint; decision E-480), which
+// travels in the shirt colour of the creature's appearance.
 enum class QcTint : quint8 {
     None,
     Skin,
     Hair,
     Shirt,
     Pants,
+    Collar,
 };
 
 // Texture for one slot of a model.

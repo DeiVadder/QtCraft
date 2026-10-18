@@ -18,9 +18,50 @@ bool carriable(const QcBlockDefinition &block)
 
 namespace QcMobTraitsContent {
 
-QStringList resolve(const QcContentRegistry &content, QcMobDefinition &mob)
+QStringList resolveTame(const QcContentRegistry &content, QcMobDefinition &mob)
 {
     QStringList warnings;
+    if (!mob.tameable) {
+        return warnings;
+    }
+
+    QcTameDefinition &tame = *mob.tameable;
+    tame.becomesType = -1;
+    if (!tame.becomes.isEmpty()) {
+        const std::optional<int> type = content.mobIndex(tame.becomes);
+        const bool tameKind = type && content.mobs()[*type].tameable;
+        if (!tameKind) {
+            warnings.append(u"mob '%1': '%2' is no tameable creature; a tamed one stays a '%1'"_s.arg(mob.name, tame.becomes));
+        }
+        tame.becomesType = tameKind ? *type : -1;
+    }
+    for (const QStringList *names : {&tame.items, &tame.healItems, &tame.collarDyes}) {
+        for (const QString &name : *names) {
+            if (!content.itemId(name)) {
+                warnings.append(u"mob '%1': unknown item '%2' for taming"_s.arg(mob.name, name));
+            }
+        }
+    }
+    return warnings;
+}
+
+QStringList checkStructurePets(const QcContentRegistry &content)
+{
+    QStringList warnings;
+    for (const QcStructureDefinition &structure : content.structures()) {
+        for (const QcStructureDefinition::Mob &mob : structure.mobs) {
+            const std::optional<int> type = mob.owner.isEmpty() ? std::nullopt : content.mobIndex(mob.mob);
+            if (!mob.owner.isEmpty() && (!type || !content.mobs()[*type].tameable)) {
+                warnings.append(u"structure '%1': creature '%2' is not tameable; it has no owner"_s.arg(structure.name, mob.mob));
+            }
+        }
+    }
+    return warnings;
+}
+
+QStringList resolve(const QcContentRegistry &content, QcMobDefinition &mob)
+{
+    QStringList warnings = resolveTame(content, mob);
     if (!mob.carries) {
         return warnings;
     }

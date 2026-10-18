@@ -26,7 +26,7 @@ Heller Wald aus Birken.
 
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-plains"></a>Ebene
 
@@ -94,7 +94,7 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -118,7 +118,7 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -141,7 +141,7 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-forest"></a>Wald
 
@@ -163,7 +163,7 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-desert"></a>Wüste
 

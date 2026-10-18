@@ -33,6 +33,8 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_archers(*m_content, m_random, m_paths)
     , m_golems(m_random, m_paths)
     , m_neutral(m_random, m_paths)
+    , m_tamePassive(m_random, m_paths, m_passive)
+    , m_tameNeutral(m_random, m_paths, m_neutral)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
@@ -55,6 +57,10 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
         case QcMobDefinition::Ai::Neutral:
             m_brains.push_back(&m_neutral);
             break;
+        }
+        // A tameable kind (passive or neutral, QcMobTraitsParser) thinks tame or wild (decision E-480).
+        if (definition.tameable) {
+            m_brains.back() = definition.ai == QcMobDefinition::Ai::Neutral ? &m_tameNeutral : &m_tamePassive;
         }
     }
 }

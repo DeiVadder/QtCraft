@@ -153,6 +153,7 @@ target_sources(qc_server PRIVATE
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
     mobs/QcMobExchange.h
+    mobs/QcMobFear.h mobs/QcMobFear.cpp
     mobs/QcMobLaying.h mobs/QcMobLaying.cpp
     mobs/QcMobManager.h mobs/QcMobManager.cpp
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
@@ -160,8 +161,12 @@ target_sources(qc_server PRIVATE
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
     mobs/QcNaturalSpawner.h mobs/QcNaturalSpawner.cpp
     mobs/QcNeutralBrain.h mobs/QcNeutralBrain.cpp
+    mobs/QcPetCare.h mobs/QcPetCare.cpp
+    mobs/QcPetOwners.h mobs/QcPetOwners.cpp
     mobs/QcServerAnimals.h mobs/QcServerAnimals.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
+    mobs/QcTameBrain.h mobs/QcTameBrain.cpp
+    mobs/QcTameState.h
 )
 target_sources(qc_server PRIVATE
     network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp

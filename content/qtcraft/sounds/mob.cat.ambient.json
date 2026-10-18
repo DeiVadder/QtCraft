@@ -1,0 +1,27 @@
+{
+    "name": "mob.cat.ambient",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.3,
+            "frequency": 520,
+            "endFrequency": 760,
+            "attack": 0.01,
+            "curve": 1.8,
+            "lowpass": 1600
+        },
+        {
+            "wave": "sine",
+            "duration": 0.25,
+            "frequency": 760,
+            "endFrequency": 480,
+            "start": 0.28,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 1800
+        }
+    ]
+}

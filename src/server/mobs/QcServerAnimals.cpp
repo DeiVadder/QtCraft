@@ -15,6 +15,7 @@ QcServerAnimals::QcServerAnimals(QcServerState &state, QcServerSounds &sounds, Q
     , m_sounds(sounds)
     , m_inventory(inventory)
     , m_breeding(state.contentPointer())
+    , m_pets(state, sounds, inventory)
 {
 }
 

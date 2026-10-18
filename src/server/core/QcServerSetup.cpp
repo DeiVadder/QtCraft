@@ -6,6 +6,7 @@
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcStandProperties.h"
 #include "server/minecarts/QcMinecartMotion.h"
+#include "server/mobs/QcPetCare.h"
 
 #include <QLoggingCategory>
 
@@ -139,10 +140,16 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
             // Villagers of a station come rested, as if they had just slept: a golem farm of the
             // showcase summons at once although its fixed time of day never brings a night
             // (decision E-470).
-            QcCreature *placed = state.entities().creatures().find(id);
-            placed->confined = mob.confined;
-            if (placed->isVillager()) {
-                placed->villager->sleptAt = state.info().worldTime;
+            QcCreature &creature = *state.entities().creatures().find(id);
+            creature.confined = mob.confined;
+            if (creature.isVillager()) {
+                creature.villager->sleptAt = state.info().worldTime;
+            }
+            // A pet of a made-up owner (the showcase's pet corner, decision E-480).
+            if (!mob.owner.isEmpty() && state.content().mobs()[*type].tameable) {
+                QcPetCare::tame(state.entities(), state.content(), creature, mob.owner);
+                creature.tame->sitting = mob.sitting;
+                creature.pose = mob.sitting ? QcPose::Sitting : QcPose::Standing;
             }
         } else {
             qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;

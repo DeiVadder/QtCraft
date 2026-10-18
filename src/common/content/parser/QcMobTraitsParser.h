@@ -6,7 +6,8 @@
 #include <QJsonObject>
 
 // Parses the traits of creatures that teleport, carry blocks and are provoked by a look (decision
-// E-460): "gaze", "teleport", "carries" and "waterDamage".
+// E-460): "gaze", "teleport", "carries" and "waterDamage"; and of companions (decision E-480):
+// "tameable", "shy", "packRange", "frightens" and "scaredOfCats".
 namespace QcMobTraitsParser {
 
 void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace);

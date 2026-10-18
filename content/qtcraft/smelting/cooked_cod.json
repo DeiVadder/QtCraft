@@ -1,0 +1,9 @@
+{
+    "name": "cooked_cod",
+    "input": "raw_cod",
+    "result": {
+        "item": "cooked_cod"
+    },
+    "seconds": 10,
+    "experience": 0.35
+}

@@ -6,6 +6,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <optional>
+
 // A creature that a player provokes by looking at its head (the enderman, decision E-460), from its
 // data (`gaze`): the player's look and the direction from their eyes to the middle of its head agree
 // within `tolerance`, which narrows with the distance d (look · direction > 1 − tolerance / d, like the
@@ -62,4 +64,62 @@ struct QcCarryDefinition
     static constexpr int maxBlocks = 64;
 
     bool operator==(const QcCarryDefinition &) const = default;
+};
+
+// A creature that players tame (wolves, cats; decision E-480), from its data (`tameable`): each
+// of its taming `items` used on it tames it with `chance` (a tame one belongs to that player's
+// identity, follows, sits when its owner uses it and fights for its owner with `defends`); a wolf
+// `becomes` a dog. Server side only, except that the client knows a kind is tameable at all
+// (it sends every use of one to the server).
+struct QcTameDefinition
+{
+    // Names of the items that tame it; empty for a kind that is only ever tame (the dog).
+    QStringList items;
+    // Chance that one item tames it.
+    double chance = 1.0 / 3.0;
+    // The kind it turns into when tamed (a wolf into a dog); empty: it stays its kind.
+    QString becomes;
+    // The index of `becomes` in the content's mobs, resolved when the content is finished; -1 for none.
+    int becomesType = -1;
+    // Food that heals a tame one by `healAmount` (meat for dogs).
+    QStringList healItems;
+    double healAmount = 4.0;
+    // A tame one that does not sit follows its owner when farther than `followDistance` metres, until
+    // it is within `stopDistance`, and teleports next to its owner when farther than
+    // `teleportDistance` (only to a safe place in loaded chunks; QcSafeSpot).
+    double followDistance = 6.0;
+    double stopDistance = 2.0;
+    double teleportDistance = 12.0;
+    // It attacks what hurts its owner and what its owner strikes (never its owner, never another pet
+    // of the same owner).
+    bool defends = false;
+    // It wears a collar whose colour a dye of `collarDyes` (dye name to RGB) changes; it starts with
+    // the colour of `collarDefault` (a key of collarDyes). Without collarDyes it wears no collar.
+    QStringList collarDyes;
+    QList<quint32> collarColors;
+    QString collarDefault;
+
+    static constexpr int maxItems = 32;
+
+    // The colour of the dye `name`, if the collar takes it.
+    std::optional<quint32> collarColor(const QString &name) const
+    {
+        const qsizetype index = collarDyes.indexOf(name);
+        return index < 0 ? std::nullopt : std::optional<quint32>(collarColors[index]);
+    }
+    bool hasCollar() const { return !collarDyes.isEmpty(); }
+
+    bool operator==(const QcTameDefinition &) const = default;
+};
+
+// A shy creature (the ocelot, decision E-480), from its data (`shy`): it flees from players closer
+// than `distance` metres, except from one who holds one of its `calmItems` and moves no faster than
+// `calmSpeed` m/s (sneaking up slowly with its food). Server side only.
+struct QcShyDefinition
+{
+    double distance = 8.0;
+    QStringList calmItems;
+    double calmSpeed = 1.5;
+
+    bool operator==(const QcShyDefinition &) const = default;
 };

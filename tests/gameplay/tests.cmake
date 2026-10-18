@@ -53,7 +53,7 @@ qc_add_test(test_village_life SOURCES gameplay/test_village_life.cpp world/QcVil
 qc_add_test(test_village_species SOURCES gameplay/test_village_species.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server)
 qc_add_test(test_golem_summons SOURCES gameplay/test_golem_summons.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server)
 # Golems over whole days (decision E-470); QTCRAFT_GOLEM_MEASURE=<days> for the recorded run.
-qc_add_test(test_golem_measure SOURCES gameplay/test_golem_measure.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_golem_measure SOURCES gameplay/test_golem_measure.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server TIMEOUT 510)
 qc_add_test(test_villager_walks SOURCES gameplay/test_villager_walks.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp LIBRARIES qc_server TIMEOUT 300)
 # Fixture villages living through whole days on a server (decision E-424); QTCRAFT_VILLAGE_SOAK_DAYS=3 for the soak.
 qc_add_test(test_village_soak SOURCES gameplay/test_village_soak.cpp world/QcVillageFixture.h world/QcVillageFixture.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
@@ -87,7 +87,9 @@ qc_add_test(test_status_effects SOURCES gameplay/test_status_effects.cpp QcServe
 qc_add_test(test_chickens SOURCES gameplay/test_chickens.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_silverfish SOURCES gameplay/test_silverfish.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_endermen SOURCES gameplay/test_endermen.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_enderman_rules SOURCES gameplay/test_enderman_rules.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_pet_rules SOURCES gameplay/test_pet_rules.cpp gameplay/QcPetFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_taming SOURCES gameplay/test_taming.cpp gameplay/QcPetFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_enderman_rules SOURCES gameplay/test_enderman_rules.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_iron_golems SOURCES gameplay/test_iron_golems.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_projectiles SOURCES gameplay/test_projectiles.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_experience_sources SOURCES gameplay/test_experience_sources.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

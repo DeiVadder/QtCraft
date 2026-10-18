@@ -1,0 +1,181 @@
+{
+    "name": "cat",
+    "sounds": {
+        "ambient": "mob.cat.ambient",
+        "hurt": "mob.cat.hurt",
+        "death": "mob.cat.death"
+    },
+    "health": 10,
+    "width": 0.6,
+    "height": 0.7,
+    "walkSpeed": 1.4,
+    "chaseSpeed": 4.0,
+    "hostile": false,
+    "frightens": true,
+    "tameable": {
+        "items": [
+            "raw_cod"
+        ],
+        "chance": 0.3333,
+        "healItems": [
+            "raw_cod",
+            "cooked_cod"
+        ],
+        "healAmount": 2,
+        "followDistance": 6,
+        "stopDistance": 2,
+        "teleportDistance": 12
+    },
+    "spawn": {
+        "weight": 0
+    },
+    "model": [
+        {
+            "from": [
+                -0.13,
+                0.3,
+                -0.38
+            ],
+            "to": [
+                0.13,
+                0.52,
+                0.32
+            ],
+            "texture": "cat_fur",
+            "sitOffset": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "from": [
+                -0.14,
+                0.38,
+                -0.62
+            ],
+            "to": [
+                0.14,
+                0.64,
+                -0.38
+            ],
+            "texture": "cat_head"
+        },
+        {
+            "from": [
+                -0.12,
+                0.64,
+                -0.55
+            ],
+            "to": [
+                -0.04,
+                0.72,
+                -0.47
+            ],
+            "texture": "cat_fur"
+        },
+        {
+            "from": [
+                0.04,
+                0.64,
+                -0.55
+            ],
+            "to": [
+                0.12,
+                0.72,
+                -0.47
+            ],
+            "texture": "cat_fur"
+        },
+        {
+            "from": [
+                -0.12,
+                0.0,
+                -0.34
+            ],
+            "to": [
+                -0.04,
+                0.3,
+                -0.26
+            ],
+            "texture": "cat_fur"
+        },
+        {
+            "from": [
+                0.04,
+                0.0,
+                -0.34
+            ],
+            "to": [
+                0.12,
+                0.3,
+                -0.26
+            ],
+            "texture": "cat_fur"
+        },
+        {
+            "from": [
+                -0.12,
+                0.0,
+                0.2
+            ],
+            "to": [
+                -0.04,
+                0.3,
+                0.28
+            ],
+            "texture": "cat_fur",
+            "sitOffset": [
+                0,
+                0,
+                -0.1
+            ]
+        },
+        {
+            "from": [
+                0.04,
+                0.0,
+                0.2
+            ],
+            "to": [
+                0.12,
+                0.3,
+                0.28
+            ],
+            "texture": "cat_fur",
+            "sitOffset": [
+                0,
+                0,
+                -0.1
+            ]
+        },
+        {
+            "from": [
+                -0.03,
+                0.4,
+                0.32
+            ],
+            "to": [
+                0.03,
+                0.48,
+                0.72
+            ],
+            "texture": "cat_fur",
+            "sitOffset": [
+                0,
+                -0.38,
+                -0.05
+            ]
+        }
+    ],
+    "drops": [
+        {
+            "item": "string",
+            "chance": 0.5
+        }
+    ],
+    "experience": [
+        1,
+        3
+    ]
+}
