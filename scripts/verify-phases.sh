@@ -101,7 +101,8 @@ $preset: $names"
     wait_for_quiet
     limited 3600 ctest --preset "$preset" --parallel "$TIMING_JOBS" --no-tests=ignore "$@" \
         -L "$TIMING_LABEL" --output-junit "$report"
-    status=$?
+    # Its own name: sh has no local variables, and run_tests keeps phase 1's result in `status`.
+    timing_status=$?
     quiet_lock_release
-    return $status
+    return $timing_status
 }
