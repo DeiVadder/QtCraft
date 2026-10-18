@@ -19,8 +19,10 @@ again next time. Without a stamp file every test runs.
   select  writes the current fingerprints to <build dir>/.verify-test-pending.json and, with
           --changed, prints the ctest regex of the selected tests on stdout (empty: none) and the
           reasons on stderr. Without --changed it only writes the pending fingerprints.
-  record  copies the pending fingerprints of the tests the JUnit report shows as passed (and of
-          the adopted tests, see below) into the stamp file.
+  record  copies the pending fingerprints of the tests the JUnit reports show as passed (and of
+          the adopted tests, see below) into the stamp file. --junit may be given once per ctest
+          phase (verify.sh runs the `timing` tests after the rest, decision E-550); a test that
+          did not run (a deferred timing test) keeps its old stamp and is selected again.
 
 --broad-label <l> (the TSan step of --tsan-concurrent --changed, decision E-412) widens the
 selection beyond the label without running every test under TSan: tests with label <l> are
@@ -33,7 +35,7 @@ next relink selects them. That keeps the first run in a fresh build directory at
 
 Usage: scripts/verify-tests.py select --build-dir <dir> [--changed] [--regex <re>] [--label <l>]
                                       [--broad-label <l>]
-       scripts/verify-tests.py record --build-dir <dir> --junit <report.xml>
+       scripts/verify-tests.py record --build-dir <dir> --junit <report.xml> [--junit <report.xml>]
 """
 
 import argparse
@@ -321,7 +323,8 @@ def record(arguments):
     stamps_path = os.path.join(build_dir, STAMPS)
     stamps = read_json(stamps_path, {})
     known = stamps.setdefault("tests", {})
-    passed = [name for name in passed_tests(arguments.junit) if name in pending["tests"]]
+    reports = [name for junit in arguments.junit for name in passed_tests(junit)]
+    passed = [name for name in reports if name in pending["tests"]]
     adopted = pending.get("adopted", [])
     for name in passed + adopted:
         known[name] = pending["tests"][name]
@@ -339,7 +342,7 @@ def main():
     parser.add_argument("--regex", default="")
     parser.add_argument("--label", default="")
     parser.add_argument("--broad-label", default="")
-    parser.add_argument("--junit", default="")
+    parser.add_argument("--junit", action="append", default=[])
     arguments = parser.parse_args()
     if arguments.command == "select":
         select(arguments)

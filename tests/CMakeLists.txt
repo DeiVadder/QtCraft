@@ -38,11 +38,8 @@ set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 # reserve as many job slots as they keep busy; the longest tests carry a cost so that a fresh build
 # directory starts them first (later runs use the measured times in Testing/Temporary).
 set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
-# Measures how punctually the server's tick timer fires; that needs a machine without other tests.
-set_tests_properties(test_tick_scheduler PROPERTIES RUN_SERIAL TRUE)
-# A walker, a watcher and the server in real time: next to other tests the walker's inputs cross the
-# server's ticks unevenly and the walk itself stutters, which is not what it measures (E-410).
-set_tests_properties(test_interpolation PROPERTIES RUN_SERIAL TRUE)
+# Tests that depend on wall time or load (test_tick_scheduler, test_interpolation and others) run in
+# a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
@@ -88,3 +85,7 @@ set_tests_properties(test_ui_palette PROPERTIES
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
 set_tests_properties(test_gamepad_sdl PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/build-sdl.sh;${PROJECT_SOURCE_DIR}/3rdparty/sdl3-tag.txt;${PROJECT_SOURCE_DIR}/cmake/QcGamepad.cmake")
+
+# Tests whose result depends on wall time or machine load: label `timing`, run by scripts/verify.sh
+# in a phase of their own with few jobs on a quiet machine (decision E-550).
+include(${CMAKE_CURRENT_SOURCE_DIR}/timing.cmake)

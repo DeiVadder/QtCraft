@@ -416,8 +416,8 @@ private slots:
         // Real time on a busy machine can delay the frame timer, and the walker's inputs then cross
         // the server's ticks unevenly (two in one tick, none in the next): the walk itself stutters
         // and a late snapshot after a double step is extrapolated too far (E-271, limits). The test
-        // runs alone (RUN_SERIAL, E-410), the best of three walks counts, and the longest gap between
-        // frames is reported.
+        // runs in the timing phase on a quiet machine with few other tests (tests/timing.cmake, E-410,
+        // E-550), the best of three walks counts, and the longest gap between frames is reported.
         Motion buffered = measure(true);
         for (int attempt = 1; attempt < 3 && buffered.backwardJumps > 0; ++attempt) {
             buffered = measure(true);

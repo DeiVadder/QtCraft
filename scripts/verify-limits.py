@@ -29,7 +29,10 @@ Warnings only, never a failure: debug times in a parallel run vary with the load
 the person reading the warning decides (set TIMEOUT/COST in tests/CMakeLists.txt or make the
 test lighter). Prints nothing when every limit fits.
 
-Usage: scripts/verify-limits.py --build-dir <dir> --junit <report.xml>
+The debug step runs in two phases (the `timing` tests after the rest, decision E-550); --junit
+is given once per phase and the check covers the tests of both.
+
+Usage: scripts/verify-limits.py --build-dir <dir> --junit <report.xml> [--junit <report.xml>]
 """
 
 import argparse
@@ -125,10 +128,12 @@ def warnings(times, properties):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--build-dir", required=True)
-    parser.add_argument("--junit", required=True)
+    parser.add_argument("--junit", action="append", required=True)
     arguments = parser.parse_args()
 
-    times = run_times(arguments.junit)
+    times = {}
+    for junit in arguments.junit:
+        times.update(run_times(junit))
     if not times:
         return
     smallest = recent_times(arguments.build_dir, times)

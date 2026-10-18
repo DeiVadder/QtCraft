@@ -28,10 +28,19 @@
 # On macOS the script runs under `caffeinate -i` (it starts itself once more), so the machine does
 # not sleep during a run; arguments and exit code pass through.
 # Every test step runs ctest in parallel (decision E-380): QC_TEST_JOBS jobs, by default the number
-# of cores minus two. The script runs at normal priority; work beside it (the next stage in its own
+# of cores minus two. It runs in two phases (decision E-550, scripts/verify-phases.sh): first every
+# test except those labelled `timing` (tests/timing.cmake), then the timing tests with
+# QC_TIMING_JOBS jobs (default 2) once the 1-min load average is below QC_QUIET_LOAD (default the
+# number of cores; at most QC_QUIET_WAIT seconds of waiting, default 600, then they run anyway).
+# The timing phase holds the quiet lock ~/.cache/qtcraft/quiet.lock (scripts/quiet-lock.sh); while
+# another run holds it, every configure, build, test and analysis step waits first (at most
+# QC_QUIET_PAUSE_MAX seconds, default 2700). Agents call scripts/wait-quiet.sh before a bare build.
+# --defer-timing: skips the timing phase and names the skipped tests; they keep their old stamps, so
+#                    a later --changed run selects them. For agents working in parallel; the
+#                    central run before the merge runs them. The script runs at normal priority; work beside it (the next stage in its own
 # worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
 # ~/.cache/qtcraft/bench.lock exists.
-# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
+# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
 
@@ -51,6 +60,7 @@ MODE_GIVEN=""
 TEST_REGEX=""
 TSAN_LABEL=""
 CHANGED=0
+DEFER_TIMING=0
 SANITIZERS="asan tsan"
 SANITIZERS_GIVEN=0
 SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
@@ -63,9 +73,10 @@ case "$TEST_JOBS" in
 '' | *[!0-9]*) echo "QC_TEST_JOBS must be a positive number, not '$TEST_JOBS'" >&2 && exit 2 ;;
 esac
 [ "$TEST_JOBS" -ge 1 ] || TEST_JOBS=1
+. "$PROJECT_DIR/scripts/verify-phases.sh"
 
 usage() {
-    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
+    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
     exit 2
 }
 
@@ -86,6 +97,9 @@ while [ $# -gt 0 ]; do
         ;;
     --changed)
         CHANGED=1
+        ;;
+    --defer-timing)
+        DEFER_TIMING=1
         ;;
     --tests)
         [ $# -ge 2 ] || usage
@@ -135,7 +149,7 @@ if [ -e "$BENCH_LOCK" ]; then
     echo "benchmark lock $BENCH_LOCK exists ($(cat "$BENCH_LOCK/owner" 2>/dev/null)); no verify run while it is held" >&2
     exit 2
 fi
-echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS)"
+echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS), timing tests with $TIMING_JOBS (QC_TIMING_JOBS)"
 
 failures=""
 timings=""
@@ -182,9 +196,9 @@ run_tests() {
     if [ "$preset" = tsan ] && [ -n "$TSAN_LABEL" ]; then
         label=$TSAN_LABEL
     fi
-    # The serial TSan suite took about 40 minutes (stage 43); an hour per step leaves room for a
-    # machine that is busy beside the run.
-    set -- --preset "$preset" --parallel "$TEST_JOBS"
+    # The serial TSan suite took about 40 minutes (stage 43); an hour per phase leaves room for a
+    # machine that is busy beside the run. The positional parameters collect the ctest filters.
+    set --
     rm -f "build/$preset/.verify-test-pending.json"
 
     selection=""
@@ -205,21 +219,23 @@ run_tests() {
         fi
     fi
 
-    # The JUnit report tells which tests passed; only those get new stamps.
+    # The JUnit reports of both phases tell which tests passed; only those get new stamps.
     junit="$PROJECT_DIR/build/$preset/Testing/verify-junit.xml"
-    rm -f "$junit"
-    limited 3600 ctest "$@" --output-junit "$junit"
+    junit_timing="$PROJECT_DIR/build/$preset/Testing/verify-junit-timing.xml"
+    rm -f "$junit" "$junit_timing"
+    run_main_phase "$preset" "$junit" "$@"
     status=$?
-    python3 scripts/verify-tests.py record --build-dir "build/$preset" --junit "$junit"
+    run_timing_phase "$preset" "$junit_timing" "$@" || status=1
+    python3 scripts/verify-tests.py record --build-dir "build/$preset" --junit "$junit" --junit "$junit_timing"
     if [ "$preset" = debug ]; then
-        check_limits "$junit"
+        check_limits "$junit" "$junit_timing"
     fi
     return $status
 }
 
 # Warns about tests whose TIMEOUT or COST does not fit their debug time (E-412); never fails.
 check_limits() {
-    found=$(python3 scripts/verify-limits.py --build-dir build/debug --junit "$1")
+    found=$(python3 scripts/verify-limits.py --build-dir build/debug --junit "$1" --junit "$2")
     [ -n "$found" ] || return 0
     echo "$found"
     limit_warnings="$limit_warnings
@@ -228,7 +244,9 @@ $found"
 
 build_and_test() {
     preset=$1
+    quiet_pause "configure-$preset"
     step "configure-$preset" limited 300 cmake --preset "$preset"
+    quiet_pause "build-$preset"
     step "build-$preset" limited 1200 cmake --build --preset "$preset"
     step "test-$preset" run_tests "$preset"
 }
@@ -265,12 +283,16 @@ for preset in $SANITIZERS; do
 done
 
 if [ "$MODE" = quick ]; then
+    quiet_pause "static-analysis-changed"
     step "static-analysis-changed" static_analysis_changed
 else
     # Release build: catches warnings that only appear without assertions.
+    quiet_pause "configure-release"
     step "configure-release" limited 300 cmake --preset release
+    quiet_pause "build-release"
     step "build-release" limited 1200 cmake --build --preset release
 
+    quiet_pause "static-analysis"
     step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
 
     # Smoke runs render offscreen (E-229); QTCRAFT_SHOT_MODE=window takes the real window, which
@@ -301,6 +323,9 @@ else
 fi
 
 echo "== timings ($MODE)$timings"
+if [ -n "$deferred_timing" ]; then
+    echo "== timing tests deferred (--defer-timing; not run, not stamped, the next --changed run selects them)$deferred_timing"
+fi
 if [ -n "$limit_warnings" ]; then
     echo "== test limits too tight for TSan (warning only; set TIMEOUT/COST in tests/CMakeLists.txt or lighten the test)$limit_warnings"
 fi
@@ -314,8 +339,11 @@ selected=""
 if [ "$CHANGED" -eq 1 ]; then
     selected=", changed tests only"
 fi
+if [ -n "$deferred_timing" ]; then
+    selected="$selected, timing tests deferred"
+fi
 if [ -n "$TSAN_LABEL" ] && [ "$CHANGED" -eq 1 ]; then
-    echo "ALL GREEN (quick, changed tests only; TSan on label $TSAN_LABEL and changed tests)"
+    echo "ALL GREEN (quick$selected; TSan on label $TSAN_LABEL and changed tests)"
 elif [ -n "$TSAN_LABEL" ]; then
     echo "ALL GREEN (quick, TSan on label $TSAN_LABEL$selected)"
 elif [ "$MODE" = quick ]; then
