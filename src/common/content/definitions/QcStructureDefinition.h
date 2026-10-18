@@ -32,13 +32,16 @@ struct QcStructureDefinition
     {
         QString mob;
         QcVec3 at;
-        // Stays in its enclosure (decision E-460): it neither teleports nor takes or places blocks
-        // (the showcase's pens; `"confined": true` in structure data).
+        // Stays in its enclosure (decision E-460): it neither teleports nor changes the world
+        // (decision E-510; the showcase's pens; `"confined": true` in structure data).
         bool confined = false;
         // A tame creature of the owner key (decision E-480; the showcase's pets belong to a made-up
         // owner, "showcase"), sitting unless `sitting` is false; empty: wild.
         QString owner = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
         bool sitting = true;
+        // Without a mind, like the reference's NoAI (decision E-510; `"noAi": true`): it stands
+        // where it is put.
+        bool noAi = false;
     };
 
     // An armour stand (decision E-238): where it stands, turned by `yaw` degrees (0 faces north),

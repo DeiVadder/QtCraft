@@ -74,6 +74,7 @@ void QcVillagePopulation::spawnVillagers(QcServerWorld &world, QcChunkPos pos, c
         m_mobs.spawn(*type, *at, nextEntityId());
         QcCreature &villager = m_mobs.editableMobs().last();
         *villager.villager = QcVillagerHomes::settle(*village, bed, villager.uid, settings, look);
+        villager.confined = plan->residentsConfined;
         // A village always lived in (a row of the showcase world) shows a child in its last bed
         // (decision E-415); it grows up like any other.
         if (plan->alwaysLivedIn && bed == village->beds.constLast().at) {
@@ -205,6 +206,9 @@ void QcVillagePopulation::liveInVillages(QcServerWorld &world, double worldTime,
         QcCreature &child = m_mobs.editableMobs().last();
         *child.villager = QcVillagerHomes::settle(*village, birth.bed, child.uid, settings, look);
         child.growUp = settings.breeding.growUpSeconds;
+        // A child of a village whose residents are confined (a row of the showcase world) is too.
+        const std::shared_ptr<const QcVillagePlan> plan = world.generator().villageFor(birth.bed.chunk());
+        child.confined = plan && plan->id == birth.village && plan->residentsConfined;
         world.villages().noteChanged();
     }
 

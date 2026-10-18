@@ -160,11 +160,12 @@ void parseMobs(const QJsonObject &json, Structure &structure, QcJsonFieldReader 
         const bool confined = entryReader.boolean(u"confined"_s, false);
         const QString owner = entryReader.string(u"owner"_s);
         const bool sitting = entryReader.boolean(u"sitting"_s, true);
+        const bool noAi = entryReader.boolean(u"noAi"_s, false);
         reader.adopt(entryReader);
         if (!reader.ok()) {
             return;
         }
-        structure.mobs.append({mob, *at, confined, owner, sitting});
+        structure.mobs.append({mob, *at, confined, owner, sitting, noAi});
     }
 }
 

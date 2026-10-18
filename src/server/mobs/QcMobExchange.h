@@ -47,6 +47,8 @@ struct Stored
     QcBlockId carried = qcAirBlockId;
     bool keptForBlock = false;
     bool confined = false;
+    // Without a mind (QcCreature::noAi, decision E-510).
+    bool noAi = false;
     // Owner, sitting and collar of a tame one (decision E-480; its target is not saved).
     std::optional<QcTameState> tame = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 

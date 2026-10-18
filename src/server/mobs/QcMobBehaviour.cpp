@@ -115,6 +115,11 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     QcMobSteering::provoke(mob, definition, *context.players);
     mob.calm = QcMobSteering::calm(mob, definition, context.worldTime);
     limitFall(mob, definition);
+    if (mob.noAi) {
+        ++m_tiers.idle;
+        withoutMind(index, mob, definition, context.world);
+        return;
+    }
     // A creature lying or sitting asks its brain whether it stays so (a villager in its bed lies
     // still until it gets up, decision E-411).
     if (mob.pose != QcPose::Standing && brain.rest(mob, context)) {
@@ -159,6 +164,23 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     walk(mob, definition, context.world, steering);
 }
 
+void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world)
+{
+    // A flyer hovers where it is, and a creature lying or sitting stays so, as its brain would leave
+    // it while it rests.
+    if (definition.flying || mob.pose != QcPose::Standing) {
+        return;
+    }
+
+    // Out of blocks it was pushed into, then only the crowd's push and the physics move it: it
+    // falls, sinks and is knocked back, but never steers, jumps or swims (walk).
+    QcMobUpkeep::leaveBlocks(mob, definition, world);
+    mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
+    QcPhysics::Steering steering{{}, 0.0};
+    steerApart(index, mob, world, steering);
+    walk(mob, definition, world, steering);
+}
+
 QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
                                                     bool coasts)
 {
@@ -201,13 +223,14 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
     if (mob.hurt.knockedBack()) {
         steering.wish = {};
     }
-    const bool jump = mob.motion.inWater || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0);
+    // One without a mind (decision E-510) neither jumps nor swims up.
+    const bool jump = !mob.noAi && (mob.motion.inWater || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0));
     const bool wasOnGround = mob.motion.onGround;
     // Feet in water (also while floating with the body above the surface).
     const bool wading = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0}));
     // A swimmer at the shore, its body above the surface, leaps onto the bank as from the ground:
     // swimming up never lifts its feet onto a bank level with the water.
-    if (mob.blockedLastTick && wading && !mob.motion.inWater && steering.wish.length() > 0.0) {
+    if (!mob.noAi && mob.blockedLastTick && wading && !mob.motion.inWater && steering.wish.length() > 0.0) {
         mob.motion.velocity.y = std::max(mob.motion.velocity.y, QcPhysics::jumpVelocity);
     }
     const bool climbsWalls = definition.abilities.climbs == QcMobAbilities::Climbing::Walls;

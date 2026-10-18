@@ -78,7 +78,8 @@
                 4.5,
                 1.0,
                 4.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "cave_spider",
@@ -86,7 +87,8 @@
                 10.5,
                 1.0,
                 4.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "cave_spider",
@@ -94,7 +96,8 @@
                 11.5,
                 1.0,
                 3.5
-            ]
+            ],
+            "confined": true
         }
     ],
     "labels": [

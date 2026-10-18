@@ -17,7 +17,8 @@ class QcServerState;
 // drop), the food adult villagers pick up from the ground every foodTicks ticks
 // (QcVillagerBreedingSettings::foods, decision E-490: it counts as produce, so throwing bread feeds
 // them), and clients learning a villager's new look. Without the game rule mobGriefing villagers
-// neither harvest nor pick anything up, like in the reference game. Trading is QcServerTrading's.
+// neither harvest nor pick anything up, like in the reference game, and confined villagers or ones
+// without a mind never do (QcCreature::mayGrief, decision E-510). Trading is QcServerTrading's.
 class QcServerVillagers
 {
 public:

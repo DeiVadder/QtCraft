@@ -95,8 +95,13 @@ struct QcCreature : QcEntity
     // before keeps that. Saved with it.
     bool keptForBlock = false;
     // Stays where a structure put it (QcStructureDefinition::Mob::confined, decision E-460): it
-    // neither teleports nor takes or places blocks. Saved with it.
+    // neither teleports nor changes the world (mayGrief, decision E-510). Saved with it.
     bool confined = false;
+    // Without a mind, like the reference game's NoAI (decision E-510): it neither thinks nor steers,
+    // walks, jumps, swims, attacks, teleports nor changes the world, but it still falls, is pushed
+    // and knocked back and takes damage. Set by structure data (`"noAi": true`), /summon … noai and
+    // /mob … noai; saved with it (QcEntityCodec::Component::NoAi).
+    bool noAi = false;
     // Game ticks until it may teleport again (QcTeleportDefinition::cooldownSeconds); not saved.
     int teleportCooldown = 0;
     // Where it teleported from since the creatures' last tick: QcCreatureTraits plays the sounds and
@@ -131,4 +136,9 @@ struct QcCreature : QcEntity
     bool isTame() const { return tame.has() && !tame->owner.isEmpty(); }
     // Whether it sits for its owner.
     bool sits() const { return isTame() && tame->sitting; }
+    // Whether it may change the world under the game rule mobGriefing `rule` (decision E-510): the
+    // one check of every griefing path (an enderman taking and placing blocks, a silverfish hiding
+    // in a block and breaking blocks when it wakes its kind, a farmer harvesting, a villager picking
+    // up food). A confined creature and one without a mind change nothing.
+    bool mayGrief(bool rule) const { return rule && !confined && !noAi; }
 };

@@ -29,12 +29,14 @@ public:
     void announceTeleports();
 
 private:
-    // Takes the block when it is still there, the creature carries none and the game rule allows it.
+    // Takes the block when it is still there, the creature carries none and may change the world
+    // (QcCreature::mayGrief).
     void take(const QcMobManager::BlockAction &action);
     // Puts the carried block into the air of the cell when no body is in it and the block holds
     // there (QcBlockRules::isSupported: a flower on soil, a cactus on sand).
     void place(const QcMobManager::BlockAction &action);
-    // With the game rule mobGriefing off the creature drops its block as an item instead.
+    // A creature that may not change the world (game rule mobGriefing off, confined; QcCreature::
+    // mayGrief) drops its block as an item instead.
     void drop(const QcMobManager::BlockAction &action);
     // It carries nothing now; kept only for the block, it is no longer kept.
     void letGo(QcCreature &mob);

@@ -16,9 +16,9 @@
         ["PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP   BBBBB  ", "PPPPPPPPPPPPPPP   BBBBB  ", "PPPPPPPPPPPPPPP   BBBBB  ", "PPPPPPPPPPPPPPP   BBBBB  ", "PPPPPPPPPPPPPPP   BBBBB  ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          "]
     ],
     "mobs": [
-        { "mob": "zombie", "at": [7.5, 1.0, 2.5] },
-        { "mob": "pig", "at": [19.5, 5.0, 5.5] },
-        { "mob": "pig", "at": [21.5, 5.0, 7.5] }
+        { "mob": "zombie", "at": [7.5, 1.0, 2.5], "confined": true },
+        { "mob": "pig", "at": [19.5, 5.0, 5.5], "confined": true },
+        { "mob": "pig", "at": [21.5, 5.0, 7.5], "confined": true }
     ],
     "labels": [
         { "at": [7.5, 5.6, 12.5], "text": "showcase.path.maze" },

@@ -49,7 +49,7 @@ void QcCreatureTraits::take(const QcMobManager::BlockAction &action)
     QcMobManager &creatures = m_state.entities().creatures();
     QcCreature *mob = creatures.find(action.mob);
     // Two creatures may have chosen the same block in one tick: the first takes it.
-    if (!mob || mob->carried != qcAirBlockId || !m_state.info().mobGriefing || m_state.world().blockAt(action.pos) != action.block) {
+    if (!mob || mob->carried != qcAirBlockId || !mob->mayGrief(m_state.info().mobGriefing) || m_state.world().blockAt(action.pos) != action.block) {
         return;
     }
 
@@ -69,7 +69,7 @@ void QcCreatureTraits::place(const QcMobManager::BlockAction &action)
 {
     QcMobManager &creatures = m_state.entities().creatures();
     QcCreature *mob = creatures.find(action.mob);
-    if (!mob || mob->carried != action.block || !m_state.info().mobGriefing || m_state.world().blockAt(action.pos) != qcAirBlockId
+    if (!mob || mob->carried != action.block || !mob->mayGrief(m_state.info().mobGriefing) || m_state.world().blockAt(action.pos) != qcAirBlockId
         || bodyIn(action.pos) || !QcBlockRules::isSupported(m_state.world(), action.pos, action.block)) {
         return;
     }
@@ -84,7 +84,7 @@ void QcCreatureTraits::place(const QcMobManager::BlockAction &action)
 void QcCreatureTraits::drop(const QcMobManager::BlockAction &action)
 {
     QcCreature *mob = m_state.entities().creatures().find(action.mob);
-    if (!mob || mob->carried != action.block || m_state.info().mobGriefing) {
+    if (!mob || mob->carried != action.block || mob->mayGrief(m_state.info().mobGriefing)) {
         return;
     }
     dropCarried(*mob);

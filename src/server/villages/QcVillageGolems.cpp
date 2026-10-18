@@ -54,7 +54,7 @@ std::optional<int> QcVillageGolems::kind(const QString &style) const
 
 QcVillageGolems::Want QcVillageGolems::wants(const QcCreature &villager, const QcVillageGolemSettings &settings, double worldTime)
 {
-    if (!villager.isVillager() || villager.dormant || villager.isYoung()) {
+    if (!villager.isVillager() || villager.dormant || villager.noAi || villager.isYoung()) {
         return Want::None;
     }
     // Only a villager that slept in its bed lately wants one; panic makes it summon at once.

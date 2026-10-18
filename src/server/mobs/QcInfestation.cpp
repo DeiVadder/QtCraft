@@ -59,14 +59,13 @@ void QcInfestation::tick()
     // Copies: waking adds creatures and hiding removes them.
     QList<QcCreature> hurt;
     QList<QcCreature> idle;
-    const bool griefing = m_state.info().mobGriefing;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         if (mob.dormant || !hides(mob)) {
             continue;
         }
         if (mob.hurtThisTick && mob.health > 0.0) {
             hurt.append(mob);
-        } else if (griefing && mob.chasing == 0 && mob.motion.onGround && !mob.hurt.active() && m_state.random().generateDouble() < hideChance) {
+        } else if (mob.mayGrief(m_state.info().mobGriefing) && mob.chasing == 0 && mob.motion.onGround && !mob.hurt.active() && m_state.random().generateDouble() < hideChance) {
             idle.append(mob);
         }
     }
@@ -87,6 +86,7 @@ int QcInfestation::wake(const QcCreature &mob)
     if (blocks == map().waking.constEnd()) {
         return 0;
     }
+    const bool griefing = mob.mayGrief(m_state.info().mobGriefing);
     int woken = 0;
     for (const QcBlockPos &offset : order) {
         // Cells of chunks that are not loaded have no block and wake nothing.
@@ -97,9 +97,10 @@ int QcInfestation::wake(const QcCreature &mob)
             continue;
         }
 
-        // Breaking it with drops lets the creature out (release); without mobGriefing the base block
-        // comes back instead.
-        if (m_state.info().mobGriefing) {
+        // Breaking it with drops lets the creature out (release); when the waking creature may not
+        // change the world (QcCreature::mayGrief: game rule mobGriefing off, confined, no mind) the
+        // base block comes back instead.
+        if (griefing) {
             m_blocks.breakBlock(pos, true);
         } else {
             m_blocks.setAndBroadcast(pos, *base);
@@ -114,6 +115,9 @@ int QcInfestation::wake(const QcCreature &mob)
 
 bool QcInfestation::hide(const QcCreature &mob, QcBlockFace face)
 {
+    if (!mob.mayGrief(m_state.info().mobGriefing)) {
+        return false;
+    }
     const QcFaceOffset offset = qcFaceOffset(face);
     const double middle = m_state.content().mobs()[mob.type].height * 0.5;
     const QcBlockPos pos = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, middle, 0.0}).offset(offset.dx, offset.dy, offset.dz);

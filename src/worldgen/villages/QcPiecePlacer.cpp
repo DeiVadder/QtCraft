@@ -386,7 +386,7 @@ void QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Bluepr
         list.append(QcVillageSpot{placed.toWorld(spot.at), spot.kind});
     }
     for (const QcStructure::Mob &mob : structure->mobs) {
-        draft.plan.mobs.append({mob.mob, placed.toWorld(mob.at), mob.confined});
+        draft.plan.mobs.append({mob.mob, placed.toWorld(mob.at), mob.confined, mob.noAi});
     }
     if (blueprint.fields) {
         const QList<QcBlockPos> crops = QcVillageFields::cropCells(*structure, m_content);

@@ -74,6 +74,9 @@ public:
 private:
     // One tick of an awake creature in its tier.
     void update(qsizetype index, QcCreature &mob, const QcMobBrain::Context &context);
+    // A creature without a mind (QcCreature::noAi, decision E-510): no brain, no steering, no blow;
+    // only the physics, the crowd's push and leaving blocks move it.
+    void withoutMind(qsizetype index, QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world);
     // What a creature does without thinking in a crowd: along its path at its last speed without
     // searching and without stepping off an edge (`coasts`, throttled) or nothing (idle), and a blow
     // at a player in melee.

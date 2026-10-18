@@ -122,8 +122,9 @@ private:
     std::optional<Goal> goalOf(QcCreature &mob, const Context &context);
     std::optional<Goal> strollGoal(const QcCreature &mob, const Context &context);
     // A farmer at work (its `profession` tends crops) keeps its crop or looks for one (not after
-    // every decision while there is none); others drop it.
-    void lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const;
+    // every decision while there is none); others and farmers that may not change the world
+    // (QcCreature::mayGrief) drop it.
+    void lookForCrops(QcCreature &mob, const QcVillagerProfession *profession, const Context &context) const;
     // A ripe crop within cropRadius of the farmer's workstation, if any: on the village's fields or
     // any other field, a player's too (decision E-490).
     std::optional<QcBlockPos> ripeCropNear(const QcVillager &villager, const Context &context) const;

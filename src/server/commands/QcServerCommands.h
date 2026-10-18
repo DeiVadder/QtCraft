@@ -6,6 +6,7 @@
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcEffectCommands.h"
 #include "server/commands/QcExperienceCommands.h"
+#include "server/commands/QcMobCommands.h"
 #include "server/commands/QcPendingCommands.h"
 #include "server/commands/QcPlayerCommands.h"
 #include "server/commands/QcTickCommands.h"
@@ -84,4 +85,5 @@ private:
     QcVillageCommands m_villages;
     QcExperienceCommands m_experience;
     QcEffectCommands m_effects;
+    QcMobCommands m_mobs;
 };

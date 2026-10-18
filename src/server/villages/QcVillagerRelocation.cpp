@@ -24,7 +24,7 @@ int QcVillagerRelocation::check(QList<QcCreature> &mobs, const Context &context)
     int moves = 0;
     for (QcCreature &mob : mobs) {
         // Villagers a structure keeps in place (a showcase farm) stay where they are.
-        if (mob.dormant || !mob.isVillager() || mob.confined || mob.pose == QcPose::Lying || mob.villager->trader != 0) {
+        if (mob.dormant || !mob.isVillager() || mob.confined || mob.noAi || mob.pose == QcPose::Lying || mob.villager->trader != 0) {
             continue;
         }
         QcVillager &villager = *mob.villager;

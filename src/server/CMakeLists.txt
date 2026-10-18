@@ -42,6 +42,7 @@ target_sources(qc_server PRIVATE
     commands/QcCommandSource.h commands/QcCommandSource.cpp
     commands/QcEffectCommands.h commands/QcEffectCommands.cpp
     commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
+    commands/QcMobCommands.h commands/QcMobCommands.cpp
     commands/QcPendingCommands.h commands/QcPendingCommands.cpp
     commands/QcPermission.h
     commands/QcPlayerCommands.h commands/QcPlayerCommands.cpp

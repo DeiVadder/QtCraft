@@ -58,7 +58,7 @@ public:
         qint64 worldLimit = 0;
     };
 
-    // Why a villager wants a golem now: it slept lately (Gossip), and panicked lately too (Panic).
+    // Why a villager wants a golem now (one without a mind, QcCreature::noAi, wants none): it slept lately (Gossip), and panicked lately too (Panic).
     enum class Want : quint8 { None, Gossip, Panic };
 
     explicit QcVillageGolems(std::shared_ptr<const QcContentRegistry> content);

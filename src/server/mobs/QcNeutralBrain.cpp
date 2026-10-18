@@ -122,19 +122,21 @@ const QcMobManager::PlayerView *QcNeutralBrain::angryAt(QcCreature &mob, const C
 
 void QcNeutralBrain::carry(QcCreature &mob, const QcMobDefinition &definition, const Context &context, int thinkTicks)
 {
-    if (!definition.carries || mob.confined || !context.blockActions) {
+    if (!definition.carries || !context.blockActions) {
         return;
     }
 
+    // Whether it may change the world (game rule mobGriefing, not confined; decision E-510).
+    const bool griefing = mob.mayGrief(context.griefing);
     const double seconds = context.dt * thinkTicks;
     if (mob.carried == qcAirBlockId) {
-        if (context.griefing && random().generateDouble() < definition.carries->takeChance * seconds) {
+        if (griefing && random().generateDouble() < definition.carries->takeChance * seconds) {
             takeBlock(mob, definition, context);
         }
     } else if (random().generateDouble() < definition.carries->placeChance * seconds) {
-        // Without the game rule it does not change the world: the block falls as an item, so the
-        // creature is not kept with the world for it forever.
-        if (context.griefing) {
+        // When it may not change the world the block falls as an item, so the creature is not kept
+        // with the world for it forever.
+        if (griefing) {
             placeBlock(mob, definition, context);
         } else {
             context.blockActions->append({QcMobManager::BlockAction::Kind::Drop, mob.id, {}, mob.carried});

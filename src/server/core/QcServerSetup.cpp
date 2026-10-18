@@ -142,6 +142,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
             // (decision E-470).
             QcCreature &creature = *state.entities().creatures().find(id);
             creature.confined = mob.confined;
+            creature.noAi = mob.noAi;
             if (creature.isVillager()) {
                 creature.villager->sleptAt = state.info().worldTime;
             }

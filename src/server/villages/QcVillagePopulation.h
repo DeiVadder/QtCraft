@@ -60,7 +60,8 @@ public:
     bool claimsReconciled(qint64 village) const { return m_claimsChecked.contains(village); }
 
 private:
-    // A villager for every free bed of a village whose head lies in the chunk (decision E-411).
+    // A villager for every free bed of a village whose head lies in the chunk (decision E-411),
+    // confined when the village's plan says so (QcVillagePlan::residentsConfined).
     void spawnVillagers(QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId, bool onlyAlwaysLivedIn);
     // The chunks next to `pos` with a free bed whose villager found no place beside it (in a
     // chunk not loaded then, m_bedsWaiting) try again now that `pos` is loaded.

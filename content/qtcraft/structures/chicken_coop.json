@@ -65,7 +65,8 @@
                 6.5,
                 1.0,
                 4.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "chicken",
@@ -73,7 +74,8 @@
                 8.5,
                 1.0,
                 5.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "chicken",
@@ -81,7 +83,8 @@
                 5.5,
                 1.0,
                 6.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "chicken",
@@ -89,7 +92,8 @@
                 7.5,
                 1.0,
                 2.5
-            ]
+            ],
+            "confined": true
         }
     ],
     "contents": [

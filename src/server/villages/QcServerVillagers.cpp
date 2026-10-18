@@ -93,8 +93,10 @@ bool QcServerVillagers::setDoor(QcBlockPos pos, bool open)
 
 void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
 {
-    // Without the game rule mobGriefing villagers leave crops alone, like in the reference game.
-    if (!m_state.info().mobGriefing) {
+    // Without the game rule mobGriefing villagers leave crops alone, like in the reference game, and a
+    // confined one or one without a mind always (QcCreature::mayGrief, decision E-510).
+    QcCreature *farmer = m_state.entities().creatures().find(villager);
+    if (!farmer || !farmer->isVillager() || !farmer->mayGrief(m_state.info().mobGriefing)) {
         return;
     }
     const QcContentRegistry &content = m_state.content();
@@ -107,10 +109,8 @@ void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
 
     m_blocks.setAndBroadcast(pos, content.withProperty(*block, crop->crop.property, stages->values.constFirst()));
     m_sounds.playBlock(*crop, QcBlockSoundAction::Break, pos);
-    if (QcCreature *farmer = m_state.entities().creatures().find(villager)) {
-        farmer->villager->produce = std::min(farmer->villager->produce + 1, QcVillagerRecord::maxProduce);
-        farmer->attackedThisTick = true;
-    }
+    farmer->villager->produce = std::min(farmer->villager->produce + 1, QcVillagerRecord::maxProduce);
+    farmer->attackedThisTick = true;
 }
 
 void QcServerVillagers::pickUpFood()
@@ -140,7 +140,8 @@ void QcServerVillagers::pickUpFood()
     }
 
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
-        if (mob.dormant || !mob.isVillager() || mob.isYoung() || mob.pose == QcPose::Lying) {
+        // A confined villager or one without a mind picks nothing up (QcCreature::mayGrief).
+        if (mob.dormant || !mob.isVillager() || mob.isYoung() || mob.pose == QcPose::Lying || !mob.mayGrief(m_state.info().mobGriefing)) {
             continue;
         }
         const QcVillagerBreedingSettings &breeding = m_state.content().villagerSettingsOf(mob.type).breeding;

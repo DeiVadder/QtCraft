@@ -2179,3 +2179,11 @@ Release-Builds, `dev` `f88fbd7` (52.5) gegen `feature/52-7-village-gameplay` nac
 **Headless** (`@server horde village village-night village-swamp`, 3 Runden, 60 Spielsekunden): Tick −2 bis +2 % in allen Szenarien bei gleicher Wesenzahl, p99 −7 bis +6 %, Speicher −2 bis +4 %. Siedlungen, Umzug, Ernte auf beliebigen Feldern und Aufsammeln von Essen kosten nichts Messbares.
 
 **Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −3 bis +4 %, Render-CPU −8 bis +4 %, GUI-CPU −4 bis +4 %, Bild Ø 8,39–8,47 ms, Speicher ±1 %; p99 10,4–16,2 ms bei beiden Ständen (Desktop am Tag). Keine Regression.
+
+## 52.8 (confined und noAi je Wesen, Showcase mit mobGriefing) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `6f4723d` (52.7) gegen `feature/52-8-confined-noai`, verschränkt, Mediane.
+
+**Headless** (`@server village`, 3 Runden, 60 Spielsekunden): Tick −3 bis +3 % bei gleicher Wesenzahl, p99 −4 bis +8 %, Speicher ±1 %. Die gemeinsame Griefing-Prüfung kostet nichts Messbares.
+
+**Fenster** (`@core`, 8 Chunks, 6 Runden): GPU −2 bis +1 %, Render-CPU −4 bis +3 %, GUI-CPU −2 bis +6 %, Bild Ø 8,36–8,39 ms, Speicher ±0 %, p99 10,0–10,5 ms (Ziel erfüllt). Tick im Fenster streut wie immer (crowd +19 %, headless −1 %). Keine Regression.

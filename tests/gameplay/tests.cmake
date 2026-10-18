@@ -119,3 +119,4 @@ qc_add_test(test_signal_dispensers SOURCES gameplay/test_signal_dispensers.cpp Q
 qc_add_test(test_signal_readers SOURCES gameplay/test_signal_readers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server)
 qc_add_test(test_invulnerability SOURCES gameplay/test_invulnerability.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_creature_minds SOURCES gameplay/test_creature_minds.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)

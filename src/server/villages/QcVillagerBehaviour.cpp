@@ -223,7 +223,7 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     }
     villager.activity = activity;
 
-    lookForCrops(villager, profession, context);
+    lookForCrops(mob, profession, context);
 
     // A stroll goes on until it ends; every other goal follows the routine.
     if (villager.strolling && villager.target && activity == QcVillagerActivity::Wander) {
@@ -241,10 +241,12 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     villager.strolling = goal && goal->purpose == QcMobPath::Purpose::Wander;
 }
 
-void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const QcVillagerProfession *profession, const Context &context) const
+void QcVillagerBehaviour::lookForCrops(QcCreature &mob, const QcVillagerProfession *profession, const Context &context) const
 {
-    // Without the game rule mobGriefing farmers leave crops alone (QcServerVillagers).
-    if (villager.activity != QcVillagerActivity::Work || !profession || !profession->tendsCrops || !context.griefing) {
+    // Farmers that may not change the world (game rule mobGriefing off, confined; QcCreature::
+    // mayGrief) leave crops alone (QcServerVillagers).
+    QcVillager &villager = *mob.villager;
+    if (villager.activity != QcVillagerActivity::Work || !profession || !profession->tendsCrops || !mob.mayGrief(context.griefing)) {
         villager.crop.reset();
     } else if (!villager.crop && --villager.cropLookIn <= 0) {
         villager.crop = ripeCropNear(villager, context);

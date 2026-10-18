@@ -568,8 +568,13 @@ private slots:
         QCOMPARE(ripeCrops({crop}), 1);
         QCOMPARE(villager(entity)->villager->produce, 0);
 
-        // With the rule on again the farmer harvests it.
+        // With the rule on again a confined farmer still leaves it (decision E-510), a free one
+        // harvests it.
         chat(u"/gamerule mobGriefing true"_s);
+        villager(entity)->confined = true;
+        ticks(400);
+        QCOMPARE(ripeCrops({crop}), 1);
+        villager(entity)->confined = false;
         QVERIFY(tickUntil([&] { return ripeCrops({crop}) == 0; }, 600));
     }
 
@@ -596,6 +601,13 @@ private slots:
         QCOMPARE(villager(entity)->villager->produce, 0);
         QVERIFY(m_server->items().take(left, 16));
         chat(u"/gamerule mobGriefing true"_s);
+        // Nor does a confined villager (decision E-510).
+        villager(entity)->confined = true;
+        const quint32 untouched = drop("qtcraft:bread", 16, villager(entity)->motion.position);
+        ticks(2 * QcServerVillagers::foodTicks);
+        QCOMPARE(villager(entity)->villager->produce, 0);
+        QVERIFY(m_server->items().take(untouched, 16));
+        villager(entity)->confined = false;
 
         const quint32 stone = drop("qtcraft:cobblestone", 1, villager(entity)->motion.position);
         const quint32 bread = drop("qtcraft:bread", 16, villager(entity)->motion.position);

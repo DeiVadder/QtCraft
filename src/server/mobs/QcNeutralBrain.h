@@ -10,8 +10,9 @@ struct QcGazeDefinition;
 // who struck or shot it; damage without a player provokes nobody) or, with a `gaze`, by looking at
 // its head (gazedAt). One with `teleport` leaves water at once and now and then teleports next to
 // a target that is far away; one that `carries` blocks takes one now and then while calm and puts
-// it down again elsewhere (actions in QcMobBrain::Context::blockActions, only with the game rule mobGriefing and when not
-// confined; without the rule a carried block is dropped as an item instead of put down).
+// it down again elsewhere (actions in QcMobBrain::Context::blockActions, only when it may change the
+// world, QcCreature::mayGrief: the game rule mobGriefing on, not confined, decision E-510; otherwise
+// a carried block is dropped as an item instead of put down).
 class QcNeutralBrain : public QcPassiveBrain
 {
 public:

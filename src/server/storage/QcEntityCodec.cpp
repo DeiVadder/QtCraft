@@ -232,6 +232,10 @@ private:
             mob.confined = true;
             return true;
         };
+        const auto noAi = [&mob](QDataStream &, quint16) {
+            mob.noAi = true;
+            return true;
+        };
         const auto golem = [&mob](QDataStream &in, quint16) {
             in >> mob.playerBuilt;
             return true;
@@ -249,20 +253,11 @@ private:
                             {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
                              known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
                              known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
-                             known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame)})) {
+                             known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
+                             known(Component::NoAi, kindVersion, noAi)})) {
             return false;
         }
-        // A carried block the content no longer has is lost with a warning.
-        if (!carried.isEmpty()) {
-            const std::optional<QcBlockId> state = m_content.stateId(carried);
-            if (!state) {
-                warnOnce(u"block"_s, carried);
-            }
-            mob.carried = state.value_or(qcAirBlockId);
-        }
-        const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp) && std::isfinite(mob.layTimer);
-        if (!finite || mob.uid == 0 || mob.breedCooldown > maxBreedingSeconds || mob.growUp > maxBreedingSeconds
-            || mob.layTimer > maxBreedingSeconds) {
+        if (!plausibleCreature(mob, carried)) {
             return false;
         }
 
@@ -273,6 +268,22 @@ private:
         mob.type = *type;
         m_record.creatures.append(entry);
         return true;
+    }
+
+    // Resolves the carried block of a read creature (one the content no longer has is lost with a
+    // warning) and checks that its numbers can be.
+    bool plausibleCreature(QcMobManager::Stored &mob, const QString &carried)
+    {
+        if (!carried.isEmpty()) {
+            const std::optional<QcBlockId> state = m_content.stateId(carried);
+            if (!state) {
+                warnOnce(u"block"_s, carried);
+            }
+            mob.carried = state.value_or(qcAirBlockId);
+        }
+        const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp) && std::isfinite(mob.layTimer);
+        return finite && mob.uid != 0 && mob.breedCooldown <= maxBreedingSeconds && mob.growUp <= maxBreedingSeconds
+               && mob.layTimer <= maxBreedingSeconds;
     }
 
     bool item(const Header &header)
@@ -559,6 +570,9 @@ void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stor
     }
     if (mob.confined) {
         components.add(quint16(Component::Confined), kindVersion, [](QDataStream &) {});
+    }
+    if (mob.noAi) {
+        components.add(quint16(Component::NoAi), kindVersion, [](QDataStream &) {});
     }
     if (mob.playerBuilt) {
         components.add(quint16(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });

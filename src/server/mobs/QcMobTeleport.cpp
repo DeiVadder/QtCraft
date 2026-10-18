@@ -12,7 +12,7 @@ namespace QcMobTeleport {
 bool teleport(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, QRandomGenerator &random,
               const std::optional<QcVec3> &around)
 {
-    if (!definition.teleport || mob.confined || mob.teleportCooldown > 0) {
+    if (!definition.teleport || mob.confined || mob.noAi || mob.teleportCooldown > 0) {
         return false;
     }
 

@@ -509,12 +509,14 @@ private slots:
         QCOMPARE(settlement->id, QcVillage::settlementId(points.at(1)));
         QCOMPARE(settlement->beds.size(), 3);
         QCOMPARE(settlement->workstations.size(), 1);
-        QCOMPARE(settlement->population, 2);
+        // The two settlers move in; with mobGriefing on they may pick up the bread and have a child
+        // in the third bed within these ticks, depending on the order in which the chunks arrive.
         const auto settlers = std::ranges::count_if(server->mobs().mobs(), [settlement](const QcCreature &mob) {
             return mob.isVillager() && mob.villager->village == settlement->id && mob.villager->home.has_value();
         });
-        QCOMPARE(settlers, 2);
-        QCOMPARE(settlement->freeBeds(), 1);
+        QVERIFY(settlers >= 2 && settlers <= 3);
+        QCOMPARE(settlement->population, int(settlers));
+        QCOMPARE(settlement->freeBeds(), 3 - int(settlers));
 
         const QList<QcVillage> before = villages.villages();
         for (const QcBlockPos &point : std::as_const(points)) {

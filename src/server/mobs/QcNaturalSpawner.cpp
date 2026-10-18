@@ -441,7 +441,9 @@ void QcNaturalSpawner::spawnVillageMobs(const QcServerWorld &world, QcChunkPos p
         const QcBlockPos cell{int(std::floor(mob.at.x)), int(std::floor(mob.at.y)), int(std::floor(mob.at.z))};
         if (type && cell.chunk() == pos) {
             const quint32 id = m_mobs.spawn(*type, mob.at, nextEntityId(), false, true);
-            m_mobs.find(id)->confined = mob.confined;
+            QcCreature &creature = *m_mobs.find(id);
+            creature.confined = mob.confined;
+            creature.noAi = mob.noAi;
         }
     }
 }

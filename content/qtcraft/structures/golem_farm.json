@@ -136,7 +136,8 @@
                 10.5,
                 1.0,
                 3.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "villager",
@@ -144,7 +145,8 @@
                 8.5,
                 1.0,
                 9.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "villager",
@@ -152,7 +154,8 @@
                 10.5,
                 1.0,
                 9.5
-            ]
+            ],
+            "confined": true
         },
         {
             "mob": "villager",
@@ -160,7 +163,8 @@
                 12.5,
                 1.0,
                 9.5
-            ]
+            ],
+            "confined": true
         }
     ],
     "labels": [

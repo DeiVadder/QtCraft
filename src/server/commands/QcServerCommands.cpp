@@ -55,6 +55,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_villages(state)
     , m_experience(state)
     , m_effects(state)
+    , m_mobs(state)
 {
     addBuiltIns();
     m_cheats.addTo(m_registry);
@@ -67,6 +68,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_villages.addTo(m_registry);
     m_experience.addTo(m_registry);
     m_effects.addTo(m_registry);
+    m_mobs.addTo(m_registry);
 }
 
 void QcServerCommands::addBuiltIns()

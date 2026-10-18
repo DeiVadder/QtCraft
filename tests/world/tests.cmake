@@ -45,3 +45,4 @@ qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_ser
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
 qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_showcase_griefing SOURCES world/test_showcase_griefing.cpp LIBRARIES qc_server TIMEOUT 300)

@@ -81,6 +81,8 @@ struct QcVillagePlan
         QcVec3 at;
         // Stays in its enclosure (QcStructureDefinition::Mob::confined, decision E-460).
         bool confined = false;
+        // Without a mind (QcStructureDefinition::Mob::noAi, decision E-510).
+        bool noAi = false;
     };
 
     // The id of the village planned in region (x, z) (QcVillagePlanner::plan): bit 61 set, bits 62
@@ -147,6 +149,10 @@ struct QcVillagePlan
     // Residents move into its free beds even while creatures do not spawn (the rows of the showcase
     // world, decision E-411); other villages get theirs only with the creatures.
     bool alwaysLivedIn = false;
+    // Its residents, the ones moving into its beds and the children born there, are confined
+    // (QcCreature::confined, decision E-510): they change no block, so the rows of the showcase
+    // world keep their ripe fields with the game rule mobGriefing on.
+    bool residentsConfined = false;
 
     bool covers(int x, int z, int margin) const
     {

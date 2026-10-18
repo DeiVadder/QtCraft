@@ -20,7 +20,8 @@ struct QcVillage;
 // the village with the free bed nearest to it within searchRadius, if that village has more beds
 // than villagers, room below the villagers per village, and the villager does not stand beyond its
 // area by more than strayReach (it would move out again at once). A bed whose claim lapsed is thus taken by any homeless villager near it,
-// not only by a child. Villagers a structure confines (QcCreature::confined) never move.
+// not only by a child. Villagers a structure confines (QcCreature::confined) and ones without a mind (QcCreature::noAi)
+// never move.
 class QcVillagerRelocation
 {
 public:

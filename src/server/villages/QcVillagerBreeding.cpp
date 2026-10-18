@@ -68,7 +68,7 @@ bool QcVillagerBreeding::breedsNow(const QcVillage &village, const Context &cont
 bool QcVillagerBreeding::willing(const QcCreature &mob) const
 {
     const QcVillager &villager = *mob.villager;
-    return !mob.dormant && !mob.isYoung() && mob.pose != QcPose::Lying && villager.trader == 0 && mob.breedCooldown <= 0.0 && mob.fleeTimer <= 0.0
+    return !mob.dormant && !mob.noAi && !mob.isYoung() && mob.pose != QcPose::Lying && villager.trader == 0 && mob.breedCooldown <= 0.0 && mob.fleeTimer <= 0.0
            && villager.produce >= m_content->villagerSettingsOf(mob.type).breeding.food;
 }
 

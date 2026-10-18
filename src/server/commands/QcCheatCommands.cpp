@@ -5,6 +5,7 @@
 #include "common/protocol/QcChatText.h"
 #include "common/world/QcDayCycle.h"
 #include "server/commands/QcCommandArguments.h"
+#include "server/commands/QcMobCommands.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerGameModes.h"
@@ -98,7 +99,7 @@ void QcCheatCommands::addItemCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops up to 64 items two metres ahead of you."),
                          .run = [this](const QcCommandContext &context) { spawnItem(context); }});
     registry.addBuiltIn({.name = u"summon"_s, .needsPlayer = true, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature|minecart|chest_minecart|hopper_minecart> [count] or /summon armor_stand [property=value …]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature> [count] [noai], /summon <minecart|chest_minecart|hopper_minecart> [count] or /summon armor_stand [property=value …]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures, minecarts or an armour stand in front of you."),
                          .run = [this](const QcCommandContext &context) { summon(context); }});
     registry.addBuiltIn({.name = u"equip"_s, .needsPlayer = true, .minArguments = 1,
@@ -197,9 +198,15 @@ void QcCheatCommands::summon(const QcCommandContext &context)
         return;
     }
 
-    const QString name = qualified(context.args[0]);
+    // A last word `noai` summons them without a mind (QcCreature::noAi, decision E-510).
+    QStringList args = context.args;
+    const bool noAi = args.size() > 1 && args.constLast() == u"noai"_s;
+    if (noAi) {
+        args.removeLast();
+    }
+    const QString name = qualified(args[0]);
     const std::optional<int> type = m_state.content().mobIndex(name);
-    const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 16);
+    const std::optional<int> count = QcCommandArguments::count(args, 1, 1, 1, 16);
     if (!type || !count) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {context.text});
         return;
@@ -223,7 +230,11 @@ void QcCheatCommands::summon(const QcCommandContext &context)
         // Summoned animals stay like natural ones.
         const quint32 id = m_state.entities().creatures().spawn(*type, at, m_state.entities().newId(), false,
                                               !definition.hostile && !definition.ambient && !definition.flying);
-        m_state.entities().creatures().find(id)->summoned = true;
+        QcCreature &creature = *m_state.entities().creatures().find(id);
+        creature.summoned = true;
+        if (noAi) {
+            QcMobCommands::setNoAi(m_state, creature, true);
+        }
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(*count), name});

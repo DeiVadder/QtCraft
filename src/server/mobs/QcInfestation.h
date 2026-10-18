@@ -16,8 +16,9 @@ class QcServerState;
 // (QcServerBlocks::breakBlock calls release). A creature of a kind that hides in blocks
 // (QcMobDefinition::hidesInBlocks) that was hurt wakes its kind in the infested blocks around it; an
 // idle one now and then turns a block next to it into the infested block of its kind and is gone.
-// With the game rule mobGriefing off, as in the reference, creatures do not hide, and waking puts the
-// base block back instead of breaking the infested one (no creature comes out).
+// A creature that may not change the world (QcCreature::mayGrief: the game rule mobGriefing off, as
+// in the reference, or the creature confined or without a mind; decision E-510) does not hide, and
+// its waking puts the base block back instead of breaking the infested one (no creature comes out).
 class QcInfestation
 {
 public:
@@ -37,10 +38,12 @@ public:
     void tick();
     // Wakes the kind of `mob` in the infested blocks around it: they break one after another, nearest
     // layers first, and after each one the waking stops with even chance (as in the reference); with
-    // mobGriefing off each turns back into its base block instead. How many blocks woke.
+    // a creature that may not change the world each turns back into its base block instead. How many
+    // blocks woke.
     int wake(const QcCreature &mob);
     // Hides `mob` in the block next to the middle of its body towards `face` when that block has an
-    // infested block of its kind: the block turns into it and the creature is removed. Whether it hid.
+    // infested block of its kind and it may change the world: the block turns into it and the
+    // creature is removed. Whether it hid.
     bool hide(const QcCreature &mob, QcBlockFace face);
 
 private:

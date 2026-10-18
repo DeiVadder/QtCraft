@@ -426,6 +426,7 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.carried = mob.carried;
     stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
     stored.confined = mob.confined;
+    stored.noAi = mob.noAi;
     if (mob.isTame()) {
         stored.tame = QcTameState{.owner = mob.tame->owner, .sitting = mob.tame->sitting, .collar = mob.tame->collar};
     }
@@ -469,6 +470,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         }
         mob.layTimer = stored.layTimer;
         mob.confined = stored.confined;
+        mob.noAi = stored.noAi;
         if (stored.tame && !stored.tame->owner.isEmpty()) {
             mob.tame.emplace(QcTameState{.owner = stored.tame->owner, .sitting = stored.tame->sitting, .collar = stored.tame->collar});
             mob.pose = stored.tame->sitting ? QcPose::Sitting : QcPose::Standing;

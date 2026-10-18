@@ -79,7 +79,8 @@ void copyPiece(QcStructure &area, const QcStructure &piece, int x, int front)
 // The village of a row in world coordinates (`origin`: the area's): its road, its bounds from the
 // road to the deepest building, and the well's bell (else the well's ground) as the meeting point.
 // Its beds and workstations come from scanning the chunks; residents move in even though creatures
-// do not spawn in the showcase (QcVillagePlan::alwaysLivedIn).
+// do not spawn in the showcase (QcVillagePlan::alwaysLivedIn), and they are confined so the row stays
+// as built (QcVillagePlan::residentsConfined, decision E-510).
 // Where a row lies in the area: its width, the local z of its road and its depth north of the road.
 struct RowSpan
 {
@@ -96,6 +97,7 @@ std::shared_ptr<QcVillagePlan> planOf(const QcVillageStyle &style, qint64 id, Qc
     plan->id = id;
     plan->style = style.name;
     plan->alwaysLivedIn = true;
+    plan->residentsConfined = true;
     plan->minX = origin.x;
     plan->maxX = origin.x + width - 1;
     plan->minZ = origin.z + road - row.depth;

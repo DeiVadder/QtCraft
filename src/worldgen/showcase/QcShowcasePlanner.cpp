@@ -190,8 +190,9 @@ QcShowcasePlan QcShowcasePlanner::build()
     // The sky stays clear for the screenshots of the tour (decision E-395).
     m_plan.setup.weatherCycle = false;
     m_plan.setup.mobSpawning = false;
-    // Creatures leave the demos as they are (decision E-460).
-    m_plan.setup.mobGriefing = false;
+    // The settlement's farmers harvest and pick up bread; the pens' creatures are confined and leave
+    // the demos as they are (decisions E-460, E-510).
+    m_plan.setup.mobGriefing = true;
 
     Cursor cursor;
     const QList<QcShowcaseAreaBuilder> areaBuilders = builders(areaContext);
@@ -247,7 +248,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         addLabel({placement.toWorld(label.at), label.text, label.detail, label.heading});
     }
     for (const QcStructure::Mob &mob : structure.mobs) {
-        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting});
+        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting, mob.noAi});
     }
     for (const QcStructure::Stand &stand : structure.stands) {
         m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * float(placement.turns()), stand.properties});

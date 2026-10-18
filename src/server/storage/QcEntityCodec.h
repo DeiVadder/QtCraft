@@ -55,6 +55,8 @@ enum class Component : quint16 {
     Laying = 13,
     // Owner identity, sitting and collar colour of a tame creature (version 1; decision E-480).
     Tame = 14,
+    // A creature without a mind (version 1, no fields; decision E-510).
+    NoAi = 16,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

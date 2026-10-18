@@ -246,14 +246,22 @@ private slots:
         QVERIFY(!setup.randomTicks);
         // The sky stays clear (decision E-395).
         QVERIFY(!setup.weatherCycle);
-        // Creatures leave the demos as they are, and the pens hold every creature, also one that
-        // teleports (decision E-460).
-        QVERIFY(!setup.mobGriefing);
+        // The settlement's farmers harvest and pick up bread; every other creature on show is
+        // confined, so it changes nothing and its pen holds it, also one that teleports (decisions
+        // E-460, E-510). Only the settlement's two villagers and the pets, which belong to someone,
+        // are free; one mannequin stands without a mind.
+        QVERIFY(setup.mobGriefing);
 
         QSet<QString> mobs;
+        int free = 0;
+        int withoutMind = 0;
         for (const QcWorldSetup::Mob &mob : setup.mobs) {
             mobs.insert(mob.mob);
-            QVERIFY2(mob.confined || mob.mob != u"qtcraft:enderman"_s, qPrintable(mob.mob));
+            if (!mob.confined && mob.owner.isEmpty()) {
+                QCOMPARE(mob.mob, u"qtcraft:villager"_s);
+                ++free;
+            }
+            withoutMind += mob.noAi ? 1 : 0;
             // Every creature stands in free space on the ground.
             const QcBlockPos feet{int(std::floor(mob.at.x)), int(std::floor(mob.at.y + 0.1)) + 0, int(std::floor(mob.at.z))};
             QVERIFY2(!m_content->block(blockAt(m_chunks, feet.offset(0, 1, 0))).solid, qPrintable(mob.mob));
@@ -261,6 +269,8 @@ private slots:
         for (const QcMobDefinition &mob : m_content->mobs()) {
             QVERIFY2(mobs.contains(mob.name), qPrintable(mob.name));
         }
+        QCOMPARE(free, 2);
+        QCOMPARE(withoutMind, 1);
 
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {
