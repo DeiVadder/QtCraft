@@ -1,0 +1,17 @@
+{
+    "name": "mob.cow.death",
+    "volume": 0.7,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.8,
+            "frequency": 180,
+            "endFrequency": 90,
+            "attack": 0.03,
+            "curve": 1.2,
+            "lowpass": 700,
+            "tremoloRate": 8,
+            "tremoloDepth": 0.3
+        }
+    ]
+}

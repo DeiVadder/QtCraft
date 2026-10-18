@@ -1,0 +1,15 @@
+{
+    "name": "mob.fish.death",
+    "volume": 0.5,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.3,
+            "frequency": 500,
+            "endFrequency": 180,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1200
+        }
+    ]
+}

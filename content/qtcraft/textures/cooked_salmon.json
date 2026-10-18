@@ -1,0 +1,8 @@
+{
+    "name": "cooked_salmon",
+    "pattern": "lump",
+    "primary": "#c86848",
+    "secondary": "#e8a070",
+    "variation": 0.1,
+    "seed": 7221
+}

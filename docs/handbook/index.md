@@ -10,10 +10,10 @@ Everything the game contains, generated from the game's content data by `qtcraft
 - [Blocks](blocks.md) – 230 entries
 - [Building parts](parts.md) – 50 entries
 - [Liquids](liquids.md) – 2 entries
-- [Items](items.md) – 65 entries
+- [Items](items.md) – 70 entries
 - [Tools and armour](tools.md) – 41 entries
-- [Food](food.md) – 17 entries
-- [Creatures](creatures.md) – 19 entries
+- [Food](food.md) – 21 entries
+- [Creatures](creatures.md) – 22 entries
 - [Biomes](biomes.md) – 8 entries
 - [World generation](worldgen.md) – 37 entries
 - [Item groups](tags.md) – 7 entries

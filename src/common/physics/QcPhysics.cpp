@@ -250,6 +250,13 @@ bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos)
     return block && content.isValidBlock(*block) && content.block(*block).liquid;
 }
 
+bool isWaterAt(const QcBlockAccess &world, QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    const QcContentRegistry &content = world.content();
+    return block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).fire.setsAlightSeconds == 0;
+}
+
 double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);

@@ -35,6 +35,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_neutral(m_random, m_paths)
     , m_tamePassive(m_random, m_paths, m_passive)
     , m_tameNeutral(m_random, m_paths, m_neutral)
+    , m_fish(m_random)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
@@ -76,6 +77,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcS
     QList<QcMobManager::PlayerHit> hits;
     m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[std::size_t(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
+    m_fish.startTick(mobs, *m_content);
     m_villagers.startTick();
     m_tiers = {};
     ++m_tick;
@@ -96,6 +98,14 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcS
                                               .creatureHits = &m_creatureHits,
                                               .blockActions = &m_blockActions,
                                               .griefing = m_griefing};
+            if (m_content->mobs()[mobs[i].type].aquatic) {
+                // Water creatures swim in their schools (decision E-502), outside the crowd's tiers.
+                ++m_tiers.full;
+                mobs[i].hurt.tick();
+                mobs[i].fleeTimer = std::max(0.0, mobs[i].fleeTimer - clock.dt);
+                m_fish.swim(i, mobs, m_content->mobs()[mobs[i].type], world, clock.dt);
+                continue;
+            }
             update(i, mobs[i], context);
         }
     }

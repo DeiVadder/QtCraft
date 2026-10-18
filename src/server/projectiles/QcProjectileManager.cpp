@@ -40,6 +40,7 @@ bool QcProjectileManager::launch(const Launch &shot, quint32 id)
     projectile.motion.velocity = shot.velocity;
     projectile.pickup = shot.pickup;
     projectile.damageFactor = shot.damageFactor;
+    projectile.transient = shot.transient;
     QcProjectileFlight::turnAlong(projectile);
     return add(std::move(projectile));
 }
@@ -131,6 +132,8 @@ bool QcProjectileManager::fly(QcProjectile &projectile, const QcProjectileDefini
         QcProjectileFlight::turnAlong(projectile);
         return true;
     }
+    case QcProjectileFlight::Outcome::Burnt:
+        return false;
     case QcProjectileFlight::Outcome::HitBlock:
         break;
     }

@@ -1,0 +1,8 @@
+{
+    "name": "salmon_head",
+    "pattern": "speckle",
+    "primary": "#a83a2a",
+    "secondary": "#c85a48",
+    "variation": 0.15,
+    "seed": 7212
+}

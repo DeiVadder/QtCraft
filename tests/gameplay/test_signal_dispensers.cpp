@@ -68,6 +68,21 @@ private:
         return content;
     }
 
+    // The cod around local (5, 0, 5), where a dispenser facing east at (4, 0, 5) pours.
+    QList<const QcCreature *> codInFront() const
+    {
+        const int cod = *m_content->mobIndex(u"qtcraft:cod"_s);
+        const QcBlockPos front = at(5, 0, 5);
+        const QcVec3 centre{front.x + 0.5, double(front.y), front.z + 0.5};
+        QList<const QcCreature *> found;
+        for (const QcCreature &mob : m_server->entities().creatures().mobs()) {
+            if (mob.type == cod && (mob.motion.position - centre).length() < 3.0) {
+                found.append(&mob);
+            }
+        }
+        return found;
+    }
+
 private slots:
     void cleanup()
     {
@@ -135,6 +150,44 @@ private slots:
         QCOMPARE(countIn(4, 0, 5, "qtcraft:water_bucket") + countIn(5, 0, 5, "qtcraft:water_bucket"), 0);
         QCOMPARE(everywhere("qtcraft:water_bucket"), 1);
         QCOMPARE(everywhere("qtcraft:bucket"), 0);
+    }
+
+    void dispenserReleasesTheFishOfAFishBucket()
+    {
+        buildArea();
+        put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
+        put(4, 0, 6, u"lever[attach=floor]"_s);
+        fill(4, 0, 5, {stack("qtcraft:cod_bucket", 1)});
+        ticks(2);
+        pulse(4, 0, 6);
+        QVERIFY2(blockAt(5, 0, 5).startsWith(u"water"_s), qPrintable(blockAt(5, 0, 5)));
+        QCOMPARE(countIn(4, 0, 5, "qtcraft:bucket"), 1);
+        // The cod comes out where the water goes, kept with the world (decision E-501).
+        const QList<const QcCreature *> released = codInFront();
+        QCOMPARE(released.size(), 1);
+        QVERIFY(released.first()->persistent);
+        QVERIFY(released.first()->bred);
+    }
+
+    void aFishBucketWithoutRoomStaysFull()
+    {
+        // Room for one cod near the dispenser, and one swims there already.
+        QcServerConfig config;
+        config.limits.breedingCrowd = 1;
+        buildArea(config);
+        put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
+        put(4, 0, 6, u"lever[attach=floor]"_s);
+        const QcBlockPos front = at(5, 0, 5);
+        m_server->entities().creatures().spawn(*m_content->mobIndex(u"qtcraft:cod"_s), {front.x + 0.5, double(front.y), front.z + 0.5},
+                                               m_server->entities().newId(), false, true);
+        fill(4, 0, 5, {stack("qtcraft:cod_bucket", 1)});
+        ticks(2);
+        pulse(4, 0, 6);
+        // Nothing poured: the full bucket is thrown out instead, the fish still inside.
+        QVERIFY2(!blockAt(5, 0, 5).startsWith(u"water"_s), qPrintable(blockAt(5, 0, 5)));
+        QCOMPARE(everywhere("qtcraft:cod_bucket"), 1);
+        QCOMPARE(everywhere("qtcraft:bucket"), 0);
+        QCOMPARE(codInFront().size(), 1);
     }
 
     void pouringStaysInsideTheWorld()

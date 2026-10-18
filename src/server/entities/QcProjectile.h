@@ -36,4 +36,7 @@ struct QcProjectile : QcEntity
     // The block it sticks in, and that block's state: it falls again when the block changes.
     QcBlockPos stuckIn;
     quint32 stuckState = 0;
+    // Never saved (a fishing rod's bobber, decision E-503): left out of the chunk's records
+    // (QcEntityRecords), so it goes with its chunk.
+    bool transient = false;
 };

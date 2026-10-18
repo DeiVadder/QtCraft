@@ -25,6 +25,40 @@ QcAabb QcServerAnimals::shownBox(const QcMobDefinition &definition, const QcCrea
     return QcPhysics::boxAt(mob.motion.position, definition.width * scale, definition.height * scale);
 }
 
+bool QcServerAnimals::milk(QcServerClient &client, quint32 mobId)
+{
+    const QcCreature *mob = m_state.entities().creatures().find(mobId);
+    const QcItemDefinition *held = m_state.heldItem(client);
+    if (!mob || !held || mob->dormant || mob->type < 0 || mob->type >= m_state.content().mobs().size()) {
+        return false;
+    }
+    const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
+    const std::optional<QcItemId> milk = m_state.content().itemId(definition.milkItem);
+    if (definition.milkWith.isEmpty() || definition.milkWith != held->name || !milk) {
+        return false;
+    }
+
+    // Calves give no milk; out of reach or hidden nothing happens either.
+    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+    if (mob->isYoung() || (centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0
+        || !QcLineOfSight::canSee(m_state.world(), client, shownBox(definition, *mob))) {
+        return true;
+    }
+
+    if (!definition.milkSound.isEmpty()) {
+        m_sounds.play(definition.milkSound, centre);
+    }
+    // In creative mode the empty bucket stays in the hand and the milk is added, as in the reference.
+    if (client.rules().infiniteItems) {
+        m_inventory.giveOrThrow(client, {*milk, 1, 0});
+    } else {
+        m_inventory.exchangeHeld(client, definition.milkItem);
+    }
+    m_inventory.send(client);
+    return true;
+}
+
 QcServerAnimals::Feeding QcServerAnimals::feed(QcServerClient &client, quint32 mobId)
 {
     QcCreature *mob = m_state.entities().creatures().find(mobId);
@@ -65,6 +99,38 @@ quint32 QcServerAnimals::spawnYoung(QcServerState &state, int type, const QcVec3
         young->bred = true;
     }
     return id;
+}
+
+namespace {
+
+std::optional<int> releasedBy(const QcServerState &state, const QcItemDefinition &item)
+{
+    return item.releasesMob.isEmpty() ? std::nullopt : state.content().mobIndex(item.releasesMob);
+}
+
+} // namespace
+
+bool QcServerAnimals::mayRelease(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position)
+{
+    const std::optional<int> type = releasedBy(state, item);
+    if (!type) {
+        return true;
+    }
+    QcMobBreeding limits(state.contentPointer());
+    limits.setLimits(state.config().limits.breedingCrowd, state.config().limits.bredPerKind);
+    return limits.roomFor(state.entities().creatures().mobs(), *type, position);
+}
+
+void QcServerAnimals::release(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position)
+{
+    const std::optional<int> type = releasedBy(state, item);
+    if (!type) {
+        return;
+    }
+    QcMobManager &creatures = state.entities().creatures();
+    if (QcCreature *released = creatures.find(creatures.spawn(*type, position, state.entities().newId(), false, true))) {
+        released->bred = true;
+    }
 }
 
 void QcServerAnimals::tick()

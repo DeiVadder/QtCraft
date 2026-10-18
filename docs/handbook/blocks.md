@@ -2089,6 +2089,14 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
+| [Raw beef](food.md#item-qtcraft-raw_beef) | [Steak](food.md#item-qtcraft-cooked_beef) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Raw chicken](food.md#item-qtcraft-raw_chicken) | [Cooked chicken](food.md#item-qtcraft-cooked_chicken) |
 
 [Furnace](#block-qtcraft-furnace)
@@ -2114,6 +2122,14 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 | 1 | → |
 |---|---|
 | [Raw porkchop](food.md#item-qtcraft-raw_porkchop) | [Cooked porkchop](food.md#item-qtcraft-cooked_porkchop) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw salmon](food.md#item-qtcraft-raw_salmon) | [Cooked salmon](food.md#item-qtcraft-cooked_salmon) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -2319,7 +2335,7 @@ Earth covered with grass, the surface of most land.
 
 **Creatures appearing on it**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 

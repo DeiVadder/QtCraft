@@ -203,4 +203,15 @@ struct QcServerClient : QcEntity
     // was given again for longer.
     QcStatusEffects effects;
     QcStatusEffects sentEffects;
+    // Fishing with a rod (QcPlayerFishing, decision E-503; not saved): the bobber cast (entity id,
+    // 0: none) from the hotbar slot `slot`, the ticks until a fish bites (-1: not drawn yet, the bobber
+    // does not float) and the ticks the bite still lasts.
+    struct Fishing
+    {
+        quint32 bobber = 0;
+        int slot = -1;
+        int waitTicks = -1;
+        int biteTicks = 0;
+    };
+    Fishing fishing;
 };

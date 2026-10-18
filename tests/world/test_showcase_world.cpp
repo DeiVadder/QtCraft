@@ -1,6 +1,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/core/QcAabb.h"
+#include "common/physics/QcPhysics.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "common/world/QcDayCycle.h"
 #include "QcRawClient.h"
@@ -87,6 +88,47 @@ class TestShowcaseWorld : public QObject
     Q_OBJECT
 
 private:
+    // A pen of the showcase (a structure) with the kinds of creatures it holds, how many, and the
+    // box it takes in the world.
+    struct ShowcasePen
+    {
+        QString structure;
+        QStringList kinds;
+        qsizetype creatures = 0;
+        QcAabb box;
+    };
+
+    // Finds every pen's placement in the showcase plan, notes its box and loads the chunks around it.
+    void placePens(QcServer &server, const QcShowcaseGenerator &generator, QList<ShowcasePen> &pens) const
+    {
+        for (ShowcasePen &pen : pens) {
+            const auto placement = std::ranges::find_if(generator.plan().placements, [&](const QcStructurePlacement &placed) {
+                return placed.structure().name() == pen.structure;
+            });
+            QVERIFY2(placement != generator.plan().placements.end(), qPrintable(pen.structure));
+            const QcStructure &structure = placement->structure();
+            const QcBlockPos a = placement->toWorld(QcBlockPos{0, 0, 0});
+            const QcBlockPos b = placement->toWorld(QcBlockPos{structure.sizeX() - 1, structure.sizeY() - 1, structure.sizeZ() - 1});
+            pen.box = {{double(std::min(a.x, b.x)), double(a.y), double(std::min(a.z, b.z))},
+                       {double(std::max(a.x, b.x) + 1), double(b.y + 1), double(std::max(a.z, b.z) + 1)}};
+            for (int x = int(pen.box.min.x) - 16; x <= int(pen.box.max.x) + 16; x += 16) {
+                for (int z = int(pen.box.min.z) - 16; z <= int(pen.box.max.z) + 16; z += 16) {
+                    server.world().loadChunk(QcBlockPos{x, 0, z}.chunk());
+                }
+            }
+        }
+    }
+
+    // Water creatures whose middle is not in a liquid.
+    qsizetype fishOnLand(QcServer &server) const
+    {
+        return std::ranges::count_if(server.mobs().mobs(), [&](const QcCreature &mob) {
+            const QcMobDefinition &kind = m_content->mobs()[mob.type];
+            const QcVec3 centre = mob.motion.position + QcVec3{0.0, kind.height * 0.5, 0.0};
+            return kind.aquatic && !QcPhysics::isLiquidAt(server.world(), QcPhysics::blockContaining(centre));
+        });
+    }
+
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
 
     std::unique_ptr<QcServer> makeServer(const QString &directory, const QString &generator = u"showcase"_s, qint64 seed = 0)
@@ -328,7 +370,7 @@ private slots:
         QcServerConfig config;
         config.generator = u"showcase"_s;
         // Fourteen enclosures are wider than five chunks (silverfish, decision E-453).
-        config.viewDistance = 3;
+        config.viewDistance = 4;
         const auto generator = std::make_shared<QcShowcaseGenerator>(m_content);
         const QcShowcaseAreaInfo creatures = *std::ranges::find(generator->plan().areas, u"creatures"_s, &QcShowcaseAreaInfo::name);
         // In the middle of the area: the whole row of enclosures lies within the view distance, wherever
@@ -670,39 +712,25 @@ private slots:
         QVERIFY(!mobs.mobs().isEmpty());
     }
 
-    // The pens of stage 52.2 (decisions E-451 to E-453): the spider cave, the silverfish wall and
-    // the chicken coop hold their creatures for a minute of game time; none escapes or hides.
+    // The pens of stages 52.2 and 52.4 (decisions E-451 to E-453, E-500 to E-503): the spider cave,
+    // the silverfish wall, the chicken coop, the cow pasture, the aquarium and the fishing pier hold
+    // their creatures for a minute of game time; none escapes or hides (fish stay in their water).
     void creaturePensOfStage52HoldTheirCreatures()
     {
         QTemporaryDir directory;
         std::unique_ptr<QcServer> server = makeServer(directory.path());
         QVERIFY(server->openWorld());
         const QcShowcaseGenerator generator(m_content);
-        struct Pen
-        {
-            QString structure;
-            QStringList kinds;
-            qsizetype creatures = 0;
-            QcAabb box;
-        };
+        using Pen = ShowcasePen;
         QList<Pen> pens{{u"qtcraft:spider_cave"_s, {u"qtcraft:spider"_s, u"qtcraft:cave_spider"_s}, 3, {}},
                         {u"qtcraft:silverfish_wall"_s, {u"qtcraft:silverfish"_s}, 3, {}},
-                        {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}}};
-        for (Pen &pen : pens) {
-            const auto placement = std::ranges::find_if(generator.plan().placements, [&](const QcStructurePlacement &placed) {
-                return placed.structure().name() == pen.structure;
-            });
-            QVERIFY2(placement != generator.plan().placements.end(), qPrintable(pen.structure));
-            const QcStructure &structure = placement->structure();
-            const QcBlockPos a = placement->toWorld(QcBlockPos{0, 0, 0});
-            const QcBlockPos b = placement->toWorld(QcBlockPos{structure.sizeX() - 1, structure.sizeY() - 1, structure.sizeZ() - 1});
-            pen.box = {{double(std::min(a.x, b.x)), double(a.y), double(std::min(a.z, b.z))},
-                       {double(std::max(a.x, b.x) + 1), double(b.y + 1), double(std::max(a.z, b.z) + 1)}};
-            for (int x = int(pen.box.min.x) - 16; x <= int(pen.box.max.x) + 16; x += 16) {
-                for (int z = int(pen.box.min.z) - 16; z <= int(pen.box.max.z) + 16; z += 16) {
-                    server->world().loadChunk(QcBlockPos{x, 0, z}.chunk());
-                }
-            }
+                        {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
+                        {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
+                        {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
+                        {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}}};
+        placePens(*server, generator, pens);
+        if (QTest::currentTestFailed()) {
+            return;
         }
 
         const auto inside = [&](const Pen &pen) {
@@ -712,13 +740,15 @@ private slots:
                        && at.z >= pen.box.min.z && at.z <= pen.box.max.z && at.y >= pen.box.min.y && at.y <= pen.box.max.y;
             });
         };
-        // The creature area's row of glass pens holds the same kinds.
+        // The creature area's row of glass pens holds the same kinds; cod live in two of the pens.
         const QcShowcaseAreaInfo row = *std::ranges::find(generator.plan().areas, u"creatures"_s, &QcShowcaseAreaInfo::name);
         const auto escaped = [&](const Pen &pen) {
             return std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
                 const QcVec3 &at = mob.motion.position;
                 const bool inRow = at.x >= row.origin.x && at.x <= row.origin.x + row.sizeX && at.z >= row.origin.z && at.z <= row.origin.z + row.sizeZ;
-                const bool inPen = at.x >= pen.box.min.x && at.x <= pen.box.max.x && at.z >= pen.box.min.z && at.z <= pen.box.max.z;
+                const bool inPen = std::ranges::any_of(pens, [&](const Pen &other) {
+                    return at.x >= other.box.min.x && at.x <= other.box.max.x && at.z >= other.box.min.z && at.z <= other.box.max.z;
+                });
                 return pen.kinds.contains(m_content->mobs()[mob.type].name) && !inRow && !inPen;
             });
         };
@@ -744,6 +774,8 @@ private slots:
             QCOMPARE(inside(pen), pen.creatures);
             QCOMPARE(escaped(pen), 0);
         }
+        // The fish swim: none lies on land.
+        QCOMPARE(fishOnLand(*server), 0);
     }
 };
 

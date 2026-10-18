@@ -80,6 +80,8 @@ inline constexpr double clingAbove = 0.1;
 // clingReach.
 bool clingsToWall(const QcBlockAccess &world, const QcAabb &box);
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos);
+// Whether `pos` holds water: a liquid that sets nothing alight (not lava).
+bool isWaterAt(const QcBlockAccess &world, QcBlockPos pos);
 // Movement factor of the liquid at `pos` (lava is slow), 1 outside liquids.
 double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos);
 // Smallest movement factor of the blocks a box overlaps (cobwebs), 1 without any.

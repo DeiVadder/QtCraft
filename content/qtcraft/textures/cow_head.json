@@ -1,0 +1,8 @@
+{
+    "name": "cow_head",
+    "pattern": "speckle",
+    "primary": "#3a2a20",
+    "secondary": "#e8e2d8",
+    "variation": 0.2,
+    "seed": 7102
+}

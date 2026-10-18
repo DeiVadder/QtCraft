@@ -261,13 +261,22 @@ struct QcMobDefinition
     {
         return spawnWeight > 0.0 || std::ranges::any_of(extraSpawns, [](const SpawnRule &rule) { return rule.weight > 0.0; });
     }
-    // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it.
+    // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it,
+    // with `catchSound` (server side only).
     QString catchWith;
     QString catchItem;
+    QString catchSound;
     // Feeding and young ones (decision E-293); only `breeding.food` reaches the client.
     QcBreedingDefinition breeding;
     // Laying eggs (decision E-452). Server side only.
     QcLayingDefinition laying;
 
     static constexpr int maxGlow = 15;
+    // Lives in water and schools (fish, decision E-502).
+    std::optional<QcAquaticDefinition> aquatic;
+    // Using `milkWith` on a grown one turns one of those items into `milkItem` with `milkSound`; the
+    // creature stays (a cow and a bucket, decision E-500). `milkWith` reaches the client.
+    QString milkWith;
+    QString milkItem;
+    QString milkSound;
 };

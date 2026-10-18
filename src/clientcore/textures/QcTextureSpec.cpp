@@ -64,7 +64,7 @@ using namespace Qt::StringLiterals;
         {u"dropper"_s, Pattern::Dropper},   {u"rail"_s, Pattern::Rail},
         {u"minecart"_s, Pattern::Minecart}, {u"bow"_s, Pattern::Bow},
         {u"arrow"_s, Pattern::Arrow},       {u"feather"_s, Pattern::Feather},
-        {u"bone"_s, Pattern::Bone},
+        {u"bone"_s, Pattern::Bone},         {u"fishing_rod"_s, Pattern::FishingRod},
         {u"carved_pumpkin"_s, Pattern::CarvedPumpkin}, {u"shears"_s, Pattern::Shears},
     };
 

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Katze](#mob-qtcraft-cat) · [Ozelot](#mob-qtcraft-ocelot) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -197,6 +197,33 @@ Ein gezähmter Wolf mit rotem Halsband. Er gehört dir, auch wenn du nicht im Sp
 | Geheilt durch | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop), [Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton), [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton), [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh) |
 | Halsband | zuerst in der Farbe dieses Farbstoffs; ein Farbstoff, den der Besitzer darauf benutzt, färbt es: [Roter Farbstoff](items.md#item-qtcraft-red_dye) |
 
+### <a id="mob-qtcraft-cod"></a>Kabeljau
+
+Ein Fisch jedes Gewässers, ob See, Fluss oder Meer. Er schwimmt im Schwarm, zappelt an Land und erstickt dort nach einer Weile. Mit einem Wassereimer fängt man ihn lebend.
+
+| | |
+|---|---|
+| ID | `qtcraft:cod` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 3 Lebenspunkte |
+| Größe | 0,5 m breit, 0,3 m hoch |
+| Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s auf der Flucht |
+| Erscheint | Tag und Nacht |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 3 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Fangbar | [Wassereimer](items.md#item-qtcraft-water_bucket), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket) |
+| Beute | [Roher Kabeljau](food.md#item-qtcraft-raw_cod), [Knochenmehl](items.md#item-qtcraft-bone_meal) (5 %) |
+
+**Erscheint auf**
+
+[Wasser](liquids.md#block-qtcraft-water)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
 ### <a id="mob-qtcraft-cat"></a>Katze
 
 Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: Jeder Fisch zähmt sie mit einer Chance von eins zu drei. Eine zahme Katze folgt dir, setzt sich, wenn du sie benutzt, und teleportiert sich wie ein Hund zu dir, kämpft aber nicht. Wesen, die Angst vor Katzen haben, halten Abstand.
@@ -219,6 +246,61 @@ Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: J
 Und in Dörfern von Biomen ohne eigenen Dorfstil.
 
 [Ebene](biomes.md#biome-qtcraft-plains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wüste](biomes.md#biome-qtcraft-desert)
+
+### <a id="mob-qtcraft-cow"></a>Kuh
+
+Ein ruhiges Weidetier der Wiesen. Ein leerer Eimer an einer ausgewachsenen Kuh melkt sie; mit Weizen verliebt sie sich. Lässt Leder und rohes Rindfleisch fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:cow` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 0,9 m breit, 1,4 m hoch |
+| Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Vermehrt sich mit | [Weizen](items.md#item-qtcraft-wheat) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Beute | [Leder](items.md#item-qtcraft-leather), [Leder](items.md#item-qtcraft-leather) (50 %), [Rohes Rindfleisch](food.md#item-qtcraft-raw_beef), [Rohes Rindfleisch](food.md#item-qtcraft-raw_beef), [Rohes Rindfleisch](food.md#item-qtcraft-raw_beef) (50 %) |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-salmon"></a>Lachs
+
+Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwarm, zappelt an Land und erstickt dort nach einer Weile. Mit einem Wassereimer fängt man ihn lebend.
+
+| | |
+|---|---|
+| ID | `qtcraft:salmon` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 3 Lebenspunkte |
+| Größe | 0,5 m breit, 0,35 m hoch |
+| Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s auf der Flucht |
+| Erscheint | Tag und Nacht |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 3 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Fangbar | [Wassereimer](items.md#item-qtcraft-water_bucket), [Lachseimer](items.md#item-qtcraft-salmon_bucket) |
+| Beute | [Roher Lachs](food.md#item-qtcraft-raw_salmon), [Knochenmehl](items.md#item-qtcraft-bone_meal) (5 %) |
+
+**Erscheint auf**
+
+[Wasser](liquids.md#block-qtcraft-water)
+
+**Erscheint in Biomen**
+
+[Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 

@@ -1,0 +1,8 @@
+{
+    "name": "fishing_bobber",
+    "pattern": "lump",
+    "primary": "#d83a2e",
+    "secondary": "#f2f2ee",
+    "variation": 0.05,
+    "seed": 5231
+}

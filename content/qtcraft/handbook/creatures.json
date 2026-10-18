@@ -9,6 +9,7 @@
         "silverfish",
         "chickens",
         "endermen",
+        "cows_and_fish",
         "pets",
         "limits"
     ],
@@ -29,6 +30,11 @@
         "silverfish",
         "infested_stone",
         "chicken",
-        "egg"
+        "egg",
+        "cow",
+        "milk_bucket",
+        "cod",
+        "salmon",
+        "cod_bucket"
     ]
 }

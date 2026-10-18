@@ -12,6 +12,7 @@ namespace QcSoundKeys {
 inline constexpr auto playerHurt = "qtcraft:player.hurt";
 inline constexpr auto playerDeath = "qtcraft:player.death";
 inline constexpr auto playerEat = "qtcraft:player.eat";
+inline constexpr auto playerDrink = "qtcraft:player.drink";
 inline constexpr auto itemPickup = "qtcraft:item.pickup";
 inline constexpr auto waterSplash = "qtcraft:water.splash";
 inline constexpr auto waterSwim = "qtcraft:water.swim";

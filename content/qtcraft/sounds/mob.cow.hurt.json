@@ -1,0 +1,19 @@
+{
+    "name": "mob.cow.hurt",
+    "volume": 0.7,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.35,
+            "frequency": 200,
+            "endFrequency": 150,
+            "attack": 0.03,
+            "curve": 1.2,
+            "lowpass": 700,
+            "tremoloRate": 8,
+            "tremoloDepth": 0.3
+        }
+    ]
+}

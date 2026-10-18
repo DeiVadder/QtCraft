@@ -89,11 +89,25 @@ QColor paintBone(const QcTextureSpec &spec, int x, int y, QColor color)
     return clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 4> painters = {{
+// A rod (primary, darker towards the grip at the bottom left) on the diagonal, its line (secondary)
+// hanging straight down from the tip to a small hook.
+QColor paintFishingRod(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const double along = alongOf(x, y);
+    if ((x + y == 15 || x + y == 16) && along >= -6.5 && along <= 6.5) {
+        return varied(spec, along < -3.0 ? scaled(color, 0.7) : color, x, y, 5);
+    }
+    const bool line = x == 14 && y >= 2 && y <= 12;
+    const bool hook = (y == 13 && (x == 13 || x == 14)) || (x == 12 && y == 12);
+    return line || hook ? spec.secondary : clear();
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 5> painters = {{
     {Pattern::Bow, paintBow},
     {Pattern::Arrow, paintArrow},
     {Pattern::Feather, paintFeather},
     {Pattern::Bone, paintBone},
+    {Pattern::FishingRod, paintFishingRod},
 }};
 
 } // namespace

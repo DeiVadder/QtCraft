@@ -1,0 +1,39 @@
+{
+    "name": "player.drink",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "range": 12,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.12,
+            "start": 0.0,
+            "frequency": 420,
+            "endFrequency": 260,
+            "attack": 0.01,
+            "curve": 2,
+            "lowpass": 1200
+        },
+        {
+            "wave": "sine",
+            "duration": 0.12,
+            "start": 0.2,
+            "frequency": 460,
+            "endFrequency": 260,
+            "attack": 0.01,
+            "curve": 2,
+            "lowpass": 1200
+        },
+        {
+            "wave": "sine",
+            "duration": 0.12,
+            "start": 0.4,
+            "frequency": 500,
+            "endFrequency": 260,
+            "attack": 0.01,
+            "curve": 2,
+            "lowpass": 1200
+        }
+    ]
+}

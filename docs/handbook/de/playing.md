@@ -432,9 +432,13 @@ Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Tref
 
 Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Enderperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.
 
+**Angeln**
+
+Wirf eine Angel mit der Benutzen-Taste aus, und ihr Schwimmer fliegt los und treibt auf dem Wasser. Nach 5 bis 30 s beißt ein Fisch an (bei Regen ein Viertel früher): Der Schwimmer taucht unter und es platscht, und 1 s lang kannst du mit der Benutzen-Taste einholen und ihn fangen. Meist fängst du Kabeljau und Lachs, ab und zu einen Stock, Faden, Leder, einen Knochen, eine Schüssel oder sogar einen Bogen. Holst du zu früh oder zu spät ein, fängst du nichts. Der Schwimmer verschwindet, wenn du einen anderen Platz wählst oder dich mehr als 32 m entfernst, und er wird nie mit der Welt gespeichert.
+
 **Siehe auch**
 
-[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Enderperle](items.md#item-qtcraft-ender_pearl)
+[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Enderperle](items.md#item-qtcraft-ender_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
@@ -498,6 +502,10 @@ Hühner flattern langsam hinab, statt zu fallen, und legen alle fünf bis zehn M
 
 Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.
 
+**Kühe, Milch und Fische**
+
+Ein leerer Eimer an einer ausgewachsenen Kuh melkt sie. Mit der Benutzen-Taste getrunken, beendet die Milch jeden Statuseffekt, auch Gift, und gibt den Eimer zurück. Kühe verlieben sich mit Weizen und lassen Leder und Rindfleisch fallen. Kabeljaue leben in Seen und Meeren, Lachse in den kalten Gewässern von Taiga, Tundra und Bergen. Fische schwimmen im Schwarm und nur im Wasser; an Land zappeln sie und ersticken nach 15 Sekunden. Ein Wassereimer an einem Fisch fängt ihn lebend; der ausgegossene Fischeimer lässt ihn wieder frei, und ein ausgesetzter Fisch bleibt in der Welt. Fische haben eine eigene Spawn-Grenze und nehmen den Tieren an Land keinen Platz.
+
 **Wölfe, Hunde und Katzen**
 
 Wölfe streifen im Rudel durch Wälder, Taiga und Tundra: Schlägst du einen, jagt dich jeder Wolf des Rudels in der Nähe. Füttere einen Wolf mit Knochen, um ihn zu zähmen; jeder Knochen wirkt mit einer Chance von eins zu drei, und der gezähmte Wolf wird dein Hund mit rotem Halsband. Katzen leben in Dörfern und werden ebenso mit rohem Kabeljau gezähmt. Ein Haustier gehört dir, nicht deiner Spielfigur einer Anmeldung: Es bleibt deins, wenn du gehst, und wartet stehend oder sitzend, bis du zurückkommst. Benutze dein Tier mit leerer Hand oder einem anderen Gegenstand, damit es sich setzt oder aufsteht. Ein Tier, das nicht sitzt, folgt dir, wenn du weggehst, und teleportiert sich neben dich, wenn du weiter als 12 m entfernt bist, aber nur auf sicheren Boden in geladenen Chunks. Ein Hund kämpft gegen das, was dich verletzt oder was du schlägst, nie gegen dich und nie gegen deine anderen Tiere. Fleisch heilt einen Hund, Fisch eine Katze; ein Farbstoff färbt das Halsband eines Hundes. Ozelots sind scheu und laufen vor jedem weg, der ihnen nahe kommt, außer du hältst rohen Kabeljau und schleichst dich langsam an.
@@ -508,7 +516,7 @@ Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungs
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg), [Kuh](creatures.md#mob-qtcraft-cow), [Milcheimer](items.md#item-qtcraft-milk_bucket), [Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 

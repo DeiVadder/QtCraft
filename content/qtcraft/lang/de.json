@@ -100,6 +100,8 @@
     "item.qtcraft.flint_and_steel": "Feuerzeug",
     "item.qtcraft.shears": "Schere",
     "item.qtcraft.bow": "Bogen",
+    "item.qtcraft.fishing_rod": "Angel",
+    "item.qtcraft.fishing_bobber": "Schwimmer",
     "item.qtcraft.arrow": "Pfeil",
     "item.qtcraft.snowball": "Schneeball",
     "item.qtcraft.ender_pearl": "Enderperle",
@@ -565,5 +567,18 @@
     "block.qtcraft.infested_stone_bricks": "Befallene Steinziegel",
     "structure.qtcraft.spider_cave": "Spinnenhöhle",
     "structure.qtcraft.silverfish_wall": "Silberfischchen-Wand",
-    "structure.qtcraft.chicken_coop": "Hühnerstall"
+    "structure.qtcraft.chicken_coop": "Hühnerstall",
+    "structure.qtcraft.cow_pasture": "Kuhweide",
+    "structure.qtcraft.aquarium": "Aquarium",
+    "structure.qtcraft.fishing_pier": "Angelsteg",
+    "mob.qtcraft.cow": "Kuh",
+    "item.qtcraft.milk_bucket": "Milcheimer",
+    "item.qtcraft.raw_beef": "Rohes Rindfleisch",
+    "item.qtcraft.cooked_beef": "Steak",
+    "mob.qtcraft.cod": "Kabeljau",
+    "mob.qtcraft.salmon": "Lachs",
+    "item.qtcraft.cod_bucket": "Kabeljaueimer",
+    "item.qtcraft.salmon_bucket": "Lachseimer",
+    "item.qtcraft.raw_salmon": "Roher Lachs",
+    "item.qtcraft.cooked_salmon": "Gebratener Lachs"
 }

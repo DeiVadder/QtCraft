@@ -1,0 +1,8 @@
+{
+    "name": "milk_bucket",
+    "maxStack": 1,
+    "drink": {
+        "clearsEffects": true
+    },
+    "emptiesTo": "bucket"
+}

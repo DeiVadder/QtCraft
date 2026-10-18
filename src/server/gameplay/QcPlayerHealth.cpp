@@ -233,6 +233,11 @@ void QcPlayerHealth::consume(QcServerClient &client)
         return;
     }
 
+    if (held && held->drink) {
+        drink(client, *held);
+        return;
+    }
+
     // Full players do not eat (decision E-039), nor do players with frozen hunger (creative mode,
     // decision E-282): the survival values stay as they are and the food is not used up.
     if (client.dead || client.hunger.frozen() || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
@@ -247,6 +252,28 @@ void QcPlayerHealth::consume(QcServerClient &client)
     }
     m_sounds.play(QString::fromLatin1(QcSoundKeys::playerEat), client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     sendFood(client);
+    m_inventory.send(client);
+}
+
+void QcPlayerHealth::drink(QcServerClient &client, const QcItemDefinition &held)
+{
+    if (client.dead) {
+        return;
+    }
+
+    // Milk ends every status effect (decision E-500); the client hears of it with its health.
+    if (held.drink->clearsEffects && client.effects.clear()) { // NOLINT(bugprone-unchecked-optional-access): consume() checked it
+        sendHealth(client);
+    }
+    // Creative players keep what they drink, like the items they place.
+    if (!client.rules().infiniteItems) {
+        if (!held.emptiesTo.isEmpty() && m_state.content().itemId(held.emptiesTo)) {
+            m_inventory.exchangeHeld(client, held.emptiesTo);
+        } else {
+            client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+        }
+    }
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::playerDrink), client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     m_inventory.send(client);
 }
 

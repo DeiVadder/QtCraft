@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -93,6 +93,61 @@ A small bird of the meadows. It flutters down gently instead of falling and lays
 | Breeding | again after 5 min, young grow up in 20 min |
 | Lays | every 5–10 min: [Egg](items.md#item-qtcraft-egg) |
 | Drops | [Feather](items.md#item-qtcraft-feather) (50 %), [Feather](items.md#item-qtcraft-feather) (50 %), [Raw chicken](food.md#item-qtcraft-raw_chicken) |
+
+**Appears on**
+
+[Grass block](blocks.md#block-qtcraft-grass_block)
+
+**Appears in biomes**
+
+All biomes.
+
+### <a id="mob-qtcraft-cod"></a>Cod
+
+A fish of any water, lakes, rivers and seas alike. It swims in schools, flops about on land and suffocates there after a while. Catch it alive with a water bucket.
+
+| | |
+|---|---|
+| ID | `qtcraft:cod` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 3 health points |
+| Size | 0.5 m wide, 0.3 m tall |
+| Speed | 1.5 m/s walking, 4 m/s fleeing |
+| Appears | day and night |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 4 |
+| Spawn weight | 3 |
+| Limit | all peaceful creatures together: 6 per player |
+| Can be caught | [Water bucket](items.md#item-qtcraft-water_bucket), [Bucket of cod](items.md#item-qtcraft-cod_bucket) |
+| Drops | [Raw cod](food.md#item-qtcraft-raw_cod), [Bone meal](items.md#item-qtcraft-bone_meal) (5 %) |
+
+**Appears on**
+
+[Water](liquids.md#block-qtcraft-water)
+
+**Appears in biomes**
+
+All biomes.
+
+### <a id="mob-qtcraft-cow"></a>Cow
+
+A calm grazer of the meadows. Use an empty bucket on a grown cow to milk it; wheat makes it fall in love. Drops leather and raw beef.
+
+| | |
+|---|---|
+| ID | `qtcraft:cow` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 10 health points |
+| Size | 0.9 m wide, 1.4 m tall |
+| Speed | 1 m/s walking, 2.5 m/s fleeing |
+| Appears | by day |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 4 |
+| Spawn weight | 2 |
+| Limit | all peaceful creatures together: 6 per player |
+| Breeds when fed | [Wheat](items.md#item-qtcraft-wheat) |
+| Breeding | again after 5 min, young grow up in 20 min |
+| Drops | [Leather](items.md#item-qtcraft-leather), [Leather](items.md#item-qtcraft-leather) (50 %), [Raw beef](food.md#item-qtcraft-raw_beef), [Raw beef](food.md#item-qtcraft-raw_beef), [Raw beef](food.md#item-qtcraft-raw_beef) (50 %) |
 
 **Appears on**
 
@@ -268,6 +323,33 @@ All biomes.
 And in villages of biomes without a village style of their own.
 
 [Desert](biomes.md#biome-qtcraft-desert), [Plains](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+
+### <a id="mob-qtcraft-salmon"></a>Salmon
+
+A fish of the cold waters of taiga, tundra and mountains. It swims in schools, flops about on land and suffocates there after a while. Catch it alive with a water bucket.
+
+| | |
+|---|---|
+| ID | `qtcraft:salmon` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 3 health points |
+| Size | 0.5 m wide, 0.35 m tall |
+| Speed | 1.5 m/s walking, 4 m/s fleeing |
+| Appears | day and night |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 4 |
+| Spawn weight | 3 |
+| Limit | all peaceful creatures together: 6 per player |
+| Can be caught | [Water bucket](items.md#item-qtcraft-water_bucket), [Bucket of salmon](items.md#item-qtcraft-salmon_bucket) |
+| Drops | [Raw salmon](food.md#item-qtcraft-raw_salmon), [Bone meal](items.md#item-qtcraft-bone_meal) (5 %) |
+
+**Appears on**
+
+[Water](liquids.md#block-qtcraft-water)
+
+**Appears in biomes**
+
+[Mountains](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-sheep"></a>Sheep
 

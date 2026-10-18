@@ -199,6 +199,9 @@ struct QcTextureSpec
         Arrow,
         Feather,
         Bone,
+        // A fishing rod (decision E-503): the rod (primary) on the diagonal, its line (secondary)
+        // hanging from the tip with a hook.
+        FishingRod,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

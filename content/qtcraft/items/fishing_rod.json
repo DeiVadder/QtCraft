@@ -1,0 +1,26 @@
+{
+    "name": "fishing_rod",
+    "maxStack": 1,
+    "durability": 64,
+    "fishing": {
+        "bobber": "fishing_bobber",
+        "speed": 15.0,
+        "minSeconds": 5.0,
+        "maxSeconds": 30.0,
+        "rainFactor": 0.75,
+        "biteSeconds": 1.0,
+        "maxDistance": 32.0,
+        "castSound": "item.bow.shoot",
+        "biteSound": "water.splash",
+        "loot": [
+            { "item": "raw_cod", "weight": 60 },
+            { "item": "raw_salmon", "weight": 25 },
+            { "item": "stick", "weight": 4 },
+            { "item": "string", "weight": 3 },
+            { "item": "leather", "weight": 3 },
+            { "item": "bone", "weight": 3 },
+            { "item": "bowl", "weight": 1 },
+            { "item": "bow", "weight": 1 }
+        ]
+    }
+}

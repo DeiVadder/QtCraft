@@ -47,3 +47,7 @@ Flows up to 7 blocks from a source; two sources make a new one. Take it with a b
 | Solid | no |
 | Replaced when building into it | yes |
 | States | falling (false, true); level (0, 1, 2, 3, 4, 5, 6, 7) |
+
+**Creatures appearing on it**
+
+[Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon)

@@ -45,6 +45,9 @@ struct QcProjectileDefinition
     // Sound keys: hitting a body, sticking in a block.
     QString hitSound;
     QString stickSound;
+    // Rises to the surface of a liquid and rests there instead of sinking (a fishing rod's bobber,
+    // decision E-503; QcProjectileFlight::floatHeight).
+    bool floats = false;
 
     // The first effect of `type` in onHit, if any.
     const QcHitEffect *effect(const char *type) const
@@ -102,4 +105,38 @@ struct QcThrowableDefinition
     double inaccuracyDegrees = 1.0;
 
     bool operator==(const QcThrowableDefinition &) const = default;
+};
+
+// One entry of a fishing rod's loot table (decision E-503): `count` of `item`, drawn with `weight`
+// against the weights of the other entries.
+struct QcFishingLoot
+{
+    QString item;
+    int weight = 1;
+    int count = 1;
+
+    bool operator==(const QcFishingLoot &) const = default;
+};
+
+// What a fishing rod does (decision E-503; "fishing" in the item's file): the use button casts
+// `bobber`, a projectile kind, at `speed` and reels it in again. While it floats on water a fish bites
+// after a wait between minSeconds and maxSeconds (times rainFactor in rain) for biteSeconds; reeling
+// in then catches one entry of `loot`. The bobber goes beyond maxDistance from the player. The
+// loot table is part of the rod, so another rod (or a pack) can fish other things. Only that the
+// item fishes reaches the client, which sends the use as QcMsg::ThrowItem.
+struct QcFishingDefinition
+{
+    QString bobber;
+    double speed = 15.0;
+    double minSeconds = 5.0;
+    double maxSeconds = 30.0;
+    double rainFactor = 0.75;
+    double biteSeconds = 1.0;
+    double maxDistance = 32.0;
+    // Sound keys: casting, a fish biting.
+    QString castSound;
+    QString biteSound;
+    QList<QcFishingLoot> loot;
+
+    bool operator==(const QcFishingDefinition &) const = default;
 };

@@ -2180,6 +2180,17 @@ Release-Builds, `dev` `f88fbd7` (52.5) gegen `feature/52-7-village-gameplay` nac
 
 **Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −3 bis +4 %, Render-CPU −8 bis +4 %, GUI-CPU −4 bis +4 %, Bild Ø 8,39–8,47 ms, Speicher ±1 %; p99 10,4–16,2 ms bei beiden Ständen (Desktop am Tag). Keine Regression.
 
+## 52.4 (Kühe und Fische) headless, Debug-relativ (2026-10-18)
+
+`test_fish`, Fall `measureSixtyFishAndTwentyCows` (E-502): Wasserbecken 17 × 15 × 4 neben der Bühne des Test-Geländes, Ticks von Hand (200 Ticks je Teil), erst ohne Wesen, dann mit 60 Fischen (halb Kabeljau, halb Lachs, dauerhaft) im Becken, dann zusätzlich 20 Kühe im Gedränge auf der 7 × 7-Bühne; Fische und Kühe getrennt ausgewiesen. Debug-Build, drei Läufe, andere Pakete bauten zeitweise.
+
+| Messung (Debug) | Tick Ø ms ohne | mit 60 Fischen | je Fisch und Tick µs | mit 20 Kühen dazu | je Kuh und Tick µs |
+|---|---|---|---|---|---|
+| erste Fassung, Fische und Kühe zusammen (3 Läufe) | 0,167–0,170 | – | – | 1,636–1,657 | 18,4–18,6 je Wesen |
+| nach dem Review: Zellen von Schwarm-Radius-Größe, 27 Zellen, Speicher bleibt, nächste Nachbarn (3 Läufe) | 0,165–0,171 | 0,985–0,999 | 13,6–13,9 | 1,447–1,484 | 22,4–24,8 |
+
+**Bewertung:** Ein Fisch kostet im Debug-Build nach dem Review etwa 14 µs je Tick (vorher Fische und Kühe zusammen 18 µs je Wesen, zusammen jetzt 1,45–1,48 statt 1,64–1,66 ms je Tick, −11 %); eine Kuh rund 23 µs wie andere Landtiere im Gedränge. Das Gitter sucht 27 statt 125 Zellen ab (Zellen so groß wie der Schwarm-Radius, ohne zusätzliche Ebenen), behält seinen Speicher (Zählsortierung in wiederverwendeten Vektoren) und nimmt die nächsten 8 Nachbarn (`nth_element`). Kein Handlungsbedarf; die Release-Messung (`@server`) gehört zum Abschluss der Etappe.
+
 ## 52.8 (confined und noAi je Wesen, Showcase mit mobGriefing) gerendert und headless (2026-10-18)
 
 Release-Builds, `dev` `6f4723d` (52.7) gegen `feature/52-8-confined-noai`, verschränkt, Mediane.
@@ -2187,3 +2198,11 @@ Release-Builds, `dev` `6f4723d` (52.7) gegen `feature/52-8-confined-noai`, versc
 **Headless** (`@server village`, 3 Runden, 60 Spielsekunden): Tick −3 bis +3 % bei gleicher Wesenzahl, p99 −4 bis +8 %, Speicher ±1 %. Die gemeinsame Griefing-Prüfung kostet nichts Messbares.
 
 **Fenster** (`@core`, 8 Chunks, 6 Runden): GPU −2 bis +1 %, Render-CPU −4 bis +3 %, GUI-CPU −2 bis +6 %, Bild Ø 8,36–8,39 ms, Speicher ±0 %, p99 10,0–10,5 ms (Ziel erfüllt). Tick im Fenster streut wie immer (crowd +19 %, headless −1 %). Keine Regression.
+
+## 52.4 (Kühe, Fische, Angel; mit dev bis 52.8 zusammengeführt) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `fc79639` (52.8) gegen `feature/52-4-cows-fish` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
+
+**Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd +7 % (0,149 → 0,160 ms, gleiche Wesenzahl, unter der 10-%-Schwelle), horde, village, explore, Felder 0 bis +5 %; Signal-Stationen +20 bis +26 % (0,073 → 0,091 ms) bei 61 statt 45 Wesen: Kuhweide, Aquarium und Angelsteg der Showcase, etwa 1,1 µs je Wesen; Speicher 0 bis +4 %.
+
+**Fenster** (`@core`, 8 Chunks, 6 Runden): GPU −4 bis +3 %, Render-CPU −6 bis +1 %, GUI-CPU −5 bis +0 %, Bild Ø 8,39–8,46 ms, Speicher ±0 %; p99 15,9–16,5 ms bei beiden Ständen (Desktop am Tag), showcase 9,9 → 12,1 ms bei Frame-Kosten unverändert. Keine Regression.

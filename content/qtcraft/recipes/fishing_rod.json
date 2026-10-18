@@ -1,0 +1,16 @@
+{
+    "name": "fishing_rod",
+    "type": "shaped",
+    "pattern": [
+        "  |",
+        " |S",
+        "| S"
+    ],
+    "key": {
+        "|": "stick",
+        "S": "string"
+    },
+    "result": {
+        "item": "fishing_rod"
+    }
+}

@@ -43,11 +43,12 @@ constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1
 
 // Peaceful walkers: the persistent kind (flying creatures stay ordinary; villagers live in their
 // villages, decision E-411).
-// Villagers and golems belong to villages (decision E-470): they are not animals.
+// Villagers and golems belong to villages (decision E-470): they are not animals; nor are fish
+// (decision E-502), which come and go with their own cap.
 bool isAnimal(const QcMobDefinition &definition)
 {
     return !definition.hostile && !definition.ambient && !definition.flying && !definition.villager
-           && definition.ai != QcMobDefinition::Ai::Golem;
+           && definition.ai != QcMobDefinition::Ai::Golem && !definition.aquatic;
 }
 
 bool nearAnyPlayer(const QcVec3 &position, const QList<QcNaturalSpawner::PlayerView> &players)
@@ -258,12 +259,15 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     const SpawnRule &rule = *candidate.rule;
     const bool timeOk = place.cave ? rule.caves
                                    : (rule.time == QcMobDefinition::SpawnTime::Any || (rule.time == QcMobDefinition::SpawnTime::Night) == night);
-    const bool groundOk = (rule.blocks.isEmpty() || rule.blocks.contains(content.block(place.ground).name))
-                          && (content.block(place.ground).solid || definition.flying);
+    // Water creatures spawn in water only, never in lava (decision E-502), the others on solid ground.
+    const QcBlockDefinition &ground = content.block(place.ground);
+    const bool water = ground.liquid && ground.fire.setsAlightSeconds == 0;
+    const bool groundOk = (rule.blocks.isEmpty() || rule.blocks.contains(ground.name))
+                          && (definition.aquatic ? water : (ground.solid || definition.flying));
     const int ruleIndex = int(candidate.rule - m_rules.at(candidate.type).constData());
     if (!timeOk || !groundOk || rule.weight <= 0.0 || place.floorY + 1 > rule.maxY
         || !spawnsInChunk(candidate.type, QcBlockPos{place.x, 0, place.z}.chunk(), rule.chunkChance, ruleIndex)
-        || (!definition.flying && !roomAbove(world, {place.x, place.floorY + 1, place.z}, definition.height))) {
+        || (!definition.flying && !definition.aquatic && !roomAbove(world, {place.x, place.floorY + 1, place.z}, definition.height))) {
         return false;
     }
 
@@ -316,8 +320,9 @@ void QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place,
             break;
         }
 
-        const bool spawned = definition.flying ? spawnFlyer(world, place, i, chosen, nextEntityId)
-                                               : spawnWalker(world, place, i, chosen, nextEntityId);
+        const bool spawned = definition.aquatic  ? spawnSwimmer(world, place, i, chosen, nextEntityId)
+                             : definition.flying ? spawnFlyer(world, place, i, chosen, nextEntityId)
+                                                 : spawnWalker(world, place, i, chosen, nextEntityId);
         if (spawned) {
             count += 1;
             counts.perType[chosen.type] += 1;
@@ -338,6 +343,23 @@ bool QcNaturalSpawner::spawnFlyer(const QcServerWorld &world, const SpawnPlace &
 
     m_mobs.spawn(chosen.type, {air.x + 0.5, air.y + 0.25, air.z + 0.5}, nextEntityId());
     m_mobs.editableMobs().last().nightRule = chosen.rule->time == QcMobDefinition::SpawnTime::Night;
+    return true;
+}
+
+bool QcNaturalSpawner::spawnSwimmer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
+                                    const NextId &nextEntityId)
+{
+    const auto [dx, dz] = groupOffsets[std::size_t(member)];
+    // One to three blocks below the surface, where the water goes that deep.
+    const int depth = 1 + m_random.bounded(3);
+    const QcBlockPos cell{place.x + dx, place.floorY - depth + 1, place.z + dz};
+    for (int dy = 0; dy < depth; ++dy) {
+        if (!QcPhysics::isWaterAt(world, cell.offset(0, dy, 0))) {
+            return false;
+        }
+    }
+
+    m_mobs.spawn(chosen.type, {cell.x + 0.5, cell.y + 0.2, cell.z + 0.5}, nextEntityId());
     return true;
 }
 
@@ -504,5 +526,5 @@ void QcNaturalSpawner::setCaps(int hostile, int passive, int ambient)
 
 int QcNaturalSpawner::capOf(const QcMobDefinition &definition) const
 {
-    return definition.ambient ? m_ambientCap : (definition.hostile ? m_hostileCap : m_passiveCap);
+    return definition.aquatic ? m_waterCap : (definition.ambient ? m_ambientCap : (definition.hostile ? m_hostileCap : m_passiveCap));
 }

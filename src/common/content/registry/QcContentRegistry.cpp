@@ -392,6 +392,28 @@ QStringList QcContentRegistry::resolveArcher(QcMobDefinition &mob) const
     return warnings;
 }
 
+QStringList QcContentRegistry::resolveFishing(QcItemDefinition &item) const
+{
+    // A rod whose bobber no pack has does not fish; loot no pack has is left out, and a rod without
+    // any loot left does not fish either (decision E-503).
+    QStringList warnings;
+    if (!item.fishing) {
+        return warnings;
+    }
+    item.fishing->loot.removeIf([&](const QcFishingLoot &loot) {
+        const bool known = itemId(loot.item).has_value();
+        if (!known) {
+            warnings.append(u"item '%1': fishing loot names no item '%2'; left out"_s.arg(item.name, loot.item));
+        }
+        return !known;
+    });
+    if (!projectile(item.fishing->bobber) || item.fishing->loot.isEmpty()) {
+        warnings.append(u"item '%1': fishing without a known bobber '%2' or loot; it does not fish"_s.arg(item.name, item.fishing->bobber));
+        item.fishing.reset();
+    }
+    return warnings;
+}
+
 QStringList QcContentRegistry::resolveProjectiles()
 {
     // Ammunition of a projectile kind no pack has is no ammunition (its projectile is cleared, so
@@ -410,6 +432,7 @@ QStringList QcContentRegistry::resolveProjectiles()
             item.throwable.reset();
         }
         warnings.append(checkProjectileUses(item));
+        warnings.append(resolveFishing(item));
     }
     for (QcProjectileDefinition &kind : m_projectiles) {
         if (!itemId(kind.item)) {

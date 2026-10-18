@@ -93,6 +93,7 @@ private slots:
         QCOMPARE(limits.villagerRoutesPerTick, 8);
         QCOMPARE(limits.villagerHarvestsPerTick, 4);
         QCOMPARE(limits.villageGolems, 256);
+        QCOMPARE(limits.waterCreaturesPerPlayer, 5);
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
         for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
@@ -100,7 +101,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(63));
+        QCOMPARE(keys.size(), qsizetype(64));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

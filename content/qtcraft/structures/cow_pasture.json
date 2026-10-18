@@ -1,0 +1,103 @@
+{
+    "name": "cow_pasture",
+    "showcase": {
+        "order": 94
+    },
+    "palette": {
+        "g": "grass_block",
+        "F": "oak_fence",
+        "H": "hay_block",
+        ".": "air",
+        "C": "chest[facing=south]"
+    },
+    "layers": [
+        [
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg"
+        ],
+        [
+            "FFFFFFFFFFF",
+            "FHH.......F",
+            "FH........F",
+            "F.........F",
+            "F.........F",
+            "F.........F",
+            "F.........F",
+            "FFFFFFFFFFF",
+            "    C      "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "cow",
+            "at": [
+                4.5,
+                1.0,
+                3.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "cow",
+            "at": [
+                7.5,
+                1.0,
+                2.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "cow",
+            "at": [
+                6.5,
+                1.0,
+                5.5
+            ],
+            "confined": true
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                4,
+                1,
+                8
+            ],
+            "items": [
+                {
+                    "item": "bucket",
+                    "count": 4
+                },
+                {
+                    "item": "milk_bucket",
+                    "count": 1
+                },
+                {
+                    "item": "wheat",
+                    "count": 16
+                },
+                {
+                    "item": "leather",
+                    "count": 4
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                3.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.cow_pasture"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "name": "cooked_beef",
+    "input": "raw_beef",
+    "result": {
+        "item": "cooked_beef"
+    },
+    "seconds": 10,
+    "experience": 0.35
+}

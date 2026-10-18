@@ -103,6 +103,7 @@ namespace QcProjectileParser {
     projectile.despawnSeconds = reader.number(u"despawnSeconds"_s, projectile.despawnSeconds, 0.0, 3600.0);
     projectile.flightSeconds = reader.number(u"flightSeconds"_s, projectile.flightSeconds, 1.0, 3600.0);
     projectile.sticks = reader.boolean(u"sticks"_s, projectile.sticks);
+    projectile.floats = reader.boolean(u"floats"_s, projectile.floats);
     projectile.onHit = parseOnHit(packNamespace, projectile.damage, reader);
     // The damage of the hit is that of the damage effects.
     projectile.damage = 0.0;

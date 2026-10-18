@@ -8,6 +8,7 @@
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
+#include "server/mobs/QcServerAnimals.h"
 #include "server/signal/QcSignalTable.h"
 #include "worldgen/terrain/QcNoise.h"
 
@@ -197,11 +198,17 @@ bool QcDispenserActions::placeLiquid(const Shot &shot, QcInventoryAccess &access
     if (!liquid || !content.block(*liquid).liquid || !replaceable || !content.itemId(item.emptiesTo)) {
         return false;
     }
+    // A fish bucket whose fish may not come out stays full (decision E-501).
+    if (!QcServerAnimals::mayRelease(m_state, item, QcServerAnimals::releasePoint(front))) {
+        return false;
+    }
 
     if (!m_blocks.setQuietly(front, *liquid)) {
         return false;
     }
     m_blocks.sendBlock(front, *liquid);
+    // It lets its fish out where it pours, kept with the world as from a player's hand.
+    QcServerAnimals::release(m_state, item, QcServerAnimals::releasePoint(front));
     m_sounds.play(QString::fromLatin1(QcSoundKeys::bucketEmpty), centreOf(front));
     exchange(shot, item.emptiesTo, access);
     return true;
@@ -228,12 +235,13 @@ bool QcDispenserActions::scoopLiquid(const Shot &shot, QcInventoryAccess &access
 
 QString QcDispenserActions::filledBucket(QcItemId empty, QcBlockId liquid) const
 {
-    // The filled item that empties into this one and pours this liquid; else the liquid's bucket.
+    // The filled item that empties into this one and pours this liquid (never one with a creature
+    // inside, a fish bucket, decision E-501); else the liquid's bucket.
     const QcContentRegistry &content = m_state.content();
     const QString &emptyName = content.item(empty).name;
     for (const QcItemDefinition &item : content.items()) {
         const std::optional<QcBlockId> places = content.blockId(item.placesBlock);
-        if (item.emptiesTo == emptyName && places && content.isSameBlock(*places, liquid)) {
+        if (item.emptiesTo == emptyName && item.releasesMob.isEmpty() && places && content.isSameBlock(*places, liquid)) {
             return item.name;
         }
     }

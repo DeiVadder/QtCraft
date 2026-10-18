@@ -6,6 +6,7 @@
 #include <QtGlobal>
 
 class QcServerInventory;
+struct QcItemDefinition;
 class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
@@ -46,6 +47,8 @@ public:
     void respawn(QcServerClient &client);
     // Eats the held food or puts on the held armour.
     void consume(QcServerClient &client);
+    // Drinks the held drink (milk clears the status effects, decision E-500) and leaves its container.
+    void drink(QcServerClient &client, const QcItemDefinition &held);
     void sendHealth(QcServerClient &client);
     void sendFood(QcServerClient &client);
 

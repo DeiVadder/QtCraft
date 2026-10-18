@@ -1,0 +1,9 @@
+{
+    "name": "cooked_salmon",
+    "input": "raw_salmon",
+    "result": {
+        "item": "cooked_salmon"
+    },
+    "seconds": 10,
+    "experience": 0.35
+}

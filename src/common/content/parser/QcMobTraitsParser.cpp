@@ -14,7 +14,7 @@ void parseGaze(QcGazeDefinition &gaze, QcJsonFieldReader &reader)
     gaze.headShare = reader.number(u"headShare"_s, gaze.headShare, 0.0, 1.0);
 }
 
-void parseTeleport(QcTeleportDefinition &teleport, QcJsonFieldReader &reader)
+void parseTeleport(QcTeleportDefinition &teleport, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     teleport.range = reader.number(u"range"_s, teleport.range, 2.0, 64.0);
     teleport.attempts = reader.integer(u"attempts"_s, teleport.attempts, 1, 64);
@@ -22,7 +22,7 @@ void parseTeleport(QcTeleportDefinition &teleport, QcJsonFieldReader &reader)
     teleport.dodgesProjectiles = reader.boolean(u"dodgesProjectiles"_s, teleport.dodgesProjectiles);
     teleport.whenWet = reader.boolean(u"whenWet"_s, teleport.whenWet);
     teleport.towardsTargetChance = reader.number(u"towardsTargetChance"_s, teleport.towardsTargetChance, 0.0, 1.0);
-    teleport.sound = reader.string(u"sound"_s);
+    teleport.sound = reader.name(u"sound"_s, packNamespace);
 }
 
 void parseCarry(QcCarryDefinition &carry, QcJsonFieldReader &reader, const QString &packNamespace)
@@ -108,6 +108,37 @@ void parseCompanions(QcMobDefinition &mob, QcJsonFieldReader &reader, const QStr
     }
 }
 
+void parseAquatic(QcAquaticDefinition &aquatic, QcJsonFieldReader &reader)
+{
+    aquatic.swimSpeed = reader.number(u"swimSpeed"_s, aquatic.swimSpeed, 0.1, 10.0);
+    aquatic.airSeconds = reader.number(u"airSeconds"_s, aquatic.airSeconds, 0.0, 600.0);
+    aquatic.suffocationDamage = reader.number(u"suffocationDamage"_s, aquatic.suffocationDamage, 0.0, 100.0);
+    aquatic.flopSpeed = reader.number(u"flopSpeed"_s, aquatic.flopSpeed, 0.0, 10.0);
+    aquatic.schoolRadius = reader.number(u"schoolRadius"_s, aquatic.schoolRadius, 0.0, 16.0);
+    aquatic.cohesion = reader.number(u"cohesion"_s, aquatic.cohesion, 0.0, 4.0);
+    aquatic.alignment = reader.number(u"alignment"_s, aquatic.alignment, 0.0, 4.0);
+    aquatic.separation = reader.number(u"separation"_s, aquatic.separation, 0.0, 4.0);
+    aquatic.separationDistance = reader.number(u"separationDistance"_s, aquatic.separationDistance, 0.0, 4.0);
+    aquatic.neighbours = reader.integer(u"neighbours"_s, aquatic.neighbours, 0, 32);
+}
+
+// Water creatures and milking (decisions E-500, E-502): "aquatic" and "milk".
+void parseWaterAndMilk(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"aquatic"_s, [&mob](const QJsonObject &, QcJsonFieldReader &nested) { parseAquatic(mob.aquatic.emplace(), nested); });
+    if (reader.ok() && mob.aquatic && (mob.flying || mob.hostile || mob.ambient || mob.ai != QcMobDefinition::Ai::Passive || mob.tameable)) {
+        reader.fail(u"'aquatic' creatures are passive, neither fly, are ambient nor tameable"_s);
+    }
+    reader.nestedObject(u"milk"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        mob.milkWith = nested.name(u"with"_s, packNamespace);
+        mob.milkItem = nested.name(u"item"_s, packNamespace);
+        mob.milkSound = nested.name(u"sound"_s, packNamespace);
+        if (nested.ok() && (mob.milkWith.isEmpty() || mob.milkItem.isEmpty())) {
+            nested.fail(u"needs 'with' and 'item'"_s);
+        }
+    });
+}
+
 } // namespace
 
 namespace QcMobTraitsParser {
@@ -116,12 +147,13 @@ void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReade
 {
     reader.nestedObject(u"gaze"_s, [&mob](const QJsonObject &, QcJsonFieldReader &nested) { parseGaze(mob.gaze.emplace(), nested); });
     reader.nestedObject(u"teleport"_s,
-                        [&mob](const QJsonObject &, QcJsonFieldReader &nested) { parseTeleport(mob.teleport.emplace(), nested); });
+                        [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) { parseTeleport(mob.teleport.emplace(), nested, packNamespace); });
     reader.nestedObject(u"carries"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseCarry(mob.carries.emplace(), nested, packNamespace);
     });
     mob.waterDamage = reader.number(u"waterDamage"_s, 0.0, 0.0, 100.0);
     parseCompanions(mob, reader, packNamespace);
+    parseWaterAndMilk(mob, reader, packNamespace);
 
     // Being provoked by a look and carrying blocks are what the neutral AI does.
     if (reader.ok() && (json.contains(u"gaze"_s) || json.contains(u"carries"_s)) && mob.ai != QcMobDefinition::Ai::Neutral) {

@@ -1,0 +1,8 @@
+{
+    "name": "salmon_bucket",
+    "pattern": "bucket",
+    "primary": "#b8bcc4",
+    "secondary": "#a83a2a",
+    "variation": 0.12,
+    "seed": 7214
+}

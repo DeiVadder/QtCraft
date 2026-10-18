@@ -44,6 +44,44 @@ std::optional<std::pair<double, quint32>> firstBody(const QcProjectile &projecti
     return first;
 }
 
+// How far along the segment from `from` in `direction` a floating projectile first enters a liquid,
+// sampled every waterProbe metres up to `limit`.
+std::optional<double> firstWater(const QcBlockAccess &world, const QcVec3 &from, const QcVec3 &direction, double limit)
+{
+    constexpr double waterProbe = 0.25;
+    for (int step = 1; step * waterProbe < limit; ++step) {
+        const double along = step * waterProbe;
+        if (QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(from + direction * along))) {
+            return along;
+        }
+    }
+    return std::nullopt;
+}
+
+// A floating projectile in water (decision E-503): it drifts on with the water's drag, never into a
+// cell without water, and rises to the surface of the uppermost water block, where it rests.
+QcProjectileFlight::Step floatStep(const QcBlockAccess &world, QcProjectile &projectile, const QcProjectileDefinition &definition, double dt)
+{
+    QcEntityMotion &motion = projectile.motion;
+    const double keep = std::exp(-definition.waterDrag * dt);
+    QcVec3 velocity{motion.velocity.x * keep, 0.0, motion.velocity.z * keep};
+    QcVec3 next = motion.position + QcVec3{velocity.x, 0.0, velocity.z} * dt;
+    if (!QcPhysics::isWaterAt(world, QcPhysics::blockContaining(next))) {
+        velocity = {};
+        next = motion.position;
+    }
+
+    const QcBlockPos cell = QcPhysics::blockContaining(next);
+    const bool covered = QcPhysics::isWaterAt(world, cell.offset(0, 1, 0));
+    const double surface = cell.y + QcProjectileFlight::floatHeight;
+    const double risen = next.y + QcProjectileFlight::floatRise * dt;
+    next.y = covered ? risen : std::min(risen, surface);
+    velocity.y = next.y > motion.position.y ? QcProjectileFlight::floatRise : 0.0;
+    motion.position = next;
+    motion.velocity = velocity;
+    return {};
+}
+
 } // namespace
 
 namespace QcProjectileFlight {
@@ -70,8 +108,13 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
           double dt)
 {
     QcEntityMotion &motion = projectile.motion;
-    const bool inLiquid = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(motion.position));
-    motion.inWater = inLiquid;
+    const QcBlockPos here = QcPhysics::blockContaining(motion.position);
+    const bool inLiquid = QcPhysics::isLiquidAt(world, here);
+    motion.inWater = QcPhysics::isWaterAt(world, here);
+    if (definition.floats && inLiquid) {
+        // Water carries it; a hot liquid (lava) burns it up.
+        return motion.inWater ? floatStep(world, projectile, definition, dt) : Step{Outcome::Burnt, 0, {}};
+    }
     QcVec3 velocity = motion.velocity;
     velocity.y -= definition.gravity * dt;
     velocity = velocity * std::exp(-(inLiquid ? definition.waterDrag : definition.drag) * dt);
@@ -96,6 +139,14 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
     if (const auto body = firstBody(projectile, bodies, direction, blockDistance, definition.size * 0.5)) {
         motion.position = motion.position + direction * body->first;
         return {Outcome::HitBody, body->second, {}};
+    }
+
+    if (definition.floats) {
+        if (const std::optional<double> water = firstWater(world, motion.position, direction, blockDistance)) {
+            // A fast floater crossing shallow water lands in it instead of in the floor below.
+            motion.position = motion.position + direction * *water;
+            return {};
+        }
     }
 
     if (block) {

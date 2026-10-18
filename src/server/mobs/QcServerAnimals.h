@@ -30,6 +30,9 @@ public:
     // Taming, sitting, healing and collars of tameable creatures (QcPetCare, decision E-480); false
     // when the use is none of these.
     bool tend(QcServerClient &client, quint32 mobId) { return m_pets.use(client, mobId); }
+    // Milks a grown creature with the held milking item (a cow and a bucket, decision E-500): one of
+    // the items becomes QcMobDefinition::milkItem. False when the held item does not milk it.
+    bool milk(QcServerClient &client, quint32 mobId);
     // The box players see and aim at: young animals at QcMsg::youngScale (collision stays adult).
     static QcAabb shownBox(const QcMobDefinition &definition, const QcCreature &mob);
     // Breeding timers, births and laid eggs of one simulated tick.
@@ -38,6 +41,14 @@ public:
     // E-450), within the same limits as births (QcServerLimits breedingCrowd, bredPerKind); its id,
     // 0 when there is no room.
     static quint32 spawnYoung(QcServerState &state, int type, const QcVec3 &position);
+    // Whether the creature a fish bucket `item` holds (QcItemDefinition::releasesMob, decision
+    // E-501) may come out at `position`, within the same limits as births; true for an item that
+    // holds none. A bucket whose creature may not come out stays full.
+    static bool mayRelease(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position);
+    // Lets the creature of `item` out at `position`, kept with the world and counted as bred.
+    static void release(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position);
+    // Where the creature of a bucket poured into the cell `cell` comes out.
+    static QcVec3 releasePoint(QcBlockPos cell) { return {cell.x + 0.5, cell.y + 0.2, cell.z + 0.5}; }
 
 private:
     // What creatures lay in this tick (QcMobLaying, decision E-452), dropped as items.

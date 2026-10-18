@@ -1,0 +1,8 @@
+{
+    "name": "milk_bucket",
+    "pattern": "bucket",
+    "primary": "#b8bcc4",
+    "secondary": "#f4f4f0",
+    "variation": 0.08,
+    "seed": 7107
+}

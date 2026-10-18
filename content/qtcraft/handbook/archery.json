@@ -5,13 +5,15 @@
     "sections": [
         "bow",
         "arrows",
-        "throwing"
+        "throwing",
+        "fishing"
     ],
     "related": [
         "bow",
         "arrow",
         "feather",
         "snowball",
-        "ender_pearl"
+        "ender_pearl",
+        "fishing_rod"
     ]
 }

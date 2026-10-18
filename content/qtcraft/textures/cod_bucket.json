@@ -1,0 +1,8 @@
+{
+    "name": "cod_bucket",
+    "pattern": "bucket",
+    "primary": "#b8bcc4",
+    "secondary": "#a89878",
+    "variation": 0.12,
+    "seed": 7204
+}

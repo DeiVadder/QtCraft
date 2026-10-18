@@ -360,6 +360,7 @@ void parseCatch(QcMobDefinition &mob, QcJsonFieldReader &catchReader, const QStr
 {
     mob.catchWith = catchReader.name(u"with"_s, packNamespace);
     mob.catchItem = catchReader.name(u"item"_s, packNamespace);
+    mob.catchSound = catchReader.name(u"sound"_s, packNamespace, QString::fromLatin1(QcSoundKeys::bottleCatch));
     if (catchReader.ok() && (mob.catchWith.isEmpty() || mob.catchItem.isEmpty())) {
         catchReader.fail(u"needs 'with' and 'item'"_s);
     }

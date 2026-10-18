@@ -1,0 +1,17 @@
+{
+    "name": "mob.fish.hurt",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.15,
+            "frequency": 600,
+            "endFrequency": 300,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1500
+        }
+    ]
+}

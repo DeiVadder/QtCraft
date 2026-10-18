@@ -334,6 +334,7 @@
         },
         {
             "entries": [
+                "item:qtcraft:fishing_rod",
                 "item:qtcraft:blue_dye",
                 "item:qtcraft:bow",
                 "item:qtcraft:brown_dye",
@@ -360,11 +361,13 @@
                 "item:qtcraft:light_gray_dye",
                 "item:qtcraft:lime_dye",
                 "item:qtcraft:charcoal",
+                "item:qtcraft:cod_bucket",
                 "item:qtcraft:bone",
                 "item:qtcraft:bone_meal",
                 "item:qtcraft:coal",
                 "item:qtcraft:coal_chunk",
                 "item:qtcraft:pumpkin_seeds",
+                "item:qtcraft:salmon_bucket",
                 "item:qtcraft:lapis_lazuli",
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
@@ -372,6 +375,7 @@
                 "item:qtcraft:minecart",
                 "item:qtcraft:magenta_dye",
                 "item:qtcraft:melon_seeds",
+                "item:qtcraft:milk_bucket",
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:paper",
                 "item:qtcraft:arrow",
@@ -383,6 +387,7 @@
                 "item:qtcraft:snowball",
                 "item:qtcraft:bowl",
                 "item:qtcraft:black_dye",
+                "item:qtcraft:fishing_bobber",
                 "item:qtcraft:emerald",
                 "item:qtcraft:spider_eye",
                 "item:qtcraft:stick",
@@ -455,6 +460,7 @@
                 "item:qtcraft:apple",
                 "item:qtcraft:bread",
                 "item:qtcraft:cooked_cod",
+                "item:qtcraft:cooked_salmon",
                 "item:qtcraft:cooked_mutton",
                 "item:qtcraft:cooked_chicken",
                 "item:qtcraft:cooked_porkchop",
@@ -465,9 +471,12 @@
                 "item:qtcraft:baked_potato",
                 "item:qtcraft:mushroom_stew",
                 "item:qtcraft:raw_cod",
+                "item:qtcraft:raw_salmon",
                 "item:qtcraft:raw_mutton",
                 "item:qtcraft:raw_chicken",
+                "item:qtcraft:raw_beef",
                 "item:qtcraft:raw_porkchop",
+                "item:qtcraft:cooked_beef",
                 "item:qtcraft:rotten_flesh"
             ],
             "id": "food",
@@ -484,7 +493,10 @@
                 "mob:qtcraft:cave_spider",
                 "mob:qtcraft:chicken",
                 "mob:qtcraft:dog",
+                "mob:qtcraft:cod",
                 "mob:qtcraft:cat",
+                "mob:qtcraft:cow",
+                "mob:qtcraft:salmon",
                 "mob:qtcraft:ocelot",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
@@ -725,6 +737,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -909,6 +933,18 @@
                             "note": "",
                             "target": "mob:qtcraft:chicken",
                             "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
                         },
                         {
                             "icon": "",
@@ -1125,6 +1161,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1331,6 +1379,24 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1531,6 +1597,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1727,6 +1805,18 @@
                             "note": "",
                             "target": "mob:qtcraft:chicken",
                             "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
                         },
                         {
                             "icon": "",
@@ -1949,6 +2039,24 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -2121,6 +2229,24 @@
                             "note": "",
                             "target": "mob:qtcraft:chicken",
                             "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
                         },
                         {
                             "icon": "",
@@ -17079,6 +17205,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_beef",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_beef",
+                                    "text": "Rohes Rindfleisch"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_beef",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_beef",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_beef",
+                                "text": "Steak"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:raw_chicken",
                                     "note": "",
                                     "target": "item:qtcraft:raw_chicken",
@@ -17203,6 +17362,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:cooked_porkchop",
                                 "text": "Gebratenes Schweinefleisch"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_salmon",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_salmon",
+                                    "text": "Roher Lachs"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_salmon",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_salmon",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_salmon",
+                                "text": "Gebratener Lachs"
                             },
                             "seconds": 10,
                             "shapeless": false,
@@ -18464,6 +18656,12 @@
                             "note": "",
                             "target": "mob:qtcraft:chicken",
                             "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
                         },
                         {
                             "icon": "",
@@ -50255,6 +50453,26 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen, die darauf erscheinen"
+                }
             ],
             "text": "Fließt bis zu 7 Blöcke von einer Quelle; zwei Quellen bilden eine neue. Mit einem Eimer aufnehmbar.",
             "title": "Wasser"
@@ -53037,6 +53255,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Wirf eine Angel mit der Benutzen-Taste aus, und ihr Schwimmer fliegt los und treibt auf dem Wasser. Nach 5 bis 30 s beißt ein Fisch an (bei Regen ein Viertel früher): Der Schwimmer taucht unter und es platscht, und 1 s lang kannst du mit der Benutzen-Taste einholen und ihn fangen. Meist fängst du Kabeljau und Lachs, ab und zu einen Stock, Faden, Leder, einen Knochen, eine Schüssel oder sogar einen Bogen. Holst du zu früh oder zu spät ein, fängst du nichts. Der Schwimmer verschwindet, wenn du einen anderen Platz wählst oder dich mehr als 32 m entfernst, und er wird nie mit der Welt gespeichert.",
+                    "title": "Angeln"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:bow",
                             "note": "",
@@ -53066,6 +53292,12 @@
                             "note": "",
                             "target": "item:qtcraft:ender_pearl",
                             "text": "Enderperle"
+                        },
+                        {
+                            "icon": "qtcraft:fishing_rod",
+                            "note": "",
+                            "target": "item:qtcraft:fishing_rod",
+                            "text": "Angel"
                         }
                     ],
                     "recipes": [
@@ -53546,6 +53778,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Ein leerer Eimer an einer ausgewachsenen Kuh melkt sie. Mit der Benutzen-Taste getrunken, beendet die Milch jeden Statuseffekt, auch Gift, und gibt den Eimer zurück. Kühe verlieben sich mit Weizen und lassen Leder und Rindfleisch fallen. Kabeljaue leben in Seen und Meeren, Lachse in den kalten Gewässern von Taiga, Tundra und Bergen. Fische schwimmen im Schwarm und nur im Wasser; an Land zappeln sie und ersticken nach 15 Sekunden. Ein Wassereimer an einem Fisch fängt ihn lebend; der ausgegossene Fischeimer lässt ihn wieder frei, und ein ausgesetzter Fisch bleibt in der Welt. Fische haben eine eigene Spawn-Grenze und nehmen den Tieren an Land keinen Platz.",
+                    "title": "Kühe, Milch und Fische"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Wölfe streifen im Rudel durch Wälder, Taiga und Tundra: Schlägst du einen, jagt dich jeder Wolf des Rudels in der Nähe. Füttere einen Wolf mit Knochen, um ihn zu zähmen; jeder Knochen wirkt mit einer Chance von eins zu drei, und der gezähmte Wolf wird dein Hund mit rotem Halsband. Katzen leben in Dörfern und werden ebenso mit rohem Kabeljau gezähmt. Ein Haustier gehört dir, nicht deiner Spielfigur einer Anmeldung: Es bleibt deins, wenn du gehst, und wartet stehend oder sitzend, bis du zurückkommst. Benutze dein Tier mit leerer Hand oder einem anderen Gegenstand, damit es sich setzt oder aufsteht. Ein Tier, das nicht sitzt, folgt dir, wenn du weggehst, und teleportiert sich neben dich, wenn du weiter als 12 m entfernt bist, aber nur auf sicheren Boden in geladenen Chunks. Ein Hund kämpft gegen das, was dich verletzt oder was du schlägst, nie gegen dich und nie gegen deine anderen Tiere. Fleisch heilt einen Hund, Fisch eine Katze; ein Farbstoff färbt das Halsband eines Hundes. Ozelots sind scheu und laufen vor jedem weg, der ihnen nahe kommt, außer du hältst rohen Kabeljau und schleichst dich langsam an.",
                     "title": "Wölfe, Hunde und Katzen"
                 },
@@ -53660,6 +53900,36 @@
                             "note": "",
                             "target": "item:qtcraft:egg",
                             "text": "Ei"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "qtcraft:milk_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:milk_bucket",
+                            "text": "Milcheimer"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "qtcraft:cod_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:cod_bucket",
+                            "text": "Kabeljaueimer"
                         }
                     ],
                     "recipes": [
@@ -58085,6 +58355,26 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "5 %",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "5 %",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Auf eine Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wird mit 45 % Wahrscheinlichkeit sofort zum Baum. Jede Anwendung verbraucht eines.",
@@ -59516,6 +59806,153 @@
             "text": "Ein Neuntel Kohle: etwas Brennstoff, schwarzer Farbstoff und kleine Fackeln.",
             "title": "Kohlestück"
         },
+        "item:qtcraft:cod_bucket": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Bucket of cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cod_bucket"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Setzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:water",
+                            "text": "Wasser"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Danach",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bucket",
+                            "note": "",
+                            "target": "item:qtcraft:bucket",
+                            "text": "Eimer"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:cod_bucket",
+            "id": "item:qtcraft:cod_bucket",
+            "name": "qtcraft:cod_bucket",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "Wassereimer",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gefangen aus"
+                }
+            ],
+            "text": "Ein Kabeljau in einem Wassereimer. Ausgegossen setzt er das Wasser und lässt den Kabeljau frei; ein ausgesetzter Fisch bleibt in der Welt.",
+            "title": "Kabeljaueimer"
+        },
+        "item:qtcraft:cooked_beef": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Steak",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cooked_beef"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "8 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:cooked_beef",
+            "id": "item:qtcraft:cooked_beef",
+            "name": "qtcraft:cooked_beef",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_beef",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_beef",
+                                    "text": "Rohes Rindfleisch"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_beef",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_beef",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_beef",
+                                "text": "Steak"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Im Ofen hergestellt"
+                }
+            ],
+            "text": "Gebratenes Rindfleisch, eines der sättigendsten Essen.",
+            "title": "Steak"
+        },
         "item:qtcraft:cooked_chicken": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -59839,6 +60276,87 @@
             ],
             "text": "Gutes Essen, das die Nahrungsleiste weit füllt.",
             "title": "Gebratenes Schweinefleisch"
+        },
+        "item:qtcraft:cooked_salmon": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Cooked salmon",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cooked_salmon"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "6 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:cooked_salmon",
+            "id": "item:qtcraft:cooked_salmon",
+            "name": "qtcraft:cooked_salmon",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_salmon",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_salmon",
+                                    "text": "Roher Lachs"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_salmon",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_salmon",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_salmon",
+                                "text": "Gebratener Lachs"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Im Ofen hergestellt"
+                }
+            ],
+            "text": "Gebratener Lachs, eine gute Mahlzeit.",
+            "title": "Gebratener Lachs"
         },
         "item:qtcraft:cyan_dye": {
             "category": "items",
@@ -62087,6 +62605,131 @@
             ],
             "text": "Ein gefangenes Glühwürmchen. Es bringt die Minenlampe zum Leuchten.",
             "title": "Glühwürmchen in der Flasche"
+        },
+        "item:qtcraft:fishing_bobber": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Fishing bobber",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:fishing_bobber"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:fishing_bobber",
+            "id": "item:qtcraft:fishing_bobber",
+            "name": "qtcraft:fishing_bobber",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Der Schwimmer einer Angel. Er treibt auf dem Wasser, bis du ihn einholst; herstellen kannst du ihn nicht.",
+            "title": "Schwimmer"
+        },
+        "item:qtcraft:fishing_rod": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Fishing rod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:fishing_rod"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Haltbarkeit",
+                    "links": [
+                    ],
+                    "value": "64 Benutzungen"
+                }
+            ],
+            "icon": "qtcraft:fishing_rod",
+            "id": "item:qtcraft:fishing_rod",
+            "name": "qtcraft:fishing_rod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "Faden"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:string",
+                                    "note": "",
+                                    "target": "item:qtcraft:string",
+                                    "text": "Faden"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:fishing_rod",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:fishing_rod",
+                                "note": "",
+                                "target": "item:qtcraft:fishing_rod",
+                                "text": "Angel"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Drück die Benutzen-Taste, um den Schwimmer auszuwerfen, und noch einmal, um ihn einzuholen. Beißt ein Fisch an, taucht der Schwimmer unter und es platscht: Hol ihn genau dann ein, um etwas zu fangen. Jeder Fang nutzt die Angel ein wenig ab.",
+            "title": "Angel"
         },
         "item:qtcraft:flint": {
             "category": "items",
@@ -66907,6 +67550,20 @@
                     ],
                     "text": "",
                     "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Zähe Haut für Bücher; vorerst nur aus Fetzen zusammengesetzt.",
@@ -68096,6 +68753,46 @@
             "text": "Ein saftiger Bissen; neun ergeben wieder eine ganze Melone.",
             "title": "Melonenscheibe"
         },
+        "item:qtcraft:milk_bucket": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Milk bucket",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:milk_bucket"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Danach",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bucket",
+                            "note": "",
+                            "target": "item:qtcraft:bucket",
+                            "text": "Eimer"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:milk_bucket",
+            "id": "item:qtcraft:milk_bucket",
+            "name": "qtcraft:milk_bucket",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Frische Milch einer Kuh. Mit der Benutzen-Taste getrunken, beendet sie alle Statuseffekte, auch Gift, und lässt den leeren Eimer zurück.",
+            "title": "Milcheimer"
+        },
         "item:qtcraft:minecart": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -69016,6 +69713,101 @@
             "text": "Aus rotem und blauem Farbstoff gemischt.",
             "title": "Violetter Farbstoff"
         },
+        "item:qtcraft:raw_beef": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Raw beef",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_beef"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "3 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:raw_beef",
+            "id": "item:qtcraft:raw_beef",
+            "name": "qtcraft:raw_beef",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_beef",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_beef",
+                                    "text": "Rohes Rindfleisch"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_beef",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_beef",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_beef",
+                                "text": "Steak"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Wird im Ofen zu"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Fleisch einer Kuh; im Ofen gebraten wird ein sättigendes Steak daraus.",
+            "title": "Rohes Rindfleisch"
+        },
         "item:qtcraft:raw_chicken": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -69187,6 +69979,20 @@
                     ],
                     "text": "",
                     "title": "Wird im Ofen zu"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Ein Fisch; zähmt Katzen und lässt dich an Ozelots heran. Besser im Ofen gebraten.",
@@ -69381,6 +70187,101 @@
             ],
             "text": "Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.",
             "title": "Rohes Schweinefleisch"
+        },
+        "item:qtcraft:raw_salmon": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Raw salmon",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_salmon"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "2 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:raw_salmon",
+            "id": "item:qtcraft:raw_salmon",
+            "name": "qtcraft:raw_salmon",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_salmon",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_salmon",
+                                    "text": "Roher Lachs"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_salmon",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_salmon",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_salmon",
+                                "text": "Gebratener Lachs"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Wird im Ofen zu"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Fleisch eines Lachses; im Ofen gebraten schmeckt es besser.",
+            "title": "Roher Lachs"
         },
         "item:qtcraft:red_dye": {
             "category": "items",
@@ -69601,6 +70502,72 @@
             ],
             "text": "Fällt von Zombies. Kaum Nahrung.",
             "title": "Verrottetes Fleisch"
+        },
+        "item:qtcraft:salmon_bucket": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Bucket of salmon",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:salmon_bucket"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Setzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:water",
+                            "text": "Wasser"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Danach",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bucket",
+                            "note": "",
+                            "target": "item:qtcraft:bucket",
+                            "text": "Eimer"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:salmon_bucket",
+            "id": "item:qtcraft:salmon_bucket",
+            "name": "qtcraft:salmon_bucket",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "Wassereimer",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gefangen aus"
+                }
+            ],
+            "text": "Ein Lachs in einem Wassereimer. Ausgegossen setzt er das Wasser und lässt den Lachs frei; ein ausgesetzter Fisch bleibt in der Welt.",
+            "title": "Lachseimer"
         },
         "item:qtcraft:shears": {
             "category": "items",
@@ -69982,6 +70949,12 @@
                             "note": "",
                             "target": "block:qtcraft:activator_rail",
                             "text": "Aktivierungsschiene"
+                        },
+                        {
+                            "icon": "qtcraft:fishing_rod",
+                            "note": "",
+                            "target": "item:qtcraft:fishing_rod",
+                            "text": "Angel"
                         },
                         {
                             "icon": "qtcraft:powered_rail",
@@ -71362,6 +72335,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:fishing_rod",
+                            "note": "",
+                            "target": "item:qtcraft:fishing_rod",
+                            "text": "Angel"
+                        },
+                        {
                             "icon": "qtcraft:bow",
                             "note": "",
                             "target": "item:qtcraft:bow",
@@ -71721,6 +72700,26 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "Kabeljaueimer",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "Lachseimer",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Fängt"
+                }
             ],
             "text": "Gießt eine Wasserquelle aus.",
             "title": "Wassereimer"
@@ -73726,6 +74725,292 @@
             "text": "Ein kleiner Vogel der Wiesen. Statt zu fallen, flattert es sanft hinab, und alle fünf bis zehn Minuten legt es ein Ei. Samen jeder Art machen es verliebt. Lässt Federn und rohes Hühnchen fallen.",
             "title": "Huhn"
         },
+        "mob:qtcraft:cod": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Cod",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cod"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "3 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,5 m breit, 0,3 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,5 m/s beim Gehen, 4 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 4"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Fangbar",
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:water_bucket",
+                            "text": "Wassereimer"
+                        },
+                        {
+                            "icon": "qtcraft:cod_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:cod_bucket",
+                            "text": "Kabeljaueimer"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_cod",
+                            "note": "",
+                            "target": "item:qtcraft:raw_cod",
+                            "text": "Roher Kabeljau"
+                        },
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "5 %",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Knochenmehl"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:raw_cod",
+            "id": "mob:qtcraft:cod",
+            "name": "qtcraft:cod",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:water",
+                            "text": "Wasser"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein Fisch jedes Gewässers, ob See, Fluss oder Meer. Er schwimmt im Schwarm, zappelt an Land und erstickt dort nach einer Weile. Mit einem Wassereimer fängt man ihn lebend.",
+            "title": "Kabeljau"
+        },
+        "mob:qtcraft:cow": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Cow",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cow"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "10 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,9 m breit, 1,4 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1 m/s beim Gehen, 2,5 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "bei Tag"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 4"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Vermehrt sich mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:wheat",
+                            "note": "",
+                            "target": "item:qtcraft:wheat",
+                            "text": "Weizen"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Nachwuchs",
+                    "links": [
+                    ],
+                    "value": "wieder nach 5 min, Junge wachsen in 20 min heran"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:leather",
+                            "note": "",
+                            "target": "item:qtcraft:leather",
+                            "text": "Leder"
+                        },
+                        {
+                            "icon": "qtcraft:leather",
+                            "note": "50 %",
+                            "target": "item:qtcraft:leather",
+                            "text": "Leder"
+                        },
+                        {
+                            "icon": "qtcraft:raw_beef",
+                            "note": "",
+                            "target": "item:qtcraft:raw_beef",
+                            "text": "Rohes Rindfleisch"
+                        },
+                        {
+                            "icon": "qtcraft:raw_beef",
+                            "note": "",
+                            "target": "item:qtcraft:raw_beef",
+                            "text": "Rohes Rindfleisch"
+                        },
+                        {
+                            "icon": "qtcraft:raw_beef",
+                            "note": "50 %",
+                            "target": "item:qtcraft:raw_beef",
+                            "text": "Rohes Rindfleisch"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:leather",
+            "id": "mob:qtcraft:cow",
+            "name": "qtcraft:cow",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein ruhiges Weidetier der Wiesen. Ein leerer Eimer an einer ausgewachsenen Kuh melkt sie; mit Weizen verliebt sie sich. Lässt Leder und rohes Rindfleisch fallen.",
+            "title": "Kuh"
+        },
         "mob:qtcraft:dog": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -74587,6 +75872,158 @@
             ],
             "text": "Friedliches Tier des Graslands; lässt Schweinefleisch fallen.",
             "title": "Schwein"
+        },
+        "mob:qtcraft:salmon": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Salmon",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:salmon"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "3 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,5 m breit, 0,35 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,5 m/s beim Gehen, 4 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 4"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Fangbar",
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:water_bucket",
+                            "text": "Wassereimer"
+                        },
+                        {
+                            "icon": "qtcraft:salmon_bucket",
+                            "note": "",
+                            "target": "item:qtcraft:salmon_bucket",
+                            "text": "Lachseimer"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_salmon",
+                            "note": "",
+                            "target": "item:qtcraft:raw_salmon",
+                            "text": "Roher Lachs"
+                        },
+                        {
+                            "icon": "qtcraft:bone_meal",
+                            "note": "5 %",
+                            "target": "item:qtcraft:bone_meal",
+                            "text": "Knochenmehl"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:raw_salmon",
+            "id": "mob:qtcraft:salmon",
+            "name": "qtcraft:salmon",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:water",
+                            "text": "Wasser"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:mountains",
+                            "text": "Gebirge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwarm, zappelt an Land und erstickt dort nach einer Weile. Mit einem Wassereimer fängt man ihn lebend.",
+            "title": "Lachs"
         },
         "mob:qtcraft:sheep": {
             "category": "creatures",
@@ -77260,6 +78697,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_salmon",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_salmon",
+                                    "text": "Roher Lachs"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_salmon",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_salmon",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_salmon",
+                                "text": "Gebratener Lachs"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:raw_mutton",
                                     "note": "",
                                     "target": "item:qtcraft:raw_mutton",
@@ -77714,6 +79184,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:baked_potato",
                                 "text": "Ofenkartoffel"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_beef",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_beef",
+                                    "text": "Rohes Rindfleisch"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_beef",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_beef",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_beef",
+                                "text": "Steak"
                             },
                             "seconds": 10,
                             "shapeless": false,

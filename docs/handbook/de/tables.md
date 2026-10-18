@@ -98,6 +98,14 @@ Alles, was Maschinen herstellen, mit der Zeit pro Stück.
 
 | 1 | → |
 |---|---|
+| [Roher Lachs](food.md#item-qtcraft-raw_salmon) | [Gebratener Lachs](food.md#item-qtcraft-cooked_salmon) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
@@ -203,6 +211,14 @@ Alles, was Maschinen herstellen, mit der Zeit pro Stück.
 | 1 | → |
 |---|---|
 | [Kartoffel](food.md#item-qtcraft-potato) | [Ofenkartoffel](food.md#item-qtcraft-baked_potato) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Rindfleisch](food.md#item-qtcraft-raw_beef) | [Steak](food.md#item-qtcraft-cooked_beef) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 

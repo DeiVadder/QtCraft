@@ -2291,7 +2291,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Wesen, die darauf erscheinen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
@@ -4078,6 +4078,14 @@ Schmilzt Erze, Sand, Ton und Essen, solange Brennstoff brennt: oben das Material
 
 | 1 | → |
 |---|---|
+| [Rohes Rindfleisch](food.md#item-qtcraft-raw_beef) | [Steak](food.md#item-qtcraft-cooked_beef) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Rohes Hühnchen](food.md#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](food.md#item-qtcraft-cooked_chicken) |
 
 [Ofen](#block-qtcraft-furnace)
@@ -4103,6 +4111,14 @@ Schmilzt Erze, Sand, Ton und Essen, solange Brennstoff brennt: oben das Material
 | 1 | → |
 |---|---|
 | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) | [Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roher Lachs](food.md#item-qtcraft-raw_salmon) | [Gebratener Lachs](food.md#item-qtcraft-cooked_salmon) |
 
 [Ofen](#block-qtcraft-furnace)
 

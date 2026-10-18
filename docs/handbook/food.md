@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked cod](#item-qtcraft-cooked_cod) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw cod](#item-qtcraft-raw_cod) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked cod](#item-qtcraft-cooked_cod) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Cooked salmon](#item-qtcraft-cooked_salmon) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw beef](#item-qtcraft-raw_beef) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw cod](#item-qtcraft-raw_cod) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Raw salmon](#item-qtcraft-raw_salmon) · [Rotten flesh](#item-qtcraft-rotten_flesh) · [Steak](#item-qtcraft-cooked_beef)
 
 ## QtCraft
 
@@ -163,6 +163,28 @@ Good food that fills a lot of the food bar.
 
 [Fuels](tables.md#table-fuels)
 
+### <a id="item-qtcraft-cooked_salmon"></a>Cooked salmon
+
+Cooked salmon, a good meal.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_salmon` |
+| Stack size | 64 |
+| Food | 6 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw salmon](#item-qtcraft-raw_salmon) | [Cooked salmon](#item-qtcraft-cooked_salmon) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
 ### <a id="item-qtcraft-melon_slice"></a>Melon slice
 
 A juicy bite; nine make a whole melon again.
@@ -247,6 +269,32 @@ Pumpkin, sugar and wheat baked into the most filling food of the farm.
 | [Pumpkin](blocks.md#block-qtcraft-pumpkin) | [Sugar](items.md#item-qtcraft-sugar) | [Pumpkin pie](#item-qtcraft-pumpkin_pie) |
 | [Wheat](items.md#item-qtcraft-wheat) | · |  |
 
+### <a id="item-qtcraft-raw_beef"></a>Raw beef
+
+Meat of a cow; cook it in a furnace for a filling steak.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_beef` |
+| Stack size | 64 |
+| Food | 3 food points |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw beef](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Cow](creatures.md#mob-qtcraft-cow) (50 %)
+
 ### <a id="item-qtcraft-raw_chicken"></a>Raw chicken
 
 Meat of a chicken; better cooked in a furnace.
@@ -294,6 +342,10 @@ A fish; tames cats and lets you get close to ocelots. Better cooked in a furnace
 [Furnace](blocks.md#block-qtcraft-furnace)
 
 [Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Cod](creatures.md#mob-qtcraft-cod)
 
 ### <a id="item-qtcraft-raw_mutton"></a>Raw mutton
 
@@ -347,6 +399,32 @@ Food from pigs; cook it in the furnace for more.
 
 [Pig](creatures.md#mob-qtcraft-pig) (2×)
 
+### <a id="item-qtcraft-raw_salmon"></a>Raw salmon
+
+Meat of a salmon; better cooked in a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_salmon` |
+| Stack size | 64 |
+| Food | 2 food points |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw salmon](#item-qtcraft-raw_salmon) | [Cooked salmon](#item-qtcraft-cooked_salmon) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Salmon](creatures.md#mob-qtcraft-salmon)
+
 ### <a id="item-qtcraft-rotten_flesh"></a>Rotten flesh
 
 Dropped by zombies. Barely food.
@@ -372,3 +450,25 @@ Dropped by zombies. Barely food.
 **Dropped by**
 
 [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="item-qtcraft-cooked_beef"></a>Steak
+
+Cooked beef, one of the most filling foods.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_beef` |
+| Stack size | 64 |
+| Food | 8 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw beef](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)

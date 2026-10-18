@@ -36,6 +36,33 @@ QList<Entry> inOrder(QList<QcEntityRecord::Ordered<Entry>> entries)
     return sorted;
 }
 
+// Adds the stands, minecarts, experience orbs and projectiles `wanted` accepts to their records;
+// transient projectiles (fishing bobbers, decision E-503) are never saved.
+template<typename Wanted>
+void collectObjectsInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &records, Wanted wanted)
+{
+    for (const QcArmourStand &stand : entities.stands().stands()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(stand); wanted(chunk)) {
+            recordOf(records, chunk).stands.append({stand, stand.id});
+        }
+    }
+    for (const QcMinecart &cart : entities.minecarts().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(cart); wanted(chunk)) {
+            recordOf(records, chunk).minecarts.append({cart, cart.id});
+        }
+    }
+    for (const QcExperienceOrb &orb : entities.orbs().orbs()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(orb); wanted(chunk)) {
+            recordOf(records, chunk).orbs.append({orb, orb.id});
+        }
+    }
+    for (const QcProjectile &shot : entities.projectiles().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(shot); !shot.transient && wanted(chunk)) {
+            recordOf(records, chunk).projectiles.append({shot, shot.id});
+        }
+    }
+}
+
 // Adds the entities `wanted` accepts to their records; `wanted(chunk)`.
 template<typename Wanted>
 void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &records, Wanted wanted)
@@ -64,26 +91,7 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
             recordOf(records, chunk).creatures.append({QcMobManager::storedOf(creature), creature.id});
         }
     }
-    for (const QcArmourStand &stand : entities.stands().stands()) {
-        if (const QcChunkPos chunk = QcEntities::chunkOf(stand); wanted(chunk)) {
-            recordOf(records, chunk).stands.append({stand, stand.id});
-        }
-    }
-    for (const QcMinecart &cart : entities.minecarts().all()) {
-        if (const QcChunkPos chunk = QcEntities::chunkOf(cart); wanted(chunk)) {
-            recordOf(records, chunk).minecarts.append({cart, cart.id});
-        }
-    }
-    for (const QcExperienceOrb &orb : entities.orbs().orbs()) {
-        if (const QcChunkPos chunk = QcEntities::chunkOf(orb); wanted(chunk)) {
-            recordOf(records, chunk).orbs.append({orb, orb.id});
-        }
-    }
-    for (const QcProjectile &shot : entities.projectiles().all()) {
-        if (const QcChunkPos chunk = QcEntities::chunkOf(shot); wanted(chunk)) {
-            recordOf(records, chunk).projectiles.append({shot, shot.id});
-        }
-    }
+    collectObjectsInto(entities, records, wanted);
 }
 
 } // namespace

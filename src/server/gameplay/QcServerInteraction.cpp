@@ -166,7 +166,9 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
 
     const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, message.face);
     const std::optional<QcBlockId> existing = m_state.world().blockAt(target);
-    if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)) {
+    // A fish bucket whose fish may not come out (decision E-501) pours nothing.
+    if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)
+        || !QcServerAnimals::mayRelease(m_state, *held, QcServerAnimals::releasePoint(target))) {
         rejectPlacement(client, target);
         // Food that plants (carrots, potatoes) is eaten where it cannot be planted (decision E-292).
         if (held && held->food > 0) {
@@ -240,6 +242,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
     // A golem's head on its body brings it to life (decision E-471).
     m_parts.golems.build(target);
+    // A fish bucket lets its fish out into the water it pours, kept with the world (decision E-501).
+    QcServerAnimals::release(m_state, held, QcServerAnimals::releasePoint(target));
 
     const bool pours = !held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo);
     if (pours) {
@@ -310,6 +314,10 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
     if (m_parts.animals.tend(client, entityId)) {
         return;
     }
+    // A cow takes the bucket before anything else is done with it (decision E-500).
+    if (m_parts.animals.milk(client, entityId)) {
+        return;
+    }
     // Food the animal eats is never eaten by the player instead, even when the animal refuses it now.
     if (m_parts.animals.feed(client, entityId) != QcServerAnimals::Feeding::NotItsFood) {
         return;
@@ -333,7 +341,7 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
     }
 
     m_state.entities().creatures().remove(entityId);
-    m_parts.sounds.play(QString::fromLatin1(QcSoundKeys::bottleCatch), centre);
+    m_parts.sounds.play(definition.catchSound, centre);
     m_parts.inventory.exchangeHeld(client, definition.catchItem);
     m_parts.inventory.send(client);
 }

@@ -146,6 +146,14 @@ Everything machines make, with the time per item.
 
 | 1 | → |
 |---|---|
+| [Raw salmon](food.md#item-qtcraft-raw_salmon) | [Cooked salmon](food.md#item-qtcraft-cooked_salmon) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Unfired lamp shell](items.md#item-qtcraft-unfired_lamp_shell) | [Fired lamp shell](items.md#item-qtcraft-fired_lamp_shell) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
@@ -211,6 +219,14 @@ Everything machines make, with the time per item.
 | 1 | → |
 |---|---|
 | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw beef](food.md#item-qtcraft-raw_beef) | [Steak](food.md#item-qtcraft-cooked_beef) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
 

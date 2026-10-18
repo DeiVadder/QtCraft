@@ -28,7 +28,18 @@ QcServerProjectiles::QcServerProjectiles(QcServerState &state, QcServerSounds &s
     , m_inventory(inventory)
     , m_launchers(state, sounds, inventory, *this)
     , m_throws(state, inventory, *this)
+    , m_fishing(state, sounds, inventory)
 {
+}
+
+void QcServerProjectiles::useHeld(QcServerClient &client)
+{
+    const QcItemDefinition *held = m_state.heldItem(client);
+    if (held && held->fishing) {
+        m_fishing.use(client);
+    } else {
+        m_throws.throwHeld(client);
+    }
 }
 
 bool QcServerProjectiles::launch(const QcProjectileManager::Launch &shot)
@@ -39,6 +50,7 @@ bool QcServerProjectiles::launch(const QcProjectileManager::Launch &shot)
 void QcServerProjectiles::tick()
 {
     m_launchers.tick();
+    m_fishing.tick();
     const QList<QcProjectileManager::Launch> launches = m_state.entities().creatures().takeLaunches();
     for (const QcProjectileManager::Launch &shot : launches) {
         launch(shot);
@@ -101,6 +113,10 @@ QList<QcProjectileManager::PlayerView> QcServerProjectiles::collectors() const
 
 bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
 {
+    // Without hit effects (a fishing rod's bobber) nothing happens to the body.
+    if (hit.definition.onHit.isEmpty()) {
+        return false;
+    }
     const QcProjectile &projectile = hit.projectile;
     // Pushed along the flight, as if struck from behind.
     const QcVec3 along = QcVec3{projectile.motion.velocity.x, 0.0, projectile.motion.velocity.z}.normalized();

@@ -80,6 +80,13 @@ void writeItem(QDataStream &stream, const QcItemDefinition &item)
     if (item.throwable) {
         stream << item.throwable->speed << item.throwable->cooldownSeconds << item.throwable->inaccuracyDegrees;
     }
+    // Drunk with the use button (decision E-500): the client sends ConsumeItem.
+    stream << item.drink.has_value();
+    if (item.drink) {
+        stream << item.drink->clearsEffects;
+    }
+    // A fishing rod (decision E-503): the client sends its use as ThrowItem; the rest is the server's.
+    stream << item.fishing.has_value();
 }
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -97,6 +104,8 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     }
     // Every use of a tameable creature goes to the server (decision E-480).
     stream << mob.tameable.has_value();
+    // Its milking item is used on it (decision E-500).
+    stream << mob.milkWith;
 }
 
 void writeRecipe(QDataStream &stream, const QcRecipeDefinition &recipe)
@@ -226,6 +235,16 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         }
         item.throwable = read;
     }
+    bool drink = false;
+    stream >> drink;
+    if (drink) {
+        stream >> item.drink.emplace().clearsEffects;
+    }
+    bool fishing = false;
+    stream >> fishing;
+    if (fishing) {
+        item.fishing.emplace();
+    }
     item.maxStack = maxStack;
     item.toolLevel = toolLevel;
     item.durability = durability;
@@ -293,6 +312,7 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
     if (tameable) {
         mob.tameable.emplace();
     }
+    stream >> mob.milkWith;
 
     // Sizes feed physics and the mesher: reject anything outside what the parser allows.
     const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };

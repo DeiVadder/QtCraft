@@ -322,8 +322,10 @@ private slots:
             qsizetype animals = 0;
             for (const QcCreature &mob : mobs.mobs()) {
                 const QcMobDefinition &definition = m_content->mobs()[mob.type];
-                animals += !definition.hostile && !definition.ambient;
-                allAnimalsPersistent = allAnimalsPersistent && (definition.hostile || definition.ambient || mob.persistent);
+                // Fish come and go with their own cap (decision E-502).
+                const bool animal = !definition.hostile && !definition.ambient && !definition.aquatic;
+                animals += animal;
+                allAnimalsPersistent = allAnimalsPersistent && (!animal || mob.persistent);
             }
             return animals - before;
         };

@@ -47,3 +47,7 @@ Fließt bis zu 7 Blöcke von einer Quelle; zwei Quellen bilden eine neue. Mit ei
 | Fest | nein |
 | Wird beim Bauen ersetzt | ja |
 | Zustände | falling (false, true); level (0, 1, 2, 3, 4, 5, 6, 7) |
+
+**Wesen, die darauf erscheinen**
+
+[Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon)

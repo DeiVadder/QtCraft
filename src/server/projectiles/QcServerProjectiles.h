@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/projectiles/QcHitEffects.h"
+#include "server/projectiles/QcPlayerFishing.h"
 #include "server/projectiles/QcPlayerLaunchers.h"
 #include "server/projectiles/QcPlayerThrows.h"
 #include "server/projectiles/QcProjectileManager.h"
@@ -18,7 +19,9 @@ struct QcServerClient;
 // projectiles go to the players that touch them. Players shoot through QcPlayerLaunchers and
 // throw through QcPlayerThrows; what a hit does comes from the kind's onHit (QcHitEffects, E-427).
 // Creatures that dodge projectiles teleport away unhurt, and a projectile that teleports its thrower
-// (an ender pearl) brings them where it breaks (decision E-460).
+// (an ender pearl) brings them where it breaks (decision E-460). Fishing rods cast and reel in
+// their bobbers through QcPlayerFishing (decision E-503); a projectile without hit effects (a
+// bobber) bounces off bodies unhurt.
 class QcServerProjectiles
 {
 public:
@@ -28,6 +31,10 @@ public:
     void tick();
     QcPlayerLaunchers &launchers() { return m_launchers; }
     QcPlayerThrows &throws() { return m_throws; }
+    QcPlayerFishing &fishing() { return m_fishing; }
+    // The use button with an item of QcMsg::ThrowItem in the hand: a fishing rod fishes, anything
+    // else is thrown (QcPlayerThrows).
+    void useHeld(QcServerClient &client);
     // Adds a shot with a new id; false beyond the limit or for an unknown kind.
     bool launch(const QcProjectileManager::Launch &shot);
 
@@ -54,5 +61,6 @@ private:
     QcServerInventory &m_inventory;
     QcPlayerLaunchers m_launchers;
     QcPlayerThrows m_throws;
+    QcPlayerFishing m_fishing;
     QcHitEffects m_effects;
 };

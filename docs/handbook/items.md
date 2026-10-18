@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spider eye](#item-qtcraft-spider_eye) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spider eye](#item-qtcraft-spider_eye) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -132,6 +132,10 @@ Use it on a crop to make it grow 2–5 stages at once, or on a sapling for a 45 
 | 1 | → |
 |---|---|
 | [Bone](#item-qtcraft-bone) | 3 × [Bone meal](#item-qtcraft-bone_meal) |
+
+**Dropped by**
+
+[Cod](creatures.md#mob-qtcraft-cod) (5 %), [Salmon](creatures.md#mob-qtcraft-salmon) (5 %)
 
 ### <a id="item-qtcraft-book"></a>Book
 
@@ -267,6 +271,36 @@ Takes a water or lava source. Made from three iron ingots.
 |---|---|---|---|
 | [Iron ingot](#item-qtcraft-iron_ingot) | · | [Iron ingot](#item-qtcraft-iron_ingot) | [Bucket](#item-qtcraft-bucket) |
 | · | [Iron ingot](#item-qtcraft-iron_ingot) | · |  |
+
+### <a id="item-qtcraft-cod_bucket"></a>Bucket of cod
+
+A cod caught in a water bucket. Pouring it out places the water and lets the cod out; a released fish stays with the world.
+
+| | |
+|---|---|
+| ID | `qtcraft:cod_bucket` |
+| Stack size | 1 |
+| Places | [Water](liquids.md#block-qtcraft-water) |
+| Afterwards | [Bucket](#item-qtcraft-bucket) |
+
+**Caught from**
+
+[Cod](creatures.md#mob-qtcraft-cod) (Water bucket)
+
+### <a id="item-qtcraft-salmon_bucket"></a>Bucket of salmon
+
+A salmon caught in a water bucket. Pouring it out places the water and lets the salmon out; a released fish stays with the world.
+
+| | |
+|---|---|
+| ID | `qtcraft:salmon_bucket` |
+| Stack size | 1 |
+| Places | [Water](liquids.md#block-qtcraft-water) |
+| Afterwards | [Bucket](#item-qtcraft-bucket) |
+
+**Caught from**
+
+[Salmon](creatures.md#mob-qtcraft-salmon) (Water bucket)
 
 ### <a id="item-qtcraft-charcoal"></a>Charcoal
 
@@ -549,6 +583,35 @@ A caught firefly. It lights the mine lamp.
 **Caught from**
 
 [Firefly](creatures.md#mob-qtcraft-firefly) (Glass bottle)
+
+### <a id="item-qtcraft-fishing_bobber"></a>Fishing bobber
+
+The float of a fishing rod. It floats on water until you reel it in; you cannot craft it.
+
+| | |
+|---|---|
+| ID | `qtcraft:fishing_bobber` |
+| Stack size | 64 |
+
+### <a id="item-qtcraft-fishing_rod"></a>Fishing rod
+
+Press the use button to cast the bobber, press it again to reel it in. When a fish bites, the bobber dips and splashes: reel in at that moment to catch something. Every catch wears the rod a little.
+
+| | |
+|---|---|
+| ID | `qtcraft:fishing_rod` |
+| Stack size | 1 |
+| Durability | 64 uses |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | · | [Stick](#item-qtcraft-stick) | [Fishing rod](#item-qtcraft-fishing_rod) |
+| · | [Stick](#item-qtcraft-stick) | [String](#item-qtcraft-string) |  |
+| [Stick](#item-qtcraft-stick) | · | [String](#item-qtcraft-string) |  |
 
 ### <a id="item-qtcraft-flint"></a>Flint
 
@@ -845,6 +908,10 @@ Tough hide for books; for now it can only be pieced together from scraps.
 
 [Book](#item-qtcraft-book), [Leather boots](tools.md#item-qtcraft-leather_boots), [Leather cap](tools.md#item-qtcraft-leather_helmet), [Leather trousers](tools.md#item-qtcraft-leather_leggings), [Leather tunic](tools.md#item-qtcraft-leather_chestplate)
 
+**Dropped by**
+
+[Cow](creatures.md#mob-qtcraft-cow) (50 %)
+
 ### <a id="item-qtcraft-leather_scrap"></a>Leather scrap
 
 Rotten flesh dried in the furnace. It takes nine scraps to make a single piece of leather.
@@ -979,6 +1046,16 @@ One from a melon slice. Planted on farmland they grow into a melon stem.
 **Dropped by**
 
 [Melon stem](blocks.md#block-qtcraft-melon_stem)
+
+### <a id="item-qtcraft-milk_bucket"></a>Milk bucket
+
+Fresh milk from a cow. Drinking it with the use button ends all status effects, poison too, and leaves the empty bucket.
+
+| | |
+|---|---|
+| ID | `qtcraft:milk_bucket` |
+| Stack size | 1 |
+| Afterwards | [Bucket](#item-qtcraft-bucket) |
 
 ### <a id="item-qtcraft-minecart"></a>Minecart
 
@@ -1263,7 +1340,7 @@ Handle of tools and torches.
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Arrow](#item-qtcraft-arrow), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Bow](#item-qtcraft-bow), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Arrow](#item-qtcraft-arrow), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Bow](#item-qtcraft-bow), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Fishing rod](#item-qtcraft-fishing_rod), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
 
 **Dropped by**
 
@@ -1280,7 +1357,7 @@ Thread from a cobweb; four make white wool.
 
 **Used in**
 
-[Bow](#item-qtcraft-bow), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [White wool](blocks.md#block-qtcraft-white_wool)
+[Bow](#item-qtcraft-bow), [Fishing rod](#item-qtcraft-fishing_rod), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [White wool](blocks.md#block-qtcraft-white_wool)
 
 **Dropped by**
 
@@ -1361,6 +1438,10 @@ Pours a water source.
 | Stack size | 1 |
 | Places | [Water](liquids.md#block-qtcraft-water) |
 | Afterwards | [Bucket](#item-qtcraft-bucket) |
+
+**Catches**
+
+[Cod](creatures.md#mob-qtcraft-cod) (Bucket of cod), [Salmon](creatures.md#mob-qtcraft-salmon) (Bucket of salmon)
 
 ### <a id="item-qtcraft-wheat"></a>Wheat
 

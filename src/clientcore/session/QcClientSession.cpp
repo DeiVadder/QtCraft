@@ -41,11 +41,11 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
 }
 
 // Whether using `item` on the entity is a use of the creature (UseEntity): food, armour, its
-// catching item or its breeding food (decision E-293).
+// catching item, its milking item (decision E-500) or its breeding food (decision E-293).
 bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &entity, const QcItemDefinition &item)
 {
     const QcMobDefinition *creature = entity.creature(content);
-    return creature && (item.food > 0 || item.armour || creature->catchWith == item.name || creature->breeding.food.contains(item.name));
+    return creature && QcClientLauncher::usesOnCreature(*creature, item);
 }
 
 // Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, a
@@ -734,10 +734,10 @@ bool QcClientSession::useItem()
         return true;
     }
 
-    // Food is eaten and armour put on (both sent as ConsumeItem) unless the food plants a block and
-    // a block is aimed at: then the server plants it or, where it cannot, eats it (decision E-292).
-    const bool eats = item && item->food > 0 && (item->placesBlock.isEmpty() || !m_target);
-    if (item && (eats || item->armour) && !opensScreen) {
+    // Food is eaten, drinks drunk (decision E-500) and armour put on (all sent as ConsumeItem) unless
+    // the food plants a block and a block is aimed at: then the server plants it or, where it cannot,
+    // eats it (decision E-292).
+    if (item && QcClientLauncher::consumes(*item, m_target.has_value()) && !opensScreen) {
         m_connection->send(QcMsg::ConsumeItem{});
         m_useTicks = 0;
         return true;

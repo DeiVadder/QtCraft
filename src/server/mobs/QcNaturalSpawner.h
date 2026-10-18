@@ -47,6 +47,8 @@ public:
 
     // Creatures spawning by themselves around one player at most, by kind.
     void setCaps(int hostile, int passive, int ambient);
+    // Water creatures spawning by themselves around one player at most (decision E-502).
+    void setWaterCap(int water) { m_waterCap = water; }
     // Advances the spawn timer; once a second, with natural spawning on, tries around every living
     // player.
     void tick(QcServerWorld &world, const QList<PlayerView> &players, bool night, double dt, const NextId &nextEntityId);
@@ -72,13 +74,17 @@ private:
         int hostile = 0;
         int passive = 0;
         int ambient = 0;
+        int water = 0;
         QHash<int, int> perType;
         bool animalsNear = false;
 
-        int &of(const QcMobDefinition &definition) { return definition.ambient ? ambient : (definition.hostile ? hostile : passive); }
+        int &of(const QcMobDefinition &definition)
+        {
+            return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
+        }
         int of(const QcMobDefinition &definition) const
         {
-            return definition.ambient ? ambient : (definition.hostile ? hostile : passive);
+            return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
         }
     };
 
@@ -119,6 +125,8 @@ private:
     // One member of a group; false when there is no room for it.
     bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
     bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    // A water creature in the water below the surface `place` (decision E-502).
+    bool spawnSwimmer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
     // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
     QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
     // Weighted choice by spawn weight for a `random` value in [0, 1).
@@ -131,6 +139,7 @@ private:
     int m_hostileCap = hostileCapPerPlayer;
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;
+    int m_waterCap = int(QcServerLimits{}.waterCreaturesPerPlayer);
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;
     double m_spawnTimer = 0.0;

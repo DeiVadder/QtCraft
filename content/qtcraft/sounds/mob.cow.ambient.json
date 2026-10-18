@@ -1,0 +1,30 @@
+{
+    "name": "mob.cow.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.9,
+            "frequency": 140,
+            "endFrequency": 120,
+            "attack": 0.03,
+            "curve": 1.2,
+            "lowpass": 700,
+            "tremoloRate": 8,
+            "tremoloDepth": 0.3
+        },
+        {
+            "wave": "saw",
+            "duration": 0.9,
+            "frequency": 280,
+            "endFrequency": 230,
+            "attack": 0.03,
+            "curve": 1.2,
+            "lowpass": 500,
+            "tremoloRate": 8,
+            "tremoloDepth": 0.3
+        }
+    ]
+}

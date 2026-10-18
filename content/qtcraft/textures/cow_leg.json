@@ -1,0 +1,8 @@
+{
+    "name": "cow_leg",
+    "pattern": "speckle",
+    "primary": "#3a2a20",
+    "secondary": "#5a4a40",
+    "variation": 0.15,
+    "seed": 7106
+}

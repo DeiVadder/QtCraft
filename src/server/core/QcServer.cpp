@@ -99,6 +99,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_state.entities().creatures().villagers().setRainCheck([this](QcBlockPos pos) {
         return m_weather.isRainingAt({pos.x, m_weather.columnTop(pos.x, pos.z) + 1, pos.z});
     });
+    // Rain on the cell above the bobber's water, so not under a roof (decision E-503).
+    m_projectiles.fishing().setRainCheck([this](QcBlockPos pos) { return m_weather.isRainingAt(pos.offset(0, 1, 0)); });
     m_weather.setStrikeHook([this](QcBlockPos pos) { m_lightning.strike(pos); });
 }
 
@@ -356,7 +358,7 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
     } else if (const auto *pick = std::get_if<QcMsg::PickBlock>(&message)) {
         m_gameModes.pickBlock(client, pick->pos);
     } else if (std::holds_alternative<QcMsg::ThrowItem>(message)) {
-        m_projectiles.throws().throwHeld(client);
+        m_projectiles.useHeld(client);
     } else if (const auto *draw = std::get_if<QcMsg::DrawLauncher>(&message)) {
         m_projectiles.launchers().draw(client, draw->action);
     } else {

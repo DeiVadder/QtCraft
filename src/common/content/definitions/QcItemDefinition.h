@@ -27,6 +27,15 @@ enum class QcDispenseAction : quint8 {
     Ignite,
 };
 
+// Drunk with the use button like food is eaten (milk, decision E-500); it becomes `emptiesTo`.
+struct QcDrinkDefinition
+{
+    // Drinking it ends all status effects of the player (QcStatusEffects::clear).
+    bool clearsEffects = false;
+
+    bool operator==(const QcDrinkDefinition &) const = default;
+};
+
 struct QcItemDefinition
 {
     // Largest allowed maxStack.
@@ -106,4 +115,13 @@ struct QcItemDefinition
     // `projectile`. Reaches the client (arm swing and cooldown); launchers without an ammunition
     // list do not shoot it.
     std::optional<QcThrowableDefinition> throwable;
+    // Drunk with the use button (milk, decision E-500); reaches the client, which sends the use as
+    // QcMsg::ConsumeItem.
+    std::optional<QcDrinkDefinition> drink;
+    // A creature that comes out where the item places its liquid (a fish bucket, decision E-501): kept
+    // with the world like a bred animal. Server side only.
+    QString releasesMob;
+    // A fishing rod (decision E-503): the use button casts and reels in its bobber. Only that it fishes
+    // reaches the client, which sends the use as QcMsg::ThrowItem.
+    std::optional<QcFishingDefinition> fishing;
 };

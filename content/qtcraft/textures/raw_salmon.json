@@ -1,0 +1,8 @@
+{
+    "name": "raw_salmon",
+    "pattern": "lump",
+    "primary": "#e07858",
+    "secondary": "#f0a888",
+    "variation": 0.1,
+    "seed": 7220
+}

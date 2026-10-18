@@ -147,6 +147,7 @@ target_sources(qc_server PRIVATE
     mobs/QcArcherState.h
     mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
+    mobs/QcFishSwimming.h mobs/QcFishSwimming.cpp
     mobs/QcInfestation.h mobs/QcInfestation.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobBrain.h
@@ -194,6 +195,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     projectiles/QcHitEffects.h projectiles/QcHitEffects.cpp
+    projectiles/QcPlayerFishing.h projectiles/QcPlayerFishing.cpp
     projectiles/QcPlayerLaunchers.h projectiles/QcPlayerLaunchers.cpp
     projectiles/QcPlayerThrows.h projectiles/QcPlayerThrows.cpp
     projectiles/QcProjectileFlight.h projectiles/QcProjectileFlight.cpp

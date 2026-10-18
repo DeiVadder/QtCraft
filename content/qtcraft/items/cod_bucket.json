@@ -1,0 +1,8 @@
+{
+    "name": "cod_bucket",
+    "maxStack": 1,
+    "places": "water",
+    "emptiesTo": "bucket",
+    "releases": "cod",
+    "dispense": "place_liquid"
+}

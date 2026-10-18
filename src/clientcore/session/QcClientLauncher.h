@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/definitions/QcMobDefinition.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcMessages.h"
 
@@ -29,12 +30,21 @@ public:
     void tick(const QcItemDefinition *held, int slot, double serverTicks = 1.0);
 
     // The use button pressed with `definition` (the item `item`, selected in `inventory`) in the
-    // hand: a throw when it is throwable and its cooldown is over, else the start of a draw (press);
-    // nothing when neither happens.
+    // hand: a throw when it is throwable and its cooldown is over, a cast or reel of a fishing rod
+    // (also QcMsg::ThrowItem, decision E-503), else the start of a draw (press); nothing when none
+    // happens.
     std::optional<QcMessage> use(QcItemId item, const QcItemDefinition &definition, const QcInventory &inventory, const QcContentRegistry &content,
                                  bool creative);
-    // Whether the use button with `item` in the hand goes to use() (a launcher or a throwable item).
-    static bool uses(const QcItemDefinition &item) { return item.launcher || item.throwable; }
+    // Whether the use button with `item` in the hand goes to use() (a launcher, a throwable item or
+    // a fishing rod).
+    static bool uses(const QcItemDefinition &item) { return item.launcher || item.throwable || item.fishing; }
+    // Whether using `item` on a creature of the kind `creature` goes to the creature (QcMsg::UseEntity):
+    // food, armour, its catching item, its milking item (decision E-500) or its breeding food (E-293).
+    static bool usesOnCreature(const QcMobDefinition &creature, const QcItemDefinition &item);
+    // Whether the use button with `item` sends QcMsg::ConsumeItem: food is eaten (unless it plants a
+    // block and `aimsAtBlock`: then it is placed, decision E-292), drinks drunk (decision E-500) and
+    // armour put on.
+    static bool consumes(const QcItemDefinition &item, bool aimsAtBlock);
     // The swing of the arm after use() sent `message`: a throw swings it from the start.
     static int swingAfter(const std::optional<QcMessage> &message, int swingTicks)
     {

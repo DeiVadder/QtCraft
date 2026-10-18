@@ -1,0 +1,110 @@
+{
+    "name": "salmon",
+    "sounds": {
+        "ambient": "mob.fish.flop",
+        "hurt": "mob.fish.hurt",
+        "death": "mob.fish.death"
+    },
+    "health": 3,
+    "width": 0.5,
+    "height": 0.35,
+    "walkSpeed": 1.5,
+    "chaseSpeed": 4.0,
+    "hostile": false,
+    "spawn": {
+        "time": "any",
+        "blocks": [
+            "water"
+        ],
+        "biomes": [
+            "taiga",
+            "tundra",
+            "mountains"
+        ],
+        "maxGroup": 4,
+        "weight": 3
+    },
+    "aquatic": {
+        "swimSpeed": 1.6,
+        "airSeconds": 15,
+        "suffocationDamage": 1,
+        "schoolRadius": 5,
+        "cohesion": 1.5,
+        "alignment": 0.8,
+        "separation": 1.2,
+        "separationDistance": 0.8,
+        "neighbours": 8
+    },
+    "catch": {
+        "with": "water_bucket",
+        "item": "salmon_bucket",
+        "sound": "item.bucket.fill"
+    },
+    "model": [
+        {
+            "from": [
+                -0.1,
+                0.0,
+                -0.35
+            ],
+            "to": [
+                0.1,
+                0.35,
+                0.175
+            ],
+            "texture": "salmon_scales"
+        },
+        {
+            "from": [
+                -0.08,
+                0.05,
+                -0.43
+            ],
+            "to": [
+                0.08,
+                0.27999999999999997,
+                -0.35
+            ],
+            "texture": "salmon_head"
+        },
+        {
+            "from": [
+                -0.02,
+                0.05,
+                0.175
+            ],
+            "to": [
+                0.02,
+                0.32999999999999996,
+                0.375
+            ],
+            "texture": "salmon_fin"
+        },
+        {
+            "from": [
+                -0.02,
+                0.35,
+                -0.13999999999999999
+            ],
+            "to": [
+                0.02,
+                0.43,
+                0.06999999999999999
+            ],
+            "texture": "salmon_fin"
+        }
+    ],
+    "drops": [
+        {
+            "item": "raw_salmon"
+        },
+        {
+            "item": "bone_meal",
+            "chance": 0.05
+        }
+    ],
+    "experience": [
+        1,
+        3
+    ]
+}

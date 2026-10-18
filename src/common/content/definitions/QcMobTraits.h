@@ -123,3 +123,28 @@ struct QcShyDefinition
 
     bool operator==(const QcShyDefinition &) const = default;
 };
+
+// A creature that lives in water (fish, decision E-502), from its data (`aquatic`): it swims only in
+// water, in schools with its kind (cohesion, alignment and separation among at most `neighbours`
+// creatures of its kind within `schoolRadius` metres), flops about on land and suffocates there
+// after `airSeconds`. Water creatures have their own cap (QcServerLimits::waterCreaturesPerPlayer)
+// and never count as animals. Server side only.
+struct QcAquaticDefinition
+{
+    // Speed in m/s while swimming; it darts away at the creature's chaseSpeed when hurt.
+    double swimSpeed = 1.5;
+    // Seconds it lives out of water; after them it takes `suffocationDamage` every second.
+    double airSeconds = 15.0;
+    double suffocationDamage = 1.0;
+    // Upward speed in m/s of a flop on land (sideways a third of it).
+    double flopSpeed = 4.0;
+    // Schooling, as weights of the steering it adds to its wandering.
+    double schoolRadius = 4.0;
+    double cohesion = 1.5;
+    double alignment = 0.8;
+    double separation = 1.2;
+    double separationDistance = 0.8;
+    int neighbours = 8;
+
+    bool operator==(const QcAquaticDefinition &) const = default;
+};

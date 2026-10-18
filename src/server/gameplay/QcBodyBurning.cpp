@@ -26,6 +26,7 @@ void QcBodyBurning::tick()
     }
     tickCreatures();
     tickWetCreatures();
+    tickDryCreatures();
 }
 
 bool QcBodyBurning::inWater(const QcVec3 &feet, double height) const
@@ -143,6 +144,24 @@ void QcBodyBurning::tickWetCreatures()
         if (definition.teleport && definition.teleport->whenWet) {
             creatures.teleport(id, m_state.world());
         }
+    }
+}
+
+void QcBodyBurning::tickDryCreatures()
+{
+    QList<std::pair<quint32, double>> dry;
+    for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
+        const std::optional<QcAquaticDefinition> &aquatic = m_state.content().mobs()[mob.type].aquatic;
+        if (!aquatic || mob.dormant) {
+            continue;
+        }
+        const int air = int(std::lround(aquatic->airSeconds * QcPhysics::tickRate));
+        if (mob.dryTicks > air && (mob.dryTicks - air) % int(QcPhysics::tickRate) == 0) {
+            dry.append({mob.id, aquatic->suffocationDamage});
+        }
+    }
+    for (const auto &[id, damage] : std::as_const(dry)) {
+        hurtCreature(id, damage);
     }
 }
 

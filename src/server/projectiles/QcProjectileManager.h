@@ -41,6 +41,8 @@ public:
         QcVec3 velocity;
         QcProjectilePickup pickup = QcProjectilePickup::Item;
         double damageFactor = 1.0;
+        // QcProjectile::transient.
+        bool transient = false;
     };
 
     struct Hit

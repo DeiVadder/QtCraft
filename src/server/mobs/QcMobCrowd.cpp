@@ -37,7 +37,7 @@ void QcMobCrowd::build(const QList<QcCreature> &mobs, const QList<QcMobDefinitio
 
     for (qsizetype i = 0; i < mobs.size(); ++i) {
         const QcCreature &mob = mobs[i];
-        if (mob.dormant || definitions[mob.type].flying) {
+        if (mob.dormant || definitions[mob.type].flying || definitions[mob.type].aquatic) {
             continue;
         }
 

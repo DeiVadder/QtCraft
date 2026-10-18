@@ -5,6 +5,18 @@
 #include <algorithm>
 #include <cmath>
 
+bool QcClientLauncher::usesOnCreature(const QcMobDefinition &creature, const QcItemDefinition &item)
+{
+    const bool milks = !creature.milkWith.isEmpty() && creature.milkWith == item.name;
+    return item.food > 0 || item.armour || creature.catchWith == item.name || milks || creature.breeding.food.contains(item.name);
+}
+
+bool QcClientLauncher::consumes(const QcItemDefinition &item, bool aimsAtBlock)
+{
+    const bool eats = item.food > 0 && (item.placesBlock.isEmpty() || !aimsAtBlock);
+    return eats || item.armour || item.drink;
+}
+
 bool QcClientLauncher::press(const QcItemDefinition &held, const QcInventory &inventory, const QcContentRegistry &content, bool creative)
 {
     if (m_launcher || !held.launcher || (!creative && inventory.ammunitionSlot(content, *held.launcher) < 0)) {
@@ -26,6 +38,9 @@ bool QcClientLauncher::release()
 std::optional<QcMessage> QcClientLauncher::use(QcItemId item, const QcItemDefinition &definition, const QcInventory &inventory,
                                                 const QcContentRegistry &content, bool creative)
 {
+    if (definition.fishing) {
+        return QcMsg::ThrowItem{};
+    }
     if (definition.throwable) {
         return mayThrow(item, *definition.throwable) ? std::optional<QcMessage>(QcMsg::ThrowItem{}) : std::nullopt;
     }

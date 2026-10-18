@@ -24,6 +24,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_falling.setMaxFalling(qsizetype(limits.fallingBlocks));
     m_items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
     m_creatures.spawner().setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
+    m_creatures.spawner().setWaterCap(int(limits.waterCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
     m_creatures.population().setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},

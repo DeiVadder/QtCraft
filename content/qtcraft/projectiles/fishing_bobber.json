@@ -1,0 +1,13 @@
+{
+    "name": "fishing_bobber",
+    "item": "fishing_bobber",
+    "gravity": 20.0,
+    "drag": 0.2,
+    "waterDrag": 10.0,
+    "onHit": [],
+    "size": 0.25,
+    "flightSeconds": 3600.0,
+    "despawnSeconds": 3600.0,
+    "sticks": true,
+    "floats": true
+}

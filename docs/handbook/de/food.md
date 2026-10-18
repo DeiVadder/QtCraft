@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratener Kabeljau](#item-qtcraft-cooked_cod) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Roher Kabeljau](#item-qtcraft-raw_cod) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratener Kabeljau](#item-qtcraft-cooked_cod) · [Gebratener Lachs](#item-qtcraft-cooked_salmon) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Roher Kabeljau](#item-qtcraft-raw_cod) · [Roher Lachs](#item-qtcraft-raw_salmon) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Rindfleisch](#item-qtcraft-raw_beef) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Steak](#item-qtcraft-cooked_beef) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -55,6 +55,28 @@ Im Ofen gebratener Kabeljau; gutes Essen, und er heilt eine zahme Katze.
 | 1 | → |
 |---|---|
 | [Roher Kabeljau](#item-qtcraft-raw_cod) | [Gebratener Kabeljau](#item-qtcraft-cooked_cod) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+### <a id="item-qtcraft-cooked_salmon"></a>Gebratener Lachs
+
+Gebratener Lachs, eine gute Mahlzeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_salmon` |
+| Stapelgröße | 64 |
+| Nahrung | 6 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roher Lachs](#item-qtcraft-raw_salmon) | [Gebratener Lachs](#item-qtcraft-cooked_salmon) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -269,6 +291,36 @@ Ein Fisch; zähmt Katzen und lässt dich an Ozelots heran. Besser im Ofen gebrat
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Droppt aus**
+
+[Kabeljau](creatures.md#mob-qtcraft-cod)
+
+### <a id="item-qtcraft-raw_salmon"></a>Roher Lachs
+
+Fleisch eines Lachses; im Ofen gebraten schmeckt es besser.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_salmon` |
+| Stapelgröße | 64 |
+| Nahrung | 2 Nahrungspunkte |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roher Lachs](#item-qtcraft-raw_salmon) | [Gebratener Lachs](#item-qtcraft-cooked_salmon) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Droppt aus**
+
+[Lachs](creatures.md#mob-qtcraft-salmon)
+
 ### <a id="item-qtcraft-raw_mutton"></a>Rohes Hammelfleisch
 
 Fleisch eines Schafs; im Ofen gebraten besser.
@@ -321,6 +373,32 @@ Fleisch eines Huhns; im Ofen gebraten besser.
 
 [Huhn](creatures.md#mob-qtcraft-chicken)
 
+### <a id="item-qtcraft-raw_beef"></a>Rohes Rindfleisch
+
+Fleisch einer Kuh; im Ofen gebraten wird ein sättigendes Steak daraus.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_beef` |
+| Stapelgröße | 64 |
+| Nahrung | 3 Nahrungspunkte |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Rindfleisch](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Droppt aus**
+
+[Kuh](creatures.md#mob-qtcraft-cow) (50 %)
+
 ### <a id="item-qtcraft-raw_porkchop"></a>Rohes Schweinefleisch
 
 Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.
@@ -346,6 +424,28 @@ Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.
 **Droppt aus**
 
 [Schwein](creatures.md#mob-qtcraft-pig) (2×)
+
+### <a id="item-qtcraft-cooked_beef"></a>Steak
+
+Gebratenes Rindfleisch, eines der sättigendsten Essen.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_beef` |
+| Stapelgröße | 64 |
+| Nahrung | 8 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Rindfleisch](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-rotten_flesh"></a>Verrottetes Fleisch
 

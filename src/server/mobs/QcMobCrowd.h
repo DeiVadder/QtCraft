@@ -10,13 +10,14 @@
 
 #include <vector>
 
-// Crowds of creatures (decision E-401). At the start of each tick the awake walkers (flyers and
-// dormant ones take no part) are counted into cells of one block, by the block their feet are in,
-// with the sum of their positions and half widths. A creature is pushed away from the centre of the
-// others in its cell and from the centre of each of the eight cells around it on the same level, as
-// far as it overlaps them: one push per cell instead of one per pair, so the cost grows with the
-// number of creatures (nine cell lookups each), however densely they stand. Creatures have no
-// collision with each other; this push is all that keeps them apart.
+// Crowds of creatures (decision E-401). At the start of each tick the awake walkers (flyers, water
+// creatures of decision E-502 and dormant ones take no part) are counted into cells of one block,
+// by the block their feet are in, with the sum of their positions and half widths. A creature is
+// pushed away from the centre of the others in its cell and from the centre of each of the eight
+// cells around it on the same level, as far as it overlaps them: one push per cell instead of one
+// per pair, so the cost grows with the number of creatures (nine cell lookups each), however
+// densely they stand. Creatures have no collision with each other; this push is all that keeps
+// them apart.
 //
 // The number in a creature's cell also decides its AI tier (Tier, thresholds QcServerLimits
 // crowdThrottled and crowdIdle) and whether the cell is crammed (game rule maxEntityCramming).

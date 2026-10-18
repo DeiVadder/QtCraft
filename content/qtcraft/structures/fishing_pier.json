@@ -1,0 +1,137 @@
+{
+    "name": "fishing_pier",
+    "showcase": {
+        "order": 96
+    },
+    "palette": {
+        "B": "stone_bricks",
+        "s": "sand",
+        "W": "water",
+        "O": "oak_planks",
+        "C": "chest[facing=south]"
+    },
+    "layers": [
+        [
+            "BBBBBBBBBBB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BsssssssssB",
+            "BBBBBBBBBBB",
+            "BBBBBBBBBBB",
+            "BBBBBBBBBBB",
+            "BBBBBBBBBBB"
+        ],
+        [
+            "BBBBBBBBBBB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BBBBBBBBBBB",
+            "    OOO    ",
+            "    OOO    ",
+            "        C  "
+        ],
+        [
+            "BBBBBBBBBBB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BBBBBBBBBBB",
+            "    OOO    ",
+            "           ",
+            "           "
+        ],
+        [
+            "BBBBBBBBBBB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWWWWWWB",
+            "BWWWWOWWWWB",
+            "BWWWWOWWWWB",
+            "BWWWWOWWWWB",
+            "BWWWWOWWWWB",
+            "BBBBBBBBBBB",
+            "           ",
+            "           ",
+            "           "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "cod",
+            "at": [
+                2.5,
+                1.5,
+                2.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "cod",
+            "at": [
+                7.5,
+                2.0,
+                3.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "cod",
+            "at": [
+                3.5,
+                1.5,
+                5.5
+            ],
+            "confined": true
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                8,
+                1,
+                11
+            ],
+            "items": [
+                {
+                    "item": "fishing_rod",
+                    "count": 1
+                },
+                {
+                    "item": "fishing_rod",
+                    "count": 1
+                },
+                {
+                    "item": "string",
+                    "count": 8
+                },
+                {
+                    "item": "stick",
+                    "count": 8
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                5.1,
+                11.5
+            ],
+            "text": "structure.qtcraft.fishing_pier"
+        }
+    ]
+}

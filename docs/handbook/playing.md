@@ -432,9 +432,13 @@ Arrows fall in an arc and slow down, much faster in water. A hit deals more dama
 
 Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit. An ender pearl is thrown the same way and teleports you to where it lands.
 
+**Fishing**
+
+Cast a fishing rod with the use button and its bobber flies off and floats on the water. After 5 to 30 s a fish bites (a quarter sooner in the rain): the bobber dips and splashes, and for 1 s you can reel in with the use button to catch it. Mostly you catch cod and salmon, now and then a stick, string, leather, a bone, a bowl or even a bow. Reel in too early or too late and you catch nothing. The bobber is gone when you select another slot or walk more than 32 m away, and it is never saved with the world.
+
 **See also**
 
-[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Ender Pearl](items.md#item-qtcraft-ender_pearl)
+[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Ender Pearl](items.md#item-qtcraft-ender_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
@@ -498,6 +502,10 @@ Chickens flutter down slowly instead of falling and lay an egg every five to ten
 
 Endermen come out on dark nights, rarely and in every biome. Look at their heads and they get angry, and the farther away they are, the more exactly you have to look; look at their legs or past them and they stay calm. One you hit chases you, not whoever stands nearest. They teleport to a safe place nearby: when they stand in water or the rain, when a projectile hits them and sometimes to reach the player they chase. They only ever land on solid ground with room above and only where the world is loaded. With the game rule **mobGriefing** they pick up single blocks and put them down elsewhere; an enderman carrying a block stays in the world until it puts it down. Without the rule it changes no blocks and drops a block it carries as an item.
 
+**Cows, milk and fish**
+
+Use an empty bucket on a grown cow to milk it. Drinking the milk with the use button ends every status effect, poison too, and gives the bucket back. Cows fall in love with wheat and drop leather and beef. Cod live in lakes and seas, salmon in the cold waters of taiga, tundra and mountains. Fish swim in schools and only in water; on land they flop about and suffocate after 15 seconds. A water bucket used on a fish catches it alive; pouring the fish bucket out lets it go again, and a released fish stays with the world. Fish have their own spawn limit and take no room from the animals on land.
+
 **Wolves, dogs and cats**
 
 Wolves roam forests, taiga and tundra in packs: strike one, and every wolf of the pack nearby chases you. Feed a wolf bones to tame it; each bone works with a chance of one in three, and the tamed wolf becomes your dog with a red collar. Cats live in villages and are tamed the same way with raw cod. A pet belongs to you, not to your character on one login: it stays yours when you leave and waits, standing or sitting, until you come back. Use your pet with an empty hand or any other item to make it sit or stand up. A pet that does not sit follows you when you walk away and, when you are farther than 12 m, teleports next to you, but only onto safe ground in loaded chunks. A dog fights what hurts you and what you hit, never you and never your other pets. Meat heals a dog, fish a cat; a dye colours a dog's collar. Ocelots are shy and run from anyone who comes close, unless you hold raw cod and sneak up slowly.
@@ -508,7 +516,7 @@ Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creature
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg), [Cow](creatures.md#mob-qtcraft-cow), [Milk bucket](items.md#item-qtcraft-milk_bucket), [Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Bucket of cod](items.md#item-qtcraft-cod_bucket)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 

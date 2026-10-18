@@ -1,0 +1,8 @@
+{
+    "name": "cow_muzzle",
+    "pattern": "speckle",
+    "primary": "#d8a8a0",
+    "secondary": "#b88880",
+    "variation": 0.1,
+    "seed": 7104
+}

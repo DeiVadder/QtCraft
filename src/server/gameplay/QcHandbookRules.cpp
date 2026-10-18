@@ -85,7 +85,8 @@ QMap<QString, double> villageValues()
     };
 }
 
-// Bows and arrows (decision E-425): the defaults the base content's bow and arrow keep.
+// Bows and arrows (decision E-425) and the fishing rod (decision E-503): the defaults the base
+// content's bow, arrow and rod keep.
 QMap<QString, double> archeryValues()
 {
     return {
@@ -94,6 +95,10 @@ QMap<QString, double> archeryValues()
         {u"projectiles.perChunk"_s, double(QcServerLimits{}.projectilesPerChunk)},
         {u"bow.drawSeconds"_s, QcLauncherDefinition{}.drawSeconds},
         {u"bow.speed"_s, QcLauncherDefinition{}.speed},
+        {u"fishing.minSeconds"_s, QcFishingDefinition{}.minSeconds},
+        {u"fishing.maxSeconds"_s, QcFishingDefinition{}.maxSeconds},
+        {u"fishing.biteSeconds"_s, QcFishingDefinition{}.biteSeconds},
+        {u"fishing.maxDistance"_s, QcFishingDefinition{}.maxDistance},
         {u"boneMeal.stagesMin"_s, double(QcServerPlants::fertilizeStagesMin)},
         {u"boneMeal.stagesMax"_s, double(QcServerPlants::fertilizeStagesMax)},
         {u"boneMeal.saplingChance"_s, 100.0 * QcItemDefinition::fertilizeSaplingChance},

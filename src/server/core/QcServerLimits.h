@@ -133,6 +133,9 @@ struct QcServerLimits
     qint64 villagerHarvestsPerTick = 4;
     // Iron golems in the world beyond which villagers summon no more (decisions E-415, E-470; 0: none).
     qint64 villageGolems = 256;
+    // Water creatures (fish, decision E-502) that spawn by themselves per player; they never count
+    // against the other caps.
+    qint64 waterCreaturesPerPlayer = 5;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

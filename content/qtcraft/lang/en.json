@@ -100,6 +100,8 @@
     "item.qtcraft.flint_and_steel": "Flint and steel",
     "item.qtcraft.shears": "Shears",
     "item.qtcraft.bow": "Bow",
+    "item.qtcraft.fishing_rod": "Fishing rod",
+    "item.qtcraft.fishing_bobber": "Fishing bobber",
     "item.qtcraft.arrow": "Arrow",
     "item.qtcraft.snowball": "Snowball",
     "item.qtcraft.ender_pearl": "Ender Pearl",
@@ -565,5 +567,18 @@
     "block.qtcraft.infested_stone_bricks": "Infested stone bricks",
     "structure.qtcraft.spider_cave": "Spider cave",
     "structure.qtcraft.silverfish_wall": "Silverfish wall",
-    "structure.qtcraft.chicken_coop": "Chicken coop"
+    "structure.qtcraft.chicken_coop": "Chicken coop",
+    "structure.qtcraft.cow_pasture": "Cow pasture",
+    "structure.qtcraft.aquarium": "Aquarium",
+    "structure.qtcraft.fishing_pier": "Fishing pier",
+    "mob.qtcraft.cow": "Cow",
+    "item.qtcraft.milk_bucket": "Milk bucket",
+    "item.qtcraft.raw_beef": "Raw beef",
+    "item.qtcraft.cooked_beef": "Steak",
+    "mob.qtcraft.cod": "Cod",
+    "mob.qtcraft.salmon": "Salmon",
+    "item.qtcraft.cod_bucket": "Bucket of cod",
+    "item.qtcraft.salmon_bucket": "Bucket of salmon",
+    "item.qtcraft.raw_salmon": "Raw salmon",
+    "item.qtcraft.cooked_salmon": "Cooked salmon"
 }

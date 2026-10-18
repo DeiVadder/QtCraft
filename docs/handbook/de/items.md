@@ -2,9 +2,29 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
+
+### <a id="item-qtcraft-fishing_rod"></a>Angel
+
+Drück die Benutzen-Taste, um den Schwimmer auszuwerfen, und noch einmal, um ihn einzuholen. Beißt ein Fisch an, taucht der Schwimmer unter und es platscht: Hol ihn genau dann ein, um etwas zu fangen. Jeder Fang nutzt die Angel ein wenig ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:fishing_rod` |
+| Stapelgröße | 1 |
+| Haltbarkeit | 64 Benutzungen |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | · | [Stock](#item-qtcraft-stick) | [Angel](#item-qtcraft-fishing_rod) |
+| · | [Stock](#item-qtcraft-stick) | [Faden](#item-qtcraft-string) |  |
+| [Stock](#item-qtcraft-stick) | · | [Faden](#item-qtcraft-string) |  |
 
 ### <a id="item-qtcraft-blue_dye"></a>Blauer Farbstoff
 
@@ -245,7 +265,7 @@ Faden aus einem Spinnennetz; vier ergeben weiße Wolle.
 
 **Wird verwendet für**
 
-[Bogen](#item-qtcraft-bow), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
+[Angel](#item-qtcraft-fishing_rod), [Bogen](#item-qtcraft-bow), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
 
 **Droppt aus**
 
@@ -610,6 +630,21 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 
 [Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle)
 
+### <a id="item-qtcraft-cod_bucket"></a>Kabeljaueimer
+
+Ein Kabeljau in einem Wassereimer. Ausgegossen setzt er das Wasser und lässt den Kabeljau frei; ein ausgesetzter Fisch bleibt in der Welt.
+
+| | |
+|---|---|
+| ID | `qtcraft:cod_bucket` |
+| Stapelgröße | 1 |
+| Setzt | [Wasser](liquids.md#block-qtcraft-water) |
+| Danach | [Eimer](#item-qtcraft-bucket) |
+
+**Gefangen aus**
+
+[Kabeljau](creatures.md#mob-qtcraft-cod) (Wassereimer)
+
 ### <a id="item-qtcraft-bone"></a>Knochen
 
 Lassen Skelette fallen. Daraus wird Knochenmehl.
@@ -643,6 +678,10 @@ Auf eine Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wi
 | 1 | → |
 |---|---|
 | [Knochen](#item-qtcraft-bone) | 3 × [Knochenmehl](#item-qtcraft-bone_meal) |
+
+**Droppt aus**
+
+[Kabeljau](creatures.md#mob-qtcraft-cod) (5 %), [Lachs](creatures.md#mob-qtcraft-salmon) (5 %)
 
 ### <a id="item-qtcraft-coal"></a>Kohle
 
@@ -723,6 +762,21 @@ Vier aus einem Kürbis. Auf Ackerboden gepflanzt wachsen sie zu einem Kürbisst�
 
 [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem)
 
+### <a id="item-qtcraft-salmon_bucket"></a>Lachseimer
+
+Ein Lachs in einem Wassereimer. Ausgegossen setzt er das Wasser und lässt den Lachs frei; ein ausgesetzter Fisch bleibt in der Welt.
+
+| | |
+|---|---|
+| ID | `qtcraft:salmon_bucket` |
+| Stapelgröße | 1 |
+| Setzt | [Wasser](liquids.md#block-qtcraft-water) |
+| Danach | [Eimer](#item-qtcraft-bucket) |
+
+**Gefangen aus**
+
+[Lachs](creatures.md#mob-qtcraft-salmon) (Wassereimer)
+
 ### <a id="item-qtcraft-lapis_lazuli"></a>Lapislazuli
 
 Ein blauer Stein aus tiefen Erzen. Er ergibt blauen Farbstoff; Händler und Verzauberung werden ihn haben wollen.
@@ -782,6 +836,10 @@ Zähe Haut für Bücher; vorerst nur aus Fetzen zusammengesetzt.
 **Wird verwendet für**
 
 [Buch](#item-qtcraft-book), [Lederhose](tools.md#item-qtcraft-leather_leggings), [Lederkappe](tools.md#item-qtcraft-leather_helmet), [Lederstiefel](tools.md#item-qtcraft-leather_boots), [Lederwams](tools.md#item-qtcraft-leather_chestplate)
+
+**Droppt aus**
+
+[Kuh](creatures.md#mob-qtcraft-cow) (50 %)
 
 ### <a id="item-qtcraft-leather_scrap"></a>Lederfetzen
 
@@ -873,6 +931,16 @@ Einer aus einer Melonenscheibe. Auf Ackerboden gepflanzt wachsen sie zu einem Me
 **Droppt aus**
 
 [Melonenstängel](blocks.md#block-qtcraft-melon_stem)
+
+### <a id="item-qtcraft-milk_bucket"></a>Milcheimer
+
+Frische Milch einer Kuh. Mit der Benutzen-Taste getrunken, beendet sie alle Statuseffekte, auch Gift, und lässt den leeren Eimer zurück.
+
+| | |
+|---|---|
+| ID | `qtcraft:milk_bucket` |
+| Stapelgröße | 1 |
+| Danach | [Eimer](#item-qtcraft-bucket) |
 
 ### <a id="item-qtcraft-orange_dye"></a>Orangefarbener Farbstoff
 
@@ -1111,6 +1179,15 @@ Aus Kohle; färbt Wolle schwarz.
 
 [Grauer Farbstoff](#item-qtcraft-gray_dye), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Schwarzes Betonpulver](blocks.md#block-qtcraft-black_concrete_powder), [Schwarzes Glas](blocks.md#block-qtcraft-black_stained_glass)
 
+### <a id="item-qtcraft-fishing_bobber"></a>Schwimmer
+
+Der Schwimmer einer Angel. Er treibt auf dem Wasser, bis du ihn einholst; herstellen kannst du ihn nicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:fishing_bobber` |
+| Stapelgröße | 64 |
+
 ### <a id="item-qtcraft-emerald"></a>Smaragd
 
 Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden für das, was sie kaufen, und verlangen sie für das, was sie verkaufen.
@@ -1170,7 +1247,7 @@ Griff für Werkzeuge und Fackeln.
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Angel](#item-qtcraft-fishing_rod), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
 
 **Droppt aus**
 
@@ -1324,6 +1401,10 @@ Gießt eine Wasserquelle aus.
 | Stapelgröße | 1 |
 | Setzt | [Wasser](liquids.md#block-qtcraft-water) |
 | Danach | [Eimer](#item-qtcraft-bucket) |
+
+**Fängt**
+
+[Kabeljau](creatures.md#mob-qtcraft-cod) (Kabeljaueimer), [Lachs](creatures.md#mob-qtcraft-salmon) (Lachseimer)
 
 ### <a id="item-qtcraft-water_bottle"></a>Wasserflasche
 

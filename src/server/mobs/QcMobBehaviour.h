@@ -3,6 +3,7 @@
 #include "server/golems/QcGolemBrain.h"
 #include "server/mobs/QcArcherBrain.h"
 #include "server/mobs/QcCreatureBrains.h"
+#include "server/mobs/QcFishSwimming.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/mobs/QcNeutralBrain.h"
@@ -106,6 +107,8 @@ private:
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;
     QcMobCrowd m_crowd;
+    // Water creatures (decision E-502).
+    QcFishSwimming m_fish;
     TierCounts m_tiers;
     QList<QcProjectileManager::Launch> m_launches;
     QList<QcMobManager::CreatureHit> m_creatureHits;

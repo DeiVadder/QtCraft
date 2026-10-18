@@ -108,6 +108,74 @@ void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
     }
 }
 
+// Drinks and fish buckets (decisions E-500, E-501): "drink": {"clearsEffects": true} and "releases".
+void parseContainerUses(QcItemDefinition &item, const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    reader.nestedObject(u"drink"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcDrinkDefinition drink;
+        drink.clearsEffects = nested.boolean(u"clearsEffects"_s, false);
+        item.drink = drink;
+    });
+    if (item.drink && (item.food > 0 || item.armour || !item.placesBlock.isEmpty() || item.throwable || item.launcher)) {
+        reader.fail(u"a 'drink' is neither eaten, worn, placed, thrown nor launches"_s);
+    }
+    item.releasesMob = reader.name(u"releases"_s, packNamespace);
+    if (!item.releasesMob.isEmpty() && item.placesBlock.isEmpty()) {
+        reader.fail(u"'releases' needs 'places' (the liquid the creature comes out in)"_s);
+    }
+}
+
+// The loot table of a fishing rod: [{"item", "weight", "count"}, ...] (decision E-503).
+QList<QcFishingLoot> parseFishingLoot(const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = reader.json.value(u"loot"_s);
+    const QJsonArray list = value.toArray();
+    if (!value.isArray() || list.isEmpty() || list.size() > 64) {
+        reader.fail(u"'loot' must be an array of 1 to 64 entries"_s);
+        return {};
+    }
+
+    QList<QcFishingLoot> loot;
+    for (const auto &entry : list) {
+        QcJsonFieldReader nested{entry.toObject(), reader.context + u" loot"_s, {}};
+        QcFishingLoot one;
+        one.item = nested.name(u"item"_s, packNamespace);
+        if (!entry.isObject() || one.item.isEmpty()) {
+            nested.fail(u"every entry needs an 'item'"_s);
+        }
+        one.weight = nested.integer(u"weight"_s, one.weight, 1, 10000);
+        one.count = nested.integer(u"count"_s, one.count, 1, 64);
+        reader.adopt(nested);
+        loot.append(one);
+    }
+    return loot;
+}
+
+// "fishing": a fishing rod's bobber, wait, bite and loot (decision E-503).
+void parseFishing(QcItemDefinition &item, const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    reader.nestedObject(u"fishing"_s, [&](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcFishingDefinition fishing;
+        fishing.bobber = nested.name(u"bobber"_s, packNamespace);
+        if (fishing.bobber.isEmpty()) {
+            nested.fail(u"'bobber' (a projectile kind) is required"_s);
+        }
+        fishing.speed = nested.number(u"speed"_s, fishing.speed, 1.0, QcProjectileDefinition::maxSpeed);
+        fishing.minSeconds = nested.number(u"minSeconds"_s, fishing.minSeconds, 0.05, 3600.0);
+        fishing.maxSeconds = nested.number(u"maxSeconds"_s, fishing.maxSeconds, fishing.minSeconds, 3600.0);
+        fishing.rainFactor = nested.number(u"rainFactor"_s, fishing.rainFactor, 0.01, 10.0);
+        fishing.biteSeconds = nested.number(u"biteSeconds"_s, fishing.biteSeconds, 0.05, 60.0);
+        fishing.maxDistance = nested.number(u"maxDistance"_s, fishing.maxDistance, 1.0, 128.0);
+        fishing.castSound = nested.name(u"castSound"_s, packNamespace);
+        fishing.biteSound = nested.name(u"biteSound"_s, packNamespace);
+        fishing.loot = parseFishingLoot(packNamespace, nested);
+        item.fishing = fishing;
+    });
+    if (item.fishing && (item.throwable || item.launcher || !item.placesBlock.isEmpty() || item.food > 0 || item.armour || item.drink)) {
+        reader.fail(u"a 'fishing' rod neither throws, launches, places, is eaten, drunk nor worn"_s);
+    }
+}
+
 } // namespace
 
 namespace QcItemParser {
@@ -156,6 +224,8 @@ namespace QcItemParser {
 
     parseDispense(item, reader);
     parseProjectileUses(item, packNamespace, reader);
+    parseContainerUses(item, packNamespace, reader);
+    parseFishing(item, packNamespace, reader);
 
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;

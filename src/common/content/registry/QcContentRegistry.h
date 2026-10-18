@@ -232,6 +232,8 @@ private:
     // Checks that ammunition and projectile kinds name each other's kinds (finish): ammunition of
     // an unknown kind is none; the warnings.
     QStringList resolveProjectiles();
+    // Checks a fishing rod's bobber and loot (decision E-503); the warnings.
+    QStringList resolveFishing(QcItemDefinition &item) const;
 
     QList<QcBlockDefinition> m_blocks;
     // Block name -> index into m_blocks.

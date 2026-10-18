@@ -1,0 +1,8 @@
+{
+    "name": "cod_scales",
+    "pattern": "speckle",
+    "primary": "#a89878",
+    "secondary": "#c8b898",
+    "variation": 0.2,
+    "seed": 7201
+}

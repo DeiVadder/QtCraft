@@ -127,6 +127,10 @@ struct QcCreature : QcEntity
     // Status effects (decision E-450): a component only creatures that have any carry
     // (QcServerEffects gives and drops it); saved with persistent creatures.
     QcComponent<QcStatusEffects> effects;
+    // Ticks a water creature (QcMobDefinition::aquatic, decision E-502) has been out of water; it
+    // suffocates after QcAquaticDefinition::airSeconds (QcBodyBurning). Not saved: a loaded fish on
+    // land has its full air again.
+    int dryTicks = 0;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give
