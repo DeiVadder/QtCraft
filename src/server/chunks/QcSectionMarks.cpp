@@ -28,6 +28,9 @@ QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
     if (block.fire.isFire) {
         traits |= bit(QcBlockTrait::Fire);
     }
+    if (block.spawner.isSpawner) {
+        traits |= bit(QcBlockTrait::Spawner);
+    }
     return traits;
 }
 

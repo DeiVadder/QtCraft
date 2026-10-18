@@ -1,5 +1,6 @@
 #include "server/commands/QcBlockCommands.h"
 
+#include "common/content/registry/QcSpawnerContent.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcServerBlocks.h"
@@ -43,8 +44,9 @@ QcBlockCommands::QcBlockCommands(QcServerState &state, QcServerBlocks &blocks, Q
 void QcBlockCommands::addTo(QcCommandRegistry &registry)
 {
     registry.addBuiltIn({.name = u"setblock"_s, .minArguments = 4,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>[states]"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Sets one block; ~ means your position, air breaks the block."),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>[states] [creature]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                          "Sets one block; ~ means your position, air breaks the block. A spawner takes the creature it brings forth."),
                          .run = [this](const QcCommandContext &context) { setBlock(context); }});
     registry.addBuiltIn({.name = u"fill"_s, .minArguments = 7,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> [replace <block>]"),
@@ -63,8 +65,32 @@ void QcBlockCommands::addTo(QcCommandRegistry &registry)
 
 void QcBlockCommands::setBlock(const QcCommandContext &context)
 {
-    if (const std::optional<BlockArea> area = parseArea(context, 1, context.args[3])) {
-        apply(context.source, *area, true);
+    const std::optional<BlockArea> area = parseArea(context, 1, context.args[3]);
+    if (!area) {
+        return;
+    }
+    // A spawner's creature kind (decision E-520): checked before the block is set.
+    std::optional<QString> mob;
+    if (context.args.size() > 4) {
+        mob = context.args[4].contains(u':') ? context.args[4] : u"qtcraft:"_s + context.args[4];
+        if (!m_state.content().block(area->block).spawner.isSpawner) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Only a spawner takes a creature"));
+            return;
+        }
+        const std::optional<int> type = m_state.content().mobIndex(*mob);
+        if (!type) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown creature: %1"), {context.args[4]});
+            return;
+        }
+        if (!QcSpawnerContent::refusal(m_state.content().mobs()[*type]).isEmpty()) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "A spawner cannot bring forth %1"), {context.args[4]});
+            return;
+        }
+    }
+
+    apply(context.source, *area, true);
+    if (mob) {
+        m_state.world().spawners().set({area->from, *mob, QcSpawners::firstDelay, false});
     }
 }
 
@@ -115,7 +141,7 @@ std::optional<QcBlockCommands::BlockArea> QcBlockCommands::parseArea(const QcCom
 
     if (!from || !to || !area.low.isInsideWorldHeight() || !area.high.isInsideWorldHeight() || area.volume() > maxFillBlocks) {
         if (corners == 1) {
-            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>[states]"));
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>[states] [creature]"));
         } else {
             context.reply(fillUsage, {QString::number(maxFillBlocks)});
         }

@@ -21,6 +21,8 @@ public:
 private:
     // The generator's labels of a chunk just sent (decision E-222).
     void sendLabels(QcServerClient &client, QcChunkPos pos) const;
+    // The creatures spinning in the spawners of a chunk just sent (decision E-520).
+    void sendSpawners(QcServerClient &client, QcChunkPos pos) const;
 
     QcServerState &m_state;
     QcChunkLoading &m_loading;

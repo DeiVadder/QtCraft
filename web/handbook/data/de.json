@@ -40,6 +40,7 @@
                 "block:qtcraft:infested_stone_bricks",
                 "block:qtcraft:infested_cobblestone",
                 "block:qtcraft:infested_stone",
+                "block:qtcraft:mossy_cobblestone",
                 "block:qtcraft:bed",
                 "block:qtcraft:birch_planks",
                 "block:qtcraft:birch_trapdoor",
@@ -176,6 +177,7 @@
                 "block:qtcraft:melon_stem",
                 "block:qtcraft:mine_lamp",
                 "block:qtcraft:poppy",
+                "block:qtcraft:spawner",
                 "block:qtcraft:obsidian",
                 "block:qtcraft:furnace",
                 "block:qtcraft:orange_stained_glass_pane",
@@ -29637,6 +29639,120 @@
             "text": "Eine Lampe mit einem Glühwürmchen: hängt an Decken, Wänden oder Böden und leuchtet ohne Brennstoff.",
             "title": "Minenlampe"
         },
+        "block:qtcraft:mossy_cobblestone": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Mossy cobblestone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:mossy_cobblestone"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "10 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,25 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:mossy_cobblestone",
+            "id": "block:qtcraft:mossy_cobblestone",
+            "name": "qtcraft:mossy_cobblestone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Bruchstein, auf dem Moos wächst. Verliese und ihre Gänge sind aus ihm und aus einfachem Bruchstein gebaut.",
+            "title": "Bemooster Bruchstein"
+        },
         "block:qtcraft:mud": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -45261,6 +45377,114 @@
             ],
             "text": "Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von selbst, wo unter offenem Himmel Schnee fällt.",
             "title": "Schneeschicht"
+        },
+        "block:qtcraft:spawner": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Monster spawner",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spawner"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,63 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:spawner",
+            "id": "block:qtcraft:spawner",
+            "name": "qtcraft:spawner",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Ein Käfig aus dunklem Eisen, in dem sich ein kleines Wesen dreht. Solange ein Spieler höchstens 16 Blöcke entfernt ist, bringt er alle 10 bis 40 Sekunden bis zu vier Wesen seiner Art hervor, auf dunklen Feldern der 9 × 3 × 9 Blöcke um ihn, bis sechs davon in der Nähe sind. Abgebaut gibt er Erfahrung, aber keinen Gegenstand; herstellen lässt er sich nicht. Verliese tief unter der Erde enthalten einen.",
+            "title": "Monster-Spawner"
         },
         "block:qtcraft:spruce_door": {
             "category": "blocks",
@@ -61495,6 +61719,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:blue_terracotta",
@@ -61781,6 +62011,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:obsidian",
@@ -64205,6 +64441,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:blue_terracotta",
@@ -64437,6 +64679,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -66502,6 +66750,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:blue_terracotta",
@@ -66788,6 +67042,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:obsidian",
@@ -71607,6 +71867,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:blue_terracotta",
@@ -71869,6 +72135,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -73423,6 +73695,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Bemooster Bruchstein"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:blue_terracotta",
@@ -73655,6 +73933,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -79452,7 +79736,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
+                    "text": "- Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
                     "title": "Spitzhacke"
                 },
                 {

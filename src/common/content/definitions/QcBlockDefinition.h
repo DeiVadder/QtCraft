@@ -8,6 +8,7 @@
 #include "common/content/definitions/QcShapeCondition.h"
 #include "common/content/definitions/QcShapeDefinition.h"
 #include "common/content/definitions/QcSignalDefinition.h"
+#include "common/content/definitions/QcSpawnerDefinition.h"
 #include "common/core/QcBlockFace.h"
 
 #include <QList>
@@ -154,6 +155,8 @@ struct QcBlockDefinition
     // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.
     double fuelSeconds = 0.0;
     QcSaplingDefinition sapling;
+    // A monster spawner (decision E-520). Server side only.
+    QcSpawnerDefinition spawner;
     // Sound material ("qtcraft:stone"), empty for silent blocks, and explicit sound names per
     // QcBlockSoundAction that replace the material's sound (see QcSoundKeys).
     QString soundMaterial;

@@ -138,16 +138,18 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
 bool QcClientSession::handleWorldMessage(const QcMessage &message)
 {
     if (const auto *chunkData = std::get_if<QcMsg::ChunkData>(&message)) {
+        m_extras.chunkArrived(chunkData->chunk->pos());
         onChunkData(*chunkData);
     } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
-        m_labelGeneration += m_labels.remove(unload->pos) ? 1 : 0;
+        m_extras.removeChunk(unload->pos);
         if (m_world) {
             m_world->removeChunk(unload->pos);
             emit chunkUnloaded(unload->pos);
         }
     } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
-        m_labels.insert(labels->pos, labels->labels);
-        ++m_labelGeneration;
+        m_extras.setLabels(*labels);
+    } else if (const auto *spawner = std::get_if<QcMsg::SpawnerDisplay>(&message)) {
+        m_extras.setSpawner(*spawner);
     } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
         m_debug.receive(*debug);
     } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {

@@ -263,7 +263,8 @@ std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QStrin
     // A village writes the blocks of its pieces and spawns their creatures; the other extras of a
     // structure need the server when the chunk is first seen, which villages do not have.
     const bool extras = !definition->stands.isEmpty() || !definition->contents.isEmpty() || !definition->labels.isEmpty()
-                        || !definition->updates.isEmpty() || !definition->growing.isEmpty() || !definition->minecarts.isEmpty();
+                        || !definition->updates.isEmpty() || !definition->growing.isEmpty() || !definition->minecarts.isEmpty()
+                        || !definition->spawners.isEmpty() || !definition->loot.isEmpty();
     if (extras && warnings) {
         warnings->append(u"village style '%1': structure '%2' has contents, armour stands, labels, minecarts, updates or growing "
                          u"saplings, which villages leave out"_s.arg(style.name, name));

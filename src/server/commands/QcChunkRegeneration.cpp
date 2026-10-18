@@ -5,6 +5,7 @@
 #include "server/blocks/QcFallingBlockManager.h"
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/core/QcServerState.h"
+#include "server/spawners/QcFurnishing.h"
 
 #include <QSet>
 
@@ -27,6 +28,8 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
         if (!m_state.world().regenerateChunk(chunk)) {
             continue;
         }
+        // The generated chests and spawners get their loot and kinds again (decision E-520).
+        QcFurnishing::furnish(m_state, chunk);
 
         dropPendingChanges(chunk);
         resend(chunk);

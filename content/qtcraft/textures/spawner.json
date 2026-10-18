@@ -1,0 +1,8 @@
+{
+    "name": "spawner",
+    "pattern": "bars",
+    "primary": "#2c3038",
+    "secondary": "#1b1e24",
+    "variation": 0.1,
+    "seed": 3801
+}

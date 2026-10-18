@@ -28,4 +28,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::LoginResponse, QcMsg::PlayerList, QcMsg::GameMode, QcMsg::CreativeItem,
                                QcMsg::PickBlock, QcMsg::Weather, QcMsg::Lightning,
                                QcMsg::PlayerExperience, QcMsg::TradeState, QcMsg::Trade, QcMsg::CloseTrade,
-                               QcMsg::DrawLauncher, QcMsg::ThrowItem>;
+                               QcMsg::DrawLauncher, QcMsg::ThrowItem, QcMsg::SpawnerDisplay>;

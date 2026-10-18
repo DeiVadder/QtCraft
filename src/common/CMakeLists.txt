@@ -12,6 +12,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcBlockDefinition.h
     content/definitions/QcBlockProperty.h
     content/definitions/QcCommandMacroDefinition.h
+    content/definitions/QcDungeonDefinition.h
     content/definitions/QcEffectDefinition.h
     content/definitions/QcExperienceDrop.h
     content/definitions/QcFarmingDefinitions.h
@@ -20,6 +21,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcItemDefinition.h
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
+    content/definitions/QcLootTableDefinition.h
     content/definitions/QcMachineDefinition.h
     content/definitions/QcMaterialDefinition.h
     content/definitions/QcMobDefinition.h
@@ -37,6 +39,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcSmeltingRecipe.h
     content/definitions/QcSoundDefinition.h content/definitions/QcSoundDefinition.cpp
     content/definitions/QcSoundKeys.h content/definitions/QcSoundKeys.cpp
+    content/definitions/QcSpawnerDefinition.h
     content/definitions/QcStructureDefinition.h
     content/definitions/QcTextureDefinition.h
     content/definitions/QcTradeDefinitions.h
@@ -59,6 +62,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
+    content/parser/QcLootTableParser.h content/parser/QcLootTableParser.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
     content/parser/QcMobTraitsParser.h content/parser/QcMobTraitsParser.cpp
@@ -86,9 +90,11 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/registry/QcLootTables.h content/registry/QcLootTables.cpp
     content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
+    content/registry/QcSpawnerContent.h content/registry/QcSpawnerContent.cpp
     content/registry/QcVillageContent.h content/registry/QcVillageContent.cpp
     content/registry/QcVillagerOutfits.h content/registry/QcVillagerOutfits.cpp
 )

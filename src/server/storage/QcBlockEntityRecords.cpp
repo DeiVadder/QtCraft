@@ -201,6 +201,7 @@ void pruneKept(QcBlockEntityRecord &record)
     note(Table::Memories, record.memories);
     note(Table::Scheduled, record.scheduled);
     note(Table::Fires, record.fires);
+    note(Table::Spawners, record.spawners);
 
     for (auto it = entries.begin(); it != entries.end();) {
         const QcBlockPos pos = it.key();

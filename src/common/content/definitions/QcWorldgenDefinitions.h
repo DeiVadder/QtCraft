@@ -4,6 +4,8 @@
 // Plain data structs grouped in one header because they are only meaningful together; block and
 // feature references are content names resolved by the generator.
 
+#include "common/content/definitions/QcDungeonDefinition.h"
+
 #include <QList>
 #include <QString>
 
@@ -131,4 +133,6 @@ struct QcTerrainSettings
     double caveEntrances = 0.04;
     // Bedrock: the bottom layer is solid, the layers above it get thinner up to this many layers.
     int bedrockLayers = 3;
+    // Dungeons with spawners and corridors to caves (decision E-522).
+    QcDungeonSettings dungeons;
 };

@@ -4,6 +4,7 @@
 #include "server/blocks/QcServerBlocks.h"
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/core/QcServerState.h"
+#include "server/spawners/QcFurnishing.h"
 #include "server/storage/QcBlockEntityRecords.h"
 #include "server/storage/QcEntityRecords.h"
 
@@ -204,6 +205,13 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         // Burning fires go on with their steps (decision E-392); fire blocks left without one are
         // adopted as new sparks in the next fire step.
         m_state.world().fires().restore(arrival.blockEntities.fires, upcomingTick(), *chunk);
+        // Spawners go on with their kinds and delays; a chunk not furnished yet gets the generator's
+        // chest loot and spawner kinds (decision E-520).
+        m_state.world().spawners().restore(arrival.blockEntities.spawners, *chunk);
+        if (arrival.blockEntities.furnished) {
+            m_state.world().noteFurnished(pos);
+        }
+        QcFurnishing::furnish(m_state, pos);
     }
 
     const bool commandMode = m_updates.commandMode();
@@ -573,6 +581,8 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         departure.blockEntities.blockUpdates = updates.value(pos);
         departure.blockEntities.blockUpdates.append(flows.value(pos));
         departure.blockEntities.fires = world.fires().takeChunk(pos, now);
+        departure.blockEntities.spawners = world.spawners().takeChunk(pos);
+        departure.blockEntities.furnished = world.isFurnished(pos);
         QcBlockEntityRecords::pruneKept(departure.blockEntities);
         departure.entities = entities.value(pos);
         departure.entities.chunk = pos;
@@ -638,6 +648,8 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blockEntities = blockEntities.take(pos);
         departure.blockEntities.chunk = pos;
         departure.blockEntities.fires = world.fires().savedOf(pos, upcomingTick());
+        departure.blockEntities.spawners = world.spawners().savedOf(pos);
+        departure.blockEntities.furnished = world.isFurnished(pos);
         // Kept parts go back with the record; tails of entries gone since are dropped for good.
         departure.blockEntities.kept = world.blockEntityParts().value(pos);
         QcBlockEntityRecords::pruneKept(departure.blockEntities);

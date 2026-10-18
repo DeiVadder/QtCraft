@@ -97,6 +97,7 @@ target_sources(qc_clientcore PRIVATE
     preview/QcPreviewScene.h preview/QcPreviewScene.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    session/QcChunkExtras.h
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h

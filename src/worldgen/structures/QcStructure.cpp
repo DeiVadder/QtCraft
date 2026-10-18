@@ -50,6 +50,8 @@ QcResult<QcStructure> QcStructure::fromDefinition(const QcStructureDefinition &d
     structure.updates = definition.updates;
     structure.growing = definition.growing;
     structure.minecarts = definition.minecarts;
+    structure.spawners = definition.spawners;
+    structure.loot = definition.loot;
     return structure;
 }
 

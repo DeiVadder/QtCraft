@@ -10,6 +10,7 @@
 #include "clientcore/player/QcHandTimers.h"
 #include "clientcore/player/QcLocalAnimation.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientLogin.h"
@@ -168,9 +169,10 @@ public:
     double timeSpeed() const { return m_worldTime.speed; }
     // The weather as shown: strengths, climate, lightning flashes (decision E-395).
     const QcClientWeather &weather() const { return m_weather; }
-    // Labels in the loaded chunks (E-222) and a number that changes whenever a chunk's labels arrived.
-    const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
-    quint64 labelGeneration() const { return m_labelGeneration; }
+    // Labels (E-222), spinning spawner creatures (E-520) and a number that changes with the labels.
+    const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_extras.labels(); }
+    quint64 labelGeneration() const { return m_extras.labelGeneration(); }
+    const QHash<QcBlockPos, int> &spawnerDisplays() const { return m_extras.spawners(); }
 
     // The server's debug data: what is asked for and what arrived (QcClientDebugSubscription).
     QcClientDebugSubscription &debug() { return m_debug; }
@@ -280,8 +282,7 @@ private:
     QcClientVitals m_vitals;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
-    QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
-    quint64 m_labelGeneration = 0;
+    QcChunkExtras m_extras;
     QcClientDebugSubscription m_debug;
     QcClientSounds m_sounds;
     QcClientWeather m_weather;

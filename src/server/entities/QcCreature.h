@@ -80,6 +80,10 @@ struct QcCreature : QcEntity
     QcPose pose = QcPose::Standing;
     // Came by /summon (counted against QcServerLimits::summonLimit); not saved.
     bool summoned = false;
+    // The monster spawner it came from (decision E-520): counted against that spawner's
+    // `maxNearby` and QcServerLimits::spawnerCreatures, not against the natural caps. Not saved
+    // (spawned creatures are not persistent).
+    std::optional<QcBlockPos> spawner;
     // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411): a component
     // only creatures of a villager kind have (decision E-423).
     QcComponent<QcVillager> villager;

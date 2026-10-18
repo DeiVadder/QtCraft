@@ -2211,6 +2211,23 @@ Release-Builds, `dev` `fc79639` (52.8) gegen `feature/52-4-cows-fish` nach Nachb
 
 Release-Builds, `dev` `6746290` gegen `feature/40-1-gamepad-backend`, `@core`, 8 Chunks, verschränkt, Mediane, ohne angeschlossenen Controller: GPU −3 bis +1 %, Bild Ø 8,33 ms, p99 9,4–9,9 ms (Ziel erfüllt), Speicher ±0 %; GUI- und Render-CPU streuen zwischen −19 und +11 % mit überlappenden Spannen. Das Abfragen ohne Controller alle 250 ms (E-540) kostet nichts Messbares.
 
+## 38.1 (Spawner, Verliese, Gänge) headless, Debug-relativ (2026-10-18)
+
+Debug-Build, gleiche Maschine, im selben Prozess verschränkt, parallel laufende andere Sitzungen (nur relativ lesen).
+
+- **Weltgenerierung** (`test_dungeons::measureGenerationCost`, Seed 381, je 2 × 144 Chunks ohne und mit Verliesen, neue Bereiche je Runde): 59,6 → 53,3 Chunks/s und in einem zweiten Lauf 82,9 → 75,8 Chunks/s, also −9 bis −11 % (Planen der Räume und Gänge über das Höhlen-Rauschen, einmal je 48 × 48-Bereich, und das Schreiben der Zellen). 77 Verliese in 121 Bereichen, 135 Gänge.
+- **Spawner im Tick** (`test_spawners::measureTickCost`, 120 Spawner in Reichweite, `spawnerCreatures` 0, 400 Ticks): 0,063–0,065 → 0,127–0,142 ms je Tick, rund 0,6 µs je Spawner und Tick.
+- **Ausstattung im Tick-Thread** (`test_spawners::measureFurnishingCost`, nach dem Review): ankommende Chunks fragen den Generator nur noch mit Spawner oder Behälter und nur die überlappten Bereiche; 120 Chunks 0,14 → 0,03 ms (21 gefragt), 400 Chunks 0,53 → 0,09 ms.
+- **Bewertung:** Generierung im Hintergrund-Thread um etwa ein Zehntel teurer; Spawner im Tick vernachlässigbar. Release-Messung (`bench-headless.sh`, Weltgenerierung) steht aus.
+
+## 38.1 (Spawner, Verliese, Gänge) Release, gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `d410917` (40.1) gegen `feature/38-1-spawners` `61f1692`, verschränkt, Mittelwerte.
+
+**Headless** (`@server` mit horde, 3 Runden, 60 Spielsekunden): crowd, horde, gravel-collapse, Felder und Signal-Stationen −1 bis +3 %; explore +7 % (0,191 → 0,205 ms, Streuung 2 %): die Verliese und Gänge der neu erzeugten Chunks, unter der 10-%-Schwelle; farm +10 % bei 0,007 ms (eine Zehntel-Mikrosekunde, Rundung). Speicher −2 bis +2 %.
+
+**Fenster** (`@core`, 8 Chunks, 3–6 Runden adaptiv): GPU −5 bis +3 %, Render-CPU −13 bis +3 %, GUI-CPU −8 bis +4 %, Speicher −0 bis +1 %; p99 bei beiden Ständen 11–16 ms mit 16–58 % Streuung (Desktop während paralleler Builds), Tick im Fenster streut wie immer. Keine Regression.
+
 ## 46.1 (Client-Struktur: Sitzungsteile, Bilder-Treiber, Entitäts-Bild) gerendert (2026-10-18)
 
 Release-Builds, `dev` gegen `feature/46-1-client-structure`, verschränkt, Mittelwerte.

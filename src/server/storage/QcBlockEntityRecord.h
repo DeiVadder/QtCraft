@@ -4,6 +4,7 @@
 #include "server/blocks/QcFireQueue.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/signal/QcSignalSchedule.h"
+#include "server/spawners/QcSpawners.h"
 
 #include <QHash>
 #include <QList>
@@ -54,6 +55,10 @@ struct QcBlockEntityRecord
         SignalWakes = 7,
         BlockUpdates = 8,
         Fires = 9,
+        // Monster spawners (decision E-520): kind, delay and confined per spawner.
+        Spawners = 10,
+        // A marker without entries: the chunk's generated block entities were put in (decision E-520).
+        Furnished = 11,
     };
 
     // What a circuit component remembers; torches' recent switching is not saved.
@@ -92,6 +97,11 @@ struct QcBlockEntityRecord
     QList<QcBlockPos> blockUpdates;
     // Burning fires with the ticks left to their next step (decision E-392), in the order of their steps.
     QList<QcFireQueue::Saved> fires;
+    // Monster spawners (decision E-520) with the ticks left to their next cycle.
+    QList<QcSpawners::Entry> spawners;
+    // The generator's chest loot and spawner kinds were put into the chunk (QcFurnishing); a chunk
+    // without the mark gets them when it arrives.
+    bool furnished = false;
     // What this version does not read, written back unchanged.
     QcBlockEntityKept kept;
 
@@ -99,6 +109,6 @@ struct QcBlockEntityRecord
     {
         return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty() && scheduled.isEmpty()
                && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty()
-               && fires.isEmpty() && kept.isEmpty();
+               && fires.isEmpty() && spawners.isEmpty() && !furnished && kept.isEmpty();
     }
 };

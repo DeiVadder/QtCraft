@@ -1,0 +1,30 @@
+{
+    "name": "spawner",
+    "sound": "stone",
+    "render": "cutout",
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [],
+    "experience": [
+        15,
+        43
+    ],
+    "spawner": {
+        "range": 16,
+        "maxNearby": 6,
+        "nearbyRange": 4,
+        "count": 4,
+        "minDelay": 10,
+        "maxDelay": 40,
+        "areaX": 9,
+        "areaY": 3,
+        "areaZ": 9,
+        "maxLight": 11
+    },
+    "textures": {
+        "all": "spawner"
+    }
+}

@@ -85,6 +85,23 @@ void encode(QDataStream &stream, const QcMsg::ChunkLabels &m)
     return m;
 }
 
+void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
+{
+    writePos(stream, m.pos);
+    stream << m.mob;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SpawnerDisplay>, QDataStream &stream)
+{
+    QcMsg::SpawnerDisplay m;
+    m.pos = readPos(stream);
+    stream >> m.mob;
+    if (m.mob < -1) {
+        return qcError(u"Invalid spawner display"_s);
+    }
+    return m;
+}
+
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::StartMining>, QDataStream &stream)
 {
     return QcMsg::StartMining{readPos(stream)};

@@ -39,6 +39,8 @@ constexpr double maxSeconds = 100000.0;
 constexpr quint32 maxTicks = 1u << 20;
 // Planting orders count up from 0; one near the top could make the next order wrap.
 constexpr quint64 maxOrder = quint64(1) << 62;
+// Characters of a content name at most (a spawner's kind).
+constexpr qsizetype maxNameLength = 256;
 
 void writePos(QDataStream &stream, QcBlockPos pos)
 {
@@ -100,10 +102,16 @@ public:
         const auto signalWakes = [this](QDataStream &, quint16) { return positions(m_record.signalWakes); };
         const auto updates = [this](QDataStream &, quint16) { return positions(m_record.blockUpdates); };
         const auto fires = entriesOf(Table::Fires, &RecordReader::fire);
+        const auto spawners = entriesOf(Table::Spawners, &RecordReader::spawner);
+        const auto furnished = [this](QDataStream &, quint16) {
+            m_record.furnished = true;
+            return true;
+        };
         return QcComponentFrames::read(m_stream,
                                        {known(Table::Containers, containers), known(Table::Machines, machines), known(Table::Saplings, saplings),
                                         known(Table::Memories, memories), known(Table::Scheduled, scheduled), known(Table::Wakes, wakes),
-                                        known(Table::SignalWakes, signalWakes), known(Table::BlockUpdates, updates), known(Table::Fires, fires)},
+                                        known(Table::SignalWakes, signalWakes), known(Table::BlockUpdates, updates), known(Table::Fires, fires),
+                                        known(Table::Spawners, spawners), known(Table::Furnished, furnished)},
                                        m_record.kept.tables, dropped, maxTableLength);
     }
 
@@ -288,6 +296,20 @@ private:
         return placed && m_stream.status() == QDataStream::Ok && fresh(m_fires, entry.pos);
     }
 
+    // A monster spawner (decision E-520): its kind by name (any name: an unknown kind waits for its
+    // mod), the ticks to its next cycle and whether its creatures stay put.
+    bool spawner()
+    {
+        QcSpawners::Entry entry;
+        quint8 confined = 0;
+        const bool placed = at(entry.pos);
+        m_stream >> entry.mob >> entry.delay >> confined;
+        entry.delay = std::min(entry.delay, QcSpawners::maxDelay);
+        entry.confined = confined != 0;
+        m_record.spawners.append(entry);
+        return placed && m_stream.status() == QDataStream::Ok && entry.mob.size() <= maxNameLength && fresh(m_spawners, entry.pos);
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -299,6 +321,7 @@ private:
     QSet<QcBlockPos> m_memories;
     QSet<QcBlockPos> m_scheduled;
     QSet<QcBlockPos> m_fires;
+    QSet<QcBlockPos> m_spawners;
     quint32 m_tails = 0;
     int m_droppedTails = 0;
 };
@@ -396,6 +419,13 @@ public:
             writePos(m_stream, fire.origin);
             m_stream << fire.age << fire.ticksLeft;
         });
+        entries(Table::Spawners, m_record.spawners, [this](const QcSpawners::Entry &spawner) {
+            writePos(m_stream, spawner.pos);
+            m_stream << spawner.mob << spawner.delay << quint8(spawner.confined);
+        });
+        if (m_record.furnished || hasTail(Table::Furnished)) {
+            m_tables.add(quint16(Table::Furnished), tableVersion, [](QDataStream &) {});
+        }
         m_tables.finish();
     }
 

@@ -3,6 +3,7 @@
 #include "server/mobs/QcCreatureTraits.h"
 #include "server/mobs/QcInfestation.h"
 #include "server/mobs/QcMobManager.h"
+#include "server/spawners/QcSpawnerRules.h"
 #include "server/villages/QcServerVillagers.h"
 
 class QcPlayerHealth;
@@ -14,8 +15,8 @@ class QcServerState;
 // what they need to know about the players, the blows they deal to players, their ambient sounds and
 // the damage of crammed cells (game rule maxEntityCramming, decision E-401), what villagers do to
 // the world (QcServerVillagers, decision E-411), what creatures with traits do (QcCreatureTraits,
-// decision E-460: blocks taken and placed, teleports) and creatures hiding in blocks (QcInfestation,
-// decision E-453).
+// decision E-460: blocks taken and placed, teleports), creatures hiding in blocks (QcInfestation,
+// decision E-453) and monster spawners (QcSpawnerRules, decision E-520).
 class QcServerCreatures
 {
 public:
@@ -55,4 +56,5 @@ private:
     QcServerVillagers m_villagers;
     QcCreatureTraits m_traits;
     QcInfestation m_infestation;
+    QcSpawnerRules m_spawners;
 };

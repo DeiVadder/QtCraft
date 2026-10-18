@@ -1,0 +1,94 @@
+{
+    "name": "dungeon_station",
+    "showcase": {
+        "order": 92
+    },
+    "palette": {
+        "C": "cobblestone",
+        "M": "mossy_cobblestone",
+        "G": "glass",
+        "B": "iron_bars",
+        "S": "spawner",
+        "K": "chest[facing=south]",
+        "T": "torch[attach=north]",
+        ".": "air"
+    },
+    "layers": [
+        [
+            "MCCCMCCCM                 ",
+            "CCCMCCCMC                 ",
+            "CCMCCCMCC                 ",
+            "CMCCCMCCCMCCMCCMCCMCCMCCMC",
+            "MCCCMCCCMCCMCCMCCMCCMCCMCC",
+            "CCCMCCCMCCMCCMCCMCCMCCMCCC",
+            "CCMCCCMCC                 ",
+            "CMCCCMCCC                 ",
+            "MCCCMCCCM                 "
+        ],
+        [
+            "CMCCMCCMC                 ",
+            "CK......C                 ",
+            "C.......C                 ",
+            "C.......CCCMCCCMCCCMCCCMCC",
+            "C...S...B................C",
+            "C.......CGGGGGGGGGGGGGGGGC",
+            "C.......C                 ",
+            "C.......C                 ",
+            "CGGGGGGGC                 "
+        ],
+        [
+            "CCMCCMCCM                 ",
+            "C.......M                 ",
+            "C.......M                 ",
+            "C.......MCMCCCMCCCMCCCMCCC",
+            "C.......B...............TC",
+            "C.......MGGGGGGGGGGGGGGGGC",
+            "C.......M                 ",
+            "C.......M                 ",
+            "CGGGGGGGM                 "
+        ],
+        [
+            "MCCMCCMCC                 ",
+            "M.......C                 ",
+            "M.......C                 ",
+            "M.......CMCCMCCMCCMCCMCCMC",
+            "M.......CCCMCCMCCMCCMCCMCC",
+            "M.......CCMCCMCCMCCMCCMCCC",
+            "M.......C                 ",
+            "M.......C                 ",
+            "MGGGGGGGC                 "
+        ],
+        [
+            "MCCCMCCCM                 ",
+            "CCCMCCCMC                 ",
+            "CCMCCCMCC                 ",
+            "CMCCCMCCC                 ",
+            "MCCCMCCCM                 ",
+            "CCCMCCCMC                 ",
+            "CCMCCCMCC                 ",
+            "CMCCCMCCC                 ",
+            "MCCCMCCCM                 "
+        ]
+    ],
+    "spawners": [
+        {
+            "at": [
+                4,
+                1,
+                4
+            ],
+            "mob": "zombie",
+            "confined": true
+        }
+    ],
+    "loot": [
+        {
+            "at": [
+                1,
+                1,
+                1
+            ],
+            "table": "dungeon_chest"
+        }
+    ]
+}

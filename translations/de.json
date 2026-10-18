@@ -317,8 +317,9 @@
     "Finds the nearest place of a biome.": "Findet die nächste Stelle eines Bioms.",
     "No player named %1 is online": "Kein Spieler namens %1 ist online",
     "Usage: /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> [replace <block>] (at most %1 blocks; ~ for coordinates relative to you) in loaded chunks": "Verwendung: /fill <x1> <y1> <z1> <x2> <y2> <z2> <Block> [replace <Block>] (höchstens %1 Blöcke; ~ für Koordinaten relativ zu dir) in geladenen Chunks",
-    "Usage: /setblock <x> <y> <z> <block>[states]": "Verwendung: /setblock <x> <y> <z> <Block>[Zustände]",
-    "Sets one block; ~ means your position, air breaks the block.": "Setzt einen Block; ~ steht für deine Position, air zerstört den Block.",
+    "Usage: /setblock <x> <y> <z> <block>[states] [creature]": "Verwendung: /setblock <x> <y> <z> <Block>[Zustände] [Wesen]",
+    "Sets one block; ~ means your position, air breaks the block. A spawner takes the creature it brings forth.": "Setzt einen Block; ~ steht für deine Position, air zerstört den Block. Ein Spawner nimmt das Wesen, das er hervorbringt.",
+    "A spawner cannot bring forth %1": "Ein Spawner kann %1 nicht hervorbringen",
     "Usage: /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> [replace <block>]": "Verwendung: /fill <x1> <y1> <z1> <x2> <y2> <z2> <Block> [replace <Block>]",
     "Fills a box with a block, or replaces only one kind of block in it.": "Füllt einen Quader mit einem Block oder ersetzt darin nur eine Blockart.",
     "Usage: /clear <x1> <y1> <z1> <x2> <y2> <z2> [block]": "Verwendung: /clear <x1> <y1> <z1> <x2> <y2> <z2> [Block]",
@@ -647,5 +648,7 @@
     "Gave %1 level %2 for %3 s to %4": "%4 hat %1 der Stufe %2 für %3 s bekommen",
     "%1 already has a stronger or longer %2": "%1 hat schon ein stärkeres oder längeres %2",
     "Took the effects away from %1": "%1 hat die Effekte nicht mehr",
-    "%1 has no such effect": "%1 hat keinen solchen Effekt"
+    "%1 has no such effect": "%1 hat keinen solchen Effekt",
+    "Only a spawner takes a creature": "Nur ein Spawner nimmt ein Wesen",
+    "Unknown creature: %1": "Unbekanntes Wesen: %1"
 }

@@ -1,0 +1,8 @@
+{
+    "name": "mossy_cobblestone",
+    "pattern": "bricks",
+    "primary": "#6f7a62",
+    "secondary": "#4a6b3a",
+    "variation": 0.22,
+    "seed": 3802
+}

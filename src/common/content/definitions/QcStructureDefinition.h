@@ -75,6 +75,22 @@ struct QcStructureDefinition
         QString item;
     };
 
+    // A monster spawner of the structure (decision E-520): the creature it brings forth and whether
+    // its creatures stay put; given to the server with the chunk (QcChunkFurnishing).
+    struct Spawner
+    {
+        QcBlockPos at;
+        QString mob;
+        bool confined = false;
+    };
+
+    // A chest filled from a loot table when its chunk first arrives (decision E-521).
+    struct Loot
+    {
+        QcBlockPos at;
+        QString table;
+    };
+
     struct Label
     {
         QcVec3 at;
@@ -122,6 +138,8 @@ struct QcStructureDefinition
     QList<QcBlockPos> growing;
     // Minecarts standing on rails when the world is made (decision E-382).
     QList<Cart> minecarts;
+    QList<Spawner> spawners;
+    QList<Loot> loot;
     // Variation where villages place the structure; elsewhere it is placed as it is.
     QList<Choice> choices;
     QList<Part> parts;

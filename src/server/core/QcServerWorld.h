@@ -13,6 +13,7 @@
 #include "server/chunks/QcChunkLinks.h"
 #include "server/chunks/QcChunkLoaders.h"
 #include "server/chunks/QcSectionMarks.h"
+#include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/villages/QcVillages.h"
 #include "worldgen/generators/QcWorldGenerator.h"
@@ -70,6 +71,13 @@ public:
     // every block set here and every chunk that arrives, leaves or is generated again.
     QcFireQueue &fires() { return m_fires; }
     const QcFireQueue &fires() const { return m_fires; }
+    // The monster spawners of the loaded chunks (decision E-520), kept in step like the fires.
+    QcSpawners &spawners() { return m_spawners; }
+    const QcSpawners &spawners() const { return m_spawners; }
+    // Loaded chunks whose generated block entities (the chests' loot, the spawners' kinds; decision
+    // E-520) were put in once (QcFurnishing); saved with the chunk, forgotten with it.
+    bool isFurnished(QcChunkPos pos) const { return m_furnished.contains(pos); }
+    void noteFurnished(QcChunkPos pos) { m_furnished.insert(pos); }
     // What the saved block entities of the loaded chunks hold that this version does not read
     // (decision E-440): unknown tables and tails of newer versions, by chunk, written back when the
     // chunk is saved or leaves the world (QcChunkLoading) and forgotten with its block entities. The
@@ -192,6 +200,8 @@ private:
     std::unique_ptr<QcVillages> m_villages;
     QcBlockEntities m_blockEntities;
     QcFireQueue m_fires;
+    QcSpawners m_spawners;
+    QSet<QcChunkPos> m_furnished;
     QHash<QcChunkPos, QcBlockEntityKept> m_blockEntityParts;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).

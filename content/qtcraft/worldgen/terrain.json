@@ -10,5 +10,43 @@
     "caveLiquidLevel": 10,
     "caveRoof": 4,
     "caveEntrances": 0.08,
-    "bedrockLayers": 5
+    "bedrockLayers": 5,
+    "dungeons": {
+        "regionSize": 48,
+        "chance": 0.6,
+        "minY": 14,
+        "maxY": 48,
+        "attempts": 6,
+        "maxCaveShare": 0.25,
+        "minSize": 7,
+        "maxSize": 9,
+        "wall": "cobblestone",
+        "moss": "mossy_cobblestone",
+        "mossChance": 0.3,
+        "spawner": "spawner",
+        "mobs": [
+            {
+                "mob": "zombie",
+                "weight": 2
+            },
+            {
+                "mob": "skeleton",
+                "weight": 1
+            },
+            {
+                "mob": "spider",
+                "weight": 1
+            }
+        ],
+        "chest": "chest",
+        "lootTable": "dungeon_chest",
+        "minChests": 1,
+        "maxChests": 2,
+        "corridors": 3,
+        "maxLength": 28,
+        "reach": 24,
+        "light": "torch",
+        "lightSpacing": 8,
+        "lightDistance": 8
+    }
 }

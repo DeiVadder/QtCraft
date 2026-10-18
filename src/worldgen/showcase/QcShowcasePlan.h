@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/world/QcWorldLabel.h"
+#include "worldgen/generators/QcChunkFurnishing.h"
 #include "worldgen/generators/QcWorldSetup.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
@@ -46,6 +47,8 @@ struct QcShowcasePlan
     QHash<QcChunkPos, QList<QcWorldLabel>> labelsByChunk;
     QList<QcShowcaseAreaInfo> areas;
     QcWorldSetup setup;
+    // The structures' spawners and loot chests by chunk (decision E-520).
+    QHash<QcChunkPos, QcChunkFurnishing> furnishingByChunk;
     QcBlockPos spawn;
     QList<QcShowcaseTourStop> tour;
     // The rows of the village area, each a village of its own (decision E-411).

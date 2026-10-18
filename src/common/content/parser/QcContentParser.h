@@ -5,6 +5,7 @@
 #include "common/content/parser/QcCommandMacroParser.h"
 #include "common/content/parser/QcEffectParser.h"
 #include "common/content/parser/QcItemParser.h"
+#include "common/content/parser/QcLootTableParser.h"
 #include "common/content/parser/QcMaterialParser.h"
 #include "common/content/parser/QcMobParser.h"
 #include "common/content/parser/QcProjectileParser.h"
@@ -32,6 +33,7 @@ namespace QcContentParser {
 using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
 using QcEffectParser::parseEffect;
+using QcLootTableParser::parseLootTable;
 using QcShapeParser::parseShape;
 using QcMaterialParser::parsePartFamily;
 using QcMaterialParser::parseMaterial;

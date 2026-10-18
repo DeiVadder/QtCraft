@@ -39,6 +39,9 @@ struct QcServerLimits
     // Creatures summoned by /summon awake at once at most (E-351); natural ones do not count, 0
     // switches summoning creatures off (armour stands are no creatures and stay possible).
     qint64 summonLimit = 64;
+    // Awake creatures from monster spawners in the world at most (decision E-520); spawners wait
+    // while there are as many. They do not count against the natural caps per player.
+    qint64 spawnerCreatures = 256;
     // Block entities in the world at most (decision E-357): containers (chests, barrels, hoppers,
     // dispensers), machines (furnaces) and growing saplings. Placing a chest or machine beyond is
     // refused, a sapling beyond does not grow.

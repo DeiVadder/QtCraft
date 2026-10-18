@@ -2241,96 +2241,119 @@
         <translation>%1 × %2 fallen gelassen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="18"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="19"/>
         <source>Usage: /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;block&gt; [replace &lt;block&gt;] (at most %1 blocks; ~ for coordinates relative to you) in loaded chunks</source>
         <translation>Verwendung: /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; [replace &lt;Block&gt;] (höchstens %1 Blöcke; ~ für Koordinaten relativ zu dir) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="46"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="118"/>
-        <source>Usage: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states]</source>
-        <translation>Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände]</translation>
-    </message>
-    <message>
         <location filename="../src/server/commands/QcBlockCommands.cpp" line="47"/>
-        <source>Sets one block; ~ means your position, air breaks the block.</source>
-        <translation>Setzt einen Block; ~ steht für deine Position, air zerstört den Block.</translation>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="144"/>
+        <source>Usage: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states] [creature]</source>
+        <translation>Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände] [Wesen]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="50"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="48"/>
+        <source>Sets one block; ~ means your position, air breaks the block. A spawner takes the creature it brings forth.</source>
+        <translation>Setzt einen Block; ~ steht für deine Position, air zerstört den Block. Ein Spawner nimmt das Wesen, das er hervorbringt.</translation>
+    </message>
+    <message>
+        <source>Usage: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states]</source>
+        <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände]</translation>
+    </message>
+    <message>
+        <source>Sets one block; ~ means your position, air breaks the block.</source>
+        <translation type="vanished">Setzt einen Block; ~ steht für deine Position, air zerstört den Block.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="52"/>
         <source>Usage: /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;block&gt; [replace &lt;block&gt;]</source>
         <translation>Verwendung: /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; [replace &lt;Block&gt;]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="51"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="53"/>
         <source>Fills a box with a block, or replaces only one kind of block in it.</source>
         <translation>Füllt einen Quader mit einem Block oder ersetzt darin nur eine Blockart.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="54"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="140"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="56"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="166"/>
         <source>Usage: /clear &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; [block]</source>
         <translation>Verwendung: /clear &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; [Block]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="55"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="57"/>
         <source>Turns a box (or only one kind of block in it) into air.</source>
         <translation>Macht einen Quader (oder nur eine Blockart darin) zu Luft.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="58"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="215"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="60"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="241"/>
         <source>Usage: /regenerate [&lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;]]</source>
         <translation>Verwendung: /regenerate [&lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;]]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="59"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="61"/>
         <source>Generates chunks again as the world type makes them; their changes are lost.</source>
         <translation>Erzeugt Chunks neu, wie der Welttyp sie macht; ihre Änderungen gehen verloren.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="83"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="77"/>
+        <source>Only a spawner takes a creature</source>
+        <translation>Nur ein Spawner nimmt ein Wesen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="82"/>
+        <source>Unknown creature: %1</source>
+        <translation>Unbekanntes Wesen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="86"/>
+        <source>A spawner cannot bring forth %1</source>
+        <translation>Ein Spawner kann %1 nicht hervorbringen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="109"/>
         <source>This changes up to %1 blocks.</source>
         <translation>Das ändert bis zu %1 Blöcke.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="98"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="124"/>
         <source>Unknown block: %1</source>
         <translation>Unbekannter Block: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="174"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="200"/>
         <source>Nothing set: the chunks are not loaded or there are too many machines</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen oder es gibt zu viele Maschinen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="175"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="201"/>
         <source>Nothing set: the chunks are not loaded</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="180"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="206"/>
         <source>Filled %1 blocks with %2</source>
         <translation>%1 Blöcke mit %2 gefüllt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="222"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="248"/>
         <location filename="../src/server/commands/QcChunkCommands.cpp" line="56"/>
         <source>At most %1 chunks at once</source>
         <translation>Höchstens %1 Chunks auf einmal</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="233"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="259"/>
         <source>Regenerating %1 chunks from %2 %3 to %4 %5 discards every change in them.</source>
         <translation>Das Neuerzeugen von %1 Chunks von %2 %3 bis %4 %5 verwirft jede Änderung darin.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="238"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="264"/>
         <source>Regenerated %1 chunks (%2 were not loaded and unchanged)</source>
         <translation>%1 Chunks neu erzeugt (%2 waren nicht geladen und unverändert)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="177"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="203"/>
         <source>Set %1 at %2 %3 %4</source>
         <translation>%1 bei %2 %3 %4 gesetzt</translation>
     </message>

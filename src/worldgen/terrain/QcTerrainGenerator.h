@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 
+class QcDungeonGenerator;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
 
@@ -40,6 +41,9 @@ public:
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
     const QcVillageGenerator &villages() const { return *m_villages; }
+    // Dungeons (decision E-522): their loot and spawner kinds, and the plans for tools and tests.
+    QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
+    const QcDungeonGenerator &dungeons() const { return *m_dungeons; }
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -49,6 +53,8 @@ public:
     int groundTop(int x, int z, const Column &column) const;
     // True where a cave carves the terrain (independent of the surface).
     bool isCave(int x, int y, int z) const;
+    // The same with the terrain column at x, z known already.
+    bool isCave(int x, int y, int z, const Column &column) const;
     int seaLevel() const { return m_definitions.seaLevel; }
     // The block the sea and lakes are filled with.
     QcBlockId waterBlock() const { return m_definitions.water; }
@@ -94,6 +100,7 @@ private:
     QcPoolPlacer m_pools;
     // Created in the constructor's body: it reads the terrain columns.
     std::unique_ptr<QcVillageGenerator> m_villages;
+    std::unique_ptr<QcDungeonGenerator> m_dungeons;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

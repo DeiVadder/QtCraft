@@ -204,6 +204,55 @@ namespace QcWorldgenParser {
     return ore;
 }
 
+namespace {
+
+// The dungeons of the terrain (decision E-522); the blocks are checked by the generator.
+void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    using Settings = QcDungeonSettings;
+    dungeons.enabled = reader.boolean(u"enabled"_s, true);
+    dungeons.regionSize = reader.integer(u"regionSize"_s, dungeons.regionSize, 24, Settings::maxRegionSize);
+    dungeons.chance = reader.number(u"chance"_s, dungeons.chance, 0.0, 1.0);
+    dungeons.minY = reader.integer(u"minY"_s, dungeons.minY, 1, QcWorld::worldHeight - 24);
+    dungeons.maxY = reader.integer(u"maxY"_s, dungeons.maxY, dungeons.minY, QcWorld::worldHeight - 24);
+    dungeons.attempts = reader.integer(u"attempts"_s, dungeons.attempts, 1, 64);
+    dungeons.maxCaveShare = reader.number(u"maxCaveShare"_s, dungeons.maxCaveShare, 0.0, 1.0);
+    dungeons.minSize = reader.integer(u"minSize"_s, dungeons.minSize, 5, Settings::maxRoomSize);
+    dungeons.maxSize = reader.integer(u"maxSize"_s, dungeons.maxSize, dungeons.minSize, Settings::maxRoomSize);
+    dungeons.wall = reader.name(u"wall"_s, packNamespace);
+    dungeons.moss = reader.name(u"moss"_s, packNamespace, dungeons.wall);
+    dungeons.mossChance = reader.number(u"mossChance"_s, dungeons.mossChance, 0.0, 0.5);
+    dungeons.spawner = reader.name(u"spawner"_s, packNamespace);
+    dungeons.chest = reader.name(u"chest"_s, packNamespace);
+    dungeons.lootTable = reader.name(u"lootTable"_s, packNamespace);
+    dungeons.minChests = reader.integer(u"minChests"_s, dungeons.minChests, 0, 8);
+    dungeons.maxChests = reader.integer(u"maxChests"_s, dungeons.maxChests, dungeons.minChests, 8);
+    dungeons.corridors = reader.integer(u"corridors"_s, dungeons.corridors, 0, 4);
+    dungeons.maxLength = reader.integer(u"maxLength"_s, dungeons.maxLength, 1, Settings::maxCorridorLength);
+    dungeons.reach = reader.integer(u"reach"_s, dungeons.reach, 1, Settings::maxCorridorLength);
+    dungeons.light = reader.name(u"light"_s, packNamespace);
+    dungeons.lightSpacing = reader.integer(u"lightSpacing"_s, dungeons.lightSpacing, 2, Settings::maxCorridorLength);
+    dungeons.lightDistance = reader.integer(u"lightDistance"_s, dungeons.lightDistance, 0, Settings::maxCorridorLength);
+    const QJsonArray mobs = json.value(u"mobs"_s).toArray();
+    for (const auto &entry : mobs) {
+        const QJsonObject mob = entry.toObject();
+        const QString name = mob.value(u"mob"_s).toString();
+        const int weight = mob.value(u"weight"_s).toInt(1);
+        if (name.isEmpty() || weight < 1) {
+            reader.fail(u"'mobs' entries need a 'mob' and a positive 'weight'"_s);
+            return;
+        }
+        dungeons.mobs.append({QcContentNames::qualify(name, packNamespace), weight});
+    }
+    const bool odd = dungeons.minSize % 2 == 1 && dungeons.maxSize % 2 == 1;
+    if (reader.ok() && (!odd || dungeons.regionSize < dungeons.maxSize + 4 || dungeons.wall.isEmpty() || dungeons.spawner.isEmpty()
+                        || dungeons.chest.isEmpty() || dungeons.light.isEmpty() || dungeons.mobs.isEmpty())) {
+        reader.fail(u"needs odd room sizes that fit the region, 'wall', 'spawner', 'chest', 'light' and 'mobs'"_s);
+    }
+}
+
+} // namespace
+
 [[nodiscard]] QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"terrain"_s, {}};
@@ -221,6 +270,9 @@ namespace QcWorldgenParser {
     settings.caveRoof = reader.integer(u"caveRoof"_s, settings.caveRoof, 0, 32);
     settings.caveEntrances = reader.number(u"caveEntrances"_s, settings.caveEntrances, 0.0, 1.0);
     settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
+    reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
+        parseDungeons(object, settings.dungeons, nested, packNamespace);
+    });
 
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {
         reader.fail(u"'stone' and 'water' are required"_s);

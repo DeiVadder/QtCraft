@@ -2,6 +2,7 @@
 
 #include "common/world/QcChunk.h"
 #include "common/world/QcWorldLabel.h"
+#include "worldgen/generators/QcChunkFurnishing.h"
 #include "worldgen/generators/QcWorldSetup.h"
 
 #include <memory>
@@ -56,6 +57,13 @@ public:
     // the chunk enters the world (QcVillages::notePointOfInterest), so it joins a village near it or
     // founds a settlement. The showcase's stations; empty for other generators.
     virtual QList<QcBlockPos> pointsOfInterestIn(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return {};
+    }
+    // The chest loot and spawner kinds of a chunk (decision E-520), in world coordinates inside it;
+    // the server puts them in when the chunk first arrives. Empty for generators without any.
+    virtual QcChunkFurnishing furnishingIn(QcChunkPos pos) const
     {
         Q_UNUSED(pos);
         return {};

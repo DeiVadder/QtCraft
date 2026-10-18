@@ -2,6 +2,7 @@
 
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerState.h"
+#include "server/spawners/QcSpawnerRules.h"
 
 #include <QtLogging>
 
@@ -69,6 +70,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
             if (sent < m_state.config().chunksPerTick && !backlog) {
                 client.connection->send(QcMsg::ChunkData{chunk});
                 sendLabels(client, pos);
+                sendSpawners(client, pos);
                 client.view.sentChunks.insert(pos);
                 ++client.view.sentChanges;
                 ++sent;
@@ -77,6 +79,14 @@ void QcChunkStreaming::stream(QcServerClient &client)
             // Nearest first: the list is sorted by distance and the pool works in FIFO order.
             m_loading.request(pos);
         }
+    }
+}
+
+void QcChunkStreaming::sendSpawners(QcServerClient &client, QcChunkPos pos) const
+{
+    const QList<QcBlockPos> spawners = m_state.world().spawners().positionsIn(pos);
+    for (const QcBlockPos &spawner : spawners) {
+        client.connection->send(QcSpawnerRules::displayOf(m_state.world(), spawner));
     }
 }
 

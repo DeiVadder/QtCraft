@@ -1,5 +1,6 @@
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainMath.h"
 #include "worldgen/terrain/QcTreeShape.h"
@@ -74,6 +75,12 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_overhangNoise(qcMixSeed(quint64(seed), 16))
 {
     m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed, warnings);
+    m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed, warnings);
+}
+
+QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
+{
+    return m_dungeons->furnishingIn(pos);
 }
 
 QcTerrainGenerator::~QcTerrainGenerator() = default;
@@ -214,6 +221,11 @@ bool QcTerrainGenerator::isCave(int x, int y, int z) const
         return false;
     }
     return m_caves.isCave(x, y, z, column(x, z));
+}
+
+bool QcTerrainGenerator::isCave(int x, int y, int z, const Column &column) const
+{
+    return m_caves.enabled() && y > 0 && m_caves.isCave(x, y, z, column);
 }
 
 int QcTerrainGenerator::overhangBand(int x, int z, const Column &column, std::array<bool, maxOverhangBand> &solid, int &size) const
@@ -489,6 +501,8 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     const QList<bool> carved = carvedColumns(*chunk, columns);
     placeOres(*chunk, columns);
     m_pools.placeInCaves(*chunk);
+    // Dungeons deep down after the cave pools, so their corridors open into finished caves.
+    m_dungeons->build(*chunk);
     // The village of the chunk's region: no features or surface pools there, its pieces last.
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
     placeFeatures(*chunk, columns, carved, village.get());

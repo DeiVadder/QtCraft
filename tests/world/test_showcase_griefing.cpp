@@ -105,7 +105,9 @@ private slots:
         QList<Pen> pens;
         for (const QcStructurePlacement &placement : m_generator.plan().placements) {
             const QcStructure &structure = placement.structure();
-            if (std::ranges::none_of(structure.mobs, &QcStructure::Mob::confined)) {
+            // Pens: confined creatures, or a spawner whose creatures are confined (the dungeon station).
+            if (std::ranges::none_of(structure.mobs, &QcStructure::Mob::confined)
+                && std::ranges::none_of(structure.spawners, &QcStructureDefinition::Spawner::confined)) {
                 continue;
             }
             const QcBlockPos a = placement.toWorld(QcBlockPos{0, 0, 0});
@@ -121,7 +123,7 @@ private slots:
             }
             return list;
         }();
-        for (const char *expected : {"qtcraft:silverfish_wall", "qtcraft:spider_cave", "qtcraft:chicken_coop", "qtcraft:golem_farm", "showcase/creatures"}) {
+        for (const char *expected : {"qtcraft:silverfish_wall", "qtcraft:spider_cave", "qtcraft:chicken_coop", "qtcraft:golem_farm", "qtcraft:dungeon_station", "showcase/creatures"}) {
             QVERIFY2(names.contains(QString::fromLatin1(expected)), qPrintable(names.join(u' ')));
         }
 
@@ -137,6 +139,12 @@ private slots:
         }
         for (const Pen &pen : std::as_const(pens)) {
             QVERIFY2(kindsIn(*server, *m_content, pen.low, pen.high) == pen.kinds, qPrintable(pen.name));
+        }
+        // The dungeon station's spawner gives its zombies `confined`: they change no block either.
+        const QList<QcBlockPos> spawners = server->world().spawners().positions();
+        QVERIFY(!spawners.isEmpty());
+        for (const QcBlockPos &pos : spawners) {
+            QVERIFY(server->world().spawners().at(pos)->confined);
         }
         const int silverfish = *m_content->mobIndex(u"qtcraft:silverfish"_s);
         // The wall's three and the creature row's one are all still out.

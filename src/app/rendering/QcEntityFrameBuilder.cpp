@@ -152,14 +152,15 @@ double QcEntityFrameBuilder::capeFrameSeconds()
     return std::min(seconds, QcCapeSwing::maxAdvance);
 }
 
-void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
+void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale)
 {
     const QcMobDefinition *creature = entity.creature(frame.content);
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
     QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, frame.alpha), entityLight(frame.world, position),
                                         entity.hurtTicks > 0};
+    placement.scale = scale;
     if ((entity.flags & QcMsg::Young) != 0) {
-        placement.scale = QcMsg::youngScale;
+        placement.scale *= QcMsg::youngScale;
     }
     if (creature && creature->glow > 0) {
         placement.light = glowingLight(placement.light, *creature, double(entity.id % 97), frame.seconds);
@@ -210,6 +211,37 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
     const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(frame.content, entity.equipment, look);
     QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body, placement, frame.uv);
+}
+
+void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame)
+{
+    // Only spawners this near are drawn: the creature is small, and a world may hold many.
+    constexpr double drawDistance = 48.0;
+    // The creature fits into this much of the cage and turns this many degrees a second.
+    constexpr double fit = 0.55;
+    constexpr double turnSpeed = 120.0;
+
+    const QcClientSession &session = *m_parts.session;
+    const QcVec3 viewer = session.playerMotion().position;
+    const QHash<QcBlockPos, int> &spawners = session.spawnerDisplays();
+    for (auto it = spawners.cbegin(); it != spawners.cend(); ++it) {
+        const QcBlockPos pos = it.key();
+        const QcVec3 feet{pos.x + 0.5, pos.y + 0.18, pos.z + 0.5};
+        if (it.value() < 0 || it.value() >= frame.content.mobs().size() || (feet - viewer).length() > drawDistance) {
+            continue;
+        }
+        const QcMobDefinition &kind = frame.content.mobs()[it.value()];
+        QcClientEntity shown;
+        // An id no entity of the server has (the capes follow entities by id).
+        shown.id = 0xff000000u | (quint32(qHash(pos)) & 0x00ffffffu);
+        shown.kind = QcEntityKind::Creature;
+        shown.creatureType = it.value();
+        shown.position = feet;
+        shown.previousPosition = feet;
+        shown.yaw = float(std::fmod(frame.seconds * turnSpeed + (pos.x * 37 + pos.z * 11) % 360, 360.0));
+        shown.previousYaw = shown.yaw;
+        appendCreature(mesh, shown, frame, std::min(1.0, fit / std::max({kind.height, kind.width, 0.1})));
+    }
 }
 
 void QcEntityFrameBuilder::appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
@@ -320,6 +352,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     for (const QcClientEntity &entity : session.dyingEntities()) {
         appendCreature(*mesh, entity, frame);
     }
+    appendSpawners(*mesh, frame);
     // In third person the player sees their own character.
     if (mode != QcCameraMode::FirstPerson && !session.isDead()) {
         appendLocalPlayer(*mesh, frame);

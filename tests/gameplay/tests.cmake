@@ -87,6 +87,7 @@ qc_add_test(test_archers SOURCES gameplay/test_archers.cpp QcServerTestFixture.h
 qc_add_test(test_spiders SOURCES gameplay/test_spiders.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_status_effects SOURCES gameplay/test_status_effects.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_chickens SOURCES gameplay/test_chickens.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_spawners SOURCES gameplay/test_spawners.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_cows SOURCES gameplay/test_cows.cpp QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_fish SOURCES gameplay/test_fish.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fishing SOURCES gameplay/test_fishing.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

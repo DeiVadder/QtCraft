@@ -21,6 +21,7 @@
 #include "common/content/definitions/QcWorldgenDefinitions.h"
 #include "common/content/definitions/QcWorldTypeDefinitions.h"
 #include "common/content/registry/QcBlockStateTable.h"
+#include "common/content/registry/QcLootTables.h"
 #include "common/core/QcResult.h"
 #include "common/handbook/QcHandbookChapter.h"
 
@@ -200,6 +201,9 @@ public:
     void registerEffect(QcEffectDefinition effect);
     const QList<QcEffectDefinition> &effects() const { return m_effects; }
     const QcEffectDefinition *effect(const QString &name) const;
+    // Loot tables of generated chests (decision E-521, server side only), replaced by name.
+    QcLootTables &lootTables() { return m_lootTables; }
+    const QcLootTables &lootTables() const { return m_lootTables; }
     // Offers of the professions (decision E-414, server side only): sets replaced by name.
     void registerTradeSet(QcTradeSet set);
     const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
@@ -232,8 +236,6 @@ private:
     // Checks that ammunition and projectile kinds name each other's kinds (finish): ammunition of
     // an unknown kind is none; the warnings.
     QStringList resolveProjectiles();
-    // Checks a fishing rod's bobber and loot (decision E-503); the warnings.
-    QStringList resolveFishing(QcItemDefinition &item) const;
 
     QList<QcBlockDefinition> m_blocks;
     // Block name -> index into m_blocks.
@@ -285,6 +287,7 @@ private:
     QList<QcProjectileDefinition> m_projectiles;
     QHash<QString, qsizetype> m_projectileIndex;
     QList<QcEffectDefinition> m_effects;
+    QcLootTables m_lootTables;
     QHash<QString, qsizetype> m_effectIndex;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;

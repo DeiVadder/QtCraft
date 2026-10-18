@@ -352,9 +352,9 @@ private slots:
             QVERIFY2(lastLine().startsWith(u"Usage: /"_s), qPrintable(fill + u" -> "_s + lastLine()));
         }
         chat(u"/setblock 2147483647 60 2147483647 stone"_s);
-        QCOMPARE(lastLine(), u"Usage: /setblock <x> <y> <z> <block>[states]"_s);
+        QCOMPARE(lastLine(), u"Usage: /setblock <x> <y> <z> <block>[states] [creature]"_s);
         chat(u"/setblock 0 2147483647 0 stone"_s);
-        QCOMPARE(lastLine(), u"Usage: /setblock <x> <y> <z> <block>[states]"_s);
+        QCOMPARE(lastLine(), u"Usage: /setblock <x> <y> <z> <block>[states] [creature]"_s);
         for (const QString &regenerate : {u"/regenerate -2147483648 0 2147483647 0"_s, u"/regenerate 2147483647 2147483647"_s,
                                           u"/regenerate ~-2147483648 ~"_s}) {
             chat(regenerate);

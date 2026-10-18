@@ -265,6 +265,14 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     for (const QcBlockPos &pos : structure.growing) {
         m_plan.setup.growing.append(placement.toWorld(pos));
     }
+    for (const QcStructureDefinition::Spawner &spawner : structure.spawners) {
+        const QcBlockPos at = placement.toWorld(spawner.at);
+        m_plan.furnishingByChunk[at.chunk()].spawners.append({at, spawner.mob, spawner.confined});
+    }
+    for (const QcStructureDefinition::Loot &loot : structure.loot) {
+        const QcBlockPos at = placement.toWorld(loot.at);
+        m_plan.furnishingByChunk[at.chunk()].chests.append({at, loot.table, quint64(qHash(at))});
+    }
 
     const QcChunkPos first = placement.origin().chunk();
     const QcChunkPos last = placement.origin().offset(placement.sizeX() - 1, 0, placement.sizeZ() - 1).chunk();

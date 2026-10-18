@@ -206,6 +206,28 @@ void parseInfested(QcBlockDefinition &block, QcJsonFieldReader &infestedReader, 
     }
 }
 
+// A monster spawner (decision E-520): its rules; the area's sizes are odd so it centres on the block.
+void parseSpawner(QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    using Spawner = QcSpawnerDefinition;
+    Spawner &spawner = block.spawner;
+    spawner.isSpawner = true;
+    spawner.mob = reader.name(u"mob"_s, packNamespace);
+    spawner.range = reader.number(u"range"_s, spawner.range, 1.0, Spawner::maxRange);
+    spawner.maxNearby = reader.integer(u"maxNearby"_s, spawner.maxNearby, 1, Spawner::maxNearbyLimit);
+    spawner.nearbyRange = reader.integer(u"nearbyRange"_s, spawner.nearbyRange, 0, Spawner::maxArea);
+    spawner.count = reader.integer(u"count"_s, spawner.count, 1, Spawner::maxCount);
+    spawner.minDelay = reader.number(u"minDelay"_s, spawner.minDelay, 0.05, Spawner::maxDelaySeconds);
+    spawner.maxDelay = reader.number(u"maxDelay"_s, spawner.maxDelay, spawner.minDelay, Spawner::maxDelaySeconds);
+    spawner.areaX = reader.integer(u"areaX"_s, spawner.areaX, 1, Spawner::maxArea);
+    spawner.areaY = reader.integer(u"areaY"_s, spawner.areaY, 1, Spawner::maxArea);
+    spawner.areaZ = reader.integer(u"areaZ"_s, spawner.areaZ, 1, Spawner::maxArea);
+    spawner.maxLight = reader.integer(u"maxLight"_s, spawner.maxLight, 0, QcBlockDefinition::maxLightLevel);
+    if (reader.ok() && (spawner.areaX % 2 == 0 || spawner.areaY % 2 == 0 || spawner.areaZ % 2 == 0)) {
+        reader.fail(u"the spawn area's sizes must be odd"_s);
+    }
+}
+
 void parseMachine(QcBlockDefinition &block, QcJsonFieldReader &machineReader, const QString &packNamespace)
 {
     block.machine.category = machineReader.string(u"category"_s, QString::fromLatin1(QcSmeltingRecipe::defaultCategory));
@@ -642,6 +664,9 @@ namespace QcBlockParser {
     block.experience = QcContentFields::parseExperience(u"experience"_s, reader);
     reader.nestedObject(u"infested"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseInfested(block, nested, packNamespace);
+    });
+    reader.nestedObject(u"spawner"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseSpawner(block, nested, packNamespace);
     });
     reader.nestedObject(u"sapling"_s, [&block, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         parseSapling(object, block, nested, packNamespace);

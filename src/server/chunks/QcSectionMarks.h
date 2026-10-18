@@ -25,8 +25,10 @@ enum class QcBlockTrait : quint8 {
     BlockEntity,
     // Fire (decision E-392): a chunk that arrives is searched for fire blocks only in these sections.
     Fire,
+    // A monster spawner (decision E-520): a chunk that arrives is searched for spawners only here.
+    Spawner,
 };
-inline constexpr int qcBlockTraitCount = 6;
+inline constexpr int qcBlockTraitCount = 7;
 
 // Per loaded chunk and block trait, a bit for each section that may hold a block with that trait.
 // A bit is set when its chunk arrives or such a block is placed and only cleared when the chunk is

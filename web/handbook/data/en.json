@@ -166,6 +166,8 @@
                 "block:qtcraft:melon",
                 "block:qtcraft:melon_stem",
                 "block:qtcraft:mine_lamp",
+                "block:qtcraft:spawner",
+                "block:qtcraft:mossy_cobblestone",
                 "block:qtcraft:mud",
                 "block:qtcraft:mud_bricks",
                 "block:qtcraft:oak_button",
@@ -29637,6 +29639,120 @@
             "text": "A lamp with a firefly inside: hangs from ceilings, walls or floors and glows without fuel.",
             "title": "Mine lamp"
         },
+        "block:qtcraft:mossy_cobblestone": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Mossy cobblestone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:mossy_cobblestone"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "10 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.25 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:mossy_cobblestone",
+            "id": "block:qtcraft:mossy_cobblestone",
+            "name": "qtcraft:mossy_cobblestone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Cobblestone overgrown with moss. Dungeons and their corridors are built from it and from plain cobblestone.",
+            "title": "Mossy cobblestone"
+        },
         "block:qtcraft:mud": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -45261,6 +45377,114 @@
             ],
             "text": "A thin cover of snow that needs a block below. It settles by itself where snow falls under the open sky.",
             "title": "Snow layer"
+        },
+        "block:qtcraft:spawner": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Monster spawner",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spawner"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:spawner",
+            "id": "block:qtcraft:spawner",
+            "name": "qtcraft:spawner",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "A cage of dark iron with a small creature spinning inside. While a player is within 16 blocks it brings forth up to four creatures of its kind every 10 to 40 seconds, on dark cells of the 9 x 3 x 9 blocks around it, until six of them are near. Breaking it gives experience but no item; it cannot be crafted. Dungeons deep underground hold one.",
+            "title": "Monster spawner"
         },
         "block:qtcraft:spruce_door": {
             "category": "blocks",
@@ -61777,6 +62001,18 @@
                             "text": "Magma block"
                         },
                         {
+                            "icon": "qtcraft:spawner",
+                            "note": "level 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
+                        },
+                        {
                             "icon": "qtcraft:mud_bricks_slab",
                             "note": "level 1",
                             "target": "block:qtcraft:mud_bricks_slab",
@@ -64421,6 +64657,18 @@
                             "text": "Magma block"
                         },
                         {
+                            "icon": "qtcraft:spawner",
+                            "note": "level 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
+                        },
+                        {
                             "icon": "qtcraft:mud_bricks_slab",
                             "note": "level 1",
                             "target": "block:qtcraft:mud_bricks_slab",
@@ -66782,6 +67030,18 @@
                             "note": "level 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magma block"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "level 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
                         },
                         {
                             "icon": "qtcraft:mud_bricks_slab",
@@ -71853,6 +72113,18 @@
                             "text": "Magma block"
                         },
                         {
+                            "icon": "qtcraft:spawner",
+                            "note": "level 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
+                        },
+                        {
                             "icon": "qtcraft:mud_bricks_slab",
                             "note": "level 1",
                             "target": "block:qtcraft:mud_bricks_slab",
@@ -73637,6 +73909,18 @@
                             "note": "level 1",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magma block"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "level 1",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
                         },
                         {
                             "icon": "qtcraft:mud_bricks_slab",
@@ -79452,7 +79736,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {

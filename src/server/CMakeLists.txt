@@ -220,6 +220,11 @@ target_sources(qc_server PRIVATE
     signal/QcSignalTable.h signal/QcSignalTable.cpp
 )
 target_sources(qc_server PRIVATE
+    spawners/QcFurnishing.h spawners/QcFurnishing.cpp
+    spawners/QcSpawnerRules.h spawners/QcSpawnerRules.cpp
+    spawners/QcSpawners.h spawners/QcSpawners.cpp
+)
+target_sources(qc_server PRIVATE
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp

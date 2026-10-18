@@ -34,6 +34,15 @@ struct ChunkLabels
     QList<QcWorldLabel> labels;
 };
 
+// Server -> client: the creature kind shown spinning in the monster spawner at `pos` (decision
+// E-520), sent after the ChunkData of its chunk and whenever it changes; `mob` is the kind's index
+// in the content, -1 for none (an empty cage, or the spawner is gone).
+struct SpawnerDisplay
+{
+    QcBlockPos pos;
+    qint32 mob = -1;
+};
+
 struct BlockUpdate
 {
     QcBlockPos pos;

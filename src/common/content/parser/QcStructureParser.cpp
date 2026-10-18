@@ -274,6 +274,33 @@ void parseCarts(const QJsonObject &json, Structure &structure, QcJsonFieldReader
     }
 }
 
+// "spawners": {"at": [x, y, z], "mob": "zombie", "confined": true}; "loot": {"at": [x, y, z], "table":
+// "dungeon_chest"} (decisions E-520, E-521).
+void parseSpawnersAndLoot(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    const QJsonArray spawners = extraArray(json, u"spawners"_s, reader);
+    for (const auto &entry : spawners) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), structure);
+        const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), packNamespace);
+        if (!cell || object.value(u"mob"_s).toString().isEmpty()) {
+            reader.fail(u"'spawners' entries need 'at' inside the structure and a 'mob'"_s);
+            return;
+        }
+        structure.spawners.append({*cell, mob, object.value(u"confined"_s).toBool(false)});
+    }
+    const QJsonArray loot = extraArray(json, u"loot"_s, reader);
+    for (const auto &entry : loot) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), structure);
+        if (!cell || object.value(u"table"_s).toString().isEmpty()) {
+            reader.fail(u"'loot' entries need 'at' inside the structure and a 'table'"_s);
+            return;
+        }
+        structure.loot.append({*cell, QcContentNames::qualify(object.value(u"table"_s).toString(), packNamespace)});
+    }
+}
+
 } // namespace
 
 namespace QcStructureParser {
@@ -316,6 +343,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
         parseCells(json, u"updates"_s, structure.updates, structure, reader);
         parseCells(json, u"growing"_s, structure.growing, structure, reader);
         parseCarts(json, structure, reader, packNamespace);
+        parseSpawnersAndLoot(json, structure, reader, packNamespace);
         QcStructureVariationParser::parseVariation(json, keys, structure, reader, packNamespace);
     }
 

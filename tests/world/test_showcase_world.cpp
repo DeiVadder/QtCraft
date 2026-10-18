@@ -680,6 +680,52 @@ private slots:
         }
     }
 
+    // The dungeon station (decision E-520): its spawner brings forth confined zombies, its chest
+    // holds loot from the dungeon table, and the torch of its corridor stub lies outside the light
+    // reach of the spawn area.
+    void theDungeonStationHasItsSpawnerAndLoot()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        const QcShowcaseGenerator generator(m_content);
+        const auto station = std::ranges::find_if(generator.plan().placements, [](const QcStructurePlacement &placement) {
+            return placement.structure().name().endsWith(u"dungeon_station"_s);
+        });
+        QVERIFY(station != generator.plan().placements.end());
+        const QcStructure &structure = station->structure();
+        QCOMPARE(structure.spawners.size(), 1);
+        QCOMPARE(structure.loot.size(), 1);
+        const QcBlockPos spawner = station->toWorld(structure.spawners[0].at);
+        const QcBlockPos chest = station->toWorld(structure.loot[0].at);
+        server->world().loadChunk(spawner.chunk());
+        server->world().loadChunk(chest.chunk());
+
+        const QcSpawners::Entry *entry = server->world().spawners().at(spawner);
+        QVERIFY(entry);
+        QCOMPARE(entry->mob, u"qtcraft:zombie"_s);
+        QVERIFY(entry->confined);
+        const QcBlockEntities::Container *container = server->blockEntities().container(chest);
+        QVERIFY(container && std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+
+        const QcBlockId torch = *m_content->stateId(u"qtcraft:torch[attach=north]"_s);
+        int torches = 0;
+        for (int x = 0; x < station->sizeX(); ++x) {
+            for (int z = 0; z < station->sizeZ(); ++z) {
+                for (int y = 0; y < structure.sizeY(); ++y) {
+                    const QcBlockPos at = station->toWorld(QcBlockPos{x, y, z});
+                    if (server->world().loadChunk(at.chunk()); server->world().blockAt(at) == torch) {
+                        ++torches;
+                        const int distance = std::max(0, std::abs(at.x - spawner.x) - 4) + std::max(0, std::abs(at.y - spawner.y) - 1)
+                                             + std::max(0, std::abs(at.z - spawner.z) - 4);
+                        QVERIFY2(distance >= 15, qPrintable(QString::number(distance)));
+                    }
+                }
+            }
+        }
+        QCOMPARE(torches, 1);
+    }
+
     void noCreatureSpawnsByItselfWithoutTheRule()
     {
         // The test terrain is grass: with spawning on, animals come with new chunks and around players.
