@@ -1,8 +1,10 @@
 #pragma once
 
 #include "common/content/definitions/QcHitEffect.h"
+#include "common/gameplay/QcStatusEffects.h"
 
 #include <QHash>
+#include <QRandomGenerator>
 #include <QString>
 
 #include <functional>
@@ -25,6 +27,8 @@ public:
         double knockback = 0.0;
         // Ticks the body burns from now on at least.
         int burnTicks = 0;
+        // Status effects the body gets when the hit counts (decision E-450).
+        QList<QcStatusEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     };
 
     // `damage`: the hit's damage from the projectile's speed (QcProjectileFlight::damageAt), which
@@ -38,6 +42,10 @@ public:
     // The impact of a hit of `definition` with the speed damage `damage`: the handlers aggregate
     // (damage once, the strongest knockback, the longest burning), so the order does not matter.
     Impact impactOf(const QcProjectileDefinition &definition, double damage) const;
+    // How many creatures a spawn effect brings where its projectile breaks (decision E-450): with the
+    // effect's chance its count, of those with groupChance its groupCount, else none. Two draws of
+    // `random` when the first succeeds, one otherwise.
+    static int spawnCount(const QcHitEffect &effect, QRandomGenerator &random);
 
 private:
     QHash<QString, Handler> m_handlers;

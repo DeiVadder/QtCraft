@@ -5,6 +5,9 @@
     "sections": [
         "spawning",
         "daylight",
+        "spiders",
+        "silverfish",
+        "chickens",
         "endermen",
         "limits"
     ],
@@ -15,6 +18,12 @@
         "slime",
         "pig",
         "sheep",
-        "firefly"
+        "firefly",
+        "spider",
+        "cave_spider",
+        "silverfish",
+        "infested_stone",
+        "chicken",
+        "egg"
     ]
 }

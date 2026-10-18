@@ -6,6 +6,7 @@
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcEntityMotion.h"
 
 #include <QDataStream>
@@ -34,6 +35,8 @@ struct QcPlayerData
     QcEquipment keptEquipment;
     // Level and points (decision E-398).
     QcExperience experience;
+    // Status effects (decision E-450).
+    QList<QcStatusEffect> effects;
 };
 
 // The player files of a world directory (players/<name>-<hash>.qcp, decision E-093): position,

@@ -414,13 +414,19 @@ QStringList QcContentRegistry::resolveProjectiles()
         if (!itemId(kind.item)) {
             warnings.append(u"projectile '%1': no item '%2'"_s.arg(kind.name, kind.item));
         }
-        // Effect types are a table in code (decision E-427); others are left out.
+        // Effect types are a table in code (decision E-427); others are left out, as are entries
+        // naming a status effect or creature no pack has (decision E-450).
         kind.onHit.removeIf([&](const QcHitEffect &effect) {
             const bool known = QcHitEffect::typeNamed(effect.type).has_value();
             if (!known) {
                 warnings.append(u"projectile '%1': unknown onHit type '%2' left out"_s.arg(kind.name, effect.type));
             }
-            return !known;
+            const bool named = (!effect.is(QcHitEffect::effect) || this->effect(effect.subject))
+                               && (!effect.is(QcHitEffect::spawn) || mobIndex(effect.subject));
+            if (known && !named) {
+                warnings.append(u"projectile '%1': onHit %2 names no known '%3'; left out"_s.arg(kind.name, effect.type, effect.subject));
+            }
+            return !known || !named;
         });
     }
     return warnings;
@@ -613,6 +619,17 @@ const QcProjectileDefinition *QcContentRegistry::projectile(const QString &name)
 {
     const auto it = m_projectileIndex.constFind(name);
     return it == m_projectileIndex.constEnd() ? nullptr : &m_projectiles[*it];
+}
+
+void QcContentRegistry::registerEffect(QcEffectDefinition effect)
+{
+    registerByName(m_effects, m_effectIndex, std::move(effect));
+}
+
+const QcEffectDefinition *QcContentRegistry::effect(const QString &name) const
+{
+    const auto it = m_effectIndex.constFind(name);
+    return it == m_effectIndex.constEnd() ? nullptr : &m_effects[*it];
 }
 
 void QcContentRegistry::registerTradeSet(QcTradeSet set)

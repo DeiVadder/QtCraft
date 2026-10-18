@@ -1,0 +1,9 @@
+{
+    "name": "cooked_chicken",
+    "input": "raw_chicken",
+    "result": {
+        "item": "cooked_chicken"
+    },
+    "seconds": 10,
+    "experience": 0.35
+}

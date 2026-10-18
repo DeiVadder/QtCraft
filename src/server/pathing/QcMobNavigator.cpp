@@ -258,7 +258,7 @@ bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcPathGround
     }
 
     QcPathDirectCells direct(ground.world, ground.cells);
-    for (int dy = 1; dy >= -std::max(ground.rules.maxDrop, QcPathRules::waterDrop); --dy) {
+    for (int dy = 1; dy >= -std::max(int(ground.rules.maxDrop), QcPathRules::waterDrop); --dy) {
         const QcBlockPos cell = ahead.offset(0, dy, 0);
         if (QcPathTerrain::standAt(direct, cell, ground.rules).ok) {
             return QcPathTerrain::safeLanding(direct, cell, -dy, ground.rules);

@@ -4,6 +4,7 @@
 #include "server/commands/QcCheatCommands.h"
 #include "server/commands/QcChunkCommands.h"
 #include "server/commands/QcCommandRegistry.h"
+#include "server/commands/QcEffectCommands.h"
 #include "server/commands/QcExperienceCommands.h"
 #include "server/commands/QcPendingCommands.h"
 #include "server/commands/QcPlayerCommands.h"
@@ -82,4 +83,5 @@ private:
     QcWeatherCommands m_weather;
     QcVillageCommands m_villages;
     QcExperienceCommands m_experience;
+    QcEffectCommands m_effects;
 };

@@ -26,8 +26,9 @@ public:
     // and contact with damaging blocks are armoured; falls are not. Command damage (/kill) also
     // reaches invulnerable players (creative mode, decision E-282); so does the void, which in
     // addition ignores the short invulnerability after a hit and has its own death message
-    // (decision E-288).
-    enum class DamageKind : quint8 { Unblockable, Armoured, Command, Void };
+    // (decision E-288). Damage of a status effect is unblockable with a death message of its own
+    // (decision E-450).
+    enum class DamageKind : quint8 { Unblockable, Armoured, Command, Void, Effect };
 
     QcPlayerHealth(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 

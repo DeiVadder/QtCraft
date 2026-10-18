@@ -41,6 +41,8 @@ private:
     // A projectile with a teleport effect broke (an ender pearl, decision E-460): its thrower comes
     // to the nearest safe place there and takes the effect's fall damage.
     void teleportThrower(const QcProjectile &projectile, const QcHitEffect &effect);
+    // The creatures of the projectile's spawn effects where it broke (decision E-450).
+    void spawnWhereBroken(const QcProjectile &projectile, const QcProjectileDefinition &definition);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

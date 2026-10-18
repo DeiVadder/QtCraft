@@ -142,6 +142,11 @@ struct QcBlockDefinition
     // Experience points mining it gives as orbs, with a tool that gets its drops (ores; decision
     // E-398). Server side only.
     QcExperienceDrop experience;
+    // An infested block (decision E-453): it stands in for the block `infestsBlock` and lets a
+    // creature of kind `infestsMob` out when broken with drops (QcInfestation); both empty for other
+    // blocks. Server side only.
+    QString infestsBlock;
+    QString infestsMob;
     // Using the block opens the 3 x 3 crafting grid instead of placing against it.
     bool opensCrafting = false;
     // Using the block opens its machine screen (furnace).

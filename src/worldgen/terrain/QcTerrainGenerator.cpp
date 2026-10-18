@@ -359,14 +359,18 @@ void QcTerrainGenerator::placeVein(QcChunk &chunk, const Ore &ore, const QList<Q
     }
 }
 
-void QcTerrainGenerator::placeOres(QcChunk &chunk) const
+void QcTerrainGenerator::placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const
 {
     const QcChunkPos pos = chunk.pos();
     QList<QcBlockPos> cells;
     for (const Ore &ore : m_definitions.ores) {
         for (int vein = 0; vein < ore.veins; ++vein) {
             growVein(ore, vein, pos, cells);
-            placeVein(chunk, ore, cells);
+            // A vein bound to biomes lies where the column of its first block has one of them.
+            const int startBiome = columns.at(pos.x * QcWorld::chunkSize + cells.first().x, pos.z * QcWorld::chunkSize + cells.first().z).biome;
+            if (ore.biomes.isEmpty() || ore.biomes.contains(startBiome)) {
+                placeVein(chunk, ore, cells);
+            }
         }
     }
 }
@@ -483,7 +487,7 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
 
     m_caves.carve(*chunk, columns);
     const QList<bool> carved = carvedColumns(*chunk, columns);
-    placeOres(*chunk);
+    placeOres(*chunk, columns);
     m_pools.placeInCaves(*chunk);
     // The village of the chunk's region: no features or surface pools there, its pieces last.
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);

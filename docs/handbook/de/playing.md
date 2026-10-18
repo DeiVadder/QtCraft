@@ -256,9 +256,13 @@ Du hast 20 Lebenspunkte, als Herzen angezeigt. Stürze tiefer als 3 m kosten ein
 
 Klicke mit links auf ein Wesen in bis zu 4 m, um es zu treffen, höchstens alle 0,4 s. Schwerter und Äxte richten mehr Schaden an als die Hand; jeder Treffer stößt das Ziel zurück.
 
+**Status-Effekte**
+
+Manche Angriffe hinterlassen eine Wirkung, die eine Weile anhält. Neben den Herzen zeigt ein Kästchen jeden Effekt mit Bild, Namen und Restzeit. Gift, vom Biss einer Höhlenspinne, nimmt alle 1,25 s einen Gesundheitspunkt (auf höheren Stufen schneller), aber nie den letzten, und färbt die Herzen grün. Rüstung hilft nicht dagegen. Effekte enden mit der Zeit oder mit dem Tod; Zombies, Skelette und Spinnen sind gegen Gift immun.
+
 **Siehe auch**
 
-[Eisenschwert](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava)
+[Eisenschwert](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava), [Spinnenauge](items.md#item-qtcraft-spider_eye)
 
 ### <a id="chapter-qtcraft-fire"></a>Feuer
 
@@ -478,6 +482,18 @@ Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf
 
 Zombies und Skelette fangen im direkten Sonnenlicht Feuer und brennen noch 8 s, nachdem sie es verlassen haben. Schatten, ein Dach oder Laub über dem Kopf, Wasser und Regen schützen sie, ebenso Höhlen.
 
+**Spinnen und Höhlenspinnen**
+
+Spinnen klettern senkrecht Wände hinauf und halten sich an Überhängen fest; eine Mauer allein hält sie also nicht auf. Ein Überhang von einem Block oben hält die breite Spinne auf, die kleine Höhlenspinne nicht. Tagsüber im Freien lässt dich eine Spinne in Ruhe, bis du sie schlägst; nachts und in Höhlen jagt sie dich und springt dich an. Höhlenspinnen leben tief in dunklen Höhlen, greifen immer an und vergiften dich mit ihrem Biss. Sie passen durch Lücken von einem Block Höhe.
+
+**Silberfischchen und befallener Stein**
+
+In den Bergen ist mancher Stein befallen: Er sieht aus wie Stein, bricht aber viel schneller, auch mit der Hand, und lässt nichts fallen; ein Silberfischchen kriecht heraus. Schlägst du ein Silberfischchen, ruft es seinesgleichen aus den befallenen Blöcken bis zehn Blöcke ringsum. In Ruhe gelassen, schlüpft es in einen Stein-, Bruchstein- oder Steinziegelblock neben sich und wartet dort. Im Kreativmodus abgebaute Blöcke lassen nichts heraus.
+
+**Hühner und Eier**
+
+Hühner flattern langsam hinab, statt zu fallen, und legen alle fünf bis zehn Minuten ein Ei. Geworfene Eier zerplatzen, wo sie landen; aus jedem achten schlüpft ein Küken, und bei einem von 32 Schlüpfen sind es vier. Hühner verlieben sich in Samen jeder Art. Sie lassen Federn für Pfeile und rohes Hühnchen fallen, das du im Ofen brätst.
+
 **Endermen**
 
 Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.
@@ -488,7 +504,7 @@ Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungs
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 

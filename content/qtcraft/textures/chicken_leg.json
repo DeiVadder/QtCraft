@@ -1,0 +1,8 @@
+{
+    "name": "chicken_leg",
+    "pattern": "noise",
+    "primary": "#e0a038",
+    "secondary": "#b88028",
+    "variation": 0.06,
+    "seed": 5504
+}

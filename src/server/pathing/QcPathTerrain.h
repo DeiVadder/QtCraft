@@ -22,7 +22,8 @@ struct QcPathRules
     static constexpr double climbHeight = 1.125;
 
     double height = 1.8;
-    int maxDrop = defaultMaxDrop;
+    // Short, so the rules stay 16 bytes and pass by value.
+    qint16 maxDrop = defaultMaxDrop;
     // Water costs a walker much (it is used only without a dry way); a swimmer moves through it freely.
     bool swims : 1 = false;
     // Closed doors and gates block unless the creature opens them: villagers do (decision E-411) and
@@ -32,6 +33,9 @@ struct QcPathRules
     // (villagers, decision E-411); to the others a ladder's cell is open like air
     // (QcPathTerrain::kindOf).
     bool climbsLadders : 1 = false;
+    // A wall climber (spiders, decision E-451) also holds on to every cell beside a solid block, or
+    // whose cell above has one beside it (QcPathTerrain::holdsOn), and climbs up and down there.
+    bool climbsWalls : 1 = false;
     // Drops deeper than maxDrop, down to waterDrop, into deep water. Villagers keep to their
     // boardwalks and jetties instead of jumping off them (decision E-411).
     bool divesIntoWater : 1 = true;
@@ -67,6 +71,30 @@ inline QcPathCell::Kind kindOf(quint8 cell, QcPathRules rules)
 {
     const QcPathCell::Kind kind = QcPathCell::kindOf(cell);
     return kind == QcPathCell::Kind::Ladder && !rules.climbsLadders ? QcPathCell::Kind::Open : kind;
+}
+
+// Whether a wall climber holds on in `feet`: a solid block beside the cell or beside the cell above
+// (the face of an overhang its body reaches, QcPhysics::clingsToWall).
+template<typename Cells>
+bool holdsOn(Cells &cells, QcBlockPos feet)
+{
+    for (const QcBlockPos cell : {feet, feet.offset(0, 1, 0)}) {
+        for (const QcBlockPos side : {cell.offset(1, 0, 0), cell.offset(-1, 0, 0), cell.offset(0, 0, 1), cell.offset(0, 0, -1)}) {
+            if (QcPathCell::kindOf(cells.cell(side)) == QcPathCell::Kind::Solid) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Whether a creature holds on in `feet` like on a ladder: a ladder it climbs, or a wall beside a wall
+// climber.
+template<typename Cells>
+bool climbsAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
+{
+    const QcPathCell::Kind kind = kindOf(cells.cell(feet), rules);
+    return kind == QcPathCell::Kind::Ladder || (rules.climbsWalls && kind == QcPathCell::Kind::Open && holdsOn(cells, feet));
 }
 
 // Whether a body part may be in the cell: open, water, a door the creature opens; the feet also on a
@@ -132,7 +160,7 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
             return stand;
         }
         stand.water = true;
-    } else if (kind == QcPathCell::Kind::Ladder || QcPathCell::kindOf(below) == QcPathCell::Kind::Solid) {
+    } else if (QcPathCell::kindOf(below) == QcPathCell::Kind::Solid || climbsAt(cells, feet, rules)) {
         stand.hurts = (below & QcPathCell::hurtsFlag) != 0;
         stand.slippery = QcPathCell::kindOf(below) == QcPathCell::Kind::Solid && (below & QcPathCell::slipperyFlag) != 0;
     } else {

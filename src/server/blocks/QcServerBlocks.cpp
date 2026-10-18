@@ -6,6 +6,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/items/QcServerExperience.h"
+#include "server/mobs/QcInfestation.h"
 
 #include <algorithm>
 
@@ -104,6 +105,8 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
         if (doubleSlab) {
             dropBlockItems(*previous, pos);
         }
+        // An infested block lets its creature out (decision E-453).
+        QcInfestation::release(m_state, definition, pos);
     }
 
     m_state.plants().blockRemoved(pos, *previous, m_state.world());

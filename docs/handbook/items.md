@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spider eye](#item-qtcraft-spider_eye) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -444,6 +444,15 @@ The hardest material, for the best tools.
 
 [Diamond ore](blocks.md#block-qtcraft-diamond_ore)
 
+### <a id="item-qtcraft-egg"></a>Egg
+
+Laid by chickens. Thrown with the use button, it bursts where it lands; one egg in eight hatches a chick there, and now and then even four.
+
+| | |
+|---|---|
+| ID | `qtcraft:egg` |
+| Stack size | 16 |
+
 ### <a id="item-qtcraft-emerald"></a>Emerald
 
 A green gem and the money of the villagers: they pay in emeralds for what they buy and ask for them for what they sell.
@@ -484,7 +493,7 @@ Dropped by endermen. Thrown with the use button, it carries you to where it land
 
 ### <a id="item-qtcraft-feather"></a>Feather
 
-Light and soft. Zombies sometimes drop one. With flint and a stick it makes arrows.
+Light and soft. Chickens drop them. With flint and a stick it makes arrows.
 
 | | |
 |---|---|
@@ -497,7 +506,7 @@ Light and soft. Zombies sometimes drop one. With flint and a stick it makes arro
 
 **Dropped by**
 
-[Zombie](creatures.md#mob-qtcraft-zombie) (25 %)
+[Chicken](creatures.md#mob-qtcraft-chicken) (50 %)
 
 ### <a id="item-qtcraft-fired_lamp_shell"></a>Fired lamp shell
 
@@ -1220,6 +1229,19 @@ Thrown with the use button, one at a time and at once. It does no harm but pushe
 
 [Snow block](blocks.md#block-qtcraft-snow_block) (4×), [Snow layer](blocks.md#block-qtcraft-snow_layer)
 
+### <a id="item-qtcraft-spider_eye"></a>Spider eye
+
+Spiders sometimes drop one. Its picture marks poison next to the hearts.
+
+| | |
+|---|---|
+| ID | `qtcraft:spider_eye` |
+| Stack size | 64 |
+
+**Dropped by**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider) (33 %), [Spider](creatures.md#mob-qtcraft-spider) (33 %)
+
 ### <a id="item-qtcraft-stick"></a>Stick
 
 Handle of tools and torches.
@@ -1262,7 +1284,7 @@ Thread from a cobweb; four make white wool.
 
 **Dropped by**
 
-[Cobweb](blocks.md#block-qtcraft-cobweb)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Cobweb](blocks.md#block-qtcraft-cobweb), [Spider](creatures.md#mob-qtcraft-spider) (50 %)
 
 ### <a id="item-qtcraft-sugar"></a>Sugar
 

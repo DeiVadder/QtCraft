@@ -8,6 +8,7 @@
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/gameplay/QcItemStack.h"
+#include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/physics/QcPlayerInput.h"
 
@@ -111,13 +112,15 @@ struct OpenCrafting
 };
 
 // Server -> client: the receiving player's health; dead players wait for Respawn. Also sent when the
-// player catches fire or stops burning (`burning`, decision E-393).
+// player catches fire or stops burning (`burning`, decision E-393), and when his status effects
+// change and every second while he has any (`effects`, decision E-450).
 struct PlayerHealth
 {
     double health = 0.0;
     double maxHealth = 0.0;
     bool dead = false;
     bool burning = false;
+    QList<QcStatusEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 // Client -> server: leave the death screen.

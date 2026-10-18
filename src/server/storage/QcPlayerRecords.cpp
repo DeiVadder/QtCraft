@@ -32,6 +32,7 @@ QcPlayerData of(const QcServerClient &client, const QcContentRegistry &content, 
     player.keptInventory = client.keptInventory;
     player.keptEquipment = client.keptEquipment;
     player.experience = client.experience;
+    player.effects = client.effects.all();
     return player;
 }
 
@@ -49,6 +50,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.keptInventory = player.keptInventory;
     client.keptEquipment = player.keptEquipment;
     client.experience = player.experience;
+    client.effects.restore(player.effects);
     QcServerGameModes::applyRules(client);
 }
 

@@ -1,0 +1,28 @@
+{
+    "name": "mob.spider.death",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.6,
+            "attack": 0.01,
+            "curve": 1.2,
+            "highpass": 1200,
+            "lowpass": 5000,
+            "tremoloRate": 25,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "square",
+            "duration": 0.4,
+            "frequency": 500,
+            "endFrequency": 150,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 1500,
+            "gain": 0.4
+        }
+    ]
+}

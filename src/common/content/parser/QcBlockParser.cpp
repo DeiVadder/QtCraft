@@ -196,6 +196,16 @@ void parseMiningFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     block.fuelSeconds = reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }
 
+// An infested block (decision E-453): the block it stands in for and the creature inside.
+void parseInfested(QcBlockDefinition &block, QcJsonFieldReader &infestedReader, const QString &packNamespace)
+{
+    block.infestsBlock = infestedReader.name(u"block"_s, packNamespace);
+    block.infestsMob = infestedReader.name(u"mob"_s, packNamespace);
+    if (infestedReader.ok() && (block.infestsBlock.isEmpty() || block.infestsMob.isEmpty())) {
+        infestedReader.fail(u"needs 'block' and 'mob'"_s);
+    }
+}
+
 void parseMachine(QcBlockDefinition &block, QcJsonFieldReader &machineReader, const QString &packNamespace)
 {
     block.machine.category = machineReader.string(u"category"_s, QString::fromLatin1(QcSmeltingRecipe::defaultCategory));
@@ -630,6 +640,9 @@ namespace QcBlockParser {
     });
     parseDrops(json, block, reader, packNamespace);
     block.experience = QcContentFields::parseExperience(u"experience"_s, reader);
+    reader.nestedObject(u"infested"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseInfested(block, nested, packNamespace);
+    });
     reader.nestedObject(u"sapling"_s, [&block, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         parseSapling(object, block, nested, packNamespace);
     });

@@ -1,0 +1,185 @@
+{
+    "name": "chicken",
+    "sounds": {
+        "ambient": "mob.chicken.ambient",
+        "hurt": "mob.chicken.hurt",
+        "death": "mob.chicken.death"
+    },
+    "health": 4,
+    "width": 0.4,
+    "height": 0.7,
+    "walkSpeed": 1.0,
+    "chaseSpeed": 2.5,
+    "hostile": false,
+    "maxFallSpeed": 2.5,
+    "spawn": {
+        "time": "day",
+        "blocks": [
+            "grass_block"
+        ],
+        "maxGroup": 4,
+        "weight": 2
+    },
+    "model": [
+        {
+            "from": [
+                -0.1875,
+                0.3125,
+                -0.25
+            ],
+            "to": [
+                0.1875,
+                0.6875,
+                0.25
+            ],
+            "texture": "chicken_feathers"
+        },
+        {
+            "from": [
+                -0.125,
+                0.5625,
+                -0.4375
+            ],
+            "to": [
+                0.125,
+                0.9375,
+                -0.25
+            ],
+            "texture": "chicken_feathers"
+        },
+        {
+            "from": [
+                -0.125,
+                0.6875,
+                -0.5625
+            ],
+            "to": [
+                0.125,
+                0.8125,
+                -0.4375
+            ],
+            "texture": "chicken_beak"
+        },
+        {
+            "from": [
+                -0.0625,
+                0.5625,
+                -0.5
+            ],
+            "to": [
+                0.0625,
+                0.6875,
+                -0.4375
+            ],
+            "texture": "chicken_wattle"
+        },
+        {
+            "from": [
+                0.1875,
+                0.4375,
+                -0.1875
+            ],
+            "to": [
+                0.25,
+                0.6875,
+                0.1875
+            ],
+            "texture": "chicken_feathers"
+        },
+        {
+            "from": [
+                -0.25,
+                0.4375,
+                -0.1875
+            ],
+            "to": [
+                -0.1875,
+                0.6875,
+                0.1875
+            ],
+            "texture": "chicken_feathers"
+        },
+        {
+            "from": [
+                0.0625,
+                0,
+                -0.0312
+            ],
+            "to": [
+                0.125,
+                0.3125,
+                0.0312
+            ],
+            "texture": "chicken_leg"
+        },
+        {
+            "from": [
+                -0.125,
+                0,
+                -0.0312
+            ],
+            "to": [
+                -0.0625,
+                0.3125,
+                0.0312
+            ],
+            "texture": "chicken_leg"
+        },
+        {
+            "from": [
+                0.0312,
+                0,
+                -0.1562
+            ],
+            "to": [
+                0.1562,
+                0.0312,
+                0.0312
+            ],
+            "texture": "chicken_leg"
+        },
+        {
+            "from": [
+                -0.1562,
+                0,
+                -0.1562
+            ],
+            "to": [
+                -0.0312,
+                0.0312,
+                0.0312
+            ],
+            "texture": "chicken_leg"
+        }
+    ],
+    "drops": [
+        {
+            "item": "feather",
+            "chance": 0.5
+        },
+        {
+            "item": "feather",
+            "chance": 0.5
+        },
+        {
+            "item": "raw_chicken"
+        }
+    ],
+    "experience": [
+        1,
+        3
+    ],
+    "breeding": {
+        "food": [
+            "wheat_seeds",
+            "melon_seeds",
+            "pumpkin_seeds"
+        ]
+    },
+    "lays": {
+        "item": "egg",
+        "minSeconds": 300,
+        "maxSeconds": 600,
+        "sound": "mob.chicken.plop"
+    }
+}

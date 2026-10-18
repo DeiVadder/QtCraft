@@ -24,6 +24,10 @@ class QcPlayerController : public QObject
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
     // On fire (decision E-393): the HUD shows flames at the bottom of the view.
     Q_PROPERTY(bool burning READ burning NOTIFY healthChanged FINAL)
+    // Status effects (decision E-450): {name, label, icon, colour, seconds, level, levelName} each; the hearts
+    // take the colour of the first effect that tints them ("" for the usual red).
+    Q_PROPERTY(QVariantList effects READ effects NOTIFY healthChanged FINAL)
+    Q_PROPERTY(QString heartColour READ heartColour NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
     Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
     // Experience (decision E-398): the level and the share of the way to the next one (0..1).
@@ -57,6 +61,8 @@ public:
     double maxHealth() const;
     bool dead() const;
     bool burning() const;
+    QVariantList effects() const;
+    QString heartColour() const;
     int food() const;
     int maxFood() const;
     int experienceLevel() const;

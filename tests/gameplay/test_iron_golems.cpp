@@ -198,6 +198,41 @@ private slots:
         QCOMPARE(mob(golem)->motion.velocity.x, 0.0);
     }
 
+    // Spiders, cave spiders and silverfish are hostile, so golems hunt them as the reference's golems
+    // hunt every monster (a spider neutral by day too); a golem's blow provokes no spider at a player.
+    // Chickens are animals and left alone (decisions E-451 to E-453, E-471).
+    void aGolemHuntsSpidersAndSilverfishButNotChickens_data()
+    {
+        QTest::addColumn<QString>("prey");
+        QTest::newRow("spider") << u"spider"_s;
+        QTest::newRow("cave spider") << u"cave_spider"_s;
+        QTest::newRow("silverfish") << u"silverfish"_s;
+    }
+
+    void aGolemHuntsSpidersAndSilverfishButNotChickens()
+    {
+        QFETCH(QString, prey);
+        joinArena();
+        chat(u"/gamemode creative"_s);
+        const quint32 golem = spawn("iron_golem", 0, -8);
+        const quint32 hunted = spawn(prey.toLatin1().constData(), 6, -8);
+        const quint32 chicken = spawn("chicken", -4, -8);
+        bool provoked = false;
+        const bool killed = tickUntil(
+            [&] {
+                if (const QcCreature *target = mob(hunted)) {
+                    provoked = provoked || target->provokedBy != 0;
+                    return false;
+                }
+                return true;
+            },
+            600);
+        QVERIFY(killed);
+        QVERIFY(!provoked);
+        QVERIFY(mob(golem) && mob(chicken));
+        QCOMPARE(mob(chicken)->health, m_content->mobs()[type("chicken")].maxHealth);
+    }
+
     // Endermen count as hostile, so golems hunt them; a golem's blow comes from no player and so
     // provokes the enderman at nobody (decision E-460).
     void aGolemHuntsEndermenWithoutProvokingThemAtPlayers()
@@ -468,7 +503,7 @@ private slots:
     {
         QcEntityRecord record;
         record.chunk = {0, 0};
-        QcMobManager::Stored built{type("iron_golem"), {8.5, 65.0, 8.5}, 0.0f, 60.0, 0.0, 0.0, false, std::nullopt, 12};
+        QcMobManager::Stored built{.type = type("iron_golem"), .position = {8.5, 65.0, 8.5}, .health = 60.0, .villager = std::nullopt, .uid = 12};
         built.playerBuilt = true;
         QcMobManager::Stored village = built;
         village.uid = 13;

@@ -1,0 +1,8 @@
+{
+    "name": "spider_body",
+    "pattern": "speckle",
+    "primary": "#3a302a",
+    "secondary": "#241d19",
+    "variation": 0.08,
+    "seed": 5410
+}

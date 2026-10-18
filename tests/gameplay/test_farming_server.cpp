@@ -43,6 +43,14 @@ private:
         QVERIFY(m_server->items().spawn(drop, 800000 + quint32(m_server->items().items().size())) != 0);
     }
 
+    // Joins without the creatures the chunks brought: which kinds come depends on all kinds of the
+    // content (a new peaceful kind changes the groups), the pigs counted are the test's own.
+    void joinWithoutCreatures()
+    {
+        join();
+        m_server->mobs().removeAll();
+    }
+
     int pigCount() const
     {
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
@@ -371,7 +379,7 @@ private slots:
 
     void fedAnimalsGetYoungOnes()
     {
-        join();
+        joinWithoutCreatures();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         const quint32 first = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900001, false, true);
         const quint32 second = m_server->mobs().spawn(pig, QcVec3{m_feet.x - 1.5, double(m_feet.y), m_feet.z + 2.5}, 900002, false, true);
@@ -426,7 +434,7 @@ private slots:
 
     void animalsBreedOnlyWhenTheySeeEachOther()
     {
-        join();
+        joinWithoutCreatures();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         // A wall three blocks high between two pigs in love, long enough not to walk around in time.
         for (int x = m_feet.x - 6; x <= m_feet.x + 6; ++x) {
@@ -462,7 +470,7 @@ private slots:
 
     void youngOnesAreBornOnTheGroundOfAParent()
     {
-        join();
+        joinWithoutCreatures();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         // One parent on the ground, the other on a pillar two blocks high, both in sight.
         const QcBlockPos pillar = m_feet.offset(2, 0, 2);

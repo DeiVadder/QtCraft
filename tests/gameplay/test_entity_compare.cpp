@@ -21,7 +21,8 @@ using namespace Qt::StringLiterals;
 // move an item or cart sends in the tick it comes to rest (its stop sample, decision E-399), with the
 // creatures walking their paths and the zombie no longer striking the player through the floor
 // (path finding and melee with a line of sight, decision E-400) and hunters that pick only players
-// they see and wander until then (decision E-401). With
+// they see and wander until then (decision E-401), and with pigs instead of sheep as the animals a
+// chunk brings since chickens joined the peaceful kinds (decision E-452). With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there; QTCRAFT_COMPARE_WORLD=<dir> keeps a
 // copy of the saved world.
 class TestEntityCompare : public QcMachineFixture

@@ -8,6 +8,7 @@
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/items/QcServerExperience.h"
+#include "server/mobs/QcMobLaying.h"
 
 QcServerAnimals::QcServerAnimals(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)
@@ -48,6 +49,23 @@ QcServerAnimals::Feeding QcServerAnimals::feed(QcServerClient &client, quint32 m
     return Feeding::Fed;
 }
 
+quint32 QcServerAnimals::spawnYoung(QcServerState &state, int type, const QcVec3 &position)
+{
+    QcMobBreeding limits(state.contentPointer());
+    limits.setLimits(state.config().limits.breedingCrowd, state.config().limits.bredPerKind);
+    QcMobManager &creatures = state.entities().creatures();
+    if (!limits.roomFor(creatures.mobs(), type, position)) {
+        return 0;
+    }
+
+    const quint32 id = creatures.spawn(type, position, state.entities().newId(), false, true);
+    if (QcCreature *young = creatures.find(id)) {
+        young->growUp = state.content().mobs()[type].breeding.growUpSeconds;
+        young->bred = true;
+    }
+    return id;
+}
+
 void QcServerAnimals::tick()
 {
     m_breeding.setLimits(m_state.config().limits.breedingCrowd, m_state.config().limits.bredPerKind);
@@ -62,5 +80,22 @@ void QcServerAnimals::tick()
         m_sounds.play(m_state.content().mobs()[birth.type].ambientSound, birth.position);
         // The parents' reward, as in the reference (decision E-398).
         QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, m_state.content().mobs()[birth.type].breeding.experience), birth.position);
+    }
+
+    layEggs();
+}
+
+void QcServerAnimals::layEggs()
+{
+    QcEntities &entities = m_state.entities();
+    const QList<QcMobLaying::Laid> laid = QcMobLaying::tick(m_state.content(), entities.creatures().editableMobs(), m_state.random(), QcPhysics::tickDuration);
+    for (const QcMobLaying::Laid &egg : laid) {
+        // Like a block's drop (decision E-028): scattered a little from its feet.
+        if (const std::optional<QcItemId> item = m_state.content().itemId(egg.item)) {
+            entities.items().spawnScattered({*item, 1, 0}, egg.position + QcVec3{0.0, 0.25, 0.0}, entities.newId());
+        }
+        if (!egg.sound.isEmpty()) {
+            m_sounds.play(egg.sound, egg.position);
+        }
     }
 }

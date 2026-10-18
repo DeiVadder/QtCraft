@@ -1,0 +1,8 @@
+{
+    "name": "chicken_feathers",
+    "pattern": "speckle",
+    "primary": "#f4f2ec",
+    "secondary": "#d8d4cc",
+    "variation": 0.05,
+    "seed": 5501
+}

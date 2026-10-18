@@ -2118,3 +2118,22 @@ Release-Builds, `dev` `506cab9` (52.3) gegen `feature/52-6-iron-golem` nach Nach
 **Headless** (`@server horde village village-night`, 3 Runden, 60 Spielsekunden): crowd, horde, village, village-night, explore, farm −5 bis +4 % bei gleicher Wesenzahl; Signal-Stationen +20 bis +26 % (0,040 → 0,049 ms) bei 22 statt 16 Wesen: Dorfbewohner, Zombie und Golems der neuen Stationen `golem_farm` und `golem_workshop`, etwa 1,5 µs je Wesen; Speicher 0 bis +3 %.
 
 **Fenster** (`@core village`, 8 Chunks, 6 Runden): GPU −2 bis +4 %, Render-CPU −6 bis +6 %, GUI-CPU −7 bis +0 %; sprint Render-CPU +14 % und GUI-CPU +20 % mit überlappenden Spannen und gleicher Entity-Zahl (wie in der Messung von 52.3: das Szenario streut); showcase 16 statt 12 Entities im Blick bei GPU +4 %; p99 10,3–10,4 ms, Speicher +0–1 %. Keine Regression.
+
+## 52.2 (Spinnen klettern, Vergleich mit Zombies) headless, Debug (2026-10-18)
+
+`QTCRAFT_SPIDER_MEASURE=full build/debug/tests/test_spiders climbingSpidersMeasure`, **Debug** (Release-Zahlen kommen zentral), Ticks von Hand so schnell der Server kann. Ein Spieler auf einem 3 × 3 Steinturm, vier Blöcke hoch, bei Nacht; 50 Wesen im Ring 6–10 m um ihn, 400 Ticks (20 s Spielzeit), der Spieler wird jeden Tick geheilt. Spinnen klettern den Turm hinauf und jagen ihn (alle 50 oben), Zombies können nicht klettern und sammeln sich am Fuß (keiner oben). Drei Läufe, Rechner stark belastet (Last 55–87 durch andere Sitzungen und ein volles Verify), daher nur das Verhältnis aussagekräftig:
+
+| Art | Tick Ø ms | Tick max ms | `mobs` Ø ms |
+|---|---|---|---|
+| Spinne (klettert, jagt) | 5,8–6,4 | 51–77 | 5,5–6,0 |
+| Zombie (erreicht ihn nicht) | 8,7–9,0 | 70–120 | 8,4–8,6 |
+
+**Bewertung:** Kletternde Spinnen kosten in der Phase der Wesen rund 30 % weniger als Zombies, die vor dem Turm keinen Weg finden und ihn immer wieder suchen; das Klettern (Fühl-Kasten an der Wand je Tick, Wege mit `climbsWalls`) ist also kein neuer Engpass. Absolut in Debug unter Last etwa 0,12 ms je Spinne und Tick.
+
+## 52.2 (Status-Effekte, Spinnen, Hühner, Silberfische; mit dev zusammengeführt) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `4063175` (52.6) gegen `feature/52-2-spiders` nach dem Zusammenführen, verschränkt, Mediane.
+
+**Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, explore −5 bis 0 %, gravel-collapse und Felder ±0 %; Signal-Stationen +26 bis +33 % (0,046 → 0,058 ms) bei 36 statt 22 Wesen: Spinnenhöhle, Silberfisch-Wand und Hühnerstall der Showcase, etwa 0,9 µs je Wesen; Speicher +1 bis +2 %.
+
+**Fenster** (`@core horde`, 8 Chunks, 6 Runden): GPU −8 bis +2 %, Render-CPU −10 bis +2 %, GUI-CPU −4 bis +5 %, Speicher ±0 %; showcase 18 statt 16 Entities im Blick (neue Gehege) bei GPU −3 %. p99 bei beiden Ständen 15,8–16,8 ms (Desktop am Morgen belebt, verpasste VSyncs von außen wie früher). Keine Regression.

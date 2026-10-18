@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
+#include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPose.h"
 #include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
@@ -53,6 +54,10 @@ struct QcCreature : QcEntity
     // `targetMemory` seconds after it lost sight of them (decision E-401).
     quint32 chasing = 0;
     double targetMemory = 0.0;
+    // A creature neutral by day (QcMobDefinition::neutralByDay, decision E-451) leaves players alone
+    // in this tick (set by QcMobBehaviour before it thinks; not while a player it was struck by makes
+    // it angry, provokedBy and angerTimer). Not saved.
+    bool calm = false;
     // The speed it decided on when it last thought: a throttled creature in a crowd coasts along its
     // path at it between its thoughts (decisions E-401, E-402).
     double lastSpeed = 0.0;
@@ -65,6 +70,9 @@ struct QcCreature : QcEntity
     double growUp = 0.0;
     // Born from breeding (counted against QcMobBreeding::maxBredPerKind).
     bool bred = false;
+    // Seconds until it lays next (QcMobDefinition::laying, decision E-452); below 0 until QcMobLaying
+    // first chooses a time. Saved with persistent creatures while it runs (QcEntityCodec::Component::Laying).
+    double layTimer = -1.0;
     // How it holds itself (decision E-423): a villager lies in its bed, where the physics leaves it
     // (decision E-411). Its box (QcEntities::boxOf), its eyes and its animation follow from it; not
     // saved, a loaded creature stands.
@@ -94,16 +102,22 @@ struct QcCreature : QcEntity
     // shows the clients the new place at once (not slid there); not saved.
     std::optional<QcVec3> teleportedFrom;
     // A neutral creature (QcMobDefinition::Ai::Neutral) chases the player that provoked it for
-    // `angerTimer` seconds more (renewed while it sees them); 0 for none. Not saved.
+    // `angerTimer` seconds more (renewed while it sees them); 0 for none. A creature neutral by day
+    // (a spider) hunts the player whose blow or shot hurt it for QcMobSteering::provokedSeconds,
+    // only that one (decision E-451). Not saved.
     quint32 provokedBy = 0;
     double angerTimer = 0.0;
     // The player whose blow or shot hurt it last (QcMobManager::damage; 0: none, or damage without
     // a player such as lightning, fire or water): a neutral creature turns on that player when it
-    // next thinks, which clears it (other brains leave it); not saved.
+    // next thinks, a creature neutral by day before it thinks (QcMobSteering::provoke); both clear
+    // it (other brains leave it). Not saved.
     quint32 struckBy = 0;
     // Whether a player built it, its prey and its anger (QcMobDefinition::Ai::Golem, decision E-471):
     // a component only creatures with the golem AI have.
     QcComponent<QcGolemState> golem;
+    // Status effects (decision E-450): a component only creatures that have any carry
+    // (QcServerEffects gives and drops it); saved with persistent creatures.
+    QcComponent<QcStatusEffects> effects;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give

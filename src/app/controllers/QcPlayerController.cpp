@@ -6,6 +6,7 @@
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcCrafting.h"
 
+#include <QColor>
 #include <QVariantMap>
 
 using namespace Qt::StringLiterals;
@@ -62,6 +63,44 @@ bool QcPlayerController::dead() const
 bool QcPlayerController::burning() const
 {
     return m_parts.session && m_parts.session->vitals().burning();
+}
+
+QVariantList QcPlayerController::effects() const
+{
+    QVariantList list;
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    if (!content) {
+        return list;
+    }
+    for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
+        const QcEffectDefinition *definition = content->effect(effect.name);
+        if (!definition) {
+            continue;
+        }
+        list.append(QVariantMap{{u"name"_s, effect.name},
+                                {u"label"_s, content->translate(definition->translationKey, m_settings.contentLanguage())},
+                                {u"icon"_s, definition->icon},
+                                {u"colour"_s, QColor(QRgb(definition->colour)).name()},
+                                {u"seconds"_s, (effect.ticksLeft + 19) / 20},
+                                {u"level"_s, effect.level},
+                                {u"levelName"_s, QcStatusEffects::levelName(effect.level)}});
+    }
+    return list;
+}
+
+QString QcPlayerController::heartColour() const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    if (!content) {
+        return {};
+    }
+    for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
+        const QcEffectDefinition *definition = content->effect(effect.name);
+        if (definition && definition->tintsHearts) {
+            return QColor(QRgb(definition->colour)).name();
+        }
+    }
+    return {};
 }
 
 int QcPlayerController::food() const

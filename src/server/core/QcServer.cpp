@@ -60,6 +60,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_trading(m_state, m_sounds, m_inventory, m_screens)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
+    , m_effects(m_state, m_sounds, m_health)
     , m_lightning(m_state, m_sounds, m_health, m_ignition)
     , m_snowfall(m_state, m_blocks, m_weather)
     , m_entitySync(m_state)
@@ -586,6 +587,7 @@ void QcServer::simulate()
     m_creatures.tick();
     m_environment.applyContactDamage();
     m_burning.tick();
+    m_effects.tick();
     m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_projectiles.tick();

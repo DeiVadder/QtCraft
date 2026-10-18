@@ -14,6 +14,16 @@ inline constexpr double eyeShare = 0.85;
 inline constexpr int sightCheckTicks = 10;
 inline constexpr double targetMemorySeconds = 5.0;
 
+// A leaper (QcMobDefinition::leapSpeed, decision E-451) leaps at a target between these distances
+// on the ground and at most a block above or below it, with this chance in each tick it thinks, this
+// fast upwards.
+inline constexpr double leapMin = 2.0;
+inline constexpr double leapMax = 4.0;
+inline constexpr double leapChance = 0.2;
+inline constexpr double leapLift = 6.0;
+// Seconds a creature neutral by day stays angry at the player that hurt it (decision E-451).
+inline constexpr double provokedSeconds = 30.0;
+
 // Yaw in degrees for a horizontal direction (0 looks north, -Z).
 float yawTowards(const QcVec3 &direction);
 // The player the creature chases this tick (QcCreature::chasing), nullptr for none. When it `looks`,
@@ -28,6 +38,18 @@ const QcMobManager::PlayerView *chooseTarget(QcCreature &mob, const QcMobDefinit
 // as for player attacks, decision E-092): no blows through walls or glass.
 bool inMelee(const QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
              const QcBlockAccess &world);
+// A creature neutral by day turns on the player whose blow or shot hurt it since it last thought
+// (QcCreature::struckBy, decision E-451) for provokedSeconds; damage without a player (a fall, fire)
+// provokes nobody. The anger ends early when that player is gone, dead or no target.
+void provoke(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players);
+// The player an angry creature neutral by day hunts, whatever the time of day; nullptr for none.
+const QcMobManager::PlayerView *provoker(const QcCreature &mob, const QcMobDefinition &definition,
+                                         const QList<QcMobManager::PlayerView> &players);
+// Whether a creature neutral by day leaves players alone now (decision E-451): by day, above ground
+// (not spawned in a cave) and not angry at a player (provoke).
+bool calm(const QcCreature &mob, const QcMobDefinition &definition, double worldTime);
+// A leaper on the ground leaps at a target within its range now and then; true when it leapt.
+bool leap(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target, QRandomGenerator &random);
 // Turns towards a target in melee (inMelee) and strikes it when the attack is ready.
 void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
             QList<QcMobManager::PlayerHit> &hits);

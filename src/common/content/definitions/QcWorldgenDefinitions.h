@@ -104,6 +104,9 @@ struct QcOreDefinition
     int maxY = 64;
     int veinsPerChunk = 8;
     int veinSize = 6;
+    // Biomes a vein may lie in (the biome of the column where it starts); empty for all (decision
+    // E-453: infested stone only in the mountains).
+    QList<QString> biomes;
 };
 
 struct QcTerrainSettings

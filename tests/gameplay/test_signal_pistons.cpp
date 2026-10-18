@@ -24,7 +24,7 @@ std::shared_ptr<const QcContentRegistry> contentWithDirectPiston()
 } // namespace
 
 // Signal Pistons on a running server (decisions E-337, E-338): the push limit, immovable and breaking
-// blocks, sticky pulling, quasi-connectivity (BUD) with the game rule and per block, 0-tick pulses
+// blocks, sticky pulling, infested blocks moved whole, quasi-connectivity (BUD) with the game rule and per block, 0-tick pulses
 // and block spitting, chests and furnaces moved with their contents across chunk borders and through
 // a save, bodies pushed, conflicting pistons, and one machine that behaves the same in all four
 // turns and at other coordinates.
@@ -183,6 +183,25 @@ private slots:
         QVERIFY(!flag(1, 0, 5, u"extended"_s));
         QVERIFY(isBlock(2, 0, 5, "gold_block"));
         QVERIFY(isBlock(3, 0, 5, "air"));
+    }
+
+    void infestedBlocksMoveWithoutLettingTheirCreatureOut()
+    {
+        // Pushed and pulled back by a sticky piston (decision E-453): no silverfish comes out.
+        buildArea();
+        put(0, 0, 5, u"lever[attach=floor]"_s);
+        put(1, 0, 5, u"sticky_signal_piston[facing=east]"_s);
+        put(2, 0, 5, u"infested_stone"_s);
+        ticks(1);
+        m_server->mobs().removeAll();
+        flip(0, 0, 5);
+        ticks(4);
+        QVERIFY(isBlock(3, 0, 5, "infested_stone"));
+        flip(0, 0, 5);
+        ticks(4);
+        QVERIFY(isBlock(2, 0, 5, "infested_stone"));
+        const int silverfish = *m_content->mobIndex(u"qtcraft:silverfish"_s);
+        QCOMPARE(std::ranges::count(m_server->mobs().mobs(), silverfish, &QcCreature::type), 0);
     }
 
     void budPistonWaitsForAnUpdate_data()

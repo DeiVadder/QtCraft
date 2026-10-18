@@ -125,7 +125,7 @@ void QcExperienceOrbManager::step(QcExperienceOrb &orb, const QList<PlayerView> 
         orb.motion.velocity.y = std::min(floatSpeed, orb.motion.velocity.y + floatSpeed * 0.5);
     }
 
-    QcPhysics::stepEntity(orb.motion, QcPhysics::Steering{wish, speed, false, false}, QcPhysics::BodySize{size, size}, world, dt);
+    QcPhysics::stepEntity(orb.motion, QcPhysics::Steering{.wish = wish, .speed = speed}, QcPhysics::BodySize{size, size}, world, dt);
 
     orb.resting = !target && orb.motion.onGround && !orb.motion.inWater && orb.motion.velocity.length() < restSpeed;
 }

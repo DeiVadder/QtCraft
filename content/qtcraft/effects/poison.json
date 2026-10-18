@@ -1,0 +1,9 @@
+{
+    "name": "poison",
+    "icon": "spider_eye",
+    "colour": "#4e9331",
+    "tintsHearts": true,
+    "damage": 1,
+    "periodTicks": 25,
+    "minHealth": 1
+}

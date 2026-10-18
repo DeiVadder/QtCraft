@@ -4,11 +4,13 @@
     "icon": "iron_sword",
     "sections": [
         "health",
-        "fighting"
+        "fighting",
+        "effects"
     ],
     "related": [
         "iron_sword",
         "zombie",
-        "lava"
+        "lava",
+        "spider_eye"
     ]
 }

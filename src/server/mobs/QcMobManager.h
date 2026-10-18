@@ -8,6 +8,7 @@
 #include "server/entities/QcEntityComponent.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/mobs/QcMobCrowd.h"
+#include "server/mobs/QcMobExchange.h"
 #include "server/projectiles/QcProjectileManager.h"
 #include "server/villages/QcVillager.h"
 
@@ -51,81 +52,12 @@ public:
     // push, lifting `lift` times a blow's lift (a golem's blow throws upwards, decision E-471).
     static QcVec3 knockbackVelocity(const QcVec3 &away, double strength, double lift = 1.0);
 
-    // A persistent mob as saved with the world.
-    struct Stored
-    {
-        int type = 0;
-        QcVec3 position;
-        float yaw = 0.0f;
-        double health = 0.0;
-        double breedCooldown = 0.0;
-        double growUp = 0.0;
-        bool bred = false;
-        // A villager's home, work and profession (decision E-411).
-        std::optional<QcVillagerRecord> villager;
-        // Its persistent id (QcCreature::uid) and what its entry holds that this version does
-        // not use (decision E-420).
-        quint64 uid = 0;
-        QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
-        // A golem a player built (decision E-471).
-        bool playerBuilt = false;
-        // The block it carries, whether it is kept only for that block and whether it stays in its
-        // enclosure (decision E-460).
-        QcBlockId carried = qcAirBlockId;
-        bool keptForBlock = false;
-        bool confined = false;
-
-        bool operator==(const Stored &) const = default;
-    };
-
-    // What the mob logic needs to know about a player.
-    struct PlayerView
-    {
-        quint32 entityId = 0;
-        QcVec3 position;
-        bool alive = true;
-        // Creatures leave invulnerable players (creative mode) alone.
-        bool targetable = true;
-        // Where the player looks (a unit vector; zero for unknown): a look at a head provokes
-        // neutral creatures with a gaze (decision E-460).
-        QcVec3 look = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
-        // Villages hold their grudges by name (QcGolemGrudges).
-        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
-    };
-
-    // A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
-    // carries out after the tick with the usual block changes (QcCreatureTraits): taking only when
-    // `block` is still there, placing only into air; dropping (game rule mobGriefing off) lets the
-    // carried block fall as an item.
-    struct BlockAction
-    {
-        enum class Kind : quint8 { Take, Place, Drop };
-        Kind kind = Kind::Take;
-        quint32 mob = 0;
-        QcBlockPos pos;
-        QcBlockId block = qcAirBlockId;
-    };
-
-    struct PlayerHit
-    {
-        quint32 playerEntityId = 0;
-        double damage = 0.0;
-        QcVec3 knockback;
-        // Times a blow's usual lift (a golem's throws upwards, decision E-471).
-        double lift = 1.0;
-    };
-
-    // A blow of one creature at another (a golem at a hostile creature, decision E-471); the server
-    // deals it after the tick (QcServerCreatures).
-    struct CreatureHit
-    {
-        quint32 attacker = 0;
-        quint32 target = 0;
-        double damage = 0.0;
-        // Where the blow comes from (the push goes away from it) and how far it throws upwards.
-        QcVec3 from;
-        double lift = 1.0;
-    };
+    // The data exchanged with the server and the brains (QcMobExchange).
+    using Stored = QcMobExchange::Stored;
+    using PlayerView = QcMobExchange::PlayerView;
+    using BlockAction = QcMobExchange::BlockAction;
+    using PlayerHit = QcMobExchange::PlayerHit;
+    using CreatureHit = QcMobExchange::CreatureHit;
 
     // Why a creature left the store: it died, was removed without a death (caught, commands),
     // despawned far from the players or in daylight, fell into the void, or its chunk unloaded (it

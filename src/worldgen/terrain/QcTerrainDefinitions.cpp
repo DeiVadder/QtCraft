@@ -165,6 +165,14 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     ore.veins = definition.veinsPerChunk;
     ore.veinSize = definition.veinSize;
     ore.seed = seed;
+    for (const QString &biome : definition.biomes) {
+        const auto found = std::ranges::find(m_content.biomes(), biome, &QcBiomeDefinition::name);
+        if (found != m_content.biomes().end()) {
+            ore.biomes.insert(int(found - m_content.biomes().begin()));
+        } else {
+            warn(u"Ore %1 references unknown biome %2"_s.arg(definition.name, biome));
+        }
+    }
     if (ore.block == qcAirBlockId) {
         return std::nullopt;
     }

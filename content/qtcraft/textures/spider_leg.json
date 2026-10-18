@@ -1,0 +1,8 @@
+{
+    "name": "spider_leg",
+    "pattern": "noise",
+    "primary": "#2a221e",
+    "secondary": "#1a1512",
+    "variation": 0.08,
+    "seed": 5412
+}

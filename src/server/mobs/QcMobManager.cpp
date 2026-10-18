@@ -155,7 +155,6 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
         mob.fleeTimer = QcPassiveBrain::fleeSeconds;
         mob.wanderDirection = away;
     }
-
     if (mob.health > 0.0) {
         return std::nullopt;
     }
@@ -397,6 +396,10 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     stored.bred = mob.bred;
     stored.villager = villager;
     stored.uid = mob.uid;
+    if (mob.effects) {
+        stored.effects = mob.effects->all();
+    }
+    stored.layTimer = mob.layTimer;
     stored.kept = mob.kept;
     stored.playerBuilt = mob.golem && mob.golem->playerBuilt;
     stored.carried = mob.carried;
@@ -437,6 +440,10 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.growUp = std::max(0.0, stored.growUp);
         mob.bred = stored.bred;
         mob.kept = stored.kept;
+        if (!stored.effects.isEmpty()) {
+            mob.effects.emplace().restore(stored.effects);
+        }
+        mob.layTimer = stored.layTimer;
         mob.confined = stored.confined;
         carryBlock(mob, stored.carried);
         mob.keptForBlock = stored.keptForBlock && mob.carried != qcAirBlockId;

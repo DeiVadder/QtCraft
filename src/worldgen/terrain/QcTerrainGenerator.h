@@ -71,7 +71,7 @@ private:
     void fillColumn(QcChunk &chunk, int localX, int localZ, const Column &column) const;
     // Per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     QList<bool> carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
-    void placeOres(QcChunk &chunk) const;
+    void placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
     // Grows one compact vein of `ore` into `cells` (chunk-local, starting from cells[0]).
     void growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const;
     void placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const;

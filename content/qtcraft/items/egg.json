@@ -1,0 +1,11 @@
+{
+    "name": "egg",
+    "texture": "egg",
+    "maxStack": 16,
+    "projectile": "egg",
+    "throwable": {
+        "speed": 30.0,
+        "cooldownSeconds": 0.25,
+        "inaccuracyDegrees": 1.0
+    }
+}

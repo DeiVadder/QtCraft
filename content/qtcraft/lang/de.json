@@ -541,5 +541,20 @@
     "mob.qtcraft.enderman": "Enderman",
     "appearance.qtcraft.enderman": "Enderman",
     "item.qtcraft.bone": "Knochen",
-    "item.qtcraft.bone_meal": "Knochenmehl"
+    "item.qtcraft.bone_meal": "Knochenmehl",
+    "effect.qtcraft.poison": "Vergiftung",
+    "item.qtcraft.spider_eye": "Spinnenauge",
+    "mob.qtcraft.spider": "Spinne",
+    "mob.qtcraft.cave_spider": "Höhlenspinne",
+    "mob.qtcraft.chicken": "Huhn",
+    "item.qtcraft.egg": "Ei",
+    "item.qtcraft.raw_chicken": "Rohes Hühnchen",
+    "item.qtcraft.cooked_chicken": "Gebratenes Hühnchen",
+    "mob.qtcraft.silverfish": "Silberfischchen",
+    "block.qtcraft.infested_stone": "Befallener Stein",
+    "block.qtcraft.infested_cobblestone": "Befallener Bruchstein",
+    "block.qtcraft.infested_stone_bricks": "Befallene Steinziegel",
+    "structure.qtcraft.spider_cave": "Spinnenhöhle",
+    "structure.qtcraft.silverfish_wall": "Silberfischchen-Wand",
+    "structure.qtcraft.chicken_coop": "Hühnerstall"
 }

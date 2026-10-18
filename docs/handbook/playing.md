@@ -256,9 +256,13 @@ You have 20 health points, shown as hearts. Falls deeper than 3 m cost one point
 
 Left-click a creature within 4 m to hit it, at most every 0.4 s. Swords and axes deal more damage than the hand; every hit knocks the target back.
 
+**Status effects**
+
+Some attacks leave an effect that lasts a while. Next to the hearts a box shows each effect with its picture, name and the time left. Poison, from the bite of a cave spider, takes one health point every 1.25 s (faster at higher levels) but never your last one, and turns the hearts green. Armour does not help against it. Effects end with time or when you die; zombies, skeletons and spiders are immune to poison.
+
 **See also**
 
-[Iron sword](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava)
+[Iron sword](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava), [Spider eye](items.md#item-qtcraft-spider_eye)
 
 ### <a id="chapter-qtcraft-fire"></a>Fire
 
@@ -478,6 +482,18 @@ Creatures appear 20–48 m away from players: peaceful animals on grass by day, 
 
 Zombies and skeletons catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves.
 
+**Spiders and cave spiders**
+
+Spiders climb straight up walls and hang on to overhangs, so a wall alone does not keep them out; an overhang of one block at the top stops the wide spider, not the small cave spider. By day in the open a spider leaves you alone until you hit it; at night and in caves it hunts you and leaps at you. Cave spiders live deep in dark caves, always attack and poison you with their bite. They fit through gaps one block high.
+
+**Silverfish and infested stone**
+
+In the mountains some stone is infested: it looks like stone but breaks much faster, even by hand, and drops nothing; a silverfish crawls out. Hit a silverfish and it calls its kin out of the infested blocks up to ten blocks around. Left alone, a silverfish slips into a stone, cobblestone or stone brick block next to it and waits there. Breaking blocks in creative mode lets nothing out.
+
+**Chickens and eggs**
+
+Chickens flutter down slowly instead of falling and lay an egg every five to ten minutes. Thrown eggs burst where they land; one in eight hatches a chick, and one hatching in 32 brings four. Chickens fall in love with seeds of any kind. They drop feathers for arrows and raw chicken, which you cook in a furnace.
+
 **Endermen**
 
 Endermen come out on dark nights, rarely and in every biome. Look at their heads and they get angry, and the farther away they are, the more exactly you have to look; look at their legs or past them and they stay calm. One you hit chases you, not whoever stands nearest. They teleport to a safe place nearby: when they stand in water or the rain, when a projectile hits them and sometimes to reach the player they chase. They only ever land on solid ground with room above and only where the world is loaded. With the game rule **mobGriefing** they pick up single blocks and put them down elsewhere; an enderman carrying a block stays in the world until it puts it down. Without the rule it changes no blocks and drops a block it carries as an item.
@@ -488,7 +504,7 @@ Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creature
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 

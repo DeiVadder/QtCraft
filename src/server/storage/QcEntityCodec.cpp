@@ -28,6 +28,9 @@ using Component = QcEntityCodec::Component;
 
 // The current version of the components of each kind (QcVillagerCodec::version for villagers).
 constexpr quint16 kindVersion = 1;
+// The current versions of the creature components beyond Creature (Component::Effects, Laying).
+constexpr quint16 effectsVersion = 1;
+constexpr quint16 layingVersion = 1;
 // Longer breeding timers than a day of seconds are damaged data.
 constexpr double maxBreedingSeconds = 86400.0;
 constexpr double maxSpeed = 60.0;
@@ -52,6 +55,16 @@ void writeVec(QDataStream &stream, const QcVec3 &v)
 void readVec(QDataStream &stream, QcVec3 &v)
 {
     stream >> v.x >> v.y >> v.z;
+}
+
+void writeEffects(QDataStream &stream, const QList<QcStatusEffect> &effects)
+{
+    QcStatusEffects::write(stream, effects);
+}
+
+bool readEffects(QDataStream &stream, QList<QcStatusEffect> &effects)
+{
+    return QcStatusEffects::read(stream, effects);
 }
 
 // What every entry starts with (decision E-420): what it is by name (empty where the kind says it
@@ -202,6 +215,11 @@ private:
             mob.villager = QcVillagerCodec::read(in, version);
             return mob.villager.has_value();
         };
+        const auto effects = [&mob](QDataStream &in, quint16) { return readEffects(in, mob.effects); };
+        const auto laying = [&mob](QDataStream &in, quint16) {
+            in >> mob.layTimer;
+            return true;
+        };
         QString carried;
         const auto carriedBlock = [&carried, &mob](QDataStream &in, quint16) {
             if (!QcComponentFrames::readText(in, carried, maxTypeName)) {
@@ -220,8 +238,9 @@ private:
         };
         if (!readComponents(mob.kept.components,
                             {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
-                             known(Component::Carried, kindVersion, carriedBlock), known(Component::Confined, kindVersion, confined),
-                             known(Component::Golem, kindVersion, golem)})) {
+                             known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
+                             known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
+                             known(Component::Laying, layingVersion, laying)})) {
             return false;
         }
         // A carried block the content no longer has is lost with a warning.
@@ -232,8 +251,9 @@ private:
             }
             mob.carried = state.value_or(qcAirBlockId);
         }
-        const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp);
-        if (!finite || mob.uid == 0 || mob.breedCooldown > maxBreedingSeconds || mob.growUp > maxBreedingSeconds) {
+        const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp) && std::isfinite(mob.layTimer);
+        if (!finite || mob.uid == 0 || mob.breedCooldown > maxBreedingSeconds || mob.growUp > maxBreedingSeconds
+            || mob.layTimer > maxBreedingSeconds) {
             return false;
         }
 
@@ -521,6 +541,9 @@ void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stor
     if (mob.villager) {
         components.add(quint16(Component::Villager), QcVillagerCodec::version, [&mob](QDataStream &out) { QcVillagerCodec::write(out, *mob.villager); });
     }
+    if (!mob.effects.isEmpty()) {
+        components.add(quint16(Component::Effects), effectsVersion, [&mob](QDataStream &out) { writeEffects(out, mob.effects); });
+    }
     if (mob.carried != qcAirBlockId) {
         const QString state = content.stateName(mob.carried);
         components.add(quint16(Component::Carried), kindVersion, [&state, &mob](QDataStream &out) { out << state << mob.keptForBlock; });
@@ -530,6 +553,10 @@ void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stor
     }
     if (mob.playerBuilt) {
         components.add(quint16(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
+    }
+    // Only a creature whose laying timer runs (a timer below 0 is chosen anew when it wakes).
+    if (mob.layTimer >= 0.0) {
+        components.add(quint16(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
     }
 }
 

@@ -69,9 +69,11 @@ public:
             chatLines.append(chat->text);
             chatKeys.append(*chat);
         } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
+            ++healthMessages;
             this->health = health->health;
             dead = health->dead;
             burning = health->burning;
+            effects = health->effects;
         } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
             openedCrafting = open->size;
         } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
@@ -198,6 +200,9 @@ public:
     bool dead = false;
     // The player is on fire (decision E-393).
     bool burning = false;
+    // His status effects (decision E-450) and how many health messages brought them.
+    QList<QcStatusEffect> effects;
+    int healthMessages = 0;
     int food = -1;
     // The experience the server reported last (decision E-398); empty before the first.
     std::optional<QcMsg::PlayerExperience> experience;

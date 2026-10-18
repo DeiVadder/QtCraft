@@ -12,6 +12,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcBlockDefinition.h
     content/definitions/QcBlockProperty.h
     content/definitions/QcCommandMacroDefinition.h
+    content/definitions/QcEffectDefinition.h
     content/definitions/QcExperienceDrop.h
     content/definitions/QcFarmingDefinitions.h
     content/definitions/QcFireDefinition.h
@@ -54,6 +55,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
+    content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
@@ -123,6 +125,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
+    gameplay/QcStatusEffects.h gameplay/QcStatusEffects.cpp
 )
 target_sources(qc_common PRIVATE
     handbook/QcHandbook.h handbook/QcHandbook.cpp

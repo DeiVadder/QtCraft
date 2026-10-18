@@ -19,6 +19,8 @@ public:
     // The player is on fire (decision E-393): the HUD shows flames at the edge of the view.
     bool burning() const { return m_health.burning; }
     bool isDead() const { return m_health.dead; }
+    // The status effects with their ticks left when the server last told (decision E-450).
+    const QList<QcStatusEffect> &effects() const { return m_health.effects; }
     int food() const { return m_food.food; }
     int maxFood() const { return m_food.maxFood; }
     // The experience level and the share of the way to the next one, 0..1 (the bar in the HUD).

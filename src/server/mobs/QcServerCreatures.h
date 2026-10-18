@@ -1,17 +1,21 @@
 #pragma once
 
 #include "server/mobs/QcCreatureTraits.h"
+#include "server/mobs/QcInfestation.h"
+#include "server/mobs/QcMobManager.h"
 #include "server/villages/QcServerVillagers.h"
 
 class QcPlayerHealth;
 class QcServerSounds;
+struct QcServerClient;
 class QcServerState;
 
 // The creatures in the server tick (decision E-367): their behaviour and spawning (QcMobManager) with
 // what they need to know about the players, the blows they deal to players, their ambient sounds and
 // the damage of crammed cells (game rule maxEntityCramming, decision E-401), what villagers do to
-// the world (QcServerVillagers, decision E-411) and what creatures with traits do (QcCreatureTraits,
-// decision E-460: blocks taken and placed, teleports).
+// the world (QcServerVillagers, decision E-411), what creatures with traits do (QcCreatureTraits,
+// decision E-460: blocks taken and placed, teleports) and creatures hiding in blocks (QcInfestation,
+// decision E-453).
 class QcServerCreatures
 {
 public:
@@ -28,6 +32,8 @@ public:
     void announceTeleports();
 
 private:
+    // A creature's blow at a player, with the effects of its kind's blows.
+    void strike(QcServerClient &client, const QcMobManager::PlayerHit &hit);
     void playAmbientSounds(double dt);
     // The blows creatures dealt each other (a golem's, decision E-471), with the attacker's sound;
     // those that die leave their loot (no experience).
@@ -43,4 +49,5 @@ private:
     QcPlayerHealth &m_health;
     QcServerVillagers m_villagers;
     QcCreatureTraits m_traits;
+    QcInfestation m_infestation;
 };

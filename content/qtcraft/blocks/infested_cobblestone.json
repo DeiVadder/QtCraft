@@ -1,0 +1,15 @@
+{
+    "name": "infested_cobblestone",
+    "sound": "stone",
+    "hardness": 1.0,
+    "tool": "pickaxe",
+    "toolLevel": 0,
+    "drops": [],
+    "infested": {
+        "block": "cobblestone",
+        "mob": "silverfish"
+    },
+    "textures": {
+        "all": "cobblestone"
+    }
+}

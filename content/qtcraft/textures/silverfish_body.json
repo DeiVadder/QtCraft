@@ -1,0 +1,8 @@
+{
+    "name": "silverfish_body",
+    "pattern": "speckle",
+    "primary": "#8c9096",
+    "secondary": "#6c7076",
+    "variation": 0.08,
+    "seed": 5531
+}

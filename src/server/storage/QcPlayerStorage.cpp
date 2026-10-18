@@ -16,9 +16,12 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 5: position and motion, view, health, inventory, food, armour, game mode, flight, the
-// kept inventory of the other mode and the experience (level and points, decision E-398). Files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 5;
+// Version 6: position and motion, view, health, inventory, food, armour, game mode, flight, the
+// kept inventory of the other mode, the experience (level and points, decision E-398) and the status
+// effects (decision E-450). Version 5 is read without effects; files of older development versions
+// are refused (decision E-356).
+constexpr quint16 playerVersion = 6;
+constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
 QString sanitizedPlayerName(const QString &name)
@@ -85,6 +88,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     writeSlots(stream, player.keptInventory);
     writeEquipment(stream, player.keptEquipment);
     stream << qint32(player.experience.level()) << qint32(player.experience.points());
+    QcStatusEffects::write(stream, player.effects);
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
@@ -129,7 +133,7 @@ QcResult<std::optional<QcPlayerData>> QcPlayerStorage::parse(const QString &play
     if (!payload) {
         return qcError(payload.error());
     }
-    if (version < playerVersion) {
+    if (version < oldestReadVersion) {
         return qcError(u"%1 is from an older development version"_s.arg(file));
     }
 
@@ -159,6 +163,9 @@ QcResult<std::optional<QcPlayerData>> QcPlayerStorage::parse(const QString &play
     qint32 points = 0;
     stream >> level >> points;
     player.experience = QcExperience(level, points);
+    if (version >= 6 && !QcStatusEffects::read(stream, player.effects)) {
+        return qcError(u"%1 is damaged (effects)"_s.arg(file));
+    }
 
     if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(player)) {
         return qcError(u"%1 is damaged"_s.arg(file));

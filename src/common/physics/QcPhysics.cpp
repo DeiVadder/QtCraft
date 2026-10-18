@@ -149,6 +149,49 @@ bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box)
 
 namespace {
 
+// Whether a collision box of a cell from `start` to z = `lastZ` overlaps `feel`.
+bool solidInRow(const QcBlockAccess &world, const QcAabb &feel, QcBlockPos start, int lastZ)
+{
+    const QcContentRegistry &content = world.content();
+    for (int z = start.z; z <= lastZ; ++z) {
+        // Most cells around a climber hold nothing to touch (air, plants): no boxes to gather.
+        const QcBlockPos pos{start.x, start.y, z};
+        const std::optional<QcBlockId> block = pos.y >= 0 ? world.blockAt(pos) : std::nullopt;
+        if (block && content.isValidBlock(*block) && content.state(*block).collision.isEmpty()) {
+            continue;
+        }
+
+        QVarLengthArray<QcAabb, 8> boxes;
+        appendCollisionBoxes(world, pos, boxes);
+        if (std::ranges::any_of(boxes, [&feel](const QcAabb &solid) { return solid.intersects(feel); })) {
+            return true;
+        }
+    }
+    return false;
+}
+
+} // namespace
+
+bool clingsToWall(const QcBlockAccess &world, const QcAabb &box)
+{
+    const double top = box.min.y + std::max(box.max.y - box.min.y, 1.0) + clingAbove;
+    // Not the floor it stands on: from a hair above its feet.
+    const QcAabb feel{{box.min.x - clingReach, box.min.y + 0.01, box.min.z - clingReach},
+                      {box.max.x + clingReach, top, box.max.z + clingReach}};
+    const int firstZ = int(std::floor(feel.min.z));
+    const int lastZ = int(std::floor(feel.max.z));
+    for (int x = int(std::floor(feel.min.x)); x <= int(std::floor(feel.max.x)); ++x) {
+        for (int y = int(std::floor(feel.min.y)); y <= int(std::floor(feel.max.y)); ++y) {
+            if (solidInRow(world, feel, {x, y, firstZ}, lastZ)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+namespace {
+
 // Smallest `slowsInside` of the cells from `start` to z = `lastZ`, 1 without any.
 double slowdownInRow(const QcBlockAccess &world, const QcContentRegistry &content, QcBlockPos start, int lastZ)
 {
@@ -336,7 +379,7 @@ void applyMove(QcEntityMotion &motion, const MoveResult &move)
 MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
 {
     const QcAabb body = boxAt(motion.position, size.width, size.height);
-    motion.climbing = !motion.inWater && touchesClimbable(world, body);
+    motion.climbing = !motion.inWater && (touchesClimbable(world, body) || (steering.climbsWalls && clingsToWall(world, body)));
     const double inside = slowdownInside(world, body);
     motion.slowed = inside < 1.0;
     const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);

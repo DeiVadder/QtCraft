@@ -98,6 +98,14 @@ Alles, was Maschinen herstellen, mit der Zeit pro Stück.
 
 | 1 | → |
 |---|---|
+| [Rohes Hühnchen](food.md#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](food.md#item-qtcraft-cooked_chicken) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) | [Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)

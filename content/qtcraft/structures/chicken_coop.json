@@ -1,0 +1,132 @@
+{
+    "name": "chicken_coop",
+    "showcase": {
+        "order": 93
+    },
+    "palette": {
+        "g": "grass_block",
+        "F": "oak_fence",
+        "O": "oak_planks",
+        "H": "hay_block",
+        "R": "oak_slab",
+        ".": "air",
+        "C": "chest[facing=south]"
+    },
+    "layers": [
+        [
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg",
+            "ggggggggggg"
+        ],
+        [
+            "FFFFFFFFFFF",
+            "FOOOO.....F",
+            "FOHHO.....F",
+            "FO.OO.....F",
+            "F.........F",
+            "F.........F",
+            "F.........F",
+            "FFFFFFFFFFF",
+            "    C      "
+        ],
+        [
+            "           ",
+            " OOOO      ",
+            " O..O      ",
+            " O.OO      ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+        ],
+        [
+            "           ",
+            " RRRR      ",
+            " RRRR      ",
+            " RRRR      ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "chicken",
+            "at": [
+                6.5,
+                1.0,
+                4.5
+            ]
+        },
+        {
+            "mob": "chicken",
+            "at": [
+                8.5,
+                1.0,
+                5.5
+            ]
+        },
+        {
+            "mob": "chicken",
+            "at": [
+                5.5,
+                1.0,
+                6.5
+            ]
+        },
+        {
+            "mob": "chicken",
+            "at": [
+                7.5,
+                1.0,
+                2.5
+            ]
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                4,
+                1,
+                8
+            ],
+            "items": [
+                {
+                    "item": "egg",
+                    "count": 16
+                },
+                {
+                    "item": "wheat_seeds",
+                    "count": 32
+                },
+                {
+                    "item": "feather",
+                    "count": 8
+                },
+                {
+                    "item": "raw_chicken",
+                    "count": 4
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                3.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.chicken_coop"
+        }
+    ]
+}

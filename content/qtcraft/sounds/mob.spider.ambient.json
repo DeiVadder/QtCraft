@@ -1,0 +1,19 @@
+{
+    "name": "mob.spider.ambient",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.35,
+            "attack": 0.03,
+            "curve": 1.5,
+            "highpass": 2500,
+            "lowpass": 7000,
+            "tremoloRate": 18,
+            "tremoloDepth": 0.6,
+            "gain": 0.8
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "spider_head",
+    "pattern": "speckle",
+    "primary": "#2e2622",
+    "secondary": "#8c1f2a",
+    "variation": 0.08,
+    "seed": 5411
+}

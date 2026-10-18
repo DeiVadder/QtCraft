@@ -1,0 +1,8 @@
+{
+    "name": "chicken_wattle",
+    "pattern": "noise",
+    "primary": "#d02828",
+    "secondary": "#a81c1c",
+    "variation": 0.06,
+    "seed": 5503
+}

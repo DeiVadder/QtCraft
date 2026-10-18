@@ -1,0 +1,16 @@
+{
+    "name": "mob.chicken.plop",
+    "volume": 0.6,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.09,
+            "frequency": 420,
+            "endFrequency": 180,
+            "attack": 0.003,
+            "curve": 2
+        }
+    ]
+}

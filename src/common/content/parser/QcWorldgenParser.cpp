@@ -192,6 +192,7 @@ namespace QcWorldgenParser {
     ore.maxY = reader.integer(u"maxY"_s, 64, ore.minY, QcWorld::worldHeight - 1);
     ore.veinsPerChunk = reader.integer(u"veinsPerChunk"_s, 8, 0, 256);
     ore.veinSize = reader.integer(u"veinSize"_s, 6, 1, 64);
+    ore.biomes = QcContentFields::parseNames(u"biomes"_s, packNamespace, reader);
 
     if (ore.block.isEmpty()) {
         reader.fail(u"'block' is required"_s);

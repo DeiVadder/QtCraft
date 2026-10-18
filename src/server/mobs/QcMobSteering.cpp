@@ -1,5 +1,7 @@
 #include "server/mobs/QcMobSteering.h"
 
+#include "common/world/QcDayCycle.h"
+
 #include "server/gameplay/QcLineOfSight.h"
 
 #include <QtMath>
@@ -98,15 +100,63 @@ void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManag
 
     if (mob.attackCooldown <= 0.0) {
         mob.attackCooldown = definition.attackCooldown;
-        hits.append({target.entityId, definition.attackDamage, towards.normalized()});
+        hits.append({.playerEntityId = target.entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .mobType = mob.type});
         mob.attackedThisTick = true;
     }
+}
+
+void provoke(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players)
+{
+    if (!definition.neutralByDay) {
+        return;
+    }
+    if (mob.struckBy != 0) {
+        mob.provokedBy = mob.struckBy;
+        mob.angerTimer = provokedSeconds;
+        mob.struckBy = 0;
+    }
+
+    // The anger ends with its time, or when that player is gone or no target any more.
+    const auto provoker = std::ranges::find(players, mob.provokedBy, &QcMobManager::PlayerView::entityId);
+    if (mob.angerTimer <= 0.0 || provoker == players.end() || !provoker->alive || !provoker->targetable) {
+        mob.provokedBy = 0;
+        mob.angerTimer = 0.0;
+    }
+}
+
+const QcMobManager::PlayerView *provoker(const QcCreature &mob, const QcMobDefinition &definition,
+                                         const QList<QcMobManager::PlayerView> &players)
+{
+    if (!definition.neutralByDay || mob.provokedBy == 0) {
+        return nullptr;
+    }
+    const auto it = std::ranges::find(players, mob.provokedBy, &QcMobManager::PlayerView::entityId);
+    return it != players.end() ? &*it : nullptr;
+}
+
+bool calm(const QcCreature &mob, const QcMobDefinition &definition, double worldTime)
+{
+    return definition.neutralByDay && !QcDayCycle::isNight(worldTime) && !mob.underground && mob.provokedBy == 0;
+}
+
+bool leap(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target, QRandomGenerator &random)
+{
+    const QcVec3 towards{target.position.x - mob.motion.position.x, 0.0, target.position.z - mob.motion.position.z};
+    const double distance = towards.length();
+    const bool level = std::abs(target.position.y - mob.motion.position.y) <= 1.0;
+    if (definition.leapSpeed <= 0.0 || !mob.motion.onGround || !level || distance < leapMin || distance > leapMax
+        || random.generateDouble() >= leapChance) {
+        return false;
+    }
+    mob.motion.velocity = towards.normalized() * definition.leapSpeed + QcVec3{0.0, leapLift, 0.0};
+    mob.yaw = yawTowards(towards);
+    return true;
 }
 
 bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
                     const QcBlockAccess &world, QList<QcMobManager::PlayerHit> &hits)
 {
-    if (!definition.hostile || mob.attackCooldown > 0.0) {
+    if (!definition.hostile || mob.calm || mob.attackCooldown > 0.0) {
         return false;
     }
 
@@ -115,8 +165,10 @@ bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QL
     double targetDistance = definition.attackRange;
     for (const QcMobManager::PlayerView &player : players) {
         const double distance = horizontalDistance(player.position, mob.motion.position);
-        // A neutral creature strikes only the player that provoked it (decision E-460).
-        const bool provoked = definition.ai != QcMobDefinition::Ai::Neutral || player.entityId == mob.provokedBy;
+        // A neutral creature strikes only the player that provoked it (decision E-460), an angry
+        // creature neutral by day only the player that hurt it (decision E-451).
+        const bool angry = definition.ai == QcMobDefinition::Ai::Neutral || (definition.neutralByDay && mob.provokedBy != 0);
+        const bool provoked = !angry || player.entityId == mob.provokedBy;
         if (player.alive && player.targetable && provoked && distance <= targetDistance && inMelee(mob, definition, player, world)) {
             target = &player;
             targetDistance = distance;

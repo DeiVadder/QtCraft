@@ -61,3 +61,16 @@ struct QcBreedingDefinition
 
     bool breeds() const { return !food.isEmpty(); }
 };
+
+// What a creature lays now and then (a chicken's eggs, decision E-452): an awake adult drops `item`
+// at its feet after a time chosen evenly between `minSeconds` and `maxSeconds`, anew after each one,
+// and `sound` plays there. Server side only.
+struct QcLayingDefinition
+{
+    QString item;
+    double minSeconds = 300.0;
+    double maxSeconds = 600.0;
+    QString sound;
+
+    bool lays() const { return !item.isEmpty(); }
+};

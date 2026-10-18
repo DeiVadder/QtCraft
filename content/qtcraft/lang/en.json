@@ -541,5 +541,20 @@
     "mob.qtcraft.enderman": "Enderman",
     "appearance.qtcraft.enderman": "Enderman",
     "item.qtcraft.bone": "Bone",
-    "item.qtcraft.bone_meal": "Bone meal"
+    "item.qtcraft.bone_meal": "Bone meal",
+    "effect.qtcraft.poison": "Poison",
+    "item.qtcraft.spider_eye": "Spider eye",
+    "mob.qtcraft.spider": "Spider",
+    "mob.qtcraft.cave_spider": "Cave spider",
+    "mob.qtcraft.chicken": "Chicken",
+    "item.qtcraft.egg": "Egg",
+    "item.qtcraft.raw_chicken": "Raw chicken",
+    "item.qtcraft.cooked_chicken": "Cooked chicken",
+    "mob.qtcraft.silverfish": "Silverfish",
+    "block.qtcraft.infested_stone": "Infested stone",
+    "block.qtcraft.infested_cobblestone": "Infested cobblestone",
+    "block.qtcraft.infested_stone_bricks": "Infested stone bricks",
+    "structure.qtcraft.spider_cave": "Spider cave",
+    "structure.qtcraft.silverfish_wall": "Silverfish wall",
+    "structure.qtcraft.chicken_coop": "Chicken coop"
 }

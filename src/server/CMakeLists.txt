@@ -40,6 +40,7 @@ target_sources(qc_server PRIVATE
     commands/QcCommandArguments.h commands/QcCommandArguments.cpp
     commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
     commands/QcCommandSource.h commands/QcCommandSource.cpp
+    commands/QcEffectCommands.h commands/QcEffectCommands.cpp
     commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
     commands/QcPendingCommands.h commands/QcPendingCommands.cpp
     commands/QcPermission.h
@@ -103,6 +104,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcSafeSpot.h gameplay/QcSafeSpot.cpp
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
     gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
+    gameplay/QcServerEffects.h gameplay/QcServerEffects.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
@@ -144,11 +146,14 @@ target_sources(qc_server PRIVATE
     mobs/QcArcherState.h
     mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
+    mobs/QcInfestation.h mobs/QcInfestation.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobBrain.h
     mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
+    mobs/QcMobExchange.h
+    mobs/QcMobLaying.h mobs/QcMobLaying.cpp
     mobs/QcMobManager.h mobs/QcMobManager.cpp
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
     mobs/QcMobTeleport.h mobs/QcMobTeleport.cpp

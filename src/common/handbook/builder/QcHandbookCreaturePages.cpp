@@ -126,6 +126,11 @@ void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
                           .arg(text.number(mob.breeding.cooldownSeconds / 60.0), text.number(mob.breeding.growUpSeconds / 60.0)),
                       {}});
     }
+    if (mob.laying.lays()) {
+        facts.append({text.label(u"fact.lays"_s),
+                      text.label(u"unit.lays"_s).arg(text.number(mob.laying.minSeconds / 60.0), text.number(mob.laying.maxSeconds / 60.0)),
+                      {links.itemLink(mob.laying.item)}});
+    }
 
     Fact drops{text.label(u"fact.drops"_s), {}, {}};
     for (const QcItemDrop &drop : mob.drops) {

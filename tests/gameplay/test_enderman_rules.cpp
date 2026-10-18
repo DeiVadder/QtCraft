@@ -185,7 +185,7 @@ private slots:
         const QcVec3 feet{0.5, 200.0, 8.5};
         const QcVec3 eyes = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
         const auto view = [&](const QcVec3 &target) {
-            return QcMobManager::PlayerView{1, feet, true, true, (target - eyes).normalized()};
+            return QcMobManager::PlayerView{.entityId = 1, .position = feet, .alive = true, .targetable = true, .look = (target - eyes).normalized()};
         };
 
         // From 50 m a look 2.5 m beside the head (2.9°, within the old fixed 5°) leaves it calm, one

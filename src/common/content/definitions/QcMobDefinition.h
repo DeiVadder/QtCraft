@@ -5,6 +5,7 @@
 #include "common/content/definitions/QcMobTraits.h"
 #include "common/core/QcVec3.h"
 #include "common/core/QcWorldConstants.h"
+#include "common/gameplay/QcStatusEffects.h"
 
 #include <QList>
 #include <QString>
@@ -133,6 +134,25 @@ struct QcMobDefinition
     // Catches fire in direct sunlight (decision E-426): by day, with the open sky above its head,
     // neither in water nor in the rain. Server side only.
     bool burnsInDaylight = false;
+    // Kinds of status effects that do nothing to it (spiders and the undead: poison; decision E-450).
+    // Server side only.
+    QStringList immuneTo;
+    // Effects its blows give the player struck (a cave spider's poison), with their ticks. Server
+    // side only.
+    QList<QcStatusEffect> blowEffects;
+    // A hostile creature that leaves players alone by day unless one hurt it (spiders, decision
+    // E-451). Server side only.
+    bool neutralByDay = false;
+    // Leaps at its target from QcMobSteering::leapMin to leapMax metres with this horizontal speed
+    // in m/s (spiders); 0 for never. Server side only.
+    double leapSpeed = 0.0;
+    // Falls no faster than this, in m/s, at least one tick of gravity (a chicken flapping its wings);
+    // 0 for no limit. Server side only.
+    double maxFallSpeed = 0.0;
+    // Hides in blocks (silverfish, decision E-453): an idle one turns a block next to it into the
+    // infested block of its kind and is gone; one that is hurt wakes its kind in the infested blocks
+    // around it (QcInfestation). Server side only.
+    bool hidesInBlocks = false;
     // Item it holds in its right hand (an archer's bow), shown on the client with the entity's held
     // item; empty for none. Server side only.
     QString heldItem;
@@ -227,6 +247,8 @@ struct QcMobDefinition
     QString catchItem;
     // Feeding and young ones (decision E-293); only `breeding.food` reaches the client.
     QcBreedingDefinition breeding;
+    // Laying eggs (decision E-452). Server side only.
+    QcLayingDefinition laying;
 
     static constexpr int maxGlow = 15;
 };

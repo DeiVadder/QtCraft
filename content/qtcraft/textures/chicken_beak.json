@@ -1,0 +1,8 @@
+{
+    "name": "chicken_beak",
+    "pattern": "noise",
+    "primary": "#e8a030",
+    "secondary": "#c88020",
+    "variation": 0.06,
+    "seed": 5502
+}

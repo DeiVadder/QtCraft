@@ -1,0 +1,8 @@
+{
+    "name": "silverfish_scales",
+    "pattern": "noise",
+    "primary": "#5c6066",
+    "secondary": "#4a4e54",
+    "variation": 0.08,
+    "seed": 5532
+}

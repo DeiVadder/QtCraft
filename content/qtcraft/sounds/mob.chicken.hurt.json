@@ -1,0 +1,19 @@
+{
+    "name": "mob.chicken.hurt",
+    "volume": 0.6,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.18,
+            "frequency": 1300,
+            "endFrequency": 900,
+            "attack": 0.004,
+            "curve": 1.5,
+            "lowpass": 2800,
+            "tremoloRate": 35,
+            "tremoloDepth": 0.5
+        }
+    ]
+}

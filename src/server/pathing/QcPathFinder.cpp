@@ -116,7 +116,7 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
     if (!QcPathTerrain::passable(m_window, side, rules, true) || !QcPathTerrain::clearAbove(m_window, side, here.lift(), rules)) {
         return std::nullopt;
     }
-    for (int drop = 1; drop <= std::max(rules.maxDrop, QcPathRules::waterDrop); ++drop) {
+    for (int drop = 1; drop <= std::max(int(rules.maxDrop), QcPathRules::waterDrop); ++drop) {
         const QcBlockPos landing = side.offset(0, -drop, 0);
         const QcPathStand stand = QcPathTerrain::standAt(m_window, landing, rules);
         if (stand.ok) {
@@ -173,13 +173,13 @@ int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
 
 int QcPathFinder::climb(QcBlockPos at, QcPathRules rules, Moves &moves, int count)
 {
-    if (QcPathTerrain::kindOf(m_window.cell(at), rules) != QcPathCell::Kind::Ladder) {
+    if (!QcPathTerrain::climbsAt(m_window, at, rules)) {
         return count;
     }
 
-    // The top of a ladder is left sideways (sideStep, a step up of a block).
+    // The top of a ladder or a wall is left sideways (sideStep, a step up of a block).
     const QcBlockPos up = at.offset(0, 1, 0);
-    if (QcPathTerrain::kindOf(m_window.cell(up), rules) == QcPathCell::Kind::Ladder && QcPathTerrain::standAt(m_window, up, rules).ok) {
+    if (QcPathTerrain::climbsAt(m_window, up, rules) && QcPathTerrain::standAt(m_window, up, rules).ok) {
         moves[std::size_t(count++)] = Move{up, 1.0f + climbCost};
     }
     const QcBlockPos down = at.offset(0, -1, 0);

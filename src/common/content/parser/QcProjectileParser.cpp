@@ -1,5 +1,6 @@
 #include "common/content/parser/QcProjectileParser.h"
 
+#include "common/content/definitions/QcEffectDefinition.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 
 #include <QJsonArray>
@@ -7,6 +8,20 @@
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// What an "effect" or "spawn" entry names, with its level or counts (decision E-450).
+void parseSubject(QcHitEffect &effect, const QString &packNamespace, QcJsonFieldReader &nested)
+{
+    const bool spawns = effect.is(QcHitEffect::spawn);
+    effect.subject = nested.name(spawns ? u"mob"_s : u"effect"_s, packNamespace);
+    if (effect.subject.isEmpty() && nested.ok()) {
+        nested.fail(spawns ? u"a spawn entry needs a 'mob'"_s : u"an effect entry needs an 'effect'"_s);
+    }
+    effect.level = nested.integer(u"level"_s, 1, 1, QcEffectDefinition::maxLevel);
+    effect.count = nested.integer(u"count"_s, 1, 1, 16);
+    effect.groupChance = nested.number(u"groupChance"_s, 0.0, 0.0, 1.0);
+    effect.groupCount = nested.integer(u"groupCount"_s, 4, 1, 16);
+}
 
 // One entry of "onHit". A type no row of QcHitEffect::types names is kept as written; the
 // content's finish leaves it out with a warning (QcContentRegistry::resolveProjectiles). A damage
@@ -25,6 +40,9 @@ QcHitEffect parseEffect(const QJsonObject &json, const QString &packNamespace, d
         effect.number = nested.number(QString::fromLatin1(type->numberKey), fallback, type->low, type->high);
     }
     effect.sound = nested.name(u"sound"_s, packNamespace);
+    if (effect.is(QcHitEffect::effect) || effect.is(QcHitEffect::spawn)) {
+        parseSubject(effect, packNamespace, nested);
+    }
     reader.adopt(nested);
     return effect;
 }
@@ -34,8 +52,13 @@ QList<QcHitEffect> parseOnHit(const QString &packNamespace, double damage, QcJso
 {
     const QJsonValue value = reader.json.value(u"onHit"_s);
     if (value.isUndefined()) {
-        return {QcHitEffect{QString::fromLatin1(QcHitEffect::damage), damage, {}, {}},
-                QcHitEffect{QString::fromLatin1(QcHitEffect::knockback), 1.0, {}, {}}};
+        QcHitEffect hurt;
+        hurt.type = QString::fromLatin1(QcHitEffect::damage);
+        hurt.number = damage;
+        QcHitEffect push;
+        push.type = QString::fromLatin1(QcHitEffect::knockback);
+        push.number = 1.0;
+        return {hurt, push};
     }
 
     const QJsonArray list = value.toArray();

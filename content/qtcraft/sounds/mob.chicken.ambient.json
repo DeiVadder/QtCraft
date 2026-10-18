@@ -1,0 +1,38 @@
+{
+    "name": "mob.chicken.ambient",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.07,
+            "frequency": 900,
+            "endFrequency": 760,
+            "start": 0,
+            "attack": 0.005,
+            "curve": 1.6,
+            "lowpass": 3000
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.06,
+            "frequency": 950,
+            "endFrequency": 800,
+            "start": 0.1,
+            "attack": 0.005,
+            "curve": 1.6,
+            "lowpass": 3000
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.12,
+            "frequency": 1100,
+            "endFrequency": 700,
+            "start": 0.19,
+            "attack": 0.005,
+            "curve": 1.6,
+            "lowpass": 3000
+        }
+    ]
+}

@@ -9,6 +9,20 @@
 #include <cmath>
 #include <numbers>
 
+namespace {
+
+// A flapping bird falls no faster than its kind's limit, the gravity of the coming step included;
+// on every path of a tick, so also after a rest or a push.
+void limitFall(QcCreature &mob, const QcMobDefinition &definition)
+{
+    if (definition.maxFallSpeed > 0.0) {
+        const double before = std::max(0.0, definition.maxFallSpeed - QcPhysics::gravity * QcPhysics::tickDuration);
+        mob.motion.velocity.y = std::max(mob.motion.velocity.y, -before);
+    }
+}
+
+} // namespace
+
 QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content, QRandomGenerator &random)
     : m_content(std::move(content))
     , m_random(random)
@@ -92,6 +106,9 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     mob.targetMemory = std::max(0.0, mob.targetMemory - context.dt);
     mob.angerTimer = std::max(0.0, mob.angerTimer - context.dt);
     mob.teleportCooldown = std::max(0, mob.teleportCooldown - 1);
+    QcMobSteering::provoke(mob, definition, *context.players);
+    mob.calm = QcMobSteering::calm(mob, definition, context.worldTime);
+    limitFall(mob, definition);
     // A creature lying or sitting asks its brain whether it stays so (a villager in its bed lies
     // still until it gets up, decision E-411).
     if (mob.pose != QcPose::Standing && brain.rest(mob, context)) {
@@ -187,8 +204,13 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
     if (mob.blockedLastTick && wading && !mob.motion.inWater && steering.wish.length() > 0.0) {
         mob.motion.velocity.y = std::max(mob.motion.velocity.y, QcPhysics::jumpVelocity);
     }
+    const bool climbsWalls = definition.abilities.climbs == QcMobAbilities::Climbing::Walls;
     const QcPhysics::MoveResult move =
-        QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{steering.wish, steering.speed, jump},
+        QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{.wish = steering.wish,
+                                                    .speed = steering.speed,
+                                                    .jump = jump,
+                                                    .hold = steering.hold,
+                                                    .climbsWalls = climbsWalls},
                               QcPhysics::BodySize{definition.width, definition.height}, world, QcPhysics::tickDuration);
     // Only a wall met while walking on the ground or swimming (the shore) is jumped at: one met in
     // the air or on landing (a head under a door's lintel) would keep it jumping.

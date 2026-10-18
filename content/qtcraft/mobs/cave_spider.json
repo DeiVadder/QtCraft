@@ -1,0 +1,303 @@
+{
+    "name": "cave_spider",
+    "sounds": {
+        "ambient": "mob.spider.ambient",
+        "hurt": "mob.spider.hurt",
+        "death": "mob.spider.death"
+    },
+    "health": 12,
+    "width": 0.7,
+    "height": 0.5,
+    "walkSpeed": 1.6,
+    "chaseSpeed": 3.8,
+    "hostile": true,
+    "leapSpeed": 6.0,
+    "immuneTo": [
+        "poison"
+    ],
+    "blowEffects": [
+        {
+            "effect": "poison",
+            "seconds": 7,
+            "level": 1
+        }
+    ],
+    "abilities": {
+        "climbs": "walls"
+    },
+    "attackDamage": 2,
+    "attackRange": 1.2,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "spawn": {
+        "time": "night",
+        "blocks": [
+            "stone"
+        ],
+        "maxGroup": 1,
+        "weight": 0.4,
+        "caves": true,
+        "maxY": 40,
+        "maxLight": 7
+    },
+    "model": [
+        {
+            "from": [
+                -0.225,
+                0.125,
+                0.05
+            ],
+            "to": [
+                0.225,
+                0.4,
+                0.475
+            ],
+            "texture": "cave_spider_body"
+        },
+        {
+            "from": [
+                -0.125,
+                0.15,
+                -0.175
+            ],
+            "to": [
+                0.125,
+                0.31,
+                0.05
+            ],
+            "texture": "cave_spider_body"
+        },
+        {
+            "from": [
+                -0.15,
+                0.125,
+                -0.4
+            ],
+            "to": [
+                0.15,
+                0.35,
+                -0.175
+            ],
+            "texture": "cave_spider_head"
+        },
+        {
+            "from": [
+                0.125,
+                0.25,
+                -0.17
+            ],
+            "to": [
+                0.425,
+                0.29,
+                -0.13
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.4,
+                0.0,
+                -0.17
+            ],
+            "to": [
+                0.44,
+                0.25,
+                -0.13
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.125,
+                0.25,
+                -0.08
+            ],
+            "to": [
+                0.425,
+                0.29,
+                -0.04
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.4,
+                0.0,
+                -0.08
+            ],
+            "to": [
+                0.44,
+                0.25,
+                -0.04
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.125,
+                0.25,
+                0.01
+            ],
+            "to": [
+                0.425,
+                0.29,
+                0.05
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.4,
+                0.0,
+                0.01
+            ],
+            "to": [
+                0.44,
+                0.25,
+                0.05
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.125,
+                0.25,
+                0.1
+            ],
+            "to": [
+                0.425,
+                0.29,
+                0.14
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                0.4,
+                0.0,
+                0.1
+            ],
+            "to": [
+                0.44,
+                0.25,
+                0.14
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.425,
+                0.25,
+                -0.17
+            ],
+            "to": [
+                -0.125,
+                0.29,
+                -0.13
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.44,
+                0.0,
+                -0.17
+            ],
+            "to": [
+                -0.4,
+                0.25,
+                -0.13
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.425,
+                0.25,
+                -0.08
+            ],
+            "to": [
+                -0.125,
+                0.29,
+                -0.04
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.44,
+                0.0,
+                -0.08
+            ],
+            "to": [
+                -0.4,
+                0.25,
+                -0.04
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.425,
+                0.25,
+                0.01
+            ],
+            "to": [
+                -0.125,
+                0.29,
+                0.05
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.44,
+                0.0,
+                0.01
+            ],
+            "to": [
+                -0.4,
+                0.25,
+                0.05
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.425,
+                0.25,
+                0.1
+            ],
+            "to": [
+                -0.125,
+                0.29,
+                0.14
+            ],
+            "texture": "cave_spider_leg"
+        },
+        {
+            "from": [
+                -0.44,
+                0.0,
+                0.1
+            ],
+            "to": [
+                -0.4,
+                0.25,
+                0.14
+            ],
+            "texture": "cave_spider_leg"
+        }
+    ],
+    "drops": [
+        {
+            "item": "string",
+            "count": 1
+        },
+        {
+            "item": "spider_eye",
+            "chance": 0.33
+        }
+    ],
+    "experience": 5
+}

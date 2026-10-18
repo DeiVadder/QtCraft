@@ -1,0 +1,15 @@
+{
+    "name": "infested_stone_bricks",
+    "sound": "stone",
+    "hardness": 0.75,
+    "tool": "pickaxe",
+    "toolLevel": 0,
+    "drops": [],
+    "infested": {
+        "block": "stone_bricks",
+        "mob": "silverfish"
+    },
+    "textures": {
+        "all": "stone_bricks"
+    }
+}

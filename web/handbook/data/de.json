@@ -37,6 +37,9 @@
                 "block:qtcraft:farmland",
                 "block:qtcraft:activator_rail",
                 "block:qtcraft:powered_rail",
+                "block:qtcraft:infested_stone_bricks",
+                "block:qtcraft:infested_cobblestone",
+                "block:qtcraft:infested_stone",
                 "block:qtcraft:bed",
                 "block:qtcraft:birch_planks",
                 "block:qtcraft:birch_trapdoor",
@@ -336,6 +339,7 @@
                 "item:qtcraft:brown_dye",
                 "item:qtcraft:book",
                 "item:qtcraft:diamond",
+                "item:qtcraft:egg",
                 "item:qtcraft:bucket",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
@@ -380,6 +384,7 @@
                 "item:qtcraft:bowl",
                 "item:qtcraft:black_dye",
                 "item:qtcraft:emerald",
+                "item:qtcraft:spider_eye",
                 "item:qtcraft:stick",
                 "item:qtcraft:clay_ball",
                 "item:qtcraft:hopper_minecart",
@@ -450,6 +455,7 @@
                 "item:qtcraft:apple",
                 "item:qtcraft:bread",
                 "item:qtcraft:cooked_mutton",
+                "item:qtcraft:cooked_chicken",
                 "item:qtcraft:cooked_porkchop",
                 "item:qtcraft:carrot",
                 "item:qtcraft:potato",
@@ -458,6 +464,7 @@
                 "item:qtcraft:baked_potato",
                 "item:qtcraft:mushroom_stew",
                 "item:qtcraft:raw_mutton",
+                "item:qtcraft:raw_chicken",
                 "item:qtcraft:raw_porkchop",
                 "item:qtcraft:rotten_flesh"
             ],
@@ -472,10 +479,14 @@
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
                 "mob:qtcraft:firefly",
+                "mob:qtcraft:cave_spider",
+                "mob:qtcraft:chicken",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:pig",
+                "mob:qtcraft:silverfish",
                 "mob:qtcraft:skeleton",
+                "mob:qtcraft:spider",
                 "mob:qtcraft:zombie"
             ],
             "id": "creatures",
@@ -497,6 +508,7 @@
         },
         {
             "entries": [
+                "ore:qtcraft:infested_stone",
                 "feature:qtcraft:birch_tree",
                 "feature:qtcraft:blue_orchid",
                 "feature:qtcraft:brown_mushroom",
@@ -695,6 +707,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -715,6 +739,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -859,6 +889,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -879,6 +921,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1053,6 +1101,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1073,6 +1133,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1235,6 +1301,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1255,6 +1333,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1417,6 +1501,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1437,6 +1533,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1599,6 +1701,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1619,6 +1733,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1793,6 +1913,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1813,6 +1945,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -1945,6 +2083,18 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1965,6 +2115,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -15582,6 +15738,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -16873,6 +17035,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:charcoal",
                                 "text": "Holzkohle"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_chicken",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_chicken",
+                                    "text": "Rohes Hühnchen"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_chicken",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_chicken",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_chicken",
+                                "text": "Gebratenes Hühnchen"
                             },
                             "seconds": 10,
                             "shapeless": false,
@@ -18198,6 +18393,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -18218,6 +18419,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -21259,6 +21466,362 @@
             ],
             "text": "Bedeckt das Wasser kalter Biome. Rutschig: Wer darauf läuft, rutscht weiter und bleibt erst langsam stehen.",
             "title": "Eis"
+        },
+        "block:qtcraft:infested_cobblestone": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Infested cobblestone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:infested_cobblestone"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,5 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,13 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lässt beim Abbauen heraus",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:silverfish",
+                            "text": "Silberfischchen"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:infested_cobblestone",
+            "id": "block:qtcraft:infested_cobblestone",
+            "name": "qtcraft:infested_cobblestone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Sieht aus wie Bruchstein, doch darin lebt ein Silberfischchen. Der Block bricht schnell, lässt nichts fallen und lässt das Silberfischchen heraus.",
+            "title": "Befallener Bruchstein"
+        },
+        "block:qtcraft:infested_stone": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Infested stone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:infested_stone"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,75"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,13 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lässt beim Abbauen heraus",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:silverfish",
+                            "text": "Silberfischchen"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:infested_stone",
+            "id": "block:qtcraft:infested_stone",
+            "name": "qtcraft:infested_stone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:infested_stone",
+                            "note": "y 40–160",
+                            "target": "ore:qtcraft:infested_stone",
+                            "text": "Befallener Stein-Vorkommen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Sieht aus wie Stein, doch darin lebt ein Silberfischchen. Der Block bricht schnell, auch mit der Hand, lässt nichts fallen und lässt das Silberfischchen heraus. Kommt in Adern in den Bergen vor.",
+            "title": "Befallener Stein"
+        },
+        "block:qtcraft:infested_stone_bricks": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Infested stone bricks",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:infested_stone_bricks"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,75"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,13 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lässt beim Abbauen heraus",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:silverfish",
+                            "text": "Silberfischchen"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:infested_stone_bricks",
+            "id": "block:qtcraft:infested_stone_bricks",
+            "name": "qtcraft:infested_stone_bricks",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Sieht aus wie Steinziegel, doch darin lebt ein Silberfischchen. Der Block bricht schnell, lässt nichts fallen und lässt das Silberfischchen heraus.",
+            "title": "Befallene Steinziegel"
         },
         "block:qtcraft:iron_bars": {
             "category": "blocks",
@@ -39797,6 +40360,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -44202,6 +44771,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:zombie",
                             "text": "Zombie"
                         }
@@ -47132,6 +47707,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Schleim"
                         },
@@ -47140,6 +47721,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
                         },
                         {
                             "icon": "",
@@ -52840,6 +53427,30 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Spinnen klettern senkrecht Wände hinauf und halten sich an Überhängen fest; eine Mauer allein hält sie also nicht auf. Ein Überhang von einem Block oben hält die breite Spinne auf, die kleine Höhlenspinne nicht. Tagsüber im Freien lässt dich eine Spinne in Ruhe, bis du sie schlägst; nachts und in Höhlen jagt sie dich und springt dich an. Höhlenspinnen leben tief in dunklen Höhlen, greifen immer an und vergiften dich mit ihrem Biss. Sie passen durch Lücken von einem Block Höhe.",
+                    "title": "Spinnen und Höhlenspinnen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "In den Bergen ist mancher Stein befallen: Er sieht aus wie Stein, bricht aber viel schneller, auch mit der Hand, und lässt nichts fallen; ein Silberfischchen kriecht heraus. Schlägst du ein Silberfischchen, ruft es seinesgleichen aus den befallenen Blöcken bis zehn Blöcke ringsum. In Ruhe gelassen, schlüpft es in einen Stein-, Bruchstein- oder Steinziegelblock neben sich und wartet dort. Im Kreativmodus abgebaute Blöcke lassen nichts heraus.",
+                    "title": "Silberfischchen und befallener Stein"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Hühner flattern langsam hinab, statt zu fallen, und legen alle fünf bis zehn Minuten ein Ei. Geworfene Eier zerplatzen, wo sie landen; aus jedem achten schlüpft ein Küken, und bei einem von 32 Schlüpfen sind es vier. Hühner verlieben sich in Samen jeder Art. Sie lassen Federn für Pfeile und rohes Hühnchen fallen, das du im Ofen brätst.",
+                    "title": "Hühner und Eier"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.",
                     "title": "Endermen"
                 },
@@ -52894,6 +53505,42 @@
                             "note": "",
                             "target": "mob:qtcraft:firefly",
                             "text": "Glühwürmchen"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:silverfish",
+                            "text": "Silberfischchen"
+                        },
+                        {
+                            "icon": "qtcraft:infested_stone",
+                            "note": "",
+                            "target": "block:qtcraft:infested_stone",
+                            "text": "Befallener Stein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "qtcraft:egg",
+                            "note": "",
+                            "target": "item:qtcraft:egg",
+                            "text": "Ei"
                         }
                     ],
                     "recipes": [
@@ -53325,6 +53972,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Manche Angriffe hinterlassen eine Wirkung, die eine Weile anhält. Neben den Herzen zeigt ein Kästchen jeden Effekt mit Bild, Namen und Restzeit. Gift, vom Biss einer Höhlenspinne, nimmt alle 1,25 s einen Gesundheitspunkt (auf höheren Stufen schneller), aber nie den letzten, und färbt die Herzen grün. Rüstung hilft nicht dagegen. Effekte enden mit der Zeit oder mit dem Tod; Zombies, Skelette und Spinnen sind gegen Gift immun.",
+                    "title": "Status-Effekte"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:iron_sword",
                             "note": "",
@@ -53342,6 +53997,12 @@
                             "note": "",
                             "target": "block:qtcraft:lava",
                             "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:spider_eye",
+                            "note": "",
+                            "target": "item:qtcraft:spider_eye",
+                            "text": "Spinnenauge"
                         }
                     ],
                     "recipes": [
@@ -58736,6 +59397,87 @@
             "text": "Ein Neuntel Kohle: etwas Brennstoff, schwarzer Farbstoff und kleine Fackeln.",
             "title": "Kohlestück"
         },
+        "item:qtcraft:cooked_chicken": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Cooked chicken",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cooked_chicken"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "6 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:cooked_chicken",
+            "id": "item:qtcraft:cooked_chicken",
+            "name": "qtcraft:cooked_chicken",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_chicken",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_chicken",
+                                    "text": "Rohes Hühnchen"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_chicken",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_chicken",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_chicken",
+                                "text": "Gebratenes Hühnchen"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Im Ofen hergestellt"
+                }
+            ],
+            "text": "Im Ofen gebratenes Hühnchen; gutes Essen.",
+            "title": "Gebratenes Hühnchen"
+        },
         "item:qtcraft:cooked_mutton": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -60778,6 +61520,34 @@
             "text": "Eine Waffe: richtet mehr Schaden an Wesen an.",
             "title": "Diamantschwert"
         },
+        "item:qtcraft:egg": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Egg",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:egg"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "16"
+                }
+            ],
+            "icon": "qtcraft:egg",
+            "id": "item:qtcraft:egg",
+            "name": "qtcraft:egg",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Von Hühnern gelegt. Mit der Benutzen-Taste geworfen, zerplatzt es, wo es landet; aus jedem achten Ei schlüpft dort ein Küken, ab und zu sogar vier.",
+            "title": "Ei"
+        },
         "item:qtcraft:emerald": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -60953,9 +61723,9 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "25 %",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
+                            "note": "50 %",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
                         }
                     ],
                     "recipes": [
@@ -60964,7 +61734,7 @@
                     "title": "Droppt aus"
                 }
             ],
-            "text": "Leicht und weich. Zombies lassen manchmal eine fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.",
+            "text": "Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.",
             "title": "Feder"
         },
         "item:qtcraft:fired_lamp_shell": {
@@ -68046,6 +68816,101 @@
             "text": "Aus rotem und blauem Farbstoff gemischt.",
             "title": "Violetter Farbstoff"
         },
+        "item:qtcraft:raw_chicken": {
+            "category": "food",
+            "categoryTitle": "Nahrung",
+            "englishTitle": "Raw chicken",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_chicken"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                },
+                {
+                    "label": "Nahrung",
+                    "links": [
+                    ],
+                    "value": "2 Nahrungspunkte"
+                }
+            ],
+            "icon": "qtcraft:raw_chicken",
+            "id": "item:qtcraft:raw_chicken",
+            "name": "qtcraft:raw_chicken",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Brennstoffe"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_chicken",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_chicken",
+                                    "text": "Rohes Hühnchen"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_chicken",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_chicken",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_chicken",
+                                "text": "Gebratenes Hühnchen"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Wird im Ofen zu"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Fleisch eines Huhns; im Ofen gebraten besser.",
+            "title": "Rohes Hühnchen"
+        },
         "item:qtcraft:raw_mutton": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -68703,6 +69568,54 @@
             ],
             "text": "Wird mit der Benutzen-Taste geworfen, einer nach dem anderen und sofort. Er tut nicht weh, stößt aber zurück, was er trifft, und zerplatzt an allem, worauf er trifft. Schnee mit einer Schaufel abgebaut gibt Schneebälle; vier ergeben einen Schneeblock.",
             "title": "Schneeball"
+        },
+        "item:qtcraft:spider_eye": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Spider eye",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spider_eye"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:spider_eye",
+            "id": "item:qtcraft:spider_eye",
+            "name": "qtcraft:spider_eye",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "33 %",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "33 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Spinnen lassen manchmal eines fallen. Sein Bild steht für Vergiftung neben den Herzen.",
+            "title": "Spinnenauge"
         },
         "item:qtcraft:stick": {
             "category": "items",
@@ -70193,6 +71106,18 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
                         {
                             "icon": "qtcraft:cobweb",
                             "note": "",
@@ -72072,6 +72997,310 @@
             "text": "Eine Gliederpuppe mit dem grünen Umhang. Sie geht langsam umher, damit der Umhang schwingt; sie erscheint nie von selbst, die Showcase-Welt hat eine am Charakter-Stand.",
             "title": "Gliederpuppe mit Umhang"
         },
+        "mob:qtcraft:cave_spider": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Cave spider",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cave_spider"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: verfolgt und greift Spieler an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "12 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,7 m breit, 0,5 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,6 m/s beim Gehen, 3,8 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "2 Schaden bis 1,2 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nachts"
+                },
+                {
+                    "label": "Höhlen",
+                    "links": [
+                    ],
+                    "value": "auch in Höhlen zu jeder Zeit"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 7"
+                },
+                {
+                    "label": "Spawnhöhe",
+                    "links": [
+                    ],
+                    "value": "bis y 40"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 1"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "0,4"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:string",
+                            "note": "",
+                            "target": "item:qtcraft:string",
+                            "text": "Faden"
+                        },
+                        {
+                            "icon": "qtcraft:spider_eye",
+                            "note": "33 %",
+                            "target": "item:qtcraft:spider_eye",
+                            "text": "Spinnenauge"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:string",
+            "id": "mob:qtcraft:cave_spider",
+            "name": "qtcraft:cave_spider",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Eine kleine, blaue Spinne der Höhlen und später der Minenschächte. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.",
+            "title": "Höhlenspinne"
+        },
+        "mob:qtcraft:chicken": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Chicken",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chicken"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "4 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,4 m breit, 0,7 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1 m/s beim Gehen, 2,5 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "bei Tag"
+                },
+                {
+                    "label": "Bleibt",
+                    "links": [
+                    ],
+                    "value": "verschwindet nie und wird mit der Welt gespeichert"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 4"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle friedlichen Wesen zusammen: 6 pro Spieler"
+                },
+                {
+                    "label": "Vermehrt sich mit",
+                    "links": [
+                        {
+                            "icon": "qtcraft:wheat_seeds",
+                            "note": "",
+                            "target": "item:qtcraft:wheat_seeds",
+                            "text": "Weizenkörner"
+                        },
+                        {
+                            "icon": "qtcraft:melon_seeds",
+                            "note": "",
+                            "target": "item:qtcraft:melon_seeds",
+                            "text": "Melonenkerne"
+                        },
+                        {
+                            "icon": "qtcraft:pumpkin_seeds",
+                            "note": "",
+                            "target": "item:qtcraft:pumpkin_seeds",
+                            "text": "Kürbiskerne"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Nachwuchs",
+                    "links": [
+                    ],
+                    "value": "wieder nach 5 min, Junge wachsen in 20 min heran"
+                },
+                {
+                    "label": "Legt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:egg",
+                            "note": "",
+                            "target": "item:qtcraft:egg",
+                            "text": "Ei"
+                        }
+                    ],
+                    "value": "alle 5–10 min"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "50 %",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feder"
+                        },
+                        {
+                            "icon": "qtcraft:feather",
+                            "note": "50 %",
+                            "target": "item:qtcraft:feather",
+                            "text": "Feder"
+                        },
+                        {
+                            "icon": "qtcraft:raw_chicken",
+                            "note": "",
+                            "target": "item:qtcraft:raw_chicken",
+                            "text": "Rohes Hühnchen"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:feather",
+            "id": "mob:qtcraft:chicken",
+            "name": "qtcraft:chicken",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein kleiner Vogel der Wiesen. Statt zu fallen, flattert es sanft hinab, und alle fünf bis zehn Minuten legt es ein Ei. Samen jeder Art machen es verliebt. Lässt Federn und rohes Hühnchen fallen.",
+            "title": "Huhn"
+        },
         "mob:qtcraft:enderman": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -72784,6 +74013,76 @@
             "text": "Friedliches Tier des Graslands; lässt Wolle fallen.",
             "title": "Schaf"
         },
+        "mob:qtcraft:silverfish": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Silverfish",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:silverfish"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: verfolgt und greift Spieler an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "8 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,4 m breit, 0,3 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,2 m/s beim Gehen, 3,5 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "1 Schaden bis 1 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "12 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:silverfish",
+            "name": "qtcraft:silverfish",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Ein kleiner grauer Schädling, der im Stein lebt. Es kommt heraus, wenn du einen befallenen Block abbaust, beißt, und wenn du es verletzt, ruft es seinesgleichen aus den befallenen Blöcken ringsum. In Ruhe gelassen, schlüpft es wieder in einen Steinblock neben sich.",
+            "title": "Silberfischchen"
+        },
         "mob:qtcraft:skeleton": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -73132,6 +74431,170 @@
             "text": "Ein hüpfender Klumpen, schwach, aber hartnäckig. Unter der Erde lebt er tief unten und nur in manchen Chunks, den Slime-Chunks; nachts kommt er auch in Sümpfen heraus.",
             "title": "Schleim"
         },
+        "mob:qtcraft:spider": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Spider",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spider"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: verfolgt und greift Spieler an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "16 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "1,3 m breit, 0,9 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,5 m/s beim Gehen, 3,6 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "2 Schaden bis 1,7 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nachts"
+                },
+                {
+                    "label": "Höhlen",
+                    "links": [
+                    ],
+                    "value": "auch in Höhlen zu jeder Zeit"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 7"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 1"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:string",
+                            "note": "",
+                            "target": "item:qtcraft:string",
+                            "text": "Faden"
+                        },
+                        {
+                            "icon": "qtcraft:string",
+                            "note": "50 %",
+                            "target": "item:qtcraft:string",
+                            "text": "Faden"
+                        },
+                        {
+                            "icon": "qtcraft:spider_eye",
+                            "note": "33 %",
+                            "target": "item:qtcraft:spider_eye",
+                            "text": "Spinnenauge"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:string",
+            "id": "mob:qtcraft:spider",
+            "name": "qtcraft:spider",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an. Tagsüber im Freien lässt sie dich in Ruhe, außer du schlägst sie; nachts und in Höhlen jagt sie dich. Breit: Durch schmale Lücken passt sie nicht. Gift schadet ihr nicht.",
+            "title": "Spinne"
+        },
         "mob:qtcraft:villager": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -73293,12 +74756,6 @@
                             "note": "2,5 %",
                             "target": "item:qtcraft:potato",
                             "text": "Kartoffel"
-                        },
-                        {
-                            "icon": "qtcraft:feather",
-                            "note": "25 %",
-                            "target": "item:qtcraft:feather",
-                            "text": "Feder"
                         }
                     ],
                     "value": ""
@@ -73817,6 +75274,64 @@
             ],
             "text": "",
             "title": "Kies-Vorkommen"
+        },
+        "ore:qtcraft:infested_stone": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Infested stone veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:infested_stone"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:infested_stone",
+                            "note": "",
+                            "target": "block:qtcraft:infested_stone",
+                            "text": "Befallener Stein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Ersetzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Höhen",
+                    "links": [
+                    ],
+                    "value": "y 40–160"
+                },
+                {
+                    "label": "Adern",
+                    "links": [
+                    ],
+                    "value": "7 pro Chunk, je bis 9 Blöcke"
+                }
+            ],
+            "icon": "qtcraft:infested_stone",
+            "id": "ore:qtcraft:infested_stone",
+            "name": "qtcraft:infested_stone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Befallener Stein-Vorkommen"
         },
         "ore:qtcraft:iron": {
             "category": "worldgen",
@@ -74834,6 +76349,39 @@
                                 "note": "",
                                 "target": "item:qtcraft:cooked_mutton",
                                 "text": "Gebratenes Hammelfleisch"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_chicken",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_chicken",
+                                    "text": "Rohes Hühnchen"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Ofen"
+                                }
+                            ],
+                            "name": "qtcraft:cooked_chicken",
+                            "needsTable": false,
+                            "note": "Ofen: 10 s pro Stück, braucht Brennstoff",
+                            "result": {
+                                "icon": "qtcraft:cooked_chicken",
+                                "note": "",
+                                "target": "item:qtcraft:cooked_chicken",
+                                "text": "Gebratenes Hühnchen"
                             },
                             "seconds": 10,
                             "shapeless": false,
@@ -76334,6 +77882,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:infested_stone",
+                            "note": "y 40–160",
+                            "target": "ore:qtcraft:infested_stone",
+                            "text": "Befallener Stein-Vorkommen"
+                        },
                         {
                             "icon": "qtcraft:diamond_ore",
                             "note": "y 2–16",

@@ -12,6 +12,9 @@
     "chaseSpeed": 2.6,
     "hostile": true,
     "burnsInDaylight": true,
+    "immuneTo": [
+        "poison"
+    ],
     "ai": "archer",
     "archer": {
         "projectile": "arrow",

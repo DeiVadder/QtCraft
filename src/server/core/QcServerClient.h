@@ -5,6 +5,7 @@
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcStatusEffects.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcMessages.h"
 #include "server/core/QcRateLimiter.h"
@@ -186,4 +187,9 @@ struct QcServerClient : QcEntity
     // the first message.
     QcExperience experience;
     std::optional<QcExperience> sentExperience;
+    // Status effects (QcServerEffects, decision E-450) and those last sent with the health, counted
+    // down in step with them: the two differ only when an effect came, went, changed its level or
+    // was given again for longer.
+    QcStatusEffects effects;
+    QcStatusEffects sentEffects;
 };

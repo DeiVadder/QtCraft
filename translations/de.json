@@ -161,6 +161,7 @@
     "Autosave failed: %1": "Automatisches Speichern fehlgeschlagen: %1",
     "The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.": "Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.",
     "%1 died": "%1 ist gestorben",
+    "%1 died of a status effect": "%1 ist an einem Statuseffekt gestorben",
     "%1 fell out of the world": "%1 fiel aus der Welt",
     "Too many chests in the world (at most %1)": "Zu viele Truhen in der Welt (höchstens %1)",
     "Too many machines in the world (at most %1)": "Zu viele Maschinen in der Welt (höchstens %1)",
@@ -633,5 +634,12 @@
     "Gives the nearest villager a profession and trading level.": "Gibt dem nächsten Dorfbewohner einen Beruf und eine Handelsstufe.",
     "No villager within %1 blocks": "Kein Dorfbewohner im Umkreis von %1 Blöcken",
     "Villager %1 is now %2 of level %3": "Dorfbewohner %1 ist jetzt %2 der Stufe %3",
-    "Projectiles": "Geschosse"
+    "Projectiles": "Geschosse",
+    "Usage: /effect give <player> <effect> [seconds] [level] or /effect clear <player> [effect]": "Verwendung: /effect give <Spieler> <Effekt> [Sekunden] [Stufe] oder /effect clear <Spieler> [Effekt]",
+    "Gives a player a status effect or takes effects away.": "Gibt einem Spieler einen Statuseffekt oder nimmt Effekte weg.",
+    "Unknown effect: %1": "Unbekannter Effekt: %1",
+    "Gave %1 level %2 for %3 s to %4": "%4 hat %1 der Stufe %2 für %3 s bekommen",
+    "%1 already has a stronger or longer %2": "%1 hat schon ein stärkeres oder längeres %2",
+    "Took the effects away from %1": "%1 hat die Effekte nicht mehr",
+    "%1 has no such effect": "%1 hat keinen solchen Effekt"
 }

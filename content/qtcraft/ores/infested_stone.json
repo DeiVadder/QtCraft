@@ -1,0 +1,12 @@
+{
+    "name": "infested_stone",
+    "replaces": "stone",
+    "block": "infested_stone",
+    "minY": 40,
+    "maxY": 160,
+    "veinsPerChunk": 7,
+    "veinSize": 9,
+    "biomes": [
+        "mountains"
+    ]
+}

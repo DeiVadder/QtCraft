@@ -1,0 +1,29 @@
+{
+    "name": "mob.silverfish.death",
+    "volume": 0.6,
+    "variants": 1,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.35,
+            "attack": 0.004,
+            "curve": 2,
+            "highpass": 2500,
+            "lowpass": 8000,
+            "tremoloRate": 30,
+            "tremoloDepth": 0.6,
+            "gain": 0.8
+        },
+        {
+            "wave": "square",
+            "duration": 0.2,
+            "frequency": 1400,
+            "endFrequency": 600,
+            "attack": 0.004,
+            "curve": 2,
+            "lowpass": 3000,
+            "gain": 0.3
+        }
+    ]
+}

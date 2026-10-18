@@ -28,10 +28,17 @@ public:
     Feeding feed(QcServerClient &client, quint32 mobId);
     // The box players see and aim at: young animals at QcMsg::youngScale (collision stays adult).
     static QcAabb shownBox(const QcMobDefinition &definition, const QcCreature &mob);
-    // Breeding timers and births of one simulated tick.
+    // Breeding timers, births and laid eggs of one simulated tick.
     void tick();
+    // A young one of `type` at `position` that is kept with the world (an egg's chick, decision
+    // E-450), within the same limits as births (QcServerLimits breedingCrowd, bredPerKind); its id,
+    // 0 when there is no room.
+    static quint32 spawnYoung(QcServerState &state, int type, const QcVec3 &position);
 
 private:
+    // What creatures lay in this tick (QcMobLaying, decision E-452), dropped as items.
+    void layEggs();
+
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcServerInventory &m_inventory;

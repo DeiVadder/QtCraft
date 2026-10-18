@@ -311,11 +311,12 @@ private slots:
         }
         QVERIFY(items.contains(u"qtcraft:bone"_s) && items.contains(u"qtcraft:arrow"_s));
 
-        // Chances of creature drops come from the data (the zombie's feather).
+        // Chances of creature drops come from the data (the zombie's carrot; feathers come from
+        // chickens, decision E-452).
         const QList<QcItemDrop> &zombie = m_content->mobs()[type("zombie")].drops;
-        const auto feather = std::ranges::find(zombie, u"qtcraft:feather"_s, &QcItemDrop::item);
-        QVERIFY(feather != zombie.end());
-        QCOMPARE(feather->chance, 0.25);
+        const auto carrot = std::ranges::find(zombie, u"qtcraft:carrot"_s, &QcItemDrop::item);
+        QVERIFY(carrot != zombie.end());
+        QCOMPARE(carrot->chance, 0.025);
     }
 
     void boneMealGrowsCropsAndSaplings()

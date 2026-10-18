@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcAppearanceDefinition.h"
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcCommandMacroDefinition.h"
+#include "common/content/definitions/QcEffectDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/definitions/QcMaterialDefinition.h"
 #include "common/content/definitions/QcMobDefinition.h"
@@ -195,6 +196,10 @@ public:
     void registerProjectile(QcProjectileDefinition projectile);
     const QList<QcProjectileDefinition> &projectiles() const { return m_projectiles; }
     const QcProjectileDefinition *projectile(const QString &name) const;
+    // Kinds of status effects (decision E-450), replaced by name; they reach the client.
+    void registerEffect(QcEffectDefinition effect);
+    const QList<QcEffectDefinition> &effects() const { return m_effects; }
+    const QcEffectDefinition *effect(const QString &name) const;
     // Offers of the professions (decision E-414, server side only): sets replaced by name.
     void registerTradeSet(QcTradeSet set);
     const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
@@ -277,6 +282,8 @@ private:
     QHash<QString, qsizetype> m_professionIndex;
     QList<QcProjectileDefinition> m_projectiles;
     QHash<QString, qsizetype> m_projectileIndex;
+    QList<QcEffectDefinition> m_effects;
+    QHash<QString, qsizetype> m_effectIndex;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

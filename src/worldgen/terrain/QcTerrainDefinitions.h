@@ -74,6 +74,8 @@ struct QcTerrainDefinitions
         int veins = 8;
         int veinSize = 6;
         quint64 seed = 0;
+        // Biome indices a vein may start in; empty for all.
+        QSet<int> biomes;
     };
 
     QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed, QStringList *warnings);

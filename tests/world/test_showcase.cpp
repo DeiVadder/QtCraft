@@ -304,6 +304,7 @@ private slots:
         // From where each hostile creature stands, the glass in every direction is thicker than what
         // its reach (from its centre) leaves once it presses against the glass.
         int checked = 0;
+        constexpr int maxWalk = 16;
         const QcWorldSetup setup = generator.setup();
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
             const QcMobDefinition &mob = content->mobs().at(*content->mobIndex(placed.mob));
@@ -312,9 +313,15 @@ private slots:
             }
             const QcBlockPos start{int(std::floor(placed.at.x)), int(std::floor(placed.at.y)), int(std::floor(placed.at.z))};
             for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}) {
+                // Pens built from data may have walls of other blocks (the spider cave's stone): only
+                // glass within reach of the creature counts here, and the walk ends at the first solid
+                // block (not through a stone wall to the glass of the next exhibit).
                 QcBlockPos pos = start;
-                while (blockAt(chunks, pos) != glass) {
+                for (int step = 0; step < maxWalk && !content->block(blockAt(chunks, pos)).solid; ++step) {
                     pos = pos.offset(dx, 0, dz);
+                }
+                if (blockAt(chunks, pos) != glass) {
+                    continue;
                 }
                 int thickness = 0;
                 for (; blockAt(chunks, pos) == glass; pos = pos.offset(dx, 0, dz)) {

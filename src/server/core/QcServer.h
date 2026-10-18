@@ -20,6 +20,7 @@
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerCrafting.h"
+#include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerGameModes.h"
 #include "server/gameplay/QcServerInteraction.h"
 #include "server/gameplay/QcServerInventory.h"
@@ -268,6 +269,7 @@ private:
     QcServerTrading m_trading;
     QcEnvironmentDamage m_environment;
     QcBodyBurning m_burning;
+    QcServerEffects m_effects;
     QcLightningStrike m_lightning;
     QcSnowfall m_snowfall;
     QcEntitySync m_entitySync;

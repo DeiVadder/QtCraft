@@ -13,6 +13,26 @@
 #include <algorithm>
 #include <cmath>
 
+namespace {
+
+// The key of the chat line that tells of a death by `kind` (QcServerMessages).
+const char *deathMessage(QcPlayerHealth::DamageKind kind)
+{
+    switch (kind) {
+    case QcPlayerHealth::DamageKind::Void:
+        return QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world");
+    case QcPlayerHealth::DamageKind::Effect:
+        return QT_TRANSLATE_NOOP("QcServerMessages", "%1 died of a status effect");
+    case QcPlayerHealth::DamageKind::Unblockable:
+    case QcPlayerHealth::DamageKind::Armoured:
+    case QcPlayerHealth::DamageKind::Command:
+        break;
+    }
+    return QT_TRANSLATE_NOOP("QcServerMessages", "%1 died");
+}
+
+} // namespace
+
 QcPlayerHealth::QcPlayerHealth(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)
     , m_sounds(sounds)
@@ -123,12 +143,11 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
     client.hurt.clear();
     client.mining.pos.reset();
     client.drawing = false;
+    client.effects.clear();
     m_state.entities().noteDeath(client.id);
     forgetTeleports(client);
 
-    const char *message = kind == DamageKind::Void ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world")
-                                                   : QT_TRANSLATE_NOOP("QcServerMessages", "%1 died");
-    client.connection->send(QcChatText::message(message, {client.name}));
+    client.connection->send(QcChatText::message(deathMessage(kind), {client.name}));
 
     // Catalogue items never fall into the world by themselves (decision E-283). Drops in the void
     // are removed at once by the item manager (decision E-288).
@@ -233,7 +252,8 @@ void QcPlayerHealth::consume(QcServerClient &client)
 
 void QcPlayerHealth::sendHealth(QcServerClient &client)
 {
-    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0});
+    client.sentEffects = client.effects;
+    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0, client.effects.all()});
 }
 
 void QcPlayerHealth::sendFood(QcServerClient &client)

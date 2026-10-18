@@ -1,0 +1,8 @@
+{
+    "name": "spider_eye",
+    "pattern": "lump",
+    "primary": "#8c1f2a",
+    "secondary": "#d24a5a",
+    "variation": 0.1,
+    "seed": 5401
+}

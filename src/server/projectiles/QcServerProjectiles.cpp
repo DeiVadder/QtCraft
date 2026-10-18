@@ -7,7 +7,9 @@
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/gameplay/QcServerCombat.h"
+#include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/mobs/QcServerAnimals.h"
 
 namespace {
 
@@ -59,6 +61,7 @@ void QcServerProjectiles::tick()
             if (effect && !effect->sound.isEmpty()) {
                 m_sounds.play(effect->sound, projectile.motion.position);
             }
+            spawnWhereBroken(projectile, definition);
             if (const QcHitEffect *teleport = definition.effect(QcHitEffect::teleport)) {
                 teleportThrower(projectile, *teleport);
             }
@@ -118,9 +121,12 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
                                              .attacker = byPlayer ? projectile.shooter : 0,
                                              .knockback = impact.knockback});
         // The hit may have killed it.
-        QcCreature *mob = took && impact.burnTicks > 0 ? m_state.entities().creatures().find(hit.body) : nullptr;
+        QcCreature *mob = took ? m_state.entities().creatures().find(hit.body) : nullptr;
         if (mob) {
             mob->burnTicks = std::max(mob->burnTicks, impact.burnTicks);
+            for (const QcStatusEffect &effect : impact.effects) {
+                QcServerEffects::giveCreature(m_state.content(), m_state.entities().creatures(), hit.body, effect);
+            }
         }
     } else {
         for (const auto &client : m_state.clients()) {
@@ -147,7 +153,7 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     // The damage without its push, then the push of the knockback effects (also without damage).
     // A stronger hit during the invulnerability does not push (decision E-429).
     const QcHurtWindow::Take take = client.hurt.wouldTake(impact.damage);
-    m_health.damage(client, impact.damage, {}, QcPlayerHealth::DamageKind::Armoured);
+    const QcHurtWindow::Take dealt = m_health.damage(client, impact.damage, {}, QcPlayerHealth::DamageKind::Armoured);
     if (client.dead) {
         client.burnTicks = 0;
         return;
@@ -156,9 +162,30 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     if (take == QcHurtWindow::Take::Fresh) {
         QcPlayerHealth::knock(client, along, impact.knockback);
     }
+    // The status effects when the hit counts: it took, or, without damage, it would have taken.
+    if ((impact.damage > 0.0 ? dealt : take) != QcHurtWindow::Take::Ignored) {
+        for (const QcStatusEffect &effect : impact.effects) {
+            QcServerEffects::givePlayer(m_state.content(), client, effect);
+        }
+    }
     // A hit without damage sends no health by itself; the client still has to see the fire.
     if (alight && impact.damage <= 0.0) {
         m_health.sendHealth(client);
+    }
+}
+
+void QcServerProjectiles::spawnWhereBroken(const QcProjectile &projectile, const QcProjectileDefinition &definition)
+{
+    QRandomGenerator &random = m_state.random();
+    for (const QcHitEffect &effect : definition.onHit) {
+        const std::optional<int> type = effect.is(QcHitEffect::spawn) ? m_state.content().mobIndex(effect.subject) : std::nullopt;
+        if (!type) {
+            continue;
+        }
+        const int count = QcHitEffects::spawnCount(effect, random);
+        for (int i = 0; i < count; ++i) {
+            QcServerAnimals::spawnYoung(m_state, *type, projectile.motion.position);
+        }
     }
 }
 

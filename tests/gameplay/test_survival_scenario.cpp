@@ -99,11 +99,11 @@ private:
         return -1;
     }
 
-    // Puts an item into the selected hotbar slot 0.
+    // Puts an item into the selected hotbar slot 0, waiting until it has come (a /give takes a tick).
     void hold(const QString &item)
     {
+        QTRY_VERIFY2_WITH_TIMEOUT(slotOf(item) >= 0, qPrintable(item), timeoutMs);
         const int slot = slotOf(item);
-        QVERIFY2(slot >= 0, qPrintable(item));
         if (slot != 0) {
             request({{u"cmd"_s, u"moveItem"_s}, {u"from"_s, slot}, {u"to"_s, 0}});
         }
@@ -135,6 +135,20 @@ private:
             }
         }
         return -1;
+    }
+
+    // The id of the first entity of `type` within 8 blocks once one is there (after a /summon), -1
+    // when none came in time.
+    int awaitEntity(const QString &type)
+    {
+        int found = -1;
+        const bool came = QTest::qWaitFor(
+            [&] {
+                found = nearestEntity(type);
+                return found >= 0;
+            },
+            timeoutMs);
+        return came ? found : -1;
     }
 
     bool isGone(int id)
@@ -367,7 +381,7 @@ private slots:
         int pig = nearestEntity(u"qtcraft:pig"_s);
         if (pig < 0) {
             request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon pig"_s}});
-            pig = nearestEntity(u"qtcraft:pig"_s);
+            pig = awaitEntity(u"qtcraft:pig"_s);
         }
         QVERIFY(pig >= 0);
         // A pig flees after each hit; the fight walks after it.
@@ -379,7 +393,7 @@ private slots:
 
         // Fight: a zombie strikes back before it falls.
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon zombie"_s}});
-        const int zombie = nearestEntity(u"qtcraft:zombie"_s);
+        const int zombie = awaitEntity(u"qtcraft:zombie"_s);
         QVERIFY(zombie >= 0);
         const Fight fight = fightUntilGone(zombie);
         QVERIFY2(fight.won, qPrintable(fight.report));

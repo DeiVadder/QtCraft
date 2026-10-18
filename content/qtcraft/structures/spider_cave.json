@@ -1,0 +1,126 @@
+{
+    "name": "spider_cave",
+    "showcase": {
+        "order": 91
+    },
+    "palette": {
+        "S": "stone",
+        "G": "glass",
+        ".": "air",
+        "W": "cobweb"
+    },
+    "layers": [
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS"
+        ],
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSS...SSS...SS",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SSGGGGGSSGGGGS",
+            "SSGGGGGSSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SSGGGGGSSGGGGS",
+            "SSGGGGGSSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SSGGGGGSSGGGGS",
+            "SSGGGGGSSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSS.W.SSSW..SS",
+            "SS....SSS...SS",
+            "SS.....SS....S",
+            "SS.....SS....S",
+            "SSGGGGGSSGGGGS",
+            "SSGGGGGSSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS"
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "spider",
+            "at": [
+                4.5,
+                1.0,
+                4.5
+            ]
+        },
+        {
+            "mob": "cave_spider",
+            "at": [
+                10.5,
+                1.0,
+                4.5
+            ]
+        },
+        {
+            "mob": "cave_spider",
+            "at": [
+                11.5,
+                1.0,
+                3.5
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                6.6,
+                7.5
+            ],
+            "text": "mob.qtcraft.spider"
+        },
+        {
+            "at": [
+                10.5,
+                6.6,
+                7.5
+            ],
+            "text": "mob.qtcraft.cave_spider"
+        },
+        {
+            "at": [
+                7.0,
+                7.4,
+                7.5
+            ],
+            "text": "structure.qtcraft.spider_cave"
+        }
+    ]
+}

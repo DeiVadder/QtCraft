@@ -576,6 +576,28 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
     });
 }
 
+void writeEffect(QDataStream &stream, const QcEffectDefinition &effect)
+{
+    stream << effect.name << effect.translationKey << effect.icon << effect.colour << effect.tintsHearts << effect.damage
+           << qint32(effect.periodTicks) << effect.minHealth;
+}
+
+[[nodiscard]] QcStatus readEffects(QDataStream &stream, QcContentRegistry &registry)
+{
+    return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: effect table"_s, u"Corrupt content: effect %1"_s, [&] {
+        QcEffectDefinition effect;
+        qint32 period = 0;
+        stream >> effect.name >> effect.translationKey >> effect.icon >> effect.colour >> effect.tintsHearts >> effect.damage >> period
+            >> effect.minHealth;
+        effect.periodTicks = period;
+        if (stream.status() != QDataStream::Ok || period < 1 || !std::isfinite(effect.damage) || !std::isfinite(effect.minHealth)) {
+            return false;
+        }
+        registry.registerEffect(std::move(effect));
+        return true;
+    });
+}
+
 } // namespace
 
 void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &stream)
@@ -600,6 +622,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
             << recipe.seconds;
     });
     writeList(stream, content.sounds(), writeSound);
+    writeList(stream, content.effects(), writeEffect);
 }
 
 QcStatus QcContentSerializer::readBlocks(QDataStream &stream, QcContentRegistry &registry)
@@ -638,9 +661,9 @@ QcResult<QcContentRegistry> QcContentSerializer::read(QDataStream &stream)
 {
     using ReadStep = QcStatus (*)(QDataStream &, QcContentRegistry &);
     // The order of the tables in the stream.
-    constexpr std::array<ReadStep, 11> steps{&readBlocks, &readItems,  &readMobs,        &readRecipes,
-                                             &readTextures, &readTranslations, &readPacks, &readModels,
-                                             &readAppearances, &readSmeltingRecipes, &readSounds};
+    constexpr std::array<ReadStep, 12> steps{&readBlocks,      &readItems,           &readMobs,   &readRecipes,
+                                             &readTextures,    &readTranslations,    &readPacks,  &readModels,
+                                             &readAppearances, &readSmeltingRecipes, &readSounds, &readEffects};
 
     QcContentRegistry registry;
     for (const ReadStep step : steps) {

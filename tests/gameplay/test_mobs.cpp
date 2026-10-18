@@ -600,14 +600,15 @@ private slots:
 
         QcMobManager night(m_content, 5);
         runFor(night, midnight);
-        bool zombie = false;
+        // Night creatures come to the surface; which kinds depends on the random draws among them.
+        bool nightCreature = false;
         for (const QcCreature &mob : night.mobs()) {
-            zombie = zombie || mob.type == type("zombie");
+            nightCreature = nightCreature || (m_content->mobs()[mob.type].spawnTime == QcMobDefinition::SpawnTime::Night && !mob.underground);
             const double distance = (mob.motion.position - player).length();
             QVERIFY2(distance < QcMobManager::despawnDistance, qPrintable(QString::number(distance)));
         }
 
-        QVERIFY(zombie);
+        QVERIFY(nightCreature);
         int hostile = 0;
         for (const QcCreature &mob : night.mobs()) {
             hostile += m_content->mobs()[mob.type].hostile;
@@ -679,6 +680,14 @@ private slots:
         QcMobDefinition zombie = anywhere->mobs()[type("zombie")];
         zombie.spawnBlocks.clear();
         anywhere->registerMob(zombie);
+        // Only zombies come at night here: the other night kinds would share the places by chance.
+        for (const QcMobDefinition &other : m_content->mobs()) {
+            if (other.name != zombie.name && other.spawnTime == QcMobDefinition::SpawnTime::Night && other.spawnWeight > 0.0) {
+                QcMobDefinition without = other;
+                without.spawnWeight = 0.0;
+                anywhere->registerMob(without);
+            }
+        }
 
         QVERIFY(spawnedZombies(anywhere, nullptr) > 0);
         QCOMPARE(spawnedZombies(anywhere, "magma_block", 0), 0);

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked chicken](#item-qtcraft-cooked_chicken) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw chicken](#item-qtcraft-raw_chicken) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -74,6 +74,28 @@ A snack and the seed of carrot plants. Pigs follow their love for it.
 **Dropped by**
 
 [Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
+
+### <a id="item-qtcraft-cooked_chicken"></a>Cooked chicken
+
+Chicken cooked in a furnace; good food.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_chicken` |
+| Stack size | 64 |
+| Food | 6 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw chicken](#item-qtcraft-raw_chicken) | [Cooked chicken](#item-qtcraft-cooked_chicken) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-cooked_mutton"></a>Cooked mutton
 
@@ -202,6 +224,32 @@ Pumpkin, sugar and wheat baked into the most filling food of the farm.
 |---|---|---|
 | [Pumpkin](blocks.md#block-qtcraft-pumpkin) | [Sugar](items.md#item-qtcraft-sugar) | [Pumpkin pie](#item-qtcraft-pumpkin_pie) |
 | [Wheat](items.md#item-qtcraft-wheat) | · |  |
+
+### <a id="item-qtcraft-raw_chicken"></a>Raw chicken
+
+Meat of a chicken; better cooked in a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_chicken` |
+| Stack size | 64 |
+| Food | 2 food points |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw chicken](#item-qtcraft-raw_chicken) | [Cooked chicken](#item-qtcraft-cooked_chicken) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Chicken](creatures.md#mob-qtcraft-chicken)
 
 ### <a id="item-qtcraft-raw_mutton"></a>Raw mutton
 

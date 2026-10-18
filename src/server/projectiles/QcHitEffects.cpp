@@ -19,6 +19,11 @@ QcHitEffects::QcHitEffects()
     // Teleporting the thrower happens where the projectile breaks (QcServerProjectiles, decision
     // E-460), on a body as on a block; the body takes nothing.
     add(QString::fromLatin1(QcHitEffect::teleport), [](const QcHitEffect &, double, Impact &) {});
+    add(QString::fromLatin1(QcHitEffect::effect), [](const QcHitEffect &effect, double, Impact &impact) {
+        impact.effects.append({effect.subject, effect.level, int(std::lround(effect.number / QcPhysics::tickDuration))});
+    });
+    // Spawning happens where the projectile breaks (QcServerProjectiles), at a body or a block.
+    add(QString::fromLatin1(QcHitEffect::spawn), [](const QcHitEffect &, double, Impact &) {});
 }
 
 QcHitEffects::Impact QcHitEffects::impactOf(const QcProjectileDefinition &definition, double damage) const
@@ -30,4 +35,13 @@ QcHitEffects::Impact QcHitEffects::impactOf(const QcProjectileDefinition &defini
         }
     }
     return impact;
+}
+
+int QcHitEffects::spawnCount(const QcHitEffect &effect, QRandomGenerator &random)
+{
+    if (random.generateDouble() >= effect.number) {
+        return 0;
+    }
+    // The reference's egg: one chick in eight throws, four in a 32nd of those.
+    return random.generateDouble() < effect.groupChance ? effect.groupCount : effect.count;
 }

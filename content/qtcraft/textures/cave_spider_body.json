@@ -1,0 +1,8 @@
+{
+    "name": "cave_spider_body",
+    "pattern": "speckle",
+    "primary": "#1f3a44",
+    "secondary": "#12262e",
+    "variation": 0.08,
+    "seed": 5413
+}

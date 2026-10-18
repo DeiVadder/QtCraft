@@ -20,8 +20,15 @@ QcPhysics::Steering QcPassiveBrain::think(QcCreature &mob, const QcMobDefinition
     // `thinkTicks` (at most sightCheckTicks) looks at its thought in the first `thinkTicks` of them.
     const bool mayPlan = thinkTicks <= 1;
     const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
-    const QcMobManager::PlayerView *target =
-        chases() ? QcMobSteering::chooseTarget(mob, definition, *context.players, context.world, looks) : nullptr;
+    // An angry creature neutral by day hunts exactly the player that hurt it (decision E-451).
+    const QcMobManager::PlayerView *provoker = QcMobSteering::provoker(mob, definition, *context.players);
+    const QcMobManager::PlayerView *target = nullptr;
+    if (chases() && provoker) {
+        target = provoker;
+        mob.chasing = provoker->entityId;
+    } else if (chases() && !mob.calm) {
+        target = QcMobSteering::chooseTarget(mob, definition, *context.players, context.world, looks);
+    }
     // A hostile creature that has not looked yet still strikes a player right next to it.
     if (!target && QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world, *context.hits)) {
         mob.lastSpeed = definition.chaseSpeed;
@@ -46,6 +53,11 @@ QcPhysics::Steering QcPassiveBrain::chase(QcCreature &mob, const QcMobDefinition
     if (QcMobSteering::inMelee(mob, definition, target, context.world)) {
         QcMobSteering::strike(mob, definition, target, *context.hits);
         return {{}, definition.chaseSpeed};
+    }
+
+    // A spider leaps at its target now and then; in the air it keeps the leap.
+    if (QcMobSteering::leap(mob, definition, target, m_random)) {
+        return {.wish = {}, .speed = definition.chaseSpeed};
     }
 
     QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Chase, target.position, 1);

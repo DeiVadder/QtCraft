@@ -288,7 +288,7 @@ Item {
                         width: heart.width
                         height: heart.height
                         text: "\u2665"
-                        color: Theme.health
+                        color: hud.game.player.heartColour !== "" ? hud.game.player.heartColour : Theme.health
                         style: Text.Outline
                         styleColor: Theme.textOutline
                         font.pixelSize: 22
@@ -354,10 +354,59 @@ Item {
     }
 
     HudLabel {
+        id: timeOfDay
+
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: 8
         text: hud.game.hud.timeOfDay
+    }
+
+    // Status effects under the time of day (decision E-450): the icon of each, its name with the
+    // level in Roman numerals (from II on) and the time left.
+    Column {
+        objectName: "statusEffects"
+
+        anchors.right: parent.right
+        anchors.top: timeOfDay.bottom
+        anchors.margins: 8
+        spacing: 4
+
+        Repeater {
+            model: hud.game.player.effects
+
+            Row {
+                id: effectRow
+
+                required property var modelData
+
+                anchors.right: parent.right
+                spacing: 4
+
+                Rectangle {
+                    width: 22
+                    height: 22
+                    radius: 4
+                    color: Qt.alpha(effectRow.modelData.colour, 0.6)
+                    border.color: effectRow.modelData.colour
+
+                    Image {
+                        anchors.fill: parent
+                        anchors.margins: 2
+                        visible: effectRow.modelData.icon !== ""
+                        source: visible ? "image://items/" + effectRow.modelData.icon : ""
+                        smooth: false
+                    }
+                }
+
+                HudLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 13
+                    text: (effectRow.modelData.level > 1 ? effectRow.modelData.label + " " + effectRow.modelData.levelName : effectRow.modelData.label)
+                          + "  " + Math.floor(effectRow.modelData.seconds / 60) + ":" + String(effectRow.modelData.seconds % 60).padStart(2, "0")
+                }
+            }
+        }
     }
 
     Row {

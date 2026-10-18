@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Smaragd](#item-qtcraft-emerald) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -127,6 +127,15 @@ Das härteste Material, für die besten Werkzeuge.
 
 [Diamanterz](blocks.md#block-qtcraft-diamond_ore)
 
+### <a id="item-qtcraft-egg"></a>Ei
+
+Von Hühnern gelegt. Mit der Benutzen-Taste geworfen, zerplatzt es, wo es landet; aus jedem achten Ei schlüpft dort ein Küken, ab und zu sogar vier.
+
+| | |
+|---|---|
+| ID | `qtcraft:egg` |
+| Stapelgröße | 16 |
+
 ### <a id="item-qtcraft-bucket"></a>Eimer
 
 Nimmt eine Wasser- oder Lavaquelle auf. Aus drei Eisenbarren.
@@ -240,11 +249,11 @@ Faden aus einem Spinnennetz; vier ergeben weiße Wolle.
 
 **Droppt aus**
 
-[Spinnennetz](blocks.md#block-qtcraft-cobweb)
+[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Spinne](creatures.md#mob-qtcraft-spider) (50 %), [Spinnennetz](blocks.md#block-qtcraft-cobweb)
 
 ### <a id="item-qtcraft-feather"></a>Feder
 
-Leicht und weich. Zombies lassen manchmal eine fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.
+Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.
 
 | | |
 |---|---|
@@ -257,7 +266,7 @@ Leicht und weich. Zombies lassen manchmal eine fallen. Mit Feuerstein und einem 
 
 **Droppt aus**
 
-[Zombie](creatures.md#mob-qtcraft-zombie) (25 %)
+[Huhn](creatures.md#mob-qtcraft-chicken) (50 %)
 
 ### <a id="item-qtcraft-flint"></a>Feuerstein
 
@@ -1126,6 +1135,19 @@ Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden fü
 **Droppt aus**
 
 [Smaragderz](blocks.md#block-qtcraft-emerald_ore)
+
+### <a id="item-qtcraft-spider_eye"></a>Spinnenauge
+
+Spinnen lassen manchmal eines fallen. Sein Bild steht für Vergiftung neben den Herzen.
+
+| | |
+|---|---|
+| ID | `qtcraft:spider_eye` |
+| Stapelgröße | 64 |
+
+**Droppt aus**
+
+[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider) (33 %), [Spinne](creatures.md#mob-qtcraft-spider) (33 %)
 
 ### <a id="item-qtcraft-stick"></a>Stock
 

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -120,6 +120,65 @@ Jeder feste Block oder eine Flüssigkeitsoberfläche.
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
 
+### <a id="mob-qtcraft-cave_spider"></a>Höhlenspinne
+
+Eine kleine, blaue Spinne der Höhlen und später der Minenschächte. Sie klettert an Wänden wie eine Spinne, passt durch Lücken von einem Block Höhe und vergiftet dich mit ihrem Biss. Immer feindlich.
+
+| | |
+|---|---|
+| ID | `qtcraft:cave_spider` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 12 Lebenspunkte |
+| Größe | 0,7 m breit, 0,5 m hoch |
+| Geschwindigkeit | 1,6 m/s beim Gehen, 3,8 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,2 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nachts |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Spawnhöhe | bis y 40 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 0,4 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Faden](items.md#item-qtcraft-string), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
+
+**Erscheint auf**
+
+[Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-chicken"></a>Huhn
+
+Ein kleiner Vogel der Wiesen. Statt zu fallen, flattert es sanft hinab, und alle fünf bis zehn Minuten legt es ein Ei. Samen jeder Art machen es verliebt. Lässt Federn und rohes Hühnchen fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:chicken` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 4 Lebenspunkte |
+| Größe | 0,4 m breit, 0,7 m hoch |
+| Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Vermehrt sich mit | [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Melonenkerne](items.md#item-qtcraft-melon_seeds), [Kürbiskerne](items.md#item-qtcraft-pumpkin_seeds) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Legt | alle 5–10 min: [Ei](items.md#item-qtcraft-egg) |
+| Beute | [Feder](items.md#item-qtcraft-feather) (50 %), [Feder](items.md#item-qtcraft-feather) (50 %), [Rohes Hühnchen](food.md#item-qtcraft-raw_chicken) |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
 ### <a id="mob-qtcraft-sheep"></a>Schaf
 
 Friedliches Tier des Graslands; lässt Wolle fallen.
@@ -213,6 +272,22 @@ Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
 
 Alle Biome.
 
+### <a id="mob-qtcraft-silverfish"></a>Silberfischchen
+
+Ein kleiner grauer Schädling, der im Stein lebt. Es kommt heraus, wenn du einen befallenen Block abbaust, beißt, und wenn du es verletzt, ruft es seinesgleichen aus den befallenen Blöcken ringsum. In Ruhe gelassen, schlüpft es wieder in einen Steinblock neben sich.
+
+| | |
+|---|---|
+| ID | `qtcraft:silverfish` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 8 Lebenspunkte |
+| Größe | 0,4 m breit, 0,3 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,5 m/s beim Verfolgen |
+| Angriff | 1 Schaden bis 1 m, alle 1 s |
+| Sieht Spieler bis | 12 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | nichts |
+
 ### <a id="mob-qtcraft-skeleton"></a>Skelett
 
 Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schießt Pfeile mit seinem Bogen, sobald er gespannt ist; kommst du zu nah, weicht es zurück. Seine Pfeile lassen sich nicht aufheben. Brennt im direkten Sonnenlicht.
@@ -242,6 +317,35 @@ Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schie�
 
 Alle Biome.
 
+### <a id="mob-qtcraft-spider"></a>Spinne
+
+Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an. Tagsüber im Freien lässt sie dich in Ruhe, außer du schlägst sie; nachts und in Höhlen jagt sie dich. Breit: Durch schmale Lücken passt sie nicht. Gift schadet ihr nicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:spider` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 1,3 m breit, 0,9 m hoch |
+| Geschwindigkeit | 1,5 m/s beim Gehen, 3,6 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,7 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nachts |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Faden](items.md#item-qtcraft-string), [Faden](items.md#item-qtcraft-string) (50 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
+
+**Erscheint auf**
+
+[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 
 Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu. Brennt im direkten Sonnenlicht.
@@ -261,7 +365,7 @@ Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und sch
 | Gruppengröße | bis 3 |
 | Erscheinungsgewicht | 3 |
 | Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
-| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %), [Feder](items.md#item-qtcraft-feather) (25 %) |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %) |
 
 **Erscheint auf**
 

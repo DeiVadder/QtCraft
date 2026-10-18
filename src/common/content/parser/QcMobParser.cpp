@@ -1,5 +1,6 @@
 #include "common/content/parser/QcMobParser.h"
 
+#include "common/content/definitions/QcEffectDefinition.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
@@ -9,6 +10,7 @@
 
 #include <QJsonArray>
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -176,6 +178,50 @@ void parseAbilities(QcMobDefinition &mob, QcJsonFieldReader &reader)
     abilities.climbs = climbing.value(climbs, abilities.climbs);
 }
 
+// "blowEffects": [{"effect": "poison", "seconds": 7, "level": 1}], the effects its blows give.
+QList<QcStatusEffect> parseBlowEffects(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<QcStatusEffect> effects;
+    const QJsonValue value = json.value(u"blowEffects"_s);
+    if (value.isUndefined()) {
+        return effects;
+    }
+    const QJsonArray list = value.toArray();
+    if (!value.isArray() || list.size() > 8) {
+        reader.fail(u"'blowEffects' must be a list of at most 8 effects"_s);
+        return effects;
+    }
+
+    for (const auto &entry : list) {
+        QcJsonFieldReader nested{entry.toObject(), reader.context + u" blowEffects"_s, {}};
+        QcStatusEffect effect;
+        effect.name = nested.name(u"effect"_s, packNamespace);
+        effect.level = nested.integer(u"level"_s, 1, 1, QcEffectDefinition::maxLevel);
+        effect.ticksLeft = int(std::lround(nested.number(u"seconds"_s, 5.0, 0.05, 3600.0) * 20.0));
+        if (!entry.isObject() || effect.name.isEmpty()) {
+            nested.fail(u"every entry is an object with an 'effect'"_s);
+        }
+        reader.adopt(nested);
+        effects.append(effect);
+    }
+    return effects;
+}
+
+// The traits of the creatures of stage 52.2 (decisions E-450, E-451, E-453): immunities, the effects
+// of its blows, neutral by day, leaping, slow falling and hiding in blocks.
+void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    mob.immuneTo = QcContentFields::parseNames(u"immuneTo"_s, packNamespace, reader);
+    mob.blowEffects = parseBlowEffects(json, reader, packNamespace);
+    mob.neutralByDay = reader.boolean(u"neutralByDay"_s, false);
+    mob.leapSpeed = reader.number(u"leapSpeed"_s, 0.0, 0.0, 20.0);
+    mob.maxFallSpeed = reader.number(u"maxFallSpeed"_s, 0.0, 0.0, 60.0);
+    mob.hidesInBlocks = reader.boolean(u"hidesInBlocks"_s, false);
+    if (reader.ok() && (mob.neutralByDay || !mob.blowEffects.isEmpty()) && !mob.hostile) {
+        reader.fail(u"'neutralByDay' and 'blowEffects' are for hostile creatures"_s);
+    }
+}
+
 // One spawn rule of a creature: the `spawn` object itself or an entry of its `also` list.
 QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldReader &reader, bool hostile, const QString &packNamespace)
 {
@@ -312,6 +358,25 @@ void parseBreeding(QcMobDefinition &mob, QcJsonFieldReader &breedingReader, cons
     }
     if (breedingReader.ok() && (mob.hostile || mob.ambient || mob.flying)) {
         breedingReader.fail(u"only peaceful animals on the ground breed"_s);
+    }
+}
+
+// What a creature lays now and then (decision E-452); only creatures on the ground lay.
+void parseLaying(QcMobDefinition &mob, QcJsonFieldReader &layingReader, const QString &packNamespace)
+{
+    QcLayingDefinition &laying = mob.laying;
+    laying.item = layingReader.name(u"item"_s, packNamespace);
+    laying.minSeconds = layingReader.number(u"minSeconds"_s, 300.0, 1.0, 86400.0);
+    laying.maxSeconds = layingReader.number(u"maxSeconds"_s, std::max(600.0, laying.minSeconds), 1.0, 86400.0);
+    laying.sound = layingReader.name(u"sound"_s, packNamespace);
+    if (layingReader.ok() && laying.item.isEmpty()) {
+        layingReader.fail(u"needs 'item'"_s);
+    }
+    if (layingReader.ok() && laying.maxSeconds < laying.minSeconds) {
+        layingReader.fail(u"'maxSeconds' is less than 'minSeconds'"_s);
+    }
+    if (layingReader.ok() && (mob.ambient || mob.flying)) {
+        layingReader.fail(u"only creatures on the ground lay"_s);
     }
 }
 
@@ -470,6 +535,9 @@ namespace QcMobParser {
     reader.nestedObject(u"breeding"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseBreeding(mob, nested, packNamespace);
     });
+    reader.nestedObject(u"lays"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseLaying(mob, nested, packNamespace);
+    });
     parseMobModel(json, mob, reader, packNamespace);
     // "villager" names the villager settings (decision E-421).
     if (json.contains(u"villager"_s) && !json.value(u"villager"_s).isString()) {
@@ -499,6 +567,7 @@ namespace QcMobParser {
     }
     QcMobTraitsParser::parseTraits(json, mob, reader, packNamespace);
     mob.burnsInDaylight = reader.boolean(u"burnsInDaylight"_s, false);
+    parseTraits(json, mob, reader, packNamespace);
     mob.heldItem = reader.name(u"heldItem"_s, packNamespace);
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
     mob.experience = QcContentFields::parseExperience(u"experience"_s, reader);

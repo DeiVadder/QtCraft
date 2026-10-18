@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcTextureDefinition.h"
 #include "common/content/parser/QcBlockParser.h"
 #include "common/content/parser/QcCommandMacroParser.h"
+#include "common/content/parser/QcEffectParser.h"
 #include "common/content/parser/QcItemParser.h"
 #include "common/content/parser/QcMaterialParser.h"
 #include "common/content/parser/QcMobParser.h"
@@ -30,6 +31,7 @@ namespace QcContentParser {
 
 using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
+using QcEffectParser::parseEffect;
 using QcShapeParser::parseShape;
 using QcMaterialParser::parsePartFamily;
 using QcMaterialParser::parseMaterial;

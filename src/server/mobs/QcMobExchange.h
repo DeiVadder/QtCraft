@@ -1,0 +1,103 @@
+#pragma once
+
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcStatusEffects.h"
+#include "server/entities/QcEntityComponent.h"
+#include "server/villages/QcVillager.h"
+
+#include <QList>
+#include <QString>
+
+#include <optional>
+
+// The data the creatures exchange with the rest of the server (decision E-422): what they know of
+// the players (PlayerView), the blows and block changes their brains decide in a tick and the
+// server carries out after it (PlayerHit, CreatureHit, BlockAction), and a persistent creature as
+// saved with the world (Stored). QcMobManager names them as its own members.
+namespace QcMobExchange {
+
+// A persistent mob as saved with the world.
+struct Stored
+{
+    int type = 0;
+    QcVec3 position;
+    float yaw = 0.0f;
+    double health = 0.0;
+    double breedCooldown = 0.0;
+    double growUp = 0.0;
+    bool bred = false;
+    // A villager's home, work and profession (decision E-411).
+    std::optional<QcVillagerRecord> villager;
+    // Its persistent id (QcCreature::uid) and what its entry holds that this version does
+    // not use (decision E-420).
+    quint64 uid = 0;
+    QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // Its status effects (decision E-450).
+    QList<QcStatusEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // Seconds until it lays next (QcCreature::layTimer, decision E-452); below 0 while not chosen.
+    double layTimer = -1.0;
+    // A golem a player built (decision E-471).
+    bool playerBuilt = false;
+    // The block it carries, whether it is kept only for that block and whether it stays in its
+    // enclosure (decision E-460).
+    QcBlockId carried = qcAirBlockId;
+    bool keptForBlock = false;
+    bool confined = false;
+
+    bool operator==(const Stored &) const = default;
+};
+
+// What the mob logic needs to know about a player.
+struct PlayerView
+{
+    quint32 entityId = 0;
+    QcVec3 position;
+    bool alive = true;
+    // Creatures leave invulnerable players (creative mode) alone.
+    bool targetable = true;
+    // Where the player looks (a unit vector; zero for unknown): a look at a head provokes
+    // neutral creatures with a gaze (decision E-460).
+    QcVec3 look = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // Villages hold their grudges by name (QcGolemGrudges).
+    QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+};
+
+// A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
+// carries out after the tick with the usual block changes (QcCreatureTraits): taking only when
+// `block` is still there, placing only into air; dropping (game rule mobGriefing off) lets the
+// carried block fall as an item.
+struct BlockAction
+{
+    enum class Kind : quint8 { Take, Place, Drop };
+    Kind kind = Kind::Take;
+    quint32 mob = 0;
+    QcBlockPos pos;
+    QcBlockId block = qcAirBlockId;
+};
+
+struct PlayerHit
+{
+    quint32 playerEntityId = 0;
+    double damage = 0.0;
+    QcVec3 knockback;
+    // Times a blow's usual lift (a golem's throws upwards, decision E-471).
+    double lift = 1.0;
+    // The kind of the creature that struck; its blow effects go with the hit (decision E-450).
+    int mobType = -1;
+};
+
+// A blow of one creature at another (a golem at a hostile creature, decision E-471); the server
+// deals it after the tick (QcServerCreatures).
+struct CreatureHit
+{
+    quint32 attacker = 0;
+    quint32 target = 0;
+    double damage = 0.0;
+    // Where the blow comes from (the push goes away from it) and how far it throws upwards.
+    QcVec3 from;
+    double lift = 1.0;
+};
+
+} // namespace QcMobExchange

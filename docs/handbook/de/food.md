@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Hühnchen](#item-qtcraft-raw_chicken) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -55,6 +55,28 @@ Im Ofen gebratenes Hammelfleisch; gutes Essen.
 | 1 | → |
 |---|---|
 | [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+### <a id="item-qtcraft-cooked_chicken"></a>Gebratenes Hühnchen
+
+Im Ofen gebratenes Hühnchen; gutes Essen.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_chicken` |
+| Stapelgröße | 64 |
+| Nahrung | 6 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Hühnchen](#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -228,6 +250,32 @@ Fleisch eines Schafs; im Ofen gebraten besser.
 **Droppt aus**
 
 [Schaf](creatures.md#mob-qtcraft-sheep) (50 %)
+
+### <a id="item-qtcraft-raw_chicken"></a>Rohes Hühnchen
+
+Fleisch eines Huhns; im Ofen gebraten besser.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_chicken` |
+| Stapelgröße | 64 |
+| Nahrung | 2 Nahrungspunkte |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Hühnchen](#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Droppt aus**
+
+[Huhn](creatures.md#mob-qtcraft-chicken)
 
 ### <a id="item-qtcraft-raw_porkchop"></a>Rohes Schweinefleisch
 

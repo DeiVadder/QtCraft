@@ -1,0 +1,8 @@
+{
+    "name": "cave_spider_leg",
+    "pattern": "noise",
+    "primary": "#183038",
+    "secondary": "#0e1e24",
+    "variation": 0.08,
+    "seed": 5415
+}

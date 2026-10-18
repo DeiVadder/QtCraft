@@ -608,7 +608,7 @@ private slots:
         QCOMPARE(fact(*zombie, u"Attack"_s)->value, u"3 damage within 1.6 m, every 1 s"_s);
         // Rarely a carrot or a potato as well (decision E-294).
         QCOMPARE(targets(fact(*zombie, u"Drops"_s)->links),
-                 (QStringList{u"item:qtcraft:rotten_flesh"_s, u"item:qtcraft:carrot"_s, u"item:qtcraft:potato"_s, u"item:qtcraft:feather"_s}));
+                 (QStringList{u"item:qtcraft:rotten_flesh"_s, u"item:qtcraft:carrot"_s, u"item:qtcraft:potato"_s}));
         QVERIFY(targets(section(*zombie, u"Appears on"_s)->links).contains(u"block:qtcraft:stone"_s));
 
         const QcHandbookEntry *firefly = m_english.entry(u"mob:qtcraft:firefly"_s);

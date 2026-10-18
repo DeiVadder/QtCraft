@@ -1,0 +1,117 @@
+{
+    "name": "silverfish",
+    "sounds": {
+        "ambient": "mob.silverfish.ambient",
+        "hurt": "mob.silverfish.hurt",
+        "death": "mob.silverfish.death"
+    },
+    "health": 8,
+    "width": 0.4,
+    "height": 0.3,
+    "walkSpeed": 1.2,
+    "chaseSpeed": 3.5,
+    "hostile": true,
+    "hidesInBlocks": true,
+    "attackDamage": 1,
+    "attackRange": 1.0,
+    "attackCooldown": 1.0,
+    "sightRange": 12,
+    "spawn": {
+        "weight": 0
+    },
+    "model": [
+        {
+            "from": [
+                -0.08,
+                0,
+                -0.5
+            ],
+            "to": [
+                0.08,
+                0.1,
+                -0.38
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.13,
+                0,
+                -0.38
+            ],
+            "to": [
+                0.13,
+                0.16,
+                -0.2
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.18,
+                0,
+                -0.2
+            ],
+            "to": [
+                0.18,
+                0.22,
+                0.02
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.15,
+                0,
+                0.02
+            ],
+            "to": [
+                0.15,
+                0.18,
+                0.2
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.1,
+                0,
+                0.2
+            ],
+            "to": [
+                0.1,
+                0.12,
+                0.36
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.05,
+                0,
+                0.36
+            ],
+            "to": [
+                0.05,
+                0.07,
+                0.48
+            ],
+            "texture": "silverfish_body"
+        },
+        {
+            "from": [
+                -0.2,
+                0.22,
+                -0.12
+            ],
+            "to": [
+                0.2,
+                0.3,
+                -0.04
+            ],
+            "texture": "silverfish_scales"
+        }
+    ],
+    "drops": [],
+    "experience": 5
+}
