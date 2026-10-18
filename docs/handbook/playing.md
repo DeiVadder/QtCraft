@@ -422,11 +422,11 @@ Arrows fall in an arc and slow down, much faster in water. A hit deals more dama
 
 **Throwing**
 
-Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit.
+Some items are thrown by hand: press the use button with a snowball in your hand and it flies off at once. You can throw again after a short moment. A bow shoots only arrows, never snowballs. Snowballs fly in an arc like arrows, deal no damage, push the target back and burst where they hit. An ender pearl is thrown the same way and teleports you to where it lands.
 
 **See also**
 
-[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball)
+[Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Ender Pearl](items.md#item-qtcraft-ender_pearl)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
@@ -474,13 +474,17 @@ Creatures appear 20–48 m away from players: peaceful animals on grass by day, 
 
 Zombies and skeletons catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves.
 
+**Endermen**
+
+Endermen come out on dark nights, rarely and in every biome. Look at their heads and they get angry, and the farther away they are, the more exactly you have to look; look at their legs or past them and they stay calm. One you hit chases you, not whoever stands nearest. They teleport to a safe place nearby: when they stand in water or the rain, when a projectile hits them and sometimes to reach the player they chase. They only ever land on solid ground with room above and only where the world is loaded. With the game rule **mobGriefing** they pick up single blocks and put them down elsewhere; an enderman carrying a block stays in the world until it puts it down. Without the rule it changes no blocks and drops a block it carries as an item.
+
 **Limits**
 
 Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 
@@ -533,7 +537,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **mobGriefing**: creatures change blocks (endermen take and place blocks; off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -569,7 +573,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
 - `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on

@@ -33,12 +33,16 @@ struct QcHitEffect
     // The projectile goes when it hits a body or a block instead of bouncing or sticking; `sound`
     // plays where it breaks.
     static constexpr const char *breaks = "break";
+    // Teleports the player who threw it to where it lands, on a body or a block (an ender pearl,
+    // decision E-460), with `damage` as fall damage; the projectile breaks there.
+    static constexpr const char *teleport = "teleport";
 
-    static constexpr std::array<Type, 4> types{{
+    static constexpr std::array<Type, 5> types{{
         {damage, "amount", 0.0, 1000.0, 2.0},
         {knockback, "strength", 0.0, 10.0, 1.0},
         {ignite, "seconds", 0.0, 3600.0, 5.0},
         {breaks, "", 0.0, 0.0, 0.0},
+        {teleport, "damage", 0.0, 1000.0, 5.0},
     }};
 
     static std::optional<Type> typeNamed(const QString &name)

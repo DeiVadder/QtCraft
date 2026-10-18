@@ -64,6 +64,9 @@ struct QcWorldInfo
     // Game rule: the weather changes by itself (decision E-395); off, it stays as it is until
     // /weather changes it.
     bool weatherCycle = true;
+    // Game rule: creatures change blocks of the world (endermen take and place blocks, decision
+    // E-460); off, they leave every block as it is.
+    bool mobGriefing = true;
     // The weather and its course (world.json "weather"; a world without it begins with a clear spell).
     QcWeatherState weather;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether

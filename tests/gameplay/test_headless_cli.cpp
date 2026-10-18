@@ -114,9 +114,9 @@ private slots:
         QCOMPARE(found.first().toObject().value(u"title"_s).toString(), u"Eisenerz"_s);
 
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
-        // Zombie, skeleton, pig, slime, firefly, sheep, villager and the two mannequins of the showcase
-        // (one with a cape).
-        QCOMPARE(creatures.size(), 9);
+        // Zombie, skeleton, enderman, pig, slime, firefly, sheep, villager and the two mannequins of
+        // the showcase (one with a cape).
+        QCOMPARE(creatures.size(), 10);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);

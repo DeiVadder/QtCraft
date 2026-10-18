@@ -32,12 +32,11 @@ protected:
     QcPhysics::Steering wander(QcCreature &mob, const QcMobDefinition &definition, const Context &context, bool mayPlan);
     QRandomGenerator &random() { return m_random; }
     const QcPathPlanner &paths() const { return m_paths; }
-
-private:
     // Along a path towards the target, or a blow in melee.
     QcPhysics::Steering chase(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
                               const Context &context, bool mayPlan);
 
+private:
     QRandomGenerator &m_random;
     QcPathPlanner &m_paths;
 };

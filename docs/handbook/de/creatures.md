@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Skelett](#mob-qtcraft-skeleton) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -19,6 +19,34 @@ Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm
 | Geschwindigkeit | 1,4 m/s beim Gehen, 3 m/s auf der Flucht |
 | Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Beute | nichts |
+
+### <a id="mob-qtcraft-enderman"></a>Enderman
+
+Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Enderperle fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:enderman` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 40 Lebenspunkte |
+| Größe | 0,6 m breit, 2,9 m hoch |
+| Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s beim Verfolgen |
+| Angriff | 7 Schaden bis 2 m, alle 1 s |
+| Sieht Spieler bis | 32 m |
+| Erscheint | nachts |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 0,4 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Enderperle](items.md#item-qtcraft-ender_pearl) (50 %) |
+
+**Erscheint auf**
+
+[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.
 
 ### <a id="mob-qtcraft-mannequin"></a>Gliederpuppe
 

@@ -2079,3 +2079,22 @@ Release-Builds, `dev` `30f30ea` (52.1) gegen den Zug `feature/37-r2b-block-entit
 **Headless** (`@server minecarts horde village`, 3 Runden, 60 Spielsekunden): Tick −9 bis 0 % in allen Szenarien (crowd 0,157 → 0,150, horde 0,140 → 0,128, village 0,084 → 0,083, minecarts 0,033 → 0,033 ms); Phase Loren in den Signal-Stationen 0,0021 → 0,0027 ms (Loren der neuen Station `ice_slide`); p99 ±10 % (absolut höchstens +0,04 ms); Spitzenspeicher −1 bis +2 %.
 
 **Fenster** (`@core minecarts village`, 8 Chunks, 6 Runden, 10 s): GPU −8 bis +1 %, Render-CPU −1 bis +7 % (showcase, 12 statt 14 Entities im Blick durch die neue Station), GUI-CPU −4 bis +5 %, Spitzenspeicher unverändert; p99 10,24–10,41 ms bei beiden Ständen (Ziel ≤ 12,5 ms erfüllt). Tick im Fenster streut wie immer (stand +28 %, minecarts −51 %, village −24 %); headless gleich. Keine Regression.
+
+## 52.3 (Endermen) headless, Debug-relativ (2026-10-18)
+
+`QTCRAFT_ENDERMAN_MEASURE=full build/debug/tests/test_endermen thirtyEndermenMeasure`, **Debug-Build** (Release-Builds waren während der parallelen Pakete nicht erlaubt), Ticks von Hand so schnell der Server kann (E-460). 30 Endermen im Ring 6–12 m um einen Spieler auf einer freien Grasfläche bei Nacht, der Spieler blickt jeden Tick auf den Kopf des ersten (einer ist wütend und greift an), `mobGriefing` an mit zehnfachen Chancen zum Aufnehmen (0,5/s) und Absetzen (0,05/s): nach 20 s tragen 25 einen Block. 400 Ticks (20 s Spielzeit), verschränkt mit der Debug-Messung der Skelette als Bezug, Last 23–36 (andere Sitzungen):
+
+| Messung (Debug) | Tick Ø ms | Tick max ms | `mobs` Ø ms | `mobs` je Wesen µs |
+|---|---|---|---|---|
+| 30 Endermen (4 Läufe) | 1,54–2,39 | 6,7–27 | 1,36–2,09 | 45–70 |
+| 50 Skelette, `skeletonsShootAtAPlayer` (2 Läufe) | 3,01–3,48 | 30–31 | 2,72–3,06 | 54–61 |
+
+**Bewertung:** Je Wesen kostet ein Enderman in der Phase der Wesen im Debug-Build etwa so viel wie ein Skelett (45–70 gegen 54–61 µs; Blick-Prüfung nur im Blick-Takt, Teleport- und Block-Suche nur bei Bedarf). Das Skelett braucht im Release 1,5 µs je Wesen und Tick (52.1b), der Faktor Debug/Release liegt dort bei etwa 40; für 30 Endermen also grob 0,04 ms je Tick im Release, unter 0,1 % eines 50-ms-Ticks. Die Spitzen (bis 27 ms) fallen mit der Fremdlast zusammen. Eine Release-Messung steht aus.
+
+## 52.3 (Enderman, Enderperle) gerendert und headless (2026-10-18)
+
+Release-Builds, `dev` `7d71ee6` gegen `feature/52-3-enderman` nach der Nachbesserung, verschränkt, Mediane; andere Pakete bauten zeitweise (Läufe markiert).
+
+**Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): Tick −1 bis +8 % (Signal-Stationen +1 Wesen: Enderman-Gehege der Showcase; village 59 → 67 Wesen bei +1 % Tick, Endermen in der Nacht-Spawnliste), p99 −5 bis +6 % (horde +19 %, absolut +0,08 ms bei gleicher Wesenzahl), Speicher ±1 %.
+
+**Fenster** (`@core horde`, 8 Chunks, 6 Runden): GPU −5 bis +2 %, Render-CPU −8 bis +4 % (sprint +19 %) und GUI-CPU −12 bis +2 % (sprint +24 %) mit überlappenden Spannen und gleicher Entity-Zahl, Speicher +0–1 %, p99 10,0–10,4 ms (Ziel erfüllt); Tick im Fenster streut wie immer. Keine wiederholte Regression.

@@ -1860,7 +1860,7 @@ Plain earth below the grass.
 
 **Creatures appearing on it**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-dirt_path"></a>Dirt path
 
@@ -2284,7 +2284,7 @@ Earth covered with grass, the surface of most land.
 
 **Creatures appearing on it**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
@@ -5091,7 +5091,7 @@ Falls when nothing holds it. Smelts into glass.
 
 **Creatures appearing on it**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstone
 
@@ -5627,7 +5627,7 @@ Packed snow of cold mountains and tundra.
 
 **Creatures appearing on it**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Snow layer
 
@@ -5960,7 +5960,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 
 **Creatures appearing on it**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_bricks"></a>Stone bricks
 

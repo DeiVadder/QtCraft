@@ -100,6 +100,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
+    gameplay/QcSafeSpot.h gameplay/QcSafeSpot.cpp
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
     gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
@@ -136,6 +137,7 @@ target_sources(qc_server PRIVATE
     mobs/QcArcherBrain.h mobs/QcArcherBrain.cpp
     mobs/QcArcherState.h
     mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
+    mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
     mobs/QcMobBrain.h
     mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
@@ -143,8 +145,10 @@ target_sources(qc_server PRIVATE
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
     mobs/QcMobManager.h mobs/QcMobManager.cpp
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
+    mobs/QcMobTeleport.h mobs/QcMobTeleport.cpp
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
     mobs/QcNaturalSpawner.h mobs/QcNaturalSpawner.cpp
+    mobs/QcNeutralBrain.h mobs/QcNeutralBrain.cpp
     mobs/QcServerAnimals.h mobs/QcServerAnimals.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
 )

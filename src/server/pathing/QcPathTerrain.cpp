@@ -14,6 +14,8 @@ QcPathRules QcPathRules::of(const QcMobDefinition &definition)
     rules.climbsLadders = abilities.climbs != QcMobAbilities::Climbing::None;
     rules.swims = abilities.swims;
     rules.divesIntoWater = abilities.divesIntoWater;
+    // What water hurts keeps out of it (decision E-460).
+    rules.avoidsWater = definition.waterDamage > 0.0;
     return rules;
 }
 

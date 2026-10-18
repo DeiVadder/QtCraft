@@ -26,7 +26,7 @@ Light forest of birches.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -49,7 +49,7 @@ Sand and sandstone with cacti and little else.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-forest"></a>Forest
 
@@ -71,7 +71,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-mountains"></a>Mountains
 
@@ -95,7 +95,7 @@ High rocky peaks with snow on top.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-plains"></a>Plains
 
@@ -117,7 +117,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
@@ -139,7 +139,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 **Creatures**
 
-[Firefly](creatures.md#mob-qtcraft-firefly), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Firefly](creatures.md#mob-qtcraft-firefly), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -163,7 +163,7 @@ Cool spruce forest with snow on the ground.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -186,4 +186,4 @@ Cold flat land under snow; its water freezes.
 
 **Creatures**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)

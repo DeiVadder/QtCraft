@@ -303,7 +303,7 @@ private slots:
     {
         joinArena();
         const quint32 archer = spawn("skeleton", 6, 0);
-        const std::optional<QList<QcItemDrop>> drops = m_server->entities().creatures().damage(archer, 100.0, player().motion.position);
+        const std::optional<QList<QcItemDrop>> drops = m_server->entities().creatures().damage({.creature = archer, .damage = 100.0, .from = player().motion.position});
         QVERIFY(drops);
         QStringList items;
         for (const QcItemDrop &drop : *drops) {

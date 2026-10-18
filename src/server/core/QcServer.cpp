@@ -587,6 +587,7 @@ void QcServer::simulate()
     m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_projectiles.tick();
+    m_creatures.announceTeleports();
     m_phases.lap(Phase::Projectiles);
     m_plants.plantItems(m_items.tick());
     m_experience.tick();

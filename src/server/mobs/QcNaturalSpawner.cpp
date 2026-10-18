@@ -24,6 +24,20 @@ bool keepsSpawnsAway(const QcBlockDefinition &block)
     return block.contactDamage > 0.0 || block.slowsInside < 1.0;
 }
 
+// Whether a walker taller than two blocks (an enderman, decision E-460) has room above the two cells
+// every spawn checks: the cells up to its height are not solid. Unloaded cells count as solid.
+bool roomAbove(const QcServerWorld &world, QcBlockPos feet, double height)
+{
+    const int cells = int(std::ceil(height - 1e-6));
+    for (int up = 2; up < cells; ++up) {
+        const std::optional<QcBlockId> block = world.blockAt(feet.offset(0, up, 0));
+        if (!block || world.content().block(*block).solid) {
+            return false;
+        }
+    }
+    return true;
+}
+
 // A group stands on these neighbouring columns.
 constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1}, {1, 1}}};
 
@@ -245,7 +259,8 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
                           && (content.block(place.ground).solid || definition.flying);
     const int ruleIndex = int(candidate.rule - m_rules.at(candidate.type).constData());
     if (!timeOk || !groundOk || rule.weight <= 0.0 || place.floorY + 1 > rule.maxY
-        || !spawnsInChunk(candidate.type, QcBlockPos{place.x, 0, place.z}.chunk(), rule.chunkChance, ruleIndex)) {
+        || !spawnsInChunk(candidate.type, QcBlockPos{place.x, 0, place.z}.chunk(), rule.chunkChance, ruleIndex)
+        || (!definition.flying && !roomAbove(world, {place.x, place.floorY + 1, place.z}, definition.height))) {
         return false;
     }
 
@@ -331,7 +346,8 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
     const QcBlockPos feet{place.x + dx, place.floorY + 1, place.z + dz};
     const auto blockAt = [&world](QcBlockPos pos) { return world.blockAt(pos).value_or(qcAirBlockId); };
     const bool standable = content.block(blockAt(feet.offset(0, -1, 0))).solid && !content.block(blockAt(feet)).solid
-                           && !content.block(blockAt(feet.offset(0, 1, 0))).solid;
+                           && !content.block(blockAt(feet.offset(0, 1, 0))).solid
+                           && roomAbove(world, feet, content.mobs()[chosen.type].height);
     const QcBlockId floor = blockAt(feet.offset(0, -1, 0));
     const bool groundOk = chosen.rule->blocks.isEmpty() || chosen.rule->blocks.contains(content.block(floor).name);
     const bool safe = !keepsSpawnsAway(content.block(floor)) && !keepsSpawnsAway(content.block(blockAt(feet)))
@@ -421,7 +437,8 @@ void QcNaturalSpawner::spawnVillageMobs(const QcServerWorld &world, QcChunkPos p
         const std::optional<int> type = m_content->mobIndex(mob.mob);
         const QcBlockPos cell{int(std::floor(mob.at.x)), int(std::floor(mob.at.y)), int(std::floor(mob.at.z))};
         if (type && cell.chunk() == pos) {
-            m_mobs.spawn(*type, mob.at, nextEntityId(), false, true);
+            const quint32 id = m_mobs.spawn(*type, mob.at, nextEntityId(), false, true);
+            m_mobs.find(id)->confined = mob.confined;
         }
     }
 }

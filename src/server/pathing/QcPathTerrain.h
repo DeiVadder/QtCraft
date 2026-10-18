@@ -9,6 +9,7 @@ struct QcMobDefinition;
 
 // How a creature moves through the cells (decision E-400): its height in cells, how far it drops,
 // whether it swims, opens doors, climbs ladders and jumps into deep water.
+// Its flags are one bit each, so the rules stay small enough to pass by value.
 struct QcPathRules
 {
     // Drops deeper than this are refused (the reference's 3; creatures take no fall damage yet, the
@@ -23,17 +24,20 @@ struct QcPathRules
     double height = 1.8;
     int maxDrop = defaultMaxDrop;
     // Water costs a walker much (it is used only without a dry way); a swimmer moves through it freely.
-    bool swims = false;
+    bool swims : 1 = false;
     // Closed doors and gates block unless the creature opens them: villagers do (decision E-411) and
     // open the doors on their path when QcMobNavigator reports them.
-    bool opensDoors = false;
+    bool opensDoors : 1 = false;
     // A creature that climbs holds on to a ladder (a place to stand) and goes up and down along it
     // (villagers, decision E-411); to the others a ladder's cell is open like air
     // (QcPathTerrain::kindOf).
-    bool climbsLadders = false;
+    bool climbsLadders : 1 = false;
     // Drops deeper than maxDrop, down to waterDrop, into deep water. Villagers keep to their
     // boardwalks and jetties instead of jumping off them (decision E-411).
-    bool divesIntoWater = true;
+    bool divesIntoWater : 1 = true;
+    // Never stands in water on its paths (creatures that water hurts, QcMobDefinition::waterDamage,
+    // decision E-460).
+    bool avoidsWater : 1 = false;
 
     static QcPathRules of(const QcMobDefinition &definition);
 };
@@ -124,7 +128,7 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
     } else if (kind == QcPathCell::Kind::Water) {
         // At the surface, or wading on a bed of solid ground.
         const bool surface = QcPathCell::kindOf(cells.cell(feet.offset(0, 1, 0))) != QcPathCell::Kind::Water;
-        if (!surface && QcPathCell::kindOf(below) != QcPathCell::Kind::Solid) {
+        if (rules.avoidsWater || (!surface && QcPathCell::kindOf(below) != QcPathCell::Kind::Solid)) {
             return stand;
         }
         stand.water = true;

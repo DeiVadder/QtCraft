@@ -115,7 +115,9 @@ bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QL
     double targetDistance = definition.attackRange;
     for (const QcMobManager::PlayerView &player : players) {
         const double distance = horizontalDistance(player.position, mob.motion.position);
-        if (player.alive && player.targetable && distance <= targetDistance && inMelee(mob, definition, player, world)) {
+        // A neutral creature strikes only the player that provoked it (decision E-460).
+        const bool provoked = definition.ai != QcMobDefinition::Ai::Neutral || player.entityId == mob.provokedBy;
+        if (player.alive && player.targetable && provoked && distance <= targetDistance && inMelee(mob, definition, player, world)) {
             target = &player;
             targetDistance = distance;
         }

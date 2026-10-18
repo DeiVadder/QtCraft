@@ -1,0 +1,28 @@
+{
+    "name": "mob.enderman.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.2,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 1.0,
+            "frequency": 180,
+            "endFrequency": 120,
+            "attack": 0.2,
+            "curve": 1.5,
+            "tremoloRate": 9,
+            "tremoloDepth": 0.5,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 1.0,
+            "attack": 0.2,
+            "curve": 1.5,
+            "lowpass": 700,
+            "highpass": 150,
+            "gain": 0.3
+        }
+    ]
+}

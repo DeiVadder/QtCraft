@@ -110,6 +110,10 @@
                 {
                     "item": "snowball",
                     "count": 16
+                },
+                {
+                    "item": "ender_pearl",
+                    "count": 16
                 }
             ]
         }

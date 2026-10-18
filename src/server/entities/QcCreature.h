@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/physics/QcPose.h"
 #include "server/entities/QcComponent.h"
@@ -8,6 +10,8 @@
 #include "server/mobs/QcArcherState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
+
+#include <optional>
 
 // A creature (decision E-364): a mob of the content's definitions (`type` indexes them) with its
 // health, behaviour timers and breeding state. QcMobManager moves and spawns them.
@@ -72,6 +76,30 @@ struct QcCreature : QcEntity
     // The draw and aim of an archer (QcMobDefinition::Ai::Archer, decision E-426): a component only
     // creatures with the archer AI have.
     QcComponent<QcArcherState> archer;
+    // The block a creature that carries blocks holds (QcMobDefinition::carries, decision E-460):
+    // its state (qcAirBlockId: none) and the item of the block, shown in its hand. Saved with it.
+    QcBlockId carried = qcAirBlockId;
+    QcItemId carriedItem = qcNoItem;
+    // Kept with the world only for the block it carries (QcCreatureTraits made it persistent when it
+    // took the block): it is let go again when it puts the block down. A creature that was kept
+    // before keeps that. Saved with it.
+    bool keptForBlock = false;
+    // Stays where a structure put it (QcStructureDefinition::Mob::confined, decision E-460): it
+    // neither teleports nor takes or places blocks. Saved with it.
+    bool confined = false;
+    // Game ticks until it may teleport again (QcTeleportDefinition::cooldownSeconds); not saved.
+    int teleportCooldown = 0;
+    // Where it teleported from since the creatures' last tick: QcCreatureTraits plays the sounds and
+    // shows the clients the new place at once (not slid there); not saved.
+    std::optional<QcVec3> teleportedFrom;
+    // A neutral creature (QcMobDefinition::Ai::Neutral) chases the player that provoked it for
+    // `angerTimer` seconds more (renewed while it sees them); 0 for none. Not saved.
+    quint32 provokedBy = 0;
+    double angerTimer = 0.0;
+    // The player whose blow or shot hurt it last (QcMobManager::damage; 0: none, or damage without
+    // a player such as lightning, fire or water): a neutral creature turns on that player when it
+    // next thinks, which clears it (other brains leave it); not saved.
+    quint32 struckBy = 0;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give

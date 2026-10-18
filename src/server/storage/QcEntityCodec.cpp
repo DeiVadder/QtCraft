@@ -202,9 +202,30 @@ private:
             mob.villager = QcVillagerCodec::read(in, version);
             return mob.villager.has_value();
         };
+        QString carried;
+        const auto carriedBlock = [&carried, &mob](QDataStream &in, quint16) {
+            if (!QcComponentFrames::readText(in, carried, maxTypeName)) {
+                return false;
+            }
+            in >> mob.keptForBlock;
+            return true;
+        };
+        const auto confined = [&mob](QDataStream &, quint16) {
+            mob.confined = true;
+            return true;
+        };
         if (!readComponents(mob.kept.components,
-                            {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager)})) {
+                            {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
+                             known(Component::Carried, kindVersion, carriedBlock), known(Component::Confined, kindVersion, confined)})) {
             return false;
+        }
+        // A carried block the content no longer has is lost with a warning.
+        if (!carried.isEmpty()) {
+            const std::optional<QcBlockId> state = m_content.stateId(carried);
+            if (!state) {
+                warnOnce(u"block"_s, carried);
+            }
+            mob.carried = state.value_or(qcAirBlockId);
         }
         const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp);
         if (!finite || mob.uid == 0 || mob.breedCooldown > maxBreedingSeconds || mob.growUp > maxBreedingSeconds) {
@@ -489,11 +510,18 @@ void writeEntries(QDataStream &stream, const QList<QcEntityRecord::Ordered<Entry
 }
 
 // The known components of each kind, added to the writer of its entry.
-void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stored &mob)
+void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stored &mob, const QcContentRegistry &content)
 {
     components.add(quint16(Component::Creature), kindVersion, [&mob](QDataStream &out) { out << mob.health << mob.breedCooldown << mob.growUp << mob.bred; });
     if (mob.villager) {
         components.add(quint16(Component::Villager), QcVillagerCodec::version, [&mob](QDataStream &out) { QcVillagerCodec::write(out, *mob.villager); });
+    }
+    if (mob.carried != qcAirBlockId) {
+        const QString state = content.stateName(mob.carried);
+        components.add(quint16(Component::Carried), kindVersion, [&state, &mob](QDataStream &out) { out << state << mob.keptForBlock; });
+    }
+    if (mob.confined) {
+        components.add(quint16(Component::Confined), kindVersion, [](QDataStream &) {});
     }
 }
 
@@ -525,7 +553,7 @@ void writeCreatures(QDataStream &stream, const QcEntityRecord &record, const QcC
 {
     writeEntries(stream, record.creatures, [&](const QcMobManager::Stored &mob, quint64 order) {
         const Header header{content.mobs()[mob.type].name, mob.position, {}, mob.yaw, order, mob.uid};
-        writeEntry(stream, header, mob.kept.components, [&mob](QcComponentFrames::Writer &components) { addCreature(components, mob); });
+        writeEntry(stream, header, mob.kept.components, [&mob, &content](QcComponentFrames::Writer &components) { addCreature(components, mob, content); });
     });
 }
 

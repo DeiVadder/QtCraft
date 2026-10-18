@@ -384,7 +384,7 @@ private slots:
         fill(*world, {-3, ground, -3}, {6, ground + 4, 3}, u"stone"_s);
         auto mobs = makeMobs(5);
         mobs->spawn(type("pig"), at(-1.5, 0.5, ground + 5), 1, false, true);
-        QVERIFY(!mobs->damage(1, 1.0, at(-6.0, 0.5, ground + 5)).has_value());
+        QVERIFY(!mobs->damage({.creature = 1, .damage = 1.0, .from = at(-6.0, 0.5, ground + 5)}).has_value());
         run(*mobs, *world, {}, 20 * 4);
 
         const QcCreature *pig = mobs->find(1);

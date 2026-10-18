@@ -52,8 +52,9 @@ struct QcProjectileDefinition
         const auto it = std::ranges::find_if(onHit, [type](const QcHitEffect &effect) { return effect.is(type); });
         return it == onHit.end() ? nullptr : &*it;
     }
-    // Whether it goes at a hit instead of bouncing off a body or sticking in a block.
-    bool breaks() const { return effect(QcHitEffect::breaks) != nullptr; }
+    // Whether it goes at a hit instead of bouncing off a body or sticking in a block; one that
+    // teleports its thrower always goes where it lands (decision E-460).
+    bool breaks() const { return effect(QcHitEffect::breaks) != nullptr || effect(QcHitEffect::teleport) != nullptr; }
 };
 
 // What an item that shoots projectiles does (a bow, decision E-425): held with the use button down,

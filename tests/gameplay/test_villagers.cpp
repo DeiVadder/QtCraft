@@ -264,7 +264,7 @@ private slots:
         // It stays there, gets up when hurt and lies down again.
         ticks(40);
         QVERIFY(villager(entity)->pose == QcPose::Lying);
-        QVERIFY(m_server->mobs().damage(entity, 1.0, villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}) == std::nullopt);
+        QVERIFY(m_server->mobs().damage({.creature = entity, .damage = 1.0, .from = villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}}) == std::nullopt);
         ticks(1);
         QVERIFY(villager(entity)->pose != QcPose::Lying);
         QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 1200));
@@ -288,7 +288,7 @@ private slots:
             chat(u"/gamerule mobInvulnerabilityTicks %1"_s.arg(rule));
             ticks(1);
             QVERIFY(villager(entity)->pose == QcPose::Lying);
-            QVERIFY(m_server->mobs().damage(entity, 1.0, villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}) == std::nullopt);
+            QVERIFY(m_server->mobs().damage({.creature = entity, .damage = 1.0, .from = villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}}) == std::nullopt);
             ticks(1);
             QVERIFY2(villager(entity)->pose != QcPose::Lying, qPrintable(u"rule %1"_s.arg(rule)));
             QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 150));

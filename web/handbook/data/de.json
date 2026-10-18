@@ -338,6 +338,7 @@
                 "item:qtcraft:bucket",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
+                "item:qtcraft:ender_pearl",
                 "item:qtcraft:string",
                 "item:qtcraft:feather",
                 "item:qtcraft:flint",
@@ -464,6 +465,7 @@
         {
             "entries": [
                 "mob:qtcraft:villager",
+                "mob:qtcraft:enderman",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
                 "mob:qtcraft:firefly",
@@ -684,6 +686,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -839,6 +847,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -1030,6 +1044,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1203,6 +1223,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -1382,6 +1408,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1549,6 +1581,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -1746,6 +1784,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Schaf"
                         },
@@ -1889,6 +1933,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -15397,6 +15447,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:slime",
                             "text": "Schleim"
                         },
@@ -18016,6 +18072,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -39580,6 +39642,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
                         },
@@ -43979,6 +44047,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
                         },
@@ -46906,6 +46980,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -52135,7 +52215,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen.",
+                    "text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Enderperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.",
                     "title": "Werfen"
                 },
                 {
@@ -52163,6 +52243,12 @@
                             "note": "",
                             "target": "item:qtcraft:snowball",
                             "text": "Schneeball"
+                        },
+                        {
+                            "icon": "qtcraft:ender_pearl",
+                            "note": "",
+                            "target": "item:qtcraft:ender_pearl",
+                            "text": "Enderperle"
                         }
                     ],
                     "recipes": [
@@ -52379,7 +52465,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -52611,6 +52697,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.",
+                    "title": "Endermen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.",
                     "title": "Obergrenzen"
                 },
@@ -52627,6 +52721,12 @@
                             "note": "",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
                         },
                         {
                             "icon": "",
@@ -53451,7 +53551,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
+                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab; in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
                     "title": "Spielregeln"
                 }
             ],
@@ -60593,6 +60693,48 @@
             ],
             "text": "Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden für das, was sie kaufen, und verlangen sie für das, was sie verkaufen.",
             "title": "Smaragd"
+        },
+        "item:qtcraft:ender_pearl": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Ender Pearl",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:ender_pearl"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "16"
+                }
+            ],
+            "icon": "qtcraft:ender_pearl",
+            "id": "item:qtcraft:ender_pearl",
+            "name": "qtcraft:ender_pearl",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Lassen Endermen fallen. Mit der Benutzen-Taste geworfen, bringt sie dich dorthin, wo sie landet, auf einem Block oder einem Wesen; die Landung schmerzt ein wenig wie ein Sturz. Du kommst immer an einer Stelle mit Platz für dich an, nie in Blöcken oder im Wasser und nie auf der anderen Seite einer Wand oder eines Dachs; eine Perle, die unter Wasser landet, ist verloren, ebenso deine Perlen, die noch fliegen, wenn du stirbst. Die nächste kannst du nach einer Sekunde werfen.",
+            "title": "Enderperle"
         },
         "item:qtcraft:feather": {
             "category": "items",
@@ -71645,6 +71787,152 @@
             ],
             "text": "Eine Gliederpuppe mit dem grünen Umhang. Sie geht langsam umher, damit der Umhang schwingt; sie erscheint nie von selbst, die Showcase-Welt hat eine am Charakter-Stand.",
             "title": "Gliederpuppe mit Umhang"
+        },
+        "mob:qtcraft:enderman": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Enderman",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:enderman"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "40 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 2,9 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,5 m/s beim Gehen, 4 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "7 Schaden bis 2 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "32 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nachts"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 7"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 1"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "0,4"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:ender_pearl",
+                            "note": "50 %",
+                            "target": "item:qtcraft:ender_pearl",
+                            "text": "Enderperle"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:ender_pearl",
+            "id": "mob:qtcraft:enderman",
+            "name": "qtcraft:enderman",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Enderperle fallen.",
+            "title": "Enderman"
         },
         "mob:qtcraft:firefly": {
             "category": "creatures",

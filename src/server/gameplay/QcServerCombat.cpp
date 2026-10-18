@@ -40,7 +40,8 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     client.hunger.exhaust(QcHunger::attack);
 
     const QcItemDefinition *held = m_state.heldItem(client);
-    hurtCreature(m_state, m_sounds, {entityId, held ? held->attackDamage : 1.0, client.motion.position, true});
+    hurtCreature(m_state, m_sounds,
+                 {.creature = entityId, .damage = held ? held->attackDamage : 1.0, .from = client.motion.position, .attacker = client.id});
 
     // Weapons wear like tools, except in creative mode (decision E-282).
     if (held && held->durability > 0 && !client.rules().infiniteItems) {
@@ -70,7 +71,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
     // are stronger: those deal the difference, silently (decision E-429).
     const QcHurtWindow::Take take = mob->hurt.wouldTake(blow.damage);
-    const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().damage(blow.creature, blow.damage, blow.from, blow.knockback);
+    const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().damage(blow);
     if (drops) {
         state.entities().noteDeath(blow.creature);
         sounds.play(definition.deathSound, lootPosition);
@@ -82,7 +83,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
         // Like block drops (decision E-028) the loot falls where the mob died; only a grown
         // creature a player killed gives experience (decisions E-398, E-399).
         dropLoot(state, *drops, lootPosition);
-        if (!young && blow.byPlayer) {
+        if (!young && blow.attacker != 0) {
             QcServerExperience::drop(state, QcServerExperience::roll(state, definition.experience), lootPosition);
         }
     }

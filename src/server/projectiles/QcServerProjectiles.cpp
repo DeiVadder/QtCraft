@@ -5,6 +5,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
+#include "server/gameplay/QcSafeSpot.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerInventory.h"
 
@@ -58,6 +59,9 @@ void QcServerProjectiles::tick()
             if (effect && !effect->sound.isEmpty()) {
                 m_sounds.play(effect->sound, projectile.motion.position);
             }
+            if (const QcHitEffect *teleport = definition.effect(QcHitEffect::teleport)) {
+                teleportThrower(projectile, *teleport);
+            }
         }};
     const QList<QcProjectileFlight::Body> bodies = projectiles.anyFlying() ? this->bodies() : QList<QcProjectileFlight::Body>();
     projectiles.tick(m_state.world(), bodies, collectors(), QcPhysics::tickDuration, handlers);
@@ -98,10 +102,21 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
     const QcVec3 along = QcVec3{projectile.motion.velocity.x, 0.0, projectile.motion.velocity.z}.normalized();
     const QcHitEffects::Impact impact = m_effects.impactOf(hit.definition, hit.damage);
     bool took = false;
-    if (m_state.entities().creatures().find(hit.body)) {
+    if (const QcCreature *target = m_state.entities().creatures().find(hit.body)) {
+        // A creature that dodges projectiles (an enderman, decision E-460) teleports away unhurt;
+        // the projectile bounces off.
+        const QcMobDefinition &definition = m_state.content().mobs()[target->type];
+        if (definition.teleport && definition.teleport->dodgesProjectiles) {
+            m_state.entities().creatures().teleport(hit.body, m_state.world());
+            return false;
+        }
         const bool byPlayer = std::ranges::any_of(m_state.clients(), [&](const auto &client) { return client->id == projectile.shooter; });
         took = QcServerCombat::hurtCreature(m_state, m_sounds,
-                                            {hit.body, impact.damage, projectile.motion.position - along, byPlayer, impact.knockback});
+                                            {.creature = hit.body,
+                                             .damage = impact.damage,
+                                             .from = projectile.motion.position - along,
+                                             .attacker = byPlayer ? projectile.shooter : 0,
+                                             .knockback = impact.knockback});
         // The hit may have killed it.
         QcCreature *mob = took && impact.burnTicks > 0 ? m_state.entities().creatures().find(hit.body) : nullptr;
         if (mob) {
@@ -144,6 +159,34 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     // A hit without damage sends no health by itself; the client still has to see the fire.
     if (alight && impact.damage <= 0.0) {
         m_health.sendHealth(client);
+    }
+}
+
+void QcServerProjectiles::teleportThrower(const QcProjectile &projectile, const QcHitEffect &effect)
+{
+    // Only a player who is still there; the thrower is not saved, so a pearl that flew on after a
+    // load teleports nobody.
+    const auto it = std::ranges::find_if(m_state.clients(), [&](const auto &client) { return client->id == projectile.shooter; });
+    if (it == m_state.clients().end() || !isPresent(**it)) {
+        return;
+    }
+
+    // Where a player fits next to the place it broke (never into blocks, liquids or a chunk that
+    // is not loaded); without one the pearl is lost.
+    QcServerClient &client = **it;
+    const std::optional<QcVec3> place = QcSafeSpot::nearest(m_state.world(), projectile.motion.position, projectile.motion.velocity,
+                                                            QcSafeSpot::cellsOf(QcPhysics::playerHeight));
+    if (!place) {
+        return;
+    }
+    client.motion.position = *place;
+    client.motion.velocity = {};
+    client.previousPosition.reset();
+    client.fallPeak = place->y;
+    client.mining.pos.reset();
+    client.stateDirty = true;
+    if (effect.number > 0.0) {
+        m_health.damage(client, effect.number, {}, QcPlayerHealth::DamageKind::Unblockable);
     }
 }
 

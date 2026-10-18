@@ -131,10 +131,12 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     state.info().randomTicks = setup.randomTicks;
     state.info().fireSpread = setup.fireSpread;
     state.info().weatherCycle = setup.weatherCycle;
+    state.info().mobGriefing = setup.mobGriefing;
 
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
-            state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
+            const quint32 id = state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
+            state.entities().creatures().find(id)->confined = mob.confined;
         } else {
             qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;
         }

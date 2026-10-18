@@ -32,7 +32,8 @@ bool inMelee(const QcCreature &mob, const QcMobDefinition &definition, const QcM
 void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
             QList<QcMobManager::PlayerHit> &hits);
 // A hostile creature without AI of its own (a crowd, QcMobCrowd) strikes the nearest player in
-// melee (inMelee) when its attack is ready, so a knot of creatures is no safe place; true when it struck.
+// melee (inMelee) when its attack is ready, so a knot of creatures is no safe place (a neutral one only
+// the player that provoked it); true when it struck.
 bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
                     const QcBlockAccess &world, QList<QcMobManager::PlayerHit> &hits);
 

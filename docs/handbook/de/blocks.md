@@ -1392,7 +1392,7 @@ Einfache Erde unter dem Gras.
 
 **Wesen, die darauf erscheinen**
 
-[Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-torch"></a>Fackel
 
@@ -2211,7 +2211,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Wesen, die darauf erscheinen**
 
-[Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
@@ -4674,7 +4674,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Wesen, die darauf erscheinen**
 
-[Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstein
 
@@ -4870,7 +4870,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Wesen, die darauf erscheinen**
 
-[Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-snow_layer"></a>Schneeschicht
 
@@ -5583,7 +5583,7 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 **Wesen, die darauf erscheinen**
 
-[Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_pressure_plate"></a>Steindruckplatte
 

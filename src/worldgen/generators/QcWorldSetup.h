@@ -28,6 +28,8 @@ struct QcWorldSetup
     bool fireSpread = true;
     // Game rule weatherCycle (decision E-395).
     bool weatherCycle = true;
+    // Game rule mobGriefing (decision E-460).
+    bool mobGriefing = true;
     QList<Mob> mobs;
     QList<Stand> stands;
     QList<Contents> contents;

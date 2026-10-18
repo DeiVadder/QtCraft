@@ -1,0 +1,8 @@
+{
+    "name": "ender_pearl",
+    "pattern": "lump",
+    "primary": "#2a8a78",
+    "secondary": "#0f3f3a",
+    "variation": 0.05,
+    "seed": 5403
+}

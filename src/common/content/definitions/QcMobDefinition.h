@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/definitions/QcMobTraits.h"
 #include "common/core/QcVec3.h"
 #include "common/core/QcWorldConstants.h"
 
@@ -9,6 +10,7 @@
 #include <QString>
 
 #include <algorithm>
+#include <optional>
 
 // One box of a mob's model, in metres relative to the mob's feet centre, facing north (-Z).
 struct QcMobPart
@@ -85,12 +87,23 @@ struct QcMobDefinition
     // What decides what it does (decision E-423): QcMobBehaviour keeps one brain of each kind.
     // Hostile ones chase players (only with `hostile`), passive ones wander and flee, villagers live
     // by their villager settings (only with `villager`), archers keep their distance and shoot
-    // (only with `hostile` and `archer`, decision E-426). Server side only.
-    enum class Ai : quint8 { Passive, Hostile, Villager, Archer };
+    // (only with `hostile` and `archer`, decision E-426), neutral ones wander like passive ones until a
+    // player provokes them (hurts them, or looks at their head with `gaze`) and then chase that player
+    // (decision E-460). Server side only.
+    enum class Ai : quint8 { Passive, Hostile, Villager, Archer, Neutral };
     Ai ai = Ai::Passive;
     QcMobAbilities abilities;
     // How an archer shoots (Ai::Archer).
     QcArcherDefinition archer;
+    // Provoked by a player's look at its head (Ai::Neutral, decision E-460).
+    std::optional<QcGazeDefinition> gaze;
+    // Teleports away (decision E-460).
+    std::optional<QcTeleportDefinition> teleport;
+    // Takes and places single blocks (decision E-460).
+    std::optional<QcCarryDefinition> carries;
+    // Damage it takes every QcBodyBurning::wetIntervalTicks in water or rain (decision E-460); 0 for
+    // none. Server side only.
+    double waterDamage = 0.0;
     // Catches fire in direct sunlight (decision E-426): by day, with the open sky above its head,
     // neither in water nor in the rain. Server side only.
     bool burnsInDaylight = false;

@@ -101,6 +101,7 @@
     "item.qtcraft.bow": "Bow",
     "item.qtcraft.arrow": "Arrow",
     "item.qtcraft.snowball": "Snowball",
+    "item.qtcraft.ender_pearl": "Ender Pearl",
     "item.qtcraft.feather": "Feather",
     "block.qtcraft.tall_grass": "Tall grass",
     "block.qtcraft.dandelion": "Dandelion",
@@ -531,6 +532,8 @@
     "appearance.qtcraft.villager_reed_hat": "Reed hat",
     "mob.qtcraft.skeleton": "Skeleton",
     "appearance.qtcraft.skeleton": "Skeleton",
+    "mob.qtcraft.enderman": "Enderman",
+    "appearance.qtcraft.enderman": "Enderman",
     "item.qtcraft.bone": "Bone",
     "item.qtcraft.bone_meal": "Bone meal"
 }

@@ -1,0 +1,35 @@
+{
+    "name": "enderman",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "enderman_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "enderman_skin",
+            "tint": "none"
+        }
+    }
+}

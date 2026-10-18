@@ -246,10 +246,14 @@ private slots:
         QVERIFY(!setup.randomTicks);
         // The sky stays clear (decision E-395).
         QVERIFY(!setup.weatherCycle);
+        // Creatures leave the demos as they are, and the pens hold every creature, also one that
+        // teleports (decision E-460).
+        QVERIFY(!setup.mobGriefing);
 
         QSet<QString> mobs;
         for (const QcWorldSetup::Mob &mob : setup.mobs) {
             mobs.insert(mob.mob);
+            QVERIFY2(mob.confined || mob.mob != u"qtcraft:enderman"_s, qPrintable(mob.mob));
             // Every creature stands in free space on the ground.
             const QcBlockPos feet{int(std::floor(mob.at.x)), int(std::floor(mob.at.y + 0.1)) + 0, int(std::floor(mob.at.z))};
             QVERIFY2(!m_content->block(blockAt(m_chunks, feet.offset(0, 1, 0))).solid, qPrintable(mob.mob));

@@ -22,6 +22,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcMachineDefinition.h
     content/definitions/QcMaterialDefinition.h
     content/definitions/QcMobDefinition.h
+    content/definitions/QcMobTraits.h
     content/definitions/QcModelDefinition.h
     content/definitions/QcPackReference.h
     content/definitions/QcPartFamily.h
@@ -58,6 +59,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
+    content/parser/QcMobTraitsParser.h content/parser/QcMobTraitsParser.cpp
     content/parser/QcProjectileParser.h content/parser/QcProjectileParser.cpp
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
@@ -82,6 +84,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
     content/registry/QcVillageContent.h content/registry/QcVillageContent.cpp

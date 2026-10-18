@@ -51,6 +51,10 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         if (const QcItemId held = m_state.content().mobs()[creature.type].heldItemId; held != qcNoItem) {
             now.held = held;
         }
+        // The block an enderman carries, in its hand (decision E-460).
+        if (creature.carriedItem != qcNoItem) {
+            now.held = creature.carriedItem;
+        }
         if (creature.archer.has() && creature.archer->drawing()) {
             now.flags = quint16(now.flags | QcMsg::Drawing);
         }

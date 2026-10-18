@@ -146,7 +146,7 @@ private slots:
         for (const double strength : {0.5, 4.0}) {
             const QcVec3 at{m_feet.x + 3.5, double(m_feet.y), m_feet.z - 2.5};
             const quint32 mob = creatures.spawn(pig, at, m_server->entities().newId());
-            QVERIFY(!creatures.damage(mob, 0.0, at - QcVec3{1.0, 0.0, 0.0}, strength));
+            QVERIFY(!creatures.damage({.creature = mob, .damage = 0.0, .from = at - QcVec3{1.0, 0.0, 0.0}, .knockback = strength}));
             const QcVec3 pushed = creatures.find(mob)->motion.velocity;
             QVERIFY(std::abs(pushed.x - QcMobManager::knockbackSpeed * strength) < 1e-9);
             QVERIFY(std::abs(pushed.y - QcMobManager::knockbackLift * std::min(strength, 1.0)) < 1e-9);

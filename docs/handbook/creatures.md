@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -19,6 +19,34 @@ A mannequin wearing the green cape. It walks about slowly, so the cape swings; i
 | Speed | 1.4 m/s walking, 1.5 m/s fleeing |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | nothing |
+
+### <a id="mob-qtcraft-enderman"></a>Enderman
+
+A tall, dark wanderer of the night. It leaves you alone until you look straight at its head or hurt it; then it chases you and hits hard. It teleports away when an arrow or a snowball hits it (they do not hurt it), and water and rain hurt it, so it keeps out of water and jumps away from it. Now and then it picks up a block such as grass, dirt or sand, carries it around in its hand and puts it down somewhere else; it drops it when it dies. Sometimes drops an ender pearl.
+
+| | |
+|---|---|
+| ID | `qtcraft:enderman` |
+| Behaviour | neutral: leaves players alone until one looks at its head or hurts it, then chases and attacks them |
+| Health | 40 health points |
+| Size | 0.6 m wide, 2.9 m tall |
+| Speed | 1.5 m/s walking, 4 m/s chasing |
+| Attack | 7 damage within 2 m, every 1 s |
+| Sees players within | 32 m |
+| Appears | at night |
+| Spawn light | block light up to 7 |
+| Group size | up to 1 |
+| Spawn weight | 0.4 |
+| Limit | all hostile creatures together: 8 per player |
+| Drops | [Ender Pearl](items.md#item-qtcraft-ender_pearl) (50 %) |
+
+**Appears on**
+
+[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
+
+**Appears in biomes**
+
+All biomes.
 
 ### <a id="mob-qtcraft-firefly"></a>Firefly
 

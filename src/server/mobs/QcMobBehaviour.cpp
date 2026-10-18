@@ -17,6 +17,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_passive(m_random, m_paths)
     , m_hostile(m_random, m_paths)
     , m_archers(*m_content, m_random, m_paths)
+    , m_neutral(m_random, m_paths)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
@@ -32,6 +33,9 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
             break;
         case QcMobDefinition::Ai::Archer:
             m_brains.push_back(&m_archers);
+            break;
+        case QcMobDefinition::Ai::Neutral:
+            m_brains.push_back(&m_neutral);
             break;
         }
     }
@@ -56,8 +60,9 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcS
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
         if (!mobs[i].dormant) {
-            const QcMobBrain::Context context{world,    mobs,  clock.worldTime, clock.dt, m_rules[std::size_t(mobs[i].type)],
-                                              &players, &hits, m_tick,          &m_launches};
+            const QcMobBrain::Context context{world,  mobs,   clock.worldTime, clock.dt,         m_rules[std::size_t(mobs[i].type)],
+                                              &players, &hits, m_tick,          &m_launches, &m_blockActions,
+                                              m_griefing};
             update(i, mobs[i], context);
         }
     }
@@ -72,6 +77,8 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     mob.attackCooldown = std::max(0.0, mob.attackCooldown - context.dt);
     mob.fleeTimer = std::max(0.0, mob.fleeTimer - context.dt);
     mob.targetMemory = std::max(0.0, mob.targetMemory - context.dt);
+    mob.angerTimer = std::max(0.0, mob.angerTimer - context.dt);
+    mob.teleportCooldown = std::max(0, mob.teleportCooldown - 1);
     // A creature lying or sitting asks its brain whether it stays so (a villager in its bed lies
     // still until it gets up, decision E-411).
     if (mob.pose != QcPose::Standing && brain.rest(mob, context)) {

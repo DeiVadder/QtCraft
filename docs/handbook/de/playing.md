@@ -422,11 +422,11 @@ Pfeile fliegen im Bogen und werden langsamer, im Wasser viel schneller. Ein Tref
 
 **Werfen**
 
-Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen.
+Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Enderperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.
 
 **Siehe auch**
 
-[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball)
+[Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Enderperle](items.md#item-qtcraft-ender_pearl)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
@@ -474,13 +474,17 @@ Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf
 
 Zombies und Skelette fangen im direkten Sonnenlicht Feuer und brennen noch 8 s, nachdem sie es verlassen haben. Schatten, ein Dach oder Laub über dem Kopf, Wasser und Regen schützen sie, ebenso Höhlen.
 
+**Endermen**
+
+Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.
+
 **Obergrenzen**
 
 Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 
@@ -533,7 +537,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab; in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -569,7 +573,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
 - `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen

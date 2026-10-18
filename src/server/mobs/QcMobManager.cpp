@@ -5,6 +5,7 @@
 #include "common/world/QcDayCycle.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBehaviour.h"
+#include "server/mobs/QcMobTeleport.h"
 #include "server/mobs/QcMobUpkeep.h"
 #include "server/mobs/QcNaturalSpawner.h"
 #include "server/villages/QcVillagePopulation.h"
@@ -121,8 +122,13 @@ QcVec3 QcMobManager::knockbackVelocity(const QcVec3 &away, double strength)
     return away * (knockbackSpeed * strength) + QcVec3{0.0, knockbackLift * std::min(strength, 1.0), 0.0};
 }
 
-std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amount, const QcVec3 &from, double knockback)
+std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow &blow)
 {
+    const quint32 mobId = blow.creature;
+    const double amount = blow.damage;
+    const QcVec3 &from = blow.from;
+    const double knockback = blow.knockback;
+    const quint32 attacker = blow.attacker;
     const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
     const QcHurtWindow::Take take = it == m_mobs.end() ? QcHurtWindow::Take::Ignored : it->hurt.wouldTake(amount);
     if (take == QcHurtWindow::Take::Ignored) {
@@ -133,6 +139,9 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
     QcCreature &mob = *it;
     mob.health -= mob.hurt.take(amount, m_hurtTicks);
     const QcVec3 away = QcVec3{mob.motion.position.x - from.x, 0.0, mob.motion.position.z - from.z}.normalized();
+    if (attacker != 0) {
+        mob.struckBy = attacker;
+    }
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
         if (knockback > 0.0) {
@@ -284,6 +293,41 @@ QList<QcProjectileManager::Launch> QcMobManager::takeLaunches()
     return m_behaviour->takeLaunches();
 }
 
+QList<QcMobManager::BlockAction> QcMobManager::takeBlockActions()
+{
+    return m_behaviour->takeBlockActions();
+}
+
+void QcMobManager::setGriefing(bool on)
+{
+    m_behaviour->setGriefing(on);
+}
+
+bool QcMobManager::teleport(quint32 mobId, const QcBlockAccess &world)
+{
+    QcCreature *mob = find(mobId);
+    return mob && QcMobTeleport::teleport(*mob, m_content->mobs()[mob->type], world, m_random);
+}
+
+void QcMobManager::keep(QcCreature &mob, bool kept)
+{
+    if (kept && !mob.persistent) {
+        mob.persistent = true;
+        mob.uid = m_nextUid++;
+    } else if (!kept && mob.persistent) {
+        mob.persistent = false;
+        mob.uid = 0;
+    }
+}
+
+void QcMobManager::carryBlock(QcCreature &mob, QcBlockId block) const
+{
+    // A state the content no longer has (a mod was removed) is no block to carry.
+    const bool valid = block != qcAirBlockId && m_content->isValidBlock(block);
+    mob.carried = valid ? block : qcAirBlockId;
+    mob.carriedItem = valid ? m_content->itemId(m_content->block(block).name).value_or(qcNoItem) : qcNoItem;
+}
+
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
@@ -337,7 +381,11 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
 {
     const std::optional<QcVillagerRecord> villager =
         mob.isVillager() ? std::optional<QcVillagerRecord>(*mob.villager) : std::nullopt;
-    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager, mob.uid, mob.kept};
+    Stored stored{mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager, mob.uid, mob.kept};
+    stored.carried = mob.carried;
+    stored.keptForBlock = mob.keptForBlock && mob.carried != qcAirBlockId;
+    stored.confined = mob.confined;
+    return stored;
 }
 
 QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
@@ -372,6 +420,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.growUp = std::max(0.0, stored.growUp);
         mob.bred = stored.bred;
         mob.kept = stored.kept;
+        mob.confined = stored.confined;
+        carryBlock(mob, stored.carried);
+        mob.keptForBlock = stored.keptForBlock && mob.carried != qcAirBlockId;
         // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this
         // only guards against a world.json put back by hand.
         m_nextUid = std::max(m_nextUid, stored.uid + 1);

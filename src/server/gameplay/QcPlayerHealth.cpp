@@ -124,6 +124,7 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
     client.mining.pos.reset();
     client.drawing = false;
     m_state.entities().noteDeath(client.id);
+    forgetTeleports(client);
 
     const char *message = kind == DamageKind::Void ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world")
                                                    : QT_TRANSLATE_NOOP("QcServerMessages", "%1 died");
@@ -137,6 +138,16 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
         // lost and the player comes back with none (decision E-398).
         QcServerExperience::drop(m_state, client.experience.deathDrop(), client.motion.position + QcVec3{0.0, 0.5, 0.0});
         client.experience = {};
+    }
+}
+
+void QcPlayerHealth::forgetTeleports(const QcServerClient &client)
+{
+    for (QcProjectile &projectile : m_state.entities().projectiles().editableAll()) {
+        const QcProjectileDefinition *definition = m_state.content().projectile(projectile.type);
+        if (projectile.shooter == client.id && definition && definition->effect(QcHitEffect::teleport)) {
+            projectile.shooter = 0;
+        }
     }
 }
 

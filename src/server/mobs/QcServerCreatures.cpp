@@ -6,12 +6,14 @@
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/mobs/QcMobCramming.h"
+#include "server/projectiles/QcProjectileFlight.h"
 
 QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks)
     : m_state(state)
     , m_sounds(sounds)
     , m_health(health)
     , m_villagers(state, sounds, blocks)
+    , m_traits(state, sounds, blocks)
 {
 }
 
@@ -21,13 +23,16 @@ void QcServerCreatures::tick()
     QList<QcMobManager::PlayerView> players;
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing) {
-            players.append({client->id, client->motion.position, !client->dead, !client->rules().invulnerable});
+            players.append({client->id, client->motion.position, !client->dead, !client->rules().invulnerable,
+                            QcProjectileFlight::direction(client->yaw, client->pitch)});
         }
     }
 
+    m_state.entities().creatures().setGriefing(m_state.info().mobGriefing);
     const QList<QcMobManager::PlayerHit> hits =
         m_state.entities().creatures().tick(m_state.world(), players, m_state.info().worldTime, dt, [this] { return m_state.entities().newId(); });
     m_villagers.apply();
+    m_traits.apply();
     playAmbientSounds(dt);
     applyCramming();
 
@@ -48,6 +53,11 @@ void QcServerCreatures::playAmbientSounds(double dt)
             m_sounds.play(definition.ambientSound, mob.motion.position + QcVec3{0.0, definition.height * 0.8, 0.0});
         }
     }
+}
+
+void QcServerCreatures::announceTeleports()
+{
+    m_traits.announceTeleports();
 }
 
 void QcServerCreatures::applyCramming()

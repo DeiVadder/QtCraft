@@ -16,6 +16,9 @@ QcHitEffects::QcHitEffects()
     });
     // Breaking is the projectile's own (QcProjectileDefinition::breaks); the body takes nothing.
     add(QString::fromLatin1(QcHitEffect::breaks), [](const QcHitEffect &, double, Impact &) {});
+    // Teleporting the thrower happens where the projectile breaks (QcServerProjectiles, decision
+    // E-460), on a body as on a block; the body takes nothing.
+    add(QString::fromLatin1(QcHitEffect::teleport), [](const QcHitEffect &, double, Impact &) {});
 }
 
 QcHitEffects::Impact QcHitEffects::impactOf(const QcProjectileDefinition &definition, double damage) const

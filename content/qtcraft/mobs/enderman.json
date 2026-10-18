@@ -1,0 +1,76 @@
+{
+    "name": "enderman",
+    "sounds": {
+        "ambient": "mob.enderman.ambient",
+        "hurt": "mob.enderman.hurt",
+        "death": "mob.enderman.death"
+    },
+    "health": 40,
+    "width": 0.6,
+    "height": 2.9,
+    "walkSpeed": 1.5,
+    "chaseSpeed": 4.0,
+    "hostile": true,
+    "ai": "neutral",
+    "attackDamage": 7,
+    "attackRange": 2.0,
+    "attackCooldown": 1.0,
+    "sightRange": 32,
+    "gaze": {
+        "tolerance": 0.025,
+        "range": 64,
+        "headShare": 0.92
+    },
+    "teleport": {
+        "range": 32,
+        "attempts": 16,
+        "cooldownSeconds": 0.5,
+        "dodgesProjectiles": true,
+        "whenWet": true,
+        "towardsTargetChance": 0.1,
+        "sound": "mob.enderman.teleport"
+    },
+    "carries": {
+        "blocks": [
+            "grass_block",
+            "dirt",
+            "sand",
+            "gravel",
+            "clay",
+            "pumpkin",
+            "melon",
+            "dandelion",
+            "poppy",
+            "red_mushroom",
+            "brown_mushroom",
+            "cactus"
+        ],
+        "takeChance": 0.05,
+        "placeChance": 0.0015,
+        "reach": 2
+    },
+    "waterDamage": 1.0,
+    "spawn": {
+        "time": "night",
+        "blocks": [
+            "grass_block",
+            "dirt",
+            "sand",
+            "snow_block",
+            "stone"
+        ],
+        "maxGroup": 1,
+        "weight": 0.4,
+        "caves": false,
+        "maxLight": 7
+    },
+    "skeleton": "enderman",
+    "outfit": "enderman",
+    "drops": [
+        {
+            "item": "ender_pearl",
+            "chance": 0.5
+        }
+    ],
+    "experience": 5
+}

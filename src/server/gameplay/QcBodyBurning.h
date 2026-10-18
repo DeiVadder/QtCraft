@@ -19,6 +19,8 @@ class QcServerState;
 // their own burning with their health (QcMsg::PlayerHealth::burning), everyone sees it on the
 // entity (QcMsg::Burning). Creatures that burn in daylight catch fire in direct sunlight. A burning creature makes its hurt sound when the damage takes and drops
 // its loot when it dies, like after a hit. Items in fire or lava burn up in QcEnvironmentDamage.
+// The same water and rain hurt creatures with `waterDamage` (endermen, decision E-460) once every
+// wetIntervalTicks, and one that teleports jumps away from it.
 class QcBodyBurning
 {
 public:
@@ -27,6 +29,8 @@ public:
     // Creatures that burn in daylight (QcMobDefinition::burnsInDaylight, decision E-426) catch fire
     // for this long in direct sunlight, as from fire; water, rain and shade keep them from it.
     static constexpr int sunlightTicks = 8 * 20;
+    // Creatures hurt by water (QcMobDefinition::waterDamage) take it this often while wet.
+    static constexpr int wetIntervalTicks = 10;
 
     // Whether rain falls on a position; rain puts out the bodies it falls on.
     using RainCheck = std::function<bool(QcBlockPos pos)>;
@@ -51,6 +55,10 @@ private:
     bool damageDue(const QcEntity &body) const;
     void tickPlayer(QcServerClient &client);
     void tickCreatures();
+    // Creatures hurt by water take their damage while wet and teleport away.
+    void tickWetCreatures();
+    // Hurts a creature like a hit (sounds, loot at its death).
+    void hurtCreature(quint32 id, double amount);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

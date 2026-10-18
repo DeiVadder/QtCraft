@@ -80,7 +80,8 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
 
         const double centreX = x + pen.wall + pen.inner / 2.0;
         const double centreZ = z + pen.wall + pen.inner / 2.0;
-        structure->mobs.append({mob.name, {centreX, 1.0, centreZ}});
+        // Confined: a creature that teleports or takes blocks stays in its pen (decision E-460).
+        structure->mobs.append({mob.name, {centreX, 1.0, centreZ}, true});
         structure->labels.append({{centreX, pen.height + 2.5, double(depth) - 0.5}, mob.translationKey, {}, false});
         x += pen.outer() + 1;
     }

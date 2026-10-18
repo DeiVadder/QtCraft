@@ -187,15 +187,15 @@ private slots:
         mobs.spawn(type("pig"), surface(*world, 2, 2), 1);
 
         // Pig: 10 health. Hits inside the invulnerability window do nothing.
-        QVERIFY(!mobs.damage(1, 6.0, {}).has_value());
-        QVERIFY(!mobs.damage(1, 6.0, {}).has_value());
+        QVERIFY(!mobs.damage({.creature = 1, .damage = 6.0, .from = {}}).has_value());
+        QVERIFY(!mobs.damage({.creature = 1, .damage = 6.0, .from = {}}).has_value());
         QCOMPARE(mobs.find(1)->health, 4.0);
 
         // A player nearby keeps the pig from despawning while the invulnerability wears off.
         for (int tick = 0; tick < 11; ++tick) {
             mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
         }
-        const auto drops = mobs.damage(1, 6.0, {});
+        const auto drops = mobs.damage({.creature = 1, .damage = 6.0, .from = {}});
         QVERIFY(drops.has_value());
         QCOMPARE(drops->size(), 1);
         QCOMPARE(drops->first().item, u"qtcraft:raw_porkchop"_s);
@@ -368,6 +368,11 @@ private slots:
         QCOMPARE(slime.extraSpawns.size(), 1);
         slime.extraSpawns.first().biomes.clear();
         everywhere->registerMob(slime);
+        // Without the rare enderman (decision E-460), whose share of the night's places would shift
+        // the random sequence this test was laid out with.
+        QcMobDefinition enderman = everywhere->mobs()[type("enderman")];
+        enderman.spawnWeight = 0.0;
+        everywhere->registerMob(enderman);
         QVERIFY(surfaceSlimes(everywhere, midnight) > 0);
 
         // The rule is for the night: none by day.

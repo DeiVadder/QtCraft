@@ -52,6 +52,9 @@ private:
     void tickPlayer(QcServerClient &client, double dt);
     void applyVoidDamage(QcServerClient &client);
     void die(QcServerClient &client, DamageKind kind);
+    // Projectiles in flight that would teleport the player (ender pearls, decision E-460) forget
+    // their thrower: they bring a dead player nowhere, also not after the respawn.
+    void forgetTeleports(const QcServerClient &client);
     // The part of a hit the player's armour lets through; the armour wears down.
     double throughArmour(QcServerClient &client, double amount);
 

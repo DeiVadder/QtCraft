@@ -79,6 +79,8 @@ qc_add_test(test_weather_effects SOURCES gameplay/test_weather_effects.cpp QcSer
 qc_add_test(test_experience SOURCES gameplay/test_experience.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_ammunition SOURCES gameplay/test_ammunition.cpp QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_archers SOURCES gameplay/test_archers.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_endermen SOURCES gameplay/test_endermen.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_enderman_rules SOURCES gameplay/test_enderman_rules.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_projectiles SOURCES gameplay/test_projectiles.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_experience_sources SOURCES gameplay/test_experience_sources.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fire_sources SOURCES gameplay/test_fire_sources.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

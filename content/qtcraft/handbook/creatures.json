@@ -5,11 +5,13 @@
     "sections": [
         "spawning",
         "daylight",
+        "endermen",
         "limits"
     ],
     "related": [
         "zombie",
         "skeleton",
+        "enderman",
         "slime",
         "pig",
         "sheep",

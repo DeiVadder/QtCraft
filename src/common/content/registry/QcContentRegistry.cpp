@@ -1,5 +1,6 @@
 #include "common/content/registry/QcContentRegistry.h"
 
+#include "common/content/registry/QcMobTraitsContent.h"
 #include "common/content/registry/QcVillageContent.h"
 #include "common/content/registry/QcVillagerOutfits.h"
 
@@ -364,6 +365,7 @@ QStringList QcContentRegistry::finish()
             mob.abilities.opensDoors = false;
         }
         warnings.append(resolveArcher(mob));
+        warnings.append(QcMobTraitsContent::resolve(*this, mob));
     }
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));

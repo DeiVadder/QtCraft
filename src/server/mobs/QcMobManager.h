@@ -6,6 +6,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
 #include "server/entities/QcEntityComponent.h"
+#include "server/gameplay/QcServerCombat.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/projectiles/QcProjectileManager.h"
 #include "server/villages/QcVillager.h"
@@ -65,6 +66,11 @@ public:
         // not use (decision E-420).
         quint64 uid = 0;
         QcEntityKept kept = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        // The block it carries, whether it is kept only for that block and whether it stays in its
+        // enclosure (decision E-460).
+        QcBlockId carried = qcAirBlockId;
+        bool keptForBlock = false;
+        bool confined = false;
 
         bool operator==(const Stored &) const = default;
     };
@@ -77,6 +83,22 @@ public:
         bool alive = true;
         // Creatures leave invulnerable players (creative mode) alone.
         bool targetable = true;
+        // Where the player looks (a unit vector; zero for unknown): a look at a head provokes
+        // neutral creatures with a gaze (decision E-460).
+        QcVec3 look = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    };
+
+    // A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
+    // carries out after the tick with the usual block changes (QcCreatureTraits): taking only when
+    // `block` is still there, placing only into air; dropping (game rule mobGriefing off) lets the
+    // carried block fall as an item.
+    struct BlockAction
+    {
+        enum class Kind : quint8 { Take, Place, Drop };
+        Kind kind = Kind::Take;
+        quint32 mob = 0;
+        QcBlockPos pos;
+        QcBlockId block = qcAirBlockId;
     };
 
     struct PlayerHit
@@ -134,12 +156,24 @@ public:
     // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425);
     // the server adds them as projectiles after the tick.
     QList<QcProjectileManager::Launch> takeLaunches();
-    // Applies damage from a player at `from`, pushing the mob away with `knockback` times a blow's
-    // push (0: not at all); returns the mob's drops when it died. A hit without damage (a snowball)
+    // The blocks the creatures took or put down since the last call (decision E-460).
+    QList<BlockAction> takeBlockActions();
+    // Game rule mobGriefing (decision E-460): without it creatures take and place no blocks.
+    void setGriefing(bool on);
+    // Teleports the creature to a safe place near it (QcMobTeleport) when its kind teleports and it
+    // may now; true when it did.
+    bool teleport(quint32 mobId, const QcBlockAccess &world);
+    // Keeps a creature with the world (persistent, with a persistent id) from now on, or no longer.
+    void keep(QcCreature &mob, bool kept);
+    // Lets the creature carry the block state (qcAirBlockId: none) with its item in the hand.
+    void carryBlock(QcCreature &mob, QcBlockId block) const;
+    // Applies the blow's damage from `blow.from` to `blow.creature`, pushing the mob away with
+    // `blow.knockback` times a blow's push (0: not at all); returns the mob's drops when it died. A hit without damage (a snowball)
     // pushes and frightens but gives no invulnerability (decision E-427). During the creature's
     // invulnerability only a stronger hit takes, with the difference and without the push
-    // (QcHurtWindow, decision E-429).
-    std::optional<QList<QcItemDrop>> damage(quint32 mobId, double amount, const QcVec3 &from, double knockback = 1.0);
+    // (QcHurtWindow, decision E-429). `blow.attacker` is the player who dealt it (0: none, as for
+    // lightning): a neutral creature turns on that player (QcCreature::struckBy, decision E-460).
+    std::optional<QList<QcItemDrop>> damage(const QcServerCombat::Blow &blow);
     // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
     // was removed.
     bool hurt(quint32 mobId, double amount);

@@ -417,7 +417,7 @@ private slots:
         QVERIFY(m_server->mobs().find(youngId)->growUp < before - 100.0);
 
         // It grows up when its time is over; until then it leaves nothing behind.
-        const std::optional<QList<QcItemDrop>> drops = m_server->mobs().damage(second, 100.0, m_client->motion.position);
+        const std::optional<QList<QcItemDrop>> drops = m_server->mobs().damage({.creature = second, .damage = 100.0, .from = m_client->motion.position});
         QVERIFY(drops && !drops->isEmpty());
         m_server->mobs().find(youngId)->growUp = 0.1;
         ticks(3);
@@ -545,7 +545,7 @@ private slots:
         const int sheep = *m_content->mobIndex(u"qtcraft:sheep"_s);
         const quint32 lamb = m_server->mobs().spawn(sheep, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900010);
         m_server->mobs().find(lamb)->growUp = 600.0;
-        const std::optional<QList<QcItemDrop>> drops = m_server->mobs().damage(lamb, 100.0, m_client->motion.position);
+        const std::optional<QList<QcItemDrop>> drops = m_server->mobs().damage({.creature = lamb, .damage = 100.0, .from = m_client->motion.position});
         QVERIFY(drops.has_value());
         QVERIFY(drops->isEmpty());
     }

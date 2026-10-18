@@ -17,6 +17,8 @@ struct QcServerClient;
 // invulnerability, knockback along the flight, loot and experience when a player shot); stuck
 // projectiles go to the players that touch them. Players shoot through QcPlayerLaunchers and
 // throw through QcPlayerThrows; what a hit does comes from the kind's onHit (QcHitEffects, E-427).
+// Creatures that dodge projectiles teleport away unhurt, and a projectile that teleports its thrower
+// (an ender pearl) brings them where it breaks (decision E-460).
 class QcServerProjectiles
 {
 public:
@@ -36,6 +38,9 @@ private:
     bool hit(const QcProjectileManager::Hit &hit);
     void hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along);
     bool pickUp(quint32 player, const QcProjectile &projectile);
+    // A projectile with a teleport effect broke (an ender pearl, decision E-460): its thrower comes
+    // to the nearest safe place there and takes the effect's fall damage.
+    void teleportThrower(const QcProjectile &projectile, const QcHitEffect &effect);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

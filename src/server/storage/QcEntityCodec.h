@@ -40,6 +40,11 @@ enum class Component : quint16 {
     ExperienceOrb = 7,
     // Pitch, age, pickup, damage factor and where it sticks of a projectile (version 1).
     Projectile = 8,
+    // The block state a creature carries, by name, and whether it is kept with the world only for
+    // that block (version 1; decision E-460). 9 is the effects of package 52.2.
+    Carried = 10,
+    // A creature that stays in its enclosure (version 1, no fields; decision E-460).
+    Confined = 11,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

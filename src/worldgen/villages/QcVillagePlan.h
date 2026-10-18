@@ -79,6 +79,8 @@ struct QcVillagePlan
     {
         QString mob;
         QcVec3 at;
+        // Stays in its enclosure (QcStructureDefinition::Mob::confined, decision E-460).
+        bool confined = false;
     };
 
     // Region coordinates packed into one number: x in the high 32 bits, z in the low (QcVillagePlanner::plan).

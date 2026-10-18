@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcMobTraitsParser.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/core/QcWorldConstants.h"
 
@@ -96,11 +97,12 @@ void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
 {
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
-        {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer}};
+        {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
+        {u"neutral"_s, Ai::Neutral}};
     const Ai fallback = mob.villager ? Ai::Villager : mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        reader.fail(u"'ai' must be passive, hostile, villager or archer"_s);
+        reader.fail(u"'ai' must be passive, hostile, villager, archer or neutral"_s);
         return;
     }
 
@@ -466,6 +468,7 @@ namespace QcMobParser {
     if (reader.ok() && json.contains(u"archer"_s) != (mob.ai == QcMobDefinition::Ai::Archer)) {
         reader.fail(u"the archer AI goes with 'archer' settings, and they with it"_s);
     }
+    QcMobTraitsParser::parseTraits(json, mob, reader, packNamespace);
     mob.burnsInDaylight = reader.boolean(u"burnsInDaylight"_s, false);
     mob.heldItem = reader.name(u"heldItem"_s, packNamespace);
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);

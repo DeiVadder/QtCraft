@@ -1,0 +1,27 @@
+{
+    "name": "mob.enderman.death",
+    "volume": 0.9,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 1.4,
+            "frequency": 220,
+            "endFrequency": 60,
+            "attack": 0.02,
+            "curve": 1.2,
+            "lowpass": 900,
+            "tremoloRate": 7,
+            "tremoloDepth": 0.5,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 1.2,
+            "attack": 0.02,
+            "curve": 1.2,
+            "lowpass": 1500,
+            "highpass": 200,
+            "gain": 0.4
+        }
+    ]
+}

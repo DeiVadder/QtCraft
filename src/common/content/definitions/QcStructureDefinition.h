@@ -32,6 +32,9 @@ struct QcStructureDefinition
     {
         QString mob;
         QcVec3 at;
+        // Stays in its enclosure (decision E-460): it neither teleports nor takes or places blocks
+        // (the showcase's pens; `"confined": true` in structure data).
+        bool confined = false;
     };
 
     // An armour stand (decision E-238): where it stands, turned by `yaw` degrees (0 faces north),

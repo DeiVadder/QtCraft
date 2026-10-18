@@ -22,14 +22,15 @@ public:
 
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
-    // A blow or a hit on a creature: from where, and whether a player dealt it (only then it gives
-    // experience).
+    // A blow or a hit on a creature: from where, and the player who dealt it (only then it gives
+    // experience and provokes a neutral creature, decision E-460).
     struct Blow
     {
         quint32 creature = 0;
         double damage = 0.0;
         QcVec3 from;
-        bool byPlayer = false;
+        // Entity id of the player; 0 for none (a creature's shot).
+        quint32 attacker = 0;
         // Strength of the push away from `from`; 1 is a blow's (decision E-427).
         double knockback = 1.0;
     };

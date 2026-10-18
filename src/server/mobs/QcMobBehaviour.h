@@ -4,6 +4,7 @@
 #include "server/mobs/QcCreatureBrains.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/mobs/QcMobManager.h"
+#include "server/mobs/QcNeutralBrain.h"
 #include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/pathing/QcPathTerrain.h"
@@ -15,7 +16,7 @@
 
 // What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
 // of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the villagers'
-// QcVillagerBehaviour); flyers drift above the ground. Walkers follow their paths
+// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain); flyers drift above the ground. Walkers follow their paths
 // (QcMobNavigator) with the shared physics and are pushed apart by their crowd (QcMobCrowd), whose
 // density also decides how much they think (QcMobCrowd::Tier); the path searches of all of them
 // share a budget per tick (QcPathPlanner).
@@ -58,6 +59,10 @@ public:
                                         Clock clock);
     // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425).
     QList<QcProjectileManager::Launch> takeLaunches() { return std::exchange(m_launches, {}); }
+    // The blocks the creatures took and put down since the last call (decision E-460).
+    QList<QcMobManager::BlockAction> takeBlockActions() { return std::exchange(m_blockActions, {}); }
+    // Game rule mobGriefing (QcMobBrain::Context::griefing).
+    void setGriefing(bool on) { m_griefing = on; }
     // A creature leaves the world for good (QcMobManager::Departure other than Unloaded): its brain
     // lets go of what it held (a villager's open door).
     void leave(const QcCreature &mob) const { brainOf(mob.type).leave(mob); }
@@ -85,12 +90,15 @@ private:
     QcPassiveBrain m_passive;
     QcHostileBrain m_hostile;
     QcArcherBrain m_archers;
+    QcNeutralBrain m_neutral;
     // The brain and the path rules of every kind, indexed by type.
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;
     QcMobCrowd m_crowd;
     TierCounts m_tiers;
     QList<QcProjectileManager::Launch> m_launches;
+    QList<QcMobManager::BlockAction> m_blockActions;
+    bool m_griefing = true;
     // Ticks since the start: when creatures look for players and throttled ones think (by their ids).
     quint64 m_tick = 0;
 };

@@ -17,9 +17,13 @@ QString kindOf(const QcMobDefinition &mob)
     return mob.ambient ? u"ambient"_s : (mob.hostile ? u"hostile"_s : u"passive"_s);
 }
 
-// The behaviour label: the category, or "archer" for hostile creatures that shoot (decision E-426).
+// The behaviour label: the category, "archer" for hostile creatures that shoot (decision E-426) or
+// "neutral" for those a player has to provoke (decision E-460).
 QString behaviourOf(const QcMobDefinition &mob)
 {
+    if (mob.ai == QcMobDefinition::Ai::Neutral) {
+        return u"neutral"_s;
+    }
     return mob.ai == QcMobDefinition::Ai::Archer ? u"archer"_s : kindOf(mob);
 }
 

@@ -1,0 +1,11 @@
+{
+    "name": "ender_pearl",
+    "texture": "ender_pearl",
+    "maxStack": 16,
+    "projectile": "ender_pearl",
+    "throwable": {
+        "speed": 30.0,
+        "cooldownSeconds": 1.0,
+        "inaccuracyDegrees": 1.0
+    }
+}
