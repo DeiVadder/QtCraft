@@ -151,6 +151,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     handbook/builder/QcHandbookBlockPages.h handbook/builder/QcHandbookBlockPages.cpp
+    handbook/builder/QcHandbookBlockTables.h handbook/builder/QcHandbookBlockTables.cpp
     handbook/builder/QcHandbookBuilder.h handbook/builder/QcHandbookBuilder.cpp
     handbook/builder/QcHandbookChapterPages.h handbook/builder/QcHandbookChapterPages.cpp
     handbook/builder/QcHandbookContext.h

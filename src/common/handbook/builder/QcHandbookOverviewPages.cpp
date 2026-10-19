@@ -8,7 +8,6 @@
 #include "common/handbook/QcHandbookLinks.h"
 
 #include <algorithm>
-#include <utility>
 
 using namespace Qt::StringLiterals;
 using Link = QcHandbookEntry::Link;
@@ -17,23 +16,8 @@ using Section = QcHandbookEntry::Section;
 
 namespace {
 
-// Links ordered by their key (ascending unless `descending`), then by text as the search compares it.
-template<typename Key>
-QList<Link> orderedLinks(QList<std::pair<Key, Link>> keyed, bool descending = false)
-{
-    std::ranges::stable_sort(keyed, [descending](const auto &a, const auto &b) {
-        if (a.first != b.first) {
-            return descending ? a.first > b.first : a.first < b.first;
-        }
-        return QcHandbook::searchKey(a.second.text) < QcHandbook::searchKey(b.second.text);
-    });
-
-    QList<Link> links;
-    for (auto &[key, link] : keyed) {
-        links.append(std::move(link));
-    }
-    return links;
-}
+using QcHandbookOverviewPages::orderedLinks;
+using QcHandbookOverviewPages::tablePage;
 
 QcHandbookEntry tagPage(const QcHandbookContext &context, const QString &tag, const QStringList &members)
 {
@@ -70,19 +54,6 @@ QcHandbookEntry tagPage(const QcHandbookContext &context, const QString &tag, co
     }
 
     entry.englishTitle = links.tagTitle(tag, QcHandbookText::english());
-    return entry;
-}
-
-QcHandbookEntry tablePage(const QcHandbookContext &context, const QString &name, const QString &iconItem)
-{
-    QcHandbookEntry entry;
-    entry.id = u"table:"_s + name;
-    entry.category = u"tables"_s;
-    entry.pack = context.links.basePack();
-    entry.title = context.text.label(u"table."_s + name);
-    entry.text = context.text.label(u"table."_s + name + u"Text"_s);
-    entry.icon = context.links.itemIcon(iconItem);
-    entry.englishTitle = context.content.translate(u"handbook.table."_s + name, QcHandbookText::english());
     return entry;
 }
 
@@ -213,6 +184,19 @@ QcHandbookEntry smeltingTable(const QcHandbookContext &context)
 } // namespace
 
 namespace QcHandbookOverviewPages {
+
+QcHandbookEntry tablePage(const QcHandbookContext &context, const QString &name, const QString &iconItem)
+{
+    QcHandbookEntry entry;
+    entry.id = u"table:"_s + name;
+    entry.category = u"tables"_s;
+    entry.pack = context.links.basePack();
+    entry.title = context.text.label(u"table."_s + name);
+    entry.text = context.text.label(u"table."_s + name + u"Text"_s);
+    entry.icon = context.links.itemIcon(iconItem);
+    entry.englishTitle = context.content.translate(u"handbook.table."_s + name, QcHandbookText::english());
+    return entry;
+}
 
 QList<QcHandbookEntry> build(const QcHandbookContext &context)
 {

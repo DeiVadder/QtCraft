@@ -17,13 +17,6 @@ namespace {
 constexpr double spawnInterval = 1.0;
 constexpr int spawnAttemptsPerPlayer = 4;
 
-// Mobs never spawn on or in a block that hurts on contact (magma) or holds bodies inside (cobwebs);
-// the block fields decide, so mod blocks follow the same rule.
-bool keepsSpawnsAway(const QcBlockDefinition &block)
-{
-    return block.contactDamage > 0.0 || block.slowsInside < 1.0;
-}
-
 // Whether a walker taller than two blocks (an enderman, decision E-460) has room above the two cells
 // every spawn checks: the cells up to its height are not solid. Unloaded cells count as solid.
 bool roomAbove(const QcServerWorld &world, QcBlockPos feet, double height)
@@ -86,7 +79,7 @@ int animalGroundAt(const QcContentRegistry &content, const QcChunk &chunk, const
 {
     const auto open = [&](int y) {
         const QcBlockDefinition &block = content.block(chunk.block(x, y, z));
-        return !block.solid && !block.liquid && !keepsSpawnsAway(block);
+        return !block.solid && !block.liquid && !block.keepsSpawnsAway();
     };
 
     for (int y = std::min(chunk.highestNonAir(x, z), QcWorld::worldHeight - 3); y > 0; --y) {
@@ -95,7 +88,7 @@ int animalGroundAt(const QcContentRegistry &content, const QcChunk &chunk, const
         if (block.liquid) {
             return -1;
         }
-        if (block.solid && !keepsSpawnsAway(block) && open(y + 1) && open(y + 2)
+        if (block.solid && !block.keepsSpawnsAway() && open(y + 1) && open(y + 2)
             && (grounds.any || grounds.blocks.contains(block.name))) {
             return y;
         }
@@ -377,8 +370,8 @@ bool QcNaturalSpawner::spawnWalker(const QcServerWorld &world, const SpawnPlace 
                            && roomAbove(world, feet, content.mobs()[chosen.type].height);
     const QcBlockId floor = blockAt(feet.offset(0, -1, 0));
     const bool groundOk = chosen.rule->blocks.isEmpty() || chosen.rule->blocks.contains(content.block(floor).name);
-    const bool safe = !keepsSpawnsAway(content.block(floor)) && !keepsSpawnsAway(content.block(blockAt(feet)))
-                      && !keepsSpawnsAway(content.block(blockAt(feet.offset(0, 1, 0))));
+    const bool safe = !content.block(floor).keepsSpawnsAway() && !content.block(blockAt(feet)).keepsSpawnsAway()
+                      && !content.block(blockAt(feet.offset(0, 1, 0))).keepsSpawnsAway();
     if (!safe || (member > 0 && (!standable || !groundOk))) {
         return false;
     }

@@ -20,6 +20,7 @@ qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES 
 target_compile_definitions(test_sound_content PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_server)
+qc_add_test(test_handbook_tables SOURCES content/test_handbook_tables.cpp LIBRARIES qc_server)
 target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods"
                                                 QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_server_messages SOURCES content/test_server_messages.cpp LIBRARIES Qt::Core)

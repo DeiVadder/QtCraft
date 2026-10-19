@@ -18,7 +18,16 @@ This document describes the current state. Sections marked *planned* are not imp
 | `qtcraft` | Client (UI) | `qc_app_core` and its QML plugin | `src/app/startup` (`main.cpp` with the order of the start, command line, window, language, scripted runs), platform side of scripted runs, shaders, translations, icon and bundle. |
 | `qtcraft-headless` | Tool | `qc_server`, `qc_clientcore` | Server plus control-interface client without a window; with `--server` the dedicated server (`QcDedicatedServer`, `QcSignalWatcher`, E-255); with `--join` the control-interface bot joins a server over TCP instead (`QcHeadlessJoin`, E-270). |
 
-The client code never includes server headers except in the two composition roots (`QcGameController` and `QcHeadlessGame`), which only create the `QcLocalServerHost` and take a transport from it. All game interaction goes through protocol messages.
+Client code without process responsibilities (`qc_clientcore`, `qc_audio`) never includes server headers. `qtcraft-headless` (`src/headless`) may include everything. In `src/app`, server headers are included only by the parts that manage the worlds of the game's own process (decision E-686):
+
+| Task | Server headers | App files |
+|------|----------------|-----------|
+| Start the in-process server and take a transport from it | `QcLocalServerHost` | `QcGameController`, `QcWorldStarter`, `QcMultiplayerController` (open to LAN), `QcBenchmarkRun` |
+| Manage worlds on disk and the data folder (list, create, delete; `settings.ini` lies in the data folder) | `QcWorldLibrary`, `QcWorldStorage`, `QcServerPersistence` | `QcWorldLibraryController` (`.h`/`.cpp`), `QcWorldStarter` (`.h`/`.cpp`), `QcSettingsController`, `QcGameController` |
+| Load mods and compare them with a server's content | `QcModLoader`, `QcBundledMods`, `QcModStatus`, `QcContentFingerprint`, `QcProfileValidation` | `QcAppStartup`, `QcWorldLibraryController`, `QcMultiplayerController`, `QcWorldStarter` |
+| Rule values quoted by the handbook | `QcHandbookRules` | `QcHandbookController` |
+
+These are the ten files of `src/app` with server includes; new ones belong only to these tasks. All game interaction still goes through protocol messages, also in a single-player game. Stage 57 moves world and mod management into a layer of its own (`qc_worlds`) and tightens the rule (`LAYERS` for `app` in `scripts/fix-includes.py`).
 
 ## Source layout
 

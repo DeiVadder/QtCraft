@@ -33,6 +33,7 @@
 #include "server/mobs/QcNaturalSpawner.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcServerPlants.h"
+#include "server/signal/QcCircuitComponents.h"
 #include "server/villages/QcServerTrading.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerRelocation.h"
@@ -68,6 +69,23 @@ QMap<QString, double> explosionValues(const QcContentRegistry &content)
         {u"explosions.perTick"_s, double(limits.explosionsPerTick)},
         {u"explosions.blocks"_s, double(limits.explosionBlocks)},
         {u"explosions.blocksPerTick"_s, double(limits.explosionBlocksPerTick)},
+    };
+}
+
+// The timing of Signal Dust components (decision E-333 ff.), in ticks, as the signal table of the
+// handbook quotes it.
+QMap<QString, double> signalValues()
+{
+    return {
+        {u"signal.ticksPerSecond"_s, QcPhysics::tickRate},
+        {u"signal.torchDelayTicks"_s, double(QcCircuitComponents::torchDelayTicks)},
+        {u"signal.burnoutToggles"_s, double(QcCircuitComponents::burnoutToggles)},
+        {u"signal.burnoutWindowTicks"_s, double(QcCircuitComponents::burnoutWindowTicks)},
+        {u"signal.repeaterStepTicks"_s, double(QcCircuitComponents::repeaterStepTicks)},
+        {u"signal.repeaterMaxTicks"_s, double(4 * QcCircuitComponents::repeaterStepTicks)},
+        {u"signal.comparatorDelayTicks"_s, double(QcCircuitComponents::comparatorDelayTicks)},
+        {u"signal.observerPulseTicks"_s, double(QcCircuitComponents::observerPulseTicks)},
+        {u"signal.dispenserDelayTicks"_s, double(QcCircuitComponents::dispenserDelayTicks)},
     };
 }
 
@@ -246,6 +264,7 @@ QMap<QString, double> values(const QcContentRegistry &content)
     rules.insert(archeryValues());
     rules.insert(villageValues());
     rules.insert(explosionValues(content));
+    rules.insert(signalValues());
     return rules;
 }
 

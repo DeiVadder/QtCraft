@@ -263,6 +263,9 @@ struct QcBlockDefinition
     static constexpr double grippingSlipperiness = 0.6;
     static constexpr double maxSlipperiness = 0.995;
 
+    // Whether creatures keep from spawning on or in the block because it hurts or slows them (lava,
+    // cobweb; QcNaturalSpawner).
+    bool keepsSpawnsAway() const { return contactDamage > 0.0 || slowsInside < 1.0; }
     // Whether the server gives the block random ticks (growing plants, crops, soil).
     bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }
     const QString &texture(QcBlockFace face) const { return faceTextures[std::size_t(face)]; }

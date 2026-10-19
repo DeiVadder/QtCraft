@@ -602,7 +602,11 @@
                 "table:fuels",
                 "table:tools",
                 "table:armour",
-                "table:smelting"
+                "table:smelting",
+                "table:signal",
+                "table:transparent",
+                "table:light",
+                "table:blast"
             ],
             "id": "tables",
             "title": "Overviews"
@@ -80239,6 +80243,1754 @@
             "text": "Armour is worn in four slots next to the character in the inventory: drag it there, shift-click it or right-click with it in the hand. Every armour point takes 4 % off the blows of creatures and the burns of lava and magma, up to 20 points (80 %); falls and hunger go through. Each such hit wears every worn piece by a quarter of the damage (at least 1); a piece breaks when its durability is used up. Two worn pieces of the same kind in the crafting grid make one with both durabilities plus 5 %.",
             "title": "Armour"
         },
+        "table:blast": {
+            "category": "tables",
+            "categoryTitle": "Overviews",
+            "englishTitle": "Blast resistance",
+            "facts": [
+            ],
+            "icon": "qtcraft:explosive",
+            "id": "table:blast",
+            "name": "",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bedrock",
+                            "note": "",
+                            "target": "block:qtcraft:bedrock",
+                            "text": "Bedrock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Never break in explosions"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "1200",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:obsidian",
+                            "note": "1200",
+                            "target": "block:qtcraft:obsidian",
+                            "text": "Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:lava_bucket",
+                            "note": "100, liquid",
+                            "target": "block:qtcraft:lava",
+                            "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "100, liquid",
+                            "target": "block:qtcraft:water",
+                            "text": "Water"
+                        },
+                        {
+                            "icon": "qtcraft:coal_block",
+                            "note": "6",
+                            "target": "block:qtcraft:coal_block",
+                            "text": "Block of coal"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_block",
+                            "note": "6",
+                            "target": "block:qtcraft:diamond_block",
+                            "text": "Block of diamond"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "6",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        },
+                        {
+                            "icon": "qtcraft:gold_block",
+                            "note": "6",
+                            "target": "block:qtcraft:gold_block",
+                            "text": "Block of gold"
+                        },
+                        {
+                            "icon": "qtcraft:iron_block",
+                            "note": "6",
+                            "target": "block:qtcraft:iron_block",
+                            "text": "Block of iron"
+                        },
+                        {
+                            "icon": "qtcraft:brick_slab",
+                            "note": "6",
+                            "target": "block:qtcraft:brick_slab",
+                            "text": "Brick slab"
+                        },
+                        {
+                            "icon": "qtcraft:brick_stairs",
+                            "note": "6",
+                            "target": "block:qtcraft:brick_stairs",
+                            "text": "Brick stairs"
+                        },
+                        {
+                            "icon": "qtcraft:brick_wall",
+                            "note": "6",
+                            "target": "block:qtcraft:brick_wall",
+                            "text": "Brick wall"
+                        },
+                        {
+                            "icon": "qtcraft:bricks",
+                            "note": "6",
+                            "target": "block:qtcraft:bricks",
+                            "text": "Bricks"
+                        },
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "6",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk Loader"
+                        },
+                        {
+                            "icon": "qtcraft:cobblestone",
+                            "note": "6",
+                            "target": "block:qtcraft:cobblestone",
+                            "text": "Cobblestone"
+                        },
+                        {
+                            "icon": "qtcraft:cobblestone_slab",
+                            "note": "6",
+                            "target": "block:qtcraft:cobblestone_slab",
+                            "text": "Cobblestone slab"
+                        },
+                        {
+                            "icon": "qtcraft:cobblestone_stairs",
+                            "note": "6",
+                            "target": "block:qtcraft:cobblestone_stairs",
+                            "text": "Cobblestone stairs"
+                        },
+                        {
+                            "icon": "qtcraft:cobblestone_wall",
+                            "note": "6",
+                            "target": "block:qtcraft:cobblestone_wall",
+                            "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:iron_bars",
+                            "note": "6",
+                            "target": "block:qtcraft:iron_bars",
+                            "text": "Iron bars"
+                        },
+                        {
+                            "icon": "qtcraft:mossy_cobblestone",
+                            "note": "6",
+                            "target": "block:qtcraft:mossy_cobblestone",
+                            "text": "Mossy cobblestone"
+                        },
+                        {
+                            "icon": "qtcraft:polished_stone",
+                            "note": "6",
+                            "target": "block:qtcraft:polished_stone",
+                            "text": "Polished stone"
+                        },
+                        {
+                            "icon": "qtcraft:polished_stone_slab",
+                            "note": "6",
+                            "target": "block:qtcraft:polished_stone_slab",
+                            "text": "Polished stone slab"
+                        },
+                        {
+                            "icon": "qtcraft:polished_stone_stairs",
+                            "note": "6",
+                            "target": "block:qtcraft:polished_stone_stairs",
+                            "text": "Polished stone stairs"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "6",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
+                        },
+                        {
+                            "icon": "qtcraft:stone_bricks_slab",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_bricks_slab",
+                            "text": "Stone brick slab"
+                        },
+                        {
+                            "icon": "qtcraft:stone_bricks_stairs",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_bricks_stairs",
+                            "text": "Stone brick stairs"
+                        },
+                        {
+                            "icon": "qtcraft:stone_bricks_wall",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_bricks_wall",
+                            "text": "Stone brick wall"
+                        },
+                        {
+                            "icon": "qtcraft:stone_bricks",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_bricks",
+                            "text": "Stone bricks"
+                        },
+                        {
+                            "icon": "qtcraft:stone_slab",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_slab",
+                            "text": "Stone slab"
+                        },
+                        {
+                            "icon": "qtcraft:stone_stairs",
+                            "note": "6",
+                            "target": "block:qtcraft:stone_stairs",
+                            "text": "Stone stairs"
+                        },
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        },
+                        {
+                            "icon": "qtcraft:iron_door",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:iron_door",
+                            "text": "Iron door"
+                        },
+                        {
+                            "icon": "qtcraft:iron_trapdoor",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:iron_trapdoor",
+                            "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:black_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:black_terracotta",
+                            "text": "Black terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:blue_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:blue_terracotta",
+                            "text": "Blue terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:brown_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:brown_terracotta",
+                            "text": "Brown terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:cyan_terracotta",
+                            "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:gray_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:gray_terracotta",
+                            "text": "Gray terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:green_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:green_terracotta",
+                            "text": "Green terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:light_blue_terracotta",
+                            "text": "Light blue terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:light_gray_terracotta",
+                            "text": "Light gray terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:lime_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:lime_terracotta",
+                            "text": "Lime terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:magenta_terracotta",
+                            "text": "Magenta terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:orange_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:orange_terracotta",
+                            "text": "Orange terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:pink_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:pink_terracotta",
+                            "text": "Pink terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:purple_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:purple_terracotta",
+                            "text": "Purple terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:red_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:red_terracotta",
+                            "text": "Red terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:terracotta",
+                            "text": "Terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:white_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:white_terracotta",
+                            "text": "White terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_terracotta",
+                            "note": "4.2",
+                            "target": "block:qtcraft:yellow_terracotta",
+                            "text": "Yellow terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "3.5, from hardness",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Furnace"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dispenser",
+                            "note": "3.5, from hardness",
+                            "target": "block:qtcraft:signal_dispenser",
+                            "text": "Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dropper",
+                            "note": "3.5, from hardness",
+                            "target": "block:qtcraft:signal_dropper",
+                            "text": "Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:birch_door",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:birch_door",
+                            "text": "Birch door"
+                        },
+                        {
+                            "icon": "qtcraft:birch_trapdoor",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:birch_trapdoor",
+                            "text": "Birch trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        },
+                        {
+                            "icon": "qtcraft:coal_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:coal_ore",
+                            "text": "Coal ore"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:diamond_ore",
+                            "text": "Diamond ore"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
+                        },
+                        {
+                            "icon": "qtcraft:gold_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:gold_ore",
+                            "text": "Gold ore"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:iron_ore",
+                            "text": "Iron ore"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
+                        },
+                        {
+                            "icon": "qtcraft:mud_bricks_slab",
+                            "note": "3",
+                            "target": "block:qtcraft:mud_bricks_slab",
+                            "text": "Mud brick slab"
+                        },
+                        {
+                            "icon": "qtcraft:mud_bricks_stairs",
+                            "note": "3",
+                            "target": "block:qtcraft:mud_bricks_stairs",
+                            "text": "Mud brick stairs"
+                        },
+                        {
+                            "icon": "qtcraft:mud_bricks_wall",
+                            "note": "3",
+                            "target": "block:qtcraft:mud_bricks_wall",
+                            "text": "Mud brick wall"
+                        },
+                        {
+                            "icon": "qtcraft:mud_bricks",
+                            "note": "3",
+                            "target": "block:qtcraft:mud_bricks",
+                            "text": "Mud bricks"
+                        },
+                        {
+                            "icon": "qtcraft:oak_door",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:oak_door",
+                            "text": "Oak door"
+                        },
+                        {
+                            "icon": "qtcraft:oak_trapdoor",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:oak_trapdoor",
+                            "text": "Oak trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:signal_hopper",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:signal_hopper",
+                            "text": "Signal Hopper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_observer",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:signal_observer",
+                            "text": "Signal Observer"
+                        },
+                        {
+                            "icon": "qtcraft:signal_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:signal_ore",
+                            "text": "Signal ore"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_door",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:spruce_door",
+                            "text": "Spruce door"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_trapdoor",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:spruce_trapdoor",
+                            "text": "Spruce trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:blue_ice",
+                            "note": "2.8, from hardness",
+                            "target": "block:qtcraft:blue_ice",
+                            "text": "Blue ice"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "2.5, from hardness",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Barrel"
+                        },
+                        {
+                            "icon": "qtcraft:chest",
+                            "note": "2.5, from hardness",
+                            "target": "block:qtcraft:chest",
+                            "text": "Chest"
+                        },
+                        {
+                            "icon": "qtcraft:crafting_table",
+                            "note": "2.5, from hardness",
+                            "target": "block:qtcraft:crafting_table",
+                            "text": "Crafting table"
+                        },
+                        {
+                            "icon": "qtcraft:birch_fence",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_fence",
+                            "text": "Birch fence"
+                        },
+                        {
+                            "icon": "qtcraft:birch_fence_gate",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_fence_gate",
+                            "text": "Birch fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:birch_log",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_log",
+                            "text": "Birch log"
+                        },
+                        {
+                            "icon": "qtcraft:birch_planks",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_planks",
+                            "text": "Birch planks"
+                        },
+                        {
+                            "icon": "qtcraft:birch_slab",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_slab",
+                            "text": "Birch slab"
+                        },
+                        {
+                            "icon": "qtcraft:birch_stairs",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_stairs",
+                            "text": "Birch stairs"
+                        },
+                        {
+                            "icon": "qtcraft:birch_wood",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:birch_wood",
+                            "text": "Birch wood"
+                        },
+                        {
+                            "icon": "qtcraft:cauldron",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:cauldron",
+                            "text": "Cauldron"
+                        },
+                        {
+                            "icon": "qtcraft:cobweb",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:cobweb",
+                            "text": "Cobweb"
+                        },
+                        {
+                            "icon": "qtcraft:oak_fence",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_fence",
+                            "text": "Oak fence"
+                        },
+                        {
+                            "icon": "qtcraft:oak_fence_gate",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_fence_gate",
+                            "text": "Oak fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_log",
+                            "text": "Oak log"
+                        },
+                        {
+                            "icon": "qtcraft:oak_planks",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_planks",
+                            "text": "Oak planks"
+                        },
+                        {
+                            "icon": "qtcraft:oak_slab",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_slab",
+                            "text": "Oak slab"
+                        },
+                        {
+                            "icon": "qtcraft:oak_stairs",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_stairs",
+                            "text": "Oak stairs"
+                        },
+                        {
+                            "icon": "qtcraft:oak_wood",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:oak_wood",
+                            "text": "Oak wood"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_fence",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_fence",
+                            "text": "Spruce fence"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_fence_gate",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_fence_gate",
+                            "text": "Spruce fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_log",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_log",
+                            "text": "Spruce log"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_planks",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_planks",
+                            "text": "Spruce planks"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_slab",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_slab",
+                            "text": "Spruce slab"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_stairs",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_stairs",
+                            "text": "Spruce stairs"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_wood",
+                            "note": "2, from hardness",
+                            "target": "block:qtcraft:spruce_wood",
+                            "text": "Spruce wood"
+                        },
+                        {
+                            "icon": "qtcraft:black_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:black_concrete",
+                            "text": "Black concrete"
+                        },
+                        {
+                            "icon": "qtcraft:blue_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:blue_concrete",
+                            "text": "Blue concrete"
+                        },
+                        {
+                            "icon": "qtcraft:brown_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:brown_concrete",
+                            "text": "Brown concrete"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:cyan_concrete",
+                            "text": "Cyan concrete"
+                        },
+                        {
+                            "icon": "qtcraft:gray_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:gray_concrete",
+                            "text": "Gray concrete"
+                        },
+                        {
+                            "icon": "qtcraft:green_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:green_concrete",
+                            "text": "Green concrete"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:light_blue_concrete",
+                            "text": "Light blue concrete"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:light_gray_concrete",
+                            "text": "Light gray concrete"
+                        },
+                        {
+                            "icon": "qtcraft:lime_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:lime_concrete",
+                            "text": "Lime concrete"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:magenta_concrete",
+                            "text": "Magenta concrete"
+                        },
+                        {
+                            "icon": "qtcraft:orange_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:orange_concrete",
+                            "text": "Orange concrete"
+                        },
+                        {
+                            "icon": "qtcraft:pink_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:pink_concrete",
+                            "text": "Pink concrete"
+                        },
+                        {
+                            "icon": "qtcraft:purple_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:purple_concrete",
+                            "text": "Purple concrete"
+                        },
+                        {
+                            "icon": "qtcraft:red_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:red_concrete",
+                            "text": "Red concrete"
+                        },
+                        {
+                            "icon": "qtcraft:white_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:white_concrete",
+                            "text": "White concrete"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_concrete",
+                            "note": "1.8, from hardness",
+                            "target": "block:qtcraft:yellow_concrete",
+                            "text": "Yellow concrete"
+                        },
+                        {
+                            "icon": "qtcraft:bookshelf",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:bookshelf",
+                            "text": "Bookshelf"
+                        },
+                        {
+                            "icon": "qtcraft:lantern",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:lantern",
+                            "text": "Lantern"
+                        },
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:sticky_signal_piston",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:sticky_signal_piston",
+                            "text": "Sticky Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:carved_pumpkin",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:carved_pumpkin",
+                            "text": "Carved pumpkin"
+                        },
+                        {
+                            "icon": "qtcraft:infested_cobblestone",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:infested_cobblestone",
+                            "text": "Infested cobblestone"
+                        },
+                        {
+                            "icon": "qtcraft:melon",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:melon",
+                            "text": "Melon"
+                        },
+                        {
+                            "icon": "qtcraft:packed_mud",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:packed_mud",
+                            "text": "Packed mud"
+                        },
+                        {
+                            "icon": "qtcraft:pumpkin",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:pumpkin",
+                            "text": "Pumpkin"
+                        },
+                        {
+                            "icon": "qtcraft:smooth_sandstone",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:smooth_sandstone",
+                            "text": "Smooth sandstone"
+                        },
+                        {
+                            "icon": "qtcraft:smooth_sandstone_slab",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:smooth_sandstone_slab",
+                            "text": "Smooth sandstone slab"
+                        },
+                        {
+                            "icon": "qtcraft:smooth_sandstone_stairs",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:smooth_sandstone_stairs",
+                            "text": "Smooth sandstone stairs"
+                        },
+                        {
+                            "icon": "qtcraft:smooth_sandstone_wall",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:smooth_sandstone_wall",
+                            "text": "Smooth sandstone wall"
+                        },
+                        {
+                            "icon": "qtcraft:black_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:black_wool_carpet",
+                            "text": "Black carpet"
+                        },
+                        {
+                            "icon": "qtcraft:black_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:black_wool",
+                            "text": "Black wool"
+                        },
+                        {
+                            "icon": "qtcraft:blue_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:blue_wool_carpet",
+                            "text": "Blue carpet"
+                        },
+                        {
+                            "icon": "qtcraft:blue_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:blue_wool",
+                            "text": "Blue wool"
+                        },
+                        {
+                            "icon": "qtcraft:brown_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:brown_wool_carpet",
+                            "text": "Brown carpet"
+                        },
+                        {
+                            "icon": "qtcraft:brown_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:brown_wool",
+                            "text": "Brown wool"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
+                        },
+                        {
+                            "icon": "qtcraft:cut_sandstone",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:cut_sandstone",
+                            "text": "Cut sandstone"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:cyan_wool_carpet",
+                            "text": "Cyan carpet"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:cyan_wool",
+                            "text": "Cyan wool"
+                        },
+                        {
+                            "icon": "qtcraft:gray_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:gray_wool_carpet",
+                            "text": "Gray carpet"
+                        },
+                        {
+                            "icon": "qtcraft:gray_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:gray_wool",
+                            "text": "Gray wool"
+                        },
+                        {
+                            "icon": "qtcraft:green_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:green_wool_carpet",
+                            "text": "Green carpet"
+                        },
+                        {
+                            "icon": "qtcraft:green_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:green_wool",
+                            "text": "Green wool"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:light_blue_wool_carpet",
+                            "text": "Light blue carpet"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:light_blue_wool",
+                            "text": "Light blue wool"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:light_gray_wool_carpet",
+                            "text": "Light gray carpet"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:light_gray_wool",
+                            "text": "Light gray wool"
+                        },
+                        {
+                            "icon": "qtcraft:lime_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:lime_wool_carpet",
+                            "text": "Lime carpet"
+                        },
+                        {
+                            "icon": "qtcraft:lime_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:lime_wool",
+                            "text": "Lime wool"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:magenta_wool_carpet",
+                            "text": "Magenta carpet"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:magenta_wool",
+                            "text": "Magenta wool"
+                        },
+                        {
+                            "icon": "qtcraft:orange_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:orange_wool_carpet",
+                            "text": "Orange carpet"
+                        },
+                        {
+                            "icon": "qtcraft:orange_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:orange_wool",
+                            "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:pink_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:pink_wool_carpet",
+                            "text": "Pink carpet"
+                        },
+                        {
+                            "icon": "qtcraft:pink_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:pink_wool",
+                            "text": "Pink wool"
+                        },
+                        {
+                            "icon": "qtcraft:purple_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:purple_wool_carpet",
+                            "text": "Purple carpet"
+                        },
+                        {
+                            "icon": "qtcraft:purple_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:purple_wool",
+                            "text": "Purple wool"
+                        },
+                        {
+                            "icon": "qtcraft:red_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:red_wool_carpet",
+                            "text": "Red carpet"
+                        },
+                        {
+                            "icon": "qtcraft:red_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:red_wool",
+                            "text": "Red wool"
+                        },
+                        {
+                            "icon": "qtcraft:sandstone",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:sandstone",
+                            "text": "Sandstone"
+                        },
+                        {
+                            "icon": "qtcraft:sandstone_slab",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:sandstone_slab",
+                            "text": "Sandstone slab"
+                        },
+                        {
+                            "icon": "qtcraft:sandstone_stairs",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:sandstone_stairs",
+                            "text": "Sandstone stairs"
+                        },
+                        {
+                            "icon": "qtcraft:sandstone_wall",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:sandstone_wall",
+                            "text": "Sandstone wall"
+                        },
+                        {
+                            "icon": "qtcraft:white_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:white_wool_carpet",
+                            "text": "White carpet"
+                        },
+                        {
+                            "icon": "qtcraft:white_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:white_wool",
+                            "text": "White wool"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_wool_carpet",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:yellow_wool_carpet",
+                            "text": "Yellow carpet"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_wool",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:yellow_wool",
+                            "text": "Yellow wool"
+                        },
+                        {
+                            "icon": "qtcraft:infested_stone",
+                            "note": "0.75, from hardness",
+                            "target": "block:qtcraft:infested_stone",
+                            "text": "Infested stone"
+                        },
+                        {
+                            "icon": "qtcraft:infested_stone_bricks",
+                            "note": "0.75, from hardness",
+                            "target": "block:qtcraft:infested_stone_bricks",
+                            "text": "Infested stone bricks"
+                        },
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "0.7, from hardness",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Activator Rail"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "0.7, from hardness",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Detector Rail"
+                        },
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "0.7, from hardness",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Powered Rail"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "0.7, from hardness",
+                            "target": "block:qtcraft:rail",
+                            "text": "Rail"
+                        },
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "0.65, from hardness",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "0.6, from hardness",
+                            "target": "block:qtcraft:clay",
+                            "text": "Clay"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "0.6, from hardness",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        },
+                        {
+                            "icon": "qtcraft:farmland",
+                            "note": "0.6, from hardness",
+                            "target": "block:qtcraft:farmland",
+                            "text": "Farmland"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.6, from hardness",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "0.6, from hardness",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        },
+                        {
+                            "icon": "qtcraft:black_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:black_concrete_powder",
+                            "text": "Black concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:blue_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:blue_concrete_powder",
+                            "text": "Blue concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:brown_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:brown_concrete_powder",
+                            "text": "Brown concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:cyan_concrete_powder",
+                            "text": "Cyan concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:gray_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:gray_concrete_powder",
+                            "text": "Gray concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:green_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:green_concrete_powder",
+                            "text": "Green concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:hay_block",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:hay_block",
+                            "text": "Hay bale"
+                        },
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:ice",
+                            "text": "Ice"
+                        },
+                        {
+                            "icon": "qtcraft:lever",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:lever",
+                            "text": "Lever"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:light_blue_concrete_powder",
+                            "text": "Light blue concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:light_gray_concrete_powder",
+                            "text": "Light gray concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:lime_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:lime_concrete_powder",
+                            "text": "Lime concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:magenta_concrete_powder",
+                            "text": "Magenta concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:magma_block",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:magma_block",
+                            "text": "Magma block"
+                        },
+                        {
+                            "icon": "qtcraft:mine_lamp",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:mine_lamp",
+                            "text": "Mine lamp"
+                        },
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        },
+                        {
+                            "icon": "qtcraft:oak_button",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:oak_button",
+                            "text": "Oak button"
+                        },
+                        {
+                            "icon": "qtcraft:oak_pressure_plate",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:oak_pressure_plate",
+                            "text": "Oak pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:orange_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:orange_concrete_powder",
+                            "text": "Orange concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:packed_ice",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:packed_ice",
+                            "text": "Packed ice"
+                        },
+                        {
+                            "icon": "qtcraft:pink_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:pink_concrete_powder",
+                            "text": "Pink concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:purple_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:purple_concrete_powder",
+                            "text": "Purple concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:red_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:red_concrete_powder",
+                            "text": "Red concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:signal_lamp",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:signal_lamp",
+                            "text": "Signal Lamp"
+                        },
+                        {
+                            "icon": "qtcraft:stone_button",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:stone_button",
+                            "text": "Stone button"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Stone pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:white_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:white_concrete_powder",
+                            "text": "White concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_concrete_powder",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:yellow_concrete_powder",
+                            "text": "Yellow concrete powder"
+                        },
+                        {
+                            "icon": "qtcraft:cactus",
+                            "note": "0.4, from hardness",
+                            "target": "block:qtcraft:cactus",
+                            "text": "Cactus"
+                        },
+                        {
+                            "icon": "qtcraft:ladder",
+                            "note": "0.4, from hardness",
+                            "target": "block:qtcraft:ladder",
+                            "text": "Ladder"
+                        },
+                        {
+                            "icon": "qtcraft:black_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:black_stained_glass",
+                            "text": "Black stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:black_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:black_stained_glass_pane",
+                            "text": "Black stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:blue_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:blue_stained_glass",
+                            "text": "Blue stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:blue_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:blue_stained_glass_pane",
+                            "text": "Blue stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:brown_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:brown_stained_glass",
+                            "text": "Brown stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:brown_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:brown_stained_glass_pane",
+                            "text": "Brown stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:cyan_stained_glass",
+                            "text": "Cyan stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:cyan_stained_glass_pane",
+                            "text": "Cyan stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:firefly_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:firefly_glass",
+                            "text": "Firefly glass"
+                        },
+                        {
+                            "icon": "qtcraft:glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:glass",
+                            "text": "Glass"
+                        },
+                        {
+                            "icon": "qtcraft:glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:glass_pane",
+                            "text": "Glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:gray_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:gray_stained_glass",
+                            "text": "Gray stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:gray_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:gray_stained_glass_pane",
+                            "text": "Gray stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:green_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:green_stained_glass",
+                            "text": "Green stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:green_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:green_stained_glass_pane",
+                            "text": "Green stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:light_blue_stained_glass",
+                            "text": "Light blue stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:light_blue_stained_glass_pane",
+                            "text": "Light blue stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:light_gray_stained_glass",
+                            "text": "Light gray stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:light_gray_stained_glass_pane",
+                            "text": "Light gray stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:lime_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:lime_stained_glass",
+                            "text": "Lime stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:lime_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:lime_stained_glass_pane",
+                            "text": "Lime stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:magenta_stained_glass",
+                            "text": "Magenta stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:magenta_stained_glass_pane",
+                            "text": "Magenta stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:orange_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:orange_stained_glass",
+                            "text": "Orange stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:orange_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:orange_stained_glass_pane",
+                            "text": "Orange stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:pink_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:pink_stained_glass",
+                            "text": "Pink stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:pink_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:pink_stained_glass_pane",
+                            "text": "Pink stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:purple_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:purple_stained_glass",
+                            "text": "Purple stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:purple_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:purple_stained_glass_pane",
+                            "text": "Purple stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:red_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:red_stained_glass",
+                            "text": "Red stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:red_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:red_stained_glass_pane",
+                            "text": "Red stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:white_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:white_stained_glass",
+                            "text": "White stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:white_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:white_stained_glass_pane",
+                            "text": "White stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_stained_glass",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:yellow_stained_glass",
+                            "text": "Yellow stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_stained_glass_pane",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:yellow_stained_glass_pane",
+                            "text": "Yellow stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
+                            "icon": "qtcraft:birch_leaves",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:birch_leaves",
+                            "text": "Birch leaves"
+                        },
+                        {
+                            "icon": "qtcraft:oak_leaves",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:oak_leaves",
+                            "text": "Oak leaves"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Snow block"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_leaves",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:spruce_leaves",
+                            "text": "Spruce leaves"
+                        },
+                        {
+                            "icon": "qtcraft:vines",
+                            "note": "0.2, from hardness",
+                            "target": "block:qtcraft:vines",
+                            "text": "Vines"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "0.1, from hardness",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:allium",
+                            "text": "Allium"
+                        },
+                        {
+                            "icon": "qtcraft:birch_sapling",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:birch_sapling",
+                            "text": "Birch sapling"
+                        },
+                        {
+                            "icon": "qtcraft:blue_orchid",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:blue_orchid",
+                            "text": "Blue orchid"
+                        },
+                        {
+                            "icon": "qtcraft:brown_mushroom",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:brown_mushroom",
+                            "text": "Brown mushroom"
+                        },
+                        {
+                            "icon": "qtcraft:carrot_crop",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:carrot_crop",
+                            "text": "Carrot crop"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Cornflower"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Dandelion"
+                        },
+                        {
+                            "icon": "qtcraft:dead_bush",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:dead_bush",
+                            "text": "Dead bush"
+                        },
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "0",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:fern",
+                            "text": "Fern"
+                        },
+                        {
+                            "icon": "qtcraft:flower_pot",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:flower_pot",
+                            "text": "Flower pot"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Lily of the valley"
+                        },
+                        {
+                            "icon": "qtcraft:melon_stem",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:melon_stem",
+                            "text": "Melon stem"
+                        },
+                        {
+                            "icon": "qtcraft:oak_sapling",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:oak_sapling",
+                            "text": "Oak sapling"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        },
+                        {
+                            "icon": "qtcraft:potato_crop",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:potato_crop",
+                            "text": "Potato crop"
+                        },
+                        {
+                            "icon": "qtcraft:pumpkin_stem",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:pumpkin_stem",
+                            "text": "Pumpkin stem"
+                        },
+                        {
+                            "icon": "qtcraft:red_mushroom",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:red_mushroom",
+                            "text": "Red mushroom"
+                        },
+                        {
+                            "icon": "qtcraft:signal_comparator",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:signal_comparator",
+                            "text": "Signal Comparator"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signal Dust"
+                        },
+                        {
+                            "icon": "qtcraft:signal_repeater",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:signal_repeater",
+                            "text": "Signal Repeater"
+                        },
+                        {
+                            "icon": "qtcraft:signal_torch",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:signal_torch",
+                            "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:slime_block",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:slime_block",
+                            "text": "Slime block"
+                        },
+                        {
+                            "icon": "qtcraft:small_torch",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:small_torch",
+                            "text": "Small torch"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sapling",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:spruce_sapling",
+                            "text": "Spruce sapling"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:sugar_cane",
+                            "text": "Sugar cane"
+                        },
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        },
+                        {
+                            "icon": "qtcraft:torch",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:torch",
+                            "text": "Torch"
+                        },
+                        {
+                            "icon": "qtcraft:wheat_crop",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:wheat_crop",
+                            "text": "Wheat crop"
+                        },
+                        {
+                            "icon": "qtcraft:wild_carrots",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:wild_carrots",
+                            "text": "Wild carrots"
+                        },
+                        {
+                            "icon": "qtcraft:wild_potatoes",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:wild_potatoes",
+                            "text": "Wild potatoes"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Resistance, strongest first"
+                }
+            ],
+            "text": "How much of an explosion's force a block soaks up before it breaks: the higher, the safer (stone 6, obsidian 1200). Blocks without a value of their own resist as much as their hardness (seconds to break by hand); unbreakable blocks never break in an explosion, and liquids soak up 100.",
+            "title": "Blast resistance"
+        },
         "table:fuels": {
             "category": "tables",
             "categoryTitle": "Overviews",
@@ -80762,6 +82514,328 @@
             ],
             "text": "Machines such as the furnace burn one fuel item at a time while they have something to process. The times are at machine speed 1.",
             "title": "Fuels"
+        },
+        "table:light": {
+            "category": "tables",
+            "categoryTitle": "Overviews",
+            "englishTitle": "Light sources",
+            "facts": [
+            ],
+            "icon": "qtcraft:torch",
+            "id": "table:light",
+            "name": "",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "15 of 15",
+                            "target": "block:qtcraft:fire",
+                            "text": "Fire"
+                        },
+                        {
+                            "icon": "qtcraft:lantern",
+                            "note": "15 of 15",
+                            "target": "block:qtcraft:lantern",
+                            "text": "Lantern"
+                        },
+                        {
+                            "icon": "qtcraft:lava_bucket",
+                            "note": "15 of 15",
+                            "target": "block:qtcraft:lava",
+                            "text": "Lava"
+                        },
+                        {
+                            "icon": "",
+                            "note": "15 of 15",
+                            "target": "block:qtcraft:signal_lamp_lit",
+                            "text": "Signal Lamp (lit)"
+                        },
+                        {
+                            "icon": "qtcraft:torch",
+                            "note": "14 of 15",
+                            "target": "block:qtcraft:torch",
+                            "text": "Torch"
+                        },
+                        {
+                            "icon": "qtcraft:mine_lamp",
+                            "note": "12 of 15",
+                            "target": "block:qtcraft:mine_lamp",
+                            "text": "Mine lamp"
+                        },
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "10 of 15",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:small_torch",
+                            "note": "10 of 15",
+                            "target": "block:qtcraft:small_torch",
+                            "text": "Small torch"
+                        },
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "7 of 15",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk Loader"
+                        },
+                        {
+                            "icon": "qtcraft:signal_torch",
+                            "note": "7 of 15",
+                            "target": "block:qtcraft:signal_torch",
+                            "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:firefly_glass",
+                            "note": "4 of 15",
+                            "target": "block:qtcraft:firefly_glass",
+                            "text": "Firefly glass"
+                        },
+                        {
+                            "icon": "qtcraft:magma_block",
+                            "note": "3 of 15",
+                            "target": "block:qtcraft:magma_block",
+                            "text": "Magma block"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Light sources, brightest first"
+                }
+            ],
+            "text": "Blocks that give light, brightest first. Light loses one level per block it travels. The creature pages tell how dark it must be for them to appear.",
+            "title": "Light sources"
+        },
+        "table:signal": {
+            "category": "tables",
+            "categoryTitle": "Overviews",
+            "englishTitle": "Signal components",
+            "facts": [
+            ],
+            "icon": "qtcraft:signal_dust",
+            "id": "table:signal",
+            "name": "",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lever",
+                            "note": "gives 15 while switched on",
+                            "target": "block:qtcraft:lever",
+                            "text": "Lever"
+                        },
+                        {
+                            "icon": "qtcraft:oak_button",
+                            "note": "gives 15 for 30 ticks when pressed",
+                            "target": "block:qtcraft:oak_button",
+                            "text": "Oak button"
+                        },
+                        {
+                            "icon": "qtcraft:stone_button",
+                            "note": "gives 15 for 20 ticks when pressed",
+                            "target": "block:qtcraft:stone_button",
+                            "text": "Stone button"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "gives 15 while a minecart stands on it",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Detector Rail"
+                        },
+                        {
+                            "icon": "qtcraft:oak_pressure_plate",
+                            "note": "gives 15 while anything lies or stands on it",
+                            "target": "block:qtcraft:oak_pressure_plate",
+                            "text": "Oak pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "gives 15 while a player or creature stands on it",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Stone pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:signal_torch",
+                            "note": "gives 15 unless its block is powered, 2 ticks after a change; burns out after 8 switches in 60 ticks",
+                            "target": "block:qtcraft:signal_torch",
+                            "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:signal_observer",
+                            "note": "gives 15 for 2 ticks out of its back when the block in front of it changes; passes no power through",
+                            "target": "block:qtcraft:signal_observer",
+                            "text": "Signal Observer"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Sources"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "wire: carries power from any side, 15 at the source and one less per block",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signal Dust"
+                        },
+                        {
+                            "icon": "qtcraft:signal_repeater",
+                            "note": "takes power from behind and gives 15 to the front after 1 to 4 steps of 2 ticks; powered repeaters at its side lock it",
+                            "target": "block:qtcraft:signal_repeater",
+                            "text": "Signal Repeater"
+                        },
+                        {
+                            "icon": "qtcraft:signal_comparator",
+                            "note": "takes power or reads the block behind it, compares it with the side inputs or subtracts them, gives 0 to 15 after 2 ticks",
+                            "target": "block:qtcraft:signal_comparator",
+                            "text": "Signal Comparator"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wire and diodes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_lamp",
+                            "note": "lights at once while powered, goes dark 4 ticks after losing power",
+                            "target": "block:qtcraft:signal_lamp",
+                            "text": "Signal Lamp"
+                        },
+                        {
+                            "icon": "qtcraft:birch_door",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:birch_door",
+                            "text": "Birch door"
+                        },
+                        {
+                            "icon": "qtcraft:birch_fence_gate",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:birch_fence_gate",
+                            "text": "Birch fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:birch_trapdoor",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:birch_trapdoor",
+                            "text": "Birch trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:iron_door",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:iron_door",
+                            "text": "Iron door"
+                        },
+                        {
+                            "icon": "qtcraft:iron_trapdoor",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:iron_trapdoor",
+                            "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:oak_door",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:oak_door",
+                            "text": "Oak door"
+                        },
+                        {
+                            "icon": "qtcraft:oak_fence_gate",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:oak_fence_gate",
+                            "text": "Oak fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:oak_trapdoor",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:oak_trapdoor",
+                            "text": "Oak trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_door",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:spruce_door",
+                            "text": "Spruce door"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_fence_gate",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:spruce_fence_gate",
+                            "text": "Spruce fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_trapdoor",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:spruce_trapdoor",
+                            "text": "Spruce trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "pushes up to 12 blocks while powered; passes no power through",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:sticky_signal_piston",
+                            "note": "pushes up to 12 blocks while powered and pulls one back; passes no power through",
+                            "target": "block:qtcraft:sticky_signal_piston",
+                            "text": "Sticky Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_hopper",
+                            "note": "moves items; any power stops it",
+                            "target": "block:qtcraft:signal_hopper",
+                            "text": "Signal Hopper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dispenser",
+                            "note": "on rising power uses or shoots one item after 4 ticks",
+                            "target": "block:qtcraft:signal_dispenser",
+                            "text": "Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dropper",
+                            "note": "on rising power throws one item after 4 ticks",
+                            "target": "block:qtcraft:signal_dropper",
+                            "text": "Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "powered while it or a rail of its kind up to 8 rails along its line gets power",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Activator Rail"
+                        },
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "powered while it or a rail of its kind up to 8 rails along its line gets power",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Powered Rail"
+                        },
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "primes and explodes as soon as it gets power",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Using power"
+                }
+            ],
+            "text": "Every block that takes part in Signal Dust circuits, by its role: sources give power (a level from 0 to 15), the wire and the diodes carry and shape it, and the blocks in the last group use it. Delays are in server ticks (20 per second). Full solid blocks between components pass power on, unless noted.",
+            "title": "Signal components"
         },
         "table:smelting": {
             "category": "tables",
@@ -81686,6 +83760,676 @@
             ],
             "text": "A block that needs a tool drops its items only when mined with that kind of tool of at least its level. Higher levels mine faster and last longer.",
             "title": "Tool tiers"
+        },
+        "table:transparent": {
+            "category": "tables",
+            "categoryTitle": "Overviews",
+            "englishTitle": "Transparent blocks",
+            "facts": [
+            ],
+            "icon": "qtcraft:glass",
+            "id": "table:transparent",
+            "name": "",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        },
+                        {
+                            "icon": "qtcraft:birch_door",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:birch_door",
+                            "text": "Birch door"
+                        },
+                        {
+                            "icon": "qtcraft:birch_leaves",
+                            "note": "dims light by 1, creatures spawn on it",
+                            "target": "block:qtcraft:birch_leaves",
+                            "text": "Birch leaves"
+                        },
+                        {
+                            "icon": "qtcraft:birch_trapdoor",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:birch_trapdoor",
+                            "text": "Birch trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:black_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:black_stained_glass",
+                            "text": "Black stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:black_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:black_stained_glass_pane",
+                            "text": "Black stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:blue_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:blue_stained_glass",
+                            "text": "Blue stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:blue_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:blue_stained_glass_pane",
+                            "text": "Blue stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:brown_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:brown_stained_glass",
+                            "text": "Brown stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:brown_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:brown_stained_glass_pane",
+                            "text": "Brown stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:cactus",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:cactus",
+                            "text": "Cactus"
+                        },
+                        {
+                            "icon": "qtcraft:cauldron",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:cauldron",
+                            "text": "Cauldron"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:cyan_stained_glass",
+                            "text": "Cyan stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:cyan_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:cyan_stained_glass_pane",
+                            "text": "Cyan stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
+                        {
+                            "icon": "qtcraft:farmland",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:farmland",
+                            "text": "Farmland"
+                        },
+                        {
+                            "icon": "qtcraft:firefly_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:firefly_glass",
+                            "text": "Firefly glass"
+                        },
+                        {
+                            "icon": "qtcraft:glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:glass",
+                            "text": "Glass"
+                        },
+                        {
+                            "icon": "qtcraft:glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:glass_pane",
+                            "text": "Glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:gray_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:gray_stained_glass",
+                            "text": "Gray stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:gray_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:gray_stained_glass_pane",
+                            "text": "Gray stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:green_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:green_stained_glass",
+                            "text": "Green stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:green_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:green_stained_glass_pane",
+                            "text": "Green stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "dims light by 2, creatures spawn on it",
+                            "target": "block:qtcraft:ice",
+                            "text": "Ice"
+                        },
+                        {
+                            "icon": "qtcraft:iron_bars",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:iron_bars",
+                            "text": "Iron bars"
+                        },
+                        {
+                            "icon": "qtcraft:iron_door",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:iron_door",
+                            "text": "Iron door"
+                        },
+                        {
+                            "icon": "qtcraft:iron_trapdoor",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:iron_trapdoor",
+                            "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:ladder",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:ladder",
+                            "text": "Ladder"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:light_blue_stained_glass",
+                            "text": "Light blue stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:light_blue_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:light_blue_stained_glass_pane",
+                            "text": "Light blue stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:light_gray_stained_glass",
+                            "text": "Light gray stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:light_gray_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:light_gray_stained_glass_pane",
+                            "text": "Light gray stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:lime_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:lime_stained_glass",
+                            "text": "Lime stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:lime_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:lime_stained_glass_pane",
+                            "text": "Lime stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:magenta_stained_glass",
+                            "text": "Magenta stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:magenta_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:magenta_stained_glass_pane",
+                            "text": "Magenta stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:spawner",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:spawner",
+                            "text": "Monster spawner"
+                        },
+                        {
+                            "icon": "qtcraft:oak_door",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:oak_door",
+                            "text": "Oak door"
+                        },
+                        {
+                            "icon": "qtcraft:oak_leaves",
+                            "note": "dims light by 1, creatures spawn on it",
+                            "target": "block:qtcraft:oak_leaves",
+                            "text": "Oak leaves"
+                        },
+                        {
+                            "icon": "qtcraft:oak_trapdoor",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:oak_trapdoor",
+                            "text": "Oak trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:orange_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:orange_stained_glass",
+                            "text": "Orange stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:orange_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:orange_stained_glass_pane",
+                            "text": "Orange stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:pink_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:pink_stained_glass",
+                            "text": "Pink stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:pink_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:pink_stained_glass_pane",
+                            "text": "Pink stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:purple_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:purple_stained_glass",
+                            "text": "Purple stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:purple_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:purple_stained_glass_pane",
+                            "text": "Purple stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:red_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:red_stained_glass",
+                            "text": "Red stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:red_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:red_stained_glass_pane",
+                            "text": "Red stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:signal_comparator",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:signal_comparator",
+                            "text": "Signal Comparator"
+                        },
+                        {
+                            "icon": "qtcraft:signal_hopper",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:signal_hopper",
+                            "text": "Signal Hopper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_repeater",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:signal_repeater",
+                            "text": "Signal Repeater"
+                        },
+                        {
+                            "icon": "qtcraft:slime_block",
+                            "note": "dims light by 1, creatures spawn on it",
+                            "target": "block:qtcraft:slime_block",
+                            "text": "Slime block"
+                        },
+                        {
+                            "icon": "qtcraft:snow_layer",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:snow_layer",
+                            "text": "Snow layer"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_door",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:spruce_door",
+                            "text": "Spruce door"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_leaves",
+                            "note": "dims light by 1, creatures spawn on it",
+                            "target": "block:qtcraft:spruce_leaves",
+                            "text": "Spruce leaves"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_trapdoor",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:spruce_trapdoor",
+                            "text": "Spruce trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:sticky_signal_piston",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:sticky_signal_piston",
+                            "text": "Sticky Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:white_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:white_stained_glass",
+                            "text": "White stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:white_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:white_stained_glass_pane",
+                            "text": "White stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_stained_glass",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:yellow_stained_glass",
+                            "text": "Yellow stained glass"
+                        },
+                        {
+                            "icon": "qtcraft:yellow_stained_glass_pane",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:yellow_stained_glass_pane",
+                            "text": "Yellow stained glass pane"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Solid: creatures collide with them"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Activator Rail"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:allium",
+                            "text": "Allium"
+                        },
+                        {
+                            "icon": "qtcraft:birch_sapling",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:birch_sapling",
+                            "text": "Birch sapling"
+                        },
+                        {
+                            "icon": "qtcraft:blue_orchid",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:blue_orchid",
+                            "text": "Blue orchid"
+                        },
+                        {
+                            "icon": "qtcraft:brown_mushroom",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:brown_mushroom",
+                            "text": "Brown mushroom"
+                        },
+                        {
+                            "icon": "qtcraft:carrot_crop",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:carrot_crop",
+                            "text": "Carrot crop"
+                        },
+                        {
+                            "icon": "qtcraft:cobweb",
+                            "note": "light passes, no creatures spawn on or in it",
+                            "target": "block:qtcraft:cobweb",
+                            "text": "Cobweb"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Cornflower"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Dandelion"
+                        },
+                        {
+                            "icon": "qtcraft:dead_bush",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:dead_bush",
+                            "text": "Dead bush"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Detector Rail"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:fern",
+                            "text": "Fern"
+                        },
+                        {
+                            "icon": "qtcraft:flower_pot",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:flower_pot",
+                            "text": "Flower pot"
+                        },
+                        {
+                            "icon": "qtcraft:lantern",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:lantern",
+                            "text": "Lantern"
+                        },
+                        {
+                            "icon": "qtcraft:lever",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:lever",
+                            "text": "Lever"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Lily of the valley"
+                        },
+                        {
+                            "icon": "qtcraft:melon_stem",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:melon_stem",
+                            "text": "Melon stem"
+                        },
+                        {
+                            "icon": "qtcraft:mine_lamp",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:mine_lamp",
+                            "text": "Mine lamp"
+                        },
+                        {
+                            "icon": "qtcraft:oak_button",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:oak_button",
+                            "text": "Oak button"
+                        },
+                        {
+                            "icon": "qtcraft:oak_pressure_plate",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:oak_pressure_plate",
+                            "text": "Oak pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:oak_sapling",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:oak_sapling",
+                            "text": "Oak sapling"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        },
+                        {
+                            "icon": "qtcraft:potato_crop",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:potato_crop",
+                            "text": "Potato crop"
+                        },
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Powered Rail"
+                        },
+                        {
+                            "icon": "qtcraft:pumpkin_stem",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:pumpkin_stem",
+                            "text": "Pumpkin stem"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:rail",
+                            "text": "Rail"
+                        },
+                        {
+                            "icon": "qtcraft:red_mushroom",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:red_mushroom",
+                            "text": "Red mushroom"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signal Dust"
+                        },
+                        {
+                            "icon": "qtcraft:signal_torch",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:signal_torch",
+                            "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:small_torch",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:small_torch",
+                            "text": "Small torch"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sapling",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:spruce_sapling",
+                            "text": "Spruce sapling"
+                        },
+                        {
+                            "icon": "qtcraft:stone_button",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:stone_button",
+                            "text": "Stone button"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Stone pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:sugar_cane",
+                            "text": "Sugar cane"
+                        },
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        },
+                        {
+                            "icon": "qtcraft:torch",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:torch",
+                            "text": "Torch"
+                        },
+                        {
+                            "icon": "qtcraft:vines",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:vines",
+                            "text": "Vines"
+                        },
+                        {
+                            "icon": "qtcraft:wheat_crop",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:wheat_crop",
+                            "text": "Wheat crop"
+                        },
+                        {
+                            "icon": "qtcraft:wild_carrots",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:wild_carrots",
+                            "text": "Wild carrots"
+                        },
+                        {
+                            "icon": "qtcraft:wild_potatoes",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:wild_potatoes",
+                            "text": "Wild potatoes"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Not solid: creatures pass through"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lava_bucket",
+                            "note": "dims light by 2, no creatures spawn on or in it",
+                            "target": "block:qtcraft:lava",
+                            "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "dims light by 2, water creatures spawn in it",
+                            "target": "block:qtcraft:water",
+                            "text": "Water"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Liquids"
+                }
+            ],
+            "text": "Blocks that are no opaque full cubes: you see through or past them, and light gets through them, dimmed by the levels given. Solid ones stop creatures, the others let them pass. Creatures spawn on solid blocks and inside the others, but never on or in a block that hurts or slows them; water creatures spawn in water. Building parts such as slabs and stairs are on their own pages.",
+            "title": "Transparent blocks"
         },
         "tag:qtcraft:arrows": {
             "category": "tags",

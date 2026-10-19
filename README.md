@@ -115,7 +115,7 @@ Useful hooks: `--play [--seed N] [--world NAME]`, `--world-type terrain|flat|voi
 - [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md) – control interface
 - [docs/Modding.md](docs/Modding.md), [docs/Mod-Sicherheit.md](docs/Mod-Sicherheit.md) – mods and their security (German)
 - [docs/Performance.md](docs/Performance.md), [docs/Performance-Verlauf.md](docs/Performance-Verlauf.md) – frame cost, hotspots, memory, goals and the per-stage measurements (German)
-- [docs/Entscheidungen.md](docs/Entscheidungen.md), [docs/FORTSCHRITT.md](docs/FORTSCHRITT.md), [docs/Abschlussbericht.md](docs/Abschlussbericht.md) – decisions, progress and final report (German)
+- [docs/Entscheidungen.md](docs/Entscheidungen.md), [docs/FORTSCHRITT.md](docs/FORTSCHRITT.md), [docs/Log.md](docs/Log.md), [docs/Abschlussbericht.md](docs/Abschlussbericht.md) – decisions, progress, dated log and the historical report of stage 8 (German)
 - [docs/ASSETS.md](docs/ASSETS.md) – textures and sounds (all procedural)
 
 ## Continuous integration

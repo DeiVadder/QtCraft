@@ -1,6 +1,7 @@
 #include "common/handbook/builder/QcHandbookBlockPages.h"
 
 #include "common/gameplay/QcMining.h"
+#include "common/handbook/builder/QcHandbookBlockTables.h"
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookIndex.h"
 #include "common/handbook/builder/QcHandbookRecipes.h"
@@ -323,22 +324,11 @@ void BlockPage::addPhysicalFacts()
 void BlockPage::addLightBlockingFact()
 {
     // Partial shapes block light only at the sides they cover (E-104); their own value has no effect.
-    bool partial = false;
-    bool coversSides = false;
-    if (const std::optional<QcBlockId> id = m_content.blockId(m_block.name)) {
-        const QcBlockStateTable &states = m_content.stateTable();
-        const quint32 type = m_content.state(*id).type;
-        for (int index = 0; index < states.stateCount(type); ++index) {
-            const QcBlockState &state = states.state(states.firstState(type) + quint32(index));
-            partial = partial || !state.fullCube;
-            coversSides = coversSides || state.lightBlockedFaces != 0;
-        }
-    }
-
-    if (coversSides) {
+    const QcHandbookBlockTables::LightBlocking blocking = QcHandbookBlockTables::lightBlocking(m_content, m_block);
+    if (blocking.coversSides) {
         addFact(u"lightOpacity"_s, label(u"value.coveredSides"_s));
-    } else if (partial || m_block.lightOpacity < 15) {
-        addFact(u"lightOpacity"_s, label(u"unit.lightLevel"_s).arg(partial ? 0 : m_block.lightOpacity));
+    } else if (blocking.opacity < 15) {
+        addFact(u"lightOpacity"_s, label(u"unit.lightLevel"_s).arg(blocking.opacity));
     }
 }
 

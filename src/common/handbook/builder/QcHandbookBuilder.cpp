@@ -1,6 +1,7 @@
 #include "common/handbook/builder/QcHandbookBuilder.h"
 
 #include "common/handbook/builder/QcHandbookBlockPages.h"
+#include "common/handbook/builder/QcHandbookBlockTables.h"
 #include "common/handbook/builder/QcHandbookChapterPages.h"
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookCreaturePages.h"
@@ -182,6 +183,7 @@ QList<QcHandbookEntry> buildEntries(const QcContentRegistry &content, QcHandbook
     entries += QcHandbookCreaturePages::build(context);
     entries += QcHandbookWorldPages::build(context);
     entries += QcHandbookOverviewPages::build(context);
+    entries += QcHandbookBlockTables::build(context);
     return entries;
 }
 

@@ -1,5 +1,7 @@
 # Abschlussbericht QtCraft
 
+> **Historisch – Stand von Etappe 8 (2026-10-08).** Dieser Bericht beschreibt den Prototyp am Ende der ersten acht Etappen und wird nicht mehr nachgeführt; Zahlen, Mängel, offene Fragen und Anleitungen darin sind überholt. Den aktuellen Stand nennt `docs/FORTSCHRITT.md`, den Verlauf `docs/Log.md`, die Architektur `docs/Architektur.md`.
+
 Stand: 2026-10-08. Entwickelt und geprüft auf macOS arm64 (M4 Max) mit Qt 6.8 und Apple Clang 21.
 
 QtCraft ist ein spielbarer Voxel-Sandbox-Prototyp. Man erstellt Welten (mit Seed), erkundet sie, baut ab und setzt Blöcke, craftet Werkzeuge, kämpft gegen Gegner, isst, stirbt und respawnt, speichert, beendet und lädt wieder. Mods ergänzen oder ändern Inhalte nur über Daten. Die Steuerschnittstelle erlaubt einem Agenten, das Spiel wie ein Mensch zu bedienen.
