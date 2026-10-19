@@ -1,23 +1,17 @@
 #include "app/preview/QcCharacterPreview.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/preview/QcCharacterPreviewRenderer.h"
 #include "clientcore/preview/QcPreviewScene.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QCursor>
-#include <QLoggingCategory>
 #include <QQuickWindow>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcPreview, "qtcraft.preview")
-
-} // namespace
 
 QcCharacterPreview::QcCharacterPreview(QQuickItem *parent)
     : QQuickRhiItem(parent)

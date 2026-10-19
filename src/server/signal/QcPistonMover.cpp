@@ -5,6 +5,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/signal/QcSignalTable.h"
@@ -13,13 +14,10 @@
 #include <array>
 #include <cmath>
 
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcPistons, "qtcraft.server")
 
 double along(const QcVec3 &v, QcFaceOffset axis)
 {
@@ -135,7 +133,7 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
     // The planner moves blocks only within loaded chunks and the world height (QcPistonPlanner), so
     // the cell takes the block; the block entity moved first and would otherwise sit on air.
     if (!m_blocks.setQuietly(to, block)) {
-        qCWarning(lcPistons) << "A piston could not place a moved block at" << to.x << to.y << to.z;
+        qCWarning(lcServer) << "A piston could not place a moved block at" << to.x << to.y << to.z;
         Q_ASSERT(false);
     }
 

@@ -1,10 +1,9 @@
 #include "app/rendering/QcSectionLightPool.h"
 
-#include <QLoggingCategory>
+#include "app/debug/QcAppLogging.h"
+
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcSectionLight, "qtcraft.renderer.light")
 
 constexpr int texelsPerSlice = QcSectionLightPool::sectionSize * QcSectionLightPool::sectionSize;
 constexpr int sliceBytes = texelsPerSlice * QcSectionLight::texelBytes;
@@ -86,7 +85,7 @@ std::optional<QcSectionLightPool::Slot> QcSectionLightPool::takeSlot(QRhi *rhi)
         std::unique_ptr<QRhiTexture> page(rhi->newTexture(QRhiTexture::RG8, sectionSize, sectionSize, sectionSize * m_slotsPerPage, 1,
                                                           QRhiTexture::ThreeDimensional));
         if (!page->create()) {
-            qCWarning(lcSectionLight) << "Cannot create a page for the light of" << m_slotsPerPage << "sections";
+            qCWarning(lcRendererLight) << "Cannot create a page for the light of" << m_slotsPerPage << "sections";
             return std::nullopt;
         }
 

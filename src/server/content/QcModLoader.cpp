@@ -4,6 +4,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcWorldLibrary.h"
 
 #include <QDataStream>
@@ -491,7 +492,7 @@ void fallBackToBaseIfRefused(QcModLoader::Result &result, QcContentRegistry &bas
         return;
     }
 
-    qWarning("Mods: clients would reject the combined content (%s); starting without mods", qPrintable(problem));
+    qCWarning(lcContent, "Mods: clients would reject the combined content (%s); starting without mods", qPrintable(problem));
     for (QcModStatus &mod : result.mods) {
         if (mod.state == QcModStatus::State::Loaded) {
             mod.state = QcModStatus::State::Failed;

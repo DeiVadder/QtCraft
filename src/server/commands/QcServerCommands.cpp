@@ -1,15 +1,13 @@
 #include "server/commands/QcServerCommands.h"
 
 #include "common/protocol/QcChatText.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcCommands, "qtcraft.commands")
 
 QLatin1StringView levelName(QcPermission permission)
 {

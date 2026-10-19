@@ -1,5 +1,6 @@
 #include "server/storage/QcChunkIo.h"
 
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcChunkCodec.h"
 #include "server/storage/QcEntityCodec.h"
@@ -98,10 +99,10 @@ void QcChunkIo::storeBlockEntities(const Departure &departure)
     QStringList warnings;
     const QcResult<QByteArray> blob = QcBlockEntityCodec::encodeWithin(departure.blockEntities, *m_content, warnings, m_blockEntityLimit);
     for (const QString &warning : std::as_const(warnings)) {
-        qWarning("%s", qPrintable(warning));
+        qCWarning(lcServer, "%s", qPrintable(warning));
     }
     if (!blob) {
-        qWarning("%s; the block entities saved before stay", qPrintable(blob.error()));
+        qCWarning(lcServer, "%s; the block entities saved before stay", qPrintable(blob.error()));
         return;
     }
     m_store.put(QcChunkStore::Kind::BlockEntities, departure.pos, *blob, departure.marks);

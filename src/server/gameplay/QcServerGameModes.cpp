@@ -1,21 +1,15 @@
 #include "server/gameplay/QcServerGameModes.h"
 
 #include "common/gameplay/QcArmour.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerCrafting.h"
 #include "server/gameplay/QcServerInventory.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <utility>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcGameModes, "qtcraft.gamemodes")
-
-} // namespace
 
 QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting)
     : m_state(state)

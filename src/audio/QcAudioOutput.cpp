@@ -1,20 +1,14 @@
 #include "audio/QcAudioOutput.h"
 
+#include "audio/QcAudioLogging.h"
 #include "audio/QcMixerDevice.h"
 
 #include <QAudioDevice>
 #include <QAudioFormat>
 #include <QAudioSink>
-#include <QLoggingCategory>
 #include <QMediaDevices>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcAudio, "qtcraft.audio")
-
-} // namespace
 
 QcAudioOutput::QcAudioOutput(QObject *parent)
     : QObject(parent)

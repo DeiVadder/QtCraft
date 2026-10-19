@@ -1,4 +1,5 @@
 #include "app/controllers/QcGameController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/models/QcItemIconProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());
     auto *game = window ? window->findChild<QcGameController *>(u"game"_s) : nullptr;
     if (!game) {
-        qCritical("Main.qml must contain a GameController with objectName 'game'");
+        qCCritical(lcStartup, "Main.qml must contain a GameController with objectName 'game'");
         return 1;
     }
     const QcResult<std::unique_ptr<QcOffscreenRender>> offscreenRender =

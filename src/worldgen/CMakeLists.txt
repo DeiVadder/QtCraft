@@ -17,6 +17,7 @@ target_sources(qc_worldgen PRIVATE
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
     generators/QcWorldGenerator.h
     generators/QcWorldGenerators.h generators/QcWorldGenerators.cpp
+    generators/QcWorldgenLogging.h generators/QcWorldgenLogging.cpp
     generators/QcWorldSetup.h
 )
 target_sources(qc_worldgen PRIVATE

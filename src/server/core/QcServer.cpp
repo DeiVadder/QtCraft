@@ -7,10 +7,10 @@
 #include "common/protocol/QcTransport.h"
 #include "common/world/QcDayCycle.h"
 #include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSetup.h"
 #include "server/gameplay/QcLineOfSight.h"
 
-#include <QLoggingCategory>
 #include <QTimer>
 
 #include <algorithm>
@@ -19,12 +19,6 @@
 #include <thread>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcServer, "qtcraft.server")
-
-} // namespace
 
 QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                    std::unique_ptr<QcWorldGenerator> generator, QObject *parent)

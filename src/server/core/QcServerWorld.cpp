@@ -2,18 +2,12 @@
 
 #include "common/light/QcLightTable.h"
 #include "common/world/QcLightVolume.h"
+#include "server/core/QcServerLogging.h"
 
-#include <QLoggingCategory>
 #include <QThread>
 
 #include <algorithm>
 #include <cmath>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcWorld, "qtcraft.server")
-
-} // namespace
 
 QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator)
     : m_content(std::move(content))
@@ -127,8 +121,8 @@ std::vector<QcServerWorld::Arrival> QcServerWorld::collectArrivals()
         }
         if (!arrival.error.isEmpty()) {
             // Damaged data stays on disk untouched; the chunk plays as generated and is never kept.
-            qCCritical(lcWorld) << "Chunk" << arrival.pos.x << arrival.pos.z << "cannot be read, it plays as generated and is not saved:"
-                                << arrival.error;
+            qCCritical(lcServer) << "Chunk" << arrival.pos.x << arrival.pos.z << "cannot be read, it plays as generated and is not saved:"
+                                 << arrival.error;
             m_quarantined.insert(arrival.pos);
             m_newlyQuarantined.append(arrival.pos);
             generateInBackground(arrival.pos, {});
@@ -234,7 +228,7 @@ QcServerWorld::Arrival QcServerWorld::produceNow(QcChunkPos pos)
     if (m_io && m_catalog.contains(pos) && !m_quarantined.contains(pos)) {
         arrival = m_io->readNow(pos);
         if (!arrival.error.isEmpty()) {
-            qCCritical(lcWorld) << "Chunk" << pos.x << pos.z << "cannot be read, it plays as generated and is not saved:" << arrival.error;
+            qCCritical(lcServer) << "Chunk" << pos.x << pos.z << "cannot be read, it plays as generated and is not saved:" << arrival.error;
             m_quarantined.insert(pos);
             m_newlyQuarantined.append(pos);
             arrival = {};

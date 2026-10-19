@@ -6,21 +6,19 @@
 #include "server/commands/QcCommandArguments.h"
 #include "server/commands/QcPendingCommands.h"
 #include "server/commands/QcWorldBackup.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
 
 #include <QElapsedTimer>
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcWorldCommands, "qtcraft.commands")
 
 const QStringList kinds{u"mobs"_s, u"hostile"_s, u"animals"_s, u"ambient"_s, u"items"_s, u"stands"_s, u"all"_s};
 
@@ -117,15 +115,15 @@ void QcWorldCommands::backup(const QcCommandContext &context)
                                                                   : m_state.config().backupDirectory;
     QcResult<QcWorldBackup::Snapshot> snapshot = QcWorldBackup::snapshot(m_state.config().worldDirectory, root, label, QDateTime::currentDateTime());
     if (!snapshot) {
-        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(snapshot.error());
+        qCWarning(lcCommands).noquote() << u"Backup failed: %1"_s.arg(snapshot.error());
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {snapshot.error()});
         return;
     }
 
-    qCInfo(lcWorldCommands).noquote() << u"Backup snapshot of %1 files %2 in %3 ms, copying to %4"_s.arg(snapshot->files.size())
-                                             .arg(snapshot->linked ? u"linked"_s : u"copied"_s)
-                                             .arg(m_clock.elapsed() - started)
-                                             .arg(snapshot->target);
+    qCInfo(lcCommands).noquote() << u"Backup snapshot of %1 files %2 in %3 ms, copying to %4"_s.arg(snapshot->files.size())
+                                        .arg(snapshot->linked ? u"linked"_s : u"copied"_s)
+                                        .arg(m_clock.elapsed() - started)
+                                        .arg(snapshot->target);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup of %1 files started, it is copied to %2"),
                   {QString::number(snapshot->files.size()), snapshot->target});
     const quint32 requester = context.source.id();
@@ -138,13 +136,13 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
 {
     QcMsg::ChatMessage line;
     if (result) {
-        qCInfo(lcWorldCommands).noquote() << u"Backup of %1 files (%2 bytes) in %3 ms: %4"_s.arg(result->files).arg(result->bytes)
-                                                 .arg(m_clock.elapsed() - startedMs)
-                                                 .arg(result->directory);
+        qCInfo(lcCommands).noquote() << u"Backup of %1 files (%2 bytes) in %3 ms: %4"_s.arg(result->files).arg(result->bytes)
+                                            .arg(m_clock.elapsed() - startedMs)
+                                            .arg(result->directory);
         line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup with %1 files (%2 MB) in %3"),
                                    {QString::number(result->files), megabytes(double(result->bytes) / (1024.0 * 1024.0)), result->directory});
     } else {
-        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(result.error());
+        qCWarning(lcCommands).noquote() << u"Backup failed: %1"_s.arg(result.error());
         line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {result.error()});
     }
 
@@ -183,7 +181,7 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
     // The rules of the entity register (decision E-364); broken ones go to the log too.
     const QStringList entityProblems = QcEntityChecks::problems(m_state.entities());
     for (const QString &problem : entityProblems) {
-        qCWarning(lcWorldCommands) << "Entities:" << problem;
+        qCWarning(lcCommands) << "Entities:" << problem;
     }
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands, %5 broken rules; %6 machines, %7 chests"),
                   {QString::number(m_state.entities().creatures().awakeCount()), QString::number(m_state.entities().items().items().size()),
@@ -193,7 +191,7 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
     // The rules between blocks and block entities (decision E-357); broken ones go to the log too.
     const QStringList problems = QcBlockEntityChecks::problems(m_state.world());
     for (const QString &problem : problems) {
-        qCWarning(lcWorldCommands) << "Block entities:" << problem;
+        qCWarning(lcCommands) << "Block entities:" << problem;
     }
     const QcBlockEntities &entities = m_state.blockEntities();
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Block entities: %1 containers, %2 machines, %3 saplings, %4 scheduled ticks; %5 broken rules"),

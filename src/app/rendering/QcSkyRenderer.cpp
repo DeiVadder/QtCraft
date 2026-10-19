@@ -1,8 +1,8 @@
 #include "app/rendering/QcSkyRenderer.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <cmath>
@@ -11,8 +11,6 @@ using namespace Qt::StringLiterals;
 using QcRenderPipelines::loadShader;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcSky, "qtcraft.renderer")
 
 // std140 layout of the Sky uniform block in sky.vert and sky.frag.
 struct SkyUniforms
@@ -56,8 +54,8 @@ void QcSkyRenderer::createPipeline(QRhi *rhi, QRhiRenderTarget *target)
     m_bindings->create();
 
     std::unique_ptr<QRhiGraphicsPipeline> pipeline(rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/sky.vert.qsb"_s, lcSky())},
-                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/sky.frag.qsb"_s, lcSky())}});
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/sky.vert.qsb"_s, lcRenderer())},
+                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/sky.frag.qsb"_s, lcRenderer())}});
     // No vertex buffer: the shader makes the triangle from the vertex index.
     pipeline->setVertexInputLayout({});
     pipeline->setShaderResourceBindings(m_bindings.get());
@@ -68,7 +66,7 @@ void QcSkyRenderer::createPipeline(QRhi *rhi, QRhiRenderTarget *target)
     if (pipeline->create()) {
         m_pipeline = std::move(pipeline);
     } else {
-        qCCritical(lcSky) << "Cannot create sky pipeline";
+        qCCritical(lcRenderer) << "Cannot create sky pipeline";
     }
 }
 

@@ -4,6 +4,7 @@
 #include "common/protocol/QcInProcessTransport.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/core/QcServer.h"
+#include "server/core/QcServerLogging.h"
 #include "server/entities/QcEntityChecks.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 
@@ -41,7 +42,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
 QcLocalServerHost::~QcLocalServerHost()
 {
     if (const QcStatus stopped = shutdown(); !stopped) {
-        qWarning("Saving the world failed: %s", qPrintable(stopped.error()));
+        qCWarning(lcServer, "Saving the world failed: %s", qPrintable(stopped.error()));
     }
 }
 

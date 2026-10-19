@@ -1,5 +1,7 @@
 #include "server/commands/QcCommandRegistry.h"
 
+#include "server/core/QcServerLogging.h"
+
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -39,7 +41,7 @@ QcStatus QcCommandRegistry::add(QcCommandSpec spec)
 void QcCommandRegistry::addBuiltIn(QcCommandSpec spec)
 {
     if (const QcStatus added = add(std::move(spec)); !added) {
-        qCritical("%s", qPrintable(added.error()));
+        qCCritical(lcCommands, "%s", qPrintable(added.error()));
         Q_ASSERT(false);
     }
 }

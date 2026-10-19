@@ -1,7 +1,8 @@
 #include "app/hooks/QcOffscreenRender.h"
 
+#include "app/debug/QcAppLogging.h"
+
 #include <QGuiApplication>
-#include <QLoggingCategory>
 #include <QQuickItem>
 #include <QQuickRenderControl>
 #include <QQuickRenderTarget>
@@ -13,7 +14,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-Q_LOGGING_CATEGORY(lcOffscreen, "qtcraft.offscreen")
 
 // Without a screen rate (offscreen platform): a usual display's 60 Hz.
 constexpr qreal fallbackRefreshRate = 60.0;

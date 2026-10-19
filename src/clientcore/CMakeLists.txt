@@ -28,6 +28,7 @@ target_sources(qc_clientcore PRIVATE
     control/QcControlWorldCommands.h control/QcControlWorldCommands.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    debug/QcClientLogging.h debug/QcClientLogging.cpp
     debug/QcDebugJson.h debug/QcDebugJson.cpp
     debug/QcDebugLines.h debug/QcDebugLines.cpp
     debug/QcDebugSnapshot.h debug/QcDebugSnapshot.cpp

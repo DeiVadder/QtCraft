@@ -3,8 +3,8 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcLiquidFlow.h"
+#include "server/core/QcServerLogging.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <cmath>
@@ -12,8 +12,6 @@
 #include <utility>
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcItems, "qtcraft.items")
 
 // Resting items below this speed stop being simulated.
 constexpr double restSpeed = 0.01;

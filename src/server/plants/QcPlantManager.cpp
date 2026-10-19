@@ -1,16 +1,11 @@
 #include "server/plants/QcPlantManager.h"
 
-#include <QLoggingCategory>
+#include "server/core/QcServerLogging.h"
+
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcPlants, "qtcraft.plants")
-
-} // namespace
 
 QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))

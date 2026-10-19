@@ -2,17 +2,15 @@
 
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
+#include "server/core/QcServerLogging.h"
 
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcFingerprint, "qtcraft.content")
 
 constexpr qsizetype hashBytes = 16;
 
@@ -80,7 +78,7 @@ QList<QcPackFingerprint> of(const QcContentRegistry &content, const QList<QcModS
         const QString directory = directories.value(pack.id);
         const QcResult<QString> hash = directory.isEmpty() ? QcResult<QString>(qcError(u"no directory"_s)) : hashOf(directory);
         if (!hash) {
-            qCWarning(lcFingerprint).noquote() << u"Content pack %1 is compared without a hash: %2"_s.arg(pack.id, hash.error());
+            qCWarning(lcContent).noquote() << u"Content pack %1 is compared without a hash: %2"_s.arg(pack.id, hash.error());
         }
         packs.append({pack.id, pack.version, hash.value_or(QString())});
     }

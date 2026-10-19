@@ -1,6 +1,7 @@
 #include "server/chunks/QcChunkStreaming.h"
 
 #include "server/chunks/QcChunkLoading.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/spawners/QcSpawnerRules.h"
 
@@ -100,7 +101,7 @@ void QcChunkStreaming::sendLabels(QcServerClient &client, QcChunkPos pos) const
     // Bounded like the protocol allows, so that no generator can make the client drop the
     // connection; the showcase planner keeps within these limits already.
     if (labels.size() > QcWorldLabel::maxPerChunk) {
-        qWarning("chunk %d, %d has %lld labels, only the first %lld are sent", pos.x, pos.z, qlonglong(labels.size()), qlonglong(QcWorldLabel::maxPerChunk));
+        qCWarning(lcServer, "chunk %d, %d has %lld labels, only the first %lld are sent", pos.x, pos.z, qlonglong(labels.size()), qlonglong(QcWorldLabel::maxPerChunk));
         labels.resize(QcWorldLabel::maxPerChunk);
     }
     for (QcWorldLabel &label : labels) {

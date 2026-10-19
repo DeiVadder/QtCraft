@@ -1,17 +1,11 @@
 #include "app/rendering/QcGpuMeshStore.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "clientcore/meshing/QcIndexPacking.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <limits>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcMeshStore, "qtcraft.renderer")
-
-} // namespace
 
 void QcGpuMeshStore::reset(QRhi *rhi, bool sectionLight)
 {
@@ -120,7 +114,7 @@ void QcGpuMeshStore::uploadSectionLight(QRhiResourceUpdateBatch *updates, quint6
     const int pages = m_lightPool.pageCount();
     m_lightPool.update(m_rhi, updates, key, mesh->light);
     if (m_lightPool.pageCount() != pages) {
-        qCInfo(lcMeshStore).nospace() << "Section light: " << m_lightPool.pageCount() << " pages, " << m_lightPool.usedSlots()
-                                       << " slots used, " << m_lightPool.sections() << " sections, " << m_lightPool.bytes() / 1024 << " KiB";
+        qCInfo(lcRenderer).nospace() << "Section light: " << m_lightPool.pageCount() << " pages, " << m_lightPool.usedSlots()
+                                     << " slots used, " << m_lightPool.sections() << " sections, " << m_lightPool.bytes() / 1024 << " KiB";
     }
 }

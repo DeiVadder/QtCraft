@@ -1,8 +1,8 @@
 #include "app/hooks/QcScriptedPad.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/input/QcGamepadUi.h"
 
-#include <QLoggingCategory>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
@@ -12,12 +12,6 @@
 #include <utility>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcPad, "qtcraft.game")
-
-} // namespace
 
 QcScriptedPad::QcScriptedPad(QcGamepadUi &ui, QObject *parent)
     : QObject(parent)
@@ -36,7 +30,7 @@ std::optional<QcScriptedPad::Step> QcScriptedPad::parse(QStringView step)
     if (step.startsWith(u"connect="_s)) {
         const std::optional<QcGamepadType> type = QcGamepadNames::typeFromName(step.mid(8).toString());
         if (!type) {
-            qCWarning(lcPad) << "--overlay pad:" << step << ": unknown pad type";
+            qCWarning(lcGame) << "--overlay pad:" << step << ": unknown pad type";
             return std::nullopt;
         }
         return Step{.kind = Step::Kind::Connect, .type = *type};
@@ -46,7 +40,7 @@ std::optional<QcScriptedPad::Step> QcScriptedPad::parse(QStringView step)
         const float value = step.mid(equals + 1).toFloat(&valid);
         const std::optional<QcGamepadAxis> axis = QcGamepadNames::axisFromName(step.left(equals).toString());
         if (!valid || !axis) {
-            qCWarning(lcPad) << "--overlay pad:" << step << ": expected '<axis>=<value>'";
+            qCWarning(lcGame) << "--overlay pad:" << step << ": expected '<axis>=<value>'";
             return std::nullopt;
         }
         return Step{.kind = Step::Kind::Axis, .axis = *axis, .value = value};
@@ -56,7 +50,7 @@ std::optional<QcScriptedPad::Step> QcScriptedPad::parse(QStringView step)
     const bool release = step.startsWith(u'-');
     const std::optional<QcGamepadButton> button = QcGamepadNames::buttonFromName(step.mid(hold || release ? 1 : 0).toString());
     if (!button) {
-        qCWarning(lcPad) << "--overlay pad:" << step << ": unknown button";
+        qCWarning(lcGame) << "--overlay pad:" << step << ": unknown button";
         return std::nullopt;
     }
     const Step::Kind kind = hold ? Step::Kind::Hold : release ? Step::Kind::Release : Step::Kind::Click;

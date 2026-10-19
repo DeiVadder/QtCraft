@@ -112,6 +112,7 @@ target_sources(qc_common PRIVATE
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp
     core/QcIntMath.h
+    core/QcLogging.h core/QcLogging.cpp
     core/QcMailbox.h
     core/QcNameText.h core/QcNameText.cpp
     core/QcPhaseWindow.h core/QcPhaseWindow.cpp

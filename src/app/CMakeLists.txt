@@ -20,6 +20,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
 )
 target_sources(qc_app_core PRIVATE
+    debug/QcAppLogging.h debug/QcAppLogging.cpp
     debug/QcDebugHud.h debug/QcDebugHud.cpp
     debug/QcDebugSettings.h debug/QcDebugSettings.cpp
     debug/QcDebugVisuals.h debug/QcDebugVisuals.cpp

@@ -1,14 +1,12 @@
 #include "server/spawners/QcFurnishing.h"
 
 #include "server/blocks/QcRails.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/minecarts/QcMinecartMotion.h"
 
-#include <QLoggingCategory>
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcFurnishing, "qtcraft.server")
 
 // The loot of `table` drawn with `seed`, spread over `slotCount` slots.
 QList<QcItemStack> lootFor(const QcContentRegistry &content, const QcLootTableDefinition &table, quint64 seed, int slotCount)
@@ -30,7 +28,7 @@ void fillChest(QcServerState &state, const QcChunkFurnishing::Chest &chest)
     QcBlockEntities::Container *container = state.blockEntities().container(chest.at);
     const QcLootTableDefinition *table = state.content().lootTables().find(chest.lootTable);
     if (!table) {
-        qCWarning(lcFurnishing) << "Unknown loot table" << chest.lootTable << "for the chest at" << chest.at.x << chest.at.y << chest.at.z;
+        qCWarning(lcServer) << "Unknown loot table" << chest.lootTable << "for the chest at" << chest.at.x << chest.at.y << chest.at.z;
         return;
     }
     if (!container || std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); })) {
@@ -63,7 +61,7 @@ void placeCart(QcServerState &state, const QcChunkFurnishing::Cart &setup)
         cart.stacks = lootFor(content, *table, setup.seed, int(cart.stacks.size()));
     }
     if (!state.entities().minecarts().add(cart)) {
-        qCWarning(lcFurnishing) << "Too many minecarts for the cart at" << setup.at.x << setup.at.y << setup.at.z;
+        qCWarning(lcServer) << "Too many minecarts for the cart at" << setup.at.x << setup.at.y << setup.at.z;
     }
 }
 

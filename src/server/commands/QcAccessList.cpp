@@ -2,6 +2,7 @@
 
 #include "common/protocol/QcChatText.h"
 #include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 
 #include <QDir>
@@ -9,7 +10,6 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QLoggingCategory>
 #include <QRegularExpression>
 #include <QSaveFile>
 
@@ -18,8 +18,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcAccess, "qtcraft.server")
 
 QJsonArray entriesToJson(const QMap<QString, QcAccessList::Entry> &entries)
 {
@@ -146,10 +144,10 @@ void QcAccessList::openDamaged(const QString &path)
     m_damagedCopy = QcSaveFile::keepAside(path);
     m_whitelistEnabled = true;
     if (m_damagedCopy.isEmpty()) {
-        qCWarning(lcAccess).noquote() << u"%1 is damaged and could not be copied aside: operators, bans and the whitelist start "
+        qCWarning(lcServer).noquote() << u"%1 is damaged and could not be copied aside: operators, bans and the whitelist start "
                                          u"empty with the whitelist on, and changes are not saved until the file is repaired"_s.arg(path);
     } else {
-        qCWarning(lcAccess).noquote() << u"%1 is damaged: operators, bans and the whitelist start empty with the whitelist on; "
+        qCWarning(lcServer).noquote() << u"%1 is damaged: operators, bans and the whitelist start empty with the whitelist on; "
                                          u"the damaged file was kept as %2"_s.arg(path, m_damagedCopy);
     }
 }

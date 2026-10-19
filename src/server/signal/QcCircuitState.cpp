@@ -1,9 +1,9 @@
 #include "server/signal/QcCircuitState.h"
 
 #include "server/blocks/QcBlockRules.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerWorld.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <array>
@@ -12,8 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcCircuits, "qtcraft.server")
 
 // How far a change reaches into circuits: a component's input looks two blocks away at most (through
 // the block a source powers), dust slopes one.
@@ -52,7 +50,7 @@ void QcCircuitState::noteChange(const QcServerWorld &world, QcBlockPos pos, QcBl
 
     if (changes.size() >= maxPendingChanges) {
         if (droppedChanges++ % droppedReportInterval == 0) {
-            qCWarning(lcCircuits) << "Too many pending circuit changes; dropped" << droppedChanges << "so far";
+            qCWarning(lcServer) << "Too many pending circuit changes; dropped" << droppedChanges << "so far";
         }
         return;
     }

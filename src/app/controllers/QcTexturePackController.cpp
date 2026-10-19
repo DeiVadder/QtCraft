@@ -1,5 +1,6 @@
 #include "app/controllers/QcTexturePackController.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "clientcore/settings/QcGameSettings.h"
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
@@ -9,14 +10,11 @@
 
 #include <QDesktopServices>
 #include <QDir>
-#include <QLoggingCategory>
 #include <QUrl>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcTextures, "qtcraft.textures")
 
 QString originName(QcTexturePack::Origin origin)
 {

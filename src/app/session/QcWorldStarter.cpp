@@ -2,20 +2,13 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "server/content/QcModLoader.h"
 #include "server/core/QcLocalServerHost.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
-#include <QLoggingCategory>
-
-namespace {
-
-// Messages go to the game's logging category "qtcraft.game", like those of QcGameController.
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
-
-} // namespace
 
 QcWorldStarter::QcWorldStarter(QcWorldLibraryController &library, QcSettingsController &settings)
     : m_library(library)

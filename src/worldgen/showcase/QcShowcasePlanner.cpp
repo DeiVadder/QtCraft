@@ -1,5 +1,6 @@
 #include "worldgen/showcase/QcShowcasePlanner.h"
 
+#include "worldgen/generators/QcWorldgenLogging.h"
 #include "worldgen/showcase/QcShowcaseArmourArea.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
 #include "worldgen/showcase/QcShowcaseCategories.h"
@@ -303,6 +304,6 @@ void QcShowcasePlanner::warn(const QString &warning) const
     if (m_warnings) {
         m_warnings->append(warning);
     } else {
-        qWarning().noquote() << warning;
+        qCWarning(lcWorldgen).noquote() << warning;
     }
 }

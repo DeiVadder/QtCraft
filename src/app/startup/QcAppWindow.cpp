@@ -1,6 +1,7 @@
 #include "app/startup/QcAppWindow.h"
 
 #include "app/controllers/QcGameController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcControlPalette.h"
@@ -29,7 +30,7 @@ bool systemColorScheme()
 void applyControlPalette(QQuickWindow &window)
 {
     if (!systemColorScheme() && !QcControlPalette::applyTo(window)) {
-        qWarning("The window offers no control palette; controls keep the system colours");
+        qCWarning(lcStartup, "The window offers no control palette; controls keep the system colours");
     }
 }
 
@@ -63,7 +64,7 @@ void placeWindow(QQuickWindow *window, const QString &screenRequest)
         QScreen *screen = screens[chosen->index];
         window->setScreen(screen);
         window->setGeometry(QcScreenChoice::placeInside(screen->availableGeometry(), window->size()));
-        qInfo().noquote() << u"Window on screen %1 \"%2\" (%3)"_s.arg(chosen->index).arg(screen->name(), chosen->reason);
+        qCInfo(lcStartup).noquote() << u"Window on screen %1 \"%2\" (%3)"_s.arg(chosen->index).arg(screen->name(), chosen->reason);
     }
 }
 

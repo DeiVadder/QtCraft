@@ -6,17 +6,15 @@
 #include "common/protocol/QcPackComparison.h"
 #include "common/protocol/QcProtocol.h"
 #include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcLogin, "qtcraft.server")
 
 using Purpose = QcLoginCrypto::Purpose;
 
@@ -30,7 +28,7 @@ QcServerLogin::QcServerLogin(QcServerState &state, Join join)
 
 void QcServerLogin::refuse(QcServerClient &client, const QcMsg::Disconnect &reason)
 {
-    qCInfo(lcLogin).noquote() << u"Player %1 (%2) refused: %3"_s.arg(client.name, client.login.address, reason.reason);
+    qCInfo(lcServer).noquote() << u"Player %1 (%2) refused: %3"_s.arg(client.name, client.login.address, reason.reason);
     client.connection->send(reason);
     client.connection->close();
     client.state = QcServerClient::State::Closed;
@@ -176,14 +174,14 @@ void QcServerLogin::admit(QcServerClient &client, const QByteArray &newIdentity)
             refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "This server cannot register new players")));
             return;
         }
-        qCInfo(lcLogin).noquote() << u"Player %1 registered the identity %2"_s.arg(client.name, client.login.fingerprint);
+        qCInfo(lcServer).noquote() << u"Player %1 registered the identity %2"_s.arg(client.name, client.login.fingerprint);
     }
     if (const QcResult<bool> bound = m_state.access().bind(client.name, client.login.fingerprint); !bound) {
-        qCWarning(lcLogin).noquote() << bound.error();
+        qCWarning(lcServer).noquote() << bound.error();
     }
 
     client.login.nonce.clear();
-    qCInfo(lcLogin).noquote() << u"Player %1 logged in from %2 (identity %3)"_s.arg(client.name, client.login.address, client.login.fingerprint);
+    qCInfo(lcServer).noquote() << u"Player %1 logged in from %2 (identity %3)"_s.arg(client.name, client.login.address, client.login.fingerprint);
     m_join(client);
 }
 

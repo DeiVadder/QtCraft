@@ -3,6 +3,7 @@
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/camera/QcMouseLook.h"
@@ -13,7 +14,6 @@
 #include <QCursor>
 #include <QGuiApplication>
 #include <QKeyEvent>
-#include <QLoggingCategory>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QWheelEvent>
@@ -23,8 +23,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcInput, "qtcraft.input")
 
 // The topmost visible item under the mouse, children in front of their parents and higher z first.
 QQuickItem *topmostItemAt(QQuickItem *item, QPointF scenePosition)

@@ -1,5 +1,6 @@
 #include "app/rendering/QcAtlasTexture.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "clientcore/textures/QcAtlasLayout.h"
 #include "clientcore/textures/QcGpuLimits.h"
 
@@ -86,13 +87,13 @@ std::unique_ptr<QRhiTexture> create(QRhi *rhi, const QList<QImage> &levels, QRhi
     });
     if (level) {
         if (*level > std::max<qsizetype>(0, QcAtlasLayout::firstLevelWithin(levels, maxSize))) {
-            qWarning("Texture atlas: the GPU refused the larger levels, using mip level %d", int(*level));
+            qCWarning(lcRenderer, "Texture atlas: the GPU refused the larger levels, using mip level %d", int(*level));
         }
         upload(rhi, texture.get(), chain(levels.mid(*level), maxSize), updates);
         return texture;
     }
 
-    qWarning("Texture atlas: the GPU refused every level; textures are drawn with the placeholder");
+    qCWarning(lcRenderer, "Texture atlas: the GPU refused every level; textures are drawn with the placeholder");
     texture = newTexture(rhi, QSize(16, 16));
     if (texture) {
         upload(rhi, texture.get(), chain({placeholder()}, maxSize), updates);

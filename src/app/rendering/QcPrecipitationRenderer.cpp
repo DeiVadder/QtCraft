@@ -1,8 +1,8 @@
 #include "app/rendering/QcPrecipitationRenderer.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
 
-#include <QLoggingCategory>
 
 #include <array>
 #include <cstddef>
@@ -11,8 +11,6 @@ using namespace Qt::StringLiterals;
 using QcRenderPipelines::loadShader;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
 
 // The corners of a particle's quad as two triangles: x across the streak or dot, y along it
 // (-1 at the drop, 1 at the far end of the streak).

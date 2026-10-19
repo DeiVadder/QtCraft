@@ -1,19 +1,13 @@
 #include "app/rendering/QcDebugLineRenderer.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
 
-#include <QLoggingCategory>
 
 #include <cstddef>
 
 using namespace Qt::StringLiterals;
 using QcRenderPipelines::loadShader;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
-
-} // namespace
 
 void QcDebugLineRenderer::reset()
 {

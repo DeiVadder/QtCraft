@@ -2,21 +2,19 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcBodyFit.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerWorld.h"
 #include "server/pathing/QcPathTerrain.h"
 #include "server/villages/QcVillage.h"
 #include "server/villages/QcVillages.h"
 #include "worldgen/terrain/QcNoise.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <cmath>
 #include <map>
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGolems, "qtcraft.server")
 
 // Salts of the draws that place a golem and decide whether gossip summons one.
 constexpr quint64 placeSalt = 4200;
@@ -47,7 +45,7 @@ std::optional<int> QcVillageGolems::kind(const QString &style) const
     const std::optional<int> type = name.isEmpty() ? std::nullopt : m_content->mobIndex(name);
     if (!type && !name.isEmpty() && !m_missingLogged) {
         m_missingLogged = true;
-        qCInfo(lcGolems) << "Villagers summon no golems: the content has no creature" << name;
+        qCInfo(lcServer) << "Villagers summon no golems: the content has no creature" << name;
     }
     return type;
 }

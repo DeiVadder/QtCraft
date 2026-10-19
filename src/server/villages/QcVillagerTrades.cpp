@@ -2,9 +2,9 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcDayCycle.h"
+#include "server/core/QcServerLogging.h"
 #include "worldgen/terrain/QcNoise.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <cmath>
@@ -12,8 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcTrades, "qtcraft.trades")
 
 std::optional<QcItemStack> resolve(const QcContentRegistry &content, const QcTradeStack &stack)
 {

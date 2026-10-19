@@ -1,17 +1,15 @@
 #include "app/rendering/QcRenderPipelines.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QFile>
-#include <QLoggingCategory>
 
 #include <cstddef>
 
 namespace QcRenderPipelines {
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcPipelines, "qtcraft.renderer")
 
 QRhiVertexInputLayout entityLayout()
 {
@@ -55,7 +53,7 @@ std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(QRhi *rhi, QRhiRender
     pipeline->setCullMode(QRhiGraphicsPipeline::Back);
 
     if (!pipeline->create()) {
-        qCCritical(lcPipelines) << "Cannot create entity pipeline";
+        qCCritical(lcRenderer) << "Cannot create entity pipeline";
         return {};
     }
     return pipeline;

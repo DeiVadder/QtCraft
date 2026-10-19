@@ -1,12 +1,8 @@
 #include "common/protocol/QcConnection.h"
 
+#include "common/core/QcLogging.h"
 #include "common/protocol/QcTransport.h"
 
-#include <QLoggingCategory>
-
-namespace {
-Q_LOGGING_CATEGORY(lcConnection, "qtcraft.connection")
-}
 
 QcConnection::QcConnection(std::unique_ptr<QcTransport> transport, QcProtocol::Peer remote, Handler handler,
                            QObject *parent)

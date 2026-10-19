@@ -1,5 +1,6 @@
 #include "app/controllers/QcWorldLibraryController.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "server/content/QcModLoader.h"
 #include "server/storage/QcWorldLibrary.h"
@@ -7,15 +8,12 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QLocale>
-#include <QLoggingCategory>
 #include <QUrl>
 #include <QVariantMap>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 QString modState(const QcModStatus &mod, const QHash<QString, QString> &loadFailures, QString &reason)
 {

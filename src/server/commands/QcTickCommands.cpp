@@ -3,12 +3,12 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/world/QcDayCycle.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/tick/QcTickControl.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <array>
@@ -18,8 +18,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcTick, "qtcraft.commands")
 
 const char *const usage = QT_TRANSLATE_NOOP("QcServerMessages",
                                             "Usage: /tick <query|freeze|unfreeze|step [ticks]|rate <ticks per second|reset>|"
@@ -75,7 +73,7 @@ void QcTickCommands::freeze(const QcCommandContext &context, bool frozen)
 
     m_parts.control.setFrozen(frozen);
     m_parts.timeChanged();
-    qCInfo(lcTick).noquote() << (frozen ? u"World frozen by %1"_s : u"World unfrozen by %1"_s).arg(context.source.name());
+    qCInfo(lcCommands).noquote() << (frozen ? u"World frozen by %1"_s : u"World unfrozen by %1"_s).arg(context.source.name());
     context.reply(frozen ? QT_TRANSLATE_NOOP("QcServerMessages", "The world is frozen; /tick step moves it on")
                          : QT_TRANSLATE_NOOP("QcServerMessages", "The world runs again"));
 }
@@ -110,7 +108,7 @@ void QcTickCommands::rate(const QcCommandContext &context)
 
     m_parts.ticks.setRate(wanted);
     m_parts.timeChanged();
-    qCInfo(lcTick).noquote() << u"Tick rate set to %1 by %2"_s.arg(number(m_parts.ticks.rate()), context.source.name());
+    qCInfo(lcCommands).noquote() << u"Tick rate set to %1 by %2"_s.arg(number(m_parts.ticks.rate()), context.source.name());
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "The tick rate is now %1 per second"), {number(m_parts.ticks.rate())});
 }
 
@@ -157,7 +155,7 @@ void QcTickCommands::sprint(const QcCommandContext &context)
     }
 
     m_parts.ticks.startSprint(*ticks);
-    qCInfo(lcTick).noquote() << u"Sprint of %1 ticks started by %2"_s.arg(*ticks).arg(context.source.name());
+    qCInfo(lcCommands).noquote() << u"Sprint of %1 ticks started by %2"_s.arg(*ticks).arg(context.source.name());
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Sprinting %1 ticks (%2 s of game time); /tick sprint stop ends it"),
                   {QString::number(*ticks), number(double(*ticks) * QcPhysics::tickDuration)});
 }
@@ -172,7 +170,7 @@ void QcTickCommands::reportSprintEnd()
 
     const double seconds = std::max(double(elapsedNs) / 1e9, 1e-9);
     const QStringList arguments{QString::number(ticks), number(seconds * 1000.0), number(double(ticks) / seconds)};
-    qCInfo(lcTick).noquote() << u"Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"_s.arg(arguments[0], arguments[1], arguments[2]);
+    qCInfo(lcCommands).noquote() << u"Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"_s.arg(arguments[0], arguments[1], arguments[2]);
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && m_state.permissionOf(*client) != QcPermission::Player) {
             client->connection->send(

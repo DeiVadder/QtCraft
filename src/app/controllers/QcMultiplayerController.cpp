@@ -3,6 +3,7 @@
 #include "app/controllers/QcCharacterSettings.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/multiplayer/QcLanAddresses.h"
 #include "app/multiplayer/QcMultiplayerSettings.h"
 #include "app/multiplayer/QcPlayerList.h"
@@ -16,15 +17,8 @@
 #include "server/core/QcLocalServerHost.h"
 #include "server/core/QcProfileValidation.h"
 
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcMultiplayer, "qtcraft.game")
-
-} // namespace
 
 QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const QcWorldStarter &worlds, const QcSettingsController &settings,
                                                  const QcWorldLibraryController &library, QObject *parent)
@@ -40,7 +34,7 @@ QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const Qc
     connect(m_client, &QcNetworkClient::stageChanged, this, &QcMultiplayerController::joiningChanged);
     connect(m_client, &QcNetworkClient::joined, this, &QcMultiplayerController::onJoined);
     connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) {
-        qCInfo(lcMultiplayer).noquote() << u"Joining failed: %1"_s.arg(reason);
+        qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(reason);
         emit joinFailed(reason);
     });
 }

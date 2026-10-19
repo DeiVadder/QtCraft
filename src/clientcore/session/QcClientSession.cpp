@@ -1,22 +1,16 @@
 #include "clientcore/session/QcClientSession.h"
 
+#include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionLink.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
 
-#include <QLoggingCategory>
 
 #include <cmath>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
-
-} // namespace
 
 QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent)
     : QObject(parent)

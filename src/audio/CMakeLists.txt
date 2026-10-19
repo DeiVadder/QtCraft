@@ -5,6 +5,7 @@ qt_add_library(qc_audio STATIC)
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_audio PRIVATE
     QcAudioEngine.h QcAudioEngine.cpp
+    QcAudioLogging.h QcAudioLogging.cpp
     QcAudioOutput.h QcAudioOutput.cpp
     QcMixerDevice.h QcMixerDevice.cpp
 )

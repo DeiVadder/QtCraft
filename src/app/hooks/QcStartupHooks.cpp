@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/hooks/QcScriptedPad.h"
@@ -12,7 +13,6 @@
 #include "clientcore/session/QcClientSession.h"
 
 #include <QCoreApplication>
-#include <QLoggingCategory>
 #include <QMouseEvent>
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -23,8 +23,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
 [[nodiscard]] std::optional<int> delayOf(const QString &line, qsizetype space)

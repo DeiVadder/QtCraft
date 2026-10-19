@@ -5,6 +5,7 @@
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/chunks/QcChunkLoading.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/storage/QcChunkIo.h"
@@ -15,17 +16,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QLockFile>
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcPersistence, "qtcraft.server")
-
-} // namespace
 
 QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcChunkLoading &loading)
     : m_state(state)
@@ -91,7 +85,7 @@ QcStatus QcServerPersistence::open()
     }
     restoreVillages(storage);
 
-    qCInfo(lcPersistence) << "Opened world" << m_state.info().name << "with" << m_state.world().storedChunkCount() << "stored chunks";
+    qCInfo(lcServer) << "Opened world" << m_state.info().name << "with" << m_state.world().storedChunkCount() << "stored chunks";
     return {};
 }
 
@@ -225,7 +219,7 @@ QcStatus QcServerPersistence::readBlockUpdates(const QcWorldStorage &storage)
 void QcServerPersistence::noteWarnings(const QStringList &warnings)
 {
     for (const QString &warning : warnings) {
-        qCWarning(lcPersistence) << warning;
+        qCWarning(lcServer) << warning;
     }
     m_openWarnings.append(warnings);
 }
@@ -279,7 +273,7 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
         player.motion.onGround = false;
     }
     if (lost > 0) {
-        qCWarning(lcPersistence) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
+        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
     }
     return {QcPlayerStorage::relativePath(client.name), storage.playerBytes(player)};
 }
@@ -331,7 +325,7 @@ void QcServerPersistence::noteResult(const QcStatus &status)
     // What the failed save held may be missing on disk: the next save writes villages.json again.
     m_villagesSaved.reset();
     m_failing = true;
-    qCWarning(lcPersistence) << "Saving failed:" << status.error();
+    qCWarning(lcServer) << "Saving failed:" << status.error();
 }
 
 QcStatus QcServerPersistence::save()
@@ -361,7 +355,7 @@ void QcServerPersistence::saveInBackground()
         return;
     }
     if (const QcStatus collected = submitSave().second; !collected) {
-        qCWarning(lcPersistence) << collected.error();
+        qCWarning(lcServer) << collected.error();
     }
 }
 
@@ -403,7 +397,7 @@ QcResult<std::optional<QByteArray>> QcServerPersistence::blockUpdateBytes() cons
 
     const qsizetype storable = std::min(qsizetype(m_state.config().limits.savedBlockUpdates), qsizetype(QcWorldStorage::maxStoredBlockUpdates));
     if (updates.size() > storable) {
-        qCWarning(lcPersistence) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
+        qCWarning(lcServer) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
         updates.resize(storable);
     }
     return QcWorldStorage::blockUpdatesBytes(updates);

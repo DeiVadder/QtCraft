@@ -71,6 +71,7 @@ target_sources(qc_server PRIVATE
     core/QcServerConfig.h
     core/QcServerDebug.h core/QcServerDebug.cpp
     core/QcServerLimits.h core/QcServerLimits.cpp
+    core/QcServerLogging.h core/QcServerLogging.cpp
     core/QcServerSetup.h core/QcServerSetup.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp

@@ -3,6 +3,7 @@
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
 #include "server/chunks/QcChunkStreaming.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerGameModes.h"
@@ -11,15 +12,8 @@
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcServerPersistence.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcJoin, "qtcraft.server")
-
-} // namespace
 
 QcPlayerJoin::QcPlayerJoin(QcServerState &state, Parts parts)
     : m_state(state)
@@ -42,7 +36,7 @@ void QcPlayerJoin::join(QcServerClient &client)
     client.stateDirty = true;
     m_state.notePlayerListChanged();
 
-    qCInfo(lcJoin) << "Player" << client.name << "joined as entity" << client.id;
+    qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.id;
     sendWelcome(client, false);
     m_parts.streaming.stream(client);
 }
@@ -56,7 +50,7 @@ bool QcPlayerJoin::restore(QcServerClient &client)
     QStringList warnings;
     const QcResult<std::optional<QcPlayerData>> stored = m_parts.persistence.readPlayer(client.name, warnings);
     for (const QString &warning : std::as_const(warnings)) {
-        qCWarning(lcJoin) << warning;
+        qCWarning(lcServer) << warning;
     }
 
     if (!stored) {
@@ -77,7 +71,7 @@ bool QcPlayerJoin::restore(QcServerClient &client)
     client.stateDirty = true;
     m_state.notePlayerListChanged();
 
-    qCInfo(lcJoin) << "Player" << client.name << "rejoined as entity" << client.id;
+    qCInfo(lcServer) << "Player" << client.name << "rejoined as entity" << client.id;
     sendWelcome(client, true);
     m_state.world().loadChunk(QcChunkStreaming::chunkOf(client.motion.position));
     m_parts.streaming.stream(client);

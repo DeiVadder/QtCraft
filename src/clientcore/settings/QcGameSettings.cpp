@@ -1,8 +1,9 @@
 #include "clientcore/settings/QcGameSettings.h"
 
+#include "clientcore/debug/QcClientLogging.h"
+
 #include <QDir>
 #include <QFileInfo>
-#include <QLoggingCategory>
 #include <QRegularExpression>
 #include <QSettings>
 
@@ -12,8 +13,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcSettings, "qtcraft.settings")
 
 QString keySetting(QcKeyBindings::Action action, int slot)
 {

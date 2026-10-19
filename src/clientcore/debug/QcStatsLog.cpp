@@ -1,18 +1,13 @@
 #include "clientcore/debug/QcStatsLog.h"
 
+#include "clientcore/debug/QcClientLogging.h"
+
 #include <QJsonDocument>
-#include <QLoggingCategory>
 #include <QTimer>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcStats, "qtcraft.stats")
-
-} // namespace
 
 QcStatsLog::QcStatsLog(int intervalMs, Source source, QObject *parent)
     : QObject(parent)

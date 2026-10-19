@@ -4,6 +4,7 @@
 #include "common/protocol/QcLoginMessages.h"
 #include "server/commands/QcAccessList.h"
 #include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 
 #include <QDir>
@@ -11,16 +12,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QLoggingCategory>
 #include <QSaveFile>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcIdentities, "qtcraft.server")
-
-} // namespace
 
 QcIdentityStore::QcIdentityStore()
     : m_salt(QcLoginCrypto::randomBytes(QcMsg::LoginChallenge::saltBytes))
@@ -105,7 +99,7 @@ QcStatus QcIdentityStore::flush()
     // One attempt per batch of additions: a file that cannot be written does not fill the log.
     m_dirty = false;
     if (const QcStatus written = write(); !written) {
-        qCWarning(lcIdentities).noquote() << written.error();
+        qCWarning(lcServer).noquote() << written.error();
         return written;
     }
     return {};

@@ -1,18 +1,12 @@
 #include "server/network/QcNetworkServer.h"
 
 #include "server/core/QcServer.h"
+#include "server/core/QcServerLogging.h"
 
-#include <QLoggingCategory>
 #include <QTcpServer>
 #include <QTcpSocket>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcNetwork, "qtcraft.network")
-
-} // namespace
 
 QcNetworkServer::QcNetworkServer(QcServer &server, QcNetworkConfig config, QObject *parent)
     : QObject(parent)

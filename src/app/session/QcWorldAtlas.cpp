@@ -1,6 +1,7 @@
 #include "app/session/QcWorldAtlas.h"
 
 #include "app/controllers/QcTexturePackController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
@@ -11,16 +12,8 @@
 #include "clientcore/textures/QcTextureAtlas.h"
 
 #include <QElapsedTimer>
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-// Messages go to the game's logging category "qtcraft.game", like those of QcGameController.
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
-
-} // namespace
 
 QcWorldAtlas::QcWorldAtlas(QcSessionParts &parts, const Targets &targets)
     : m_parts(parts)

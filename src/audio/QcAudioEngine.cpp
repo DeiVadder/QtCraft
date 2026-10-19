@@ -1,11 +1,11 @@
 #include "audio/QcAudioEngine.h"
 
+#include "audio/QcAudioLogging.h"
 #include "clientcore/sound/QcMusicComposer.h"
 #include "clientcore/sound/QcSoundSpatial.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
 #include "common/content/definitions/QcSoundKeys.h"
 
-#include <QLoggingCategory>
 #include <QtConcurrent/QtConcurrentRun>
 
 #include <algorithm>
@@ -13,8 +13,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcAudioEngine, "qtcraft.audio")
 
 const std::array<QString, 4> &ambienceKeys()
 {
@@ -37,7 +35,7 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
     connect(&m_bankWatcher, &QFutureWatcherBase::finished, this, [this] {
         m_bank = m_bankWatcher.result();
         for (const QString &name : m_bank->skipped()) {
-            qCWarning(lcAudioEngine) << "Sound left out (memory budget):" << name;
+            qCWarning(lcAudio) << "Sound left out (memory budget):" << name;
         }
         emit bankReady();
     });
@@ -67,7 +65,7 @@ QcAudioEngine::~QcAudioEngine()
 void QcAudioEngine::start(bool enabled)
 {
     if (!enabled) {
-        qCInfo(lcAudioEngine) << "Audio is switched off";
+        qCInfo(lcAudio) << "Audio is switched off";
         return;
     }
 
@@ -128,7 +126,7 @@ void QcAudioEngine::warnUnknown(const QString &key)
     constexpr qsizetype maxWarnings = 256;
     if (!m_warned.contains(key) && m_warned.size() < maxWarnings) {
         m_warned.insert(key);
-        qCWarning(lcAudioEngine) << "Unknown sound, playing nothing:" << key;
+        qCWarning(lcAudio) << "Unknown sound, playing nothing:" << key;
     }
 }
 

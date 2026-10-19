@@ -3,6 +3,7 @@
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcTexturePackController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/input/QcGameInput.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
@@ -12,7 +13,6 @@
 #include "server/core/QcLocalServerHost.h"
 
 #include <QCoreApplication>
-#include <QLoggingCategory>
 #include <QTimer>
 
 #include <algorithm>
@@ -20,12 +20,9 @@
 #include <memory>
 #include <numbers>
 
-
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 // Mean and longest time per server tick phase (decision E-225), "key=value" pairs for the BENCH line.
 QString tickPhasePairs(const QcTickStats::Summary &ticks)

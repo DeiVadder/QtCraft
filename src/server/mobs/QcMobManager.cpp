@@ -3,6 +3,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcMobTeleport.h"
@@ -35,7 +36,7 @@ quint64 uniqueUid(quint64 saved, QSet<quint64> &taken, quint64 &next)
     quint64 uid = saved;
     if (taken.contains(uid)) {
         uid = next++;
-        qWarning().noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
+        qCWarning(lcServer).noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
     }
     taken.insert(uid);
     return uid;

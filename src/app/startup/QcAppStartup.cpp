@@ -1,6 +1,7 @@
 #include "app/startup/QcAppStartup.h"
 
 #include "app/controllers/QcGameController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScreenshotHook.h"
@@ -36,7 +37,7 @@ void openMenuScreen(const QQuickWindow &window, QcGameController &game, const Qc
     // Popups are no QObject children of the window; the menu opens its own screen.
     QObject *menu = window.findChild<QObject *>(u"mainMenu"_s);
     if (!menu) {
-        qWarning("--overlay multiplayer: no main menu");
+        qCWarning(lcStartup, "--overlay multiplayer: no main menu");
         return;
     }
 
@@ -50,9 +51,9 @@ void installBundledMods()
 {
     const QString bundled = QcBundledMods::directory(QCoreApplication::applicationDirPath());
     if (const QcResult<QStringList> installed = QcBundledMods::installDisabled(bundled, QcModLoader::defaultDirectory()); !installed) {
-        qWarning().noquote() << u"Cannot install the bundled mods:"_s << installed.error();
+        qCWarning(lcStartup).noquote() << u"Cannot install the bundled mods:"_s << installed.error();
     } else if (!installed->isEmpty()) {
-        qInfo().noquote() << u"Installed bundled mods (switched off) in %1: %2"_s.arg(QcModLoader::defaultDirectory(), installed->join(u", "_s));
+        qCInfo(lcStartup).noquote() << u"Installed bundled mods (switched off) in %1: %2"_s.arg(QcModLoader::defaultDirectory(), installed->join(u", "_s));
     }
 }
 

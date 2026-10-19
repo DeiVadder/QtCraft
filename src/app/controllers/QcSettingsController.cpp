@@ -1,20 +1,14 @@
 #include "app/controllers/QcSettingsController.h"
 
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "server/storage/QcWorldLibrary.h"
 
 #include <QDir>
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
-
-} // namespace
 
 QcSettingsController::QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library,
                                            QcAudioEngine *audio, QObject *parent)

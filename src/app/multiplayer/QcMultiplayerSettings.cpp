@@ -1,12 +1,12 @@
 #include "app/multiplayer/QcMultiplayerSettings.h"
 
+#include "clientcore/debug/QcClientLogging.h"
 #include "common/core/QcNameText.h"
 #include "network/QcServerAddress.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QLocale>
-#include <QLoggingCategory>
 #include <QSettings>
 
 #include <algorithm>
@@ -14,8 +14,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcSettings, "qtcraft.settings")
 
 constexpr int defaultMaxPlayers = 8;
 

@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIcons.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/icons/QcBlockIcon.h"
@@ -12,15 +13,8 @@
 #include "server/gameplay/QcHandbookRules.h"
 
 #include <QElapsedTimer>
-#include <QLoggingCategory>
 
 #include <memory>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
-
-} // namespace
 
 QcHandbookController::QcHandbookController(const QcSessionParts &parts, const QcSettingsController &settings,
                                            const QcWorldLibraryController &library, QcItemIcons &icons, QObject *parent)

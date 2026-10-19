@@ -1,6 +1,7 @@
 #include "app/startup/QcAppLanguage.h"
 
 #include "app/controllers/QcGameController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/startup/QcAppOptions.h"
 
 #include <QCoreApplication>
@@ -28,9 +29,9 @@ QString QcAppLanguage::install(QTranslator &translator, const QString &name)
     QCoreApplication::removeTranslator(&translator);
     if (translator.load(locale, u"qtcraft"_s, u"_"_s, u":/i18n"_s)) {
         QCoreApplication::installTranslator(&translator);
-        qInfo().noquote() << u"UI language %1: translation loaded"_s.arg(locale.name());
+        qCInfo(lcStartup).noquote() << u"UI language %1: translation loaded"_s.arg(locale.name());
     } else {
-        qInfo().noquote() << u"UI language %1: no translation, English texts"_s.arg(locale.name());
+        qCInfo(lcStartup).noquote() << u"UI language %1: no translation, English texts"_s.arg(locale.name());
     }
     return locale.name().left(2);
 }

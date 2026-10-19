@@ -1,10 +1,10 @@
 #include "app/hooks/QcScreenshotHook.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcLayoutCheck.h"
 
 #include <QCoreApplication>
 #include <QImage>
-#include <QLoggingCategory>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
@@ -12,10 +12,6 @@
 #include <utility>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-Q_LOGGING_CATEGORY(lcScreenshot, "qtcraft.screenshot")
-}
 
 QcScreenshotHook::QcScreenshotHook(QQuickWindow *window, QString filePath, int frameCount, QObject *parent)
     : QObject(parent)

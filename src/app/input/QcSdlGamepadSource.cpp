@@ -1,10 +1,10 @@
 #include "app/input/QcSdlGamepadSource.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "clientcore/input/QcGamepadTypeDetection.h"
 
 #include <SDL3/SDL.h>
 
-#include <QLoggingCategory>
 #include <QThread>
 
 #include <algorithm>
@@ -14,8 +14,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGamepad, "qtcraft.gamepad")
 
 // SDL's buttons in the order of QcGamepadButton.
 constexpr std::array<SDL_GamepadButton, qcGamepadButtonCount> sdlButtons{

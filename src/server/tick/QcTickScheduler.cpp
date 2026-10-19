@@ -1,17 +1,12 @@
 #include "server/tick/QcTickScheduler.h"
 
-#include <QLoggingCategory>
+#include "server/core/QcServerLogging.h"
+
 
 #include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <utility>
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcTicks, "qtcraft.server")
-
-} // namespace
 
 QcTickScheduler::QcTickScheduler(Clock clock)
     : m_clock(std::move(clock))
@@ -152,6 +147,6 @@ int QcTickScheduler::takeDueTicks(qint64 now)
     const qint64 skipped = due - maxCatchUpTicks;
     m_nextDueNs += skipped * m_intervalNs;
     m_stats.addSkipped(quint64(skipped));
-    qCWarning(lcTicks) << "Server overloaded, skipped" << skipped << "ticks";
+    qCWarning(lcServer) << "Server overloaded, skipped" << skipped << "ticks";
     return maxCatchUpTicks;
 }

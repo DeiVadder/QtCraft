@@ -1,5 +1,7 @@
 #include "worldgen/structures/QcStateRotation.h"
 
+#include "worldgen/generators/QcWorldgenLogging.h"
+
 #include <QHash>
 #include <QMutex>
 #include <QSet>
@@ -41,7 +43,7 @@ void warnMissingValue(const QString &block, const QString &property, const QStri
         }
         reported.insert(key);
     }
-    qWarning("Turning %s: it has no state %s=%s; that property keeps its value", qPrintable(block), qPrintable(property), qPrintable(value));
+    qCWarning(lcWorldgen, "Turning %s: it has no state %s=%s; that property keeps its value", qPrintable(block), qPrintable(property), qPrintable(value));
 }
 
 } // namespace

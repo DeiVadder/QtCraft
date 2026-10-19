@@ -3,20 +3,18 @@
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcRails.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcStandProperties.h"
 #include "server/minecarts/QcMinecartMotion.h"
 #include "server/mobs/QcPetCare.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcSetup, "qtcraft.server")
 
 QcBlockId blockAt(QcServerState &state, QcBlockPos pos)
 {
@@ -30,7 +28,7 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
     for (const QcStructureDefinition::Stack &item : items) {
         const std::optional<QcItemId> id = state.content().itemId(item.item);
         if (!id) {
-            qCWarning(lcSetup) << "World setup: unknown item" << item.item;
+            qCWarning(lcServer) << "World setup: unknown item" << item.item;
             continue;
         }
         stacks.append({*id, std::min(item.count, state.content().item(*id).maxStack), 0});
@@ -45,7 +43,7 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
     const QList<QcItemStack> stacks = stacksOf(state, contents.items);
     QcBlockEntities &entities = state.blockEntities();
     if (!entities.ensure(contents.at, block)) {
-        qCWarning(lcSetup) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;
+        qCWarning(lcServer) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;
         return;
     }
 
@@ -71,11 +69,11 @@ void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
     stand.item = QcStandProperties::standItem(state.content());
     for (const QString &property : setup.properties) {
         if (!QcStandProperties::applyLine(state.content(), stand, property)) {
-            qCWarning(lcSetup) << "World setup: armour stand property" << property << "does not apply";
+            qCWarning(lcServer) << "World setup: armour stand property" << property << "does not apply";
         }
     }
     if (!state.entities().stands().add(stand)) {
-        qCWarning(lcSetup) << "World setup: too many armour stands";
+        qCWarning(lcServer) << "World setup: too many armour stands";
     }
 }
 
@@ -86,7 +84,7 @@ void placeMinecart(QcServerState &state, const QcWorldSetup::Cart &setup)
     const std::optional<QcRails::Track> track = QcRails::trackOf(state.content(), blockAt(state, cell));
     const std::optional<QcItemId> item = state.content().itemId(setup.item);
     if (!track || !item || !state.content().item(*item).placesCart) {
-        qCWarning(lcSetup) << "World setup: no rail or no cart item for a minecart at" << cell.x << cell.y << cell.z << setup.item;
+        qCWarning(lcServer) << "World setup: no rail or no cart item for a minecart at" << cell.x << cell.y << cell.z << setup.item;
         return;
     }
 
@@ -98,7 +96,7 @@ void placeMinecart(QcServerState &state, const QcWorldSetup::Cart &setup)
     cart.motion.onGround = true;
     cart.yaw = QcMinecartMotion::yawAlong(to - from);
     if (!state.entities().minecarts().add(cart)) {
-        qCWarning(lcSetup) << "World setup: too many minecarts";
+        qCWarning(lcServer) << "World setup: too many minecarts";
     }
 }
 
@@ -154,7 +152,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
                 creature.pose = mob.sitting ? QcPose::Sitting : QcPose::Standing;
             }
         } else {
-            qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;
+            qCWarning(lcServer) << "World setup: unknown creature" << mob.mob;
         }
     }
 

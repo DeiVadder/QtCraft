@@ -21,7 +21,8 @@
 #                    records the tests that passed, so a run without --changed also renews the stamps.
 # Every mode first checks the source lists of the CMake files (scripts/check-cmake-lists.py, E-417)
 # and that every project include names its header by its path below src/ or tests/ and keeps the
-# layers of src/ (scripts/fix-includes.py --check, E-418, E-419).
+# layers of src/ (scripts/fix-includes.py --check, E-418, E-419), and that every logging category is
+# defined once (scripts/check-logging.py, E-680).
 # After the debug test step every mode compares each test's time with its TIMEOUT and COST and
 # warns about limits that would be too tight under TSan (scripts/verify-limits.py, E-412); the
 # warnings are repeated at the end and do not fail the run.
@@ -286,6 +287,9 @@ step "check-cmake-lists" sh -c "python3 scripts/check-cmake-lists.py --self-test
 # Includes with the header's path below its include root and within the layers of src/ (decision
 # E-418, E-419); every mode, before the build.
 step "check-includes" sh -c "python3 scripts/fix-includes.py --self-test && python3 scripts/fix-includes.py --check"
+# Logging categories each defined once, no logging without a category in src/ (decision E-680);
+# every mode, before the build.
+step "check-logging" sh -c "python3 scripts/check-logging.py --self-test && python3 scripts/check-logging.py"
 build_and_test debug
 for preset in $SANITIZERS; do
     build_and_test "$preset"

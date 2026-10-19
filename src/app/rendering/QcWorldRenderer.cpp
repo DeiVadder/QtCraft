@@ -1,5 +1,6 @@
 #include "app/rendering/QcWorldRenderer.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcAtlasTexture.h"
 
 #include "app/hooks/QcThreadCpuClock.h"
@@ -8,7 +9,6 @@
 #include "clientcore/camera/QcFrustum.h"
 
 #include <QElapsedTimer>
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <array>
@@ -20,8 +20,6 @@ using QcRenderPipelines::loadShader;
 using QcRenderPipelines::minimumLight;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
 
 constexpr int maxOutlineBoxes = 16;
 

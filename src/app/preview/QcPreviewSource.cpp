@@ -3,6 +3,7 @@
 #include "app/controllers/QcCharacterSettings.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/textures/QcGpuLimits.h"
@@ -10,15 +11,8 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcWorkerPool.h"
 
-#include <QLoggingCategory>
 
 using namespace Qt::StringLiterals;
-
-namespace {
-
-Q_LOGGING_CATEGORY(lcPreview, "qtcraft.preview")
-
-} // namespace
 
 QcPreviewSource::QcPreviewSource(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcCharacterSettings &character,
                                  const QcTexturePackController &texturePacks, QObject *parent)

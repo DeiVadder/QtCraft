@@ -1,5 +1,6 @@
 #include "app/controllers/QcGameController.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/input/QcGamepadBackend.h"
 #include "app/multiplayer/QcPlayerList.h"
@@ -13,7 +14,6 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QCoreApplication>
-#include <QLoggingCategory>
 #include <QQuickWindow>
 
 #include <algorithm>
@@ -21,8 +21,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 // Stable across runs and platforms, unlike qHash.
 qint64 seedFromText(const QString &text)

@@ -2,17 +2,15 @@
 
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcRails.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <array>
 #include <utility>
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcBlockUpdates, "qtcraft.server")
 
 // Only blocks whose state depends on the horizontal neighbour: connections, rails, wall mounts,
 // flowing liquids and blocks that harden next to another one.
@@ -75,7 +73,7 @@ void QcBlockUpdateQueue::queue(QcBlockPos pos)
         // Bounded memory and save size; a block whose update was dropped is checked again
         // by the next change next to it.
         if (m_dropped++ == 0) {
-            qCWarning(lcBlockUpdates) << "Too many pending command updates; dropping further ones";
+            qCWarning(lcServer) << "Too many pending command updates; dropping further ones";
         }
         return;
     }

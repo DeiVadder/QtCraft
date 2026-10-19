@@ -3,19 +3,17 @@
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/chunks/QcChunkStreaming.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/spawners/QcFurnishing.h"
 #include "server/storage/QcBlockEntityRecords.h"
 #include "server/storage/QcEntityRecords.h"
 
 #include <QElapsedTimer>
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcLoading, "qtcraft.server")
 
 // Admitting or unloading chunks longer than this in one tick is logged with what it did.
 constexpr qint64 slowPhaseMs = 20;
@@ -103,8 +101,8 @@ void QcChunkLoading::warnOversize(const QcChunkGroups::Group &group)
     const QcChunkPos first = group.chunks.constFirst();
     if (!m_oversizeWarned.contains(first)) {
         m_oversizeWarned.insert(first);
-        qCWarning(lcLoading) << "Circuits around chunk" << first.x << first.z << "connect more than" << groupLimit()
-                             << "chunks (chunkGroupLimit); they load chunk by chunk and wait at the edge of the loaded area";
+        qCWarning(lcServer) << "Circuits around chunk" << first.x << first.z << "connect more than" << groupLimit()
+                            << "chunks (chunkGroupLimit); they load chunk by chunk and wait at the edge of the loaded area";
     }
 }
 
@@ -159,8 +157,8 @@ void QcChunkLoading::admitArrivals()
     // A long admission is named with what it did, so a stall in this phase can be told from one of
     // the whole process (decision E-378).
     if (const qint64 ms = timer.elapsed(); ms >= slowPhaseMs) {
-        qCWarning(lcLoading) << "Admitting chunks took" << ms << "ms:" << arrived.size() << "arrived," << world.loadedChunkCount() - loadedBefore
-                             << "entered," << m_waiting.size() << "wait for their group";
+        qCWarning(lcServer) << "Admitting chunks took" << ms << "ms:" << arrived.size() << "arrived," << world.loadedChunkCount() - loadedBefore
+                            << "entered," << m_waiting.size() << "wait for their group";
     }
 }
 
@@ -230,7 +228,7 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         m_state.entities().creatures().notePopulated(pos);
     }
     for (const QString &warning : std::as_const(warnings)) {
-        qCWarning(lcLoading) << "Chunk" << pos.x << pos.z << warning;
+        qCWarning(lcServer) << "Chunk" << pos.x << pos.z << warning;
     }
 }
 
@@ -604,7 +602,7 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         }
     }
     if (const qint64 ms = timer.elapsed(); ms >= slowPhaseMs) {
-        qCWarning(lcLoading) << "Unloading" << chunks.size() << "chunks took" << ms << "ms";
+        qCWarning(lcServer) << "Unloading" << chunks.size() << "chunks took" << ms << "ms";
     }
 }
 
@@ -666,8 +664,8 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departures.append(std::move(departure));
     }
     if (!blockEntities.isEmpty() || !entities.isEmpty()) {
-        qCWarning(lcLoading) << "A save found block entities or entities in" << blockEntities.size() + entities.size()
-                             << "chunks that are not loaded; they are kept in memory only";
+        qCWarning(lcServer) << "A save found block entities or entities in" << blockEntities.size() + entities.size()
+                            << "chunks that are not loaded; they are kept in memory only";
     }
     return departures;
 }

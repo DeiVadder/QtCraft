@@ -5,17 +5,15 @@
 #include "server/commands/QcCommandArguments.h"
 #include "server/commands/QcPendingCommands.h"
 #include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-Q_LOGGING_CATEGORY(lcPlayers, "qtcraft.commands")
 
 QString reasonOf(const QStringList &args, qsizetype first)
 {
@@ -134,7 +132,7 @@ void QcPlayerCommands::kick(const QcCommandContext &context)
     } else if (count == 0) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No player named %1 is online"), {name});
     } else {
-        qCInfo(lcPlayers).noquote() << u"%1 kicked %2 (%3)"_s.arg(context.source.name(), name, reason);
+        qCInfo(lcCommands).noquote() << u"%1 kicked %2 (%3)"_s.arg(context.source.name(), name, reason);
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Kicked %1"), {name});
     }
 }
@@ -159,7 +157,7 @@ void QcPlayerCommands::ban(const QcCommandContext &context)
                reason.isEmpty() ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1"), {context.source.name()})
                                 : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1: %2"), {context.source.name(), reason}),
                hostRefused);
-    qCInfo(lcPlayers).noquote() << u"%1 banned %2 (%3)"_s.arg(context.source.name(), name, reason);
+    qCInfo(lcCommands).noquote() << u"%1 banned %2 (%3)"_s.arg(context.source.name(), name, reason);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Banned %1"), {*valid});
     reportWrite(context, changed);
 }
@@ -237,7 +235,7 @@ void QcPlayerCommands::op(const QcCommandContext &context, bool grant)
 
     const QcResult<bool> changed = m_state.access().setOperator(name, grant, fingerprintOf(name));
     m_state.notePlayerListChanged();
-    qCInfo(lcPlayers).noquote() << u"%1 %2 %3"_s.arg(context.source.name(), grant ? u"made an operator:"_s : u"took operator rights from"_s, name);
+    qCInfo(lcCommands).noquote() << u"%1 %2 %3"_s.arg(context.source.name(), grant ? u"made an operator:"_s : u"took operator rights from"_s, name);
     for (QcServerClient *player : online) {
         player->connection->send(QcChatText::message(grant ? QT_TRANSLATE_NOOP("QcServerMessages", "You are now an operator")
                                                            : QT_TRANSLATE_NOOP("QcServerMessages", "You are no longer an operator")));

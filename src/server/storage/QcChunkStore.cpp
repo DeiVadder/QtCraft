@@ -2,6 +2,7 @@
 
 #include "common/core/QcCrc32.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 
 #include <QDataStream>
@@ -325,7 +326,7 @@ QcStatus QcChunkStore::stageRegion(Kind kind, QcChunkPos region, QList<Step> &st
             blobs.insert(blob.chunk, blob);
         }
         for (const QcChunkPos &chunk : std::as_const(damaged)) {
-            qWarning("%s: chunk %d, %d is damaged and kept as it is", qPrintable(path), chunk.x, chunk.z);
+            qCWarning(lcServer, "%s: chunk %d, %d is damaged and kept as it is", qPrintable(path), chunk.x, chunk.z);
         }
     }
     for (auto it = m_pending[k].cbegin(); it != m_pending[k].cend(); ++it) {

@@ -1,11 +1,11 @@
 #include "app/preview/QcCharacterPreviewRenderer.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/preview/QcCharacterPreview.h"
 #include "app/preview/QcPreviewAtlasCache.h"
 #include "app/rendering/QcAtlasTexture.h"
 #include "app/rendering/QcRenderPipelines.h"
 
-#include <QLoggingCategory>
 
 #include <algorithm>
 #include <atomic>
@@ -17,8 +17,6 @@ namespace {
 // Far enough that no fog reaches the figure.
 constexpr float noFog = 1.0e4f;
 constexpr float farPlane = 32.0f;
-
-Q_LOGGING_CATEGORY(lcPreview, "qtcraft.preview")
 
 std::atomic<int> liveRenderers = 0;
 
