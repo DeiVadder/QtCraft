@@ -7,7 +7,7 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 Stand 2026-10-19 23:50. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
 - **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 51 und 56 erledigt (zuletzt 56e keine Ausgabeparameter `538cd8a`, E-694).
-- **Läuft:** Fenster-Benchmark der geschuldeten Messungen von 51 und 56 (dev vor 51.1 `69b32e4` gegen `538cd8a`, `@core`, `@ui`, `explosive-chain`; vom Menschen am 2026-10-19 abends freigegeben, ein bis zwei Läufe, ohne die übrige Arbeit zu blockieren). Etappe 57 beginnt parallel (lesen und planen während der Sperre).
+- **Läuft:** Etappe 57 in drei parallelen Paketen (57a Tick-Systeme als Liste, 57b Schicht `qc_worlds`, 57d Renderer-Ressourcen und `FrameInput`); 57c Fassaden teilen nach 57a. Fenster-Benchmarks von 51 und 56 nachgeholt (2026-10-20, ohne Regression, `docs/Performance-Verlauf.md`).
 - **Danach:** Etappe 57 (Architektur entlasten: Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden teilen, `QcWorldRenderer` DeviceResources und FrameInput), dann 47 und 58; Reihenfolge in der Tabelle „Etappen“ (neu: 68 Rucksack nach 62).
 - **Fenster-Läufe** nur nach Freigabe des Menschen; headless und offscreen sind erlaubt.
 
