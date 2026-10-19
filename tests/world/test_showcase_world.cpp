@@ -119,6 +119,28 @@ private:
         }
     }
 
+    // Names a pen whose count is off: its box, every creature of its kinds with health and position,
+    // and every departure of such a creature so far (with its reason and last position).
+    QString penReport(QcServer &server, const ShowcasePen &pen, const QStringList &departures) const
+    {
+        QString report = u"%1 box (%2 %3 %4)-(%5 %6 %7):"_s.arg(pen.structure)
+                             .arg(pen.box.min.x).arg(pen.box.min.y).arg(pen.box.min.z)
+                             .arg(pen.box.max.x).arg(pen.box.max.y).arg(pen.box.max.z);
+        for (const QcCreature &mob : server.mobs().mobs()) {
+            const QString &kind = m_content->mobs()[mob.type].name;
+            if (pen.kinds.contains(kind)) {
+                const QcVec3 &at = mob.motion.position;
+                report += u" [%1 #%2 health %3 at %4 %5 %6]"_s.arg(kind).arg(mob.id).arg(mob.health).arg(at.x).arg(at.y).arg(at.z);
+            }
+        }
+        for (const QString &departure : departures) {
+            if (std::ranges::any_of(pen.kinds, [&](const QString &kind) { return departure.startsWith(kind); })) {
+                report += u" departed: "_s + departure;
+            }
+        }
+        return report;
+    }
+
     // Water creatures whose middle is not in a liquid.
     qsizetype fishOnLand(QcServer &server) const
     {
@@ -764,6 +786,8 @@ private slots:
     void creaturePensOfStage52HoldTheirCreatures()
     {
         QTemporaryDir directory;
+        // Outlives the server, whose departure listener writes to it.
+        QStringList departures;
         std::unique_ptr<QcServer> server = makeServer(directory.path());
         QVERIFY(server->openWorld());
         const QcShowcaseGenerator generator(m_content);
@@ -778,6 +802,11 @@ private slots:
         if (QTest::currentTestFailed()) {
             return;
         }
+        server->mobs().onDeparture([&](const QcCreature &mob, QcMobManager::Departure why) {
+            const QcVec3 &at = mob.motion.position;
+            departures += u"%1 #%2 reason %3 health %4 at %5 %6 %7"_s.arg(m_content->mobs()[mob.type].name).arg(mob.id).arg(int(why))
+                              .arg(mob.health).arg(at.x).arg(at.y).arg(at.z);
+        });
 
         const auto inside = [&](const Pen &pen) {
             return std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
@@ -802,7 +831,7 @@ private slots:
             server->tick();
         }
         for (const Pen &pen : std::as_const(pens)) {
-            QCOMPARE(inside(pen), pen.creatures);
+            QVERIFY2(inside(pen) == pen.creatures, qPrintable(penReport(*server, pen, departures)));
         }
         QHash<quint32, QcVec3> start;
         for (const QcCreature &mob : server->mobs().mobs()) {
@@ -817,8 +846,7 @@ private slots:
         });
         QVERIFY2(moved >= 5, qPrintable(QString::number(moved)));
         for (const Pen &pen : std::as_const(pens)) {
-            QCOMPARE(inside(pen), pen.creatures);
-            QCOMPARE(escaped(pen), 0);
+            QVERIFY2(inside(pen) == pen.creatures && escaped(pen) == 0, qPrintable(penReport(*server, pen, departures)));
         }
         // The fish swim: none lies on land.
         QCOMPARE(fishOnLand(*server), 0);
