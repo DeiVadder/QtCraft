@@ -55,16 +55,8 @@ target_sources(qc_server PRIVATE
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
 )
 target_sources(qc_server PRIVATE
-    content/QcBundledMods.h content/QcBundledMods.cpp
-    content/QcContentFingerprint.h content/QcContentFingerprint.cpp
-    content/QcModLoader.h content/QcModLoader.cpp
-    content/QcModStatus.h
-)
-target_sources(qc_server PRIVATE
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
-    core/QcLocalServerHost.h core/QcLocalServerHost.cpp
-    core/QcProfileValidation.h core/QcProfileValidation.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcServer.h core/QcServer.cpp
     core/QcServerClient.h
@@ -110,7 +102,6 @@ target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
     gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
-    gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
@@ -262,7 +253,6 @@ target_sources(qc_server PRIVATE
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
     storage/QcStackReader.h storage/QcStackReader.cpp
     storage/QcVillagerCodec.h storage/QcVillagerCodec.cpp
-    storage/QcWorldLibrary.h storage/QcWorldLibrary.cpp
     storage/QcWorldStorage.h storage/QcWorldStorage.cpp
 )
 target_sources(qc_server PRIVATE

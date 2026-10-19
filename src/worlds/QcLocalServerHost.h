@@ -2,11 +2,12 @@
 
 #include "common/core/QcMailbox.h"
 #include "common/core/QcResult.h"
+#include "common/core/QcTickSummary.h"
+#include "common/protocol/QcLoginSettings.h"
 #include "common/protocol/QcTransport.h"
-#include "server/core/QcServerConfig.h"
-#include "server/network/QcNetworkServer.h"
-#include "server/storage/QcServerPersistence.h"
-#include "server/tick/QcTickStats.h"
+#include "common/world/QcDamagedFile.h"
+#include "network/QcNetworkConfig.h"
+#include "worlds/QcWorldStart.h"
 
 #include <QObject>
 
@@ -14,7 +15,9 @@
 #include <optional>
 
 class QcContentRegistry;
+class QcNetworkServer;
 class QcServer;
+struct QcServerConfig;
 class QcWorldGenerator;
 class QThread;
 
@@ -25,6 +28,12 @@ class QcLocalServerHost : public QObject
     Q_OBJECT
 
 public:
+    // Opens the world `start` describes, with the server's rules for a world of this process: the
+    // view distance one chunk ring beyond the player's, the default game mode only for an unsaved world.
+    QcLocalServerHost(const QcWorldStart &start, std::shared_ptr<const QcContentRegistry> content,
+                      std::unique_ptr<QcWorldGenerator> generator, QObject *parent = nullptr);
+    // Opens a world with a configuration of the server's own (headless tool and tests, which
+    // include server/core/QcServerConfig.h).
     QcLocalServerHost(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                       std::unique_ptr<QcWorldGenerator> generator, QObject *parent = nullptr);
     ~QcLocalServerHost() override;
@@ -36,7 +45,7 @@ public:
     // The world comes from an older development version (decision E-356).
     bool worldTooOld() const { return m_worldTooOld; }
     // The damaged per-region file that kept the world from opening (decision E-366).
-    const QcServerPersistence::DamagedFile &damagedFile() const { return m_damagedFile; }
+    const QcDamagedFile &damagedFile() const { return m_damagedFile; }
 
     // Connects a new client; the returned transport belongs to the caller's thread. Clients of the
     // host are local players (QcServer::ClientOrigin::Local: chat is not rate limited, debug data
@@ -57,7 +66,7 @@ public:
     // replies as English text (blocks until done).
     QStringList runConsoleCommand(const QString &line);
     // Server tick durations, lateness and skipped ticks so far (benchmark); zero when no world is open.
-    QcTickStats::Summary tickStats() const;
+    QcTickSummary tickStats() const;
     void resetTickTimes();
     // Creatures and dropped item stacks on the server now (benchmark; blocks until the server
     // thread counted them). Both -1 when no world is open.
@@ -89,7 +98,7 @@ private:
     QString m_startError;
     bool m_worldInUse = false;
     bool m_worldTooOld = false;
-    QcServerPersistence::DamagedFile m_damagedFile;
+    QcDamagedFile m_damagedFile;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
     // Both live in the server thread and are created, used and destroyed only there (the network
     // listener before the server it refers to).

@@ -1,9 +1,9 @@
+#include "common/auth/QcProfileValidation.h"
 #include "common/core/QcNameText.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "server/core/QcProfileValidation.h"
 #include "server/gameplay/QcHunger.h"
 
 #include <QTest>

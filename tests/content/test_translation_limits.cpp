@@ -3,7 +3,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "QcTestUtil.h"
-#include "server/content/QcModLoader.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDataStream>
 #include <QDir>

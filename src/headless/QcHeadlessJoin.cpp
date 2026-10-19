@@ -4,7 +4,7 @@
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"
 #include "network/QcServerAddress.h"
-#include "server/content/QcContentFingerprint.h"
+#include "worlds/QcContentFingerprint.h"
 
 #include <QDir>
 

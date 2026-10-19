@@ -1,8 +1,8 @@
 #pragma once
 
 #include "common/core/QcResult.h"
-#include "server/content/QcModLoader.h"
 #include "server/core/QcServerConfig.h"
+#include "worlds/QcModLoader.h"
 
 #include <QCommandLineParser>
 #include <QHash>

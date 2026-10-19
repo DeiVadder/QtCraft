@@ -4,7 +4,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
-#include "server/storage/QcWorldLibrary.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDir>
 

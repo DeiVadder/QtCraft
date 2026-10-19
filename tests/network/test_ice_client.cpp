@@ -4,8 +4,9 @@
 #include "QcLatencyTransport.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
-#include "server/core/QcLocalServerHost.h"
+#include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QTest>
 

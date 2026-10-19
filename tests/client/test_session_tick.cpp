@@ -5,8 +5,9 @@
 #include "common/physics/QcPhysics.h"
 #include "QcRecordingTransport.h"
 #include "QcTestUtil.h"
-#include "server/core/QcLocalServerHost.h"
+#include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QElapsedTimer>
 #include <QEventLoop>

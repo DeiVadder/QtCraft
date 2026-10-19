@@ -1,4 +1,4 @@
-#include "server/gameplay/QcHandbookRules.h"
+#include "worlds/QcHandbookRules.h"
 
 #include "common/content/definitions/QcWeatherDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"

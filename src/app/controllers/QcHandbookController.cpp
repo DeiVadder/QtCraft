@@ -10,7 +10,7 @@
 #include "clientcore/textures/QcGpuLimits.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
-#include "server/gameplay/QcHandbookRules.h"
+#include "worlds/QcHandbookRules.h"
 
 #include <QElapsedTimer>
 

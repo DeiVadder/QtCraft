@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcResult.h"
+#include "common/world/QcDamagedFile.h"
 #include "server/storage/QcChunkStore.h"
 #include "server/storage/QcWorldStorage.h"
 
@@ -61,17 +62,9 @@ public:
     bool worldInUse() const { return m_worldInUse; }
     // Whether open() failed because the world comes from an older development version.
     bool worldTooOld() const { return m_worldTooOld; }
-    // What a damaged per-region file of the world held (decision E-366): open() refuses the world
-    // and names the file; moved out of the world folder, the world opens without what it held.
-    // Journal: the last save broke off and cannot be finished; without its journal and staged files
-    // the world opens as saved before (decision E-378).
-    enum class DamagedPart { None, Blocks, Entities, BlockEntities, Journal };
-    struct DamagedFile
-    {
-        DamagedPart part = DamagedPart::None;
-        // Relative to the world directory.
-        QString file;
-    };
+    // The damaged per-region file that made open() refuse the world (QcDamagedFile).
+    using DamagedPart = QcDamagedPart;
+    using DamagedFile = QcDamagedFile;
     const DamagedFile &damagedFile() const { return m_damagedFile; }
 
 private:

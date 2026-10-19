@@ -7,28 +7,6 @@
 
 #include <optional>
 
-// The weather of a world as world.json keeps it (decision E-395): the current spell (kind and the
-// ticks until it ends), how many spells the world has had, the strengths of rain and thunder,
-// which fade towards the spell's kind, and how many ticks the weather has run.
-struct QcWeatherState
-{
-    QcWeatherKind kind = QcWeatherKind::Clear;
-    // Ticks until the spell ends while the game rule weatherCycle is on.
-    qint64 ticksLeft = 0;
-    // Spells so far; with the seed it decides the next spell. 0: the world's first spell has not
-    // begun (a new world, or one saved without weather), the first tick starts a clear one.
-    qint64 spell = 0;
-    // Strengths in 0..1.
-    float rain = 0.0f;
-    float thunder = 0.0f;
-    // Ticks the weather has run (world.json "ticks", 0 when missing). With the seed it decides the
-    // random draws of each tick (strikes, snowfall; QcWeatherCycle::Draws), so they go on after
-    // loading as if the world had not been saved (decision E-397).
-    qint64 ticks = 0;
-
-    friend bool operator==(const QcWeatherState &, const QcWeatherState &) = default;
-};
-
 // The weather's course as a pure function of the world seed (decision E-395): after a clear spell
 // comes rain or a thunderstorm, after them a clear spell again; the kind and length of each spell
 // follow from the seed and the spell's number, so the same world has the same weather whatever

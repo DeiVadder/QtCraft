@@ -3,8 +3,9 @@
 #include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"
 #include "QcTestUtil.h"
-#include "server/core/QcLocalServerHost.h"
+#include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QTest>
 

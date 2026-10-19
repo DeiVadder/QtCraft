@@ -7,7 +7,7 @@
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
-#include "server/core/QcLocalServerHost.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QDir>
 #include <QFile>

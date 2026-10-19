@@ -1,8 +1,8 @@
 #pragma once
 
 #include "common/core/QcResult.h"
-#include "server/content/QcModStatus.h"
-#include "server/storage/QcServerPersistence.h"
+#include "common/world/QcDamagedFile.h"
+#include "worlds/QcModStatus.h"
 
 #include <QCoreApplication>
 #include <QList>
@@ -50,7 +50,7 @@ public:
 
     // The translated message for a world that a damaged per-region file kept from opening (decision
     // E-366); empty when no such file was the reason.
-    static QString damagedFileMessage(const QcServerPersistence::DamagedFile &damaged);
+    static QString damagedFileMessage(const QcDamagedFile &damaged);
 
 private:
     // Why `server` did not start; a world kept closed by a damaged file is noted as unplayable.

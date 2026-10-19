@@ -118,7 +118,7 @@ qc_configure_target(qc_app_core)
 add_library(qc_app_core_headers INTERFACE)
 target_include_directories(qc_app_core_headers INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_app_core PUBLIC
-    qc_app_core_headers qc_common qc_server qc_clientcore qc_audio
+    qc_app_core_headers qc_common qc_worlds qc_clientcore qc_audio
     Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
 
 qt_add_qml_module(qc_app_core
@@ -265,7 +265,7 @@ qt_add_shaders(qtcraft "qtcraft_opaque_shaders"
 )
 
 qt_add_translations(qtcraft
-    SOURCE_TARGETS qtcraft qc_app_core qc_clientcore qc_server qc_network
+    SOURCE_TARGETS qtcraft qc_app_core qc_clientcore qc_server qc_worlds qc_network
     TS_FILE_DIR ${PROJECT_SOURCE_DIR}/translations
     TS_FILE_BASE qtcraft
     RESOURCE_PREFIX /i18n)

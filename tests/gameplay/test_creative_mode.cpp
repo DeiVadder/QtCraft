@@ -4,7 +4,7 @@
 #include "server/gameplay/QcServerGameModes.h"
 #include "server/network/QcServerSettings.h"
 #include "server/storage/QcSaveFile.h"
-#include "server/storage/QcWorldLibrary.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDir>
 #include <QFile>

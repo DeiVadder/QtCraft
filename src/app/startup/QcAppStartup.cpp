@@ -9,8 +9,8 @@
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/debug/QcStatsLog.h"
-#include "server/content/QcBundledMods.h"
-#include "server/content/QcModLoader.h"
+#include "worlds/QcBundledMods.h"
+#include "worlds/QcModLoader.h"
 
 #include <QCoreApplication>
 #include <QQuickWindow>

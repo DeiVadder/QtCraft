@@ -2,8 +2,8 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "server/content/QcModLoader.h"
-#include "server/storage/QcWorldLibrary.h"
+#include "worlds/QcModLoader.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDesktopServices>
 #include <QDir>

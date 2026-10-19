@@ -23,14 +23,14 @@
 #include "headless/QcStdinReader.h"
 #include "headless/QcTextureTools.h"
 #include "headless/QcWorldStats.h"
-#include "server/content/QcContentFingerprint.h"
-#include "server/content/QcModLoader.h"
-#include "server/core/QcLocalServerHost.h"
-#include "server/gameplay/QcHandbookRules.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worlds/QcContentFingerprint.h"
+#include "worlds/QcHandbookRules.h"
+#include "worlds/QcLocalServerHost.h"
+#include "worlds/QcModLoader.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QCommandLineParser>
 #include <QCoreApplication>

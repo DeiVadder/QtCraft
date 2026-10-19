@@ -19,10 +19,10 @@ qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp QcTestWor
 # The prediction of the local player on its own (decision E-530): reconciliation, pending inputs, riding.
 # The client session's tick thread (decision E-560): pacer and core on a fake clock, long frames of
 # the session's thread (real time), order of commands, ending sessions, the fallback without a thread.
-qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTransport.h LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 # The session on its tick thread against a server: wish to fly after landing, server stop and kick,
 # death and respawn, riding, the same walk as with the timer in the session's thread.
-qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"
@@ -32,11 +32,11 @@ qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
-qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_server qc_clientcore Qt::Qml)
+qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_worlds qc_clientcore Qt::Qml)
 target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_reconciliation SOURCES client/test_reconciliation.cpp QcTestWorld.h LIBRARIES qc_clientcore)
-qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
@@ -62,7 +62,7 @@ qc_add_test(test_gamepad_profiles SOURCES client/test_gamepad_profiles.cpp LIBRA
 qc_add_test(test_gamepad_navigation SOURCES client/test_gamepad_navigation.cpp LIBRARIES qc_clientcore)
 # The gamepad controls behind the keyboard in the game's frame order: focus, screens, background
 # presses, the lead between pads (decision E-541).
-qc_add_test(test_gamepad_controls SOURCES client/test_gamepad_controls.cpp LIBRARIES qc_app_core qc_server)
+qc_add_test(test_gamepad_controls SOURCES client/test_gamepad_controls.cpp LIBRARIES qc_server qc_app_core qc_worlds)
 # The pad on the screens of a window: focus moves, clicks, back, tabs, lists, popups, keyboard
 # requests and the device in use (decisions E-583, E-584).
 qc_add_test(test_gamepad_screens SOURCES client/test_gamepad_screens.cpp LIBRARIES qc_app_core)
@@ -87,7 +87,7 @@ qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARI
 # The screens that exist only while shown and a while after (LazyScreen.qml, decision E-691),
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
-qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_server)
+qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
 target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.

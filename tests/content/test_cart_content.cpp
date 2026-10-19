@@ -1,5 +1,5 @@
 #include "QcTestUtil.h"
-#include "server/content/QcModLoader.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDir>
 #include <QFile>

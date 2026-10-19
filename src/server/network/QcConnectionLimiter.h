@@ -1,5 +1,7 @@
 #pragma once
 
+#include "network/QcNetworkConfig.h"
+
 #include <QHash>
 #include <QHostAddress>
 #include <QString>
@@ -10,15 +12,7 @@
 class QcConnectionLimiter
 {
 public:
-    struct Limits
-    {
-        // New connections per second and address in the long run, and the burst allowed at once.
-        double perSecond = 1.0;
-        double burst = 8.0;
-        // Open connections (logging in or playing) per address and in all.
-        int perAddress = 8;
-        int total = 64;
-    };
+    using Limits = QcConnectionLimits;
     // Addresses remembered at most; full buckets are forgotten first.
     static constexpr qsizetype maxTracked = 4096;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/core/QcResult.h"
-#include "server/storage/QcWorldStorage.h"
+#include "common/world/QcWorldInfo.h"
 
 #include <QList>
 #include <QString>

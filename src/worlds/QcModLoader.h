@@ -2,7 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
-#include "server/content/QcModStatus.h"
+#include "worlds/QcModStatus.h"
 
 #include <QList>
 #include <QString>

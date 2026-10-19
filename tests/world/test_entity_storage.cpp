@@ -6,9 +6,9 @@
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcVillagerCodec.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDirIterator>
 #include <QFile>

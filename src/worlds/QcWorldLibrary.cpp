@@ -1,6 +1,7 @@
-#include "server/storage/QcWorldLibrary.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include "common/core/QcDataRoot.h"
+#include "server/storage/QcWorldStorage.h"
 
 #include <QDir>
 #include <QFileInfo>

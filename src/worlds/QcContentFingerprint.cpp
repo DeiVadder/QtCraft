@@ -1,4 +1,4 @@
-#include "server/content/QcContentFingerprint.h"
+#include "worlds/QcContentFingerprint.h"
 
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"

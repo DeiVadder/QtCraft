@@ -1,12 +1,12 @@
 #include "server/core/QcServer.h"
 
+#include "common/auth/QcProfileValidation.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
 #include "common/world/QcDayCycle.h"
-#include "server/core/QcProfileValidation.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSetup.h"
 #include "server/gameplay/QcLineOfSight.h"

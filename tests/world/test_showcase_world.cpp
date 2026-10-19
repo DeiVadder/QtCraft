@@ -7,7 +7,6 @@
 #include "QcStoredWorld.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServer.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerTrades.h"
 #include "server/villages/QcVillages.h"
@@ -16,6 +15,7 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDir>
 #include <QFile>

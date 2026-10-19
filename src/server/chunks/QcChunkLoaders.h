@@ -3,6 +3,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcBlockPos.h"
 #include "common/world/QcChunk.h"
+#include "common/world/QcPlacedChunkLoader.h"
 
 #include <QHash>
 #include <QList>
@@ -21,14 +22,7 @@
 class QcChunkLoaders
 {
 public:
-    struct Loader
-    {
-        QcBlockPos pos;
-        // The player who placed it; empty for commands and structures.
-        QString owner;
-
-        bool operator==(const Loader &) const = default;
-    };
+    using Loader = QcPlacedChunkLoader;
 
     static constexpr auto tag = "qtcraft:chunk_loaders";
 

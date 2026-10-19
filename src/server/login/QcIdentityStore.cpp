@@ -1,9 +1,9 @@
 #include "server/login/QcIdentityStore.h"
 
 #include "common/auth/QcLoginCrypto.h"
+#include "common/auth/QcProfileValidation.h"
 #include "common/protocol/QcLoginMessages.h"
 #include "server/commands/QcAccessList.h"
-#include "server/core/QcProfileValidation.h"
 #include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 

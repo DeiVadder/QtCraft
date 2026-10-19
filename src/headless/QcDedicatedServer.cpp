@@ -2,9 +2,9 @@
 
 #include "headless/QcServerConsole.h"
 #include "headless/QcSignalWatcher.h"
-#include "server/core/QcLocalServerHost.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcLocalServerHost.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QCoreApplication>
 #include <QDir>

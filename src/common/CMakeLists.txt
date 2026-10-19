@@ -4,6 +4,7 @@ qt_add_library(qc_common STATIC)
 target_sources(qc_common PRIVATE
     auth/QcLoginCrypto.h auth/QcLoginCrypto.cpp
     auth/QcPlayerKey.h auth/QcPlayerKey.cpp
+    auth/QcProfileValidation.h auth/QcProfileValidation.cpp
 )
 target_sources(qc_common PRIVATE
     content/definitions/QcAppearance.h
@@ -121,6 +122,7 @@ target_sources(qc_common PRIVATE
     core/QcResult.h
     core/QcSectionKey.h
     core/QcTickPhase.h
+    core/QcTickSummary.h
     core/QcVec3.h
     core/QcWorkerPool.h core/QcWorkerPool.cpp
     core/QcWorldConstants.h
@@ -191,6 +193,7 @@ target_sources(qc_common PRIVATE
     protocol/QcInProcessTransport.h protocol/QcInProcessTransport.cpp
     protocol/QcLoginCodec.cpp
     protocol/QcLoginMessages.h
+    protocol/QcLoginSettings.h
     protocol/QcMachineCodec.cpp
     protocol/QcMachineMessages.h
     protocol/QcMessages.h
@@ -212,13 +215,16 @@ target_sources(qc_common PRIVATE
     world/QcBlockAccess.h
     world/QcChunk.h world/QcChunk.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
+    world/QcDamagedFile.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
     world/QcLightPassage.h
     world/QcLightVolume.h world/QcLightVolume.cpp
     world/QcMinecartBody.h
+    world/QcPlacedChunkLoader.h
     world/QcPrecipitationTable.h world/QcPrecipitationTable.cpp
     world/QcWeather.h world/QcWeather.cpp
+    world/QcWorldInfo.h world/QcWorldInfo.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp
 )
 qc_configure_target(qc_common)

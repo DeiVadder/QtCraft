@@ -2,8 +2,8 @@
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "QcTestUtil.h"
-#include "server/gameplay/QcHandbookRules.h"
 #include "server/signal/QcCircuitComponents.h"
+#include "worlds/QcHandbookRules.h"
 
 #include <QTest>
 

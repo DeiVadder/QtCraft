@@ -11,12 +11,12 @@
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFallingBlockManager.h"
 #include "server/blocks/QcLiquidFlow.h"
-#include "server/content/QcModLoader.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDataStream>
 #include <QDir>

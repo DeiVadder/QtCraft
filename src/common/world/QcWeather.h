@@ -14,6 +14,28 @@ enum class QcWeatherKind : quint8 { Clear, Rain, Thunder };
 // What falls at one place while it rains: nothing (a dry biome, or no rain at all), rain or snow.
 enum class QcPrecipitation : quint8 { None, Rain, Snow };
 
+// The weather of a world as world.json keeps it (decision E-395): the current spell (kind and the
+// ticks until it ends), how many spells the world has had, the strengths of rain and thunder,
+// which fade towards the spell's kind, and how many ticks the weather has run.
+struct QcWeatherState
+{
+    QcWeatherKind kind = QcWeatherKind::Clear;
+    // Ticks until the spell ends while the game rule weatherCycle is on.
+    qint64 ticksLeft = 0;
+    // Spells so far; with the seed it decides the next spell. 0: the world's first spell has not
+    // begun (a new world, or one saved without weather), the first tick starts a clear one.
+    qint64 spell = 0;
+    // Strengths in 0..1.
+    float rain = 0.0f;
+    float thunder = 0.0f;
+    // Ticks the weather has run (world.json "ticks", 0 when missing). With the seed it decides the
+    // random draws of each tick (strikes, snowfall; QcWeatherCycle::Draws), so they go on after
+    // loading as if the world had not been saved (decision E-397).
+    qint64 ticks = 0;
+
+    friend bool operator==(const QcWeatherState &, const QcWeatherState &) = default;
+};
+
 namespace QcWeather {
 
 // The name used by /weather, world.json and the control interface ("clear", "rain", "thunder").

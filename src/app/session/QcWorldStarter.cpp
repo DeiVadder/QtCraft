@@ -3,10 +3,10 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
-#include "server/content/QcModLoader.h"
-#include "server/core/QcLocalServerHost.h"
-#include "server/storage/QcWorldStorage.h"
+#include "common/world/QcWorldInfo.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcLocalServerHost.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDir>
 
@@ -34,9 +34,9 @@ QcResult<std::shared_ptr<const QcContentRegistry>> QcWorldStarter::loadContent()
     return shared;
 }
 
-QString QcWorldStarter::damagedFileMessage(const QcServerPersistence::DamagedFile &damaged)
+QString QcWorldStarter::damagedFileMessage(const QcDamagedFile &damaged)
 {
-    using Part = QcServerPersistence::DamagedPart;
+    using Part = QcDamagedPart;
     switch (damaged.part) {
     case Part::Entities:
         return tr("The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the creatures, "
@@ -64,19 +64,7 @@ std::expected<std::unique_ptr<QcLocalServerHost>, QcWorldStarter::Refusal>
 QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world, const QString &directory,
                             std::optional<std::array<int, 2>> spawnColumn)
 {
-    QcServerConfig config;
-    config.worldName = world.name;
-    config.seed = world.seed;
-    config.generator = world.generator;
-    config.generatorOptions = world.generatorOptions;
-    config.worldDirectory = directory;
-    // One extra ring: sections are meshed only once their neighbours are known.
-    config.viewDistance = m_settings.viewDistance() + 1;
-    config.spawnColumn = spawnColumn;
-    // An unsaved world (test hooks) has no world.json to keep its default game mode.
-    if (directory.isEmpty()) {
-        config.defaultGameMode = world.defaultGameMode;
-    }
+    const QcWorldStart start{.world = world, .directory = directory, .viewDistance = m_settings.viewDistance(), .spawnColumn = spawnColumn};
     // Options given for an unsaved world (--flat-layers) must fit; a saved world with damaged ones
     // falls back to the defaults with a warning.
     if (const QcStatus checked = QcWorldGenerators::checkOptions(world.generator, world.generatorOptions, *content);
@@ -84,7 +72,7 @@ QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &cont
         return std::unexpected(Refusal{tr("Cannot start the world: %1").arg(checked.error()), checked.error()});
     }
 
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, content, config.seed, world.generatorOptions);
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, content, world.seed, world.generatorOptions);
     if (!generator) {
         return std::unexpected(Refusal{tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator), std::nullopt});
     }
@@ -92,7 +80,7 @@ QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &cont
     for (const QString &warning : generator->warnings()) {
         qCWarning(lcGame) << "World generation:" << warning;
     }
-    auto server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
+    auto server = std::make_unique<QcLocalServerHost>(start, content, std::move(generator));
     if (!server->startError().isEmpty()) {
         return std::unexpected(Refusal{tr("Cannot load the world: %1").arg(startError(*server, directory)), std::nullopt});
     }

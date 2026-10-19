@@ -12,10 +12,12 @@
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"
-#include "server/content/QcContentFingerprint.h"
-#include "server/content/QcModLoader.h"
-#include "server/core/QcLocalServerHost.h"
-#include "server/core/QcProfileValidation.h"
+#include "common/auth/QcProfileValidation.h"
+#include "common/protocol/QcLoginSettings.h"
+#include "network/QcNetworkConfig.h"
+#include "worlds/QcContentFingerprint.h"
+#include "worlds/QcLocalServerHost.h"
+#include "worlds/QcModLoader.h"
 
 
 using namespace Qt::StringLiterals;

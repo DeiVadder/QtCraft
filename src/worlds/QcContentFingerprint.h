@@ -2,7 +2,7 @@
 
 #include "common/core/QcResult.h"
 #include "common/protocol/QcLoginMessages.h"
-#include "server/content/QcModLoader.h"
+#include "worlds/QcModLoader.h"
 
 // What a network server and its clients compare at the login (decision E-252): per loaded content
 // pack its id, version and a hash over its files, so that two installations with the same mod

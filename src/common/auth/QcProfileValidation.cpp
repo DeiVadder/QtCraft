@@ -1,4 +1,4 @@
-#include "server/core/QcProfileValidation.h"
+#include "common/auth/QcProfileValidation.h"
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcNameText.h"

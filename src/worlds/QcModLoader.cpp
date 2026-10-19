@@ -1,11 +1,11 @@
-#include "server/content/QcModLoader.h"
+#include "worlds/QcModLoader.h"
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "server/core/QcServerLogging.h"
-#include "server/storage/QcWorldLibrary.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QDataStream>
 #include <QDir>

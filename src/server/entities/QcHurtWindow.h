@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/world/QcWorldInfo.h"
+
 #include <QtGlobal>
 
 // The short invulnerability of a player or creature after a hurt (decision E-429), counted in game
@@ -16,9 +18,10 @@ public:
     // stronger hit during the window (only the difference, silent and without knockback).
     enum class Take : quint8 { Ignored, Fresh, Stronger };
 
-    // The game rules' default length of the window (the reference's 0.5 s) and their highest value.
-    static constexpr int defaultTicks = 10;
-    static constexpr int maxTicks = 200;
+    // The game rules' default length of the window (the reference's 0.5 s) and their highest value,
+    // as world.json keeps them.
+    static constexpr int defaultTicks = QcWorldInfo::defaultInvulnerabilityTicks;
+    static constexpr int maxTicks = QcWorldInfo::maxInvulnerabilityTicks;
     // Ticks after a fresh hit with damage during which a creature does not steer (knocked back).
     static constexpr int knockbackTicks = 5;
 

@@ -1,11 +1,11 @@
 #include "server/login/QcServerLogin.h"
 
 #include "common/auth/QcLoginCrypto.h"
+#include "common/auth/QcProfileValidation.h"
 #include "common/core/QcNameText.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcPackComparison.h"
 #include "common/protocol/QcProtocol.h"
-#include "server/core/QcProfileValidation.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 

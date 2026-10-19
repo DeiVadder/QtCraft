@@ -10,7 +10,8 @@
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/tick/QcTickTiming.h"
 #include "common/core/QcProcessMemory.h"
-#include "server/core/QcLocalServerHost.h"
+#include "common/core/QcTickSummary.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QCoreApplication>
 #include <QTimer>
@@ -25,7 +26,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Mean and longest time per server tick phase (decision E-225), "key=value" pairs for the BENCH line.
-QString tickPhasePairs(const QcTickStats::Summary &ticks)
+QString tickPhasePairs(const QcTickSummary &ticks)
 {
     QStringList pairs;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
@@ -288,7 +289,7 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
         total += ns;
     }
 
-    const QcTickStats::Summary ticks = m_parts.server ? m_parts.server->tickStats() : QcTickStats::Summary();
+    const QcTickSummary ticks = m_parts.server ? m_parts.server->tickStats() : QcTickSummary();
     const double averageMs = double(total) / double(sorted.size()) / 1e6;
     const qsizetype entities = m_parts.session ? m_parts.session->entities().size() : 0;
 

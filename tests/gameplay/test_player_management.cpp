@@ -1,7 +1,7 @@
+#include "common/auth/QcProfileValidation.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 #include "server/commands/QcAccessList.h"
-#include "server/core/QcProfileValidation.h"
 
 #include <QFile>
 #include <QJsonArray>

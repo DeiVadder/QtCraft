@@ -9,9 +9,9 @@
 #include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "server/core/QcLocalServerHost.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcLocalServerHost.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QCoreApplication>
 #include <QQuickWindow>

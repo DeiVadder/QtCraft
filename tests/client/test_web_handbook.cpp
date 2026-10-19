@@ -8,7 +8,7 @@
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookWeb.h"
 #include "QcTestUtil.h"
-#include "server/gameplay/QcHandbookRules.h"
+#include "worlds/QcHandbookRules.h"
 
 #include <QDir>
 #include <QFile>

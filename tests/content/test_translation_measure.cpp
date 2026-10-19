@@ -2,7 +2,7 @@
 #include "common/content/parser/QcContentParser.h"
 #include "common/core/QcProcessMemory.h"
 #include "QcTestUtil.h"
-#include "server/content/QcModLoader.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDir>
 #include <QElapsedTimer>

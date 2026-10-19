@@ -4,9 +4,10 @@
 #include "network/QcTcpConnector.h"
 #include "QcRecordingTransport.h"
 #include "QcTestUtil.h"
-#include "server/core/QcLocalServerHost.h"
+#include "server/core/QcServerConfig.h"
 #include "server/network/QcNetworkServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QSignalSpy>
 #include <QTest>

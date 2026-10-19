@@ -1,18 +1,49 @@
-#include "server/core/QcLocalServerHost.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/core/QcServer.h"
-#include "server/core/QcServerLogging.h"
+#include "server/core/QcServerConfig.h"
 #include "server/entities/QcEntityChecks.h"
+#include "server/network/QcNetworkServer.h"
 #include "worldgen/generators/QcWorldGenerator.h"
+#include "worlds/QcWorldsLogging.h"
 
 #include <QThread>
 
 #include <mutex>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The server's configuration for a world of this process.
+[[nodiscard]] QcServerConfig serverConfigOf(const QcWorldStart &start)
+{
+    QcServerConfig config;
+    config.worldName = start.world.name;
+    config.seed = start.world.seed;
+    config.generator = start.world.generator;
+    config.generatorOptions = start.world.generatorOptions;
+    config.worldDirectory = start.directory;
+    // One extra ring: sections are meshed only once their neighbours are known.
+    config.viewDistance = start.viewDistance + 1;
+    config.spawnColumn = start.spawnColumn;
+    // An unsaved world (test hooks) has no world.json to keep its default game mode.
+    if (start.directory.isEmpty()) {
+        config.defaultGameMode = start.world.defaultGameMode;
+    }
+    return config;
+}
+
+} // namespace
+
+QcLocalServerHost::QcLocalServerHost(const QcWorldStart &start, std::shared_ptr<const QcContentRegistry> content,
+                                     std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
+    : QcLocalServerHost(serverConfigOf(start), std::move(content), std::move(generator), parent)
+{
+}
 
 QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                                      std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
@@ -42,7 +73,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
 QcLocalServerHost::~QcLocalServerHost()
 {
     if (const QcStatus stopped = shutdown(); !stopped) {
-        qCWarning(lcServer, "Saving the world failed: %s", qPrintable(stopped.error()));
+        qCWarning(lcWorlds, "Saving the world failed: %s", qPrintable(stopped.error()));
     }
 }
 
@@ -69,9 +100,9 @@ void QcLocalServerHost::acceptPendingClients(QcServer *server)
     }
 }
 
-QcTickStats::Summary QcLocalServerHost::tickStats() const
+QcTickSummary QcLocalServerHost::tickStats() const
 {
-    return m_server ? m_server->tickTimes() : QcTickStats::Summary();
+    return m_server ? m_server->tickTimes() : QcTickSummary();
 }
 
 QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()

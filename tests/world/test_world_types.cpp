@@ -3,10 +3,10 @@
 #include "QcRawClient.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServer.h"
-#include "server/storage/QcWorldLibrary.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worlds/QcWorldLibrary.h"
 
 #include <QTemporaryDir>
 #include <QTest>

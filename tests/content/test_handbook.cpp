@@ -6,8 +6,8 @@
 #include "common/handbook/QcHandbookJson.h"
 #include "common/handbook/QcHandbookMarkdown.h"
 #include "QcTestUtil.h"
-#include "server/content/QcModLoader.h"
-#include "server/gameplay/QcHandbookRules.h"
+#include "worlds/QcHandbookRules.h"
+#include "worlds/QcModLoader.h"
 
 #include <QDir>
 #include <QElapsedTimer>

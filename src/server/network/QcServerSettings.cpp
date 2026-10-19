@@ -1,6 +1,6 @@
 #include "server/network/QcServerSettings.h"
 
-#include "server/core/QcProfileValidation.h"
+#include "common/auth/QcProfileValidation.h"
 
 #include <QFile>
 #include <QJsonArray>

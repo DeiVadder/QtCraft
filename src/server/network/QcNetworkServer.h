@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcResult.h"
+#include "network/QcNetworkConfig.h"
 #include "network/QcTcpTransport.h"
 #include "server/network/QcConnectionLimiter.h"
 
@@ -9,19 +10,6 @@
 
 class QcServer;
 class QTcpServer;
-
-// Settings of the listener of a network game (decisions E-251, E-254).
-struct QcNetworkConfig
-{
-    // Any: IPv4 and IPv6 on all interfaces (LAN and internet); LocalHost or LocalHostIPv6 for this
-    // computer only.
-    QHostAddress bindAddress = QHostAddress::Any;
-    // 0 picks a free port (tests).
-    quint16 port = 25600;
-    QcConnectionLimiter::Limits connections;
-    // Clients send only small messages; a frame beyond this ends their connection.
-    QcTcpTransport::Limits transport{.maxIncomingFrameBytes = qint64(256) * 1024};
-};
 
 // Accepts TCP connections for a QcServer in the server's thread (decision E-251): every accepted
 // socket becomes a QcTcpTransport and a remote client of the server, which logs it in; no data is

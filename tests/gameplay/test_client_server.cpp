@@ -7,9 +7,9 @@
 #include "common/protocol/QcProtocol.h"
 #include "QcRawClient.h"
 #include "QcTestUtil.h"
-#include "server/core/QcLocalServerHost.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QSignalSpy>
 #include <QTest>

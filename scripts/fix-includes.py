@@ -20,7 +20,9 @@ scripts/check-cmake-lists.py reports what is out of place.
 
 The check also keeps the layers of src/ (decision E-419): a top folder includes headers of itself
 and of the folders LAYERS allows it, nothing else (common nothing, worldgen and network only
-common, ...; app and headless, the composition roots, anything). A new top folder needs its line.
+common, ...; worlds also server, app the allow-list of LAYERS without server and headless (decision
+E-705), headless anything). HEADER_LAYERS narrows the headers of a folder: the headers of worlds
+include no server header. A new top folder needs its line.
 
 Usage: scripts/fix-includes.py [--check] [--deps [<prefix>]] [--self-test]
   --check      change nothing; exit 1 and list the files that would change and the includes that
@@ -50,9 +52,9 @@ CMAKE_FILE = re.compile(r"(?<![\w${}/.-])((?:\$\{(?:PROJECT|CMAKE_CURRENT)_SOURC
 CMAKE_COMMENT = re.compile(r"#\[(=*)\[.*?\]\1\]|#[^\n]*", re.DOTALL)
 TS_LOCATION = re.compile(r'(<location filename=")([^"]+)(")')
 TRANSLATIONS = "translations"
-# The top folders of src/ whose headers each top folder may include besides its own (decision
-# E-419); None: any. Direct includes only: audio reaches network through clientcore, but does not
-# include it.
+# The top folders of src/ whose headers each top folder may include besides its own (decisions
+# E-419, E-705); None: any. Direct includes only: audio reaches network through clientcore, but does
+# not include it.
 LAYERS = {
     "common": set(),
     "worldgen": {"common"},
@@ -60,8 +62,14 @@ LAYERS = {
     "clientcore": {"common", "network"},
     "audio": {"common", "clientcore"},
     "server": {"common", "network", "worldgen"},
-    "app": None,
+    "worlds": {"common", "network", "worldgen", "server"},
+    "app": {"common", "network", "worldgen", "clientcore", "audio", "worlds"},
     "headless": None,
+}
+# Narrower layers for the headers of a top folder (decision E-705): the headers of worlds include no
+# server header, so app, which includes them, sees no server type; the sources of worlds may.
+HEADER_LAYERS = {
+    "worlds": {"common", "network", "worldgen"},
 }
 
 
@@ -218,7 +226,8 @@ def layer_violations(root, files):
         if layer not in LAYERS:
             problems.append(f"{path}: top folder src/{layer} has no line in LAYERS (decision E-419)")
             continue
-        allowed = LAYERS[layer]
+        narrowed = path.endswith(".h") and layer in HEADER_LAYERS
+        allowed = HEADER_LAYERS[layer] if narrowed else LAYERS[layer]
         if allowed is None:
             continue
         with open(os.path.join(root, path), encoding="utf-8") as file:
@@ -226,8 +235,9 @@ def layer_violations(root, files):
         for match in INCLUDE.finditer(text):
             target = match.group(2).partition("/")[0]
             if "/" in match.group(2) and target in LAYERS and target != layer and target not in allowed:
-                problems.append(f"{path}: includes {match.group(2)}, but src/{layer} may include only "
-                                f"{', '.join(sorted(allowed)) or 'itself'} (decision E-419)")
+                kind = "headers of src/" if narrowed else "src/"
+                problems.append(f"{path}: includes {match.group(2)}, but {kind}{layer} may include only "
+                                f"{', '.join(sorted(allowed)) or 'itself'} (decisions E-419, E-705)")
     return problems
 
 
@@ -239,11 +249,16 @@ SELF_TEST_CASES = [
     ("audio/QcA.cpp", '  #  include "network/QcN.h"\n', "includes network/QcN.h"),
     ("server/QcA.cpp", '#include "app/QcGameController.h"\n', "src/server may include only common, network, worldgen"),
     ("plugins/QcA.cpp", '#include "common/QcB.h"\n', "top folder src/plugins has no line in LAYERS"),
+    ("app/QcA.cpp", '#include "worlds/QcW.h"\n#include "server/QcS.h"\n', "includes server/QcS.h"),
+    ("worlds/QcA.cpp", '#include "clientcore/QcC.h"\n', "src/worlds may include only common, network, server, worldgen"),
+    ("server/QcB.cpp", '#include "worlds/QcW.h"\n', "src/server may include only common, network, worldgen"),
+    ("worlds/QcB.h", '#include "server/QcS.h"\n', "headers of src/worlds may include only common, network, worldgen"),
 ]
 SELF_TEST_GOOD = [
     ("common/a/QcA.cpp", '#include "common/b/QcB.h"\n#include "QcLocal.h"\n#include <QList>\n#include "moc_QcA.cpp"\n'),
     ("server/QcA.cpp", '#include "worldgen/QcW.h"\n#include "network/QcN.h"\n#include "common/QcC.h"\n'),
-    ("app/QcA.cpp", '#include "server/QcS.h"\n#include "audio/QcAudio.h"\n'),
+    ("app/QcA.cpp", '#include "worlds/QcW.h"\n#include "audio/QcAudio.h"\n'),
+    ("worlds/QcA.cpp", '#include "server/QcS.h"\n#include "worldgen/QcW.h"\n'),
     ("audio/QcA.cpp", '#include "clientcore/sound/QcSoundBank.h"\n'),
 ]
 
