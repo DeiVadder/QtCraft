@@ -76,11 +76,11 @@ private slots:
         settings.appearance.shirtColor = 0x00ff00;
         settings.appearance.pantsColor = 0x000000;
         settings.appearance.cape = u"mod:red_cape"_s;
-        settings.masterVolume = 0.25;
-        settings.effectsVolume = 0.0;
-        settings.musicVolume = 1.0;
-        settings.ambientVolume = 0.4;
-        settings.muted = true;
+        settings.audio.master = 0.25;
+        settings.audio.effects = 0.0;
+        settings.audio.music = 1.0;
+        settings.audio.ambient = 0.4;
+        settings.audio.muted = true;
         settings.characterPresets = {{u"Cave look"_s, {u"qtcraft:miner"_s, u"qtcraft:cap"_s, 0x111111, 0x222222, 0x333333, 0x444444, u"qtcraft:green_cape"_s}},
                                      {u"Bald"_s, {u"qtcraft:tunic"_s, QString(), 0xabcdef, 0, 0xffffff, 0x010101}}};
 
@@ -280,11 +280,11 @@ private slots:
     void audioDefaultsAndBadVolumes()
     {
         const QcGameSettings defaults;
-        QCOMPARE(defaults.masterVolume, 0.8);
-        QCOMPARE(defaults.effectsVolume, 1.0);
-        QCOMPARE(defaults.musicVolume, 0.5);
-        QCOMPARE(defaults.ambientVolume, 0.7);
-        QVERIFY(!defaults.muted);
+        QCOMPARE(defaults.audio.master, 0.8);
+        QCOMPARE(defaults.audio.effects, 1.0);
+        QCOMPARE(defaults.audio.music, 0.5);
+        QCOMPARE(defaults.audio.ambient, 0.7);
+        QVERIFY(!defaults.audio.muted);
 
         QTemporaryDir dir;
         const QString path = dir.filePath(u"settings.ini"_s);
@@ -294,11 +294,11 @@ private slots:
         file.close();
 
         const QcGameSettings settings = QcGameSettings::load(path);
-        QCOMPARE(settings.masterVolume, 1.0);
-        QCOMPARE(settings.effectsVolume, 0.0);
-        QCOMPARE(settings.musicVolume, defaults.musicVolume);
-        QCOMPARE(settings.ambientVolume, defaults.ambientVolume);
-        QVERIFY(settings.muted);
+        QCOMPARE(settings.audio.master, 1.0);
+        QCOMPARE(settings.audio.effects, 0.0);
+        QCOMPARE(settings.audio.music, defaults.audio.music);
+        QCOMPARE(settings.audio.ambient, defaults.audio.ambient);
+        QVERIFY(settings.audio.muted);
     }
 
     void badCharacterAndViewValuesFallBack()

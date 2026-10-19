@@ -128,8 +128,6 @@ private:
     // dimming block moved. Returns the lowest and highest such cell for a change at `pos`.
     std::pair<int, int> skyLightRange(const QcClientWorld &world, QcBlockPos pos, const QcBlockRenderTable::Entry &before,
                                       const QcBlockRenderTable::Entry &after) const;
-    // The sections of the 3 x 3 chunks around `chunk` whose sky light the cells low..high reach.
-    static void appendSkyLightSections(QList<SectionAddress> &dirty, QcChunkPos chunk, int low, int high);
     // Dirty sections not being meshed, nearest to the focus first.
     QList<quint64> nearestDirtyFirst() const;
     // Nullopt while a side neighbour of the chunk is missing.

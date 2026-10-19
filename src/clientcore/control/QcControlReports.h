@@ -32,7 +32,8 @@ public:
     QJsonObject weatherJson() const;
 
 private:
-    void insertTarget(QJsonObject &status) const;
+    // The block the player aims at, none when he aims at nothing.
+    [[nodiscard]] std::optional<QJsonObject> targetJson() const;
 
     const QcClientSession &m_session;
     const QStringList &m_chatLog;

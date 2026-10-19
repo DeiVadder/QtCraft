@@ -97,9 +97,14 @@ void QcBlockCommands::setBlock(const QcCommandContext &context)
 void QcBlockCommands::fill(const QcCommandContext &context, bool clear)
 {
     std::optional<BlockArea> area = parseArea(context, 2, clear ? u"air"_s : context.args[6]);
-    if (!area || !parseFilter(context, *area, clear)) {
+    if (!area) {
         return;
     }
+    const std::optional<Filter> filter = parseFilter(context, clear);
+    if (!filter) {
+        return;
+    }
+    area->filter = *filter;
 
     if (area->volume() <= confirmFillBlocks) {
         apply(context.source, *area, false);
@@ -110,12 +115,17 @@ void QcBlockCommands::fill(const QcCommandContext &context, bool clear)
     m_pending.ask(context, [this, area = *area](const QcCommandSource &source) { apply(source, area, false); }, m_state.clock().playerTimeNs());
 }
 
-std::optional<QcBlockId> QcBlockCommands::parseBlock(const QcCommandContext &context, const QString &text, QString &name) const
+QString QcBlockCommands::blockName(const QString &text)
 {
-    // "name" or "name[property=value,...]"; without states, connections follow the neighbours.
-    name = text.section(u'[', 0, 0).contains(u':') ? text : u"qtcraft:"_s + text;
-    QStringList problems;
-    const std::optional<QcBlockId> block = m_state.content().stateId(name, &problems);
+    return text.section(u'[', 0, 0).contains(u':') ? text : u"qtcraft:"_s + text;
+}
+
+std::optional<QcBlockId> QcBlockCommands::parseBlock(const QcCommandContext &context, const QString &text) const
+{
+    // Without states, connections follow the neighbours.
+    const QcContentRegistry::ParsedState parsed = m_state.content().parseState(blockName(text));
+    const std::optional<QcBlockId> block = parsed.id;
+    const QStringList &problems = parsed.problems;
     if (block && !problems.isEmpty()) {
         context.source.replyPlain(problems.join(u"; "_s));
         return std::nullopt;
@@ -148,7 +158,8 @@ std::optional<QcBlockCommands::BlockArea> QcBlockCommands::parseArea(const QcCom
         return std::nullopt;
     }
 
-    const std::optional<QcBlockId> block = parseBlock(context, blockWord, area.name);
+    area.name = blockName(blockWord);
+    const std::optional<QcBlockId> block = parseBlock(context, blockWord);
     if (!block) {
         return std::nullopt;
     }
@@ -157,7 +168,7 @@ std::optional<QcBlockCommands::BlockArea> QcBlockCommands::parseArea(const QcCom
     return area;
 }
 
-bool QcBlockCommands::parseFilter(const QcCommandContext &context, BlockArea &area, bool clear) const
+std::optional<QcBlockCommands::Filter> QcBlockCommands::parseFilter(const QcCommandContext &context, bool clear) const
 {
     // /fill … <block> replace <filter>, /clear … <filter>.
     const QStringList &args = context.args;
@@ -165,18 +176,19 @@ bool QcBlockCommands::parseFilter(const QcCommandContext &context, BlockArea &ar
     if (!valid) {
         context.reply(clear ? QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /clear <x1> <y1> <z1> <x2> <y2> <z2> [block]") : fillUsage,
                       {QString::number(maxFillBlocks)});
-        return false;
+        return std::nullopt;
     }
 
     const qsizetype filterIndex = clear ? 6 : 8;
     if (args.size() <= filterIndex) {
-        return true;
+        return Filter{};
     }
 
-    QString name;
-    area.filter = parseBlock(context, args[filterIndex], name);
-    area.filterState = name.contains(u'[');
-    return area.filter.has_value();
+    const std::optional<QcBlockId> block = parseBlock(context, args[filterIndex]);
+    if (!block) {
+        return std::nullopt;
+    }
+    return Filter{block, blockName(args[filterIndex]).contains(u'[')};
 }
 
 void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area, bool single)
@@ -196,7 +208,7 @@ void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area
         }
     }
 
-    if (changed == 0 && !area.filter) {
+    if (changed == 0 && !area.filter.block) {
         source.reply(machine ? QT_TRANSLATE_NOOP("QcServerMessages", "Nothing set: the chunks are not loaded or there are too many machines")
                              : QT_TRANSLATE_NOOP("QcServerMessages", "Nothing set: the chunks are not loaded"));
     } else if (single) {
@@ -213,7 +225,8 @@ bool QcBlockCommands::changeBlock(QcBlockPos pos, const BlockArea &area, bool ma
     if (!current || (machine && !m_state.blockEntities().machine(pos) && m_state.blockEntities().isMachineTableFull())) {
         return false;
     }
-    if (area.filter && (area.filterState ? *current != *area.filter : !m_state.content().isSameBlock(*current, *area.filter))) {
+    const Filter &filter = area.filter;
+    if (filter.block && (filter.explicitState ? *current != *filter.block : !m_state.content().isSameBlock(*current, *filter.block))) {
         return false;
     }
 

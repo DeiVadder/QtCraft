@@ -403,7 +403,7 @@ void QcServerWorld::dropOrphanTails(QcBlockPos pos)
     }
 
     // Scheduled ticks stay with a changed block (QcBlockEntities::placed); the backstop for them
-    // and for entries that end without a block change is QcBlockEntityRecords::pruneKept.
+    // and for entries that end without a block change is QcBlockEntityRecord::pruneKept.
     using Table = QcBlockEntityRecord::Table;
     tails->removeIf([this, pos](const QcEntityComponent &tail) {
         switch (Table(tail.id)) {

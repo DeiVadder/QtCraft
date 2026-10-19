@@ -42,9 +42,15 @@ QcPhysics::Steering QcPassiveBrain::think(QcCreature &mob, const QcMobDefinition
         target = QcMobSteering::chooseTarget(mob, definition, *context.players, context.world, looks);
     }
     // A hostile creature that has not looked yet still strikes a player right next to it.
-    if (!target && QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world, *context.hits)) {
-        mob.lastSpeed = definition.chaseSpeed;
-        return {{}, definition.chaseSpeed};
+    if (!target) {
+        const QcMobSteering::Melee melee = QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world);
+        if (melee.hit) {
+            context.hits->append(*melee.hit);
+        }
+        if (melee.struck) {
+            mob.lastSpeed = definition.chaseSpeed;
+            return {{}, definition.chaseSpeed};
+        }
     }
 
     const QcPhysics::Steering steering = target ? chase(mob, definition, *target, context, mayPlan) : wander(mob, definition, context, mayPlan);
@@ -63,7 +69,9 @@ QcPhysics::Steering QcPassiveBrain::chase(QcCreature &mob, const QcMobDefinition
 {
     // In melee it stands and strikes; otherwise it walks its path, within one cell of the target.
     if (QcMobSteering::inMelee(mob, definition, target, context.world)) {
-        QcMobSteering::strike(mob, definition, target, *context.hits);
+        if (const std::optional<QcMobManager::PlayerHit> hit = QcMobSteering::strike(mob, definition, target)) {
+            context.hits->append(*hit);
+        }
         return {{}, definition.chaseSpeed};
     }
 

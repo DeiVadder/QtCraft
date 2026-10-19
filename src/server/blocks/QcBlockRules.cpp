@@ -43,20 +43,19 @@ bool hasProperty(const QcContentRegistry &content, QcBlockId id, const QString &
     return content.block(id).property(property) != nullptr;
 }
 
-// Sets a property when the block has it and the value is allowed; false when the value is not allowed.
-bool assign(const QcContentRegistry &content, QcBlockId &id, const QString &property, const QString &value)
+// `id` with the property set when the block has it (unchanged otherwise); std::nullopt when the
+// value is not allowed.
+[[nodiscard]] std::optional<QcBlockId> assigned(const QcContentRegistry &content, QcBlockId id, const QString &property, const QString &value)
 {
     const QcBlockProperty *definition = content.block(id).property(property);
     if (!definition) {
-        return true;
+        return id;
     }
 
     if (!definition->values.contains(value)) {
-        return false;
+        return std::nullopt;
     }
-
-    id = content.withProperty(id, property, value);
-    return true;
+    return content.withProperty(id, property, value);
 }
 
 // A solid block whose side towards `towards` is completely covered.
@@ -195,24 +194,21 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
     const QString half = upper ? u"top"_s : u"bottom"_s;
     const QcBlockProperty *slabType = definition.property(u"type"_s);
 
-    if (!assign(content, state, u"facing"_s, facing) || (slabType && !assign(content, state, u"type"_s, half))) {
-        return std::nullopt;
+    std::optional<QcBlockId> oriented = assigned(content, state, u"facing"_s, facing);
+    if (oriented && slabType) {
+        oriented = assigned(content, *oriented, u"type"_s, half);
+    }
+    if (oriented && !definition.door) {
+        oriented = assigned(content, *oriented, u"half"_s, half);
     }
 
-    if (!definition.door && !assign(content, state, u"half"_s, half)) {
-        return std::nullopt;
-    }
-
-    if (hasProperty(content, state, u"attach"_s)) {
+    if (oriented && hasProperty(content, *oriented, u"attach"_s)) {
         // Towards the block the new one hangs on: the clicked block.
         const QcBlockFace towards = opposite(face);
         const QString attach = towards == QcBlockFace::Down ? u"floor"_s : (towards == QcBlockFace::Up ? u"ceiling"_s : faceName(towards));
-        if (!assign(content, state, u"attach"_s, attach)) {
-            return std::nullopt;
-        }
+        oriented = assigned(content, *oriented, u"attach"_s, attach);
     }
-
-    return state;
+    return oriented;
 }
 
 // The lower half of a door at `target` with its hinge; std::nullopt without room for the upper half.
@@ -220,16 +216,16 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
                                    const QString &facing)
 {
     const QcContentRegistry &content = world.content();
-    if (!replaceableAt(world, target.offset(0, 1, 0)) || !assign(content, state, u"half"_s, u"bottom"_s)) {
+    const std::optional<QcBlockId> lower = replaceableAt(world, target.offset(0, 1, 0)) ? assigned(content, state, u"half"_s, u"bottom"_s)
+                                                                                         : std::nullopt;
+    if (!lower) {
         return std::nullopt;
     }
 
     // The hinge sits on the side of the door the player aimed at.
     const QcFaceOffset right = qcFaceOffset(rightOf(faceFromName(facing).value_or(QcBlockFace::North)));
     const double along = (hit.x - 0.5) * right.dx + (hit.z - 0.5) * right.dz;
-    assign(content, state, u"hinge"_s, along < 0.0 ? u"left"_s : u"right"_s);
-
-    return state;
+    return assigned(content, *lower, u"hinge"_s, along < 0.0 ? u"left"_s : u"right"_s).value_or(*lower);
 }
 
 // The foot of a bed at `target` whose head goes one block further in `facing`; std::nullopt
@@ -238,11 +234,10 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
 {
     const QcFaceOffset ahead = qcFaceOffset(faceFromName(facing).value_or(QcBlockFace::North));
     const QcBlockPos head = target.offset(ahead.dx, 0, ahead.dz);
-    if (!replaceableAt(world, head) || !hasSolidFace(world, head.offset(0, -1, 0), QcBlockFace::Up)
-        || !assign(world.content(), state, u"part"_s, u"foot"_s)) {
+    if (!replaceableAt(world, head) || !hasSolidFace(world, head.offset(0, -1, 0), QcBlockFace::Up)) {
         return std::nullopt;
     }
-    return state;
+    return assigned(world.content(), state, u"part"_s, u"foot"_s);
 }
 
 // A door half needs its partner and the lower one a floor; a bed half only its partner (the floor
@@ -348,14 +343,13 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
         const QString side = faceName(horizontal[i]);
         // Towards an unloaded chunk the side stays as it is; loading the chunk updates it.
         connected[i] = world.blockAt(neighbour) ? connectsTo(world, definition, neighbour) : content.property(id, side) == u"true"_s;
-        assign(content, state, side, connected[i] ? u"true"_s : u"false"_s);
+        state = assigned(content, state, side, connected[i] ? u"true"_s : u"false"_s).value_or(state);
     }
 
     // A wall shows its post except in the middle of a straight run.
     const bool straight = (connected[0] && connected[2] && !connected[1] && !connected[3])
                           || (connected[1] && connected[3] && !connected[0] && !connected[2]);
-    assign(content, state, u"up"_s, straight ? u"false"_s : u"true"_s);
-    return state;
+    return assigned(content, state, u"up"_s, straight ? u"false"_s : u"true"_s).value_or(state);
 }
 
 bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)

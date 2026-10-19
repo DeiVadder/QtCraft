@@ -79,48 +79,53 @@ void Writer::finish()
     patch(m_stream, m_countAt, m_count);
 }
 
-bool readRaw(QDataStream &stream, qint64 length, QByteArray &bytes)
+std::optional<QByteArray> readRaw(QDataStream &stream, qint64 length)
 {
     if (length < 0 || length > stream.device()->bytesAvailable()) {
-        return false;
+        return std::nullopt;
     }
-    bytes.resize(qsizetype(length));
-    return stream.readRawData(bytes.data(), int(length)) == int(length);
+    QByteArray bytes(qsizetype(length), Qt::Uninitialized);
+    if (stream.readRawData(bytes.data(), int(length)) != int(length)) {
+        return std::nullopt;
+    }
+    return bytes;
 }
 
 namespace {
 
-// Reads the known component `known` of `version` and `length` in place; its newer fields go to `kept`.
-bool readKnown(QDataStream &stream, const Known &known, quint16 version, quint32 length, QcEntityComponents &kept)
+// Reads the known component `known` of `version` and `length` in place. Outside: none for damaged
+// data; inside: the component with its newer fields to keep, none when there are none.
+[[nodiscard]] std::optional<std::optional<QcEntityComponent>> readKnown(QDataStream &stream, const Known &known, quint16 version,
+                                                                        quint32 length)
 {
     const qint64 start = stream.device()->pos();
     if (!known.read(stream, version, length) || stream.status() != QDataStream::Ok) {
-        return false;
+        return std::nullopt;
     }
     const qint64 used = stream.device()->pos() - start;
     if (std::cmp_greater(used, length) || (version <= known.version && std::cmp_not_equal(used, length))) {
-        return false;
+        return std::nullopt;
     }
     if (version <= known.version) {
-        return true;
+        return std::optional<std::optional<QcEntityComponent>>(std::in_place, std::nullopt);
     }
-    QcEntityComponent tail{known.id, version, true, {}};
-    if (!readRaw(stream, qint64(length) - used, tail.payload)) {
-        return false;
+    std::optional<QByteArray> payload = readRaw(stream, qint64(length) - used);
+    if (!payload) {
+        return std::nullopt;
     }
-    kept.append(std::move(tail));
-    return true;
+    return std::optional<std::optional<QcEntityComponent>>(std::in_place, QcEntityComponent{known.id, version, true, std::move(*payload)});
 }
 
 } // namespace
 
-bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped, quint32 lengthLimit)
+std::optional<ReadComponents> read(QDataStream &stream, std::initializer_list<Known> known, quint32 lengthLimit)
 {
     quint16 count = 0;
     stream >> count;
     if (stream.status() != QDataStream::Ok || count > maxComponents) {
-        return false;
+        return std::nullopt;
     }
+    ReadComponents result;
     std::array<quint16, maxComponents> seen{};
     qsizetype unknown = 0;
     for (quint16 i = 0; i < count; ++i) {
@@ -131,60 +136,64 @@ bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityCompo
         // The length is checked against the data left before anything is read.
         if (stream.status() != QDataStream::Ok || version == 0 || length > lengthLimit || qint64(length) > stream.device()->bytesAvailable()
             || std::find(seen.begin(), seen.begin() + i, id) != seen.begin() + i) {
-            return false;
+            return std::nullopt;
         }
         seen[i] = id;
 
         const auto it = std::ranges::find(known, id, &Known::id);
         if (it != known.end()) {
-            if (!readKnown(stream, *it, version, length, kept)) {
-                return false;
+            std::optional<std::optional<QcEntityComponent>> newer = readKnown(stream, *it, version, length);
+            if (!newer) {
+                return std::nullopt;
+            }
+            if (*newer) {
+                result.kept.append(std::move(**newer));
             }
             continue;
         }
-        QcEntityComponent component{id, version, false, {}};
-        if (!readRaw(stream, length, component.payload)) {
-            return false;
+        std::optional<QByteArray> payload = readRaw(stream, length);
+        if (!payload) {
+            return std::nullopt;
         }
+        QcEntityComponent component{id, version, false, std::move(*payload)};
         if (std::cmp_less(unknown, maxKept)) {
             ++unknown;
-            kept.append(std::move(component));
+            result.kept.append(std::move(component));
         } else {
-            ++dropped;
+            ++result.dropped;
         }
     }
-    return true;
+    return result;
 }
 
-bool readText(QDataStream &stream, QString &text, qsizetype maxChars)
+std::optional<QString> readText(QDataStream &stream, qsizetype maxChars)
 {
     constexpr quint32 null = 0xffffffffu;
     quint32 bytes = 0;
     stream >> bytes;
     if (stream.status() != QDataStream::Ok) {
-        return false;
+        return std::nullopt;
     }
     if (bytes == null) {
-        text = QString();
-        return true;
+        return QString();
     }
     if (bytes % 2 != 0 || bytes > quint32(maxChars) * 2) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
 
     QByteArray raw(qsizetype(bytes), Qt::Uninitialized);
     if (stream.readRawData(raw.data(), int(bytes)) != int(bytes)) {
         stream.setStatus(QDataStream::ReadPastEnd);
-        return false;
+        return std::nullopt;
     }
-    text.resize(qsizetype(bytes / 2));
+    QString text(qsizetype(bytes / 2), Qt::Uninitialized);
     if (stream.byteOrder() == QDataStream::BigEndian) {
         qFromBigEndian<char16_t>(raw.constData(), text.size(), text.data());
     } else {
         qFromLittleEndian<char16_t>(raw.constData(), text.size(), text.data());
     }
-    return true;
+    return text;
 }
 
 } // namespace QcComponentFrames

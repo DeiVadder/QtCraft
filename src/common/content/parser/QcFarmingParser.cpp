@@ -20,9 +20,9 @@ void requireStages(const QcBlockDefinition &block, const QString &name, QcJsonFi
 
 namespace QcFarmingParser {
 
-void parseCrop(QcBlockDefinition &block, QcJsonFieldReader &cropReader, const QString &packNamespace)
+QcCropDefinition parseCrop(const QcBlockDefinition &block, QcJsonFieldReader &cropReader, const QString &packNamespace)
 {
-    QcCropDefinition &crop = block.crop;
+    QcCropDefinition crop;
     crop.property = cropReader.string(u"property"_s, u"age"_s);
     crop.averageSeconds = cropReader.number(u"averageSeconds"_s, 1200.0, 1.0, 86400.0);
     crop.dryFactor = cropReader.number(u"dryFactor"_s, 0.5, 0.0, 1.0);
@@ -42,11 +42,12 @@ void parseCrop(QcBlockDefinition &block, QcJsonFieldReader &cropReader, const QS
     if (cropReader.ok() && crop.bearsFruit() && crop.fruitGround.isEmpty()) {
         cropReader.fail(u"a 'fruit' needs 'fruitGround'"_s);
     }
+    return crop;
 }
 
-void parseSoil(QcBlockDefinition &block, QcJsonFieldReader &soilReader, const QString &packNamespace)
+QcSoilDefinition parseSoil(const QcBlockDefinition &block, QcJsonFieldReader &soilReader, const QString &packNamespace)
 {
-    QcSoilDefinition &soil = block.soil;
+    QcSoilDefinition soil;
     soil.property = soilReader.string(u"property"_s, u"moist"_s);
     soil.water = soilReader.name(u"water"_s, packNamespace, u"qtcraft:water"_s);
     soil.reach = soilReader.integer(u"reach"_s, 4, 0, 8);
@@ -56,6 +57,7 @@ void parseSoil(QcBlockDefinition &block, QcJsonFieldReader &soilReader, const QS
     if (soilReader.ok() && (soil.revertsTo.isEmpty() || soil.revertsTo == block.name)) {
         soilReader.fail(u"'revertsTo' must name another block"_s);
     }
+    return soil;
 }
 
 } // namespace QcFarmingParser

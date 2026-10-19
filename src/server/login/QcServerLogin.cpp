@@ -80,11 +80,8 @@ void QcServerLogin::response(QcServerClient &client, const QcMsg::LoginResponse 
         return;
     }
 
-    QByteArray newIdentity;
-    std::optional<QcMsg::Disconnect> refusal = verify(client, response, newIdentity);
-    if (!refusal) {
-        refusal = admission(client);
-    }
+    const std::expected<QByteArray, QcMsg::Disconnect> newIdentity = verify(client, response);
+    const std::optional<QcMsg::Disconnect> refusal = newIdentity ? admission(client) : std::optional(newIdentity.error());
     if (refusal) {
         refuse(client, *refusal);
         return;
@@ -93,50 +90,46 @@ void QcServerLogin::response(QcServerClient &client, const QcMsg::LoginResponse 
     if (response.viewDistance > 0) {
         client.view.distance = std::min(response.viewDistance, m_state.config().viewDistance);
     }
-    admit(client, newIdentity);
+    admit(client, *newIdentity);
 }
 
-std::optional<QcMsg::Disconnect> QcServerLogin::verify(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity)
+std::expected<QByteArray, QcMsg::Disconnect> QcServerLogin::verify(QcServerClient &client, const QcMsg::LoginResponse &response)
 {
     if (!m_state.config().password.isEmpty()
         && !QcLoginCrypto::equal(response.passwordProof, QcLoginCrypto::proof(passwordKey(), client.login.nonce, Purpose::Password))) {
-        return QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Wrong server password"));
+        return std::unexpected(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Wrong server password")));
     }
 
     const QStringList differences = QcPackComparison::differences(serverPacks(), response.packs);
     if (!differences.isEmpty()) {
-        return QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Your game content differs from the server's: %1"),
-                                      {QcPackComparison::summary(differences)});
+        return std::unexpected(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Your game content differs from the server's: %1"),
+                                                      {QcPackComparison::summary(differences)}));
     }
-    return verifyIdentity(client, response, newIdentity);
+    return verifyIdentity(client, response);
 }
 
-std::optional<QcMsg::Disconnect> QcServerLogin::verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response,
-                                                               QByteArray &newIdentity) const
+std::expected<QByteArray, QcMsg::Disconnect> QcServerLogin::verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response) const
 {
     const QcIdentityStore::Identity *known = m_state.identities().find(client.name);
     const QByteArray &identity = known ? known->identity : response.identity;
     if (!known && identity.size() != QcLoginCrypto::keyBytes) {
-        return QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Invalid player identity"));
+        return std::unexpected(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Invalid player identity")));
     }
 
     // A proof with the registered identity shows the client has the key behind the name.
     if (!QcLoginCrypto::equal(response.identityProof, QcLoginCrypto::proof(identity, client.login.nonce, Purpose::Identity))) {
-        return known ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The name %1 belongs to another player on this server"),
-                                              {client.name})
-                     : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Invalid player identity"));
+        return std::unexpected(known ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The name %1 belongs to another player on this server"),
+                                                              {client.name})
+                                     : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Invalid player identity")));
     }
 
     // A full store would let newcomers in without binding their name to them.
     if (!known && m_state.identities().isFull()) {
-        return QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "This server cannot register new players"));
+        return std::unexpected(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "This server cannot register new players")));
     }
 
     client.login.fingerprint = QcLoginCrypto::fingerprint(identity);
-    if (!known) {
-        newIdentity = identity;
-    }
-    return std::nullopt;
+    return known ? QByteArray() : identity;
 }
 
 std::optional<QcMsg::Disconnect> QcServerLogin::admission(const QcServerClient &client) const

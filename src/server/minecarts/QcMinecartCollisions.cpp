@@ -61,8 +61,9 @@ std::pair<double, double> approaches(const QList<QcMinecart> &carts, const Pair 
 // One round of take-backs: every cart keeps the smallest share of its step that any of its pairs
 // allows with the shares of the round before (all pairs at once, so the order does not matter).
 // `shared` splits a pair's take-back between both carts by how far each came; without it every cart
-// that came closer stays where it was. Returns whether a share changed.
-bool takeBack(const QList<QcMinecart> &carts, const QList<Pair> &pairs, const QList<QcVec3> &before, QList<double> &share, bool shared)
+// that came closer stays where it was. The new shares when one changed, none otherwise.
+[[nodiscard]] std::optional<QList<double>> takeBack(const QList<QcMinecart> &carts, const QList<Pair> &pairs, const QList<QcVec3> &before,
+                                                    const QList<double> &share, bool shared)
 {
     QList<double> next = share;
     bool changed = false;
@@ -85,8 +86,7 @@ bool takeBack(const QList<QcMinecart> &carts, const QList<Pair> &pairs, const QL
         limit(pair.first, forward);
         limit(pair.second, backward);
     }
-    share = next;
-    return changed;
+    return changed ? std::optional(std::move(next)) : std::nullopt;
 }
 
 } // namespace
@@ -151,16 +151,24 @@ QList<QcVec3> pushes(const QList<QcMinecart> &carts, const QList<Pair> &pairs, c
     return change;
 }
 
-void keepApart(QList<QcMinecart> &carts, const QList<Pair> &pairs, const QList<QcVec3> &before)
+QList<QcMinecart> keptApart(QList<QcMinecart> carts, const QList<Pair> &pairs, const QList<QcVec3> &before)
 {
     QList<double> share(carts.size(), 1.0);
+    // One round of take-backs; whether a share changed.
+    const auto takeBackRound = [&](bool shared) {
+        std::optional<QList<double>> next = takeBack(carts, pairs, before, share, shared);
+        if (next) {
+            share = std::move(*next);
+        }
+        return next.has_value();
+    };
     bool changed = true;
     for (int round = 0; round < sharedRounds && changed; ++round) {
-        changed = takeBack(carts, pairs, before, share, true);
+        changed = takeBackRound(true);
     }
     // Shares only shrink and every round without sharing stops at least one more cart, so this ends.
     while (changed) {
-        changed = takeBack(carts, pairs, before, share, false);
+        changed = takeBackRound(false);
     }
 
     for (qsizetype i = 0; i < carts.size(); ++i) {
@@ -170,6 +178,7 @@ void keepApart(QList<QcMinecart> &carts, const QList<Pair> &pairs, const QList<Q
             cart.motion.velocity = cart.motion.velocity * share[i];
         }
     }
+    return carts;
 }
 
 } // namespace QcMinecartCollisions

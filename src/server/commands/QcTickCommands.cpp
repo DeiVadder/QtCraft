@@ -162,13 +162,13 @@ void QcTickCommands::sprint(const QcCommandContext &context)
 
 void QcTickCommands::reportSprintEnd()
 {
-    quint64 ticks = 0;
-    qint64 elapsedNs = 0;
-    if (!m_parts.ticks.takeSprintEnded(ticks, elapsedNs)) {
+    const std::optional<QcTickScheduler::SprintEnd> sprint = m_parts.ticks.takeSprintEnded();
+    if (!sprint) {
         return;
     }
 
-    const double seconds = std::max(double(elapsedNs) / 1e9, 1e-9);
+    const quint64 ticks = sprint->ticks;
+    const double seconds = std::max(double(sprint->elapsedNs) / 1e9, 1e-9);
     const QStringList arguments{QString::number(ticks), number(seconds * 1000.0), number(double(ticks) / seconds)};
     qCInfo(lcCommands).noquote() << u"Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"_s.arg(arguments[0], arguments[1], arguments[2]);
     for (const auto &client : m_state.clients()) {

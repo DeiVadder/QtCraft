@@ -22,7 +22,7 @@ public:
     static QString optionsOf(const QcVoidDefinition &settings);
 
     // Invalid `options` fall back to the content's settings with a warning; empty takes them.
-    explicit QcVoidGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &options = {}, QStringList *warnings = nullptr);
+    explicit QcVoidGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &options = {});
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override { return {0, m_platformY + 1, 0}; }

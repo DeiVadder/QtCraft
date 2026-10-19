@@ -413,6 +413,7 @@ QcPhysics::Steering QcVillagerBehaviour::walk(QcCreature &mob, const QcMobDefini
         return *waiting;
     }
     const QcDoorPassage::Moves doors = QcDoorPassage::use(mob, villager.openedDoor, navigation);
+    villager.openedDoor = doors.opened;
     if (doors.close) {
         m_actions.append({Action::Kind::CloseDoor, *doors.close, mob.id});
     }
@@ -429,10 +430,9 @@ QcBlockPos QcVillagerBehaviour::legTowards(QcCreature &mob, QcBlockPos target, c
 {
     QcVillager &villager = *mob.villager;
     const VillageRoutes routes(m_roads, context.world, villager.village);
-    QcMobLegs::Budget budget{m_routes, m_limits.routesPerTick};
-    const QcBlockPos cell = QcMobLegs::towards(mob, villager.legs, target, routes, budget);
-    m_routes = budget.used;
-    return cell;
+    const QcMobLegs::Towards towards = villager.legs.towards(mob, target, routes, {m_routes, m_limits.routesPerTick});
+    m_routes += towards.asked;
+    return towards.cell;
 }
 
 void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)

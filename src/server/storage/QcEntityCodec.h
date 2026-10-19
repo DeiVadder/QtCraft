@@ -3,10 +3,9 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
 #include "server/storage/QcEntityRecord.h"
+#include "server/storage/QcLoadWarnings.h"
 
 #include <QByteArray>
-#include <QSet>
-#include <QStringList>
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
 // E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks and lit explosives, armour stands,
@@ -64,9 +63,9 @@ enum class Component : quint16 {
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);
 // The record of `chunk`. Unknown items, blocks, creatures and capes and armour that no longer fits
-// its slot are dropped with a warning (each unknown name once per world, through `reported`); damaged
-// or implausible data (an entity outside the chunk, values that cannot be) is an error.
-[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
-                                QSet<QString> &reported);
+// its slot are dropped with a warning (each unknown name once per world: QcLoadWarnings::addOnce);
+// damaged or implausible data (an entity outside the chunk, values that cannot be) is an error.
+[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+                                              QcLoadWarnings &warnings);
 
 } // namespace QcEntityCodec

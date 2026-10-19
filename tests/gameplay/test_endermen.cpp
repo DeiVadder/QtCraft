@@ -261,9 +261,8 @@ private slots:
         // Saved and loaded with its chunk, it still carries the block.
         const QcChunkPos chunk = QcEntities::chunkOf(*mob(enderman));
         const QHash<QcChunkPos, QcEntityRecord> records = QcEntityRecords::take(m_server->entities(), {chunk});
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings);
         QVERIFY(back.has_value());
         QVERIFY(QcEntityRecords::apply(*back, m_server->entities()).isEmpty());
         const auto loaded = std::ranges::find(m_server->entities().creatures().mobs(), type("enderman"), &QcCreature::type);

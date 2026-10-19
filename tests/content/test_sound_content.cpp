@@ -216,12 +216,11 @@ private slots:
 
     void baseGameHasEverySoundItUses()
     {
-        QStringList warnings;
-        const QcResult<std::shared_ptr<QcContentRegistry>> loaded = QcBaseContent::load(warnings);
+        const QcResult<QcBaseContent::Loaded> loaded = QcBaseContent::load();
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        QVERIFY2(loaded->warnings.isEmpty(), qPrintable(loaded->warnings.join(u'\n')));
 
-        const QcContentRegistry &content = **loaded;
+        const QcContentRegistry &content = *loaded->registry;
         const auto blockKey = [&content](const char *name, QcBlockSoundAction action) {
             return key(content.block(*content.blockId(QString::fromLatin1(name))), action);
         };
@@ -296,8 +295,7 @@ private slots:
         writeFile(mod + u"/mobs/ghost.json"_s,
                   R"({"name":"ghost","sounds":{"ambient":"boo"},"model":[{"from":[0,0,0],"to":[1,1,1],"texture":"qtcraft:glass"}]})");
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
         const QcContentRegistry &content = *loaded->content;
         QVERIFY(content.sound(u"bells:chime"_s));
@@ -312,7 +310,7 @@ private slots:
         QCOMPARE(key(bell, QcBlockSoundAction::Break), u"qtcraft:block.glass.break"_s);
 
         // Broken definitions and names nothing defines are reported; such blocks and mobs stay silent.
-        const QString all = warnings.join(u'\n');
+        const QString all = loaded->warnings.join(u'\n');
         QVERIFY2(all.contains(u"broken.json"_s) && all.contains(u"'wave'"_s), qPrintable(all));
         QVERIFY2(all.contains(u"block bells:mute: unknown sound 'bells:nothing'"_s), qPrintable(all));
         QVERIFY2(all.contains(u"mob bells:ghost: unknown sound 'bells:boo'"_s), qPrintable(all));
@@ -326,10 +324,9 @@ private slots:
 
     void exampleModBringsItsOwnSounds()
     {
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR));
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        QVERIFY2(loaded->warnings.isEmpty(), qPrintable(loaded->warnings.join(u'\n')));
 
         const QcContentRegistry &content = *loaded->content;
         const QcBlockDefinition &ruby = content.block(*content.blockId(u"rubies:ruby_block"_s));

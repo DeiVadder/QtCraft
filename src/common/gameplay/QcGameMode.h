@@ -23,7 +23,7 @@ inline constexpr int count = 2;
 // protocol carries only the mode itself.
 struct Rules
 {
-    // Double-tapping jump toggles flight (shared physics, QcPhysics::stepPlayer).
+    // Double-tapping jump toggles flight (shared physics, QcEntityMotion::stepPlayer).
     bool mayFly = false;
     // Blocks break with the first strike, also unbreakable ones, and drop nothing.
     bool instantBreak = false;

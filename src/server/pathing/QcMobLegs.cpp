@@ -23,47 +23,49 @@ double horizontalDistanceTo(const QcCreature &mob, QcBlockPos cell)
 
 } // namespace
 
-QcBlockPos towards(const QcCreature &mob, State &state, QcBlockPos target, const Routes &routes, Budget &budget)
+Towards State::towards(const QcCreature &mob, QcBlockPos target, const Routes &routes, Budget budget)
 {
-    if (const std::optional<QcBlockPos> shore = wayOutOfWater(mob, state, routes, budget)) {
-        return *shore;
+    const Way way = wayOutOfWater(mob, routes, budget);
+    const int asked = way.asked ? 1 : 0;
+    if (way.shore) {
+        return {*way.shore, asked};
     }
+    budget.used += asked;
+
     const QcBlockPos feet = feetOf(mob);
     if (std::abs(target.x - feet.x) <= routes.reach() && std::abs(target.z - feet.z) <= routes.reach()) {
-        state.leg.reset();
-        return target;
+        leg.reset();
+        return {target, asked};
     }
-    const bool walking = state.leg && horizontalDistanceTo(mob, *state.leg) > arrived
-                         && !(mob.path.finished() && mob.path.plannedGoal == *state.leg);
-    state.retryIn = std::max(0, state.retryIn - 1);
-    if (walking || state.retryIn > 0 || budget.spent()) {
-        return state.leg.value_or(target);
+    const bool walking = leg && horizontalDistanceTo(mob, *leg) > arrived
+                         && !(mob.path.finished() && mob.path.plannedGoal == *leg);
+    retryIn = std::max(0, retryIn - 1);
+    if (walking || retryIn > 0 || !budget.take()) {
+        return {leg.value_or(target), asked};
     }
 
-    ++budget.used;
-    state.leg = routes.nextLeg(feet, target);
-    state.retryIn = state.leg ? 0 : retryTicks;
-    return state.leg.value_or(target);
+    leg = routes.nextLeg(feet, target);
+    retryIn = leg ? 0 : retryTicks;
+    return {leg.value_or(target), asked + 1};
 }
 
-std::optional<QcBlockPos> wayOutOfWater(const QcCreature &mob, State &state, const Routes &routes, Budget &budget)
+Way State::wayOutOfWater(const QcCreature &mob, const Routes &routes, Budget budget)
 {
     if (!mob.motion.inWater) {
         // Ashore once it stands on dry ground (at the surface it bobs in and out of the water).
         if (mob.motion.onGround) {
-            state.shore.reset();
+            shore.reset();
         }
-        return state.shore;
+        return {shore, false};
     }
     const bool noWay = mob.path.finished() && !mob.path.reachesGoal && !mob.path.queued;
-    if (state.shore || !noWay || budget.spent()) {
-        return state.shore;
+    if (shore || !noWay || budget.spent()) {
+        return {shore, false};
     }
 
-    ++budget.used;
-    state.shore = routes.wayOutOfWater(feetOf(mob));
-    state.leg.reset();
-    return state.shore;
+    shore = routes.wayOutOfWater(feetOf(mob));
+    leg.reset();
+    return {shore, true};
 }
 
 } // namespace QcMobLegs

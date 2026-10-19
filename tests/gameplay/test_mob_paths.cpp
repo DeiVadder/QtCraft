@@ -412,7 +412,7 @@ private slots:
         east.yaw = 90.0f;
         east.forward = 1.0f;
         for (int tick = 0; tick < 40; ++tick) {
-            QcPhysics::stepPlayer(player, east, *world, QcPhysics::tickDuration, false);
+            player.stepPlayer(east, *world, QcPhysics::tickDuration, false);
             QVERIFY(player.position.y < 1.2);
         }
         QVERIFY(player.position.x > 1.5);
@@ -423,7 +423,7 @@ private slots:
         mob.position = {-2.5, onPath, 0.5};
         const QcPhysics::Steering steering{{1.0, 0.0, 0.0}, villager.walkSpeed, false};
         for (int tick = 0; tick < 60; ++tick) {
-            QcPhysics::stepEntity(mob, steering, QcPhysics::BodySize{villager.width, villager.height}, *world, QcPhysics::tickDuration);
+            mob.step(steering, QcPhysics::BodySize{villager.width, villager.height}, *world, QcPhysics::tickDuration);
             QVERIFY(mob.position.y < 1.2);
         }
         QVERIFY(mob.position.x > 1.5);

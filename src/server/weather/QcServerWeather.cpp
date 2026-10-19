@@ -37,14 +37,16 @@ const QcWeatherState &QcServerWeather::state() const
 
 void QcServerWeather::tick()
 {
-    QcWeatherCycle::step(m_state.info().weather, m_state.info().seed, m_state.info().weatherCycle);
+    QcWorldInfo &info = m_state.info();
+    info.weather = QcWeatherCycle::next(info.weather, info.seed, info.weatherCycle);
     strikeNearPlayers();
     syncClients();
 }
 
 void QcServerWeather::set(QcWeatherKind kind, std::optional<qint64> ticks)
 {
-    QcWeatherCycle::set(m_state.info().weather, m_state.info().seed, kind, ticks);
+    QcWorldInfo &info = m_state.info();
+    info.weather = QcWeatherCycle::begun(info.weather, info.seed, kind, ticks);
 }
 
 QcWeather::Climate QcServerWeather::climateAt(int x, int z) const

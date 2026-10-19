@@ -5,6 +5,7 @@
 
 #include <QByteArray>
 
+#include <expected>
 #include <functional>
 #include <optional>
 
@@ -37,10 +38,10 @@ public:
     QList<QcPackFingerprint> serverPacks() const;
 
 private:
-    // Password, content and identity; sets the client's fingerprint, and `newIdentity` when the
-    // name registers one.
-    std::optional<QcMsg::Disconnect> verify(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity);
-    [[nodiscard]] std::optional<QcMsg::Disconnect> verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity) const;
+    // Password, content and identity; sets the client's fingerprint. The identity the name registers
+    // (empty when it has one already), or why the client is refused.
+    [[nodiscard]] std::expected<QByteArray, QcMsg::Disconnect> verify(QcServerClient &client, const QcMsg::LoginResponse &response);
+    [[nodiscard]] std::expected<QByteArray, QcMsg::Disconnect> verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response) const;
     // Bans, whitelist, the player limit and a player of the same name on the server.
     [[nodiscard]] std::optional<QcMsg::Disconnect> admission(const QcServerClient &client) const;
     void admit(QcServerClient &client, const QByteArray &newIdentity);

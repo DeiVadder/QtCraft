@@ -27,7 +27,7 @@ enum Purpose : int {
 
 } // namespace
 
-QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings)
+QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
     , m_settings(content.terrainSettings().mineshafts)
     , m_seed(qcMixSeed(seed, 0x3803))
@@ -35,15 +35,16 @@ QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const 
     if (!m_settings.enabled) {
         return;
     }
-    const std::optional<QcMineshaftBlocks> blocks = QcMineshaftBlocks::resolve(m_settings, content, warnings);
-    if (!blocks) {
+    QcMineshaftBlocks::Resolved blocks = QcMineshaftBlocks::resolve(m_settings, content);
+    m_warnings = std::move(blocks.warnings);
+    if (!blocks.blocks) {
         return;
     }
 
-    m_blocks = *blocks;
+    m_blocks = std::move(*blocks.blocks);
     for (const QcMineshaftSettings::BiomeChance &entry : std::as_const(m_settings.entranceBiomes)) {
-        if (warnings && !std::ranges::contains(content.biomes(), entry.biome, &QcBiomeDefinition::name)) {
-            warnings->append(u"mineshafts: 'entranceBiomes' names unknown biome '%1'"_s.arg(entry.biome));
+        if (!std::ranges::contains(content.biomes(), entry.biome, &QcBiomeDefinition::name)) {
+            m_warnings.append(u"mineshafts: 'entranceBiomes' names unknown biome '%1'"_s.arg(entry.biome));
         }
     }
     const std::optional<QcItemId> cart = content.itemId(m_settings.cart);
@@ -86,12 +87,20 @@ std::shared_ptr<const QcMineshaftPlan> QcMineshaftPlanner::plan(int regionX, int
         m_settings, randomFrom(NetworkBase), [&](QcMineshaftNetwork::Point at) { return site.node(frame.node(at)); },
         [&](QcMineshaftNetwork::Point from, QcMineshaftNetwork::Point to) { return site.corridor(frame.corridor(from, to)); });
     plan->levels = network.grow(levels, false);
-    layOut(*plan, network, frame);
+    plan->nodes = nodesOf(network, frame);
+    plan->corridors = corridorsOf(network, frame);
 
-    m_access->addRooms(*plan, network, site, randomFrom(AccessBase));
-    m_details->add(*plan, randomFrom(DetailsBase));
-    m_access->addEntrance(*plan, site, frame, randomFrom(AccessBase));
-    bound(*plan);
+    plan->rooms = m_access->roomsOf(*plan, network, site, randomFrom(AccessBase));
+    QcMineshaftDetails::Furnishing furnishing = m_details->furnish(*plan, randomFrom(DetailsBase));
+    plan->blocks = std::move(furnishing.blocks);
+    plan->spawners = std::move(furnishing.spawners);
+    plan->carts = std::move(furnishing.carts);
+    plan->pillars = std::move(furnishing.pillars);
+    for (const int corridor : std::as_const(furnishing.railed)) {
+        plan->corridors[corridor].rails = true;
+    }
+    plan->entrance = m_access->entranceOf(*plan, site, frame, randomFrom(AccessBase));
+    plan->bound();
     return plan;
 }
 
@@ -114,47 +123,26 @@ std::optional<QcBlockPos> QcMineshaftPlanner::findCentre(QcMineshaftSite &site, 
     return std::nullopt;
 }
 
-void QcMineshaftPlanner::layOut(QcMineshaftPlan &plan, const QcMineshaftNetwork &network, const QcMineshaftFrame &frame)
+QList<QcMineshaftPlan::Node> QcMineshaftPlanner::nodesOf(const QcMineshaftNetwork &network, const QcMineshaftFrame &frame)
 {
+    QList<QcMineshaftPlan::Node> nodes;
     for (const QcMineshaftNetwork::Node &node : network.nodes()) {
         QcMineshaftPlan::Node placed = frame.node(node.at);
         placed.bridge = node.bridge;
-        plan.nodes.append(placed);
+        nodes.append(placed);
     }
+    return nodes;
+}
+
+QList<QcMineshaftPlan::Corridor> QcMineshaftPlanner::corridorsOf(const QcMineshaftNetwork &network, const QcMineshaftFrame &frame)
+{
+    QList<QcMineshaftPlan::Corridor> corridors;
     for (const QcMineshaftNetwork::Link &link : network.links()) {
         QcMineshaftPlan::Corridor corridor = frame.corridor(network.nodes()[link.from].at, network.nodes()[link.to].at);
         corridor.from = link.from;
         corridor.to = link.to;
         corridor.bridge = link.bridge;
-        plan.corridors.append(corridor);
+        corridors.append(corridor);
     }
-}
-
-void QcMineshaftPlanner::bound(QcMineshaftPlan &plan)
-{
-    const QcBlockPos centre = plan.nodes.constFirst().centre;
-    plan.minX = plan.maxX = centre.x;
-    plan.minZ = plan.maxZ = centre.z;
-    const auto add = [&plan](QcBlockPos cell) {
-        plan.minX = std::min(plan.minX, cell.x - 1);
-        plan.minZ = std::min(plan.minZ, cell.z - 1);
-        plan.maxX = std::max(plan.maxX, cell.x + 1);
-        plan.maxZ = std::max(plan.maxZ, cell.z + 1);
-    };
-    plan.forEachOpenCell(add);
-    for (const QcMineshaftPlan::Placed &placed : std::as_const(plan.blocks)) {
-        add(placed.at);
-    }
-    if (plan.entrance) {
-        for (const QcMineshaftPlan::Placed &placed : std::as_const(plan.entrance->blocks)) {
-            add(placed.at);
-        }
-        for (const QcBlockPos &cell : std::as_const(plan.entrance->lining)) {
-            add(cell);
-        }
-    }
-    for (const QcMineshaftPlan::Room &room : std::as_const(plan.rooms)) {
-        add(room.placement.origin());
-        add(room.placement.origin().offset(room.placement.sizeX() - 1, 0, room.placement.sizeZ() - 1));
-    }
+    return corridors;
 }

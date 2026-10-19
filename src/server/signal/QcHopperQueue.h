@@ -23,8 +23,8 @@ struct QcHopperQueue
     void wake(QcBlockPos pos) { awake.insert(pos); }
     // Looks at the hopper at `tick` (not before).
     void wakeAt(QcBlockPos pos, quint64 tick) { timers[tick].append(pos); }
-    // Moves the awake hoppers and those whose timer is due into `woken`.
-    void takeDue(quint64 now, QSet<QcBlockPos> &woken);
+    // Takes the awake hoppers and those whose timer is due.
+    [[nodiscard]] QSet<QcBlockPos> takeDue(quint64 now);
     void forgetChunk(QcChunkPos chunk);
     void clear();
 

@@ -81,9 +81,9 @@ private:
 
     // Unknown when part of the surroundings is not loaded and no trunk was found.
     Support supportOf(QcBlockPos pos, const QcBlockAccess &world) const;
-    // Whether the row of leafReach blocks either side of `centre` along z holds a trunk; sets
-    // `unknown` for cells that are not loaded.
-    bool rowHasTrunk(QcBlockPos centre, const QcBlockAccess &world, bool &unknown) const;
+    // Support of the row of leafReach blocks either side of `centre` along z: a trunk in it, else
+    // unknown when cells of it are not loaded.
+    [[nodiscard]] Support rowSupport(QcBlockPos centre, const QcBlockAccess &world) const;
     // Plans a decay check for leaves at `pos` (nothing for other blocks or when already planned).
     void planDecayCheck(QcBlockPos pos, const QcBlockAccess &world);
     void decayLeaves(const QcBlockAccess &world, const BreakBlock &breakBlock);

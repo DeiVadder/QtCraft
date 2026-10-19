@@ -40,7 +40,7 @@ int QcPathPlanner::nodesFor(const QcCreature &mob) const
     return mob.path.purpose == QcMobPath::Purpose::Wander ? std::max(16, search / 4) : search;
 }
 
-void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf)
+void QcPathPlanner::serve(const QcBlockAccess &world, std::span<QcCreature> mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf)
 {
     m_nodesLastTick = 0;
     m_villagerNodesLastTick = 0;
@@ -101,7 +101,7 @@ void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, c
     m_queue.insert(m_queue.begin(), m_deferred.begin(), m_deferred.end());
 }
 
-void QcPathPlanner::walkStraight(QList<QcCreature> &mobs)
+void QcPathPlanner::walkStraight(std::span<QcCreature> mobs)
 {
     for (const quint32 id : m_queue) {
         if (const qsizetype index = queuedIndex(id); index >= 0) {
@@ -111,7 +111,7 @@ void QcPathPlanner::walkStraight(QList<QcCreature> &mobs)
     m_queue.clear();
 }
 
-bool QcPathPlanner::lapses(QList<QcCreature> &mobs, qsizetype index)
+bool QcPathPlanner::lapses(std::span<QcCreature> mobs, qsizetype index)
 {
     if (index >= 0 && !mobs[index].dormant && mobs[index].path.hasGoal()) {
         return false;
@@ -122,7 +122,7 @@ bool QcPathPlanner::lapses(QList<QcCreature> &mobs, qsizetype index)
     return true;
 }
 
-int QcPathPlanner::otherCreaturesQueued(const QList<QcCreature> &mobs) const
+int QcPathPlanner::otherCreaturesQueued(std::span<const QcCreature> mobs) const
 {
     int others = 0;
     for (const auto &[id, index] : m_queued) {
@@ -131,14 +131,14 @@ int QcPathPlanner::otherCreaturesQueued(const QList<QcCreature> &mobs) const
     return others;
 }
 
-void QcPathPlanner::findQueued(const QList<QcCreature> &mobs)
+void QcPathPlanner::findQueued(std::span<const QcCreature> mobs)
 {
     m_queued.clear();
     for (const quint32 id : m_queue) {
         m_queued.emplace_back(id, -1);
     }
     std::ranges::sort(m_queued);
-    for (qsizetype i = 0; i < mobs.size(); ++i) {
+    for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         const auto found = std::ranges::lower_bound(m_queued, std::pair<quint32, qsizetype>(mobs[i].id, -1));
         if (found != m_queued.end() && found->first == mobs[i].id) {
             found->second = i;

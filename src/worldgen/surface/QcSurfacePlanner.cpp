@@ -8,7 +8,7 @@
 
 using namespace Qt::StringLiterals;
 
-QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings)
+QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
     , m_content(content)
 {
@@ -16,14 +16,13 @@ QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcCo
         if (!definition.surface) {
             continue;
         }
-        QcResult<QcPieceVariation> structure = QcPieceVariation::resolve(definition, content, warnings);
+        const QcPieceVariation::Resolved structure = QcPieceVariation::resolve(definition, content);
+        m_warnings.append(QcPieceVariation::warningsOf(structure));
         const std::optional<QcBlockId> foundation =
             definition.surface->foundation.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.blockId(definition.surface->foundation);
         if (!structure || !foundation) {
-            if (warnings) {
-                warnings->append(u"structure '%1': not placed on the surface (%2)"_s.arg(
-                    definition.name, structure ? u"unknown foundation '%1'"_s.arg(definition.surface->foundation) : structure.error()));
-            }
+            m_warnings.append(u"structure '%1': not placed on the surface (%2)"_s.arg(
+                definition.name, structure ? u"unknown foundation '%1'"_s.arg(definition.surface->foundation) : structure.error().error));
             continue;
         }
         m_kinds.append({definition.name, *structure, *definition.surface, *foundation, qcMixSeed(seed, qcNameSalt(definition.name))});

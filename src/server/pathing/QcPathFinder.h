@@ -56,16 +56,37 @@ private:
         QcBlockPos to;
         float cost = 0.0f;
     };
-    using Moves = std::array<Move, 10>;
+    // The moves from one node: at most four sides, two climbs and four diagonals.
+    class Moves
+    {
+    public:
+        void add(Move move) { m_moves[std::size_t(m_count++)] = move; }
+        // Adds `cost` to every move.
+        void raise(float cost)
+        {
+            for (Move &move : *this) {
+                move.cost += cost;
+            }
+        }
+        Move *begin() { return m_moves.data(); }
+        Move *end() { return m_moves.data() + m_count; }
+        const Move *begin() const { return m_moves.data(); }
+        const Move *end() const { return m_moves.data() + m_count; }
+
+    private:
+        std::array<Move, 10> m_moves{};
+        int m_count = 0;
+    };
 
     // Where a creature at `feet` (falling, in deep water) can start from: its cell, a few below or
     // two above.
     std::optional<QcBlockPos> startCell(QcBlockPos feet, QcPathRules rules);
-    // Moves from a node; returns how many were written.
-    int expand(QcBlockPos at, QcPathRules rules, Moves &moves);
+    // The moves from a node.
+    [[nodiscard]] Moves expand(QcBlockPos at, QcPathRules rules);
     std::optional<Move> sideStep(QcBlockPos at, QcPathStand here, QcBlockPos side, QcPathRules rules);
-    // Up and down a ladder the feet are on: to the ladder cell above, to the cell below.
-    int climb(QcBlockPos at, QcPathRules rules, Moves &moves, int count);
+    // Up and down a ladder the feet are on: to the ladder cell above, to the cell below (Moves is an
+    // inline buffer, returning it allocates nothing).
+    [[nodiscard]] Moves climbs(QcBlockPos at, QcPathRules rules);
     // Fire or lava in the side cell or below it (a side that cannot be entered).
     bool dangerous(QcBlockPos side);
     // The best of the visited nodes (closest to the goal) and the cells from the start to it.

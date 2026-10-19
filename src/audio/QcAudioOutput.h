@@ -9,6 +9,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <span>
 
 class QAudioSink;
 class QcMixerDevice;
@@ -42,7 +43,8 @@ public:
     qint64 framesRendered() const { return m_framesRendered.load(); }
 
 private:
-    void render(float *out, int frames);
+    // The next `frames` stereo frames of the mixer, as the device reads them.
+    [[nodiscard]] std::span<const float> render(int frames);
     void fail(const QString &reason);
 
     mutable std::mutex m_mutex;

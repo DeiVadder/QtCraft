@@ -51,7 +51,7 @@ void rail(const QcShowcaseContext &context, QcStructure &area, int x, int z)
         railed = place(context, area, {x + dx, 1, z + 12}, u"qtcraft:rail[facing=east,shape=straight]"_s) && railed;
     }
     if (railed && context.content.itemId(u"qtcraft:minecart"_s)) {
-        area.minecarts.append({{x + 3, 1, z + 12}, u"qtcraft:minecart"_s});
+        area.addCart({{x + 3, 1, z + 12}, u"qtcraft:minecart"_s});
     }
 }
 
@@ -86,7 +86,7 @@ QList<QcBlockPos> build(const QcShowcaseContext &context, QcStructure &area, QcB
     const QcBlockPos growth{frame.rowsWidth - 1 + growthGap, 1, frame.firstRoad - 3};
     if (bed(context, area, growth)) {
         points.append(world(growth));
-        area.labels.append({{growth.x + 0.5, 3.5, growth.z + 0.5}, u"showcase.station.growth"_s, {}, false});
+        area.addLabel({{growth.x + 0.5, 3.5, growth.z + 0.5}, u"showcase.station.growth"_s, {}, false});
     }
 
     // The settlement: three beds and a composter in one chunk, so its id (its first spot) is the
@@ -105,15 +105,15 @@ QList<QcBlockPos> build(const QcShowcaseContext &context, QcStructure &area, QcB
     }
     const QcBlockPos chest{x + 13, 1, z + 3};
     if (place(context, area, chest, u"qtcraft:chest[facing=south]"_s) && context.content.itemId(u"qtcraft:bread"_s)) {
-        area.contents.append({chest, {{u"qtcraft:bread"_s, 16}}});
+        area.addContents({chest, {{u"qtcraft:bread"_s, 16}}});
     }
     field(context, area, x, z);
     rail(context, area, x, z);
     if (context.content.mobIndex(u"qtcraft:villager"_s)) {
-        area.mobs.append({u"qtcraft:villager"_s, {x + 5.5, 1.0, z + 6.0}, false});
-        area.mobs.append({u"qtcraft:villager"_s, {x + 9.5, 1.0, z + 6.0}, false});
+        area.addMob({u"qtcraft:villager"_s, {x + 5.5, 1.0, z + 6.0}, false});
+        area.addMob({u"qtcraft:villager"_s, {x + 9.5, 1.0, z + 6.0}, false});
     }
-    area.labels.append({{x + 8.0, 3.5, z + 1.5}, u"showcase.station.settlement"_s, {}, false});
+    area.addLabel({{x + 8.0, 3.5, z + 1.5}, u"showcase.station.settlement"_s, {}, false});
     return points;
 }
 

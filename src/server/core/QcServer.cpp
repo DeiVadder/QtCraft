@@ -123,10 +123,8 @@ QcStatus QcServer::openWorld()
         return opened;
     }
 
-    QStringList accessWarnings;
-    m_state.access().open(m_state.config().worldDirectory, m_state.config().operators, accessWarnings);
-    m_state.identities().open(m_state.config().worldDirectory, accessWarnings);
-    m_persistence.noteWarnings(accessWarnings);
+    const QStringList accessWarnings = m_state.access().open(m_state.config().worldDirectory, m_state.config().operators);
+    m_persistence.noteWarnings(accessWarnings + m_state.identities().open(m_state.config().worldDirectory));
 
     // A new world gets what its generator sets up once (decision E-221).
     if (!m_state.info().setupDone) {
@@ -453,7 +451,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
     client.previousPosition = previous;
-    QcPhysics::stepPlayer(client.motion, input, m_state.world(), QcPhysics::tickDuration, client.rules().mayFly);
+    client.motion.stepPlayer(input, m_state.world(), QcPhysics::tickDuration, client.rules().mayFly);
     m_health.afterMove(client, wasOnGround, wasInWater, previous.y);
 
     client.yaw = input.yaw;

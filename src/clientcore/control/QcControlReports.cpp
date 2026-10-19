@@ -64,7 +64,9 @@ QJsonObject QcControlReports::playerStatus() const
         status.insert(u"disconnectReason"_s, m_session.disconnectReason());
     }
 
-    insertTarget(status);
+    if (const std::optional<QJsonObject> target = targetJson()) {
+        status.insert(u"target"_s, *target);
+    }
 
     status.insert(u"health"_s, m_session.vitals().health());
     status.insert(u"maxHealth"_s, m_session.vitals().maxHealth());
@@ -111,16 +113,18 @@ QJsonObject QcControlReports::weatherJson() const
             {u"strikes"_s, qint64(weather.strikes())}};
 }
 
-void QcControlReports::insertTarget(QJsonObject &status) const
+std::optional<QJsonObject> QcControlReports::targetJson() const
 {
-    if (const auto &target = m_session.target()) {
-        const std::optional<QcBlockId> block = m_session.world() ? m_session.world()->blockAt(target->block) : std::nullopt;
-        status.insert(u"target"_s, QJsonObject{{u"x"_s, target->block.x},
-                                               {u"y"_s, target->block.y},
-                                               {u"z"_s, target->block.z},
-                                               {u"face"_s, QcControlArguments::faceName(target->face)},
-                                               {u"block"_s, block ? m_session.content()->block(*block).name : QString()}});
+    const auto &target = m_session.target();
+    if (!target) {
+        return std::nullopt;
     }
+    const std::optional<QcBlockId> block = m_session.world() ? m_session.world()->blockAt(target->block) : std::nullopt;
+    return QJsonObject{{u"x"_s, target->block.x},
+                       {u"y"_s, target->block.y},
+                       {u"z"_s, target->block.z},
+                       {u"face"_s, QcControlArguments::faceName(target->face)},
+                       {u"block"_s, block ? m_session.content()->block(*block).name : QString()}};
 }
 
 QJsonValue QcControlReports::stackJson(QcItemStack stack) const

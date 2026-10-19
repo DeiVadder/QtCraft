@@ -35,35 +35,31 @@ QColor paint(const QcTextureSpec &spec, int x, int y, QColor color)
     return QcTexturePaint::scaled(color, (x + y) % 2 == 0 ? 1.0 : 0.95);
 }
 
-bool read(const QJsonObject &json, QcTextureSpec &spec, QString &problem)
+QcResult<QcTextureSpec> read(const QJsonObject &json, QcTextureSpec spec)
 {
     const QJsonArray rows = json.value(u"bitmap"_s).toArray();
     if (rows.size() > QcTextureSpec::maxBitmapRows) {
-        problem = u"'bitmap' has more than %1 rows"_s.arg(QcTextureSpec::maxBitmapRows);
-        return false;
+        return qcError(u"'bitmap' has more than %1 rows"_s.arg(QcTextureSpec::maxBitmapRows));
     }
     for (const auto &row : rows) {
         if (!row.isString() || row.toString().size() > QcTexturePaint::size) {
-            problem = u"'bitmap' rows must be strings of at most %1 characters"_s.arg(QcTexturePaint::size);
-            return false;
+            return qcError(u"'bitmap' rows must be strings of at most %1 characters"_s.arg(QcTexturePaint::size));
         }
         spec.bitmap.append(row.toString());
     }
 
     const QJsonObject palette = json.value(u"palette"_s).toObject();
     if (palette.size() > QcTextureSpec::maxPaletteEntries) {
-        problem = u"'palette' has more than %1 colours"_s.arg(QcTextureSpec::maxPaletteEntries);
-        return false;
+        return qcError(u"'palette' has more than %1 colours"_s.arg(QcTextureSpec::maxPaletteEntries));
     }
     for (auto it = palette.constBegin(); it != palette.constEnd(); ++it) {
         const std::optional<QColor> color = opaqueColor(it.value());
         if (it.key().size() != 1 || !color) {
-            problem = u"'palette' maps single characters to colours '#rrggbb'"_s;
-            return false;
+            return qcError(u"'palette' maps single characters to colours '#rrggbb'"_s);
         }
         spec.palette.insert(it.key().front(), *color);
     }
-    return true;
+    return spec;
 }
 
 } // namespace QcTextureEmblem

@@ -4,6 +4,7 @@
 #include "common/gameplay/QcArmour.h"
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -25,16 +26,26 @@ namespace {
     return result;
 }
 
-// The layer boxes of the boxes of `bone` that `layer` covers.
-void appendCovered(QList<QcEntityMesher::Attachment> &out, const QcArmourLayer &layer, const QcModelBone &bone)
+// Attachments gathered into one list.
+class Attachments
 {
-    for (const QcModelBox &box : bone.boxes) {
-        const std::optional<QcAabb> grown = layer.covers.contains(box.slot) ? layerBox(box, layer) : std::nullopt;
-        if (grown) {
-            out.append({bone.role, *grown, layer.texture, layer.front});
+public:
+    // Adds the layer boxes of the boxes of `bone` that `layer` covers.
+    void addCovered(const QcArmourLayer &layer, const QcModelBone &bone)
+    {
+        for (const QcModelBox &box : bone.boxes) {
+            const std::optional<QcAabb> grown = layer.covers.contains(box.slot) ? layerBox(box, layer) : std::nullopt;
+            if (grown) {
+                m_list.append({bone.role, *grown, layer.texture, layer.front});
+            }
         }
     }
-}
+
+    [[nodiscard]] QList<QcEntityMesher::Attachment> take() { return std::exchange(m_list, {}); }
+
+private:
+    QList<QcEntityMesher::Attachment> m_list;
+};
 
 } // namespace
 
@@ -43,13 +54,15 @@ const QcModelDefinition *referenceModel(const QcContentRegistry &content)
     return content.model(u"qtcraft:humanoid"_s);
 }
 
-void appendLayers(QList<QcEntityMesher::Attachment> &out, const QcArmourDefinition &armour, const QcModelDefinition &reference)
+QList<QcEntityMesher::Attachment> layers(const QcArmourDefinition &armour, const QcModelDefinition &reference)
 {
+    Attachments result;
     for (const QcArmourLayer &layer : armour.layers) {
         for (const QcModelBone &bone : reference.bones) {
-            appendCovered(out, layer, bone);
+            result.addCovered(layer, bone);
         }
     }
+    return result.take();
 }
 
 QList<QcEntityMesher::Attachment> attachments(const QcContentRegistry &content, const QcEquipment &equipment)
@@ -64,7 +77,7 @@ QList<QcEntityMesher::Attachment> attachments(const QcContentRegistry &content, 
         }
 
         if (reference) {
-            appendLayers(result, *armour, *reference);
+            result.append(layers(*armour, *reference));
         }
         for (const QcArmourPart &part : armour->parts) {
             result.append({part.bone, {part.from, part.to}, part.texture, part.front});
@@ -88,9 +101,7 @@ QList<QcEntityMesher::Attachment> headFillers(const QcContentRegistry &content, 
         layer.texture = texture;
         layer.front.clear();
     }
-    QList<QcEntityMesher::Attachment> result;
-    appendLayers(result, filler, *reference);
-    return result;
+    return layers(filler, *reference);
 }
 
 double capeClearance(const QcModelDefinition &wearer, const QList<QcEntityMesher::Attachment> &attachments)

@@ -119,18 +119,18 @@ std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageS
     return fits ? std::optional<int>(wet) : std::nullopt;
 }
 
-void layStairs(const QcTerrainGenerator &terrain, const QcContentRegistry &content, QcVillageDraft &draft, const QcVillageDraft::Road &road)
+std::optional<QcVillageDraft::Stairs> stairsAt(const QcTerrainGenerator &terrain, const QcContentRegistry &content,
+                                                const QcVillageDraft &draft, const QcVillageDraft::Road &road)
 {
     const int endX = road.x + road.dx * (road.length - 1);
     const int endZ = road.z + road.dz * (road.length - 1);
-    const QList<QcVillagePlan::Deck> flight =
-        stairs(terrain, content, draft.style->stilts, {endX, endZ, road.dx, road.dz, 2 * QcVillageDraft::roadHalfWidth + 1});
+    QList<QcVillagePlan::Deck> flight = stairs(terrain, content, draft.style->stilts, {endX, endZ, road.dx, road.dz, 2 * QcVillageDraft::roadHalfWidth + 1});
     if (flight.isEmpty()) {
-        return;
+        return std::nullopt;
     }
 
     QcVillageDraft::Rect rect{flight.front().at.x, flight.front().at.z, flight.front().at.x, flight.front().at.z};
-    for (const QcVillagePlan::Deck &stair : flight) {
+    for (const QcVillagePlan::Deck &stair : std::as_const(flight)) {
         rect = {std::min(rect.x0, stair.at.x), std::min(rect.z0, stair.at.z), std::max(rect.x1, stair.at.x), std::max(rect.z1, stair.at.z)};
     }
     const int spacing = draft.region.spacing;
@@ -139,43 +139,17 @@ void layStairs(const QcTerrainGenerator &terrain, const QcContentRegistry &conte
     const bool inRegion = rect.x0 >= regionX0 && rect.z0 >= regionZ0 && rect.x1 < regionX0 + spacing && rect.z1 < regionZ0 + spacing;
     const bool hitsPiece = std::ranges::any_of(draft.pieces, [&](QcVillageDraft::Rect other) { return rect.intersects(other, 0); });
     if (!inRegion || hitsPiece || draft.touchesRoad(rect, 0)) {
-        return;
+        return std::nullopt;
     }
-    draft.plan.decks.append(flight);
-    draft.markRoad(rect);
-    draft.stairs.append(rect);
 
     // The land access stays dry: the stairs and a strip beyond them through the wetland's reach.
     const int beyond = draft.style->wetland.reach() + 1;
     const int farX = endX + road.dx * (int(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
     const int farZ = endZ + road.dz * (int(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
     const int side = QcVillageDraft::roadHalfWidth + 1;
-    draft.plan.wetland.dry.append({std::min(rect.x0, farX - side * std::abs(road.dz)), std::min(rect.z0, farZ - side * std::abs(road.dx)),
-                                    std::max(rect.x1, farX + side * std::abs(road.dz)), std::max(rect.z1, farZ + side * std::abs(road.dx))});
-}
-
-void planWetland(QcVillageDraft &draft)
-{
-    // The wetland spreads from the pieces and boardwalks, not from the stairs down to land.
-    QcVillagePlan::Wetland &wetland = draft.plan.wetland;
-    wetland.settings = draft.style->wetland;
-    const QList<QcVillageDraft::Rect> covered = draft.pieces + draft.roads;
-    for (const QcVillageDraft::Rect rect : covered) {
-        if (!draft.stairs.contains(rect)) {
-            wetland.wet.append({rect.x0, rect.z0, rect.x1, rect.z1});
-        }
-    }
-
-    // Its columns are part of the village: no trees or plants grow there (decision E-403).
-    // The village stays inside its region, so its chunks need no other plan.
-    const int reach = wetland.settings.reach();
-    const int regionX0 = draft.region.x * draft.region.spacing;
-    const int regionZ0 = draft.region.z * draft.region.spacing;
-    QcVillagePlan &plan = draft.plan;
-    plan.minX = std::max(regionX0, plan.minX - reach);
-    plan.minZ = std::max(regionZ0, plan.minZ - reach);
-    plan.maxX = std::min(regionX0 + draft.region.spacing - 1, plan.maxX + reach);
-    plan.maxZ = std::min(regionZ0 + draft.region.spacing - 1, plan.maxZ + reach);
+    const QcVillageDraft::Rect dry{std::min(rect.x0, farX - side * std::abs(road.dz)), std::min(rect.z0, farZ - side * std::abs(road.dx)),
+                                   std::max(rect.x1, farX + side * std::abs(road.dz)), std::max(rect.z1, farZ + side * std::abs(road.dx))};
+    return QcVillageDraft::Stairs{std::move(flight), rect, dry};
 }
 
 } // namespace QcBoardwalkPlanner

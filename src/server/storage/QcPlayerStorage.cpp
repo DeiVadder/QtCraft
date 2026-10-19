@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -32,6 +33,182 @@ QString sanitizedPlayerName(const QString &name)
     }
     return result.isEmpty() ? u"player"_s : result.left(32);
 }
+
+// Reads the fields of one player file after its header and collects the warnings of reading it:
+// unknown items are dropped, an unknown game mode is played as survival.
+class PlayerFileReader
+{
+public:
+    PlayerFileReader(QDataStream &stream, const QcContentRegistry &content, const QString &path)
+        : m_stream(stream)
+        , m_content(content)
+        , m_path(path)
+    {
+    }
+
+    // The player of a file of `version`; an error names the damaged part.
+    [[nodiscard]] QcResult<QcPlayerData> read(quint16 version)
+    {
+        QcPlayerData player;
+        QcEntityMotion &m = player.motion;
+        qint32 selected = 0;
+        m_stream >> m.position.x >> m.position.y >> m.position.z >> m.velocity.x >> m.velocity.y >> m.velocity.z >> m.onGround
+            >> player.yaw >> player.pitch >> player.health >> selected;
+        std::optional<QcInventory> inventory = readSlots();
+        if (!inventory) {
+            return qcError(u"%1 is damaged (inventory)"_s.arg(m_path));
+        }
+        inventory->setSelectedHotbarSlot(selected);
+
+        qint32 food = 0;
+        m_stream >> food >> player.exhaustion;
+        player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
+        std::optional<Worn> worn = readEquipment(std::move(*inventory));
+        if (!worn) {
+            return qcError(u"%1 is damaged (armour)"_s.arg(m_path));
+        }
+        player.inventory = std::move(worn->inventory);
+        player.equipment = worn->equipment;
+        std::optional<OtherMode> other = readGameMode();
+        if (!other) {
+            return qcError(u"%1 is damaged (game mode)"_s.arg(m_path));
+        }
+        player.gameMode = other->gameMode;
+        player.motion.flying = other->flying;
+        player.keptInventory = std::move(other->kept.inventory);
+        player.keptEquipment = other->kept.equipment;
+
+        qint32 level = 0;
+        qint32 points = 0;
+        m_stream >> level >> points;
+        player.experience = QcExperience(level, points);
+        if (version >= 6) {
+            std::optional<QList<QcStatusEffect>> effects = QcStatusEffects::read(m_stream);
+            if (!effects) {
+                return qcError(u"%1 is damaged (effects)"_s.arg(m_path));
+            }
+            player.effects = std::move(*effects);
+        }
+        return player;
+    }
+
+    [[nodiscard]] QStringList takeWarnings() { return std::exchange(m_warnings, {}); }
+
+private:
+    // The armour slots and the inventory with the pieces that no longer fit their slot.
+    struct Worn
+    {
+        QcEquipment equipment;
+        QcInventory inventory;
+    };
+
+    // The game mode, flight and the inventory set kept for the modes of the other set.
+    struct OtherMode
+    {
+        QcGameMode gameMode = QcGameMode::Survival;
+        bool flying = false;
+        Worn kept;
+    };
+
+    // Inventory slots after the selected slot; std::nullopt when they are damaged.
+    [[nodiscard]] std::optional<QcInventory> readSlots()
+    {
+        const std::optional<quint32> slotCountRead = QcStreamLimits::readCount(m_stream, QcInventory::slotCount);
+        if (!slotCountRead) {
+            return std::nullopt;
+        }
+
+        QcInventory inventory;
+        for (quint32 i = 0; i < *slotCountRead; ++i) {
+            QString name;
+            qint32 count = 0;
+            qint32 damage = 0;
+            m_stream >> name >> count >> damage;
+            if (name.isEmpty() || count <= 0) {
+                continue;
+            }
+
+            const std::optional<QcItemId> item = m_content.itemId(name);
+            if (!item) {
+                m_warnings.append(u"%1: unknown item '%2' dropped"_s.arg(m_path, name));
+                continue;
+            }
+
+            const QcItemDefinition &definition = m_content.item(*item);
+            inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))});
+        }
+        return m_stream.status() == QDataStream::Ok ? std::optional(std::move(inventory)) : std::nullopt;
+    }
+
+    // The armour slots; pieces that no longer fit their slot go into `inventory`. std::nullopt when damaged.
+    [[nodiscard]] std::optional<Worn> readEquipment(QcInventory inventory)
+    {
+        const std::optional<quint32> countRead = QcStreamLimits::readCount(m_stream, QcEquipment::slotCount);
+        if (!countRead) {
+            return std::nullopt;
+        }
+
+        Worn worn{{}, std::move(inventory)};
+        for (quint32 i = 0; i < *countRead; ++i) {
+            QString name;
+            qint32 stackCount = 0;
+            qint32 damage = 0;
+            m_stream >> name >> stackCount >> damage;
+            if (name.isEmpty() || stackCount <= 0) {
+                continue;
+            }
+
+            const std::optional<QcItemId> item = m_content.itemId(name);
+            if (!item) {
+                m_warnings.append(u"%1: unknown item '%2' dropped"_s.arg(m_path, name));
+                continue;
+            }
+
+            const QcItemDefinition &definition = m_content.item(*item);
+            const QcItemStack stack{*item, 1, std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+            // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
+            if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
+                worn.equipment.stacks[i] = stack;
+            } else if (worn.inventory.add(stack.item, 1, m_content, stack.damage) > 0) {
+                m_warnings.append(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(m_path, name));
+            }
+        }
+        return m_stream.status() == QDataStream::Ok ? std::optional(std::move(worn)) : std::nullopt;
+    }
+
+    // Game mode, flight and the kept inventory set; std::nullopt when damaged.
+    [[nodiscard]] std::optional<OtherMode> readGameMode()
+    {
+        OtherMode other;
+        quint8 mode = 0;
+        qint32 keptSelected = 0;
+        m_stream >> mode >> other.flying >> keptSelected;
+
+        // A mode of a newer version is played as survival rather than refusing the player.
+        if (const std::optional<QcGameMode> known = QcGameModes::fromValue(mode)) {
+            other.gameMode = *known;
+        } else {
+            m_warnings.append(u"%1: unknown game mode %2, playing survival"_s.arg(m_path).arg(mode));
+        }
+
+        std::optional<QcInventory> kept = readSlots();
+        if (!kept) {
+            return std::nullopt;
+        }
+        kept->setSelectedHotbarSlot(keptSelected);
+        std::optional<Worn> worn = readEquipment(std::move(*kept));
+        if (!worn) {
+            return std::nullopt;
+        }
+        other.kept = std::move(*worn);
+        return other;
+    }
+
+    QDataStream &m_stream;
+    const QcContentRegistry &m_content;
+    const QString &m_path;
+    QStringList m_warnings;
+};
 
 } // namespace
 
@@ -108,73 +285,49 @@ void QcPlayerStorage::writeEquipment(QDataStream &stream, const QcEquipment &equ
     }
 }
 
-QcResult<std::optional<QcPlayerData>> QcPlayerStorage::read(const QString &playerName, QStringList &warnings) const
+QcPlayerStorage::Result QcPlayerStorage::read(const QString &playerName) const
 {
     QFile stored(path(playerName));
     if (!stored.exists()) {
-        return std::optional<QcPlayerData>();
+        return Read{};
     }
     if (!stored.open(QIODevice::ReadOnly)) {
-        return qcError(u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()));
+        return std::unexpected(Failure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
     }
-    return parse(playerName, stored.read(qint64(16) * 1024 * 1024), warnings);
+    return parse(playerName, stored.read(qint64(16) * 1024 * 1024));
 }
 
-QcResult<std::optional<QcPlayerData>> QcPlayerStorage::parse(const QString &playerName, const std::optional<QByteArray> &contents,
-                                                             QStringList &warnings) const
+QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const std::optional<QByteArray> &contents) const
 {
     const QString file = path(playerName);
     if (!contents) {
-        return std::optional<QcPlayerData>();
+        return Read{};
     }
 
-    quint16 version = 0;
-    const QcResult<QByteArray> payload = QcSaveFile::parse(*contents, file, playerMagic, playerVersion, &version);
+    const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(*contents, file, playerMagic, playerVersion);
     if (!payload) {
-        return qcError(payload.error());
+        return std::unexpected(Failure{payload.error(), {}});
     }
-    if (version < oldestReadVersion) {
-        return qcError(u"%1 is from an older development version"_s.arg(file));
+    if (payload->version < oldestReadVersion) {
+        return std::unexpected(Failure{u"%1 is from an older development version"_s.arg(file), {}});
     }
 
-    QDataStream stream(*payload);
+    QDataStream stream(payload->bytes);
     stream.setVersion(QcSaveFile::streamVersion);
-
-    QcPlayerData player;
-    QcEntityMotion &m = player.motion;
-    qint32 selected = 0;
-    stream >> m.position.x >> m.position.y >> m.position.z >> m.velocity.x >> m.velocity.y >> m.velocity.z >> m.onGround
-        >> player.yaw >> player.pitch >> player.health >> selected;
-    if (!readSlots(stream, file, player.inventory, warnings)) {
-        return qcError(u"%1 is damaged (inventory)"_s.arg(file));
+    PlayerFileReader reader(stream, *m_content, file);
+    QcResult<QcPlayerData> player = reader.read(payload->version);
+    // What was read before a damaged part was warned about still is (unknown items dropped).
+    if (!player) {
+        return std::unexpected(Failure{player.error(), reader.takeWarnings()});
     }
-    player.inventory.setSelectedHotbarSlot(selected);
-
-    qint32 food = 0;
-    stream >> food >> player.exhaustion;
-    player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
-    if (!readEquipment(stream, file, player.equipment, player.inventory, warnings)) {
-        return qcError(u"%1 is damaged (armour)"_s.arg(file));
-    }
-    if (!readGameMode(stream, file, player, warnings)) {
-        return qcError(u"%1 is damaged (game mode)"_s.arg(file));
-    }
-    qint32 level = 0;
-    qint32 points = 0;
-    stream >> level >> points;
-    player.experience = QcExperience(level, points);
-    if (version >= 6 && !QcStatusEffects::read(stream, player.effects)) {
-        return qcError(u"%1 is damaged (effects)"_s.arg(file));
+    if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(*player)) {
+        return std::unexpected(Failure{u"%1 is damaged"_s.arg(file), reader.takeWarnings()});
     }
 
-    if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(player)) {
-        return qcError(u"%1 is damaged"_s.arg(file));
-    }
-
-    player.health = std::clamp(player.health, 0.0, 1000.0);
-    player.exhaustion = std::max(0.0, player.exhaustion);
-    player.yaw = std::fmod(player.yaw, 360.0f);
-    return std::optional<QcPlayerData>(player);
+    player->health = std::clamp(player->health, 0.0, 1000.0);
+    player->exhaustion = std::max(0.0, player->exhaustion);
+    player->yaw = std::fmod(player->yaw, 360.0f);
+    return Read{std::move(*player), reader.takeWarnings()};
 }
 
 bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
@@ -189,88 +342,4 @@ bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
                          && m.position.y >= QcWorld::voidFloorY - verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
     const bool directionOk = std::isfinite(player.yaw) && std::isfinite(player.pitch) && std::abs(player.pitch) <= 90.0f;
     return inWorld && finite(m.velocity) && directionOk && std::isfinite(player.health) && std::isfinite(player.exhaustion);
-}
-
-bool QcPlayerStorage::readSlots(QDataStream &stream, const QString &path, QcInventory &inventory, QStringList &warnings) const
-{
-    quint32 slotCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcInventory::slotCount, slotCount)) {
-        return false;
-    }
-
-    for (quint32 i = 0; i < slotCount; ++i) {
-        QString name;
-        qint32 count = 0;
-        qint32 damage = 0;
-        stream >> name >> count >> damage;
-        if (name.isEmpty() || count <= 0) {
-            continue;
-        }
-
-        const std::optional<QcItemId> item = m_content->itemId(name);
-        if (!item) {
-            warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
-            continue;
-        }
-
-        const QcItemDefinition &definition = m_content->item(*item);
-        inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack),
-                                   std::clamp(damage, 0, std::max(0, definition.durability - 1))});
-    }
-    return stream.status() == QDataStream::Ok;
-}
-
-bool QcPlayerStorage::readEquipment(QDataStream &stream, const QString &path, QcEquipment &equipment, QcInventory &inventory,
-                                    QStringList &warnings) const
-{
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcEquipment::slotCount, count)) {
-        return false;
-    }
-
-    for (quint32 i = 0; i < count; ++i) {
-        QString name;
-        qint32 stackCount = 0;
-        qint32 damage = 0;
-        stream >> name >> stackCount >> damage;
-        if (name.isEmpty() || stackCount <= 0) {
-            continue;
-        }
-
-        const std::optional<QcItemId> item = m_content->itemId(name);
-        if (!item) {
-            warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
-            continue;
-        }
-
-        const QcItemDefinition &definition = m_content->item(*item);
-        const QcItemStack stack{*item, 1, std::clamp(damage, 0, std::max(0, definition.durability - 1))};
-        // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
-        if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
-            equipment.stacks[i] = stack;
-        } else if (inventory.add(stack.item, 1, *m_content, stack.damage) > 0) {
-            warnings.append(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(path, name));
-        }
-    }
-    return stream.status() == QDataStream::Ok;
-}
-
-bool QcPlayerStorage::readGameMode(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const
-{
-    quint8 mode = 0;
-    qint32 keptSelected = 0;
-    stream >> mode >> player.motion.flying >> keptSelected;
-
-    // A mode of a newer version is played as survival rather than refusing the player.
-    if (const std::optional<QcGameMode> known = QcGameModes::fromValue(mode)) {
-        player.gameMode = *known;
-    } else {
-        warnings.append(u"%1: unknown game mode %2, playing survival"_s.arg(path).arg(mode));
-    }
-
-    if (!readSlots(stream, path, player.keptInventory, warnings)) {
-        return false;
-    }
-    player.keptInventory.setSelectedHotbarSlot(keptSelected);
-    return readEquipment(stream, path, player.keptEquipment, player.keptInventory, warnings);
 }

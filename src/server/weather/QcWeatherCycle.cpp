@@ -72,7 +72,7 @@ int Draws::bounded(int lowest, int highest)
     return lowest + int(z % quint64(highest - lowest));
 }
 
-void step(QcWeatherState &state, qint64 seed, bool cycle)
+QcWeatherState next(QcWeatherState state, qint64 seed, bool cycle)
 {
     ++state.ticks;
     if (state.spell == 0) {
@@ -89,13 +89,15 @@ void step(QcWeatherState &state, qint64 seed, bool cycle)
 
     state.rain = fade(state.rain, state.kind == QcWeatherKind::Clear ? 0.0f : 1.0f);
     state.thunder = fade(state.thunder, state.kind == QcWeatherKind::Thunder ? 1.0f : 0.0f);
+    return state;
 }
 
-void set(QcWeatherState &state, qint64 seed, QcWeatherKind kind, std::optional<qint64> ticks)
+QcWeatherState begun(QcWeatherState state, qint64 seed, QcWeatherKind kind, std::optional<qint64> ticks)
 {
     state.kind = kind;
     state.ticksLeft = std::clamp<qint64>(ticks.value_or(lengthOf(seed, state.spell, kind)), 1, maxSetTicks);
     ++state.spell;
+    return state;
 }
 
 QJsonObject toJson(const QcWeatherState &state)

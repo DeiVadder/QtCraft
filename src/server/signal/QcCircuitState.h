@@ -60,6 +60,9 @@ struct QcCircuitState
             ticketWishes.insert(chunk);
         }
     }
+    // A position from a chunk's record that the circuits were going to look at: a change of itself in
+    // the next step, a `signal` on its way or a look (decision E-374).
+    void lookAgain(QcBlockPos pos, bool signal) { changes.append({pos, qcAirBlockId, qcAirBlockId, false, signal}); }
     // The chunks signals wait for since the last call.
     QSet<QcChunkPos> takeTicketWishes() { return std::exchange(ticketWishes, {}); }
     // Moves what waited for the chunks around this newly loaded one into the changes when they are

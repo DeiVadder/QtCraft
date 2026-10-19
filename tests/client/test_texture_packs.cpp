@@ -383,12 +383,11 @@ private slots:
         const auto broken = find(u"mod:rubies/broken"_s);
         QVERIFY(broken != entries.end() && !broken->manifest && broken->error);
 
-        QStringList missing;
-        const QcTexturePackStack stack =
-            QcTexturePackLibrary::loadStack({u"mod:rubies/shiny"_s, u"mod:rubies/broken"_s, u"user:none"_s}, entries, missing);
-        QCOMPARE(stack.size(), 1);
-        QCOMPARE(stack.front()->id, u"mod:rubies/shiny"_s);
-        QCOMPARE(missing, (QStringList{u"mod:rubies/broken"_s, u"user:none"_s}));
+        const QcTexturePackLibrary::LoadedStack loaded =
+            QcTexturePackLibrary::loadStack({u"mod:rubies/shiny"_s, u"mod:rubies/broken"_s, u"user:none"_s}, entries);
+        QCOMPARE(loaded.stack.size(), 1);
+        QCOMPARE(loaded.stack.front()->id, u"mod:rubies/shiny"_s);
+        QCOMPARE(loaded.missing, (QStringList{u"mod:rubies/broken"_s, u"user:none"_s}));
     }
 
     // The checks above for the folders around the files: a linked textures folder, a linked pack

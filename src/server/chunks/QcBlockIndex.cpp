@@ -17,7 +17,8 @@ void QcBlockIndex::noteChunk(QcChunkPos pos, const QcChunk &chunk)
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
         const QcChunkSection &section = chunk.section(index);
         if (std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isMarked(id); })) {
-            scanSection(section, {pos.x * QcWorld::chunkSize, index * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize}, found);
+            const QcBlockPos corner{pos.x * QcWorld::chunkSize, index * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize};
+            section.forEachCell(corner, [this](QcBlockId id) { return isMarked(id); }, [&found](QcBlockPos block) { found.append(block); });
         }
     }
 
@@ -29,19 +30,6 @@ void QcBlockIndex::noteChunk(QcChunkPos pos, const QcChunk &chunk)
         m_touched.insert(block);
     }
     m_byChunk.insert(pos, found);
-}
-
-void QcBlockIndex::scanSection(const QcChunkSection &section, QcBlockPos corner, QList<QcBlockPos> &found) const
-{
-    constexpr int size = QcWorld::chunkSize;
-    for (int cell = 0; cell < size * size * QcWorld::sectionHeight; ++cell) {
-        const int x = cell % size;
-        const int z = cell / size % size;
-        const int y = cell / (size * size);
-        if (isMarked(section.block(x, y, z))) {
-            found.append(corner.offset(x, y, z));
-        }
-    }
 }
 
 void QcBlockIndex::noteBlock(QcBlockPos pos, QcBlockId block)

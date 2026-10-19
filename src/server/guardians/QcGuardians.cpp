@@ -50,40 +50,43 @@ void QcGuardians::tick()
 
     int total = guardianCount();
     for (const QcGuardSite &site : std::as_const(sites)) {
-        serve(site, players, total);
+        if (serve(site, players, total)) {
+            ++total;
+        }
     }
 }
 
-void QcGuardians::serve(const QcGuardSite &site, const QList<QcVec3> &players, int &total)
+bool QcGuardians::serve(const QcGuardSite &site, const QList<QcVec3> &players, int total)
 {
     const quint64 now = m_state.clock().tick();
     const quint64 cooldown = quint64(std::llround(site.rule.cooldownSeconds * QcPhysics::tickRate));
     if (guardianCount(site.id) >= site.rule.max) {
         m_readyAt.insert(site.id, now + cooldown);
-        return;
+        return false;
     }
     // A zone seen for the first time in this session waits half its cooldown: reloading the world
     // brings the next guardian at most that much earlier.
     const auto ready = m_readyAt.constFind(site.id);
     if (ready == m_readyAt.cend()) {
         m_readyAt.insert(site.id, now + cooldown / 2);
-        return;
+        return false;
     }
     if (now < *ready) {
-        return;
+        return false;
     }
 
     const std::optional<int> type = m_state.content().mobIndex(site.rule.mob);
     if (!type || !QcSpawnerContent::refusal(m_state.content().mobs()[*type]).isEmpty() || total >= m_state.config().limits.guardians) {
-        return;
+        return false;
     }
     if (!playersAllow(site, players) || !zoneLoaded(site)) {
-        return;
+        return false;
     }
-    if (bringForth(site, *type)) {
-        ++total;
-        m_readyAt.insert(site.id, now + cooldown);
+    if (!bringForth(site, *type)) {
+        return false;
     }
+    m_readyAt.insert(site.id, now + cooldown);
+    return true;
 }
 
 bool QcGuardians::playersAllow(const QcGuardSite &site, const QList<QcVec3> &players)

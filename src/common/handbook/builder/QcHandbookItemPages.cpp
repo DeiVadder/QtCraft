@@ -18,18 +18,21 @@ bool isTool(const QcItemDefinition &item)
 }
 
 // Slot, points and set of armour (decision E-234); its durability counts hits.
-void addArmourFacts(const QcHandbookContext &context, const QcArmourDefinition &armour, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> armourFacts(const QcHandbookContext &context, const QcArmourDefinition &armour)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     facts.append({text.label(u"fact.wornOn"_s), text.label(u"slot."_s + qcEquipmentSlotName(armour.slot)), {}});
     facts.append({text.label(u"fact.armourPoints"_s), u"+"_s + QString::number(armour.points), {context.links.tableLink(u"armour"_s)}});
     const QString setKey = u"armour_set."_s + QString(armour.set).replace(u':', u'.');
     facts.append({text.label(u"fact.armourSet"_s), context.content.translate(setKey, text.language()), {}});
+    return facts;
 }
 
 // Tool, durability, attack, food and fuel values, and lighting fire (decision E-393).
-void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> useFacts(const QcHandbookContext &context, const QcItemDefinition &item)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     if (!item.tool.isEmpty()) {
         facts.append({text.label(u"fact.tool"_s), text.label(u"value.toolTier"_s).arg(text.toolName(item.tool)).arg(item.toolLevel),
@@ -37,7 +40,7 @@ void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item,
         facts.append({text.label(u"fact.toolSpeed"_s), text.label(u"unit.factor"_s).arg(text.number(item.toolSpeed)), {}});
     }
     if (item.armour) {
-        addArmourFacts(context, *item.armour, facts);
+        facts += armourFacts(context, *item.armour);
     }
     if (item.durability > 0) {
         facts.append({text.label(u"fact.durability"_s), text.label(item.armour ? u"unit.hits"_s : u"unit.uses"_s).arg(item.durability), {}});
@@ -54,6 +57,7 @@ void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item,
     if (item.ignites) {
         facts.append({text.label(u"fact.ignites"_s), {}, {context.links.blockLink(u"qtcraft:fire"_s)}});
     }
+    return facts;
 }
 
 // The fact `label` linking every block whose `into` field names a block (what a hoe tills, what a
@@ -70,8 +74,9 @@ Fact blocksTurnedBy(const QcHandbookContext &context, const QString &label, QStr
 }
 
 // What the item places, empties to and scoops up, and its tags.
-void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> linkFacts(const QcHandbookContext &context, const QcItemDefinition &item)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     const QcHandbookLinks &links = context.links;
 
@@ -117,6 +122,7 @@ void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item
         }
         facts.append(std::move(tags));
     }
+    return facts;
 }
 
 // Blocks that need a tool of the item's kind and level to drop anything.
@@ -131,7 +137,7 @@ Section harvestSection(const QcHandbookContext &context, const QcItemDefinition 
         }
     }
 
-    QcHandbookLinks::sortLinks(harvests.links);
+    harvests.links = QcHandbookLinks::sortedLinks(std::move(harvests.links));
     return harvests;
 }
 
@@ -149,10 +155,10 @@ QcHandbookEntry itemPage(const QcHandbookContext &context, const QcItemDefinitio
 
     entry.facts.append({text.label(u"fact.id"_s), item.name, {}});
     entry.facts.append({text.label(u"fact.maxStack"_s), QString::number(item.maxStack), {}});
-    addUseFacts(context, item, entry.facts);
-    addLinkFacts(context, item, entry.facts);
+    entry.facts += useFacts(context, item);
+    entry.facts += linkFacts(context, item);
 
-    context.recipes.addItemSections(entry, item.name);
+    entry.sections += context.recipes.itemSections(item.name);
     if (!item.tool.isEmpty()) {
         Section harvests = harvestSection(context, item);
         if (!harvests.links.isEmpty()) {

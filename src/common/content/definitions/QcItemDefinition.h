@@ -127,4 +127,9 @@ struct QcItemDefinition
     // A fishing rod (decision E-503): the use button casts and reels in its bobber. Only that it fishes
     // reaches the client, which sends the use as QcMsg::ThrowItem.
     std::optional<QcFishingDefinition> fishing;
+
+    // Leaves out what does not go together with the projectile uses (when the content is finished):
+    // the use button throws a throwable item (QcClientLauncher::uses), so its other uses would never
+    // happen (decision E-427), and an empty ammunition list means none. The warnings, one per change.
+    [[nodiscard]] QStringList settleProjectileUses();
 };

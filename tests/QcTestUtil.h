@@ -15,26 +15,40 @@
 template<typename Result>
 QByteArray qcErrorText(const Result &result)
 {
-    return result.has_value() ? QByteArray() : result.error().toUtf8();
+    if (result.has_value()) {
+        return {};
+    }
+    // A failure with more than a message (QcPlayerStorage::Failure) names it in `error`.
+    if constexpr (requires { result.error().error; }) {
+        return result.error().error.toUtf8();
+    } else {
+        return result.error().toUtf8();
+    }
 }
 
 // Helpers shared by the tests of every topic.
 namespace QcTestUtil {
 
-// The base content pack alone (no mods), as the game loads it before mods. The content is loaded
-// in member initialisers and fixture setup, where a failed check cannot end a single test case, and
-// no case can run without it, so a pack that does not load cleanly stops the test binary.
+// The base content pack alone (no mods), as the game loads it before mods, with its warnings, or why
+// it does not load.
+inline QcResult<QcBaseContent::Loaded> baseContent()
+{
+    return QcBaseContent::load();
+}
+
+// The base content for tests that cannot run without it. The content is loaded in member
+// initialisers and fixture setup, where a failed check cannot end a single test case, so a pack
+// that does not load or loads with warnings stops the test binary.
 inline std::shared_ptr<QcContentRegistry> loadContent()
 {
-    QStringList warnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> content = QcBaseContent::load(warnings);
+    QcResult<QcBaseContent::Loaded> content = baseContent();
     if (!content) {
         qFatal("The base content does not load: %s", qPrintable(content.error()));
     }
-    if (!warnings.isEmpty()) {
-        qFatal("The base content has warnings: %s", qPrintable(warnings.join(u'\n')));
+    if (!content->warnings.isEmpty()) {
+        qFatal("The base content has warnings: %s", qPrintable(content->warnings.join(u'\n')));
     }
-    return std::move(*content);
+    return std::move(content->registry);
 }
 
 // Fails the running test case from a helper that has to hand back a value at once, such as a

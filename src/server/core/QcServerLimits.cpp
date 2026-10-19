@@ -96,14 +96,11 @@ std::span<const QcServerLimits::Field> QcServerLimits::fields()
     return table;
 }
 
-QcServerLimits QcServerLimits::fromJson(const QJsonObject &json, const QString &source, QStringList *warnings)
+QcServerLimits::Read QcServerLimits::fromJson(const QJsonObject &json, const QString &source)
 {
-    QcServerLimits limits;
-    const auto warn = [&](const QString &text) {
-        if (warnings) {
-            warnings->append(u"%1: limits: %2"_s.arg(source, text));
-        }
-    };
+    Read read;
+    QcServerLimits &limits = read.limits;
+    const auto warn = [&](const QString &text) { read.warnings.append(u"%1: limits: %2"_s.arg(source, text)); };
 
     for (auto it = json.constBegin(); it != json.constEnd(); ++it) {
         const auto field = std::ranges::find_if(table, [&it](const Field &candidate) { return it.key() == QLatin1StringView(candidate.key); });
@@ -123,7 +120,7 @@ QcServerLimits QcServerLimits::fromJson(const QJsonObject &json, const QString &
         }
         limits.*(field->value) = clamped;
     }
-    return limits;
+    return read;
 }
 
 QJsonObject QcServerLimits::toJson() const

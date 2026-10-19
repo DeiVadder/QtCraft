@@ -68,9 +68,11 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
 
     stream >> m.name >> m.position >> m.yaw >> m.health;
     m.item = readStack(stream);
-    if (!readAppearance(stream, m.appearance)) {
+    std::optional<QcAppearance> appearance = readAppearance(stream);
+    if (!appearance) {
         return qcError(u"Invalid appearance"_s);
     }
+    m.appearance = std::move(*appearance);
 
     stream >> m.pitch >> m.flags >> m.held >> m.block;
     m.equipment = readEquipment(stream);
@@ -89,13 +91,13 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream)
 {
     QcMsg::EntityMoves m;
-    quint32 count = 0;
     stream >> m.timeMs;
-    if (m.timeMs < 0 || !QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, count)) {
+    const std::optional<quint32> count = m.timeMs < 0 ? std::nullopt : QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!count) {
         return qcError(u"Corrupt entity moves"_s);
     }
 
-    for (quint32 i = 0; i < count; ++i) {
+    for (quint32 i = 0; i < *count; ++i) {
         QcMsg::EntityMove move;
         stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt >> move.pitch >> move.flags >> move.held;
         if (!isFinite(move.position) || !std::isfinite(move.yaw) || !std::isfinite(move.health) || !std::isfinite(move.pitch)) {

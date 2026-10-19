@@ -52,9 +52,10 @@ public:
 
 private:
     bool mayHoldPlants(const QcChunkSection &section) const;
-    // Picks the random cells of the sections of `chunk` marked in `sections` (bit n: section n)
-    // that hold a growing plant and adds the cells holding one.
-    void pickRandomPlants(const QcChunk &chunk, quint32 sections, QList<QcBlockPos> &ticked);
+    // Picks the random cells of the sections of `chunk` marked in `sections` (bit n: section n) and
+    // calls `visit(pos)` for those holding a growing plant.
+    template<typename Visit>
+    void forRandomPlants(const QcChunk &chunk, quint32 sections, Visit visit);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QRandomGenerator m_random;

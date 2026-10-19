@@ -52,7 +52,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
 }
 
 [[nodiscard]] QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
-                                          QStringList &warnings, QSet<QString> &reported)
+                                          QcLoadWarnings &warnings)
 {
     // qUncompress reads the expected size from the first four bytes; a damaged one could ask for
     // gigabytes.
@@ -66,26 +66,24 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
 
     QDataStream stream(raw);
     stream.setVersion(QcSaveFile::streamVersion);
-    quint32 nameCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, nameCount)) {
+    const std::optional<quint32> nameCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!nameCountRead) {
         return qcError(u"damaged block palette"_s);
     }
+    const quint32 nameCount = *nameCountRead;
     QList<QcBlockId> runtimeIds;
     runtimeIds.reserve(nameCount);
     for (quint32 i = 0; i < nameCount; ++i) {
         QString name;
         stream >> name;
-        QStringList problems;
-        const std::optional<QcBlockId> id = content.stateId(name, &problems);
-        if (!id && !reported.contains(name)) {
-            reported.insert(name);
-            warnings.append(u"unknown block '%1' replaced by air (in this world reported only here)"_s.arg(name));
+        const QcContentRegistry::ParsedState parsed = content.parseState(name);
+        const std::optional<QcBlockId> id = parsed.id;
+        const QStringList &problems = parsed.problems;
+        if (!id) {
+            warnings.addOnce(u"block:"_s + name, u"unknown block '%1' replaced by air (in this world reported only here)"_s.arg(name));
         }
         for (const QString &problem : std::as_const(problems)) {
-            if (!reported.contains(problem)) {
-                reported.insert(problem);
-                warnings.append(u"%1, default used"_s.arg(problem));
-            }
+            warnings.addOnce(u"state:"_s + problem, u"%1, default used"_s.arg(problem));
         }
         runtimeIds.append(id.value_or(qcAirBlockId));
     }

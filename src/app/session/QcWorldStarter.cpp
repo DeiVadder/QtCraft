@@ -18,13 +18,12 @@ QcWorldStarter::QcWorldStarter(QcWorldLibraryController &library, QcSettingsCont
 
 QcResult<std::shared_ptr<const QcContentRegistry>> QcWorldStarter::loadContent()
 {
-    QStringList warnings;
-    QcResult<QcModLoader::Result> content = QcModLoader::load(m_library.modsDirectory(), warnings);
-    for (const QString &warning : std::as_const(warnings)) {
+    QcModLoader::Loaded content = QcModLoader::load(m_library.modsDirectory());
+    for (const QString &warning : QcModLoader::warningsOf(content)) {
         qCWarning(lcGame) << "Content:" << warning;
     }
     if (!content) {
-        return std::unexpected(tr("Cannot load game content: %1").arg(content.error()));
+        return std::unexpected(tr("Cannot load game content: %1").arg(content.error().error));
     }
 
     m_library.recordLoadedMods(content->mods);
@@ -85,16 +84,14 @@ QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &cont
         return std::unexpected(Refusal{tr("Cannot start the world: %1").arg(checked.error()), checked.error()});
     }
 
-    QStringList generatorWarnings;
-    std::unique_ptr<QcWorldGenerator> generator =
-        QcWorldGenerators::create(world.generator, content, config.seed, &generatorWarnings, world.generatorOptions);
-    for (const QString &warning : std::as_const(generatorWarnings)) {
-        qCWarning(lcGame) << "World generation:" << warning;
-    }
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, content, config.seed, world.generatorOptions);
     if (!generator) {
         return std::unexpected(Refusal{tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator), std::nullopt});
     }
 
+    for (const QString &warning : generator->warnings()) {
+        qCWarning(lcGame) << "World generation:" << warning;
+    }
     auto server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
     if (!server->startError().isEmpty()) {
         return std::unexpected(Refusal{tr("Cannot load the world: %1").arg(startError(*server, directory)), std::nullopt});

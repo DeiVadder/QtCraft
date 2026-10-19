@@ -39,6 +39,9 @@ struct ChunkCounts
     // A few places worth a look: lava on the surface and ground opened by a cave.
     QList<QcBlockPos> lavaLakes;
     QList<QcBlockPos> entrances;
+
+    // Adds the counts of another part of the world.
+    void add(const ChunkCounts &part);
 };
 
 QString percent(double part, double whole, int precision = 1)
@@ -160,31 +163,31 @@ private:
     ChunkCounts m_counts;
 };
 
-void addCounts(ChunkCounts &sum, const ChunkCounts &part)
+void ChunkCounts::add(const ChunkCounts &part)
 {
     for (auto it = part.underground.cbegin(); it != part.underground.cend(); ++it) {
-        sum.underground[it.key()] += it.value();
+        underground[it.key()] += it.value();
     }
     for (auto it = part.exposed.cbegin(); it != part.exposed.cend(); ++it) {
-        sum.exposed[it.key()] += it.value();
+        exposed[it.key()] += it.value();
     }
     for (std::size_t band = 0; band < bands.size(); ++band) {
         for (auto it = part.perBand[band].cbegin(); it != part.perBand[band].cend(); ++it) {
-            sum.perBand[band][it.key()] += it.value();
+            perBand[band][it.key()] += it.value();
         }
     }
     for (std::size_t band = 0; band < bands.size(); ++band) {
-        sum.caveAir[band] += part.caveAir[band];
-        sum.cells[band] += part.cells[band];
+        caveAir[band] += part.caveAir[band];
+        cells[band] += part.cells[band];
     }
 
-    sum.dryColumns += part.dryColumns;
-    sum.openColumns += part.openColumns;
-    sum.lavaLakes.append(part.lavaLakes);
-    sum.entrances.append(part.entrances);
+    dryColumns += part.dryColumns;
+    openColumns += part.openColumns;
+    lavaLakes.append(part.lavaLakes);
+    entrances.append(part.entrances);
     for (auto biome = part.surface.cbegin(); biome != part.surface.cend(); ++biome) {
         for (auto it = biome->cbegin(); it != biome->cend(); ++it) {
-            sum.surface[biome.key()][it.key()] += it.value();
+            surface[biome.key()][it.key()] += it.value();
         }
     }
 }
@@ -219,12 +222,20 @@ BiomeGrid sampleBiomes(const QcTerrainGenerator &generator, int radius)
     return grid;
 }
 
-// The connected cells of `start`'s biome, labelled with `id`.
-Region floodRegion(const BiomeGrid &grid, QList<int> &label, qsizetype start, int id)
+// The region of every grid cell, -1 for cells not reached yet.
+struct RegionLabels
+{
+    QList<int> ids;
+
+    // The connected cells of `start`'s biome, labelled with `id`.
+    Region flood(const BiomeGrid &grid, qsizetype start, int id);
+};
+
+Region RegionLabels::flood(const BiomeGrid &grid, qsizetype start, int id)
 {
     Region region;
     region.biome = grid.cells[start];
-    label[start] = id;
+    ids[start] = id;
 
     QList<qsizetype> stack{start};
     while (!stack.isEmpty()) {
@@ -243,8 +254,8 @@ Region floodRegion(const BiomeGrid &grid, QList<int> &label, qsizetype start, in
             const qsizetype neighbour = qsizetype(nz) * grid.size + nx;
             if (grid.cells[neighbour] != region.biome) {
                 region.edges += 1;
-            } else if (label[neighbour] < 0) {
-                label[neighbour] = id;
+            } else if (ids[neighbour] < 0) {
+                ids[neighbour] = id;
                 stack.append(neighbour);
             }
         }
@@ -256,11 +267,11 @@ Region floodRegion(const BiomeGrid &grid, QList<int> &label, qsizetype start, in
 QList<Region> biomeRegions(const QcTerrainGenerator &generator, int radius)
 {
     const BiomeGrid grid = sampleBiomes(generator, radius);
-    QList<int> label(grid.cells.size(), -1);
+    RegionLabels labels{QList<int>(grid.cells.size(), -1)};
     QList<Region> regions;
     for (qsizetype start = 0; start < grid.cells.size(); ++start) {
-        if (label[start] < 0) {
-            regions.append(floodRegion(grid, label, start, int(regions.size())));
+        if (labels.ids[start] < 0) {
+            regions.append(labels.flood(grid, start, int(regions.size())));
         }
     }
     return regions;
@@ -466,7 +477,7 @@ QStringList report(const QcTerrainGenerator &generator, const QcContentRegistry 
     }
     const ChunkCounts total = QtConcurrent::blockingMappedReduced<ChunkCounts>(
         positions, [&](QcChunkPos pos) { return ChunkCounter(generator, content, pos).count(); },
-        [](ChunkCounts &sum, const ChunkCounts &part) { addCounts(sum, part); });
+        [](ChunkCounts &sum, const ChunkCounts &part) { sum.add(part); });
 
     QStringList lines = undergroundLines(total, content, positions.size());
     lines << caveLines(total) << surfaceLines(total, generator, content);

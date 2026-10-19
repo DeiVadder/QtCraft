@@ -70,9 +70,11 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
         return m;
     }
 
-    if (!readAppearance(stream, m.appearance)) {
+    std::optional<QcAppearance> appearance = readAppearance(stream);
+    if (!appearance) {
         return qcError(u"Invalid appearance"_s);
     }
+    m.appearance = std::move(*appearance);
     return m;
 }
 
@@ -101,11 +103,12 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
 {
     QcMsg::Disconnect m;
-    quint32 count = 0;
     stream >> m.reason >> m.key;
-    if (!QcStreamLimits::readCount(stream, QcMsg::Disconnect::maxArguments, count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::Disconnect::maxArguments);
+    if (!countRead) {
         return qcError(u"Too many disconnect arguments"_s);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count; ++i) {
         QString argument;
@@ -125,11 +128,12 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
 {
     QcMsg::ChatMessage m;
-    quint32 count = 0;
     stream >> m.text >> m.key;
-    if (!QcStreamLimits::readCount(stream, QcMsg::ChatMessage::maxArguments, count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::ChatMessage::maxArguments);
+    if (!countRead) {
         return qcError(u"Too many chat arguments"_s);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count; ++i) {
         QString argument;

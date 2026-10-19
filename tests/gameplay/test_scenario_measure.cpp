@@ -162,8 +162,7 @@ private:
         config.spawnColumn = scene.spawn;
         config.viewDistance = scene.view;
         config.operators = {u"Raw"_s};
-        QStringList warnings;
-        std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(scene.world, m_content, scene.seed, &warnings, scene.layers);
+        std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(scene.world, m_content, scene.seed, scene.layers);
         QVERIFY2(generator, qPrintable(scene.world));
         m_server = std::make_unique<QcServer>(config, m_content, std::move(generator));
         QVERIFY(m_server->openWorld().has_value());

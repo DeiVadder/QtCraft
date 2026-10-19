@@ -26,13 +26,7 @@ QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCirc
 // records' kept parts are left to the caller (QcServerWorld::keepBlockEntityParts).
 QStringList apply(const QList<QcBlockEntityRecord> &records, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers,
            quint64 now);
-// Fills the record of a chunk that leaves the world (decision E-374), `record.chunk`, with
-// everything of it taken out of the block entities, the circuits' work and the hoppers' queue; its
-// `kept` parts, set by the caller, decide like in collect(). `blockUpdates` and `fires` are left to
-// the caller.
-void take(QcBlockEntityRecord &record, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers, quint64 now);
-// Drops the kept tails of entries the record no longer holds (a container broken since it was read),
-// once the record is complete (fires included): a tail goes back only with its entry.
-void pruneKept(QcBlockEntityRecord &record);
+// A chunk leaving the world fills its record with QcBlockEntityRecord::takeFrom, and drops the kept
+// tails of entries gone with QcBlockEntityRecord::pruneKept.
 
 } // namespace QcBlockEntityRecords

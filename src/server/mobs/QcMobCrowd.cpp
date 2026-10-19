@@ -27,15 +27,15 @@ void QcMobCrowd::setThresholds(qint64 throttled, qint64 idle)
     m_idle = int(idle);
 }
 
-void QcMobCrowd::build(const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions)
+void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions)
 {
     // Emptied without giving back their storage: the crowd is counted anew every tick.
     m_cells.clear();
     m_cellIndex.removeIf([](const auto &) { return true; });
-    m_cellIndex.reserve(mobs.size());
+    m_cellIndex.reserve(std::ssize(mobs));
     m_members.assign(std::size_t(mobs.size()), Member{});
 
-    for (qsizetype i = 0; i < mobs.size(); ++i) {
+    for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         const QcCreature &mob = mobs[i];
         if (mob.dormant || definitions[mob.type].flying || definitions[mob.type].aquatic) {
             continue;

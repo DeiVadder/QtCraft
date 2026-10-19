@@ -4,6 +4,8 @@
 #include <QList>
 #include <QString>
 
+#include <optional>
+
 // One status effect a body has (decision E-450): its kind (QcEffectDefinition::name), its level
 // (1 = level I) and the ticks it still lasts.
 struct QcStatusEffect
@@ -46,9 +48,9 @@ public:
     // number beyond.
     static QString levelName(int level);
     // The saved form (creature components, player files): a count, then name, level and ticks of
-    // each. Reading fails for damaged data (too many, out of bounds).
+    // each. Reading gives std::nullopt for damaged data (too many, out of bounds).
     static void write(QDataStream &stream, const QList<QcStatusEffect> &effects);
-    [[nodiscard]] static bool read(QDataStream &stream, QList<QcStatusEffect> &effects);
+    [[nodiscard]] static std::optional<QList<QcStatusEffect>> read(QDataStream &stream);
 
     bool operator==(const QcStatusEffects &) const = default;
 

@@ -6,6 +6,7 @@
 #include <QtGlobal>
 
 #include <bit>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
@@ -13,91 +14,114 @@ namespace {
 
 using Problem = QcTexturePackProblem;
 
-// Reads an optional string field of at most `limit` characters into `target`.
-bool readText(const QJsonObject &json, const QString &key, qsizetype limit, QString &target, Problem &problem)
+// Reads the fields of a manifest one by one and keeps the first problem; once there is one, every
+// further read gives a default value without looking at the JSON.
+class FieldReader
+{
+public:
+    explicit FieldReader(const QJsonObject &json)
+        : m_json(json)
+    {
+    }
+
+    const std::optional<Problem> &problem() const { return m_problem; }
+
+    // An optional string field of at most `limit` characters (empty when missing).
+    [[nodiscard]] QString text(const QString &key, qsizetype limit) { return textOf(m_json, key, limit); }
+    [[nodiscard]] int format();
+    [[nodiscard]] int resolution();
+    [[nodiscard]] QList<QcTexturePackManifest::Credit> credits();
+    [[nodiscard]] QString preview();
+
+private:
+    [[nodiscard]] QString textOf(const QJsonObject &json, const QString &key, qsizetype limit);
+    void fail(Problem problem) { m_problem = std::move(problem); }
+
+    const QJsonObject &m_json;
+    std::optional<Problem> m_problem;
+};
+
+QString FieldReader::textOf(const QJsonObject &json, const QString &key, qsizetype limit)
 {
     const QJsonValue value = json.value(key);
-    if (value.isUndefined()) {
-        return true;
+    if (m_problem || value.isUndefined()) {
+        return {};
     }
     if (!value.isString() || value.toString().size() > limit) {
-        problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "'%1' in the manifest must be a text of at most %2 characters"),
-                   {key, QString::number(limit)}};
-        return false;
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'%1' in the manifest must be a text of at most %2 characters"), {key, QString::number(limit)}});
+        return {};
     }
-
-    target = value.toString().trimmed();
-    return true;
+    return value.toString().trimmed();
 }
 
-bool readCredits(const QJsonObject &json, QList<QcTexturePackManifest::Credit> &credits, Problem &problem)
+QList<QcTexturePackManifest::Credit> FieldReader::credits()
 {
-    const QJsonValue value = json.value(u"credits"_s);
-    if (value.isUndefined()) {
-        return true;
+    const QJsonValue value = m_json.value(u"credits"_s);
+    if (m_problem || value.isUndefined()) {
+        return {};
     }
     if (!value.isArray() || value.toArray().size() > QcTexturePackManifest::maxCredits) {
-        problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "'credits' in the manifest must be a list of at most %1 entries"),
-                   {QString::number(QcTexturePackManifest::maxCredits)}};
-        return false;
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'credits' in the manifest must be a list of at most %1 entries"),
+              {QString::number(QcTexturePackManifest::maxCredits)}});
+        return {};
     }
 
+    QList<QcTexturePackManifest::Credit> credits;
     const QJsonArray entries = value.toArray();
     for (const auto &entry : entries) {
         if (!entry.isObject()) {
-            problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "Every entry of 'credits' must be an object")};
-            return false;
+            fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "Every entry of 'credits' must be an object")});
+            return {};
         }
 
         const QJsonObject object = entry.toObject();
-        QcTexturePackManifest::Credit credit;
         const qsizetype limit = qsizetype(QcTexturePackManifest::maxNameLength) * 4;
-        if (!readText(object, u"author"_s, limit, credit.author, problem) || !readText(object, u"license"_s, limit, credit.license, problem)
-            || !readText(object, u"source"_s, limit, credit.source, problem) || !readText(object, u"note"_s, limit, credit.note, problem)) {
-            return false;
+        const QcTexturePackManifest::Credit credit{textOf(object, u"author"_s, limit), textOf(object, u"license"_s, limit),
+                                                   textOf(object, u"source"_s, limit), textOf(object, u"note"_s, limit)};
+        if (m_problem) {
+            return {};
         }
         credits.append(credit);
     }
-    return true;
+    return credits;
 }
 
-bool readResolution(const QJsonObject &json, int &resolution, Problem &problem)
+int FieldReader::resolution()
 {
-    const QJsonValue value = json.value(u"resolution"_s);
+    const QJsonValue value = m_json.value(u"resolution"_s);
     const double number = value.toDouble(-1.0);
+    if (m_problem) {
+        return QcTexturePackManifest::minResolution;
+    }
     if (!value.isDouble() || number != double(int(number)) || !QcTexturePackManifest::isValidResolution(int(number))) {
-        problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "'resolution' must be a power of two from %1 to %2"),
-                   {QString::number(QcTexturePackManifest::minResolution), QString::number(QcTexturePackManifest::maxResolution)}};
-        return false;
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'resolution' must be a power of two from %1 to %2"),
+              {QString::number(QcTexturePackManifest::minResolution), QString::number(QcTexturePackManifest::maxResolution)}});
+        return QcTexturePackManifest::minResolution;
     }
-
-    resolution = int(number);
-    return true;
+    return int(number);
 }
 
-bool readFormat(const QJsonObject &json, int &format, Problem &problem)
+int FieldReader::format()
 {
-    const QJsonValue value = json.value(u"format"_s);
-    if (value.toDouble(-1.0) != QcTexturePackManifest::formatVersion) {
-        problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "Unsupported manifest format (expected 'format': %1)"),
-                   {QString::number(QcTexturePackManifest::formatVersion)}};
-        return false;
+    const QJsonValue value = m_json.value(u"format"_s);
+    if (!m_problem && value.toDouble(-1.0) != QcTexturePackManifest::formatVersion) {
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "Unsupported manifest format (expected 'format': %1)"),
+              {QString::number(QcTexturePackManifest::formatVersion)}});
     }
-
-    format = QcTexturePackManifest::formatVersion;
-    return true;
+    return QcTexturePackManifest::formatVersion;
 }
 
-bool readPreview(const QJsonObject &json, QString &preview, Problem &problem)
+QString FieldReader::preview()
 {
-    if (!readText(json, u"preview"_s, QcTexturePackManifest::maxNameLength, preview, problem)) {
-        return false;
+    QString preview = text(u"preview"_s, QcTexturePackManifest::maxNameLength);
+    if (m_problem) {
+        return {};
     }
     if (!preview.isEmpty() && (!QcTexturePackManifest::isPlainFileName(preview) || !preview.endsWith(u".png"_s))) {
-        problem = {{}, QT_TRANSLATE_NOOP("QcTexturePack", "'preview' must name a PNG file in the pack folder")};
-        return false;
+        fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'preview' must name a PNG file in the pack folder")});
+        return {};
     }
-    return true;
+    return preview;
 }
 
 } // namespace
@@ -120,15 +144,16 @@ std::expected<QcTexturePackManifest, QcTexturePackProblem> QcTexturePackManifest
 
     const QJsonObject json = document.object();
     QcTexturePackManifest manifest;
-    Problem field;
-    const bool ok = readFormat(json, manifest.format, field) && readText(json, u"name"_s, maxNameLength, manifest.name, field)
-                    && readText(json, u"description"_s, maxTextLength, manifest.description, field)
-                    && readText(json, u"license"_s, qsizetype(maxNameLength) * 4, manifest.license, field) && readResolution(json, manifest.resolution, field)
-                    && readCredits(json, manifest.credits, field) && readPreview(json, manifest.preview, field);
-    if (ok && manifest.name.isEmpty()) {
-        field.message = QT_TRANSLATE_NOOP("QcTexturePack", "The manifest needs a 'name'");
-    }
-    if (!ok || manifest.name.isEmpty()) {
+    FieldReader reader(json);
+    manifest.format = reader.format();
+    manifest.name = reader.text(u"name"_s, maxNameLength);
+    manifest.description = reader.text(u"description"_s, maxTextLength);
+    manifest.license = reader.text(u"license"_s, qsizetype(maxNameLength) * 4);
+    manifest.resolution = reader.resolution();
+    manifest.credits = reader.credits();
+    manifest.preview = reader.preview();
+    if (reader.problem() || manifest.name.isEmpty()) {
+        Problem field = reader.problem().value_or(Problem{{}, QT_TRANSLATE_NOOP("QcTexturePack", "The manifest needs a 'name'")});
         field.file = problem.file;
         return std::unexpected(field);
     }

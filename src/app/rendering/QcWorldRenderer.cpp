@@ -23,11 +23,31 @@ namespace {
 
 constexpr int maxOutlineBoxes = 16;
 
-// 12 edges as line segments of two corners per box.
-using OutlineVertices = std::array<float, std::size_t(maxOutlineBoxes) * 24 * 3>;
-
-void appendBoxEdges(const QcAabb &box, OutlineVertices &vertices, std::size_t &next)
+// Line vertices of the outline: 12 edges as line segments of two corners per box, for at most
+// maxOutlineBoxes boxes.
+class OutlineVertices
 {
+public:
+    static constexpr std::size_t floatsPerBox = std::size_t(12) * 2 * 3;
+
+    // Adds the edges of `box`; false (and nothing added) when maxOutlineBoxes boxes are in.
+    [[nodiscard]] bool addBox(const QcAabb &box);
+
+    const float *data() const { return m_values.data(); }
+    // Number of floats written so far.
+    std::size_t size() const { return m_size; }
+
+private:
+    std::array<float, std::size_t(maxOutlineBoxes) * floatsPerBox> m_values{};
+    std::size_t m_size = 0;
+};
+
+bool OutlineVertices::addBox(const QcAabb &box)
+{
+    if (m_size + floatsPerBox > m_values.size()) {
+        return false;
+    }
+
     // Slightly larger than the boxes so the lines are not hidden by their faces.
     constexpr float grow = 0.004f;
     constexpr std::array<std::pair<int, int>, 12> edges = {
@@ -45,10 +65,11 @@ void appendBoxEdges(const QcAabb &box, OutlineVertices &vertices, std::size_t &n
     for (const auto &[from, to] : edges) {
         for (const int corner : {from, to}) {
             for (const float value : corners[std::size_t(corner)]) {
-                vertices[next++] = value;
+                m_values[m_size++] = value;
             }
         }
     }
+    return true;
 }
 
 } // namespace
@@ -237,7 +258,7 @@ void QcWorldRenderer::createOutlinePipeline()
         m_outlineBindings->create();
         // 12 edges as line segments per box.
         m_outlineVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer,
-                                                 quint32(std::size_t(maxOutlineBoxes) * 24 * 3 * sizeof(float))));
+                                                 quint32(std::size_t(maxOutlineBoxes) * OutlineVertices::floatsPerBox * sizeof(float))));
         m_outlineVertices->create();
         m_uploadedSelection.reset();
     }
@@ -276,42 +297,19 @@ void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
         return;
     }
 
-    OutlineVertices vertices{};
-    std::size_t next = 0;
-    for (qsizetype b = 0; b < std::min<qsizetype>(m_selection.size(), maxOutlineBoxes); ++b) {
-        appendBoxEdges(m_selection[b], vertices, next);
+    // The outline shows the first maxOutlineBoxes boxes of a shape.
+    OutlineVertices vertices;
+    for (const QcAabb &box : std::as_const(m_selection)) {
+        if (!vertices.addBox(box)) {
+            break;
+        }
     }
 
-    updates->updateDynamicBuffer(m_outlineVertices.get(), 0, quint32(next * sizeof(float)), vertices.data());
-    m_outlineVertexCount = quint32(next / 3);
+    updates->updateDynamicBuffer(m_outlineVertices.get(), 0, quint32(vertices.size() * sizeof(float)), vertices.data());
+    m_outlineVertexCount = quint32(vertices.size() / 3);
     m_uploadedSelection = m_selection;
 }
 
-void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, QcGpuBuffers &buffers)
-{
-    buffers.indexCount = 0;
-    if (!mesh || mesh->indices.isEmpty()) {
-        return;
-    }
-
-    const auto vertexBytes = quint32(mesh->vertices.size() * qsizetype(sizeof(QcEntityVertex)));
-    const auto indexBytes = quint32(mesh->indices.size() * qsizetype(sizeof(quint32)));
-
-    // Dynamic buffers grow on demand and are reused every frame.
-    if (!buffers.vertices || buffers.vertices->size() < vertexBytes) {
-        buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
-        buffers.vertices->create();
-    }
-    if (!buffers.indices || buffers.indices->size() < indexBytes) {
-        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::IndexBuffer, indexBytes * 2));
-        buffers.indices->create();
-    }
-
-    updates->updateDynamicBuffer(buffers.vertices.get(), 0, vertexBytes, mesh->vertices.constData());
-    updates->updateDynamicBuffer(buffers.indices.get(), 0, indexBytes, mesh->indices.constData());
-    m_sample.uploadBytes += vertexBytes + indexBytes;
-    buffers.indexCount = quint32(mesh->indices.size());
-}
 
 void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
 {
@@ -343,8 +341,8 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     QElapsedTimer uploadTime;
     uploadTime.start();
     uploadOutline(updates);
-    uploadEntityMesh(updates, m_entityMesh.get(), m_entityBuffers);
-    uploadEntityMesh(updates, m_handMesh.get(), m_handBuffers);
+    m_sample.uploadBytes += m_entityBuffers.uploadDynamic(m_rhi, updates, m_entityMesh.get());
+    m_sample.uploadBytes += m_handBuffers.uploadDynamic(m_rhi, updates, m_handMesh.get());
     m_sample.uploadBytes += m_meshStore.uploadQueued(updates);
     m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
 }

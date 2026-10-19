@@ -70,10 +70,10 @@ private:
     // A blueprint of the kind chosen by weight.
     static const QcVillageStyle::Blueprint &chooseBlueprint(QcVillageDraft &draft, const QcVillageStyle::Piece &piece);
     // Adds a building of the blueprint with its choices and parts drawn, its beds, workstations and
-    // creatures.
-    void addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin, int turns) const;
-    // On land: the doorsteps of a placed piece's outer doors (QcVillagePlan::thresholds).
-    void addThresholds(QcVillageDraft &draft, const QcStructurePlacement &piece) const;
+    // creatures, on land with the doorsteps of its outer doors (QcVillagePlan::thresholds); the placed piece,
+    // valid until the next piece is added.
+    [[nodiscard]] const QcStructurePlacement &addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin,
+                                         int turns) const;
     // The cells in front of the outer doors of a placed piece, at the height of its floor.
     QList<QcBlockPos> doorsteps(const QcStructurePlacement &piece) const;
 

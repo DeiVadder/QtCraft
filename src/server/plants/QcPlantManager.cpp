@@ -125,25 +125,28 @@ QcPlantManager::Support QcPlantManager::supportOf(QcBlockPos pos, const QcBlockA
     bool unknown = false;
     for (int dx = -leafReach; dx <= leafReach; ++dx) {
         for (int dy = -leafReach; dy <= leafReach; ++dy) {
-            if (rowHasTrunk(pos.offset(dx, dy, 0), world, unknown)) {
+            const Support row = rowSupport(pos.offset(dx, dy, 0), world);
+            if (row == Support::Trunk) {
                 return Support::Trunk;
             }
+            unknown = unknown || row == Support::Unknown;
         }
     }
     return unknown ? Support::Unknown : Support::None;
 }
 
-bool QcPlantManager::rowHasTrunk(QcBlockPos centre, const QcBlockAccess &world, bool &unknown) const
+QcPlantManager::Support QcPlantManager::rowSupport(QcBlockPos centre, const QcBlockAccess &world) const
 {
+    bool unknown = false;
     for (int dz = -leafReach; dz <= leafReach; ++dz) {
         const std::optional<QcBlockId> block = world.blockAt(centre.offset(0, 0, dz));
         if (!block) {
             unknown = true;
         } else if (isTrunk(*block)) {
-            return true;
+            return Support::Trunk;
         }
     }
-    return false;
+    return unknown ? Support::Unknown : Support::None;
 }
 
 bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock)

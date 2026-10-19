@@ -460,10 +460,9 @@ private slots:
         for (const QcProjectile &shot : projectiles().all()) {
             record.projectiles.append({shot, shot.id});
         }
-        QStringList warnings;
-        QSet<QString> reported;
+        QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> back =
-            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), record.chunk, *m_content, warnings, reported);
+            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), record.chunk, *m_content, warnings);
         QVERIFY(back.has_value());
         QCOMPARE(back->projectiles.size(), 2);
         for (qsizetype i = 0; i < 2; ++i) {

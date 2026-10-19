@@ -10,14 +10,6 @@ namespace QcEntityRecords {
 
 namespace {
 
-// The record of `chunk`, made on first use.
-QcEntityRecord &recordOf(QHash<QcChunkPos, QcEntityRecord> &records, QcChunkPos chunk)
-{
-    QcEntityRecord &record = records[chunk];
-    record.chunk = chunk;
-    return record;
-}
-
 QcChunkPos chunkAt(const QcVec3 &feet)
 {
     return QcPhysics::blockContaining(feet).chunk();
@@ -36,40 +28,64 @@ QList<Entry> inOrder(QList<QcEntityRecord::Ordered<Entry>> entries)
     return sorted;
 }
 
-// Adds the stands, minecarts, experience orbs and projectiles `wanted` accepts to their records;
-// transient projectiles (fishing bobbers, decision E-503) are never saved.
+// The records of the chunks while entities are collected into them.
+class RecordCollector
+{
+public:
+    // Adds the entities `wanted` accepts to their records; `wanted(chunk)`.
+    template<typename Wanted>
+    void add(const QcEntities &entities, Wanted wanted);
+
+    QHash<QcChunkPos, QcEntityRecord> take() { return std::move(m_records); }
+
+private:
+    // Adds the stands, minecarts, experience orbs and projectiles `wanted` accepts to their records;
+    // transient projectiles (fishing bobbers, decision E-503) are never saved.
+    template<typename Wanted>
+    void addObjects(const QcEntities &entities, Wanted wanted);
+
+    // The record of `chunk`, made on first use.
+    QcEntityRecord &recordOf(QcChunkPos chunk)
+    {
+        QcEntityRecord &record = m_records[chunk];
+        record.chunk = chunk;
+        return record;
+    }
+
+    QHash<QcChunkPos, QcEntityRecord> m_records;
+};
+
 template<typename Wanted>
-void collectObjectsInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &records, Wanted wanted)
+void RecordCollector::addObjects(const QcEntities &entities, Wanted wanted)
 {
     for (const QcArmourStand &stand : entities.stands().stands()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(stand); wanted(chunk)) {
-            recordOf(records, chunk).stands.append({stand, stand.id});
+            recordOf(chunk).stands.append({stand, stand.id});
         }
     }
     for (const QcMinecart &cart : entities.minecarts().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(cart); wanted(chunk)) {
-            recordOf(records, chunk).minecarts.append({cart, cart.id});
+            recordOf(chunk).minecarts.append({cart, cart.id});
         }
     }
     for (const QcExperienceOrb &orb : entities.orbs().orbs()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(orb); wanted(chunk)) {
-            recordOf(records, chunk).orbs.append({orb, orb.id});
+            recordOf(chunk).orbs.append({orb, orb.id});
         }
     }
     for (const QcProjectile &shot : entities.projectiles().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(shot); !shot.transient && wanted(chunk)) {
-            recordOf(records, chunk).projectiles.append({shot, shot.id});
+            recordOf(chunk).projectiles.append({shot, shot.id});
         }
     }
 }
 
-// Adds the entities `wanted` accepts to their records; `wanted(chunk)`.
 template<typename Wanted>
-void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &records, Wanted wanted)
+void RecordCollector::add(const QcEntities &entities, Wanted wanted)
 {
     for (const QcItemEntity &item : entities.items().items()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(item); wanted(chunk)) {
-            recordOf(records, chunk).items.append(
+            recordOf(chunk).items.append(
                 {{item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age, item.kept}, item.id});
         }
     }
@@ -77,42 +93,43 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
     quint64 waiting = QcEntityRecord::waitingOrderBase;
     for (const QcItemEntityManager::Drop &drop : entities.items().queued()) {
         if (const QcChunkPos chunk = chunkAt(drop.position); wanted(chunk)) {
-            recordOf(records, chunk).items.append({drop, waiting});
+            recordOf(chunk).items.append({drop, waiting});
         }
         ++waiting;
     }
     for (const QcFallingBlock &falling : entities.fallingBlocks().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(falling); wanted(chunk)) {
-            recordOf(records, chunk).fallingBlocks.append({falling, falling.id});
+            recordOf(chunk).fallingBlocks.append({falling, falling.id});
         }
     }
     for (const QcPrimedExplosive &primed : entities.explosives().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(primed); wanted(chunk)) {
-            recordOf(records, chunk).primedExplosives.append({primed, primed.id});
+            recordOf(chunk).primedExplosives.append({primed, primed.id});
         }
     }
     for (const QcCreature &creature : entities.creatures().mobs()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(creature); creature.persistent && wanted(chunk)) {
-            recordOf(records, chunk).creatures.append({QcMobManager::storedOf(creature), creature.id});
+            recordOf(chunk).creatures.append({QcMobManager::storedOf(creature), creature.id});
         }
     }
-    collectObjectsInto(entities, records, wanted);
+    addObjects(entities, wanted);
 }
 
 } // namespace
 
 QHash<QcChunkPos, QcEntityRecord> collect(const QcEntities &entities)
 {
-    QHash<QcChunkPos, QcEntityRecord> records;
-    collectInto(entities, records, [](QcChunkPos) { return true; });
-    return records;
+    RecordCollector collector;
+    collector.add(entities, [](QcChunkPos) { return true; });
+    return collector.take();
 }
 
 QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkPos> &chunks)
 {
-    QHash<QcChunkPos, QcEntityRecord> records;
     const auto in = [&chunks](QcChunkPos chunk) { return chunks.contains(chunk); };
-    collectInto(std::as_const(entities), records, in);
+    RecordCollector collector;
+    collector.add(std::as_const(entities), in);
+    QHash<QcChunkPos, QcEntityRecord> records = collector.take();
 
     const auto gone = [&in](const QcEntity &entity) { return in(QcEntities::chunkOf(entity)); };
     entities.items().editableItems().removeIf(gone);

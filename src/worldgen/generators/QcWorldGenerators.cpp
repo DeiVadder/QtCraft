@@ -62,19 +62,19 @@ bool isKnown(const QString &type)
 }
 
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
-                                         QStringList *warnings, const QString &options)
+                                         const QString &options)
 {
     if (type == QLatin1StringView(terrain)) {
-        return std::make_unique<QcTerrainGenerator>(std::move(content), seed, warnings);
+        return std::make_unique<QcTerrainGenerator>(std::move(content), seed);
     }
     if (type == QLatin1StringView(flat)) {
-        return std::make_unique<QcFlatGenerator>(std::move(content), options, warnings);
+        return std::make_unique<QcFlatGenerator>(std::move(content), options);
     }
     if (type == QLatin1StringView(empty)) {
-        return std::make_unique<QcVoidGenerator>(std::move(content), options, warnings);
+        return std::make_unique<QcVoidGenerator>(std::move(content), options);
     }
     if (type == QLatin1StringView(showcase)) {
-        return std::make_unique<QcShowcaseGenerator>(std::move(content), warnings);
+        return std::make_unique<QcShowcaseGenerator>(std::move(content));
     }
     return nullptr;
 }

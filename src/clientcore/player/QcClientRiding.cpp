@@ -10,19 +10,17 @@ bool QcClientRiding::noteVehicle(quint32 vehicle)
     return changed;
 }
 
-void QcClientRiding::follow(QcEntityMotion &motion, const QcClientEntities &entities) const
+std::optional<QcEntityMotion> QcClientRiding::seated(const QcClientEntities &entities) const
 {
     const auto cart = entities.all().constFind(m_vehicle);
     if (cart == entities.all().constEnd()) {
-        return;
+        return std::nullopt;
     }
 
     const QcVec3 seat{0.0, QcMinecartBody::seatOffset, 0.0};
+    QcEntityMotion motion;
     motion.position = cart->position + seat;
     motion.velocity = (cart->position - cart->previousPosition) * QcPhysics::tickRate;
     motion.onGround = true;
-    motion.inWater = false;
-    motion.flying = false;
-    motion.climbing = false;
-    motion.slowed = false;
+    return motion;
 }

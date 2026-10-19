@@ -108,98 +108,145 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
     return {};
 }
 
-void parseMobility(QcSignalDefinition &signal, QcJsonFieldReader &reader)
+// Reads the "signal" object of one block: owns the signal definition being built; `block` is the block
+// read so far, whose state properties the kind needs.
+class SignalReader
 {
-    const QString movable = reader.string(u"movable"_s, u"default"_s);
+public:
+    SignalReader(const QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
+        : m_block(block)
+        , m_reader(reader)
+        , m_namespace(packNamespace)
+    {
+    }
+
+    [[nodiscard]] QcSignalDefinition read();
+
+private:
+    void readMobility();
+    void readKindFields();
+    void readReading();
+    void checkKind() const;
+
+    const QcBlockDefinition &m_block;
+    QcJsonFieldReader &m_reader;
+    const QString &m_namespace;
+    QcSignalDefinition m_signal;
+};
+
+void SignalReader::readMobility()
+{
+    const QString movable = m_reader.string(u"movable"_s, u"default"_s);
     if (movable == u"push"_s) {
-        signal.mobility = QcPistonMobility::Push;
+        m_signal.mobility = QcPistonMobility::Push;
     } else if (movable == u"immovable"_s) {
-        signal.mobility = QcPistonMobility::Immovable;
+        m_signal.mobility = QcPistonMobility::Immovable;
     } else if (movable == u"breaks"_s) {
-        signal.mobility = QcPistonMobility::Breaks;
+        m_signal.mobility = QcPistonMobility::Breaks;
     } else if (movable != u"default"_s) {
-        reader.fail(u"'movable' must be default, push, immovable or breaks"_s);
+        m_reader.fail(u"'movable' must be default, push, immovable or breaks"_s);
     }
 }
 
-void parseKindFields(QcSignalDefinition &signal, QcJsonFieldReader &reader, const QString &packNamespace)
+void SignalReader::readKindFields()
 {
-    signal.power = reader.integer(u"power"_s, QcSignalDefinition::maxPower, 1, QcSignalDefinition::maxPower);
-    signal.pulseTicks = reader.integer(u"pulseTicks"_s, 20, 1, QcSignalDefinition::maxPulseTicks);
-    signal.offDelayTicks = reader.integer(u"offDelayTicks"_s, 4, 0, QcSignalDefinition::maxPulseTicks);
+    m_signal.power = m_reader.integer(u"power"_s, QcSignalDefinition::maxPower, 1, QcSignalDefinition::maxPower);
+    m_signal.pulseTicks = m_reader.integer(u"pulseTicks"_s, 20, 1, QcSignalDefinition::maxPulseTicks);
+    m_signal.offDelayTicks = m_reader.integer(u"offDelayTicks"_s, 4, 0, QcSignalDefinition::maxPulseTicks);
 
-    const QString detects = reader.string(u"detects"_s, u"all"_s);
+    const QString detects = m_reader.string(u"detects"_s, u"all"_s);
     if (detects != u"all"_s && detects != u"living"_s && detects != u"carts"_s) {
-        reader.fail(u"'detects' must be all, living or carts"_s);
+        m_reader.fail(u"'detects' must be all, living or carts"_s);
     }
-    signal.detectsItems = detects == u"all"_s;
-    signal.detectsCarts = detects == u"carts"_s;
-    signal.railReach = reader.integer(u"reach"_s, 8, 0, QcSignalDefinition::maxRailReach);
+    m_signal.detectsItems = detects == u"all"_s;
+    m_signal.detectsCarts = detects == u"carts"_s;
+    m_signal.railReach = m_reader.integer(u"reach"_s, 8, 0, QcSignalDefinition::maxRailReach);
 
-    signal.sticky = reader.boolean(u"sticky"_s, false);
-    signal.pushLimit = reader.integer(u"pushLimit"_s, 12, 1, QcSignalDefinition::maxPushLimit);
-    signal.quasiConnectivity = reader.boolean(u"quasiConnectivity"_s, true);
-    signal.active = reader.boolean(u"active"_s, true);
-    signal.counterpart = reader.name(u"counterpart"_s, packNamespace);
-    signal.head = reader.name(u"head"_s, packNamespace);
-    signal.usesItems = reader.boolean(u"uses"_s, true);
+    m_signal.sticky = m_reader.boolean(u"sticky"_s, false);
+    m_signal.pushLimit = m_reader.integer(u"pushLimit"_s, 12, 1, QcSignalDefinition::maxPushLimit);
+    m_signal.quasiConnectivity = m_reader.boolean(u"quasiConnectivity"_s, true);
+    m_signal.active = m_reader.boolean(u"active"_s, true);
+    m_signal.counterpart = m_reader.name(u"counterpart"_s, m_namespace);
+    m_signal.head = m_reader.name(u"head"_s, m_namespace);
+    m_signal.usesItems = m_reader.boolean(u"uses"_s, true);
 }
 
 // "comparator": "contents" or {"property": "<name>"} (decision E-343).
-void parseReading(QcBlockDefinition &block, QcJsonFieldReader &reader)
+void SignalReader::readReading()
 {
-    const QJsonValue value = reader.json.value(u"comparator"_s);
-    QcSignalDefinition &signal = block.signal;
+    const QJsonValue value = m_reader.json.value(u"comparator"_s);
     if (value.isUndefined()) {
         return;
     }
     if (value.isString() && value.toString() == u"carts"_s) {
-        if (!block.rail) {
-            reader.fail(u"'comparator': \"carts\" needs a rail"_s);
+        if (!m_block.rail) {
+            m_reader.fail(u"'comparator': \"carts\" needs a rail"_s);
             return;
         }
-        signal.reading = QcComparatorReading::Carts;
+        m_signal.reading = QcComparatorReading::Carts;
         return;
     }
     if (value.isString() && value.toString() == u"contents"_s) {
-        if (block.containerSlots == 0 && !block.machine.isMachine()) {
-            reader.fail(u"'comparator': \"contents\" needs a container or a machine"_s);
+        if (m_block.containerSlots == 0 && !m_block.machine.isMachine()) {
+            m_reader.fail(u"'comparator': \"contents\" needs a container or a machine"_s);
             return;
         }
-        signal.reading = QcComparatorReading::Contents;
+        m_signal.reading = QcComparatorReading::Contents;
         return;
     }
     if (value.isObject()) {
         const QString property = value.toObject().value(u"property"_s).toString();
-        const QcBlockProperty *found = block.property(property);
+        const QcBlockProperty *found = m_block.property(property);
         if (!found || found->values.size() < 2) {
-            reader.fail(u"'comparator' names '%1', which is no state property with at least two values"_s.arg(property));
+            m_reader.fail(u"'comparator' names '%1', which is no state property with at least two values"_s.arg(property));
             return;
         }
-        signal.reading = QcComparatorReading::Property;
-        signal.readProperty = property;
+        m_signal.reading = QcComparatorReading::Property;
+        m_signal.readProperty = property;
         return;
     }
-    reader.fail(u"'comparator' must be \"contents\", \"carts\" or an object with 'property'"_s);
+    m_reader.fail(u"'comparator' must be \"contents\", \"carts\" or an object with 'property'"_s);
 }
 
-void checkKind(const QcBlockDefinition &block, QcJsonFieldReader &reader)
+void SignalReader::checkKind() const
 {
-    const QcSignalDefinition &signal = block.signal;
-    const QList<std::pair<QString, QStringList>> required = requiredStates(signal.kind);
+    const QList<std::pair<QString, QStringList>> required = requiredStates(m_signal.kind);
     for (const auto &[property, values] : required) {
-        if (reader.ok() && !hasValues(block, property, values)) {
-            reader.fail(u"a %1 needs the state '%2' with the values %3"_s.arg(QcSignalParser::kindName(signal.kind), property,
-                                                                               values.join(u", "_s)));
+        if (m_reader.ok() && !hasValues(m_block, property, values)) {
+            m_reader.fail(u"a %1 needs the state '%2' with the values %3"_s.arg(QcSignalParser::kindName(m_signal.kind), property,
+                                                                                 values.join(u", "_s)));
         }
     }
 
-    if (reader.ok() && signal.kind == QcSignalKind::Piston && signal.head.isEmpty()) {
-        reader.fail(u"a piston needs 'head', the block of its extended head"_s);
+    if (m_reader.ok() && m_signal.kind == QcSignalKind::Piston && m_signal.head.isEmpty()) {
+        m_reader.fail(u"a piston needs 'head', the block of its extended head"_s);
     }
-    if (reader.ok() && (signal.kind == QcSignalKind::Torch || signal.kind == QcSignalKind::Lamp) && signal.counterpart.isEmpty()) {
-        reader.fail(u"torches and lamps need 'counterpart', the block of the other light state"_s);
+    if (m_reader.ok() && (m_signal.kind == QcSignalKind::Torch || m_signal.kind == QcSignalKind::Lamp) && m_signal.counterpart.isEmpty()) {
+        m_reader.fail(u"torches and lamps need 'counterpart', the block of the other light state"_s);
     }
+}
+
+QcSignalDefinition SignalReader::read()
+{
+    const QString type = m_reader.string(u"type"_s);
+    if (!type.isEmpty()) {
+        const std::optional<QcSignalKind> kind = kindFromName(type);
+        if (!kind) {
+            m_reader.fail(u"unknown signal type '%1'"_s.arg(type));
+            return m_signal;
+        }
+        m_signal.kind = *kind;
+    }
+
+    readKindFields();
+    readMobility();
+    readReading();
+    // Pistons and observers pass no power through (as in the reference).
+    const bool conducts = m_signal.kind != QcSignalKind::Piston && m_signal.kind != QcSignalKind::PistonHead
+                          && m_signal.kind != QcSignalKind::Observer;
+    m_signal.conducts = m_reader.boolean(u"conducts"_s, conducts);
+    checkKind();
+    return m_signal;
 }
 
 } // namespace
@@ -216,26 +263,9 @@ QString kindName(QcSignalKind kind)
     return {};
 }
 
-void parseSignal(QcBlockDefinition &block, QcJsonFieldReader &signalReader, const QString &packNamespace)
+QcSignalDefinition parseSignal(const QcBlockDefinition &block, QcJsonFieldReader &signalReader, const QString &packNamespace)
 {
-    QcSignalDefinition &signal = block.signal;
-    const QString type = signalReader.string(u"type"_s);
-    if (!type.isEmpty()) {
-        const std::optional<QcSignalKind> kind = kindFromName(type);
-        if (!kind) {
-            signalReader.fail(u"unknown signal type '%1'"_s.arg(type));
-            return;
-        }
-        signal.kind = *kind;
-    }
-
-    parseKindFields(signal, signalReader, packNamespace);
-    parseMobility(signal, signalReader);
-    parseReading(block, signalReader);
-    // Pistons and observers pass no power through (as in the reference).
-    const bool conducts = signal.kind != QcSignalKind::Piston && signal.kind != QcSignalKind::PistonHead && signal.kind != QcSignalKind::Observer;
-    signal.conducts = signalReader.boolean(u"conducts"_s, conducts);
-    checkKind(block, signalReader);
+    return SignalReader(block, signalReader, packNamespace).read();
 }
 
 } // namespace QcSignalParser

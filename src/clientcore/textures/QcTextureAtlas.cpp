@@ -60,10 +60,13 @@ std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const
     const auto draw = [&definitions, &packs, &tiles, &done, tileSize, jobs](qsizetype first) {
         for (qsizetype i = first; i < definitions.size(); i += jobs) {
             Tile &tile = tiles[std::size_t(i)];
-            tile.resolved = QcTextureSources::resolve(definitions[i], packs, tileSize, tile.problem);
-            if (tile.resolved) {
-                QcAlphaCoverage::fillTransparentColour(tile.resolved->image);
+            QcResult<QcTextureSources::Resolved> resolved = QcTextureSources::resolve(definitions[i], packs, tileSize);
+            if (!resolved) {
+                tile.problem = resolved.error();
+                continue;
             }
+            QcAlphaCoverage::fillTransparentColour(resolved->image);
+            tile.resolved = std::move(*resolved);
         }
         done[std::size_t(first)].store(true, std::memory_order_release);
     };

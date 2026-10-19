@@ -34,16 +34,18 @@ public:
     void setMuted(bool muted);
 
     // Takes the stored values and applies them.
-    void load(const QcGameSettings &settings);
-    void store(QcGameSettings &settings) const;
+    void load(const QcGameSettings::AudioVolumes &volumes);
+    // The values to store.
+    [[nodiscard]] QcGameSettings::AudioVolumes volumes() const;
     void apply() const;
 
 signals:
     void changed();
 
 private:
-    // Clamps and applies a new value of one of the volumes.
-    void changeVolume(double &volume, double requested);
+    // `requested` clamped to the sliders' range 0..1 (`current` for a value that is no number); a
+    // value outside it came from outside and is corrected with a warning.
+    [[nodiscard]] static double checkedVolume(double requested, double current);
 
     QcAudioEngine *m_audio = nullptr;
     double m_masterVolume = QcGameSettings::defaultMasterVolume;

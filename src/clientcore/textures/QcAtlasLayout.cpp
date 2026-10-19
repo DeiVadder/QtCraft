@@ -80,11 +80,12 @@ void QcAtlasLayout::place(QImage &atlas, qsizetype index, const QImage &tile) co
 
 namespace {
 
-// One pixel of the next level from a 2 x 2 block, colours weighted by alpha. A fully transparent
+// One pixel (RGBA) of the next level from a 2 x 2 block, colours weighted by alpha. A fully transparent
 // block keeps the plain mean of its colours (decision E-332: the colours given to transparent
 // texels carry on into the smaller levels instead of turning black).
-void average(const std::array<const uchar *, 4> &block, uchar *target)
+[[nodiscard]] std::array<uchar, 4> average(const std::array<const uchar *, 4> &block)
 {
+    std::array<uchar, 4> pixel{};
     int alpha = 0;
     std::array<int, 3> colour = {0, 0, 0};
     std::array<int, 3> plain = {0, 0, 0};
@@ -96,9 +97,10 @@ void average(const std::array<const uchar *, 4> &block, uchar *target)
         }
     }
     for (std::size_t c = 0; c < 3; ++c) {
-        target[c] = alpha > 0 ? uchar((colour[c] + alpha / 2) / alpha) : uchar((plain[c] + 2) / 4);
+        pixel[c] = alpha > 0 ? uchar((colour[c] + alpha / 2) / alpha) : uchar((plain[c] + 2) / 4);
     }
-    target[3] = uchar((alpha + 2) / 4);
+    pixel[3] = uchar((alpha + 2) / 4);
+    return pixel;
 }
 
 } // namespace
@@ -121,7 +123,8 @@ QImage QcAtlasLayout::halve(const QImage &level)
         const uchar *lower = level.constScanLine(2 * y + 1);
         uchar *target = next.scanLine(y);
         for (std::ptrdiff_t x = 0; x < next.width(); ++x) {
-            average({upper + 8 * x, upper + 8 * x + 4, lower + 8 * x, lower + 8 * x + 4}, target + 4 * x);
+            const std::array<uchar, 4> pixel = average({upper + 8 * x, upper + 8 * x + 4, lower + 8 * x, lower + 8 * x + 4});
+            std::ranges::copy(pixel, target + 4 * x);
         }
     }
     return next;

@@ -22,6 +22,7 @@
 #include "common/content/definitions/QcWorldTypeDefinitions.h"
 #include "common/content/registry/QcBlockStateTable.h"
 #include "common/content/registry/QcLootTables.h"
+#include "common/content/registry/QcNamedList.h"
 #include "common/core/QcResult.h"
 #include "common/handbook/QcHandbookChapter.h"
 
@@ -80,9 +81,17 @@ public:
     QcBlockId withProperty(QcBlockId id, const QString &property, const QString &value) const;
     // "name" or "name[a=x,b=y]" with every property, as stored in saves.
     QString stateName(QcBlockId id) const;
+    // A parsed state name: the state (std::nullopt for an unknown block) and what was wrong with it.
+    struct ParsedState
+    {
+        std::optional<QcBlockId> id;
+        QStringList problems;
+    };
     // Parses a state name. Unknown properties or values keep their defaults and are described in
-    // `problems`, as does a missing closing bracket; std::nullopt for unknown blocks.
-    [[nodiscard]] std::optional<QcBlockId> stateId(const QString &text, QStringList *problems = nullptr) const;
+    // `problems`, as is a missing closing bracket.
+    [[nodiscard]] ParsedState parseState(const QString &text) const;
+    // The state of a state name, as parseState without the problems.
+    [[nodiscard]] std::optional<QcBlockId> stateId(const QString &text) const { return parseState(text).id; }
 
     // Registers a new item or replaces an existing one (keeping its id). Ids start at 1.
     [[nodiscard]] QcResult<QcItemId> registerItem(QcItemDefinition definition);
@@ -95,8 +104,8 @@ public:
     // Building part families and materials (server side; their results are ordinary content).
     void registerPartFamily(QcPartFamily family);
     void registerMaterial(QcMaterialDefinition material);
-    const QList<QcPartFamily> &partFamilies() const { return m_partFamilies; }
-    const QList<QcMaterialDefinition> &materials() const { return m_materials; }
+    const QList<QcPartFamily> &partFamilies() const { return m_partFamilies.items(); }
+    const QList<QcMaterialDefinition> &materials() const { return m_materials.items(); }
     qsizetype itemCount() const { return m_items.size(); }
     bool isValidItem(QcItemId id) const { return id != qcNoItem && qsizetype(id) <= m_items.size(); }
     // Precondition: isValidItem(id).
@@ -109,30 +118,30 @@ public:
 
     // Registers or replaces a mob type; mob type ids are indices into mobs().
     void registerMob(QcMobDefinition definition);
-    const QList<QcMobDefinition> &mobs() const { return m_mobs; }
+    const QList<QcMobDefinition> &mobs() const { return m_mobs.items(); }
     [[nodiscard]] std::optional<int> mobIndex(const QString &name) const;
 
     // Skeleton models and appearances (outfits, hair styles); replaced by name like mobs.
     void registerModel(QcModelDefinition definition);
-    const QList<QcModelDefinition> &models() const { return m_models; }
+    const QList<QcModelDefinition> &models() const { return m_models.items(); }
     const QcModelDefinition *model(const QString &name) const;
     void registerAppearance(QcAppearanceDefinition definition);
-    const QList<QcAppearanceDefinition> &appearances() const { return m_appearances; }
+    const QList<QcAppearanceDefinition> &appearances() const { return m_appearances.items(); }
     const QcAppearanceDefinition *appearance(const QString &name) const;
 
     void registerRecipe(QcRecipeDefinition definition);
-    const QList<QcRecipeDefinition> &recipes() const { return m_recipes; }
+    const QList<QcRecipeDefinition> &recipes() const { return m_recipes.items(); }
     [[nodiscard]] std::optional<qsizetype> recipeIndex(const QString &name) const;
 
     // Smelting recipes, replaced by name like crafting recipes.
     void registerSmeltingRecipe(QcSmeltingRecipe recipe);
-    const QList<QcSmeltingRecipe> &smeltingRecipes() const { return m_smeltingRecipes; }
+    const QList<QcSmeltingRecipe> &smeltingRecipes() const { return m_smeltingRecipes.items(); }
     // The first recipe of `category` that takes `inputItem`, or null.
     const QcSmeltingRecipe *smeltingRecipe(const QString &category, const QString &inputItem) const;
 
     // Sound definitions, replaced by name.
     void registerSound(QcSoundDefinition definition);
-    const QList<QcSoundDefinition> &sounds() const { return m_sounds; }
+    const QList<QcSoundDefinition> &sounds() const { return m_sounds.items(); }
     const QcSoundDefinition *sound(const QString &name) const;
 
     void registerBiome(QcBiomeDefinition definition);
@@ -141,20 +150,20 @@ public:
     void setTerrainSettings(QcTerrainSettings settings) { m_terrain = std::move(settings); }
     // Handbook chapters about playing, replaced by name (server side only, not synchronised).
     void registerHandbookChapter(QcHandbookChapter chapter);
-    const QList<QcHandbookChapter> &handbookChapters() const { return m_handbookChapters; }
-    const QList<QcBiomeDefinition> &biomes() const { return m_biomes; }
+    const QList<QcHandbookChapter> &handbookChapters() const { return m_handbookChapters.items(); }
+    const QList<QcBiomeDefinition> &biomes() const { return m_biomes.items(); }
     // The biome named `name`; null when there is none.
     const QcBiomeDefinition *biome(const QString &name) const;
-    const QList<QcFeatureDefinition> &features() const { return m_features; }
-    const QList<QcOreDefinition> &ores() const { return m_ores; }
+    const QList<QcFeatureDefinition> &features() const { return m_features.items(); }
+    const QList<QcOreDefinition> &ores() const { return m_ores.items(); }
     const QcTerrainSettings &terrainSettings() const { return m_terrain; }
     // Structures (server side only, not synchronised), replaced by name.
     void registerStructure(QcStructureDefinition structure);
-    const QList<QcStructureDefinition> &structures() const { return m_structures; }
+    const QList<QcStructureDefinition> &structures() const { return m_structures.items(); }
     const QcStructureDefinition *structure(const QString &name) const;
     // Command macros of the packs (server side only, not synchronised), replaced by name.
     void registerCommandMacro(QcCommandMacroDefinition macro);
-    const QList<QcCommandMacroDefinition> &commandMacros() const { return m_commandMacros; }
+    const QList<QcCommandMacroDefinition> &commandMacros() const { return m_commandMacros.items(); }
     const QcCommandMacroDefinition *commandMacro(const QString &name) const;
     // Settings of the showcase world (server side only); a later pack replaces them.
     void setShowcase(QcShowcaseDefinition showcase) { m_showcase = std::move(showcase); }
@@ -170,8 +179,13 @@ public:
     // Village styles and settings (decision E-403, server side only): styles replaced by name (each
     // registration counts QcVillageStyleDefinition::registered up), the settings by a later pack.
     void registerVillageStyle(QcVillageStyleDefinition style);
-    QList<QcVillageStyleDefinition> &villageStyles() { return m_villageStyles; }
-    const QList<QcVillageStyleDefinition> &villageStyles() const { return m_villageStyles; }
+    const QList<QcVillageStyleDefinition> &villageStyles() const { return m_villageStyles.items(); }
+    // Changes the style at `index` with `change(QcVillageStyleDefinition &)`; its name stays (QcNamedList::update).
+    template<typename Change>
+    void updateVillageStyle(qsizetype index, Change change)
+    {
+        m_villageStyles.update(index, change);
+    }
     const QcVillageStyleDefinition *villageStyle(const QString &name) const;
     void setVillageSettings(QcVillageSettings settings) { m_villageSettings = std::move(settings); }
     const QcVillageSettings &villageSettings() const { return m_villageSettings; }
@@ -182,8 +196,13 @@ public:
     QcVillageGolemSettings golemOfStyle(const QString &style) const;
     // Villager species and professions (decision E-411, E-421, server side only), replaced by name.
     void registerVillagerSettings(QcVillagerSettings settings);
-    QList<QcVillagerSettings> &villagerSpecies() { return m_villagerSettings; }
-    const QList<QcVillagerSettings> &villagerSpecies() const { return m_villagerSettings; }
+    const QList<QcVillagerSettings> &villagerSpecies() const { return m_villagerSettings.items(); }
+    // Changes every species with `change(QcVillagerSettings &)`; the names stay (QcNamedList::update).
+    template<typename Change>
+    void updateVillagerSpecies(Change change)
+    {
+        m_villagerSettings.updateAll(change);
+    }
     const QcVillagerSettings *villagerSettings(const QString &name) const;
     // Removes the species `name` (QcVillageContent::resolveSpecies drops a broken one).
     void removeVillagerSettings(const QString &name);
@@ -191,22 +210,22 @@ public:
     // finish() keeps on the creature); empty settings for a kind without them.
     const QcVillagerSettings &villagerSettingsOf(int mobType) const;
     void registerProfession(QcVillagerProfession profession);
-    const QList<QcVillagerProfession> &professions() const { return m_professions; }
+    const QList<QcVillagerProfession> &professions() const { return m_professions.items(); }
     const QcVillagerProfession *profession(const QString &name) const;
     // Kinds of projectiles (decision E-425, server side only), replaced by name.
     void registerProjectile(QcProjectileDefinition projectile);
-    const QList<QcProjectileDefinition> &projectiles() const { return m_projectiles; }
+    const QList<QcProjectileDefinition> &projectiles() const { return m_projectiles.items(); }
     const QcProjectileDefinition *projectile(const QString &name) const;
     // Kinds of status effects (decision E-450), replaced by name; they reach the client.
     void registerEffect(QcEffectDefinition effect);
-    const QList<QcEffectDefinition> &effects() const { return m_effects; }
+    const QList<QcEffectDefinition> &effects() const { return m_effects.items(); }
     const QcEffectDefinition *effect(const QString &name) const;
     // Loot tables of generated chests (decision E-521, server side only), replaced by name.
     QcLootTables &lootTables() { return m_lootTables; }
     const QcLootTables &lootTables() const { return m_lootTables; }
     // Offers of the professions (decision E-414, server side only): sets replaced by name.
     void registerTradeSet(QcTradeSet set);
-    const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
+    const QList<QcTradeSet> &tradeSets() const { return m_tradeSets.items(); }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -231,8 +250,8 @@ private:
     friend class QcContentSerializer;
 
     void rebuildStates();
-    // Checks what an archer shoots and what a creature holds (finish); the warnings.
-    QStringList resolveArcher(QcMobDefinition &mob) const;
+    // Replaces the block table with the one in the stream (QcContentSerializer.cpp, the wire format).
+    [[nodiscard]] QcStatus readBlockTable(QDataStream &stream);
     // Checks that ammunition and projectile kinds name each other's kinds (finish): ammunition of
     // an unknown kind is none; the warnings.
     QStringList resolveProjectiles();
@@ -248,52 +267,32 @@ private:
     QList<QcTextureDefinition> m_textures;
     QHash<QString, qsizetype> m_textureIndex;
     QHash<QString, QHash<QString, QString>> m_translations;
-    QList<QcMobDefinition> m_mobs;
-    QHash<QString, qsizetype> m_mobIndex;
-    QList<QcModelDefinition> m_models;
-    QHash<QString, qsizetype> m_modelIndex;
-    QList<QcAppearanceDefinition> m_appearances;
-    QHash<QString, qsizetype> m_appearanceIndex;
-    QList<QcRecipeDefinition> m_recipes;
-    QHash<QString, qsizetype> m_recipeIndex;
-    QList<QcSmeltingRecipe> m_smeltingRecipes;
-    QHash<QString, qsizetype> m_smeltingIndex;
-    QList<QcSoundDefinition> m_sounds;
-    QHash<QString, qsizetype> m_soundIndex;
-    QList<QcBiomeDefinition> m_biomes;
-    QHash<QString, qsizetype> m_biomeIndex;
-    QList<QcFeatureDefinition> m_features;
-    QHash<QString, qsizetype> m_featureIndex;
-    QList<QcOreDefinition> m_ores;
-    QHash<QString, qsizetype> m_oreIndex;
+    QcNamedList<QcMobDefinition> m_mobs;
+    QcNamedList<QcModelDefinition> m_models;
+    QcNamedList<QcAppearanceDefinition> m_appearances;
+    QcNamedList<QcRecipeDefinition> m_recipes;
+    QcNamedList<QcSmeltingRecipe> m_smeltingRecipes;
+    QcNamedList<QcSoundDefinition> m_sounds;
+    QcNamedList<QcBiomeDefinition> m_biomes;
+    QcNamedList<QcFeatureDefinition> m_features;
+    QcNamedList<QcOreDefinition> m_ores;
     QcTerrainSettings m_terrain;
-    QList<QcStructureDefinition> m_structures;
-    QHash<QString, qsizetype> m_structureIndex;
-    QList<QcCommandMacroDefinition> m_commandMacros;
-    QHash<QString, qsizetype> m_commandMacroIndex;
+    QcNamedList<QcStructureDefinition> m_structures;
+    QcNamedList<QcCommandMacroDefinition> m_commandMacros;
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
     QcWeatherDefinition m_weather;
-    QList<QcVillageStyleDefinition> m_villageStyles;
-    QHash<QString, qsizetype> m_villageStyleIndex;
-    QList<QcTradeSet> m_tradeSets;
-    QHash<QString, qsizetype> m_tradeSetIndex;
+    QcNamedList<QcVillageStyleDefinition> m_villageStyles;
+    QcNamedList<QcTradeSet> m_tradeSets;
     QcVillageSettings m_villageSettings;
-    QList<QcVillagerSettings> m_villagerSettings;
-    QHash<QString, qsizetype> m_villagerSettingsIndex;
-    QList<QcVillagerProfession> m_professions;
-    QHash<QString, qsizetype> m_professionIndex;
-    QList<QcProjectileDefinition> m_projectiles;
-    QHash<QString, qsizetype> m_projectileIndex;
-    QList<QcEffectDefinition> m_effects;
+    QcNamedList<QcVillagerSettings> m_villagerSettings;
+    QcNamedList<QcVillagerProfession> m_professions;
+    QcNamedList<QcProjectileDefinition> m_projectiles;
+    QcNamedList<QcEffectDefinition> m_effects;
     QcLootTables m_lootTables;
-    QHash<QString, qsizetype> m_effectIndex;
-    QList<QcHandbookChapter> m_handbookChapters;
-    QHash<QString, qsizetype> m_handbookChapterIndex;
+    QcNamedList<QcHandbookChapter> m_handbookChapters;
     QList<QcPackReference> m_packs;
-    QList<QcPartFamily> m_partFamilies;
-    QHash<QString, qsizetype> m_partFamilyIndex;
-    QList<QcMaterialDefinition> m_materials;
-    QHash<QString, qsizetype> m_materialIndex;
+    QcNamedList<QcPartFamily> m_partFamilies;
+    QcNamedList<QcMaterialDefinition> m_materials;
 };

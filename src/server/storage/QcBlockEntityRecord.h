@@ -12,6 +12,9 @@
 #include <algorithm>
 #include <optional>
 
+struct QcCircuitState;
+struct QcHopperQueue;
+
 // What the saved block entities of a chunk hold that this version does not read (decision E-440),
 // held per chunk by QcServerWorld while the chunk is loaded and written back unchanged: tables of
 // unknown ids and the tails of newer versions of known tables (`tables`, QcComponentFrames), and the
@@ -111,4 +114,13 @@ struct QcBlockEntityRecord
                && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty()
                && fires.isEmpty() && spawners.isEmpty() && !furnished && kept.isEmpty();
     }
+
+    // Fills the record of a chunk that leaves the world (decision E-374), `chunk`, with everything
+    // of it taken out of the block entities, the circuits' work and the hoppers' queue; its `kept`
+    // parts, set by the caller, decide like in QcBlockEntityRecords::collect(). `blockUpdates` and
+    // `fires` are left to the caller. In QcBlockEntityRecords.cpp.
+    void takeFrom(QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers, quint64 now);
+    // Drops the kept tails of entries the record no longer holds (a container broken since it was
+    // read), once the record is complete (fires included): a tail goes back only with its entry.
+    void pruneKept();
 };

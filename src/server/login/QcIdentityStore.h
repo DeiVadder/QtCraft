@@ -33,9 +33,9 @@ public:
     // A store in memory with a random salt.
     QcIdentityStore();
 
-    // Reads <directory>/identities.json; problems end up in `warnings`. A new store keeps its random
+    // Reads <directory>/identities.json; the warnings name its problems. A new store keeps its random
     // salt, written with the first identity.
-    void open(const QString &directory, QStringList &warnings);
+    [[nodiscard]] QStringList open(const QString &directory);
 
     const QByteArray &salt() const { return m_salt; }
     const Identity *find(const QString &name) const;
@@ -52,7 +52,7 @@ public:
     bool hasUnsavedChanges() const { return m_dirty; }
 
 private:
-    void read(const QString &path, QStringList &warnings);
+    [[nodiscard]] QStringList read(const QString &path);
     [[nodiscard]] QcStatus write() const;
 
     QString m_path;

@@ -54,8 +54,6 @@ protected:
     bool chases() const override { return true; }
 
 private:
-    // Keeps the target's last place and smoothed velocity in the state.
-    static void track(QcArcherState &state, const QcMobManager::PlayerView &target, const Context &context);
     // Draws while it sees the target within range, and shoots after the draw time.
     void drawAndShoot(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target, bool canShoot,
                       const Context &context);

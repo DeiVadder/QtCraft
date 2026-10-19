@@ -8,6 +8,7 @@
 
 #include <deque>
 #include <functional>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -40,7 +41,7 @@ public:
     // Queues a search for the creature's goal (QcMobPath) unless one is waiting.
     void request(QcCreature &mob);
     // Runs the waiting searches within this tick's budget. `rulesOf` gives the rules of a creature's kind.
-    void serve(const QcBlockAccess &world, QList<QcCreature> &mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf);
+    void serve(const QcBlockAccess &world, std::span<QcCreature> mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf);
 
     // Nodes expanded in the last tick, searches run in it and waiting after it (tests, debug).
     int nodesLastTick() const { return m_nodesLastTick; }
@@ -57,15 +58,15 @@ private:
     void apply(QcCreature &mob, const QcPathResult &result, QcBlockPos goal) const;
     // Finds the waiting creatures in `mobs` (one pass, without allocating once warmed up), and the
     // index of one of them afterwards (-1: gone).
-    void findQueued(const QList<QcCreature> &mobs);
+    void findQueued(std::span<const QcCreature> mobs);
     qsizetype queuedIndex(quint32 id) const;
     // Path finding switched off: the waiting creatures walk straight (QcMobNavigator).
-    void walkStraight(QList<QcCreature> &mobs);
+    void walkStraight(std::span<QcCreature> mobs);
     // Whether the request of the creature at `index` (-1: gone) lapses: gone, resting in an unloaded
     // chunk or without a goal; it is no longer queued then.
-    static bool lapses(QList<QcCreature> &mobs, qsizetype index);
+    static bool lapses(std::span<QcCreature> mobs, qsizetype index);
     // The waiting creatures (found by findQueued) that are no villagers.
-    int otherCreaturesQueued(const QList<QcCreature> &mobs) const;
+    int otherCreaturesQueued(std::span<const QcCreature> mobs) const;
 
     QcPathCellTable m_cells;
     QcPathFinder m_finder;

@@ -89,20 +89,19 @@ private slots:
     {
         QcCreature mob;
         mob.motion.position = {0.5, 1.0, 0.5};
-        std::optional<QcBlockPos> opened;
         QcMobNavigator::Navigation navigation;
         navigation.door = QcBlockPos{1, 1, 0};
-        QcDoorPassage::Moves moves = QcDoorPassage::use(mob, opened, navigation);
+        QcDoorPassage::Moves moves = QcDoorPassage::use(mob, std::nullopt, navigation);
         QVERIFY(!moves.close);
         QCOMPARE(moves.open, navigation.door);
-        QCOMPARE(opened, navigation.door);
+        QCOMPARE(moves.opened, navigation.door);
 
         // Through it and on: closed behind; a door out of reach is not opened.
         mob.motion.position = {3.5, 1.0, 0.5};
         navigation.door = QcBlockPos{9, 1, 0};
-        moves = QcDoorPassage::use(mob, opened, navigation);
+        moves = QcDoorPassage::use(mob, moves.opened, navigation);
         QCOMPARE(moves.close, std::optional(QcBlockPos{1, 1, 0}));
-        QVERIFY(!moves.open && !opened);
+        QVERIFY(!moves.open && !moves.opened);
     }
 
     void farGoalsGoInLegsWithinTheBudget()
@@ -112,22 +111,31 @@ private slots:
         mob.motion.onGround = true;
         QcMobLegs::State state;
         const OneLeg routes;
-        QcMobLegs::Budget budget{0, 1};
-        QCOMPARE(QcMobLegs::towards(mob, state, {10, 1, 0}, routes, budget), (QcBlockPos{10, 1, 0}));
+        const QcMobLegs::Budget budget{0, 1};
+        const QcMobLegs::Budget spent{1, 1};
+        QcMobLegs::Towards towards = state.towards(mob, {10, 1, 0}, routes, budget);
+        QCOMPARE(towards.cell, (QcBlockPos{10, 1, 0}));
+        QCOMPARE(towards.asked, 0);
         QCOMPARE(routes.asked, 0);
-        QCOMPARE(QcMobLegs::towards(mob, state, {100, 1, 0}, routes, budget), (QcBlockPos{20, 1, 0}));
+        towards = state.towards(mob, {100, 1, 0}, routes, budget);
+        QCOMPARE(towards.cell, (QcBlockPos{20, 1, 0}));
+        QCOMPARE(towards.asked, 1);
         QCOMPARE(routes.asked, 1);
-        QVERIFY(budget.spent());
 
         // Swimming where a search found no path: the shore first, once the budget allows.
         mob.motion.inWater = true;
         mob.path.planned = true;
-        QCOMPARE(QcMobLegs::towards(mob, state, {100, 1, 0}, routes, budget), (QcBlockPos{20, 1, 0}));
-        budget = {0, 1};
-        QCOMPARE(QcMobLegs::towards(mob, state, {100, 1, 0}, routes, budget), (QcBlockPos{0, 1, 5}));
+        towards = state.towards(mob, {100, 1, 0}, routes, spent);
+        QCOMPARE(towards.cell, (QcBlockPos{20, 1, 0}));
+        QCOMPARE(towards.asked, 0);
+        towards = state.towards(mob, {100, 1, 0}, routes, budget);
+        QCOMPARE(towards.cell, (QcBlockPos{0, 1, 5}));
+        QCOMPARE(towards.asked, 1);
         QVERIFY(!state.leg);
         mob.motion.inWater = false;
-        QVERIFY(!QcMobLegs::wayOutOfWater(mob, state, routes, budget));
+        const QcMobLegs::Way way = state.wayOutOfWater(mob, routes, budget);
+        QVERIFY(!way.shore);
+        QVERIFY(!way.asked);
     }
 };
 

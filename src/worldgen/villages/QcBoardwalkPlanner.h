@@ -51,12 +51,9 @@ QList<QcVillagePlan::Deck> stairs(const QcTerrainGenerator &terrain, const QcCon
 // share); std::nullopt otherwise.
 [[nodiscard]] std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageStyle &style, std::pair<int, int> centre,
                                            int reach, int step);
-// Stairs from the end of a laid boardwalk down to dry land, where they fit in the region and keep
-// off pieces and roads, with the land access kept dry by the wetland (decision E-419: a step of
-// the village planner on its draft).
-void layStairs(const QcTerrainGenerator &terrain, const QcContentRegistry &content, QcVillageDraft &draft, const QcVillageDraft::Road &road);
-// The areas the wetland spreads from (pieces and boardwalks, not the stairs), and the village's
-// columns grown by its reach within its region.
-void planWetland(QcVillageDraft &draft);
+// Stairs from the end of a laid boardwalk down to dry land with the land access the wetland keeps
+// dry (QcVillageDraft::addStairs); none where they leave the region or meet pieces or roads.
+[[nodiscard]] std::optional<QcVillageDraft::Stairs> stairsAt(const QcTerrainGenerator &terrain, const QcContentRegistry &content,
+                                                             const QcVillageDraft &draft, const QcVillageDraft::Road &road);
 
 } // namespace QcBoardwalkPlanner

@@ -247,10 +247,9 @@ private slots:
         chicken.uid = 7;
         chicken.effects = {{poison, 2, 333}};
         record.creatures.append({chicken, 1});
-        QStringList warnings;
-        QSet<QString> reported;
+        QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> read =
-            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings, reported);
+            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings);
         QVERIFY(read);
         QCOMPARE(read->creatures.front().entry.effects, chicken.effects);
 
@@ -258,9 +257,9 @@ private slots:
         QcPlayerData data;
         data.motion.position = {1.0, 70.0, 1.0};
         data.effects = {{poison, 1, 400}};
-        const QcResult<std::optional<QcPlayerData>> parsed = storage.parse(u"Raw"_s, storage.bytes(data), warnings);
-        QVERIFY(parsed && *parsed);
-        QCOMPARE((*parsed)->effects, data.effects);
+        const QcPlayerStorage::Result parsed = storage.parse(u"Raw"_s, storage.bytes(data));
+        QVERIFY(parsed && parsed->player);
+        QCOMPARE(parsed->player->effects, data.effects);
     }
 
     void effectHitsAddUp()

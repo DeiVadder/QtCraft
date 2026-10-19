@@ -174,9 +174,9 @@ bool QcMachineRules::step(Machine &machine, const QcMachineDefinition &definitio
     return changed;
 }
 
-void QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed,
-                          QList<QcBlockPos> *slotsChanged) const
+QList<QcBlockPos> QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt) const
 {
+    QList<QcBlockPos> slotsChanged;
     entities.forEachMachine([&](Machine &machine) {
         // An empty, cold machine has nothing to do (generated furnaces, decision E-369; also one
         // that only keeps gathered experience, E-399); its step would change nothing, so it costs
@@ -193,11 +193,10 @@ void QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world,
         }
 
         const std::array<QcItemStack, slotCount> before = machine.stacks;
-        if (step(machine, *definition, dt) && changed) {
-            changed->append(machine.pos);
-        }
-        if (slotsChanged && machine.stacks != before) {
-            slotsChanged->append(machine.pos);
+        step(machine, *definition, dt);
+        if (machine.stacks != before) {
+            slotsChanged.append(machine.pos);
         }
     });
+    return slotsChanged;
 }

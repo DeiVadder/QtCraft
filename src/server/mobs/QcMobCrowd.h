@@ -8,6 +8,7 @@
 #include <QHash>
 #include <QList>
 
+#include <span>
 #include <vector>
 
 // Crowds of creatures (decision E-401). At the start of each tick the awake walkers (flyers, water
@@ -40,7 +41,7 @@ public:
 
     // Counts the awake walkers of `mobs` where they stand at the start of the tick; the other calls
     // take the index of a creature in this list.
-    void build(const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions);
+    void build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions);
 
     // Creatures in the cell of the creature (itself included); 0 for one that takes no part.
     int countAt(qsizetype index) const;

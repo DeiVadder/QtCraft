@@ -7,22 +7,18 @@
 
 #include <algorithm>
 
-namespace {
-
-// Sets `field` while the pad wants it and gives it back (false) once when it stops; `mine` says
-// whether the pad set it.
-void contribute(bool &field, bool want, bool &mine)
+bool QcGamepadControls::SharedFlag::merged(bool current, bool want)
 {
     if (want) {
-        field = true;
-        mine = true;
-    } else if (mine) {
-        field = false;
-        mine = false;
+        m_mine = true;
+        return true;
     }
+    if (m_mine) {
+        m_mine = false;
+        return false;
+    }
+    return current;
 }
-
-} // namespace
 
 QcGamepadControls::QcGamepadControls(QObject *parent)
     : QObject(parent)
@@ -178,7 +174,7 @@ void QcGamepadControls::onStateChanged(int id)
     for (std::size_t index = 0; index < now.size(); ++index) {
         now[index] = QcGamepadMapping::held(Action(index), shaped, profile.bindings, before[index], profile.triggerThreshold);
     }
-    QcGamepadMapping::applyCombos(now, before, shaped, profile.bindings);
+    now = QcGamepadMapping::withCombos(now, before, shaped, profile.bindings);
 
     if (id != m_pad && takesLead(id, before, now)) {
         if (m_pad != 0) {
@@ -218,8 +214,7 @@ void QcGamepadControls::applyFrame(QcClientSession &session, float seconds, bool
     const bool sprintPressed = runPresses(session);
     dropStackWhenHeld(session);
     const QcGamepadState shaped = shapedState(m_pad);
-    QcPlayerInput intent = session.intent();
-    applyWalk(intent, shaped, sprintPressed, session.gameMode().flightWanted());
+    QcPlayerInput intent = walked(session.intent(), shaped, sprintPressed, session.gameMode().flightWanted());
 
     // While the radial menu is open, the right stick chooses a slot instead of looking.
     if (m_radial.isOpen()) {
@@ -415,7 +410,7 @@ void QcGamepadControls::closeRadial(QcClientSession *session, bool select)
     emit radialChanged();
 }
 
-void QcGamepadControls::applyWalk(QcPlayerInput &intent, const QcGamepadState &shaped, bool sprintPressed, bool flying)
+QcPlayerInput QcGamepadControls::walked(QcPlayerInput intent, const QcGamepadState &shaped, bool sprintPressed, bool flying)
 {
     const QcGamepadMapping::Bindings &bindings = m_profile.bindings;
     const auto held = [&shaped, &bindings](Action action) { return QcGamepadMapping::held(action, shaped, bindings, false); };
@@ -437,9 +432,10 @@ void QcGamepadControls::applyWalk(QcPlayerInput &intent, const QcGamepadState &s
     const bool sneak = flying ? held(Action::Sneak) : m_sneakToggled;
     const bool sprintHeld = sprintPressed || held(Action::Sprint);
     const bool sprint = m_sprint.update(walk.forward >= QcGamepadMapping::sprintForward, sprintHeld, sneak);
-    contribute(intent.jump, held(Action::Jump), m_jumping);
-    contribute(intent.sneak, sneak, m_sneaking);
-    contribute(intent.sprint, sprint, m_sprinting);
+    intent.jump = m_jumping.merged(intent.jump, held(Action::Jump));
+    intent.sneak = m_sneaking.merged(intent.sneak, sneak);
+    intent.sprint = m_sprinting.merged(intent.sprint, sprint);
+    return intent;
 }
 
 void QcGamepadControls::release(QcClientSession &session)
@@ -457,9 +453,9 @@ void QcGamepadControls::release(QcClientSession &session)
         intent.forward = 0.0f;
         intent.strafe = 0.0f;
     }
-    contribute(intent.jump, false, m_jumping);
-    contribute(intent.sneak, false, m_sneaking);
-    contribute(intent.sprint, false, m_sprinting);
+    intent.jump = m_jumping.merged(intent.jump, false);
+    intent.sneak = m_sneaking.merged(intent.sneak, false);
+    intent.sprint = m_sprinting.merged(intent.sprint, false);
     if (intent != session.intent()) {
         session.setIntent(intent);
     }
@@ -495,9 +491,9 @@ void QcGamepadControls::stop()
     m_flight.reset();
     m_active = false;
     m_walking = false;
-    m_jumping = false;
-    m_sneaking = false;
-    m_sprinting = false;
+    m_jumping = {};
+    m_sneaking = {};
+    m_sprinting = {};
     m_mining = false;
     m_using = false;
 }

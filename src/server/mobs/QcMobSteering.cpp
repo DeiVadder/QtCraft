@@ -90,8 +90,7 @@ bool inMelee(const QcCreature &mob, const QcMobDefinition &definition, const QcM
     return QcLineOfSight::reaches(world, eye, QcPhysics::boxAt(target.position, QcPhysics::playerWidth, QcPhysics::playerHeight));
 }
 
-void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
-            QList<QcMobManager::PlayerHit> &hits)
+std::optional<QcMobManager::PlayerHit> strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target)
 {
     const QcVec3 towards{target.position.x - mob.motion.position.x, 0.0, target.position.z - mob.motion.position.z};
     if (towards.length() > 0.0) {
@@ -100,9 +99,11 @@ void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManag
 
     if (mob.attackCooldown <= 0.0) {
         mob.attackCooldown = definition.attackCooldown;
-        hits.append({.playerEntityId = target.entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .mobType = mob.type, .mob = mob.id});
         mob.attackedThisTick = true;
+        return QcMobManager::PlayerHit{
+            .playerEntityId = target.entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .mobType = mob.type, .mob = mob.id};
     }
+    return std::nullopt;
 }
 
 void provoke(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players)
@@ -153,11 +154,11 @@ bool leap(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager
     return true;
 }
 
-bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
-                    const QcBlockAccess &world, QList<QcMobManager::PlayerHit> &hits)
+Melee strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
+                     const QcBlockAccess &world)
 {
     if (!definition.hostile || mob.calm || mob.attackCooldown > 0.0) {
-        return false;
+        return {};
     }
 
     // The nearest player in melee: one behind glass does not shield another in reach.
@@ -175,10 +176,9 @@ bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QL
         }
     }
     if (!target) {
-        return false;
+        return {};
     }
-    strike(mob, definition, *target, hits);
-    return true;
+    return {true, strike(mob, definition, *target)};
 }
 
 } // namespace QcMobSteering

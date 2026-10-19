@@ -132,10 +132,10 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
     return std::nullopt;
 }
 
-int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
+QcPathFinder::Moves QcPathFinder::expand(QcBlockPos at, QcPathRules rules)
 {
     const QcPathStand here = QcPathTerrain::standAt(m_window, at, rules);
-    int count = 0;
+    Moves moves;
     float sideCost = 0.0f;
     std::array<bool, 4> flat{};
     for (std::size_t i = 0; i < sides.size(); ++i) {
@@ -145,11 +145,13 @@ int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
             sideCost += dangerous(side) ? dangerBesideCost : wallCost;
             continue;
         }
-        moves[std::size_t(count++)] = *move;
+        moves.add(*move);
         flat[i] = move->to == side && sameLevelAs(QcPathTerrain::standAt(m_window, side, rules), here);
     }
 
-    count = climb(at, rules, moves, count);
+    for (const Move climb : climbs(at, rules)) {
+        moves.add(climb);
+    }
 
     // Diagonals only between two free sides on the same level: no cutting corners.
     for (std::size_t a = 0; a < 2; ++a) {
@@ -160,34 +162,33 @@ int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
             const QcBlockPos corner = at.offset(sides[a][0], 0, sides[b][1]);
             const QcPathStand stand = QcPathTerrain::standAt(m_window, corner, rules);
             if (stand.ok && sameLevelAs(stand, here)) {
-                moves[std::size_t(count++)] = Move{corner, diagonalCost + standCost(stand, rules)};
+                moves.add(Move{corner, diagonalCost + standCost(stand, rules)});
             }
         }
     }
 
-    for (int i = 0; i < count; ++i) {
-        moves[std::size_t(i)].cost += sideCost;
-    }
-    return count;
+    moves.raise(sideCost);
+    return moves;
 }
 
-int QcPathFinder::climb(QcBlockPos at, QcPathRules rules, Moves &moves, int count)
+QcPathFinder::Moves QcPathFinder::climbs(QcBlockPos at, QcPathRules rules)
 {
+    Moves moves;
     if (!QcPathTerrain::climbsAt(m_window, at, rules)) {
-        return count;
+        return moves;
     }
 
     // The top of a ladder or a wall is left sideways (sideStep, a step up of a block).
     const QcBlockPos up = at.offset(0, 1, 0);
     if (QcPathTerrain::climbsAt(m_window, up, rules) && QcPathTerrain::standAt(m_window, up, rules).ok) {
-        moves[std::size_t(count++)] = Move{up, 1.0f + climbCost};
+        moves.add(Move{up, 1.0f + climbCost});
     }
     const QcBlockPos down = at.offset(0, -1, 0);
     const QcPathStand below = QcPathTerrain::standAt(m_window, down, rules);
     if (below.ok) {
-        moves[std::size_t(count++)] = Move{down, 1.0f + standCost(below, rules)};
+        moves.add(Move{down, 1.0f + standCost(below, rules)});
     }
-    return count;
+    return moves;
 }
 
 bool QcPathFinder::dangerous(QcBlockPos side)
@@ -212,7 +213,6 @@ QcPathResult QcPathFinder::find(const QcBlockAccess &world, const QcPathCellTabl
     int best = startIndex;
     float bestEstimate = estimate(*start, request.goal);
     int nodes = 0;
-    Moves moves;
     const auto later = std::greater<>();
 
     while (!m_heap.empty() && nodes < request.maxNodes) {
@@ -236,15 +236,14 @@ QcPathResult QcPathFinder::find(const QcBlockAccess &world, const QcPathCellTabl
             break;
         }
 
-        const int count = expand(at, rules, moves);
-        for (int i = 0; i < count; ++i) {
-            const int next = m_window.indexOf(moves[std::size_t(i)].to);
-            const float cost = m_window.cost(index) + moves[std::size_t(i)].cost;
+        for (const Move &move : expand(at, rules)) {
+            const int next = m_window.indexOf(move.to);
+            const float cost = m_window.cost(index) + move.cost;
             if (next < 0 || m_window.closed(next) || (m_window.visited(next) && m_window.cost(next) <= cost)) {
                 continue;
             }
             m_window.open(next, cost, index);
-            m_heap.emplace_back(cost + estimate(moves[std::size_t(i)].to, request.goal) * heuristicWeight, next);
+            m_heap.emplace_back(cost + estimate(move.to, request.goal) * heuristicWeight, next);
             std::ranges::push_heap(m_heap, later);
         }
     }

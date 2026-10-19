@@ -18,7 +18,7 @@
 class QcMineshaftGenerator
 {
 public:
-    QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
     const QcMineshaftPlanner &planner() const { return m_planner; }
     // The region's plan, planned once (null without a mine shaft).
@@ -28,13 +28,14 @@ public:
     void build(QcChunk &chunk) const;
     // The surface entrances in the chunk, after the terrain's features and surface pools.
     void buildEntrances(QcChunk &chunk) const;
-    // Adds the chunk's spawners, carts and room contents to `furnishing`.
-    void addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const;
+    // The chunk's spawners, carts and room contents.
+    [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
 
 private:
     // The loot seed of a chest or cart at a cell.
     quint64 lootSeed(QcBlockPos at) const;
-    static void addRoomFurnishing(QcChunkPos pos, const QcMineshaftPlan::Room &room, quint64 seed, QcChunkFurnishing &furnishing);
+    // The chests, spawners and carts of a room from a structure in the chunk.
+    [[nodiscard]] static QcChunkFurnishing roomFurnishing(QcChunkPos pos, const QcMineshaftPlan::Room &room, quint64 seed);
 
     QcMineshaftPlanner m_planner;
     QcMineshaftBuilder m_builder;

@@ -6,6 +6,7 @@
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbook.h"
 #include "common/handbook/QcHandbookLinks.h"
+#include "common/handbook/QcLinkList.h"
 
 #include <algorithm>
 
@@ -37,18 +38,18 @@ QcHandbookEntry tagPage(const QcHandbookContext &context, const QString &tag, co
     for (const QString &member : members) {
         memberSection.links.append(links.itemLink(member));
     }
-    QcHandbookLinks::sortLinks(memberSection.links);
+    memberSection.links = QcHandbookLinks::sortedLinks(std::move(memberSection.links));
     entry.sections.append(std::move(memberSection));
 
-    Section usedIn{text.label(u"section.usedIn"_s), {}, {}, {}};
+    QcLinkList usedBy;
     const QString ingredient = u"#"_s + tag;
     for (const QcRecipeDefinition &recipe : context.content.recipes()) {
         if (recipe.ingredients.contains(ingredient)
             || std::ranges::any_of(recipe.keys, [&ingredient](const auto &key) { return key.second == ingredient; })) {
-            QcHandbookLinks::appendUnique(usedIn.links, links.itemLink(recipe.resultItem));
+            usedBy.addUnique(links.itemLink(recipe.resultItem));
         }
     }
-    QcHandbookLinks::sortLinks(usedIn.links);
+    Section usedIn{text.label(u"section.usedIn"_s), {}, usedBy.sorted(), {}};
     if (!usedIn.links.isEmpty()) {
         entry.sections.append(std::move(usedIn));
     }
@@ -78,7 +79,7 @@ QcHandbookEntry fuelTable(const QcHandbookContext &context)
             machines.links.append(links.blockLink(block.name));
         }
     }
-    QcHandbookLinks::sortLinks(machines.links);
+    machines.links = QcHandbookLinks::sortedLinks(std::move(machines.links));
     fuels.sections.append(std::move(machines));
     return fuels;
 }

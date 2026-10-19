@@ -53,9 +53,9 @@ public:
     // The dust the dust at `pos` is linked to.
     QList<QcBlockPos> links(QcBlockPos pos) const;
 
-    // Recomputes the dust within 15 links of the dust among `seeds` (other positions are ignored);
-    // changed dust goes into `result`.
-    void recompute(const std::vector<QcBlockPos> &seeds, Result &result) const;
+    // Recomputes the dust within 15 links of the dust among `seeds` (other positions are ignored):
+    // the dust that changes and the parts that wait for a chunk.
+    [[nodiscard]] Result recompute(const std::vector<QcBlockPos> &seeds) const;
 
 private:
     struct Region;
@@ -64,15 +64,29 @@ private:
     // The dust within reach of the seeds, with links inside the region as indices and the strength
     // that dust just outside the region gives each node.
     Region collect(const std::vector<QcBlockPos> &seeds) const;
-    // The linked parts of the region: a part number per node.
-    static QList<int> parts(const Region &region, int &count);
-    static void markPart(const Region &region, qsizetype start, int number, QList<int> &part);
-    // Per part the unloaded chunk it reads, if any; adds the waiting parts with their seeds to `result`.
-    static QList<std::optional<QcChunkPos>> blockedParts(const Region &region, const QList<int> &part, int count, Result &result);
+    // The linked parts of a region: a part number per node (-1: not yet in a part) and the number
+    // of parts.
+    struct Parts
+    {
+        QList<int> of;
+        int count = 0;
+
+        // Gives the next part number to the node `start` and all dust linked to it.
+        void add(const Region &region, qsizetype start);
+    };
+
+    // Per part the unloaded chunk it reads, if any, and the waiting parts with their seeds.
+    struct Blocking
+    {
+        QList<std::optional<QcChunkPos>> ofPart;
+        QList<Result::Blocked> waiting;
+    };
+
+    // The linked parts of the region.
+    [[nodiscard]] static Parts parts(const Region &region);
+    [[nodiscard]] static Blocking blockedParts(const Region &region, const Parts &parts);
     // Strength of every dust of the region, strongest first.
-    static QList<int> strengths(const Region &region, QList<int> inputs);
-    // Gives `level` to the linked dust that has less and puts it into that level's bucket.
-    static void spread(const QList<int> &linked, int level, QList<int> &inputs, QList<int> &bucket);
+    [[nodiscard]] static QList<int> strengths(const Region &region, QList<int> inputs);
 
     const QcSignalPower &m_power;
 };

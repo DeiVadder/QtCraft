@@ -10,6 +10,7 @@
 #include "worldgen/terrain/QcTerrainDefinitions.h"
 
 #include <QList>
+#include <QVarLengthArray>
 
 #include <array>
 #include <memory>
@@ -33,9 +34,9 @@ class QcTerrainGenerator : public QcWorldGenerator
 public:
     using Column = QcTerrainColumn;
 
-    // Unresolvable references are reported in `warnings` and replaced by sensible fallbacks; omitted
+    // Unresolvable references are replaced by sensible fallbacks with a warning (warnings()); omitted
     // optional blocks (empty names) fall back silently.
-    QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed, QStringList *warnings = nullptr);
+    QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed);
     ~QcTerrainGenerator() override;
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
@@ -83,17 +84,25 @@ private:
     // Biome height of land before blending: base height plus hills, ridges and terraces.
     double biomeHeight(const Biome &biome, double rolling, double ridge, double terraces) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
-    // it everything is solid, above it nothing). Fills `solid` from the band's lowest y, which it
-    // returns, and gives the band's size in `size`.
+    // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;
-    int overhangBand(int x, int z, const Column &column, std::array<bool, maxOverhangBand> &solid, int &size) const;
+    struct OverhangBand
+    {
+        int bottom = 0;
+        int size = 0;
+        std::array<bool, maxOverhangBand> solid{};
+    };
+    [[nodiscard]] OverhangBand overhangBand(int x, int z, const Column &column) const;
     void fillColumn(QcChunk &chunk, int localX, int localZ, const Column &column) const;
     // Per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     QList<bool> carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
     void placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
-    // Grows one compact vein of `ore` into `cells` (chunk-local, starting from cells[0]).
-    void growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const;
-    void placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const;
+    // The cells of one vein, chunk-local; on the stack up to the largest vein the content allows
+    // (`veinSize` at most 64, QcWorldgenParser).
+    using Vein = QVarLengthArray<QcBlockPos, 64>;
+    // One compact vein of `ore`, grown from its first cell.
+    [[nodiscard]] Vein grownVein(const Ore &ore, int vein, QcChunkPos pos) const;
+    void placeVein(QcChunk &chunk, const Ore &ore, const Vein &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
     // Columns under and around `village` (may be null) and the footprints of surface structures
     // (`structures`) get none.
@@ -103,10 +112,8 @@ private:
     // The first feature of the column's biome that grows there by density, patches and shore.
     [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
     void placeFeature(QcChunk &chunk, const Feature &feature, QcBlockPos base, double random) const;
-    // Spawn candidate on the square ring of `radius` around the origin, if any.
-    [[nodiscard]] std::optional<QcBlockPos> spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const;
-    // Open, dry and not too high ground at a column; `chunk` caches the last generated chunk.
-    bool fitsSpawn(int x, int z, const Column &column, std::shared_ptr<QcChunk> &chunk) const;
+    // The search for the spawn point (defined in the source), which keeps the last chunk it generated.
+    class SpawnSearch;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;

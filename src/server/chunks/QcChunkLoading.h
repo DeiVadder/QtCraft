@@ -91,11 +91,14 @@ private:
     QSet<QcChunkPos> leavingGroups(const QSet<QcChunkPos> &candidates);
     // Takes these chunks out of the world and hands what was kept of them to the storage.
     void unload(const QSet<QcChunkPos> &chunks);
-    // The chunks around a player and what was sent to him.
-    void addPlayerChunks(QSet<QcChunkPos> &needed) const;
-    void addSpawnChunks(QSet<QcChunkPos> &needed) const;
-    // Forced chunks, spawn chunks and the chunks of chunk loaders.
-    void addKeptChunks(QSet<QcChunkPos> &needed) const;
+    // Calls `visit(chunk)` for the chunks around each player and those sent to him (some more than once).
+    template<typename Visit>
+    void forPlayerChunks(Visit visit) const;
+    template<typename Visit>
+    void forSpawnChunks(Visit visit) const;
+    // Forced chunks, spawn chunks and the chunks of chunk loaders (some more than once).
+    template<typename Visit>
+    void forKeptChunks(Visit visit) const;
     // Gives `chunk` a load ticket for its group and asks for it; false when the limits refuse.
     bool requestTicket(QcChunkPos chunk, quint64 now, bool retry);
     // The chunks signals wait for that are not loaded.
@@ -104,10 +107,9 @@ private:
     QSet<QcChunkPos> chunksWithSignals() const;
     // The chunks of signals that wait for a chunk on its way (they stay, decision E-376).
     QSet<QcChunkPos> waitingSignalChunks() const;
-    // Takes the chunks loaded for circuits that a signal passes through (changes, scheduled ticks,
-    // block updates) out of `candidates` for at most the time of a ticket (decision E-410); true
-    // when it kept one.
-    bool holdPassingSignals(QSet<QcChunkPos> &candidates);
+    // The chunks of `candidates` loaded for circuits that a signal passes through (changes, scheduled
+    // ticks, block updates): they stay for at most the time of a ticket (decision E-410).
+    [[nodiscard]] QSet<QcChunkPos> passingSignals(const QSet<QcChunkPos> &candidates);
     // The chunks loaded for circuits: those with tickets or a waiting signal and the loaded groups
     // around them.
     QSet<QcChunkPos> circuitChunks() const;

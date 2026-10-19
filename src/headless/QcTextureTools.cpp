@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <optional>
 #include <print>
 
 using namespace Qt::StringLiterals;
@@ -28,11 +29,12 @@ namespace {
 const QStringList previewKeys = {u"qtcraft:grass_side"_s, u"qtcraft:stone"_s,     u"qtcraft:oak_planks"_s, u"qtcraft:cobblestone"_s,
                                  u"qtcraft:oak_log"_s,    u"qtcraft:iron_ore"_s,  u"qtcraft:bricks"_s,     u"qtcraft:iron_pickaxe"_s};
 
-QcTexturePackStack loadPacks(const QStringList &ids, const QString &modsDirectory, bool &ok)
+// The stack of the packs `ids`, after printing their problems; nullopt if one is unknown or invalid.
+[[nodiscard]] std::optional<QcTexturePackStack> loadPacks(const QStringList &ids, const QString &modsDirectory)
 {
-    QStringList missing;
-    const QcTexturePackStack stack = QcTexturePackLibrary::loadStack(ids, QcTexturePackLibrary::scan(QcTexturePackLibrary::roots(modsDirectory)), missing);
-    for (const QString &id : std::as_const(missing)) {
+    const QcTexturePackLibrary::LoadedStack loaded = QcTexturePackLibrary::loadStack(ids, QcTexturePackLibrary::scan(QcTexturePackLibrary::roots(modsDirectory)));
+    const QcTexturePackStack &stack = loaded.stack;
+    for (const QString &id : loaded.missing) {
         QcHeadlessOptions::printError(u"Unknown or invalid texture pack: "_s + id);
     }
     for (const QcTexturePackRef &pack : stack) {
@@ -40,8 +42,7 @@ QcTexturePackStack loadPacks(const QStringList &ids, const QString &modsDirector
             QcHeadlessOptions::printError(u"%1: %2"_s.arg(pack->id, problem.englishText()));
         }
     }
-    ok = missing.isEmpty();
-    return stack;
+    return loaded.missing.isEmpty() ? std::optional(stack) : std::nullopt;
 }
 
 QJsonObject manifestFor(const ExportRequest &request)
@@ -79,9 +80,8 @@ QImage previewOf(const QHash<QString, QImage> &tiles, int resolution)
 
 int exportPack(const QcContentRegistry &content, const ExportRequest &request)
 {
-    bool ok = true;
-    const QcTexturePackStack packs = loadPacks(request.packs, request.modsDirectory, ok);
-    if (!ok || !QcTexturePackManifest::isValidResolution(request.resolution)) {
+    const std::optional<QcTexturePackStack> loaded = loadPacks(request.packs, request.modsDirectory);
+    if (!loaded || !QcTexturePackManifest::isValidResolution(request.resolution)) {
         QcHeadlessOptions::printError(u"Nothing exported (check the packs and that the resolution is a power of two from 16 to 512)"_s);
         return 1;
     }
@@ -102,11 +102,10 @@ int exportPack(const QcContentRegistry &content, const ExportRequest &request)
             continue;
         }
 
-        QString problem;
-        const std::optional<QcTextureSources::Resolved> resolved = QcTextureSources::resolve(definition, packs, request.resolution, problem);
+        const QcResult<QcTextureSources::Resolved> resolved = QcTextureSources::resolve(definition, *loaded, request.resolution);
         const QString path = directory.filePath(u"textures/%1/%2.png"_s.arg(space, name));
         if (!resolved || !QDir().mkpath(QFileInfo(path).path()) || !resolved->image.save(path, "PNG")) {
-            QcHeadlessOptions::printError(u"Cannot export %1 %2"_s.arg(definition.name, problem));
+            QcHeadlessOptions::printError(u"Cannot export %1 %2"_s.arg(definition.name, resolved ? QString() : resolved.error()));
             return 1;
         }
         written.insert(definition.name, resolved->image);
@@ -135,8 +134,7 @@ int printAtlasStats(const QcContentRegistry &content, const QString &modsDirecto
     for (const QString &id : std::as_const(ids)) {
         QElapsedTimer loading;
         loading.start();
-        QStringList missing;
-        const QcTexturePackStack packs = id.isEmpty() ? QcTexturePackStack() : QcTexturePackLibrary::loadStack({id}, entries, missing);
+        const QcTexturePackStack packs = id.isEmpty() ? QcTexturePackStack() : QcTexturePackLibrary::loadStack({id}, entries).stack;
         const qint64 loadMs = loading.elapsed();
 
         qint64 best = std::numeric_limits<qint64>::max();

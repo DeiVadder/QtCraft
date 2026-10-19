@@ -22,51 +22,59 @@ constexpr QByteArrayView blockUpdatesMagic("QCBU");
 // More forced chunks than any limit allows are damaged data.
 constexpr qsizetype maxForcedChunks = 65536;
 
-// The game rules of world.json ("gameRules"); a missing rule keeps its default.
-void readGameRules(const QJsonObject &rules, QcWorldInfo &info)
-{
-    info.keepInventory = rules.value(u"keepInventory"_s).toBool(true);
-    info.daylightCycle = rules.value(u"daylightCycle"_s).toBool(true);
-    info.mobSpawning = rules.value(u"mobSpawning"_s).toBool(true);
-    info.randomTicks = rules.value(u"randomTicks"_s).toBool(true);
-    info.fireSpread = rules.value(u"fireSpread"_s).toBool(true);
-    info.quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
-    info.weatherCycle = rules.value(u"weatherCycle"_s).toBool(true);
-    info.mobGriefing = rules.value(u"mobGriefing"_s).toBool(true);
-    info.explosionBlockDamage = rules.value(u"explosionBlockDamage"_s).toBool(true);
-    info.spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, QcWorldInfo::maxSpawnChunkRadius);
-    info.maxEntityCramming = std::clamp(rules.value(u"maxEntityCramming"_s).toInt(24), 0, QcWorldInfo::maxEntityCrammingLimit);
-    info.playerInvulnerabilityTicks = std::clamp(rules.value(u"playerInvulnerabilityTicks"_s).toInt(QcHurtWindow::defaultTicks), 0,
-                                                 QcHurtWindow::maxTicks);
-    info.mobInvulnerabilityTicks = std::clamp(rules.value(u"mobInvulnerabilityTicks"_s).toInt(QcHurtWindow::defaultTicks), 0,
-                                              QcHurtWindow::maxTicks);
-}
 
-// The chunk loader blocks and the forced chunks of world.json; entries out of range are left out.
-void readChunkLists(const QJsonObject &json, QcWorldInfo &info)
+// The chunk loader blocks of world.json; entries out of range are left out.
+[[nodiscard]] QList<QcChunkLoaders::Loader> chunkLoadersOf(const QJsonObject &json)
 {
+    QList<QcChunkLoaders::Loader> result;
     const QJsonArray loaders = json.value(u"chunkLoaders"_s).toArray();
     for (const auto &entry : loaders) {
         const QJsonObject loader = entry.toObject();
         const QcBlockPos pos{loader.value(u"x"_s).toInt(), loader.value(u"y"_s).toInt(), loader.value(u"z"_s).toInt()};
-        if (info.chunkLoaders.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(qint64(pos.x)) <= QcWorld::maxHorizontalBlock
+        if (result.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(qint64(pos.x)) <= QcWorld::maxHorizontalBlock
             && std::abs(qint64(pos.z)) <= QcWorld::maxHorizontalBlock) {
-            info.chunkLoaders.append({pos, loader.value(u"owner"_s).toString().left(64)});
+            result.append({pos, loader.value(u"owner"_s).toString().left(64)});
         }
     }
+    return result;
+}
 
+// The forced chunks of world.json; entries out of range and repeated ones are left out.
+[[nodiscard]] QList<QcChunkPos> forcedChunksOf(const QJsonObject &json)
+{
+    QList<QcChunkPos> result;
     const QJsonArray forced = json.value(u"forcedChunks"_s).toArray();
     for (const auto &entry : forced) {
         const QJsonArray pair = entry.toArray();
         const QcChunkPos chunk{pair.at(0).toInt(), pair.at(1).toInt()};
-        if (info.forcedChunks.size() < maxForcedChunks && pair.size() == 2 && std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk
-            && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk && !info.forcedChunks.contains(chunk)) {
-            info.forcedChunks.append(chunk);
+        if (result.size() < maxForcedChunks && pair.size() == 2 && std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk
+            && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk && !result.contains(chunk)) {
+            result.append(chunk);
         }
     }
+    return result;
 }
 
 } // namespace
+
+void QcWorldInfo::readGameRules(const QJsonObject &rules)
+{
+    keepInventory = rules.value(u"keepInventory"_s).toBool(true);
+    daylightCycle = rules.value(u"daylightCycle"_s).toBool(true);
+    mobSpawning = rules.value(u"mobSpawning"_s).toBool(true);
+    randomTicks = rules.value(u"randomTicks"_s).toBool(true);
+    fireSpread = rules.value(u"fireSpread"_s).toBool(true);
+    quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
+    weatherCycle = rules.value(u"weatherCycle"_s).toBool(true);
+    mobGriefing = rules.value(u"mobGriefing"_s).toBool(true);
+    explosionBlockDamage = rules.value(u"explosionBlockDamage"_s).toBool(true);
+    spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, QcWorldInfo::maxSpawnChunkRadius);
+    maxEntityCramming = std::clamp(rules.value(u"maxEntityCramming"_s).toInt(24), 0, QcWorldInfo::maxEntityCrammingLimit);
+    playerInvulnerabilityTicks = std::clamp(rules.value(u"playerInvulnerabilityTicks"_s).toInt(QcHurtWindow::defaultTicks), 0,
+                                                 QcHurtWindow::maxTicks);
+    mobInvulnerabilityTicks = std::clamp(rules.value(u"mobInvulnerabilityTicks"_s).toInt(QcHurtWindow::defaultTicks), 0,
+                                              QcHurtWindow::maxTicks);
+}
 
 QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content)
     : m_directory(std::move(directory))
@@ -113,7 +121,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.created = QDateTime::fromString(json.value(u"created"_s).toString(), Qt::ISODate);
     info.lastPlayed = QDateTime::fromString(json.value(u"lastPlayed"_s).toString(), Qt::ISODate);
     info.worldTime = std::max(0.0, json.value(u"worldTime"_s).toDouble());
-    readGameRules(json.value(u"gameRules"_s).toObject(), info);
+    info.readGameRules(json.value(u"gameRules"_s).toObject());
     info.weather = QcWeatherCycle::fromJson(json.value(u"weather"_s).toObject());
     const QJsonObject generator = json.value(u"generator"_s).toObject();
     info.generator = generator.value(u"type"_s).toString();
@@ -127,7 +135,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.limits = json.value(u"limits"_s).toObject();
     bool idOk = false;
     info.nextCreatureId = json.value(u"nextCreatureId"_s).toString().toULongLong(&idOk);
-    readChunkLists(json, info);
+    info.chunkLoaders = chunkLoadersOf(json);
+    info.forcedChunks = forcedChunksOf(json);
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
@@ -237,17 +246,18 @@ QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
         return QList<QcBlockPos>();
     }
 
-    const QcResult<QByteArray> payload = QcSaveFile::read(path, blockUpdatesMagic);
+    const QcResult<QcSaveFile::Payload> payload = QcSaveFile::read(path, blockUpdatesMagic);
     if (!payload) {
         return qcError(payload.error());
     }
 
-    QDataStream stream(*payload);
+    QDataStream stream(payload->bytes);
     stream.setVersion(QcSaveFile::streamVersion);
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, maxStoredBlockUpdates, count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, maxStoredBlockUpdates);
+    if (!countRead) {
         return qcError(u"%1 is damaged (count)"_s.arg(path));
     }
+    const quint32 count = *countRead;
 
     QList<QcBlockPos> positions;
     positions.reserve(count);

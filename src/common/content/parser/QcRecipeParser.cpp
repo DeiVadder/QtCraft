@@ -6,12 +6,14 @@
 #include <QJsonArray>
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-void trimBlankRows(QList<QString> &rows)
+// The rows without blank rows at the top and bottom.
+[[nodiscard]] QList<QString> withoutBlankRows(QList<QString> rows)
 {
     while (!rows.isEmpty() && rows.first().trimmed().isEmpty()) {
         rows.removeFirst();
@@ -19,10 +21,11 @@ void trimBlankRows(QList<QString> &rows)
     while (!rows.isEmpty() && rows.last().trimmed().isEmpty()) {
         rows.removeLast();
     }
+    return rows;
 }
 
-// Pads the rows to one width, removes blank columns at both sides and returns the remaining width.
-qsizetype trimBlankColumns(QList<QString> &rows)
+// The rows padded to one width, without blank columns at both sides.
+[[nodiscard]] QList<QString> withoutBlankColumns(QList<QString> rows)
 {
     qsizetype width = 0;
     for (const QString &row : std::as_const(rows)) {
@@ -49,11 +52,13 @@ qsizetype trimBlankColumns(QList<QString> &rows)
         }
         --width;
     }
-    return width;
+    return rows;
 }
 
-void parsePatternKeys(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] decltype(QcRecipeDefinition::keys) parsePatternKeys(const QJsonObject &json, QcJsonFieldReader &reader,
+                                                                 const QString &packNamespace)
 {
+    decltype(QcRecipeDefinition::keys) result;
     const QJsonObject keys = json.value(u"key"_s).toObject();
     if (keys.size() > 9) {
         reader.fail(u"'key' has more than 9 entries"_s);
@@ -65,8 +70,9 @@ void parsePatternKeys(const QJsonObject &json, QcRecipeDefinition &recipe, QcJso
             reader.fail(u"'key' maps single characters to item names"_s);
             break;
         }
-        recipe.keys.append({it.key().at(0), item});
+        result.append({it.key().at(0), item});
     }
+    return result;
 }
 
 void checkPatternUsesKeys(const QcRecipeDefinition &recipe, QcJsonFieldReader &reader)
@@ -80,7 +86,8 @@ void checkPatternUsesKeys(const QcRecipeDefinition &recipe, QcJsonFieldReader &r
     }
 }
 
-void parseShaped(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonFieldReader &reader, const QString &packNamespace)
+// The rows of "pattern", trimmed.
+[[nodiscard]] QList<QString> parsePattern(const QJsonObject &json, QcJsonFieldReader &reader)
 {
     QList<QString> rows;
     const QJsonArray pattern = json.value(u"pattern"_s).toArray();
@@ -89,19 +96,17 @@ void parseShaped(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonFiel
     }
 
     // Trim blank rows and columns so the shape can sit anywhere in the grid.
-    trimBlankRows(rows);
-    const qsizetype width = trimBlankColumns(rows);
+    rows = withoutBlankColumns(withoutBlankRows(std::move(rows)));
+    const qsizetype width = rows.isEmpty() ? 0 : rows.first().size();
     if (rows.isEmpty() || rows.size() > 3 || width > 3) {
         reader.fail(u"'pattern' must have 1 to 3 rows of at most 3 keys"_s);
     }
-
-    recipe.pattern = rows;
-    parsePatternKeys(json, recipe, reader, packNamespace);
-    checkPatternUsesKeys(recipe, reader);
+    return rows;
 }
 
-void parseShapeless(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QStringList parseIngredients(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
+    QStringList result;
     const QJsonArray ingredients = json.value(u"ingredients"_s).toArray();
     for (const auto &entry : ingredients) {
         const QString item = QcContentFields::qualifyIngredient(entry.toString(), packNamespace);
@@ -109,12 +114,13 @@ void parseShapeless(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonF
             reader.fail(u"invalid ingredient"_s);
             break;
         }
-        recipe.ingredients.append(item);
+        result.append(item);
     }
 
-    if (recipe.ingredients.isEmpty() || recipe.ingredients.size() > 9) {
+    if (result.isEmpty() || result.size() > 9) {
         reader.fail(u"'ingredients' needs 1 to 9 items"_s);
     }
+    return result;
 }
 
 } // namespace
@@ -146,9 +152,11 @@ namespace QcRecipeParser {
     }
 
     if (recipe.shaped) {
-        parseShaped(json, recipe, reader, packNamespace);
+        recipe.pattern = parsePattern(json, reader);
+        recipe.keys = parsePatternKeys(json, reader, packNamespace);
+        checkPatternUsesKeys(recipe, reader);
     } else {
-        parseShapeless(json, recipe, reader, packNamespace);
+        recipe.ingredients = parseIngredients(json, reader, packNamespace);
     }
 
     if (!reader.ok()) {

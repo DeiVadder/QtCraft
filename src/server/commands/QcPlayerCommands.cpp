@@ -96,21 +96,20 @@ void QcPlayerCommands::list(const QcCommandContext &context) const
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 players online: %2"), {QString::number(names.size()), names.join(u", "_s)});
 }
 
-int QcPlayerCommands::disconnect(const QString &name, const QcMsg::Disconnect &reason, bool &hostRefused)
+QcPlayerCommands::Disconnected QcPlayerCommands::disconnect(const QString &name, const QcMsg::Disconnect &reason)
 {
-    int count = 0;
-    hostRefused = false;
+    Disconnected result;
     const QList<QcServerClient *> online = QcCommandArguments::players(m_state, name);
     for (QcServerClient *player : online) {
         if (player->local) {
-            hostRefused = true;
+            result.hostRefused = true;
             continue;
         }
         player->connection->send(reason);
         player->connection->close();
-        ++count;
+        ++result.count;
     }
-    return count;
+    return result;
 }
 
 void QcPlayerCommands::kick(const QcCommandContext &context)
@@ -122,14 +121,12 @@ void QcPlayerCommands::kick(const QcCommandContext &context)
 
     const QString &name = context.args[0];
     const QString reason = reasonOf(context.args, 1);
-    bool hostRefused = false;
-    const int count = disconnect(name,
-                                 reason.isEmpty() ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Kicked by %1"), {context.source.name()})
-                                                  : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Kicked by %1: %2"), {context.source.name(), reason}),
-                                 hostRefused);
-    if (hostRefused) {
+    const Disconnected done = disconnect(
+        name, reason.isEmpty() ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Kicked by %1"), {context.source.name()})
+                               : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Kicked by %1: %2"), {context.source.name(), reason}));
+    if (done.hostRefused) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "The host of the world cannot be kicked or banned"));
-    } else if (count == 0) {
+    } else if (done.count == 0) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No player named %1 is online"), {name});
     } else {
         qCInfo(lcCommands).noquote() << u"%1 kicked %2 (%3)"_s.arg(context.source.name(), name, reason);
@@ -152,11 +149,9 @@ void QcPlayerCommands::ban(const QcCommandContext &context)
 
     const QString reason = reasonOf(context.args, 1);
     const QcResult<bool> changed = m_state.access().addBan({name, reason, context.source.name(), QDateTime::currentDateTimeUtc(), fingerprintOf(name)});
-    bool hostRefused = false;
-    disconnect(name,
-               reason.isEmpty() ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1"), {context.source.name()})
-                                : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1: %2"), {context.source.name(), reason}),
-               hostRefused);
+    disconnect(name, reason.isEmpty()
+                         ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1"), {context.source.name()})
+                         : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1: %2"), {context.source.name(), reason}));
     qCInfo(lcCommands).noquote() << u"%1 banned %2 (%3)"_s.arg(context.source.name(), name, reason);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Banned %1"), {*valid});
     reportWrite(context, changed);

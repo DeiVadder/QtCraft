@@ -75,17 +75,17 @@ QcMsg::ServerDebug QcServerDebug::build(const QcServerClient &client) const
     message.biome = m_state.world().generator().biomeAt(int(std::floor(feet.x)), int(std::floor(feet.z))).left(QcMsg::ServerDebug::maxTextLength);
     message.worldType = m_state.config().generator.left(QcMsg::ServerDebug::maxTextLength);
 
-    addChunks(client, message);
+    message.chunks = chunksOf(client);
     if ((client.view.debugFlags & QcMsg::DebugSubscribe::mobGoals) != 0) {
-        addGoals(client, message);
+        message.goals = goalsNear(client);
     }
     return message;
 }
 
-void QcServerDebug::addChunks(const QcServerClient &client, QcMsg::ServerDebug &message) const
+QcMsg::ServerDebug::Chunks QcServerDebug::chunksOf(const QcServerClient &client) const
 {
     const QcChunkLoading::Numbers numbers = m_loading.numbers();
-    QcMsg::ServerDebug::Chunks &chunks = message.chunks;
+    QcMsg::ServerDebug::Chunks chunks;
     chunks.stored = quint32(numbers.stored);
     chunks.arriving = quint32(numbers.waiting);
     chunks.unsaved = quint32(numbers.unsaved);
@@ -98,30 +98,33 @@ void QcServerDebug::addChunks(const QcServerClient &client, QcMsg::ServerDebug &
     chunks.loaders = quint32(numbers.loaders);
     const QcChunkPos here = QcPhysics::blockContaining(client.motion.position).chunk();
     chunks.playerGroup = m_state.world().chunk(here) ? quint32(m_loading.groupOf(here).chunks.size()) : 0;
+    return chunks;
 }
 
-void QcServerDebug::addGoals(const QcServerClient &client, QcMsg::ServerDebug &message) const
+QList<QcMsg::MobGoal> QcServerDebug::goalsNear(const QcServerClient &client) const
 {
     using Kind = QcMsg::MobGoal::Kind;
+    QList<QcMsg::MobGoal> goals;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         if (mob.dormant || (mob.motion.position - client.motion.position).length() > goalRange) {
             continue;
         }
-        if (message.goals.size() >= qsizetype(QcMsg::ServerDebug::maxGoals)) {
-            return;
+        if (goals.size() >= qsizetype(QcMsg::ServerDebug::maxGoals)) {
+            return goals;
         }
 
         const auto chased = std::ranges::find_if(m_state.clients(), [&mob](const auto &other) {
             return mob.chasing != 0 && other->id == mob.chasing;
         });
         if (chased != m_state.clients().end()) {
-            message.goals.append({mob.id, Kind::Chase, (*chased)->motion.position});
+            goals.append({mob.id, Kind::Chase, (*chased)->motion.position});
         } else if (mob.path.hasGoal()) {
             const Kind kind = mob.path.purpose == QcMobPath::Purpose::Flee ? Kind::Flee : Kind::Wander;
-            message.goals.append({mob.id, kind, mob.path.goal});
+            goals.append({mob.id, kind, mob.path.goal});
         } else if (m_state.content().mobs()[mob.type].flying && mob.wanderDirection.length() > 0.0) {
             // Flyers drift without a goal: where they head shortly.
-            message.goals.append({mob.id, Kind::Wander, mob.motion.position + mob.wanderDirection.normalized() * goalLookAhead});
+            goals.append({mob.id, Kind::Wander, mob.motion.position + mob.wanderDirection.normalized() * goalLookAhead});
         }
     }
+    return goals;
 }

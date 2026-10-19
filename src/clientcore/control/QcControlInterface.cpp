@@ -139,12 +139,11 @@ void QcControlInterface::start(const QJsonObject &request)
 
 void QcControlInterface::startExtension(const QJsonObject &request, const QString &command)
 {
-    QJsonObject response;
-    if (m_extension && m_extension(request, response)) {
-        if (response.value(u"ok"_s).toBool(true)) {
-            m_context.finish(request, response);
+    if (const std::optional<QJsonObject> response = m_extension ? m_extension(request) : std::nullopt) {
+        if (response->value(u"ok"_s).toBool(true)) {
+            m_context.finish(request, *response);
         } else {
-            m_context.fail(request, response.value(u"error"_s).toString());
+            m_context.fail(request, response->value(u"error"_s).toString());
         }
         return;
     }

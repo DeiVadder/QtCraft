@@ -72,13 +72,13 @@ private:
         east.yaw = 90.0f;
         east.forward = 1.0f;
         for (int tick = 0; tick < ticks; ++tick) {
-            QcPhysics::stepPlayer(motion, east, world, dt, false);
+            motion.stepPlayer(east, world, dt, false);
         }
 
         Walk walk{motion.velocity.x, 0.0};
         const double released = motion.position.x;
         for (int tick = 0; tick < 200 && motion.velocity.length() > 1e-6; ++tick) {
-            QcPhysics::stepPlayer(motion, {}, world, dt, false);
+            motion.stepPlayer({}, world, dt, false);
         }
         walk.slide = motion.position.x - released;
         return walk;

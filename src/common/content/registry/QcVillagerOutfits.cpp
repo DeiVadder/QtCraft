@@ -14,9 +14,10 @@ bool isKind(const QcContentRegistry &registry, const QString &name, QcAppearance
     return appearance && appearance->kind == kind;
 }
 
-// Checks the names of a look; `owner` names it in the warnings.
-void checkLook(const QcContentRegistry &registry, const QcVillagerLook &look, const QString &owner, QStringList &warnings)
+// Checks the names of a look; the warnings, which name it by `owner`.
+[[nodiscard]] QStringList checkLook(const QcContentRegistry &registry, const QcVillagerLook &look, const QString &owner)
 {
+    QStringList warnings;
     if (!isKind(registry, look.outfit, QcAppearanceDefinition::Kind::Outfit)) {
         warnings.append(u"villagers of %1: '%2' is no outfit"_s.arg(owner, look.outfit));
     }
@@ -25,6 +26,7 @@ void checkLook(const QcContentRegistry &registry, const QcVillagerLook &look, co
             warnings.append(u"villagers of %1: '%2' is no hair style"_s.arg(owner, hair));
         }
     }
+    return warnings;
 }
 
 // The outfit `base` with the layers of `profession` in place of its own of the same slot.
@@ -72,7 +74,7 @@ QStringList generate(QcContentRegistry &registry)
     }
 
     for (const auto &[owner, look] : std::as_const(looks)) {
-        checkLook(registry, look, owner, warnings);
+        warnings += checkLook(registry, look, owner);
         const QcAppearanceDefinition *base = registry.appearance(look.outfit);
         if (!base || base->kind != QcAppearanceDefinition::Kind::Outfit) {
             continue;

@@ -37,9 +37,9 @@ quint64 planKey(int kind, int regionX, int regionZ)
 } // namespace
 
 QcSurfaceStructures::QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content,
-                                         quint64 seed, QStringList *warnings)
+                                         quint64 seed)
     : m_villages(villages)
-    , m_planner(terrain, content, seed, warnings)
+    , m_planner(terrain, content, seed)
 {
     m_ground.resize(std::size_t(content.stateCount()));
     for (std::size_t id = 0; id < m_ground.size(); ++id) {
@@ -176,10 +176,11 @@ void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &plac
     placement.writeInto(chunk);
 }
 
-void QcSurfaceStructures::addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const
+QcChunkFurnishing QcSurfaceStructures::furnishingIn(QcChunkPos pos) const
 {
+    QcChunkFurnishing furnishing;
     if (m_planner.kinds().isEmpty()) {
-        return;
+        return furnishing;
     }
     const QList<std::shared_ptr<const QcStructurePlacement>> plans = plansTouching(pos);
     for (const std::shared_ptr<const QcStructurePlacement> &plan : plans) {
@@ -190,6 +191,7 @@ void QcSurfaceStructures::addFurnishing(QcChunkPos pos, QcChunkFurnishing &furni
             }
         }
     }
+    return furnishing;
 }
 
 QList<QcGuardSite> QcSurfaceStructures::sitesNear(QcBlockPos from, int reach) const

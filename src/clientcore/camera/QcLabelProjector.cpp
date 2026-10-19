@@ -10,6 +10,7 @@
 #include <array>
 #include <cmath>
 #include <limits>
+#include <utility>
 
 namespace {
 
@@ -27,33 +28,43 @@ struct Candidate
     double distance = 0.0;
 };
 
-// The labels of one chunk within their reach of the eye.
-void appendInReach(QList<Candidate> &candidates, QcChunkPos pos, const QList<QcWorldLabel> &labels, const QcVec3 &eye)
+// The labels near the eye, gathered chunk by chunk into one list.
+class Candidates
 {
-    const quint64 chunkKey = (quint64(quint32(pos.x)) << 40) ^ (quint64(quint32(pos.z)) << 16);
-    for (qsizetype i = 0; i < labels.size(); ++i) {
-        const QcWorldLabel &label = labels[i];
-        const double distance = (label.position - eye).length();
-        if (distance <= (label.heading ? QcLabelProjector::headingReach : QcLabelProjector::labelReach)) {
-            candidates.append({&label, chunkKey ^ quint64(i), distance});
+public:
+    // Adds the labels of the chunk at `pos` that are within their reach of the eye.
+    void addChunk(QcChunkPos pos, const QList<QcWorldLabel> &labels, const QcVec3 &eye)
+    {
+        const quint64 chunkKey = (quint64(quint32(pos.x)) << 40) ^ (quint64(quint32(pos.z)) << 16);
+        for (qsizetype i = 0; i < labels.size(); ++i) {
+            const QcWorldLabel &label = labels[i];
+            const double distance = (label.position - eye).length();
+            if (distance <= (label.heading ? QcLabelProjector::headingReach : QcLabelProjector::labelReach)) {
+                m_list.append({&label, chunkKey ^ quint64(i), distance});
+            }
         }
     }
-}
 
-QList<Candidate> candidatesNear(const QHash<QcChunkPos, QList<QcWorldLabel>> &labels, const QcVec3 &eye)
+    [[nodiscard]] QList<Candidate> take() { return std::exchange(m_list, {}); }
+
+private:
+    QList<Candidate> m_list;
+};
+
+[[nodiscard]] QList<Candidate> candidatesNear(const QHash<QcChunkPos, QList<QcWorldLabel>> &labels, const QcVec3 &eye)
 {
-    QList<Candidate> candidates;
+    Candidates candidates;
     const QcChunkPos centre = QcBlockPos{int(std::floor(eye.x)), 0, int(std::floor(eye.z))}.chunk();
     const int radius = int(std::ceil(QcLabelProjector::headingReach / QcWorld::chunkSize)) + 1;
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dz = -radius; dz <= radius; ++dz) {
             const QcChunkPos pos{centre.x + dx, centre.z + dz};
             if (const auto found = labels.constFind(pos); found != labels.constEnd()) {
-                appendInReach(candidates, pos, *found, eye);
+                candidates.addChunk(pos, *found, eye);
             }
         }
     }
-    return candidates;
+    return candidates.take();
 }
 
 // Steps of a voxel traversal (Amanatides & Woo) along one axis.

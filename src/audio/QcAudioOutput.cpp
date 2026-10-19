@@ -56,7 +56,7 @@ bool QcAudioOutput::start()
         m_mixer = QcAudioMixer(format.sampleRate());
     }
 
-    m_device = std::make_unique<QcMixerDevice>([this](float *out, int frames) { render(out, frames); }, sampleFormat);
+    m_device = std::make_unique<QcMixerDevice>([this](int frames) { return render(frames); }, sampleFormat);
     m_device->open(QIODevice::ReadOnly);
     m_sink = std::make_unique<QAudioSink>(device, format);
     m_sink->setBufferSize(format.bytesForDuration(qint64(bufferMilliseconds) * 1000));
@@ -104,9 +104,11 @@ void QcAudioOutput::withMixer(const std::function<void(QcAudioMixer &)> &change)
     change(m_mixer);
 }
 
-void QcAudioOutput::render(float *out, int frames)
+std::span<const float> QcAudioOutput::render(int frames)
 {
     const std::scoped_lock lock(m_mutex);
-    m_mixer.mix(out, frames);
     m_framesRendered += frames;
+    // The mixer's buffer changes only in mix(), which only this audio thread calls, so the view
+    // stays valid after the lock is released.
+    return m_mixer.mix(frames);
 }

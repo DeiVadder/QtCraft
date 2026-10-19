@@ -31,7 +31,7 @@ QcFishSwimming::CellKey QcFishSwimming::cellOf(int type, const QcVec3 &position,
     return {type, cellKey(int(std::floor(position.x / size)), int(std::floor(position.y / size)), int(std::floor(position.z / size)))};
 }
 
-void QcFishSwimming::startTick(const QList<QcCreature> &mobs, const QcContentRegistry &content)
+void QcFishSwimming::startTick(std::span<const QcCreature> mobs, const QcContentRegistry &content)
 {
     // Emptied without giving back their storage: the grid is built anew every tick.
     m_cellIndex.removeIf([](const auto &) { return true; });
@@ -39,7 +39,7 @@ void QcFishSwimming::startTick(const QList<QcCreature> &mobs, const QcContentReg
     m_cellStart.clear();
 
     // First the cell of each awake water creature and the size of each cell ...
-    for (qsizetype i = 0; i < mobs.size(); ++i) {
+    for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         const QcCreature &mob = mobs[i];
         const std::optional<QcAquaticDefinition> &aquatic = content.mobs()[mob.type].aquatic;
         if (mob.dormant || !aquatic) {
@@ -63,7 +63,7 @@ void QcFishSwimming::startTick(const QList<QcCreature> &mobs, const QcContentReg
     m_cellStart.push_back(total);
     m_members.assign(std::size_t(total), 0);
     std::vector<qsizetype> &next = m_cellStart;
-    for (qsizetype i = 0; i < mobs.size(); ++i) {
+    for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         if (const qsizetype cell = m_cellOfMob[std::size_t(i)]; cell >= 0) {
             m_members[std::size_t(next[std::size_t(cell)]++)] = i;
         }
@@ -80,7 +80,7 @@ bool QcFishSwimming::inWater(const QcBlockAccess &world, const QcVec3 &position)
     return QcPhysics::isWaterAt(world, QcPhysics::blockContaining(position));
 }
 
-void QcFishSwimming::collectFrom(const QList<QcCreature> &mobs, qsizetype index, CellKey cell, double radius)
+void QcFishSwimming::collectFrom(std::span<const QcCreature> mobs, qsizetype index, CellKey cell, double radius)
 {
     const auto found = m_cellIndex.constFind(cell);
     if (found == m_cellIndex.constEnd()) {
@@ -99,7 +99,7 @@ void QcFishSwimming::collectFrom(const QList<QcCreature> &mobs, qsizetype index,
     }
 }
 
-const QList<const QcCreature *> &QcFishSwimming::neighboursOf(const QList<QcCreature> &mobs, qsizetype index, const QcAquaticDefinition &aquatic)
+const QList<const QcCreature *> &QcFishSwimming::neighboursOf(std::span<const QcCreature> mobs, qsizetype index, const QcAquaticDefinition &aquatic)
 {
     m_candidates.clear();
     m_found.clear();
@@ -167,7 +167,7 @@ QcVec3 QcFishSwimming::schooling(const QcVec3 &position, const QList<const QcCre
     return steering;
 }
 
-void QcFishSwimming::swim(qsizetype index, QList<QcCreature> &mobs, const QcMobDefinition &definition, const QcBlockAccess &world, double dt)
+void QcFishSwimming::swim(qsizetype index, std::span<QcCreature> mobs, const QcMobDefinition &definition, const QcBlockAccess &world, double dt)
 {
     QcCreature &mob = mobs[index];
     const QcAquaticDefinition &aquatic = *definition.aquatic; // NOLINT(bugprone-unchecked-optional-access): called for water creatures only
@@ -266,6 +266,6 @@ void QcFishSwimming::flopOnLand(QcCreature &mob, const QcMobDefinition &definiti
     // It keeps the speed of its flop through the air (a body without wish keeps nothing on the ground).
     const QcVec3 flat{mob.motion.velocity.x, 0.0, mob.motion.velocity.z};
     const double speed = flat.length();
-    QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{.wish = speed > 1e-6 ? flat * (1.0 / speed) : QcVec3{}, .speed = mob.motion.onGround && !flops ? 0.0 : speed},
+    mob.motion.step(QcPhysics::Steering{.wish = speed > 1e-6 ? flat * (1.0 / speed) : QcVec3{}, .speed = mob.motion.onGround && !flops ? 0.0 : speed},
                           QcPhysics::BodySize{definition.width, definition.height}, world, dt);
 }

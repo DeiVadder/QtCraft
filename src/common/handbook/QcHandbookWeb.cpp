@@ -16,13 +16,16 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-void addIcons(const QList<QcHandbookEntry::Link> &links, QSet<QString> &names)
+// The icon names of the links that have one.
+[[nodiscard]] QSet<QString> iconsOf(const QList<QcHandbookEntry::Link> &links)
 {
+    QSet<QString> names;
     for (const QcHandbookEntry::Link &link : links) {
         if (!link.icon.isEmpty()) {
             names.insert(link.icon);
         }
     }
+    return names;
 }
 
 } // namespace
@@ -82,14 +85,14 @@ QStringList icons(const QcHandbook &handbook)
             names.insert(entry.icon);
         }
         for (const QcHandbookEntry::Fact &fact : entry.facts) {
-            addIcons(fact.links, names);
+            names.unite(iconsOf(fact.links));
         }
         for (const QcHandbookEntry::Section &section : entry.sections) {
-            addIcons(section.links, names);
+            names.unite(iconsOf(section.links));
             for (const QcHandbookEntry::Recipe &recipe : section.recipes) {
-                addIcons(recipe.cells, names);
-                addIcons(recipe.machines, names);
-                addIcons({recipe.result}, names);
+                names.unite(iconsOf(recipe.cells));
+                names.unite(iconsOf(recipe.machines));
+                names.unite(iconsOf({recipe.result}));
             }
         }
     }

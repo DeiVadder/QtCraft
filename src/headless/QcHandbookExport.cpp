@@ -29,13 +29,12 @@ std::shared_ptr<const QcContentRegistry> documented(const QCommandLineParser &pa
     if (parser.isSet(options.mods)) {
         return content;
     }
-    QStringList baseWarnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+    QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
     if (!base) {
         printError(u"Cannot load the base game: "_s + base.error());
         return nullptr;
     }
-    return *base;
+    return base->registry;
 }
 
 QcHandbook build(const QcContentRegistry &content, const QString &language)

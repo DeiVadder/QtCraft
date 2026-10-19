@@ -184,11 +184,10 @@ private slots:
         QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Jonas"_s, player).has_value());
 
         const auto withoutMod = registryWith({u"a:stone"_s});
-        QStringList warnings;
-        const auto read = QcTestWorldFiles(dir.path(), withoutMod).readPlayer(u"Jonas"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), withoutMod).readPlayer(u"Jonas"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QVERIFY(read->has_value());
-        const QcPlayerData &loaded = **read;
+        QVERIFY(read->player.has_value());
+        const QcPlayerData &loaded = *read->player;
         QCOMPARE(loaded.motion.position, player.motion.position);
         QCOMPARE(loaded.yaw, 135.0f);
         QCOMPARE(loaded.pitch, -20.0f);
@@ -196,7 +195,7 @@ private slots:
         QCOMPARE(loaded.inventory.slot(0).item, *withoutMod->itemId(u"a:stone"_s));
         QCOMPARE(loaded.inventory.slot(0).count, 42);
         QVERIFY(loaded.inventory.slot(20).isEmpty());
-        QCOMPARE(warnings.size(), 1);
+        QCOMPARE(read->warnings.size(), 1);
     }
 
     void gameRulesRoundTripAndDefaultForOldWorlds()
@@ -253,8 +252,7 @@ private slots:
         player.pitch = pitch;
         QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Odd"_s, player).has_value());
 
-        QStringList warnings;
-        QVERIFY(!QcTestWorldFiles(dir.path(), content).readPlayer(u"Odd"_s, warnings).has_value());
+        QVERIFY(!QcTestWorldFiles(dir.path(), content).readPlayer(u"Odd"_s).has_value());
     }
 
     void playerFallingThroughTheVoidLoads()
@@ -267,11 +265,10 @@ private slots:
         player.motion.velocity = {0.0, -QcPhysics::terminalVelocity, 0.0};
         QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Faller"_s, player).has_value());
 
-        QStringList warnings;
-        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Faller"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Faller"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QVERIFY(read->has_value());
-        QCOMPARE((*read)->motion.position.y, QcWorld::voidFloorY);
+        QVERIFY(read->player.has_value());
+        QCOMPARE(read->player->motion.position.y, QcWorld::voidFloorY);
     }
 
     void negativeHealthIsClamped()
@@ -283,10 +280,9 @@ private slots:
         player.health = -7.0;
         QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Hurt"_s, player).has_value());
 
-        QStringList warnings;
-        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Hurt"_s, warnings);
-        QVERIFY(read.has_value() && read->has_value());
-        QCOMPARE((*read)->health, 0.0);
+        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Hurt"_s);
+        QVERIFY(read.has_value() && read->player.has_value());
+        QCOMPARE(read->player->health, 0.0);
     }
 
     void chunksBeyondTheWorldEdgeAreRejected()
@@ -312,11 +308,10 @@ private slots:
         player.exhaustion = 2.5;
         QVERIFY(storage.writePlayer(u"Hungry"_s, player).has_value());
 
-        QStringList warnings;
-        const auto read = storage.readPlayer(u"Hungry"_s, warnings);
+        const auto read = storage.readPlayer(u"Hungry"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE((*read)->food, 7);
-        QCOMPARE((*read)->exhaustion, 2.5);
+        QCOMPARE(read->player->food, 7);
+        QCOMPARE(read->player->exhaustion, 2.5);
 
         // A file of an older development version (version 1, before hunger) is refused, not converted.
         QByteArray payload;
@@ -337,14 +332,14 @@ private slots:
         old.write(file);
         old.close();
 
-        const auto oldRead = storage.readPlayer(u"Old"_s, warnings);
+        const auto oldRead = storage.readPlayer(u"Old"_s);
         QVERIFY(!oldRead.has_value());
-        QVERIFY2(oldRead.error().contains(u"older development version"_s), qPrintable(oldRead.error()));
+        QVERIFY2(oldRead.error().error.contains(u"older development version"_s), qPrintable(oldRead.error().error));
 
         // Food beyond the range is clamped.
         player.food = 99;
         QVERIFY(storage.writePlayer(u"Hungry"_s, player).has_value());
-        QCOMPARE((*storage.readPlayer(u"Hungry"_s, warnings))->food, 20);
+        QCOMPARE(storage.readPlayer(u"Hungry"_s)->player->food, 20);
     }
 
     void playerNamesDifferingInCaseGetTheirOwnFiles()
@@ -372,12 +367,11 @@ private slots:
         QCOMPARE(files.size(), 4);
         QVERIFY(QcWorldStorage::playerFileName(u"Bob"_s).startsWith(u"bob-"_s));
 
-        QStringList warnings;
-        QCOMPARE((*storage.readPlayer(u"Bob"_s, warnings))->health, 5.0);
-        QCOMPARE((*storage.readPlayer(u"bob"_s, warnings))->health, 9.0);
-        QCOMPARE((*storage.readPlayer(u"a.b"_s, warnings))->health, 5.0);
-        QCOMPARE((*storage.readPlayer(u"a_b"_s, warnings))->health, 9.0);
-        QVERIFY(!*storage.readPlayer(u"BOB"_s, warnings));
+        QCOMPARE(storage.readPlayer(u"Bob"_s)->player->health, 5.0);
+        QCOMPARE(storage.readPlayer(u"bob"_s)->player->health, 9.0);
+        QCOMPARE(storage.readPlayer(u"a.b"_s)->player->health, 5.0);
+        QCOMPARE(storage.readPlayer(u"a_b"_s)->player->health, 9.0);
+        QVERIFY(!storage.readPlayer(u"BOB"_s)->player);
     }
 
     void playerFilesUnderTheNamesOfOlderVersionsAreNotRead()
@@ -393,11 +387,10 @@ private slots:
         const QDir players(dir.filePath(u"players"_s));
         QVERIFY(QFile::rename(players.filePath(QcWorldStorage::playerFileName(u"Alice"_s)), players.filePath(u"Alice.qcp"_s)));
 
-        QStringList warnings;
-        const auto read = storage.readPlayer(u"Alice"_s, warnings);
+        const auto read = storage.readPlayer(u"Alice"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QVERIFY(!read->has_value());
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(!read->player.has_value());
+        QVERIFY(read->warnings.isEmpty());
         QCOMPARE(players.entryList(QDir::Files), QStringList{u"Alice.qcp"_s});
     }
 
@@ -486,10 +479,9 @@ private slots:
     void missingPlayerIsNotAnError()
     {
         QTemporaryDir dir;
-        QStringList warnings;
-        const auto read = QcTestWorldFiles(dir.path(), registryWith({})).readPlayer(u"Nobody"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), registryWith({})).readPlayer(u"Nobody"_s);
         QVERIFY(read.has_value());
-        QVERIFY(!read->has_value());
+        QVERIFY(!read->player.has_value());
     }
 };
 

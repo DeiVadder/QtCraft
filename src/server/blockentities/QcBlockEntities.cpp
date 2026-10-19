@@ -145,19 +145,19 @@ void QcBlockEntities::placedContainer(QcBlockPos pos, QcBlockId after)
     }
 }
 
-bool QcBlockEntities::forgetUnfitting(Memory &memory, QcSignalKind kind)
+bool QcBlockEntities::Memory::forgetUnfitting(QcSignalKind kind)
 {
     if (kind != QcSignalKind::Torch) {
-        memory.torchOffTicks.clear();
-        memory.burntOutUntil = 0;
+        torchOffTicks.clear();
+        burntOutUntil = 0;
     }
     if (kind != QcSignalKind::Opener) {
-        memory.powered = false;
+        powered = false;
     }
     if (kind != QcSignalKind::Piston) {
-        memory.extendingSince.reset();
+        extendingSince.reset();
     }
-    return memory.isEmpty();
+    return isEmpty();
 }
 
 void QcBlockEntities::placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after)
@@ -174,7 +174,7 @@ void QcBlockEntities::placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId a
     }
 
     const auto it = m_memories.find(pos);
-    if (it != m_memories.end() && forgetUnfitting(*it, now)) {
+    if (it != m_memories.end() && it->forgetUnfitting(now)) {
         removeMemory(pos);
     }
 }
@@ -249,49 +249,37 @@ void QcBlockEntities::reconcile(const QcChunk &chunk)
     }
     for (const QcBlockPos &pos : positions.memories) {
         const auto it = m_memories.find(pos);
-        if (it != m_memories.end() && forgetUnfitting(*it, kindOf(blockAt(pos)))) {
+        if (it != m_memories.end() && it->forgetUnfitting(kindOf(blockAt(pos)))) {
             removeMemory(pos);
         }
     }
 }
 
-namespace {
-
-// Moves the entry at `from` to `to` within one table; it stays where it is when `to` has one.
 template<typename Entry>
-bool moveEntry(QHash<QcBlockPos, Entry> &table, QcBlockPos from, QcBlockPos to)
+bool QcBlockEntities::relocateEntry(QHash<QcBlockPos, Entry> QcBlockEntities::*table, QList<QcBlockPos> ChunkIndex::*positions,
+                                    QcBlockPos from, QcBlockPos to)
 {
-    if (!table.contains(from) || table.contains(to)) {
+    QHash<QcBlockPos, Entry> &entries = this->*table;
+    if (!entries.contains(from) || entries.contains(to)) {
         return false;
     }
-    Entry entry = table.take(from);
+    Entry entry = entries.take(from);
     if constexpr (requires { entry.pos; }) {
         entry.pos = to;
     }
-    table.insert(to, std::move(entry));
+    entries.insert(to, std::move(entry));
+    unindex(from, positions);
+    index(to, positions);
     return true;
 }
 
-} // namespace
-
 void QcBlockEntities::relocate(QcBlockPos from, QcBlockPos to)
 {
-    if (moveEntry(m_containers, from, to)) {
-        unindex(from, &ChunkIndex::containers);
-        index(to, &ChunkIndex::containers);
-    }
-    if (moveEntry(m_machines, from, to)) {
-        unindex(from, &ChunkIndex::machines);
-        index(to, &ChunkIndex::machines);
-    }
-    if (moveEntry(m_memories, from, to)) {
-        unindex(from, &ChunkIndex::memories);
-        index(to, &ChunkIndex::memories);
-    }
-    if (moveEntry(m_saplingAt, from, to)) {
+    relocateEntry(&QcBlockEntities::m_containers, &ChunkIndex::containers, from, to);
+    relocateEntry(&QcBlockEntities::m_machines, &ChunkIndex::machines, from, to);
+    relocateEntry(&QcBlockEntities::m_memories, &ChunkIndex::memories, from, to);
+    if (relocateEntry(&QcBlockEntities::m_saplingAt, &ChunkIndex::saplings, from, to)) {
         m_saplings[m_saplingAt.value(to)].pos = to;
-        unindex(from, &ChunkIndex::saplings);
-        index(to, &ChunkIndex::saplings);
     }
     m_schedule.relocate(from, to);
 }

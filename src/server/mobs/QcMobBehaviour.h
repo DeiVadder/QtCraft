@@ -15,6 +15,7 @@
 #include "server/villages/QcVillagerBehaviour.h"
 
 #include <memory>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -59,7 +60,7 @@ public:
 
     // One tick of the awake creatures at the clock's world time: the waiting path searches, then each
     // decides and moves. Returns the blows they dealt to players; their shots wait in takeLaunches.
-    QList<QcMobManager::PlayerHit> tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players,
+    QList<QcMobManager::PlayerHit> tick(std::span<QcCreature> mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players,
                                         Clock clock);
     // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425).
     QList<QcProjectileManager::Launch> takeLaunches() { return std::exchange(m_launches, {}); }
@@ -84,8 +85,9 @@ private:
     // at a player in melee.
     QcPhysics::Steering withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
                                         bool coasts);
-    // Adds the push of the crowd to the steering.
-    void steerApart(qsizetype index, const QcCreature &mob, const QcServerWorld &world, QcPhysics::Steering &steering) const;
+    // `steering` with the push of the crowd added.
+    [[nodiscard]] QcPhysics::Steering withCrowd(qsizetype index, const QcCreature &mob, const QcServerWorld &world,
+                                                QcPhysics::Steering steering) const;
     // One tick of the physics with the steering (none while knocked back).
     static void walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering);
     // Drifting flight without gravity at a few metres above the ground.

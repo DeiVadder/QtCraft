@@ -44,7 +44,7 @@ private:
         config.viewDistance = 2;
         config.seed = 1;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, nullptr));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
         auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 31 + jitterMs));
         m_link = link.get();

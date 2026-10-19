@@ -40,7 +40,9 @@ QList<QcRoadLayer::Road> QcRoadLayer::layArm(QcVillageDraft &draft, const Arm &a
 
     recordRuns(draft, runs, arm.closed);
     if (draft.style->overWater && !arm.closed) {
-        QcBoardwalkPlanner::layStairs(m_terrain, m_content, draft, runs.back());
+        if (const std::optional<QcVillageDraft::Stairs> stairs = QcBoardwalkPlanner::stairsAt(m_terrain, m_content, draft, runs.back())) {
+            draft.addStairs(*stairs);
+        }
     }
     return runs;
 }
@@ -138,19 +140,12 @@ int QcRoadLayer::windTurn(QcVillageDraft &draft, std::pair<int, int> cell, int d
 
 void QcRoadLayer::recordRuns(QcVillageDraft &draft, const QList<Road> &runs, bool closed) const
 {
-    const int arm = draft.plan.runs.isEmpty() ? 0 : draft.plan.runs.back().arm + 1;
+    const int arm = draft.nextArm();
     for (qsizetype i = 0; i < runs.size(); ++i) {
         // Where runs meet (and all round a ring) the brush is square, so a bend has no gap.
         const Road &run = runs[i];
         paintRun(draft, run, {i > 0 || closed, i + 1 < runs.size() || closed});
-
-        const int endX = run.x + run.dx * (run.length - 1);
-        const int endZ = run.z + run.dz * (run.length - 1);
-        const Rect first = QcVillageDraft::brush({run.x, run.z}, run.dx, run.dz, true);
-        const Rect last = QcVillageDraft::brush({endX, endZ}, run.dx, run.dz, true);
-        draft.roads.append({std::min(first.x0, last.x0), std::min(first.z0, last.z0), std::max(first.x1, last.x1), std::max(first.z1, last.z1)});
-        draft.plan.runs.append({run.x, run.z, run.dx, run.dz, run.length, arm, run.branch});
-        draft.plan.roadLength += run.length;
+        draft.addRun(run, arm);
     }
 }
 

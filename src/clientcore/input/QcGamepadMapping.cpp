@@ -152,8 +152,8 @@ std::optional<Combo> comboOf(Action action)
     return std::nullopt;
 }
 
-void applyCombos(std::array<bool, actionCount> &now, const std::array<bool, actionCount> &before, const QcGamepadState &shaped,
-                 const Bindings &bindings)
+std::array<bool, actionCount> withCombos(std::array<bool, actionCount> now, const std::array<bool, actionCount> &before,
+                                         const QcGamepadState &shaped, const Bindings &bindings)
 {
     for (const Combo &combo : combos) {
         const std::optional<QcGamepadButton> modifier = bindings.button(combo.modifier);
@@ -175,6 +175,8 @@ void applyCombos(std::array<bool, actionCount> &now, const std::array<bool, acti
             now[std::size_t(*own)] = false;
         }
     }
+
+    return now;
 }
 
 std::optional<Action> Bindings::stranded(Action action, QcGamepadButton button) const

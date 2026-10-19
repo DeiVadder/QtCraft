@@ -36,8 +36,6 @@ public:
 
 private:
     bool hasNear(QcBlockPos pos) const;
-    // Adds the marked blocks of a section whose lowest corner is `corner`.
-    void scanSection(const QcChunkSection &section, QcBlockPos corner, QList<QcBlockPos> &found) const;
 
     std::vector<bool> m_marked;
     QHash<QcChunkPos, QList<QcBlockPos>> m_byChunk;

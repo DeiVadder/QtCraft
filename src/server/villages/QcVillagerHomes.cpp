@@ -47,11 +47,13 @@ bool holds(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, quint64 
     return spot && spot->claimedBy == holder;
 }
 
-void unclaim(QList<QcVillage::Spot> &spots, std::optional<QcBlockPos> at, quint64 holder)
+// The spots with the one at `at` free again if `holder` held it (moved in and out, no copy).
+[[nodiscard]] QList<QcVillage::Spot> unclaimed(QList<QcVillage::Spot> spots, std::optional<QcBlockPos> at, quint64 holder)
 {
     if (QcVillage::Spot *spot = at ? QcVillage::spotAt(spots, *at) : nullptr; spot && spot->claimedBy == holder) {
         spot->claimedBy = 0;
     }
+    return spots;
 }
 
 } // namespace
@@ -188,8 +190,8 @@ void release(QcVillages &villages, const QcVillager &villager, quint64 holder)
     if (!village) {
         return;
     }
-    unclaim(village->beds, villager.home, holder);
-    unclaim(village->workstations, villager.work, holder);
+    village->beds = unclaimed(std::move(village->beds), villager.home, holder);
+    village->workstations = unclaimed(std::move(village->workstations), villager.work, holder);
     // One the reconciled village no longer counts (away when it was reconciled) left its population
     // then already.
     const bool counted = !village->residents.known || village->residents.uids.remove(holder);

@@ -59,12 +59,12 @@ std::shared_ptr<const QcContentRegistry> loadContentWithLongStates(const QString
     writeJson(QDir(modDirectory).filePath(u"blocks/gizmo.json"_s),
               {{u"name"_s, u"gizmo"_s}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:stone"_s}}}, {u"states"_s, states}});
 
-    QStringList warnings;
     auto content = std::make_shared<QcContentRegistry>();
-    if (!QcBaseContent::loadInto(*content, warnings) || !QcContentPackLoader::load(modDirectory, *content, warnings)) {
+    if (!QcBaseContent::loadInto(*content) || !QcContentPackLoader::load(modDirectory, *content)) {
         return nullptr;
     }
-    warnings += content->finish();
+    // The warnings of finishing do not matter here.
+    static_cast<void>(content->finish());
     return content;
 }
 

@@ -16,8 +16,8 @@ int floorDiv(int value, int divisor)
 
 } // namespace
 
-QcMineshaftGenerator::QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings)
-    : m_planner(terrain, content, seed, warnings)
+QcMineshaftGenerator::QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
+    : m_planner(terrain, content, seed)
     , m_builder(m_planner.blocks(), m_planner.settings().maxPillar)
     , m_seed(qcMixSeed(seed, 0x3804))
 {
@@ -85,8 +85,9 @@ quint64 QcMineshaftGenerator::lootSeed(QcBlockPos at) const
     return qcMixSeed(m_seed, quint64(qcPositionRandom(m_seed ^ 0x5eed, at.x, at.y, at.z) * 4294967296.0));
 }
 
-void QcMineshaftGenerator::addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const
+QcChunkFurnishing QcMineshaftGenerator::furnishingIn(QcChunkPos pos) const
 {
+    QcChunkFurnishing furnishing;
     const QcMineshaftSettings &settings = m_planner.settings();
     const QList<std::shared_ptr<const QcMineshaftPlan>> plans = plansTouching(pos);
     for (const std::shared_ptr<const QcMineshaftPlan> &plan : plans) {
@@ -102,14 +103,16 @@ void QcMineshaftGenerator::addFurnishing(QcChunkPos pos, QcChunkFurnishing &furn
         }
         for (const QcMineshaftPlan::Room &room : plan->rooms) {
             if (room.placement.overlaps(pos)) {
-                addRoomFurnishing(pos, room, lootSeed(room.placement.origin()), furnishing);
+                furnishing.add(roomFurnishing(pos, room, lootSeed(room.placement.origin())));
             }
         }
     }
+    return furnishing;
 }
 
-void QcMineshaftGenerator::addRoomFurnishing(QcChunkPos pos, const QcMineshaftPlan::Room &room, quint64 seed, QcChunkFurnishing &furnishing)
+QcChunkFurnishing QcMineshaftGenerator::roomFurnishing(QcChunkPos pos, const QcMineshaftPlan::Room &room, quint64 seed)
 {
+    QcChunkFurnishing furnishing;
     const QcStructurePlacement &placement = room.placement;
     for (const QcStructureDefinition::Loot &loot : placement.structure().loot) {
         if (const QcBlockPos at = placement.toWorld(loot.at); at.chunk() == pos) {
@@ -126,4 +129,5 @@ void QcMineshaftGenerator::addRoomFurnishing(QcChunkPos pos, const QcMineshaftPl
             furnishing.carts.append({at, cart.item, {}, 0});
         }
     }
+    return furnishing;
 }

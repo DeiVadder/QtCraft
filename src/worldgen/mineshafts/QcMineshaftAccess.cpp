@@ -35,19 +35,21 @@ QcMineshaftAccess::QcMineshaftAccess(const QcTerrainGenerator &terrain, const Qc
         if (definition.mineshaftWeight <= 0 || !settings.fitsRoom(definition.sizeX, definition.sizeY, definition.sizeZ)) {
             continue;
         }
-        if (QcResult<QcStructure> structure = QcStructure::fromDefinition(definition, content)) {
+        if (QcStructure::Loaded structure = QcStructure::fromDefinition(definition, content)) {
             m_rooms.append({std::make_shared<const QcStructure>(std::move(*structure)), definition.mineshaftWeight});
             m_totalWeight += definition.mineshaftWeight;
         }
     }
 }
 
-void QcMineshaftAccess::addRooms(QcMineshaftPlan &plan, const QcMineshaftNetwork &network, QcMineshaftSite &site, const Random &random) const
+QList<QcMineshaftPlan::Room> QcMineshaftAccess::roomsOf(const QcMineshaftPlan &plan, const QcMineshaftNetwork &network, QcMineshaftSite &site,
+                                                    const Random &random) const
 {
+    QList<QcMineshaftPlan::Room> rooms;
     if (m_rooms.isEmpty()) {
-        return;
+        return rooms;
     }
-    for (qsizetype i = 1; i < plan.nodes.size() && plan.rooms.size() < m_settings.maxRooms; ++i) {
+    for (qsizetype i = 1; i < plan.nodes.size() && rooms.size() < m_settings.maxRooms; ++i) {
         const int node = int(i);
         const auto link = std::ranges::find_if(network.links(), [node](QcMineshaftNetwork::Link l) { return l.from == node || l.to == node; });
         if (network.degree(node) != 1 || link->stairs || random(RoomChance, node) >= m_settings.roomChance) {
@@ -61,9 +63,10 @@ void QcMineshaftAccess::addRooms(QcMineshaftPlan &plan, const QcMineshaftNetwork
         }
         const int turns = QcMineshaftBlocks::sideOf(neighbour.x - end.x, neighbour.z - end.z);
         if (std::optional<QcStructurePlacement> room = roomAt(end, turns, site, random(RoomPick, node))) {
-            plan.rooms.append({node, std::move(*room)});
+            rooms.append({node, std::move(*room)});
         }
     }
+    return rooms;
 }
 
 bool QcMineshaftAccess::crossedByPillars(const QcMineshaftNetwork &network, const QcMineshaftPlan::Node &node)
@@ -130,7 +133,8 @@ bool QcMineshaftAccess::level(QcMineshaftSite &site, QcBlockPos top) const
     return true;
 }
 
-void QcMineshaftAccess::addEntrance(QcMineshaftPlan &plan, QcMineshaftSite &site, const QcMineshaftFrame &frame, const Random &random) const
+std::optional<QcMineshaftPlan::Entrance> QcMineshaftAccess::entranceOf(const QcMineshaftPlan &plan, QcMineshaftSite &site, const QcMineshaftFrame &frame,
+                                                                      const Random &random) const
 {
     // In the room's north west corner, the ladder against its west wall.
     const QcMineshaftPlan::Node &room = plan.nodes.constFirst();
@@ -138,12 +142,12 @@ void QcMineshaftAccess::addEntrance(QcMineshaftPlan &plan, QcMineshaftSite &site
     const int z = frame.centre.z - room.half;
     const QString biome = m_terrain.biomeName(site.column(x, z).biome);
     if (random(Entrance, 0) >= m_settings.entranceChanceIn(biome)) {
-        return;
+        return std::nullopt;
     }
     const int roof = room.centre.y + room.height;
     const std::optional<QcBlockPos> top = surfaceAt(site, x, z, roof);
     if (!top || !site.clearOfDungeons({x - 1, room.centre.y, z - 1}, top->offset(1, 4, 1))) {
-        return;
+        return std::nullopt;
     }
 
     QcMineshaftPlan::Entrance entrance{*top, {}, {}, {}};
@@ -159,26 +163,27 @@ void QcMineshaftAccess::addEntrance(QcMineshaftPlan &plan, QcMineshaftSite &site
             entrance.lining.append({x, y, z + 1});
         }
     }
-    addHeadframe(entrance);
-    plan.entrance = std::move(entrance);
+    entrance.blocks.append(headframe(*top));
+    return entrance;
 }
 
-void QcMineshaftAccess::addHeadframe(QcMineshaftPlan::Entrance &entrance) const
+QList<QcMineshaftPlan::Placed> QcMineshaftAccess::headframe(QcBlockPos top) const
 {
-    const QcBlockPos top = entrance.top;
+    QList<QcMineshaftPlan::Placed> blocks;
     // A plank ring around the shaft's top, posts at its corners and a roof above; the ladder goes on
     // two cells above the ground against the lining behind it.
     for (int dz = -1; dz <= 1; ++dz) {
         for (int dx = -1; dx <= 1; ++dx) {
             if (dx != 0 || dz != 0) {
-                entrance.blocks.append({top.offset(dx, 0, dz), m_blocks.planks});
+                blocks.append({top.offset(dx, 0, dz), m_blocks.planks});
             }
-            entrance.blocks.append({top.offset(dx, 4, dz), m_blocks.planks});
+            blocks.append({top.offset(dx, 4, dz), m_blocks.planks});
         }
     }
     for (const auto &[dx, dz] : {std::pair{-1, -1}, {1, -1}, {-1, 1}, {1, 1}}) {
         for (int dy = 1; dy <= 3; ++dy) {
-            entrance.blocks.append({top.offset(dx, dy, dz), m_blocks.post});
+            blocks.append({top.offset(dx, dy, dz), m_blocks.post});
         }
     }
+    return blocks;
 }

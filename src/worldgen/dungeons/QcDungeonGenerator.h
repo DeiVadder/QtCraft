@@ -19,7 +19,7 @@
 class QcDungeonGenerator
 {
 public:
-    QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
     const QcDungeonPlanner &planner() const { return m_planner; }
     // The region's plan, planned once (null without a dungeon).

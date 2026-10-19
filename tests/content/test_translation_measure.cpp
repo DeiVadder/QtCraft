@@ -1,6 +1,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/core/QcProcessMemory.h"
+#include "QcTestUtil.h"
 #include "server/content/QcModLoader.h"
 
 #include <QDir>
@@ -94,8 +95,7 @@ private:
         const double heapBefore = heapMb();
         QElapsedTimer timer;
         timer.start();
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(modsDirectory, warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(modsDirectory);
         report("mod load", double(timer.nsecsElapsed()) / 1e6, "ms");
         QVERIFY(loaded.has_value());
         for (const QcModStatus &mod : loaded->mods) {
@@ -116,11 +116,10 @@ private slots:
         const double heapBefore = heapMb();
         QElapsedTimer timer;
         timer.start();
-        QStringList warnings;
-        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(warnings);
+        const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
         const double loadMs = double(timer.nsecsElapsed()) / 1e6;
         QVERIFY(base.has_value());
-        const QcContentRegistry &content = **base;
+        const QcContentRegistry &content = *base->registry;
 
         qsizetype parts = 0;
         for (const QcBlockDefinition &block : content.blocks()) {

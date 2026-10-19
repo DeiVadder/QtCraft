@@ -29,25 +29,22 @@ constexpr int solidLayers = 3;
 
 } // namespace
 
-QcCoastalTowerPlanner::QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed,
-                                             QStringList *warnings)
+QcCoastalTowerPlanner::QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
     , m_content(content)
     , m_settings(content.terrainSettings().coastalTowers)
     , m_seed(qcMixSeed(seed, qcNameSalt(u"coastal_towers"_s)))
 {
     if (m_settings.enabled) {
-        resolve(content, warnings);
+        resolve(content);
     }
 }
 
-void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content, QStringList *warnings)
+void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
 {
     const std::optional<QcBlockId> foundation = content.stateId(m_settings.foundation);
     if (!foundation) {
-        if (warnings) {
-            warnings->append(u"coastalTowers: unknown foundation block '%1', no towers"_s.arg(m_settings.foundation));
-        }
+        m_warnings.append(u"coastalTowers: unknown foundation block '%1', no towers"_s.arg(m_settings.foundation));
         return;
     }
     m_foundation = *foundation;
@@ -55,11 +52,11 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content, QStringLis
     // A tower must stay inside its region with a column to spare on each side.
     for (const QcCoastalTowerSettings::Structure &entry : std::as_const(m_settings.structures)) {
         const QcStructureDefinition *definition = content.structure(entry.structure);
-        QcResult<QcStructure> structure = definition ? QcStructure::fromDefinition(*definition, content, warnings) : qcError(u"unknown"_s);
+        QcStructure::Loaded structure = definition ? QcStructure::fromDefinition(*definition, content)
+                                                   : std::unexpected(QcStructure::Failure{u"unknown"_s, {}});
+        m_warnings.append(QcStructure::warningsOf(structure));
         if (!structure || std::max(structure->sizeX(), structure->sizeZ()) + 2 > m_settings.regionSize) {
-            if (warnings) {
-                warnings->append(u"coastalTowers: structure '%1' is unknown or does not fit the region, left out"_s.arg(entry.structure));
-            }
+            m_warnings.append(u"coastalTowers: structure '%1' is unknown or does not fit the region, left out"_s.arg(entry.structure));
             continue;
         }
         m_kinds.append({std::make_shared<const QcStructure>(std::move(*structure)), entry.weight});

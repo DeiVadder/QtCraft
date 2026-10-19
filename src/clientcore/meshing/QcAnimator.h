@@ -38,6 +38,14 @@ struct BodyPose
     double capeSway = 0.0;
 
     const BoneRotation &bone(QcBoneRole role) const { return bones[std::size_t(role)]; }
+    BoneRotation &bone(QcBoneRole role) { return bones[std::size_t(role)]; }
+
+    // On the back around a point just above the feet, the limbs straight, the head on the pillow;
+    // only the breath (`idle`) moves the arms.
+    void lieOnBack(double idle);
+    // Aiming a bow (decision E-425): the left arm holds it out along the view, the right one pulls
+    // the string back towards the face.
+    void aimBow(const QcEntityPose &pose);
 };
 
 // Where the first-person arm and held item sit relative to their rest position, in the camera's

@@ -36,9 +36,10 @@ public:
     QcMsg::ServerDebug build(const QcServerClient &client) const;
 
 private:
-    void addGoals(const QcServerClient &client, QcMsg::ServerDebug &message) const;
+    // Where the awake creatures near the client are heading, at most maxGoals.
+    [[nodiscard]] QList<QcMsg::MobGoal> goalsNear(const QcServerClient &client) const;
     // Chunks, groups and tickets (decisions E-374 to E-377).
-    void addChunks(const QcServerClient &client, QcMsg::ServerDebug &message) const;
+    [[nodiscard]] QcMsg::ServerDebug::Chunks chunksOf(const QcServerClient &client) const;
 
     const QcServerState &m_state;
     const QcChunkLoading &m_loading;

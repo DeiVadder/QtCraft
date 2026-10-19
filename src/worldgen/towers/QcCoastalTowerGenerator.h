@@ -17,11 +17,11 @@
 // the ground (at most `maxFoundation` blocks); above the floor the footprint is cleared (trees,
 // plants) up to a few blocks over the structure, which is then written; no trees, plants or surface
 // pools grow near a tower (footprintsNear()), so none is cut or left floating. The chests' loot and
-// spawners of the structure come with addFurnishing(). Thread-safe.
+// spawners of the structure come with furnishingIn(). Thread-safe.
 class QcCoastalTowerGenerator
 {
 public:
-    QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
     const QcCoastalTowerPlanner &planner() const { return m_planner; }
     // The region's plan, planned once (null without a tower).
@@ -33,8 +33,8 @@ public:
     QList<QcCoastalTowerPlan::Footprint> footprintsNear(QcChunkPos pos, int margin) const;
     // Builds after the terrain's features and surface pools, before the villages.
     void build(QcChunk &chunk) const;
-    // Adds the chunk's chests and spawners of the towers' structures to `furnishing`.
-    void addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const;
+    // The chunk's chests and spawners of the towers' structures.
+    [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
 
 private:
     // The towers whose footprint lies within `margin` columns of the chunk.

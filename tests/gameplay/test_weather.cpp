@@ -28,11 +28,11 @@ private:
     {
         QList<std::pair<QcWeatherKind, qint64>> result;
         QcWeatherState state;
-        QcWeatherCycle::step(state, seed, true);
+        state = QcWeatherCycle::next(state, seed, true);
         result.append({state.kind, state.ticksLeft + 1});
         while (result.size() < spells) {
             const qint64 spell = state.spell;
-            QcWeatherCycle::step(state, seed, true);
+            state = QcWeatherCycle::next(state, seed, true);
             if (state.spell != spell) {
                 result.append({state.kind, state.ticksLeft + 1});
             }
@@ -80,19 +80,19 @@ private slots:
     void strengthsFadeInAndOut()
     {
         QcWeatherState state;
-        QcWeatherCycle::step(state, 7, false);
-        QcWeatherCycle::set(state, 7, QcWeatherKind::Thunder, 1000);
+        state = QcWeatherCycle::next(state, 7, false);
+        state = QcWeatherCycle::begun(state, 7, QcWeatherKind::Thunder, 1000);
         for (int i = 0; i < QcWeatherCycle::fadeTicks - 1; ++i) {
-            QcWeatherCycle::step(state, 7, false);
+            state = QcWeatherCycle::next(state, 7, false);
         }
         QVERIFY(state.rain > 0.9f && state.rain < 1.0f);
-        QcWeatherCycle::step(state, 7, false);
+        state = QcWeatherCycle::next(state, 7, false);
         QCOMPARE(state.rain, 1.0f);
         QCOMPARE(state.thunder, 1.0f);
 
-        QcWeatherCycle::set(state, 7, QcWeatherKind::Rain, 1000);
+        state = QcWeatherCycle::begun(state, 7, QcWeatherKind::Rain, 1000);
         for (int i = 0; i < QcWeatherCycle::fadeTicks; ++i) {
-            QcWeatherCycle::step(state, 7, false);
+            state = QcWeatherCycle::next(state, 7, false);
         }
         QCOMPARE(state.rain, 1.0f);
         QCOMPARE(state.thunder, 0.0f);

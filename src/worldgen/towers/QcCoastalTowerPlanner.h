@@ -25,9 +25,11 @@ class QcCoastalTowerPlanner
 public:
     using Footprint = QcCoastalTowerPlan::Footprint;
 
-    // Unresolvable structures or blocks are reported in `warnings`; without a structure or the
-    // foundation block, towers are off.
-    QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    // Unresolvable structures or blocks are left out with a warning (warnings()); without a
+    // structure or the foundation block, towers are off.
+    QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
+
+    const QStringList &warnings() const { return m_warnings; }
 
     bool enabled() const { return m_enabled; }
     const QcCoastalTowerSettings &settings() const { return m_settings; }
@@ -48,7 +50,7 @@ private:
         int weight = 1;
     };
 
-    void resolve(const QcContentRegistry &content, QStringList *warnings);
+    void resolve(const QcContentRegistry &content);
     const Kind &pick(double random) const;
     // The grid of candidate sites: whether each point is land at a tower's height or open sea.
     struct Grid
@@ -97,6 +99,7 @@ private:
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;
     QcCoastalTowerSettings m_settings;
+    QStringList m_warnings;
     quint64 m_seed = 0;
     bool m_enabled = false;
     QcBlockId m_foundation = qcAirBlockId;

@@ -7,6 +7,7 @@
 #include <QList>
 
 #include <functional>
+#include <optional>
 
 class QcBlockAccess;
 
@@ -20,8 +21,9 @@ public:
     // The ambience targets are sampled every this many ticks.
     static constexpr int ambienceTicks = 10;
 
-    // Stamps the cue with `tick` and keeps it among the recent ones; false for a cue without a key.
-    bool record(QcSoundCue &cue, quint64 tick);
+    // Keeps the cue stamped with `tick` among the recent ones and returns it; none for a cue without
+    // a key.
+    [[nodiscard]] std::optional<QcSoundCue> record(QcSoundCue cue, quint64 tick);
     const QList<QcSoundCue> &recent() const { return m_recent; }
     void clearRecent() { m_recent.clear(); }
 

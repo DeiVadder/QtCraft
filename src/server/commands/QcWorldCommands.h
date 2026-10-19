@@ -47,14 +47,21 @@ public:
 
 private:
     // What /remove takes away.
+    // What /remove takes away: a selector, and the circle around `centre` (none: the whole world).
     struct Removal
     {
         QString what;
         std::optional<QcVec3> centre;
         double radius = 0.0;
+    };
+    // How many entities a removal finds.
+    struct Swept
+    {
         int mobs = 0;
         int items = 0;
         int stands = 0;
+
+        int total() const { return mobs + items + stands; }
     };
 
     void save(const QcCommandContext &context) const;
@@ -65,7 +72,8 @@ private:
     void limits(const QcCommandContext &context) const;
     void remove(const QcCommandContext &context);
     // Counts (or with `apply` removes) what the removal matches.
-    void sweep(Removal &removal, bool apply);
+    // The entities `removal` finds; with `apply` they are removed.
+    [[nodiscard]] Swept sweep(const Removal &removal, bool apply);
     // Selectors: mobs, hostile, animals, ambient, items, stands, all, a creature name or "item:<name>".
     bool isKnownSelector(const QString &what) const;
     bool matchesMob(const QString &what, int type) const;

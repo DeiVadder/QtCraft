@@ -836,8 +836,8 @@ private slots:
 
     void generatorPlacesVegetationOnItsGround()
     {
-        QStringList warnings;
-        const QcTerrainGenerator generator(m_content, 42, &warnings);
+        const QcTerrainGenerator generator(m_content, 42);
+        const QStringList &warnings = generator.warnings();
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         QHash<QString, int> found;
         const QStringList plants = {u"qtcraft:tall_grass"_s, u"qtcraft:dandelion"_s, u"qtcraft:poppy"_s, u"qtcraft:cornflower"_s,

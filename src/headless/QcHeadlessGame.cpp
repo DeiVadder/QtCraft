@@ -59,23 +59,22 @@ void exitSoon(int code)
     QTimer::singleShot(0, qApp, [code] { QCoreApplication::exit(code); });
 }
 
-bool fail(QJsonObject &response, const QString &error)
+// The response of a command that failed.
+[[nodiscard]] QJsonObject failure(const QString &error)
 {
-    response = {{u"ok"_s, false}, {u"error"_s, error}};
-    return true;
+    return {{u"ok"_s, false}, {u"error"_s, error}};
 }
 
 // Base game only: the icon must not depend on the mods of whoever builds the game.
 bool exportIcon(const QString &directory)
 {
-    QStringList baseWarnings;
-    const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+    const QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
     if (!base) {
         printError(u"Cannot load the base game: "_s + base.error());
         return false;
     }
 
-    const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(**base), directory);
+    const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(*base->registry), directory);
     if (!written) {
         printError(written.error());
     }
@@ -239,12 +238,13 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return exportIcon(parser.value(options.icon));
     }
 
-    QcServerConfig config;
-    int timeLimit = 0;
-    if (!QcHeadlessOptions::readConfig(parser, options, config, timeLimit)) {
+    const std::optional<QcHeadlessOptions::RunConfig> run = QcHeadlessOptions::readConfig(parser, options);
+    if (!run) {
         printError(u"Invalid numeric option or world type"_s);
         return false;
     }
+    const QcServerConfig &config = run->server;
+    const int timeLimit = run->timeLimit;
     const std::optional<QcModLoader::Result> loaded = QcHeadlessOptions::loadContent(parser, options);
     if (!loaded) {
         return false;
@@ -279,14 +279,17 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     if (parser.isSet(options.tour)) {
-        printLines(QcShowcaseTour::lines(QcShowcaseGenerator(shared).plan()));
+        const QcShowcaseGenerator showcase(shared);
+        for (const QString &warning : showcase.warnings()) {
+            printError(u"world generation warning: "_s + warning);
+        }
+        printLines(QcShowcaseTour::lines(showcase.plan()));
         exitSoon(0);
         return true;
     }
 
-    QStringList generatorWarnings;
-    const QcTerrainGenerator generator(shared, config.seed, &generatorWarnings);
-    for (const QString &warning : std::as_const(generatorWarnings)) {
+    const QcTerrainGenerator generator(shared, config.seed);
+    for (const QString &warning : generator.warnings()) {
         printError(u"world generation warning: "_s + warning);
     }
     if (runWorldTool(parser, options, generator, *shared)) {
@@ -410,9 +413,7 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile)
     }
 
     m_control = std::make_unique<QcControlInterface>(m_session.get(), nullptr, m_output);
-    m_control->setExtensionHandler([this](const QJsonObject &request, QJsonObject &response) {
-        return m_remote ? handleRemoteCommand(request, response) : handleWorldCommand(request, response);
-    });
+    m_control->setExtensionHandler([this](const QJsonObject &request) { return m_remote ? remoteCommand(request) : worldCommand(request); });
     m_scriptMode = scriptFile.has_value();
     // A script's exit code reports whether every request succeeded, also when it ends with quit.
     if (m_scriptMode) {
@@ -522,14 +523,12 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 
 QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 {
-    QStringList generatorWarnings;
-    std::unique_ptr<QcWorldGenerator> generator =
-        QcWorldGenerators::create(config.generator, m_content, config.seed, &generatorWarnings, config.generatorOptions);
-    for (const QString &warning : std::as_const(generatorWarnings)) {
-        printError(u"world generation warning: "_s + warning);
-    }
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, m_content, config.seed, config.generatorOptions);
     if (!generator) {
         return qcError(u"Unknown world type '%1'"_s.arg(config.generator));
+    }
+    for (const QString &warning : generator->warnings()) {
+        printError(u"world generation warning: "_s + warning);
     }
 
     // The current world keeps running when the new one cannot be opened.
@@ -576,65 +575,59 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     return {};
 }
 
-bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject &response)
+std::optional<QJsonObject> QcHeadlessGame::worldCommand(const QJsonObject &request)
 {
     const QString command = request.value(u"cmd"_s).toString();
     if (command == u"worldList"_s) {
-        response = {{u"worlds"_s, worldList()}};
-        return true;
+        return QJsonObject{{u"worlds"_s, worldList()}};
     }
 
     if (command == u"worldCreate"_s || command == u"worldLoad"_s) {
-        const QcResult<QcServerConfig> config = command == u"worldCreate"_s ? createdWorld(request, response) : listedWorld(request, response);
-        if (!config) {
-            return fail(response, config.error());
+        const QcResult<WorldChoice> world = command == u"worldCreate"_s ? createdWorld(request) : listedWorld(request);
+        if (!world) {
+            return failure(world.error());
         }
-        if (const QcStatus started = startWorld(*config); !started) {
-            return fail(response, started.error());
+        if (const QcStatus started = startWorld(world->config); !started) {
+            return failure(started.error());
         }
-        response.insert(u"note"_s, u"Send waitUntilReady before acting in the world."_s);
-        return true;
+        return QJsonObject{{u"folder"_s, world->folder}, {u"note"_s, u"Send waitUntilReady before acting in the world."_s}};
     }
 
     if (command == u"handbook"_s) {
-        handleHandbookCommand(request, response);
-        return true;
+        return handbookCommand(request);
     }
 
     if (command == u"console"_s) {
         // A line of the server console (decision E-247), with the console's rights.
         if (!m_server || !request.value(u"text"_s).isString()) {
-            return fail(response, m_server ? u"'text' must be a string"_s : u"No world is open"_s);
+            return failure(m_server ? u"'text' must be a string"_s : u"No world is open"_s);
         }
-        response = {{u"lines"_s, QJsonArray::fromStringList(m_server->runConsoleCommand(request.value(u"text"_s).toString()))}};
-        return true;
+        return QJsonObject{{u"lines"_s, QJsonArray::fromStringList(m_server->runConsoleCommand(request.value(u"text"_s).toString()))}};
     }
 
     if (command == u"worldSave"_s) {
         const QcStatus saved = m_server ? m_server->save() : QcStatus(qcError(u"No world is open"_s));
         if (!saved) {
-            return fail(response, saved.error());
+            return failure(saved.error());
         }
-        response = {{u"saved"_s, true}};
-        return true;
+        return QJsonObject{{u"saved"_s, true}};
     }
 
-    return false;
+    return std::nullopt;
 }
 
-bool QcHeadlessGame::handleRemoteCommand(const QJsonObject &request, QJsonObject &response)
+std::optional<QJsonObject> QcHeadlessGame::remoteCommand(const QJsonObject &request)
 {
     const QString command = request.value(u"cmd"_s).toString();
     if (command == u"handbook"_s) {
-        handleHandbookCommand(request, response);
-        return true;
+        return handbookCommand(request);
     }
 
     // A bot on another process's server has no world of its own to manage.
     if (command.startsWith(u"world"_s) || command == u"console"_s) {
-        return fail(response, u"'%1' is not available for a bot that joined a server"_s.arg(command));
+        return failure(u"'%1' is not available for a bot that joined a server"_s.arg(command));
     }
-    return false;
+    return std::nullopt;
 }
 
 QJsonArray QcHeadlessGame::worldList() const
@@ -651,7 +644,7 @@ QJsonArray QcHeadlessGame::worldList() const
     return worlds;
 }
 
-QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request, QJsonObject &response) const
+QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonObject &request) const
 {
     bool seedOk = true;
     const qint64 seed = request.contains(u"seed"_s) ? request.value(u"seed"_s).toVariant().toString().toLongLong(&seedOk)
@@ -680,11 +673,10 @@ QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request
     config.generator = entry->info.generator;
     config.generatorOptions = entry->info.generatorOptions;
     config.worldDirectory = entry->directory;
-    response = {{u"folder"_s, entry->folder}};
-    return config;
+    return WorldChoice{std::move(config), entry->folder};
 }
 
-QcResult<QcServerConfig> QcHeadlessGame::listedWorld(const QJsonObject &request, QJsonObject &response) const
+QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::listedWorld(const QJsonObject &request) const
 {
     const QList<QcWorldLibrary::Entry> entries = m_library->list();
     const QString folder = request.value(u"folder"_s).toString();
@@ -702,8 +694,7 @@ QcResult<QcServerConfig> QcHeadlessGame::listedWorld(const QJsonObject &request,
     config.generator = it->info.generator;
     config.generatorOptions = it->info.generatorOptions;
     config.worldDirectory = it->directory;
-    response = {{u"folder"_s, folder}};
-    return config;
+    return WorldChoice{std::move(config), folder};
 }
 
 const QcHandbook &QcHeadlessGame::handbook(const QString &language)
@@ -715,14 +706,13 @@ const QcHandbook &QcHeadlessGame::handbook(const QString &language)
     return *book;
 }
 
-void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObject &response)
+QJsonObject QcHeadlessGame::handbookCommand(const QJsonObject &request)
 {
     // Only languages the content has get a handbook of their own, so the cache stays small.
     const QString language = request.value(u"language"_s).toString(u"en"_s);
     if (!m_content->languages().contains(language)) {
-        response = {{u"ok"_s, false},
-                    {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->languages().join(u", "_s))}};
-        return;
+        return {{u"ok"_s, false},
+                {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->languages().join(u", "_s))}};
     }
 
     const QcHandbook &book = handbook(language);
@@ -747,32 +737,27 @@ void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObje
         }
 
         if (!entry) {
-            response = {{u"ok"_s, false}, {u"error"_s, u"No handbook entry '%1'"_s.arg(id)}};
-            return;
+            return {{u"ok"_s, false}, {u"error"_s, u"No handbook entry '%1'"_s.arg(id)}};
         }
 
-        response = {{u"entry"_s, QcHandbookJson::entry(book, *entry)}};
-        return;
+        return {{u"entry"_s, QcHandbookJson::entry(book, *entry)}};
     }
 
     if (request.contains(u"search"_s)) {
-        response = {{u"results"_s, summaries(book.search(request.value(u"search"_s).toString()))}};
-        return;
+        return {{u"results"_s, summaries(book.search(request.value(u"search"_s).toString()))}};
     }
 
     if (request.contains(u"category"_s)) {
         const QcHandbook::Category *category = book.category(request.value(u"category"_s).toString());
         if (!category) {
-            response = {{u"ok"_s, false}, {u"error"_s, u"No handbook category '%1'"_s.arg(request.value(u"category"_s).toString())}};
-            return;
+            return {{u"ok"_s, false}, {u"error"_s, u"No handbook category '%1'"_s.arg(request.value(u"category"_s).toString())}};
         }
-        response = {{u"entries"_s, summaries(category->entries)}};
-        return;
+        return {{u"entries"_s, summaries(category->entries)}};
     }
 
-    response = {{u"categories"_s, QcHandbookJson::categories(book)},
-                {u"entries"_s, book.entries().size()},
-                {u"problems"_s, QJsonArray::fromStringList(book.problems())}};
+    return {{u"categories"_s, QcHandbookJson::categories(book)},
+            {u"entries"_s, book.entries().size()},
+            {u"problems"_s, QJsonArray::fromStringList(book.problems())}};
 }
 
 void QcHeadlessGame::finishScript()

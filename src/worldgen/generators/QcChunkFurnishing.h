@@ -43,4 +43,11 @@ struct QcChunkFurnishing
     QList<Cart> carts;
 
     bool isEmpty() const { return chests.isEmpty() && spawners.isEmpty() && carts.isEmpty(); }
+    // Takes in what another part of the generator furnishes the same chunk with.
+    void add(const QcChunkFurnishing &other)
+    {
+        chests.append(other.chests);
+        spawners.append(other.spawners);
+        carts.append(other.carts);
+    }
 };

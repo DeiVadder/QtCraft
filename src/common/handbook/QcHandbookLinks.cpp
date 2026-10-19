@@ -39,23 +39,14 @@ QString QcHandbookLinks::humanized(const QString &name)
     return text;
 }
 
-void QcHandbookLinks::sortLinks(QList<Link> &links)
+QList<Link> QcHandbookLinks::sortedLinks(QList<Link> links)
 {
     std::ranges::stable_sort(links, [](const Link &a, const Link &b) {
         const QString keyA = QcHandbook::searchKey(a.text);
         const QString keyB = QcHandbook::searchKey(b.text);
         return keyA != keyB ? keyA < keyB : a.target < b.target;
     });
-}
-
-void QcHandbookLinks::appendUnique(QList<Link> &links, Link link)
-{
-    const auto same = std::ranges::find_if(links, [&link](const Link &other) { return other.target == link.target && !link.target.isEmpty(); });
-    if (same == links.end()) {
-        links.append(std::move(link));
-    } else if (!link.note.isEmpty() && !same->note.contains(link.note)) {
-        same->note = same->note.isEmpty() ? link.note : same->note + u", "_s + link.note;
-    }
+    return links;
 }
 
 QString QcHandbookLinks::basePack() const

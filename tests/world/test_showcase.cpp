@@ -58,9 +58,8 @@ private slots:
     void initTestCase()
     {
         m_content = QcTestUtil::loadContent();
-        QStringList warnings;
-        m_generator = std::make_unique<QcShowcaseGenerator>(m_content, &warnings);
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        m_generator = std::make_unique<QcShowcaseGenerator>(m_content);
+        QVERIFY2(m_generator->warnings().isEmpty(), qPrintable(m_generator->warnings().join(u'\n')));
         m_chunks = generateAll(*m_generator);
     }
 

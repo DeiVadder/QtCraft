@@ -40,4 +40,14 @@ struct QcCircuitPlan
     qsizetype work = 0;
 
     bool isEmpty() const { return writes.isEmpty() && openings.isEmpty() && pistons.isEmpty() && schedules.isEmpty() && fires.isEmpty() && ignitions.isEmpty(); }
+
+    // What the components decide, in the words of the plan.
+    void write(QcBlockPos pos, QcBlockId block) { writes.insert(pos, block); }
+    void schedule(QcBlockPos pos, int delay, QcSignalSchedule::Priority priority) { schedules.append({pos, delay, priority}); }
+    void open(QcBlockPos pos, bool isOpen) { openings.append({pos, isOpen}); }
+    void movePiston(QcPistonPlan piston) { pistons.append(std::move(piston)); }
+    void burnOut(QcBlockPos pos) { burntOut.append(pos); }
+    void fire(QcBlockPos pos) { fires.append(pos); }
+    void ignite(QcBlockPos pos) { ignitions.append(pos); }
+    void addWork(qsizetype amount) { work += amount; }
 };

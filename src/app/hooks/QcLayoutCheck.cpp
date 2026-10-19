@@ -14,15 +14,16 @@ QStringList QcLayoutCheck::itemsOutside(const QQuickItem &root, const QRectF &bo
     QStringList found;
     const QList<QQuickItem *> children = root.childItems();
     for (const QQuickItem *child : children) {
-        collect(*child, bounds, found);
+        found += outside(*child, bounds);
     }
     return found;
 }
 
-void QcLayoutCheck::collect(const QQuickItem &item, const QRectF &bounds, QStringList &found)
+QStringList QcLayoutCheck::outside(const QQuickItem &item, const QRectF &bounds)
 {
+    QStringList found;
     if (!item.isVisible() || item.opacity() <= 0.0) {
-        return;
+        return found;
     }
 
     // Empty items (anchors, spacers, positioners without content) show nothing themselves.
@@ -34,12 +35,13 @@ void QcLayoutCheck::collect(const QQuickItem &item, const QRectF &bounds, QStrin
     }
 
     if (item.clip()) {
-        return;
+        return found;
     }
     const QList<QQuickItem *> children = item.childItems();
     for (const QQuickItem *child : children) {
-        collect(*child, bounds, found);
+        found += outside(*child, bounds);
     }
+    return found;
 }
 
 QStringList QcLayoutCheck::chatOverlaps(const QQuickItem &root)

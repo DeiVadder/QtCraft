@@ -147,8 +147,7 @@ private slots:
         QCOMPARE(read->toJson(), settings.toJson());
         QCOMPARE(*read->seed, -42);
 
-        QcServerConfig config;
-        read->applyTo(config);
+        const QcServerConfig config = read->serverConfig();
         QCOMPARE(config.serverName, u"Kiste"_s);
         QCOMPARE(config.maxPlayers, 3);
         QCOMPARE(config.password, u"pw"_s);
@@ -270,8 +269,7 @@ private slots:
     void contentFingerprintsTellPacksApart()
     {
         // The base game: hashed from its resources, the same every time.
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> base = QcModLoader::load(QString(), warnings);
+        const QcModLoader::Loaded base = QcModLoader::load(QString());
         QVERIFY(base.has_value());
         const QList<QcPackFingerprint> basePacks = QcContentFingerprint::of(*base->content, base->mods);
         QCOMPARE(basePacks.size(), 1);
@@ -282,7 +280,7 @@ private slots:
         // With the example mod: a second pack with its own hash.
         const QString mods = m_data.filePath(u"mods"_s);
         QVERIFY(copyDirectory(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR "/rubies"), QDir(mods).filePath(u"rubies"_s)));
-        const QcResult<QcModLoader::Result> withMod = QcModLoader::load(mods, warnings);
+        const QcModLoader::Loaded withMod = QcModLoader::load(mods);
         QVERIFY(withMod.has_value());
         const QList<QcPackFingerprint> modPacks = QcContentFingerprint::of(*withMod->content, withMod->mods);
         QCOMPARE(modPacks.size(), 2);

@@ -1,6 +1,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcQuickMove.h"
+#include "common/gameplay/QcSlotList.h"
 #include "QcServerTestFixture.h"
 
 #include <QTest>
@@ -65,13 +66,14 @@ private slots:
         join();
         const QcItemId dirt = item("qtcraft:dirt");
         const QcItemId stone = item("qtcraft:stone");
-        QList<QcItemStack> stacks(6);
+        QcSlotList slotList{QList<QcItemStack>(6)};
+        QList<QcItemStack> &stacks = slotList.stacks;
         stacks[0] = {dirt, 40, 0};
         stacks[1] = {stone, 3, 0};
         stacks[3] = {dirt, 60, 0};
         stacks[5] = {dirt, 10, 0};
         // 60 + 4 fills slot 3 to 64 first although slot 2 is empty and comes earlier.
-        QCOMPARE(QcInventory::moveInto(stacks, 0, {1, 2, 3, 5}, *m_content), 40);
+        QCOMPARE(slotList.moveInto(0, {1, 2, 3, 5}, *m_content), 40);
         QCOMPARE(stacks[3].count, 64);
         QCOMPARE(stacks[5].count, 46);
         QVERIFY(stacks[0].isEmpty());
@@ -79,7 +81,7 @@ private slots:
         QCOMPARE(stacks[1], (QcItemStack{stone, 3, 0}));
 
         // Without room nothing moves.
-        QCOMPARE(QcInventory::moveInto(stacks, 1, {3}, *m_content), 0);
+        QCOMPARE(slotList.moveInto(1, {3}, *m_content), 0);
         QCOMPARE(stacks[1].count, 3);
     }
 

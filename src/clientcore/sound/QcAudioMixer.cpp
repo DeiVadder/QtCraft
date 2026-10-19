@@ -106,13 +106,14 @@ float QcAudioMixer::limit(float sample)
     return std::copysign(std::min(bent, 0.9999f), sample);
 }
 
-void QcAudioMixer::mix(float *out, int frames)
+std::span<const float> QcAudioMixer::mix(int frames)
 {
     if (frames <= 0) {
-        return;
+        return {};
     }
 
-    std::fill(out, out + qsizetype(frames) * 2, 0.0f);
+    m_output.assign(std::size_t(frames) * 2, 0.0f);
+    float *out = m_output.data();
     const float master = m_muted ? 0.0f : m_master;
     for (Voice &voice : m_voices) {
         const std::vector<float> &samples = voice.buffer->samples;
@@ -147,7 +148,8 @@ void QcAudioMixer::mix(float *out, int frames)
     }
 
     m_voices.removeIf([](const Voice &voice) { return !voice.loop && voice.position >= double(voice.buffer->samples.size()); });
-    for (int i = 0; i < frames * 2; ++i) {
-        out[i] = limit(out[i]);
+    for (float &sample : m_output) {
+        sample = limit(sample);
     }
+    return m_output;
 }

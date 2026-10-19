@@ -52,9 +52,11 @@ void writeVec(QDataStream &stream, const QcVec3 &v)
     stream << v.x << v.y << v.z;
 }
 
-void readVec(QDataStream &stream, QcVec3 &v)
+[[nodiscard]] QcVec3 readVec(QDataStream &stream)
 {
+    QcVec3 v;
     stream >> v.x >> v.y >> v.z;
+    return v;
 }
 
 void writeEffects(QDataStream &stream, const QList<QcStatusEffect> &effects)
@@ -62,10 +64,6 @@ void writeEffects(QDataStream &stream, const QList<QcStatusEffect> &effects)
     QcStatusEffects::write(stream, effects);
 }
 
-bool readEffects(QDataStream &stream, QList<QcStatusEffect> &effects)
-{
-    return QcStatusEffects::read(stream, effects);
-}
 
 // What every entry starts with (decision E-420): what it is by name (empty where the kind says it
 // all), where it is and how it moves, its place in the table of its kind (QcEntityRecord) and its
@@ -100,24 +98,17 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     return {quint16(id), version, read};
 }
 
-// The warnings of one read: each unknown name is reported once per world, not once per chunk.
-struct ReadWarnings
-{
-    QStringList &list;
-    QSet<QString> &unknown;
-};
-
 // Reads the entries of one chunk record from a region file and checks them: every entity lies in
 // the record's chunk, at a finite place inside the world.
 class RecordReader
 {
 public:
-    RecordReader(QDataStream &stream, const QcContentRegistry &content, const QString &path, ReadWarnings warnings, QcEntityRecord &record)
+    // Each unknown name is reported once to `warnings` (once per world, not once per chunk).
+    RecordReader(QDataStream &stream, const QcContentRegistry &content, const QString &path, QcLoadWarnings &warnings, QcEntityRecord &record)
         : m_stream(stream)
         , m_content(content)
         , m_path(path)
-        , m_warnings(warnings.list)
-        , m_unknown(warnings.unknown)
+        , m_warnings(warnings)
         , m_record(record)
     {
     }
@@ -134,28 +125,35 @@ private:
     template<typename Read>
     bool entries(Read read)
     {
-        quint32 count = 0;
-        if (!QcStreamLimits::readCount(m_stream, QcEntityCodec::maxPerChunk, count)) {
+        const std::optional<quint32> countRead = QcStreamLimits::readCount(m_stream, QcEntityCodec::maxPerChunk);
+        if (!countRead) {
             return false;
         }
+        const quint32 count = *countRead;
         for (quint32 i = 0; i < count; ++i) {
-            Header header;
-            if (!readHeader(header) || !read(header)) {
+            const std::optional<Header> header = readHeader();
+            if (!header || !read(*header)) {
                 return false;
             }
         }
         return true;
     }
 
-    bool readHeader(Header &header)
+    [[nodiscard]] std::optional<Header> readHeader()
     {
-        if (!QcComponentFrames::readText(m_stream, header.type, maxTypeName)) {
-            return false;
+        std::optional<QString> type = QcComponentFrames::readText(m_stream, maxTypeName);
+        if (!type) {
+            return std::nullopt;
         }
-        readVec(m_stream, header.position);
-        readVec(m_stream, header.velocity);
+        Header header;
+        header.type = std::move(*type);
+        header.position = readVec(m_stream);
+        header.velocity = readVec(m_stream);
         m_stream >> header.yaw >> header.order >> header.uid;
-        return m_stream.status() == QDataStream::Ok && inChunk(header.position) && isFinite(header.velocity) && std::isfinite(header.yaw);
+        if (m_stream.status() != QDataStream::Ok || !inChunk(header.position) || !isFinite(header.velocity) || !std::isfinite(header.yaw)) {
+            return std::nullopt;
+        }
+        return header;
     }
 
     // A finite place in this record's chunk, with room above and below the world.
@@ -165,36 +163,30 @@ private:
                && std::abs(feet.y) <= 4.0 * QcWorld::worldHeight && QcPhysics::blockContaining(feet).chunk() == m_record.chunk;
     }
 
-    // Reads the known components of an entry and keeps the others, those beyond
-    // QcComponentFrames::maxKept dropped with a warning; false for damaged data.
-    bool readComponents(QcEntityComponents &kept, std::initializer_list<QcComponentFrames::Known> readers)
+    // Reads the known components of an entry and returns the others to keep, those beyond
+    // QcComponentFrames::maxKept dropped with a warning; none for damaged data.
+    [[nodiscard]] std::optional<QcEntityComponents> readComponents(std::initializer_list<QcComponentFrames::Known> readers)
     {
-        int dropped = 0;
-        if (!QcComponentFrames::read(m_stream, readers, kept, dropped)) {
-            return false;
+        std::optional<QcComponentFrames::ReadComponents> components = QcComponentFrames::read(m_stream, readers);
+        if (!components) {
+            return std::nullopt;
         }
-        if (dropped > 0) {
+        if (components->dropped > 0) {
             const QString text = u"%1: an entity with more than %2 unknown components; %3 of them dropped"_s;
-            m_warnings.append(text.arg(m_path).arg(QcComponentFrames::maxKept).arg(dropped));
+            m_warnings.add(text.arg(m_path).arg(QcComponentFrames::maxKept).arg(components->dropped));
         }
-        return true;
+        return std::move(components->kept);
     }
 
-    // Keeps the header fields that the entries of a kind do not use in this version (decision E-420).
-    static void keepHeader(const Header &header, QcEntityKept &kept, bool withType)
+    // The header fields that the entries of a kind do not use in this version (decision E-420).
+    [[nodiscard]] static QcEntityKept keptOf(const Header &header, bool withType)
     {
-        kept.uid = header.uid;
-        if (withType) {
-            kept.type = header.type;
-        }
+        return {{}, header.uid, withType ? header.type : QString()};
     }
 
     void warnOnce(const QString &kind, const QString &name)
     {
-        if (!m_unknown.contains(kind + name)) {
-            m_unknown.insert(kind + name);
-            m_warnings.append(u"%1: unknown %2 '%3' dropped (in this world reported only here)"_s.arg(m_path, kind, name));
-        }
+        m_warnings.addOnce(kind + u':' + name, u"%1: unknown %2 '%3' dropped (in this world reported only here)"_s.arg(m_path, kind, name));
     }
 
     bool creature(const Header &header)
@@ -215,18 +207,21 @@ private:
             mob.villager = QcVillagerCodec::read(in, version);
             return mob.villager.has_value();
         };
-        const auto effects = [&mob](QDataStream &in, quint16) { return readEffects(in, mob.effects); };
+        const auto effects = [&mob](QDataStream &in, quint16) {
+            const std::optional<QList<QcStatusEffect>> read = QcStatusEffects::read(in);
+            mob.effects = read.value_or(QList<QcStatusEffect>());
+            return read.has_value();
+        };
         const auto laying = [&mob](QDataStream &in, quint16) {
             in >> mob.layTimer;
             return true;
         };
         QString carried;
         const auto carriedBlock = [&carried, &mob](QDataStream &in, quint16) {
-            if (!QcComponentFrames::readText(in, carried, maxTypeName)) {
-                return false;
-            }
+            const std::optional<QString> read = QcComponentFrames::readText(in, maxTypeName);
+            carried = read.value_or(QString());
             in >> mob.keptForBlock;
-            return true;
+            return read.has_value();
         };
         const auto confined = [&mob](QDataStream &, quint16) {
             mob.confined = true;
@@ -242,22 +237,25 @@ private:
         };
         const auto tame = [&mob](QDataStream &in, quint16) {
             QcTameState &state = mob.tame.emplace();
-            if (!QcComponentFrames::readText(in, state.owner, maxTypeName)) {
-                return false;
-            }
+            state.owner = QcComponentFrames::readText(in, maxTypeName).value_or(QString());
             in >> state.sitting >> state.collar;
-            // A tame creature without an owner cannot be.
+            // A tame creature without an owner (or whose owner could not be read) cannot be.
             return !state.owner.isEmpty();
         };
-        if (!readComponents(mob.kept.components,
-                            {known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
-                             known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
-                             known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
-                             known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                             known(Component::NoAi, kindVersion, noAi)})) {
+        std::optional<QcEntityComponents> components =
+            readComponents({known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
+                            known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
+                            known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
+                            known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
+                            known(Component::NoAi, kindVersion, noAi)});
+        if (!components) {
             return false;
         }
-        if (!plausibleCreature(mob, carried)) {
+        mob.kept.components = std::move(*components);
+        if (!carried.isEmpty()) {
+            mob.carried = resolvedCarried(carried);
+        }
+        if (!plausibleCreature(mob)) {
             return false;
         }
 
@@ -270,17 +268,19 @@ private:
         return true;
     }
 
-    // Resolves the carried block of a read creature (one the content no longer has is lost with a
-    // warning) and checks that its numbers can be.
-    bool plausibleCreature(QcMobManager::Stored &mob, const QString &carried)
+    // The carried block of a read creature; one the content no longer has is lost with a warning.
+    [[nodiscard]] QcBlockId resolvedCarried(const QString &carried)
     {
-        if (!carried.isEmpty()) {
-            const std::optional<QcBlockId> state = m_content.stateId(carried);
-            if (!state) {
-                warnOnce(u"block"_s, carried);
-            }
-            mob.carried = state.value_or(qcAirBlockId);
+        const std::optional<QcBlockId> state = m_content.stateId(carried);
+        if (!state) {
+            warnOnce(u"block"_s, carried);
         }
+        return state.value_or(qcAirBlockId);
+    }
+
+    // Whether the numbers of a read creature can be.
+    static bool plausibleCreature(const QcMobManager::Stored &mob)
+    {
         const bool finite = std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp) && std::isfinite(mob.layTimer);
         return finite && mob.uid != 0 && mob.breedCooldown <= maxBreedingSeconds && mob.growUp <= maxBreedingSeconds
                && mob.layTimer <= maxBreedingSeconds;
@@ -299,11 +299,12 @@ private:
             in >> count >> damage >> drop.age >> drop.pickupDelay;
             return true;
         };
-        keepHeader(header, drop.kept, false);
-        if (!readComponents(drop.kept.components, {known(Component::Item, kindVersion, fields)}) || !std::isfinite(drop.age)
-            || !std::isfinite(drop.pickupDelay)) {
+        drop.kept = keptOf(header, false);
+        std::optional<QcEntityComponents> components = readComponents({known(Component::Item, kindVersion, fields)});
+        if (!components || !std::isfinite(drop.age) || !std::isfinite(drop.pickupDelay)) {
             return false;
         }
+        drop.kept.components = std::move(*components);
 
         const std::optional<QcItemId> item = header.type.isEmpty() ? std::nullopt : m_content.itemId(header.type);
         if (!item) {
@@ -351,19 +352,22 @@ private:
             in >> *fuse;
             return true;
         };
-        keepHeader(header, block.kept, false);
-        if (!readComponents(block.kept.components, {known(Component::FallingBlock, kindVersion, fields), known(Component::Fuse, kindVersion, fuseField)})
-            || !std::isfinite(block.age)) {
+        block.kept = keptOf(header, false);
+        std::optional<QcEntityComponents> components =
+            readComponents({known(Component::FallingBlock, kindVersion, fields), known(Component::Fuse, kindVersion, fuseField)});
+        if (!components || !std::isfinite(block.age)) {
             return false;
         }
+        block.kept.components = std::move(*components);
 
-        QStringList problems;
-        const std::optional<QcBlockId> state = m_content.stateId(header.type, &problems);
+        const QcContentRegistry::ParsedState parsed = m_content.parseState(header.type);
+        const std::optional<QcBlockId> state = parsed.id;
+        const QStringList &problems = parsed.problems;
         if (!state || *state == qcAirBlockId) {
             warnOnce(u"falling block"_s, header.type);
             return true;
         }
-        m_warnings.append(problems);
+        m_warnings.add(problems);
         block.motion.velocity = clampedVelocity(block.motion.velocity);
         block.age = std::clamp(block.age, 0.0, QcFallingBlockManager::maxSeconds);
         block.block = *state;
@@ -403,11 +407,12 @@ private:
             return true;
         };
         const double y = stand.motion.position.y;
-        keepHeader(header, stand.kept, true);
-        if (!readComponents(stand.kept.components, {known(Component::ArmourStand, kindVersion, fields)}) || y < QcWorld::voidLimitY
-            || y > QcWorld::worldHeight + 64.0) {
+        stand.kept = keptOf(header, true);
+        std::optional<QcEntityComponents> components = readComponents({known(Component::ArmourStand, kindVersion, fields)});
+        if (!components || y < QcWorld::voidLimitY || y > QcWorld::worldHeight + 64.0) {
             return false;
         }
+        stand.kept.components = std::move(*components);
 
         stand.yaw = qcNormalizedAngle(stand.yaw);
         stand.name = QcNameText::clean(stand.name, QcArmourStandManager::maxNameLength);
@@ -426,12 +431,13 @@ private:
         cart.yaw = header.yaw;
         // A container cart's slots (decision E-386) and whether a hopper cart pulls.
         const auto fields = [this, &cart](QDataStream &in, quint16) {
-            quint32 slotCount = 0;
             in >> cart.item;
-            if (!QcStreamLimits::readCount(in, QcBlockDefinition::maxContainerSlots, slotCount)) {
+            const std::optional<quint32> slotCountRead = QcStreamLimits::readCount(in, QcBlockDefinition::maxContainerSlots);
+            if (!slotCountRead) {
                 return false;
             }
-            QcStackReader stacks(m_content, m_path, m_warnings, &m_unknown);
+            const quint32 slotCount = *slotCountRead;
+            QcStackReader stacks(m_content, m_path, m_warnings);
             cart.stacks.resize(slotCount);
             for (QcItemStack &stack : cart.stacks) {
                 stack = stacks.read(in);
@@ -440,11 +446,12 @@ private:
             return true;
         };
         const double y = cart.motion.position.y;
-        keepHeader(header, cart.kept, true);
-        if (!readComponents(cart.kept.components, {known(Component::Minecart, kindVersion, fields)}) || y < QcWorld::voidLimitY
-            || y > QcWorld::worldHeight + 64.0) {
+        cart.kept = keptOf(header, true);
+        std::optional<QcEntityComponents> components = readComponents({known(Component::Minecart, kindVersion, fields)});
+        if (!components || y < QcWorld::voidLimitY || y > QcWorld::worldHeight + 64.0) {
             return false;
         }
+        cart.kept.components = std::move(*components);
 
         // A cart whose item a mod took away still rolls, it only drops nothing.
         if (!cart.item.isEmpty() && !m_content.itemId(cart.item)) {
@@ -468,11 +475,12 @@ private:
             in >> value >> orb.age >> orb.pickupDelay;
             return true;
         };
-        keepHeader(header, orb.kept, true);
-        if (!readComponents(orb.kept.components, {known(Component::ExperienceOrb, kindVersion, fields)}) || !std::isfinite(orb.age)
-            || !std::isfinite(orb.pickupDelay) || value <= 0) {
+        orb.kept = keptOf(header, true);
+        std::optional<QcEntityComponents> components = readComponents({known(Component::ExperienceOrb, kindVersion, fields)});
+        if (!components || !std::isfinite(orb.age) || !std::isfinite(orb.pickupDelay) || value <= 0) {
             return false;
         }
+        orb.kept.components = std::move(*components);
 
         orb.value = value;
         orb.motion.velocity = clampedVelocity(orb.motion.velocity);
@@ -493,13 +501,17 @@ private:
         QString stuckState;
         const auto fields = [&](QDataStream &in, quint16) {
             in >> shot.pitch >> shot.age >> pickup >> shot.damageFactor >> shot.stuck >> shot.stuckIn.x >> shot.stuckIn.y >> shot.stuckIn.z;
-            return QcComponentFrames::readText(in, stuckState, maxTypeName);
+            const std::optional<QString> read = QcComponentFrames::readText(in, maxTypeName);
+            stuckState = read.value_or(QString());
+            return read.has_value();
         };
-        keepHeader(header, shot.kept, false);
-        if (!readComponents(shot.kept.components, {known(Component::Projectile, kindVersion, fields)}) || !std::isfinite(shot.age)
-            || !std::isfinite(shot.pitch) || !std::isfinite(shot.damageFactor) || pickup > quint8(QcProjectilePickup::Never)) {
+        shot.kept = keptOf(header, false);
+        std::optional<QcEntityComponents> components = readComponents({known(Component::Projectile, kindVersion, fields)});
+        if (!components || !std::isfinite(shot.age) || !std::isfinite(shot.pitch) || !std::isfinite(shot.damageFactor)
+            || pickup > quint8(QcProjectilePickup::Never)) {
             return false;
         }
+        shot.kept.components = std::move(*components);
 
         // A kind a mod took away goes; a block that no longer exists lets it fall.
         if (!m_content.projectile(header.type)) {
@@ -543,7 +555,7 @@ private:
         for (std::size_t slot = 0; slot < QcEquipment::slotCount; ++slot) {
             QcItemStack &stack = stand.equipment.stacks[slot];
             if (!stack.isEmpty() && !QcArmour::fits(m_content, stack, QcEquipmentSlot(slot))) {
-                m_warnings.append(u"%1: '%2' is no armour for its slot on a stand; dropped"_s.arg(m_path, m_content.item(stack.item).name));
+                m_warnings.add(u"%1: '%2' is no armour for its slot on a stand; dropped"_s.arg(m_path, m_content.item(stack.item).name));
                 stack = {};
             }
         }
@@ -561,8 +573,7 @@ private:
     QDataStream &m_stream;
     const QcContentRegistry &m_content;
     const QString &m_path;
-    QStringList &m_warnings;
-    QSet<QString> &m_unknown;
+    QcLoadWarnings &m_warnings;
     QcEntityRecord &m_record;
 };
 
@@ -720,8 +731,8 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     return blob;
 }
 
-[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
-                                QSet<QString> &reported)
+[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+                                              QcLoadWarnings &warnings)
 {
     QDataStream stream(blob);
     stream.setVersion(QcSaveFile::streamVersion);
@@ -729,7 +740,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     record.chunk = chunk;
     const QString where = u"chunk %1, %2"_s.arg(chunk.x).arg(chunk.z);
     quint8 populated = 0;
-    const bool read = RecordReader(stream, content, where, {warnings, reported}, record).read();
+    const bool read = RecordReader(stream, content, where, warnings, record).read();
     stream >> populated;
     if (!read || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
         return qcError(u"damaged entities of chunk %1, %2"_s.arg(chunk.x).arg(chunk.z));

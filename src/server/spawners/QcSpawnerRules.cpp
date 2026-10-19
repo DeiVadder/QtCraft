@@ -51,23 +51,23 @@ void QcSpawnerRules::tick()
         if (total < 0) {
             total = spawnedCount();
         }
-        cycle(*spawner, rules, *type, total);
+        total += cycle(*spawner, rules, *type, total);
     }
 }
 
-void QcSpawnerRules::cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int &total)
+int QcSpawnerRules::cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int total)
 {
     const qint64 limit = m_state.config().limits.spawnerCreatures;
     int nearby = nearbyOf(spawner.pos, rules, type);
     if (nearby >= rules.maxNearby || total >= limit) {
         resetDelay(spawner, rules);
-        return;
+        return 0;
     }
 
     QRandomGenerator &random = m_state.random();
     QcMobManager &mobs = m_state.entities().creatures();
     int spawned = 0;
-    for (int attempt = 0; attempt < rules.count && nearby < rules.maxNearby && total < limit; ++attempt) {
+    for (int attempt = 0; attempt < rules.count && nearby < rules.maxNearby && total + spawned < limit; ++attempt) {
         const int dx = random.bounded(rules.areaX) - rules.areaX / 2;
         const int dy = random.bounded(rules.areaY) - rules.areaY / 2;
         const int dz = random.bounded(rules.areaZ) - rules.areaZ / 2;
@@ -85,11 +85,11 @@ void QcSpawnerRules::cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition
         creature.confined = spawner.confined;
         ++spawned;
         ++nearby;
-        ++total;
     }
     if (spawned > 0) {
         resetDelay(spawner, rules);
     }
+    return spawned;
 }
 
 void QcSpawnerRules::resetDelay(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules)

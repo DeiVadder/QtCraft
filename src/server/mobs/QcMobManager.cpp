@@ -28,20 +28,6 @@ QSet<quint64> loadedUids(const QList<QcCreature> &mobs)
     return uids;
 }
 
-// The id a loaded creature keeps: its saved one, unless `taken` has it. A copied chunk (by hand or by
-// a tool) brings creatures whose ids are already in the world; the copy gets the next free one from
-// `next`, so every id names one creature.
-quint64 uniqueUid(quint64 saved, QSet<quint64> &taken, quint64 &next)
-{
-    quint64 uid = saved;
-    if (taken.contains(uid)) {
-        uid = next++;
-        qCWarning(lcServer).noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
-    }
-    taken.insert(uid);
-    return uid;
-}
-
 } // namespace
 
 QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
@@ -352,6 +338,17 @@ void QcMobManager::keep(QcCreature &mob, bool kept)
     }
 }
 
+quint64 QcMobManager::uniqueUid(quint64 saved, const QSet<quint64> &taken)
+{
+    if (!taken.contains(saved)) {
+        return saved;
+    }
+
+    const quint64 uid = m_nextUid++;
+    qCWarning(lcServer).noquote() << QStringLiteral("A loaded creature has the persistent id %1 of another one; it gets %2").arg(saved).arg(uid);
+    return uid;
+}
+
 void QcMobManager::carryBlock(QcCreature &mob, QcBlockId block) const
 {
     // A state the content no longer has (a mod was removed) is no block to carry.
@@ -486,7 +483,8 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         // The counter is saved with the chunks in one journal, so it lies beyond every saved id; this
         // only guards against a world.json put back by hand.
         m_nextUid = std::max(m_nextUid, stored.uid + 1);
-        mob.uid = uniqueUid(stored.uid, uids, m_nextUid);
+        mob.uid = uniqueUid(stored.uid, uids);
+        uids.insert(mob.uid);
         if (m_content->mobs()[stored.type].ai == QcMobDefinition::Ai::Archer) {
             mob.archer.emplace();
         }

@@ -7,35 +7,41 @@ namespace {
 constexpr int last = QcWorld::chunkSize - 1;
 using Channel = QcLightEngine::Channel;
 
-// What a section's current levels changed against its published ones.
-struct SectionDiff
+// Neighbouring sections (dx, dy, dz in -1..1, index (dy + 1) * 9 + (dz + 1) * 3 + dx + 1) whose
+// meshes read a changed cell.
+struct SectionReach
 {
-    // Neighbouring sections (dx, dy, dz in -1..1) whose meshes read a changed cell.
-    std::array<bool, 27> reach{};
-    bool changed = false;
-    bool lit = false;
-};
+    std::array<bool, 27> sections{};
 
-// Marks the sections next to the cell `index` of a section (and the section itself) as reached.
-void markReach(std::array<bool, 27> &reach, int index)
-{
-    const int lx = index % QcWorld::chunkSize;
-    const int lz = (index / QcWorld::chunkSize) % QcWorld::chunkSize;
-    const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
-    for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
-        for (int dz = lz == 0 ? -1 : 0; dz <= (lz == last ? 1 : 0); ++dz) {
-            for (int dx = lx == 0 ? -1 : 0; dx <= (lx == last ? 1 : 0); ++dx) {
-                reach[std::size_t(dy + 1) * 9 + std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = true;
+    // Marks the sections next to the cell `index` of a section (and the section itself) as reached.
+    void mark(int index)
+    {
+        const int lx = index % QcWorld::chunkSize;
+        const int lz = (index / QcWorld::chunkSize) % QcWorld::chunkSize;
+        const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
+        for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
+            for (int dz = lz == 0 ? -1 : 0; dz <= (lz == last ? 1 : 0); ++dz) {
+                for (int dx = lx == 0 ? -1 : 0; dx <= (lx == last ? 1 : 0); ++dx) {
+                    sections[std::size_t(dy + 1) * 9 + std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = true;
+                }
             }
         }
     }
-}
+};
+
+// What a section's current levels changed against its published ones.
+struct SectionDiff
+{
+    SectionReach reach;
+    bool changed = false;
+    bool lit = false;
+};
 
 // `current` null: every cell has the level `uniform`. `published` null: dark.
 SectionDiff diffSection(const QcLightNibbles *current, int uniform, const QcLightNibbles *published)
 {
     // Locals rather than fields of the result keep the per-cell loop in registers.
-    std::array<bool, 27> reach{};
+    SectionReach reach;
     bool changed = false;
     bool lit = false;
 
@@ -47,23 +53,35 @@ SectionDiff diffSection(const QcLightNibbles *current, int uniform, const QcLigh
             continue;
         }
         changed = true;
-        markReach(reach, index);
+        reach.mark(index);
     }
 
     return {reach, changed, lit};
 }
 
-void queueRemesh(QcBlockLightEngine::Changes &changes, QSet<quint64> &remeshed, QcChunkPos chunk, int section)
+// Sections to mesh again, each listed once.
+class RemeshList
 {
-    if (section < 0 || section >= QcWorld::sectionCount) {
-        return;
+public:
+    // Adds the section unless it is outside the world or already listed.
+    void add(QcChunkPos chunk, int section)
+    {
+        if (section < 0 || section >= QcWorld::sectionCount) {
+            return;
+        }
+        const quint64 key = qcSectionKey(chunk, section);
+        if (!m_listed.contains(key)) {
+            m_listed.insert(key);
+            m_sections.append({chunk, section});
+        }
     }
-    const quint64 key = qcSectionKey(chunk, section);
-    if (!remeshed.contains(key)) {
-        remeshed.insert(key);
-        changes.remesh.append({chunk, section});
-    }
-}
+
+    QList<QcBlockLightEngine::SectionRef> take() { return std::move(m_sections); }
+
+private:
+    QList<QcBlockLightEngine::SectionRef> m_sections;
+    QSet<quint64> m_listed;
+};
 
 } // namespace
 
@@ -103,7 +121,7 @@ std::shared_ptr<const QcChunkLight::Section> QcBlockLightEngine::current(QcChunk
 QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
 {
     Changes changes;
-    QSet<quint64> remeshed;
+    RemeshList remesh;
     const QList<QcLightEngine::SectionRef> touched = m_engine.takeTouched(Channel::Block);
     for (const QcLightEngine::SectionRef &ref : touched) {
         const auto it = m_published.find(ref.chunk);
@@ -123,11 +141,12 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
         published = diff.lit ? current(ref.chunk, ref.section) : nullptr;
         changes.sections.append({ref.chunk, ref.section, published});
         for (int i = 0; i < 27; ++i) {
-            if (diff.reach[std::size_t(i)]) {
-                queueRemesh(changes, remeshed, {ref.chunk.x + i % 3 - 1, ref.chunk.z + (i / 3) % 3 - 1}, ref.section + i / 9 - 1);
+            if (diff.reach.sections[std::size_t(i)]) {
+                remesh.add({ref.chunk.x + i % 3 - 1, ref.chunk.z + (i / 3) % 3 - 1}, ref.section + i / 9 - 1);
             }
         }
     }
+    changes.remesh = remesh.take();
     return changes;
 }
 

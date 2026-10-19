@@ -35,14 +35,12 @@ qint64 QcMixerDevice::readData(char *data, qint64 maxSize)
         return 0;
     }
 
-    m_scratch.resize(std::size_t(frames) * 2);
-    m_render(m_scratch.data(), frames);
-
+    const std::span<const float> mixed = m_render(frames);
     if (m_format == Format::Float) {
-        std::memcpy(data, m_scratch.data(), m_scratch.size() * sizeof(float));
+        std::memcpy(data, mixed.data(), mixed.size() * sizeof(float));
     } else {
-        for (std::size_t i = 0; i < m_scratch.size(); ++i) {
-            const auto value = qint16(std::lround(std::clamp(m_scratch[i], -1.0f, 1.0f) * 32767.0f));
+        for (std::size_t i = 0; i < mixed.size(); ++i) {
+            const auto value = qint16(std::lround(std::clamp(mixed[i], -1.0f, 1.0f) * 32767.0f));
             std::memcpy(data + i * sizeof(qint16), &value, sizeof(qint16));
         }
     }

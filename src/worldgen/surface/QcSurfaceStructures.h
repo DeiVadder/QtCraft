@@ -32,8 +32,7 @@ public:
     // Regions whose plans are kept at most; beyond, the cache starts over.
     static constexpr qsizetype cacheCapacity = 4096;
 
-    QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content, quint64 seed,
-                        QStringList *warnings);
+    QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content, quint64 seed);
 
     const QcSurfacePlanner &planner() const { return m_planner; }
     // The copy of kind `kind` in the region, planned once.
@@ -44,8 +43,8 @@ public:
     // generator places no features and no surface pools there (decision E-630).
     QList<QcSurfacePlanner::Rect> footprintsNear(QcChunkPos pos, int margin) const;
     void build(QcChunk &chunk) const;
-    // Adds the loot of the copies' chests in the chunk.
-    void addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const;
+    // The loot of the copies' chests in the chunk.
+    [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
     // The guardian zones of the copies in the regions within `reach` of `from`.
     QList<QcGuardSite> sitesNear(QcBlockPos from, int reach) const;
     // The same from the regions planned so far, never planning (the server's tick thread);

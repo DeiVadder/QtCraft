@@ -43,10 +43,11 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
     QcMsg::MachineState m;
     m.pos = readPos(stream);
     stream >> m.entity;
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcMsg::MachineState::maxSlots, count) || count == 0) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::MachineState::maxSlots);
+    if (!countRead || *countRead == 0) {
         return qcError(u"Corrupt machine state"_s);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count; ++i) {
         m.stacks.append(readStack(stream));

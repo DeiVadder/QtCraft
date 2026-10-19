@@ -311,8 +311,7 @@ private slots:
             file.write(QJsonDocument(QJsonObject{{u"format"_s, 1}, {u"operators"_s, QJsonArray{u"Al"_s}}}).toJson());
         }
         QcAccessList access;
-        QStringList warnings;
-        access.open(directory.path(), {}, warnings);
+        QVERIFY(access.open(directory.path(), {}).isEmpty());
         QVERIFY(access.wasDamaged());
         QVERIFY(access.operators().isEmpty());
         QVERIFY(access.whitelistEnabled());
@@ -331,8 +330,7 @@ private slots:
             file.write(QJsonDocument(QJsonObject{{u"format"_s, 2}, {u"operators"_s, names}, {u"bans"_s, bans}}).toJson());
         }
         QcAccessList access;
-        QStringList warnings;
-        access.open(directory.path(), {}, warnings);
+        const QStringList warnings = access.open(directory.path(), {});
         QCOMPARE(access.operators(), QStringList{u"Good"_s});
         QCOMPARE(access.bans().size(), 1);
         QCOMPARE(access.ban(u"bad"_s)->reason.size(), QcAccessList::maxReasonLength);

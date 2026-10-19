@@ -30,7 +30,7 @@ int randomIndex(int corridor, int along, int lateral, int height)
 
 } // namespace
 
-bool QcMineshaftDetails::Taken::contains(QcBlockPos pos) const
+bool QcMineshaftDetails::Work::contains(QcBlockPos pos) const
 {
     if (cells.contains(pos)) {
         return true;
@@ -49,14 +49,21 @@ QcMineshaftDetails::QcMineshaftDetails(const QcMineshaftSettings &settings, cons
 {
 }
 
-void QcMineshaftDetails::add(QcMineshaftPlan &plan, const Random &random) const
+void QcMineshaftDetails::Work::place(QcBlockPos at, QcBlockId block)
 {
-    Taken taken{plan, {}};
-    placeSpawners(plan, taken, random);
-    placeRails(plan, taken, random);
-    placeSupports(plan, taken);
-    placeLights(plan, taken, random);
-    placeCobwebs(plan, taken, random);
+    furnishing.blocks.append({at, block});
+    cells.insert(at);
+}
+
+QcMineshaftDetails::Furnishing QcMineshaftDetails::furnish(const QcMineshaftPlan &plan, const Random &random) const
+{
+    Work work{plan, {}, {}};
+    placeSpawners(work, random);
+    placeRails(work, random);
+    placeSupports(work);
+    placeLights(work, random);
+    placeCobwebs(work, random);
+    return std::move(work.furnishing);
 }
 
 bool QcMineshaftDetails::isPlain(const QcMineshaftPlan &plan, const QcMineshaftPlan::Corridor &corridor)
@@ -65,17 +72,11 @@ bool QcMineshaftDetails::isPlain(const QcMineshaftPlan &plan, const QcMineshaftP
     return !corridor.stairs() && !isRoom(corridor.from) && !isRoom(corridor.to) && corridor.length >= 3;
 }
 
-void QcMineshaftDetails::place(QcMineshaftPlan &plan, Taken &taken, QcBlockPos at, QcBlockId block)
-{
-    plan.blocks.append({at, block});
-    taken.cells.insert(at);
-}
-
-int QcMineshaftDetails::distanceToSpawners(const QcMineshaftPlan &plan, QcBlockPos pos)
+int QcMineshaftDetails::distanceToSpawners(const QList<QcMineshaftPlan::Spawner> &spawners, QcBlockPos pos)
 {
     const auto axis = [](int value, int low, int high) { return value < low ? low - value : (value > high ? value - high : 0); };
     int nearest = std::numeric_limits<int>::max();
-    for (const QcMineshaftPlan::Spawner &spawner : plan.spawners) {
+    for (const QcMineshaftPlan::Spawner &spawner : spawners) {
         const int distance = axis(pos.x, spawner.areaLow.x, spawner.areaHigh.x) + axis(pos.y, spawner.areaLow.y, spawner.areaHigh.y)
                              + axis(pos.z, spawner.areaLow.z, spawner.areaHigh.z);
         nearest = std::min(nearest, distance);
@@ -83,8 +84,9 @@ int QcMineshaftDetails::distanceToSpawners(const QcMineshaftPlan &plan, QcBlockP
     return nearest;
 }
 
-void QcMineshaftDetails::placeSpawners(QcMineshaftPlan &plan, Taken &taken, const Random &random) const
+void QcMineshaftDetails::placeSpawners(Work &work, const Random &random) const
 {
+    const QcMineshaftPlan &plan = work.plan;
     QList<int> candidates;
     for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
         if (isPlain(plan, plan.corridors[i])) {
@@ -97,9 +99,9 @@ void QcMineshaftDetails::placeSpawners(QcMineshaftPlan &plan, Taken &taken, cons
         const qsizetype pick = std::min(candidates.size() - 1, qsizetype(random(SpawnerCorridor, i) * double(candidates.size())));
         const QcMineshaftPlan::Corridor &corridor = plan.corridors[candidates.takeAt(pick)];
         const QcBlockPos at = spawnerCell(corridor);
-        place(plan, taken, at, m_blocks.spawner);
-        plan.spawners.append({at, at.offset(-m_blocks.areaX, -m_blocks.areaY, -m_blocks.areaZ), at.offset(m_blocks.areaX, m_blocks.areaY, m_blocks.areaZ)});
-        placeSpawnerWebs(plan, taken, corridor, random);
+        work.place(at, m_blocks.spawner);
+        work.addSpawner({at, at.offset(-m_blocks.areaX, -m_blocks.areaY, -m_blocks.areaZ), at.offset(m_blocks.areaX, m_blocks.areaY, m_blocks.areaZ)});
+        placeSpawnerWebs(work, corridor, random);
     }
 }
 
@@ -111,12 +113,12 @@ QcBlockPos QcMineshaftDetails::spawnerCell(const QcMineshaftPlan::Corridor &corr
     return corridor.cell(along, 1);
 }
 
-void QcMineshaftDetails::placeSpawnerWebs(QcMineshaftPlan &plan, Taken &taken, const QcMineshaftPlan::Corridor &corridor, const Random &random) const
+void QcMineshaftDetails::placeSpawnerWebs(Work &work, const QcMineshaftPlan::Corridor &corridor, const Random &random) const
 {
     // Beside the spawner from the floor up, above it in the middle lane; not in supports.
     constexpr std::array<std::pair<int, int>, 8> cells{{{-1, 0}, {-1, 1}, {-1, 2}, {1, 0}, {1, 1}, {1, 2}, {0, 1}, {0, 2}}};
     const int middle = corridor.length / 2;
-    const int index = int(plan.spawners.size());
+    const int index = int(work.furnishing.spawners.size());
     for (int along = std::max(0, middle - 2); along <= std::min(corridor.length - 1, middle + 2); ++along) {
         if (corridor.supports.contains(along)) {
             continue;
@@ -124,67 +126,70 @@ void QcMineshaftDetails::placeSpawnerWebs(QcMineshaftPlan &plan, Taken &taken, c
         for (const auto &[lateral, height] : cells) {
             const QcBlockPos at = corridor.cell(along, lateral).offset(0, height, 0);
             const double chance = lateral == 0 ? spawnerLaneWebChance : spawnerWebChance;
-            if (!taken.contains(at) && random(SpawnerWeb, randomIndex(index, along, lateral, height)) < chance) {
-                place(plan, taken, at, m_blocks.cobweb);
+            if (!work.contains(at) && random(SpawnerWeb, randomIndex(index, along, lateral, height)) < chance) {
+                work.place(at, m_blocks.cobweb);
             }
         }
     }
 }
 
-void QcMineshaftDetails::placeRails(QcMineshaftPlan &plan, Taken &taken, const Random &random) const
+void QcMineshaftDetails::placeRails(Work &work, const Random &random) const
 {
+    const QcMineshaftPlan &plan = work.plan;
     for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
-        QcMineshaftPlan::Corridor &corridor = plan.corridors[i];
-        const bool spawner = std::ranges::any_of(plan.spawners, [&corridor](const auto &s) { return s.at == spawnerCell(corridor); });
+        const QcMineshaftPlan::Corridor &corridor = plan.corridors[i];
+        const bool spawner = std::ranges::any_of(work.furnishing.spawners, [&corridor](const auto &s) { return s.at == spawnerCell(corridor); });
         if (!isPlain(plan, corridor) || spawner || random(Rails, int(i)) >= m_settings.railChance) {
             continue;
         }
 
-        corridor.rails = true;
+        work.addRails(int(i));
         const QcBlockId rail = corridor.dx != 0 ? m_blocks.railEastWest : m_blocks.railNorthSouth;
         for (int along = 0; along < corridor.length; ++along) {
-            place(plan, taken, corridor.cell(along), rail);
+            work.place(corridor.cell(along), rail);
         }
         if (m_carts && random(Cart, int(i)) < m_settings.cartChance) {
             const int along = std::min(corridor.length - 1, int(random(CartPlace, int(i)) * corridor.length));
-            plan.carts.append(corridor.cell(along));
+            work.addCart(corridor.cell(along));
         }
     }
 }
 
-void QcMineshaftDetails::placeSupports(QcMineshaftPlan &plan, Taken &taken) const
+void QcMineshaftDetails::placeSupports(Work &work) const
 {
-    for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
-        for (const int along : std::as_const(plan.corridors[i].supports)) {
-            placeSupport(plan, taken, plan.corridors[i], along);
+    const QcMineshaftPlan &plan = work.plan;
+    for (const QcMineshaftPlan::Corridor &corridor : plan.corridors) {
+        for (const int along : corridor.supports) {
+            placeSupport(work, corridor, along);
         }
     }
     for (const QcMineshaftPlan::Node &node : std::as_const(plan.nodes)) {
         if (node.bridge) {
-            plan.pillars.append(node.centre.offset(0, -1, 0));
+            work.addPillar(node.centre.offset(0, -1, 0));
         }
     }
 }
 
-void QcMineshaftDetails::placeSupport(QcMineshaftPlan &plan, Taken &taken, const QcMineshaftPlan::Corridor &corridor, int along) const
+void QcMineshaftDetails::placeSupport(Work &work, const QcMineshaftPlan::Corridor &corridor, int along) const
 {
-    if (taken.contains(corridor.cell(along, -1)) || taken.contains(corridor.cell(along, 1))) {
+    if (work.contains(corridor.cell(along, -1)) || work.contains(corridor.cell(along, 1))) {
         return;
     }
     for (const int lateral : {-1, 1}) {
-        place(plan, taken, corridor.cell(along, lateral), m_blocks.post);
-        place(plan, taken, corridor.cell(along, lateral).offset(0, 1, 0), m_blocks.post);
+        work.place(corridor.cell(along, lateral), m_blocks.post);
+        work.place(corridor.cell(along, lateral).offset(0, 1, 0), m_blocks.post);
         if (corridor.bridge) {
-            plan.pillars.append(corridor.cell(along, lateral).offset(0, -1, 0));
+            work.addPillar(corridor.cell(along, lateral).offset(0, -1, 0));
         }
     }
     for (int lateral = -1; lateral <= 1; ++lateral) {
-        place(plan, taken, corridor.cell(along, lateral).offset(0, 2, 0), m_blocks.planks);
+        work.place(corridor.cell(along, lateral).offset(0, 2, 0), m_blocks.planks);
     }
 }
 
-void QcMineshaftDetails::placeLights(QcMineshaftPlan &plan, Taken &taken, const Random &random) const
+void QcMineshaftDetails::placeLights(Work &work, const Random &random) const
 {
+    const QcMineshaftPlan &plan = work.plan;
     for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
         const QcMineshaftPlan::Corridor &corridor = plan.corridors[i];
         for (const int along : corridor.supports) {
@@ -193,35 +198,35 @@ void QcMineshaftDetails::placeLights(QcMineshaftPlan &plan, Taken &taken, const 
             const QcBlockPos cell = corridor.cell(at).offset(0, 2, 0);
             const QcBlockPos beam = corridor.cell(along).offset(0, 2, 0);
             // A support left out (in a room) has no beam.
-            const bool hung = taken.cells.contains(beam);
-            if (at < 0 || !hung || taken.contains(cell) || random(Light, int(i) * 64 + along) >= m_settings.lightChance
-                || distanceToSpawners(plan, cell) < m_settings.lightDistance) {
+            const bool hung = work.cells.contains(beam);
+            if (at < 0 || !hung || work.contains(cell) || random(Light, int(i) * 64 + along) >= m_settings.lightChance
+                || distanceToSpawners(work.furnishing.spawners, cell) < m_settings.lightDistance) {
                 continue;
             }
-            place(plan, taken, cell, m_blocks.lights[std::size_t(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
+            work.place(cell, m_blocks.lights[std::size_t(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
         }
     }
 }
 
-void QcMineshaftDetails::placeCobwebs(QcMineshaftPlan &plan, Taken &taken, const Random &random) const
+void QcMineshaftDetails::placeCobwebs(Work &work, const Random &random) const
 {
-    for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
-        placeCobwebsIn(plan, taken, int(i), random);
+    for (qsizetype i = 0; i < work.plan.corridors.size(); ++i) {
+        placeCobwebsIn(work, int(i), random);
     }
 }
 
-void QcMineshaftDetails::placeCobwebsIn(QcMineshaftPlan &plan, Taken &taken, int index, const Random &random) const
+void QcMineshaftDetails::placeCobwebsIn(Work &work, int index, const Random &random) const
 {
     // Both sides, in the upper corners more often than lower down.
     constexpr std::array<std::pair<int, int>, 6> cells{{{-1, 0}, {-1, 1}, {-1, 2}, {1, 0}, {1, 1}, {1, 2}}};
-    const QcMineshaftPlan::Corridor corridor = plan.corridors[index];
+    const QcMineshaftPlan::Corridor &corridor = work.plan.corridors[index];
     for (int along = 0; along < corridor.length; ++along) {
         for (const auto &[lateral, height] : cells) {
             const QcBlockPos at = corridor.cell(along, lateral).offset(0, height, 0);
             const double chance = height == 2 ? m_settings.cobwebChance : m_settings.cobwebChance / 4;
             const int purpose = height == 2 ? UpperWeb : LowerWeb;
-            if (!taken.contains(at) && random(purpose, randomIndex(index, along, lateral, height)) < chance) {
-                place(plan, taken, at, m_blocks.cobweb);
+            if (!work.contains(at) && random(purpose, randomIndex(index, along, lateral, height)) < chance) {
+                work.place(at, m_blocks.cobweb);
             }
         }
     }

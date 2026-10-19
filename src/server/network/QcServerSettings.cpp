@@ -17,30 +17,30 @@ namespace {
 
 constexpr qint64 maxFileBytes = qint64(1024) * 1024;
 
-// Reads an integer key within [low, high]; an absent key keeps `value`.
-bool readInt(const QJsonObject &json, const QString &key, int low, int high, int &value)
+// Reads an integer key within [low, high]; `absent` when the key is missing, nullopt when invalid.
+[[nodiscard]] std::optional<int> readInt(const QJsonObject &json, const QString &key, int low, int high, int absent)
 {
     if (!json.contains(key)) {
-        return true;
+        return absent;
     }
     const double number = json.value(key).toDouble(-1e300);
     if (!json.value(key).isDouble() || number != std::floor(number) || number < low || number > high) {
-        return false;
+        return std::nullopt;
     }
-    value = int(number);
-    return true;
+    return int(number);
 }
 
-bool readText(const QJsonObject &json, const QString &key, qsizetype maxLength, QString &value)
+// Reads a text key of at most `maxLength` characters; `absent` when the key is missing, nullopt
+// when invalid.
+[[nodiscard]] std::optional<QString> readText(const QJsonObject &json, const QString &key, qsizetype maxLength, const QString &absent)
 {
     if (!json.contains(key)) {
-        return true;
+        return absent;
     }
     if (!json.value(key).isString() || json.value(key).toString().size() > maxLength) {
-        return false;
+        return std::nullopt;
     }
-    value = json.value(key).toString();
-    return true;
+    return json.value(key).toString();
 }
 
 QString invalid(const QString &key)
@@ -50,8 +50,9 @@ QString invalid(const QString &key)
 
 // Operator names must be valid player names as they are (QcProfileValidation), not cleaned into
 // another name or into "Player".
-[[nodiscard]] QcStatus readOperators(const QJsonObject &json, QStringList &operators)
+[[nodiscard]] QcResult<QStringList> readOperators(const QJsonObject &json)
 {
+    QStringList operators;
     if (json.contains(u"operators"_s) && !json.value(u"operators"_s).isArray()) {
         return qcError(invalid(u"operators"_s));
     }
@@ -65,7 +66,7 @@ QString invalid(const QString &key)
         }
         operators.append(*valid);
     }
-    return {};
+    return operators;
 }
 
 } // namespace
@@ -106,18 +107,22 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
                                        {u"connectionBurst"_s, 1, 1000, &settings.connectionBurst},
                                        {u"maxConnectionsPerAddress"_s, 1, 1000, &settings.maxConnectionsPerAddress}}};
     for (const Range &range : ranges) {
-        if (!readInt(json, range.key, range.low, range.high, *range.value)) {
+        const std::optional<int> read = readInt(json, range.key, range.low, range.high, *range.value);
+        if (!read) {
             return qcError(u"server.json: \"%1\" must be a whole number from %2 to %3"_s.arg(range.key).arg(range.low).arg(range.high));
         }
+        *range.value = *read;
     }
     settings.port = quint16(port);
 
     for (const auto &[key, value] : {std::pair{u"serverName"_s, &settings.serverName}, std::pair{u"motd"_s, &settings.motd},
                                      std::pair{u"bindAddress"_s, &settings.bindAddress}, std::pair{u"password"_s, &settings.password},
                                      std::pair{u"world"_s, &settings.world}, std::pair{u"worldType"_s, &settings.worldType}}) {
-        if (!readText(json, key, 256, *value)) {
+        const std::optional<QString> read = readText(json, key, 256, *value);
+        if (!read) {
             return qcError(invalid(key));
         }
+        *value = *read;
     }
 
     // A number, or its text (seeds need all 64 bits, JSON numbers have 53); empty for a random one.
@@ -145,10 +150,14 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
     if (json.contains(u"limits"_s) && !json.value(u"limits"_s).isObject()) {
         return qcError(invalid(u"limits"_s));
     }
-    settings.limits = QcServerLimits::fromJson(json.value(u"limits"_s).toObject(), u"server.json"_s, &settings.limitWarnings);
-    if (const QcStatus operators = readOperators(json, settings.operators); !operators) {
+    const QcServerLimits::Read limits = QcServerLimits::fromJson(json.value(u"limits"_s).toObject(), u"server.json"_s);
+    settings.limits = limits.limits;
+    settings.limitWarnings.append(limits.warnings);
+    QcResult<QStringList> operators = readOperators(json);
+    if (!operators) {
         return qcError(operators.error());
     }
+    settings.operators = std::move(*operators);
 
     if (!settings.address()) {
         return qcError(invalid(u"bindAddress"_s));
@@ -204,8 +213,9 @@ QcResult<QHostAddress> QcServerSettings::address() const
     return parsed;
 }
 
-void QcServerSettings::applyTo(QcServerConfig &config) const
+QcServerConfig QcServerSettings::serverConfig() const
 {
+    QcServerConfig config;
     config.serverName = serverName;
     config.motd = motd;
     config.password = password;
@@ -216,6 +226,7 @@ void QcServerSettings::applyTo(QcServerConfig &config) const
     config.defaultGameMode = defaultGameMode;
     config.limits = limits;
     config.limitsFromServer = true;
+    return config;
 }
 
 QcNetworkConfig QcServerSettings::networkConfig() const

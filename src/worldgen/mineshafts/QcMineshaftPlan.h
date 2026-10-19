@@ -7,6 +7,7 @@
 #include <QList>
 #include <QString>
 
+#include <algorithm>
 #include <cstdlib>
 #include <optional>
 
@@ -121,6 +122,35 @@ struct QcMineshaftPlan
     int maxZ = 0;
 
     bool touches(int x0, int z0, int x1, int z1) const { return x1 >= minX && x0 <= maxX && z1 >= minZ && z0 <= maxZ; }
+    // Sets the columns touched by its open cells, blocks, entrance and rooms, and one more around.
+    void bound()
+    {
+        const QcBlockPos centre = nodes.constFirst().centre;
+        minX = maxX = centre.x;
+        minZ = maxZ = centre.z;
+        const auto add = [this](QcBlockPos cell) {
+            minX = std::min(minX, cell.x - 1);
+            minZ = std::min(minZ, cell.z - 1);
+            maxX = std::max(maxX, cell.x + 1);
+            maxZ = std::max(maxZ, cell.z + 1);
+        };
+        forEachOpenCell(add);
+        for (const QcMineshaftPlan::Placed &placed : std::as_const(blocks)) {
+            add(placed.at);
+        }
+        if (entrance) {
+            for (const QcMineshaftPlan::Placed &placed : std::as_const(entrance->blocks)) {
+                add(placed.at);
+            }
+            for (const QcBlockPos &cell : std::as_const(entrance->lining)) {
+                add(cell);
+            }
+        }
+        for (const QcMineshaftPlan::Room &room : std::as_const(rooms)) {
+            add(room.placement.origin());
+            add(room.placement.origin().offset(room.placement.sizeX() - 1, 0, room.placement.sizeZ() - 1));
+        }
+    }
     // Calls `visit` with every cell the plan opens: nodes, corridors and the entrance's shaft.
     template<typename Visit>
     void forEachOpenCell(Visit &&visit) const

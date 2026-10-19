@@ -141,7 +141,7 @@ public:
     QList<QcChunkPos> takeNewlyQuarantined() { return std::exchange(m_newlyQuarantined, {}); }
 
     // Takes a chunk out of the world with what was derived from its blocks (marks, hoppers, links);
-    // its block entities must have been taken before (QcBlockEntityRecords::take). Returns its blocks
+    // its block entities must have been taken before (QcBlockEntityRecord::takeFrom). Returns its blocks
     // if they changed since they were last kept.
     std::shared_ptr<const QcChunk> remove(QcChunkPos pos);
     // Removes a loaded chunk whatever its state and returns it (tests of circuits at the edge of the

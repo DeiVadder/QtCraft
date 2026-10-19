@@ -130,10 +130,9 @@ private:
         return {quint16(table), version, true, payload};
     }
 
-    QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, QStringList &warnings) const
+    QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, QcLoadWarnings &warnings) const
     {
-        QSet<QString> reported;
-        return QcBlockEntityCodec::decode(blob, chunk, *m_content, warnings, reported);
+        return QcBlockEntityCodec::decode(blob, chunk, *m_content, warnings);
     }
 
     // The stored record of `chunk` of the world in `directory` (empty when there is none).
@@ -166,10 +165,10 @@ private slots:
     {
         const QcBlockPos pos{3, 64, 5};
         const QByteArray blob = futureBlob(pos, Damage::None);
-        QStringList warnings;
+        QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(blob, {0, 0}, warnings);
         QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
 
         // The fields this version knows are read, the rest is kept.
         QCOMPARE(read->saplings.size(), 1);
@@ -213,7 +212,7 @@ private slots:
     void damagedFramesAreRefused()
     {
         QFETCH(Damage, damage);
-        QStringList warnings;
+        QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(futureBlob({3, 64, 5}, damage), {0, 0}, warnings);
         QVERIFY(!read.has_value());
         QVERIFY(read.error().contains(u"damaged block entities of chunk 0, 0"_s));
@@ -233,12 +232,12 @@ private slots:
                 frame(out, quint16(1000 + i), 1, "mod");
             }
         });
-        QStringList warnings;
+        QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(blob, {1, -1}, warnings);
         QVERIFY(read.has_value());
         QCOMPARE(read->kept.tables.size(), qsizetype(QcComponentFrames::maxKept));
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY2(warnings[0].contains(u"16 of them dropped"_s), qPrintable(warnings[0]));
+        QCOMPARE(warnings.texts().size(), 1);
+        QVERIFY2(warnings.texts()[0].contains(u"16 of them dropped"_s), qPrintable(warnings.texts()[0]));
 
         // What is kept, written again together with every known table, stays readable.
         QcBlockEntityRecord record = *read;
@@ -267,7 +266,7 @@ private slots:
                       table.writeRawData("WW", 2);
                   }));
         });
-        QStringList warnings;
+        QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(blob, {0, -1}, warnings);
         QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
         QVERIFY(read->saplings.isEmpty());
@@ -307,15 +306,15 @@ private slots:
             frame(out, quint16(Table::Saplings), 1, saplings);
             frame(out, quint16(Table::Memories), 1, memories);
         });
-        QStringList warnings;
+        QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(blob, {0, 0}, warnings);
         QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
         QCOMPARE(read->memories.size(), 1);
         QCOMPARE(read->kept.entries.size(), qsizetype(QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::worldHeight));
         // The memory's tail came last and was dropped; the sapling's at its cell is kept.
         QCOMPARE(read->kept.entries.value({1, 2, 3}), QcEntityComponents{tail(Table::Saplings, 2, "t")});
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY2(warnings[0].contains(u"what 1 of them added is dropped"_s), qPrintable(warnings[0]));
+        QCOMPARE(warnings.texts().size(), 1);
+        QVERIFY2(warnings.texts()[0].contains(u"what 1 of them added is dropped"_s), qPrintable(warnings.texts()[0]));
     }
 
     void blobsBeyondTheLimitAreNeverWritten()
@@ -329,19 +328,18 @@ private slots:
         record.kept.tables = {{4711, 1, false, QByteArray(500, 'm')}};
         const QByteArray full = QcBlockEntityCodec::encode(record, *m_content);
 
-        QStringList warnings;
-        const QcResult<QByteArray> fits = QcBlockEntityCodec::encodeWithin(record, *m_content, warnings, quint32(full.size()));
+        const QcResult<QcBlockEntityCodec::Fitted> fits = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(full.size()));
         QVERIFY(fits.has_value());
-        QCOMPARE(*fits, full);
-        QVERIFY(warnings.isEmpty());
+        QCOMPARE(fits->blob, full);
+        QVERIFY(!fits->warning);
 
-        const QcResult<QByteArray> trimmed = QcBlockEntityCodec::encodeWithin(record, *m_content, warnings, quint32(plain.size()));
+        const QcResult<QcBlockEntityCodec::Fitted> trimmed = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(plain.size()));
         QVERIFY(trimmed.has_value());
-        QCOMPARE(*trimmed, plain);
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY2(warnings[0].contains(u"chunk 2, 3"_s), qPrintable(warnings[0]));
+        QCOMPARE(trimmed->blob, plain);
+        QVERIFY(trimmed->warning);
+        QVERIFY2(trimmed->warning->contains(u"chunk 2, 3"_s), qPrintable(*trimmed->warning));
 
-        const QcResult<QByteArray> refused = QcBlockEntityCodec::encodeWithin(record, *m_content, warnings, quint32(plain.size() - 1));
+        const QcResult<QcBlockEntityCodec::Fitted> refused = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(plain.size() - 1));
         QVERIFY(!refused.has_value());
         QVERIFY2(refused.error().contains(u"not saved"_s), qPrintable(refused.error()));
 
@@ -377,7 +375,7 @@ private slots:
 
     void tailsGoOnlyWithTheirEntries()
     {
-        // A chunk leaving the world (QcBlockEntityRecords::take): an empty container and a memory
+        // A chunk leaving the world (QcBlockEntityRecord::takeFrom): an empty container and a memory
         // with nothing to save are kept for their tails; the tail of an entry gone is dropped.
         QcBlockEntities entities(m_content);
         QcCircuitState circuits;
@@ -400,10 +398,10 @@ private slots:
         // Saving collects the same entries.
         QcBlockEntityRecord collected = QcBlockEntityRecords::collect(entities, circuits, 100, parts).value(0);
         collected.kept = record.kept;
-        QcBlockEntityRecords::pruneKept(collected);
+        collected.pruneKept();
 
-        QcBlockEntityRecords::take(record, entities, circuits, hoppers, 100);
-        QcBlockEntityRecords::pruneKept(record);
+        record.takeFrom(entities, circuits, hoppers, 100);
+        record.pruneKept();
         for (const QcBlockEntityRecord &taken : {record, collected}) {
             QCOMPARE(taken.containers.size(), 1);
             QCOMPARE(taken.containers[0].pos, withTail);

@@ -28,11 +28,12 @@ public:
     static constexpr double queue = 2.5;
     static constexpr double stepBack = 1.8;
 
-    // Doors to close and to open, in this order.
+    // Doors to close and to open, in this order, and the door the creature holds open afterwards.
     struct Moves
     {
         std::optional<QcBlockPos> close;
         std::optional<QcBlockPos> open;
+        std::optional<QcBlockPos> opened;
     };
 
     explicit QcDoorPassage(const QcContentRegistry &content);
@@ -45,13 +46,19 @@ public:
     // where the ground allows. The steering of one that waits; none for one that goes or has no
     // door ahead (or flees).
     std::optional<QcPhysics::Steering> waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcPathGround &ground);
-    // Opens the door on the path ahead and closes the one it went through.
-    static Moves use(const QcCreature &mob, std::optional<QcBlockPos> &opened, const QcMobNavigator::Navigation &navigation);
+    // Opens the door on the path ahead and closes the one it went through (`opened`, the door it held open).
+    [[nodiscard]] static Moves use(const QcCreature &mob, std::optional<QcBlockPos> opened, const QcMobNavigator::Navigation &navigation);
 
 private:
-    // The door it stands in (`inside`), else a door, open or closed, on its next waypoint.
-    std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcBlockAccess &world,
-                                        bool &inside) const;
+    // A door in a creature's way and whether the creature stands in it.
+    struct Door
+    {
+        QcBlockPos pos;
+        bool inside = false;
+    };
+
+    // The door it stands in, else a door, open or closed, on its next waypoint.
+    [[nodiscard]] std::optional<Door> doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcBlockAccess &world) const;
     // A waiting creature steps back and aside to stepBack from the door, facing it.
     static QcPhysics::Steering stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const QcPathGround &ground);
 

@@ -19,8 +19,7 @@ namespace {
 // The base content with a mod item and a small mod chest.
 std::shared_ptr<const QcContentRegistry> contentWithMod()
 {
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+    std::shared_ptr<QcContentRegistry> content = QcTestUtil::baseContent()->registry;
     QcItemDefinition gem = content->item(*content->itemId(u"qtcraft:diamond"_s));
     gem.name = u"mod:gem"_s;
     QcBlockDefinition crate = content->block(*content->blockId(u"qtcraft:barrel"_s));
@@ -418,7 +417,7 @@ private slots:
         config.seed = 7;
         config.worldDirectory = dir.path();
         {
-            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 7, nullptr, config.generatorOptions));
+            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 7, config.generatorOptions));
             const QcStatus opened = server.openWorld();
             QVERIFY(!opened.has_value());
             QVERIFY(server.worldTooOld());

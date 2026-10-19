@@ -24,12 +24,13 @@ class QcTerrainGenerator;
 class QcMineshaftPlanner
 {
 public:
-    // Unresolvable blocks are reported in `warnings` and switch mine shafts off.
-    QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    // Unresolvable blocks switch mine shafts off with a warning (warnings()).
+    QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
     ~QcMineshaftPlanner();
 
     bool enabled() const { return m_enabled; }
     const QcMineshaftSettings &settings() const { return m_settings; }
+    const QStringList &warnings() const { return m_warnings; }
     const QcMineshaftBlocks &blocks() const { return m_blocks; }
     // The region's mine shaft; null without one.
     [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> plan(int regionX, int regionZ) const;
@@ -37,14 +38,14 @@ public:
 private:
     [[nodiscard]] std::optional<QcBlockPos> findCentre(QcMineshaftSite &site, const QcMineshaftPlan &plan, int levels) const;
     // Nodes and corridors of the network in the world.
-    static void layOut(QcMineshaftPlan &plan, const QcMineshaftNetwork &network, const QcMineshaftFrame &frame);
-    // The columns the plan touches, one more around.
-    static void bound(QcMineshaftPlan &plan);
+    [[nodiscard]] static QList<QcMineshaftPlan::Node> nodesOf(const QcMineshaftNetwork &network, const QcMineshaftFrame &frame);
+    [[nodiscard]] static QList<QcMineshaftPlan::Corridor> corridorsOf(const QcMineshaftNetwork &network, const QcMineshaftFrame &frame);
     // A random value in [0, 1) of the plan's region, a purpose and an index.
     double random(const QcMineshaftPlan &plan, int purpose, int index) const;
 
     const QcTerrainGenerator &m_terrain;
     QcMineshaftSettings m_settings;
+    QStringList m_warnings;
     quint64 m_seed = 0;
     bool m_enabled = false;
     QcMineshaftBlocks m_blocks;

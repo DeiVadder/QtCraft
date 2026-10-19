@@ -7,7 +7,9 @@
 #include <QHash>
 #include <QList>
 #include <QString>
+#include <QStringList>
 
+#include <expected>
 #include <optional>
 
 // A structure whose palette is resolved to block states (decision E-219): read from a definition
@@ -24,9 +26,20 @@ public:
 
     QcStructure(QString name, int sizeX, int sizeY, int sizeZ);
 
-    // Unknown blocks fail; unknown state properties or values keep their defaults with a warning.
-    [[nodiscard]] static QcResult<QcStructure> fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content,
-                                                QStringList *warnings = nullptr);
+    // Why a definition could not be resolved, with the warnings of the palette entries before it.
+    struct Failure
+    {
+        QString error;
+        QStringList warnings;
+    };
+
+    using Loaded = std::expected<QcStructure, Failure>;
+
+    // Unknown blocks fail; unknown state properties or values keep their defaults with a warning
+    // (warnings(), or Failure::warnings for the entries before an unknown block).
+    [[nodiscard]] static Loaded fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content);
+    // The warnings of a resolution, whether it succeeded or not (callers report them before the outcome).
+    [[nodiscard]] static const QStringList &warningsOf(const Loaded &loaded) { return loaded ? loaded->warnings() : loaded.error().warnings; }
 
     const QString &name() const { return m_name; }
     int sizeX() const { return m_sizeX; }
@@ -41,6 +54,15 @@ public:
     // Palette index of a cell (or QcStructureDefinition::keep); precondition: contains(x, y, z).
     qint16 paletteIndex(int x, int y, int z) const { return m_cells[cellIndex(x, y, z)]; }
     const QList<QcBlockId> &palette() const { return m_palette; }
+    // What fromDefinition() kept at a default (unknown state properties or values).
+    const QStringList &warnings() const { return m_warnings; }
+
+    // The extras of a structure assembled in code (the showcase's areas).
+    void addMob(Mob mob) { mobs.append(std::move(mob)); }
+    void addContents(Contents placed) { contents.append(std::move(placed)); }
+    void addLabel(Label label) { labels.append(std::move(label)); }
+    void addGrowing(QcBlockPos cell) { growing.append(cell); }
+    void addCart(QcStructureDefinition::Cart cart) { minecarts.append(std::move(cart)); }
 
     QList<Mob> mobs;
     QList<Stand> stands;
@@ -66,4 +88,5 @@ private:
     QList<QcBlockId> m_palette;
     QHash<QcBlockId, qint16> m_paletteIndex;
     QList<qint16> m_cells;
+    QStringList m_warnings;
 };

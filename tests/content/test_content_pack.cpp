@@ -29,23 +29,22 @@ class TestContentPack : public QObject
 private slots:
     void baseContentLoadsCleanly()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
-        QVERIFY2(content.has_value(), qcErrorText(content).constData());
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        const QcResult<QcBaseContent::Loaded> loaded = QcBaseContent::load();
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded).constData());
+        QVERIFY2(loaded->warnings.isEmpty(), qPrintable(loaded->warnings.join(u'\n')));
+        const std::shared_ptr<QcContentRegistry> &content = loaded->registry;
 
         // The assignment asks for at least a dozen distinct block types besides air.
-        QVERIFY((*content)->blockCount() > 12);
+        QVERIFY(content->blockCount() > 12);
         for (const char *name : {"qtcraft:stone", "qtcraft:grass_block", "qtcraft:water", "qtcraft:oak_leaves",
                                  "qtcraft:glass", "qtcraft:iron_ore", "qtcraft:sand", "qtcraft:snow_block"}) {
-            QVERIFY2((*content)->blockId(QString::fromLatin1(name)).has_value(), name);
+            QVERIFY2(content->blockId(QString::fromLatin1(name)).has_value(), name);
         }
     }
 
     void baseBlocksHaveDistinctProperties()
     {
-        QStringList warnings;
-        const auto content = *QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent()->registry;
         const auto block = [&content](const char *name) { return content->block(*content->blockId(QString::fromLatin1(name))); };
 
         QVERIFY(block("qtcraft:stone").solid && block("qtcraft:stone").opaque);
@@ -61,8 +60,7 @@ private slots:
 
     void smeltingReplacesTheIngotRecipes()
     {
-        QStringList warnings;
-        const auto content = *QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent()->registry;
 
         // Ingots, glass and bricks come from the furnace now, not from ores in the crafting grid (E-037);
         // the grid only packs nuggets or storage blocks back into ingots and bricks into a block
@@ -115,8 +113,7 @@ private slots:
 
     void mobsSurviveTheContentSync()
     {
-        QStringList warnings;
-        const auto content = *QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent()->registry;
         QVERIFY(content->mobs().size() >= 3);
 
         QByteArray data;
@@ -146,8 +143,7 @@ private slots:
 
     void everyTextureAndTranslationExists()
     {
-        QStringList warnings;
-        const auto content = *QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent()->registry;
         const QcTextureAtlas atlas = QcTextureAtlas::build(*content);
         QVERIFY2(atlas.problems().isEmpty(), qPrintable(atlas.problems().join(u'\n')));
 
@@ -174,11 +170,10 @@ private slots:
         writeFile(dir.filePath(u"textures/good.json"_s), "{\"name\":\"good\",\"pattern\":\"noise\",\"primary\":\"#808080\"}");
 
         QcContentRegistry registry;
-        QStringList warnings;
-        const auto info = QcContentPackLoader::load(dir.path(), registry, warnings);
-        QVERIFY2(info.has_value(), qcErrorText(info).constData());
-        QCOMPARE(info->id, u"testpack"_s);
-        QCOMPARE(warnings.size(), 2);
+        const auto loaded = QcContentPackLoader::load(dir.path(), registry);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded).constData());
+        QCOMPARE(loaded->info.id, u"testpack"_s);
+        QCOMPARE(loaded->warnings.size(), 2);
         QVERIFY(registry.blockId(u"testpack:good"_s).has_value());
         QVERIFY(!registry.blockId(u"testpack:bad"_s).has_value());
         QVERIFY(registry.texture(u"testpack:good"_s));
@@ -210,8 +205,9 @@ private slots:
         writeFile(dir.filePath(u"weather.json"_s), R"({"lightning": {"damage": 2}, "snow": {"layer": ")" + layer + R"("}})");
 
         QcContentRegistry registry;
-        QStringList warnings;
-        QVERIFY(QcContentPackLoader::load(dir.path(), registry, warnings).has_value());
+        const QcResult<QcLoadedPack> loaded = QcContentPackLoader::load(dir.path(), registry);
+        QVERIFY(loaded.has_value());
+        const QStringList &warnings = loaded->warnings;
         QCOMPARE(warnings.isEmpty(), accepted);
         QCOMPARE(registry.weather().snow.layer, accepted ? u"testpack:powder"_s : QcWeatherDefinition{}.snow.layer);
         QCOMPARE(registry.weather().lightning.damage, accepted ? 2.0 : QcWeatherDefinition{}.lightning.damage);
@@ -238,8 +234,7 @@ private slots:
             writeFile(dir.filePath(u"pack.json"_s), manifest);
         }
         QcContentRegistry registry;
-        QStringList warnings;
-        QVERIFY(!QcContentPackLoader::load(dir.path(), registry, warnings).has_value());
+        QVERIFY(!QcContentPackLoader::load(dir.path(), registry).has_value());
     }
 
     void atlasFallsBackToPlaceholder()

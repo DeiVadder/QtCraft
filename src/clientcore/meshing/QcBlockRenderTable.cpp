@@ -130,8 +130,18 @@ bool insideShape(const QList<QcAabb> &boxes, const QcAabb &box, QcBlockFace face
 }
 
 // Quads, side covers and crosses of a state that is not the full cube.
-void addShape(Entry &entry, const QcBlockState &state, const QcBlockDefinition &block, const QcTextureAtlas &atlas)
+struct Shape
 {
+    QList<QcBlockRenderTable::Quad> quads;
+    QList<QcBlockRenderTable::Cross> crosses;
+    std::array<QList<SideRect>, 6> cover;
+};
+
+// The shape of `state`; boxes without a texture slot of their own use the face textures `faceUv`.
+[[nodiscard]] Shape shapeOf(const QcBlockState &state, const QcBlockDefinition &block, const QcTextureAtlas &atlas,
+                            const std::array<QRectF, 6> &faceUv)
+{
+    Shape shape;
     for (qsizetype b = 0; b < state.boxes.size(); ++b) {
         const QcAabb &box = state.boxes[b];
         const QString slot = state.boxTextures.value(b);
@@ -140,21 +150,22 @@ void addShape(Entry &entry, const QcBlockState &state, const QcBlockDefinition &
             if (insideShape(state.boxes, box, face)) {
                 continue;
             }
-            const QRectF uv = slot.isEmpty() ? entry.faceUv[std::size_t(face)] : atlas.uv(block.slotTexture(slot));
+            const QRectF uv = slot.isEmpty() ? faceUv[std::size_t(face)] : atlas.uv(block.slotTexture(slot));
             const QcBlockRenderTable::Quad quad = makeQuad(box, face, uv, stretch);
             if (quad.boundary) {
-                entry.cover[std::size_t(face)].append(quad.rect);
+                shape.cover[std::size_t(face)].append(quad.rect);
             }
-            entry.quads.append(quad);
+            shape.quads.append(quad);
         }
     }
 
     for (qsizetype c = 0; c < state.crosses.size(); ++c) {
         const QcAabb &box = state.crosses[c];
         const QString slot = state.crossTextures.value(c);
-        const QRectF uv = slot.isEmpty() ? entry.faceUv[std::size_t(QcBlockFace::North)] : atlas.uv(block.slotTexture(slot));
-        entry.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)}, uv});
+        const QRectF uv = slot.isEmpty() ? faceUv[std::size_t(QcBlockFace::North)] : atlas.uv(block.slotTexture(slot));
+        shape.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)}, uv});
     }
+    return shape;
 }
 
 // Height of a liquid's surface: falls with the flow level; sources and falling liquid are nearly full.
@@ -209,7 +220,10 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     }
 
     if (!state.fullCube) {
-        addShape(entry, state, block, atlas);
+        Shape shape = shapeOf(state, block, atlas, entry.faceUv);
+        entry.quads = std::move(shape.quads);
+        entry.crosses = std::move(shape.crosses);
+        entry.cover = std::move(shape.cover);
     } else {
         for (const QcBlockFace face : qcAllBlockFaces) {
             entry.cover[std::size_t(face)] = {SideRect{}};

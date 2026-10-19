@@ -9,6 +9,7 @@
 
 #include <concepts>
 #include <initializer_list>
+#include <optional>
 #include <type_traits>
 
 // The components of a saved entry (decision E-420): after the entry's header a count, then per
@@ -120,15 +121,22 @@ private:
     quint16 m_count = 0;
 };
 
+// What read() keeps of one entry's components besides the known fields, and how many unknown
+// components it dropped beyond maxKept.
+struct ReadComponents
+{
+    QcEntityComponents kept;
+    int dropped = 0;
+};
+
 // Reads the components of one entry from `stream`: those of an id in `known` with its reader, read in
-// place, the others kept in `kept` as they are (beyond maxKept dropped and counted in `dropped`). Of
-// a newer version of a known component the bytes after the known fields go to `kept` as its tail.
-// False for damaged data: more components or longer ones than allowed, a length beyond the data, an
+// place, the others kept as they are (beyond maxKept dropped and counted). Of a newer version of a
+// known component the bytes after the known fields are kept as its tail.
+// Nullopt for damaged data: more components or longer ones than allowed, a length beyond the data, an
 // id twice, version 0, a reader that fails or reads beyond its component, an older or the current
 // version that holds more than its fields. `lengthLimit` bounds one component (maxLength for entities;
 // the tables of a chunk's block entities allow more, QcBlockEntityCodec).
-[[nodiscard]] bool read(QDataStream &stream, std::initializer_list<Known> known, QcEntityComponents &kept, int &dropped,
-                        quint32 lengthLimit = maxLength);
+[[nodiscard]] std::optional<ReadComponents> read(QDataStream &stream, std::initializer_list<Known> known, quint32 lengthLimit = maxLength);
 
 // Overwrites the placeholder length at byte `at` of `stream` (which writes to a seekable device)
 // with `length`: in place in the bytes of a QBuffer, else by seeking there and back.
@@ -136,11 +144,11 @@ void patchLength(QDataStream &stream, qint64 at, quint32 length);
 
 // Reads the raw bytes of `length` that follow in `stream`, checked against the data left before
 // anything is allocated.
-[[nodiscard]] bool readRaw(QDataStream &stream, qint64 length, QByteArray &bytes);
+[[nodiscard]] std::optional<QByteArray> readRaw(QDataStream &stream, qint64 length);
 
 // Reads a QString written by QDataStream (byte length, then UTF-16) after checking its length: a
-// damaged length of up to 4 GB is never allocated. False for a text longer than `maxChars` (the
-// stream turns corrupt).
-[[nodiscard]] bool readText(QDataStream &stream, QString &text, qsizetype maxChars);
+// damaged length of up to 4 GB is never allocated. std::nullopt for a text longer than `maxChars`
+// (the stream turns corrupt).
+[[nodiscard]] std::optional<QString> readText(QDataStream &stream, qsizetype maxChars);
 
 } // namespace QcComponentFrames

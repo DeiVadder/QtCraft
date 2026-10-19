@@ -56,8 +56,8 @@ void QcMinecartHoppers::tick()
 
         const bool hopper = m_state.entities().minecarts().loadOf(cart).hopper;
         if (hopper && cart.enabled && cart.readyAt <= now) {
-            bool container = false;
-            const bool pulled = pullFromAbove(cart, access, container) || (!container && pickUp(cart));
+            const Pull pull = pullFromAbove(cart, access);
+            const bool pulled = pull == Pull::Moved || (pull == Pull::NoContainer && pickUp(cart));
             if (pulled) {
                 cart.readyAt = now + quint64(m_state.hoppers().cooldownTicks);
             }
@@ -134,12 +134,11 @@ bool QcMinecartHoppers::unloadInto(QcMinecart &cart, QcBlockPos hopper, QcInvent
     return false;
 }
 
-bool QcMinecartHoppers::pullFromAbove(QcMinecart &cart, QcInventoryAccess &access, bool &container)
+QcMinecartHoppers::Pull QcMinecartHoppers::pullFromAbove(QcMinecart &cart, QcInventoryAccess &access)
 {
     const QcBlockPos above = cellOf(cart).offset(0, 1, 0);
-    container = access.hasInventory(above) && access.ensure(above);
-    if (!container) {
-        return false;
+    if (!access.hasInventory(above) || !access.ensure(above)) {
+        return Pull::NoContainer;
     }
 
     const QList<QcItemStack> source = access.slotsAt(above);
@@ -157,9 +156,9 @@ bool QcMinecartHoppers::pullFromAbove(QcMinecart &cart, QcInventoryAccess &acces
         QcItemStack &target = cart.stacks[into];
         target = target.isEmpty() ? unit : QcItemStack{target.item, target.count + 1, target.damage};
         ++m_stats.moved;
-        return true;
+        return Pull::Moved;
     }
-    return false;
+    return Pull::Nothing;
 }
 
 void QcMinecartHoppers::buildGrid()

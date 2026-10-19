@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
@@ -243,7 +242,7 @@ private slots:
         definition.sizeX = definition.sizeY = definition.sizeZ = 1;
         definition.palette = {u"qtcraft:oak_stairs[facing=west,half=top]"_s};
         definition.cells = {0};
-        const QcResult<QcStructure> structure = QcStructure::fromDefinition(definition, *m_content);
+        const QcStructure::Loaded structure = QcStructure::fromDefinition(definition, *m_content);
         QVERIFY(structure);
         QCOMPARE(structure->block(0, 0, 0), std::optional(id(*m_content, u"qtcraft:oak_stairs[facing=west,half=top]"_s)));
 
@@ -252,9 +251,16 @@ private slots:
 
         // Unknown properties keep the default and are reported.
         definition.palette = {u"qtcraft:oak_stairs[colour=red]"_s};
-        QStringList warnings;
-        QVERIFY(QcStructure::fromDefinition(definition, *m_content, &warnings));
-        QCOMPARE(warnings.size(), 1);
+        const QcStructure::Loaded unknownProperty = QcStructure::fromDefinition(definition, *m_content);
+        QVERIFY(unknownProperty);
+        QCOMPARE(unknownProperty->warnings().size(), 1);
+
+        // A failure keeps the warnings of the entries before the unknown block.
+        definition.palette = {u"qtcraft:oak_stairs[colour=red]"_s, u"qtcraft:no_such_block"_s};
+        const QcStructure::Loaded failed = QcStructure::fromDefinition(definition, *m_content);
+        QVERIFY(!failed);
+        QVERIFY(failed.error().error.contains(u"qtcraft:no_such_block"_s));
+        QCOMPARE(QcStructure::warningsOf(failed), unknownProperty->warnings());
     }
 
     void turnsDirectionsClockwise()
@@ -293,8 +299,7 @@ private slots:
     void missingTurnedValuesAreReportedOnce()
     {
         // A mod block that can only face north or east.
-        QStringList warnings;
-        const std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::baseContent()->registry;
         QcBlockDefinition sign;
         sign.name = u"test:half_sign"_s;
         sign.faceTextures.fill(u"qtcraft:stone"_s);
@@ -414,10 +419,9 @@ private slots:
         // Every structure of the base game resolves without warnings.
         QVERIFY(m_content->structures().size() >= 8);
         for (const QcStructureDefinition &definition : m_content->structures()) {
-            QStringList warnings;
-            const QcResult<QcStructure> structure = QcStructure::fromDefinition(definition, *m_content, &warnings);
-            QVERIFY2(structure, qPrintable(structure ? QString() : structure.error()));
-            QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+            const QcStructure::Loaded structure = QcStructure::fromDefinition(definition, *m_content);
+            QVERIFY2(structure, qPrintable(structure ? QString() : structure.error().error));
+            QVERIFY2(structure->warnings().isEmpty(), qPrintable(structure->warnings().join(u'\n')));
             for (const QcStructureDefinition::Label &label : definition.labels) {
                 QVERIFY2(m_content->hasTranslation(label.text, u"en"_s), qPrintable(label.text));
             }

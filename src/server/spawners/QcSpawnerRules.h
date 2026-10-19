@@ -41,8 +41,9 @@ private:
     // Whether the body of `definition` with its feet in `feet` has room: no solid, liquid, hurting or
     // slowing block in the cells it takes up.
     bool hasRoom(QcBlockPos feet, const QcMobDefinition &definition) const;
-    // Runs the cycle of a spawner whose delay ran out.
-    void cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int &total);
+    // Runs the cycle of a spawner whose delay ran out (`total`: spawner creatures in the world so
+    // far); the number of creatures it spawned.
+    [[nodiscard]] int cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int total);
     void resetDelay(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules);
     bool playerNear(const QcVec3 &centre, double range, const QList<QcVec3> &players) const;
     QList<QcVec3> playerPositions() const;

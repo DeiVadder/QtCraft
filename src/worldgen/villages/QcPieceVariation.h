@@ -25,9 +25,19 @@ public:
     };
 
     // `definition` already carries the style's palette swaps. Unknown blocks of the structure fail;
-    // an option naming an unknown block keeps that palette entry with a warning.
-    [[nodiscard]] static QcResult<QcPieceVariation> resolve(const QcStructureDefinition &definition, const QcContentRegistry &content,
-                                                            QStringList *warnings);
+    // an option naming an unknown block keeps that palette entry with a warning (warnings()).
+    // A failure carries the warnings of the palette entries before the unknown block.
+    using Resolved = std::expected<QcPieceVariation, QcStructure::Failure>;
+
+    [[nodiscard]] static Resolved resolve(const QcStructureDefinition &definition, const QcContentRegistry &content);
+    // The warnings of a resolution, whether it succeeded or not (callers report them before the outcome).
+    [[nodiscard]] static const QStringList &warningsOf(const Resolved &resolved)
+    {
+        return resolved ? resolved->warnings() : resolved.error().warnings;
+    }
+
+    // What resolving kept at a default or left out (unknown states, unknown blocks of options).
+    const QStringList &warnings() const { return m_warnings; }
 
     // The structure without parts and with every palette entry as written.
     const std::shared_ptr<const QcStructure> &base() const { return m_base; }
@@ -51,13 +61,15 @@ private:
     };
 
     QcPieceVariation() = default;
-    [[nodiscard]] static Option resolveOption(const QcStructureDefinition &definition, const QHash<QString, QString> &swaps,
-                                              const QcContentRegistry &content, QStringList *warnings);
+    // One option of a choice; its unknown blocks go to the warnings.
+    [[nodiscard]] Option resolveOption(const QcStructureDefinition &definition, const QHash<QString, QString> &swaps,
+                                       const QcContentRegistry &content);
 
     std::shared_ptr<const QcStructure> m_base;
     // The definition's palette resolved, and its cells (QcStructureDefinition::cellIndex).
     QList<QcBlockId> m_states;
     QList<qint16> m_cells;
+    QStringList m_warnings;
     QList<QList<Option>> m_choices;
     QList<QcStructureDefinition::Part> m_parts;
 };

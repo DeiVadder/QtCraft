@@ -234,9 +234,8 @@ bool QcWorldCommands::matchesItem(const QString &what, QcItemStack stack) const
     return what.startsWith(u"item:"_s) && m_state.content().itemId(QcCommandArguments::qualified(what.mid(5))) == stack.item;
 }
 
-void QcWorldCommands::sweep(Removal &removal, bool apply)
+QcWorldCommands::Swept QcWorldCommands::sweep(const Removal &removal, bool apply)
 {
-    removal.mobs = removal.items = removal.stands = 0;
     QList<quint32> mobs;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         if (!mob.dormant && matchesMob(removal.what, mob.type) && inRange(removal.centre, removal.radius, mob.motion.position)) {
@@ -254,11 +253,9 @@ void QcWorldCommands::sweep(Removal &removal, bool apply)
     const auto itemMatches = [&](const QcItemEntity &item) {
         return matchesItem(removal.what, item.stack) && inRange(removal.centre, removal.radius, item.motion.position);
     };
-    removal.mobs = int(mobs.size());
-    removal.stands = int(stands.size());
-    removal.items = int(std::ranges::count_if(m_state.entities().items().items(), itemMatches));
+    const Swept swept{int(mobs.size()), int(std::ranges::count_if(m_state.entities().items().items(), itemMatches)), int(stands.size())};
     if (!apply) {
-        return;
+        return swept;
     }
 
     // Removed without dying: no drops; the clients drop them with the next entity sync.
@@ -269,6 +266,7 @@ void QcWorldCommands::sweep(Removal &removal, bool apply)
         m_state.entities().stands().remove(id);
     }
     m_state.entities().items().removeWhere(itemMatches);
+    return swept;
 }
 
 void QcWorldCommands::remove(const QcCommandContext &context)
@@ -288,19 +286,18 @@ void QcWorldCommands::remove(const QcCommandContext &context)
         removal.radius = *radius;
     }
 
-    sweep(removal, false);
-    const int total = removal.mobs + removal.items + removal.stands;
-    auto run = [this, removal](const QcCommandSource &source) mutable {
-        sweep(removal, true);
+    const Swept found = sweep(removal, false);
+    auto run = [this, removal](const QcCommandSource &source) {
+        const Swept removed = sweep(removal, true);
         source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Removed %1 creatures, %2 item stacks and %3 armour stands"),
-                     {QString::number(removal.mobs), QString::number(removal.items), QString::number(removal.stands)});
+                     {QString::number(removed.mobs), QString::number(removed.items), QString::number(removed.stands)});
     };
-    if (total <= confirmRemoveCount && removal.stands == 0 && !world) {
+    if (found.total() <= confirmRemoveCount && found.stands == 0 && !world) {
         run(context.source);
         return;
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "This removes %1 creatures, %2 item stacks and %3 armour stands."),
-                  {QString::number(removal.mobs), QString::number(removal.items), QString::number(removal.stands)});
+                  {QString::number(found.mobs), QString::number(found.items), QString::number(found.stands)});
     m_pending.ask(context, run, m_state.clock().playerTimeNs());
 }

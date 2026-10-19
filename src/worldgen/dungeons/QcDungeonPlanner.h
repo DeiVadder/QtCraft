@@ -33,8 +33,10 @@ public:
         std::array<QcBlockId, 4> lights{};
     };
 
-    // Unresolvable blocks are reported in `warnings` and switch dungeons off.
-    QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    // Unresolvable blocks switch dungeons off with a warning (warnings()).
+    QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
+
+    const QStringList &warnings() const { return m_warnings; }
 
     bool enabled() const { return m_enabled; }
     const QcDungeonSettings &settings() const { return m_settings; }
@@ -53,10 +55,14 @@ private:
     static bool deepEnough(Probe &probe, QcBlockPos origin, int sizeX, int sizeZ);
     // Whether caves take at most `limit` cells of a room at `origin` (counting stops beyond it).
     static bool fewCaves(Probe &probe, QcBlockPos origin, int sizeX, int sizeZ, double limit);
-    void placeContents(QcDungeonPlan &plan) const;
+    // The spawner's creature, by the weights of the settings.
+    [[nodiscard]] QString mobOf(const QcDungeonPlan &plan) const;
+    // The chests of the room, drawn from chestPlaces().
+    [[nodiscard]] QList<QcDungeonPlan::Placed> chestsOf(const QcDungeonPlan &plan) const;
     // Every place a chest may stand, with the chest facing into the room.
     QList<QcDungeonPlan::Placed> chestPlaces(const QcDungeonPlan &plan) const;
-    void placeCorridors(Probe &probe, QcDungeonPlan &plan) const;
+    // The shortest corridors from the room's doors to caves, at most `corridors` of them.
+    [[nodiscard]] QList<QcDungeonPlan::Corridor> corridorsOf(Probe &probe, const QcDungeonPlan &plan) const;
     // The shortest way from a door outwards along (dx, dz) to a cave: straight, or with one bend.
     [[nodiscard]] std::optional<QcDungeonPlan::Corridor> corridorFrom(Probe &probe, QcBlockPos door, int dx, int dz) const;
     // Steps from `from` along `step` to the first open cell, at most `steps`; none when the way
@@ -64,9 +70,10 @@ private:
     [[nodiscard]] static std::optional<int> firstOpen(Probe &probe, QcBlockPos from, std::pair<int, int> step, int steps);
     // The cells next to the corridor cell `index`.
     static QList<QcBlockPos> around(const QcDungeonPlan::Corridor &corridor, qsizetype index);
-    void addLiningAndLights(QcDungeonPlan &plan) const;
+    // The cells next to the corridors outside the room and the corridors (`inside`), sorted.
+    [[nodiscard]] static QList<QcBlockPos> liningOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside);
     // The lights of the corridors; `inside` holds the corridors' cells.
-    void addLights(QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const;
+    [[nodiscard]] QList<QcDungeonPlan::Placed> lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const;
     // A light on a wall beside the corridor's head cell `head` entered by `step`.
     [[nodiscard]] std::optional<QcDungeonPlan::Placed> lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,
                                                                const QSet<QcBlockPos> &inside) const;
@@ -75,6 +82,7 @@ private:
 
     const QcTerrainGenerator &m_terrain;
     QcDungeonSettings m_settings;
+    QStringList m_warnings;
     quint64 m_seed = 0;
     bool m_enabled = false;
     Blocks m_blocks;

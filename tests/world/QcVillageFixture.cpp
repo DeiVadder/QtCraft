@@ -39,7 +39,9 @@ Building buildingOf(const QcVillageStyles &styles, const QcVillageStyle &style, 
 {
     Building building;
     building.structure = blueprint.variation.build(blueprint.variation.everything());
-    building.spots = styles.spotsOf(*building.structure, building.bell);
+    QcVillageStyles::Spots spots = styles.spotsOf(*building.structure);
+    building.spots = std::move(spots.spots);
+    building.bell = spots.bell;
     building.fields = blueprint.fields;
     if (blueprint.fields && !style.crops.isEmpty()) {
         // The same crops every time: a fixed sequence instead of the seed.
@@ -240,7 +242,7 @@ namespace QcVillageFixture {
 
 std::shared_ptr<QcVillagePlan> plan(const QcContentRegistry &content, const Options &options)
 {
-    const QcVillageStyles styles(content, nullptr);
+    const QcVillageStyles styles(content);
     const QcVillageStyle *style = styles.named(options.style);
     if (!style) {
         return nullptr;

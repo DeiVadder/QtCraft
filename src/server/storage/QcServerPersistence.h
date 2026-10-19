@@ -52,7 +52,7 @@ public:
     // Waits until everything handed to the storage is written (tests, shutting down).
     void waitForStorage();
     bool hasStorage() const { return m_storage.has_value(); }
-    [[nodiscard]] QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
+    [[nodiscard]] QcPlayerStorage::Result readPlayer(const QString &name) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_openWarnings; }
     // Logs the warnings and keeps them for the players.
@@ -78,8 +78,8 @@ private:
     // Takes the world's lock file; fails when another server holds it.
     [[nodiscard]] QcStatus lockWorld();
     [[nodiscard]] QcStatus createInfo(const QcWorldStorage &storage);
-    // Reads world.json; differences of the content packs are added to `warnings`.
-    [[nodiscard]] QcStatus readInfo(const QcWorldStorage &storage, QStringList &warnings);
+    // Reads world.json; the warnings name differences of the content packs and limits out of range.
+    [[nodiscard]] QcResult<QStringList> readInfo(const QcWorldStorage &storage);
     // Opens the chunk storage (a journal of a save that broke off is finished) and hands it to the world.
     [[nodiscard]] QcStatus openChunks(const QString &directory);
     [[nodiscard]] QcStatus readBlockUpdates(const QcWorldStorage &storage);

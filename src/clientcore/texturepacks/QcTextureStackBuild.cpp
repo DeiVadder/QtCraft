@@ -11,8 +11,9 @@ namespace QcTextureStackBuild {
 
 namespace {
 
-// The active packs in priority order: reused ones from the request, the others loaded now.
-QcTexturePackStack loadPacks(const Request &request, const QList<QcTexturePackLibrary::Entry> &entries, QStringList &missing)
+// The active packs in priority order: reused ones from the request, the others loaded now; the ids
+// that could not be loaded.
+[[nodiscard]] QcTexturePackLibrary::LoadedStack loadPacks(const Request &request, const QList<QcTexturePackLibrary::Entry> &entries)
 {
     QStringList toLoad;
     for (const QString &id : request.ids) {
@@ -20,7 +21,7 @@ QcTexturePackStack loadPacks(const Request &request, const QList<QcTexturePackLi
             toLoad.append(id);
         }
     }
-    const QcTexturePackStack fresh = QcTexturePackLibrary::loadStack(toLoad, entries, missing);
+    QcTexturePackLibrary::LoadedStack fresh = QcTexturePackLibrary::loadStack(toLoad, entries);
 
     QcTexturePackStack stack;
     for (const QString &id : request.ids) {
@@ -28,32 +29,38 @@ QcTexturePackStack loadPacks(const Request &request, const QList<QcTexturePackLi
             stack.append(known);
             continue;
         }
-        const auto loaded = std::ranges::find(fresh, id, &QcTexturePack::id);
-        if (loaded != fresh.end()) {
+        const auto loaded = std::ranges::find(fresh.stack, id, &QcTexturePack::id);
+        if (loaded != fresh.stack.end()) {
             stack.append(*loaded);
         }
     }
-    return stack;
+    return {std::move(stack), std::move(fresh.missing)};
 }
 
-// Keeps the packs whose images fit the budget, the highest priority first.
-QcTexturePackStack withinBudget(const QcTexturePackStack &stack, qint64 budget, QStringList &overBudget)
+// The packs whose images fit the budget, the highest priority first, and the ids of the others.
+struct Budgeted
 {
     QcTexturePackStack kept;
+    QStringList overBudget;
+};
+
+[[nodiscard]] Budgeted withinBudget(const QcTexturePackStack &stack, qint64 budget)
+{
+    Budgeted result;
     qint64 used = 0;
     for (const QcTexturePackRef &pack : stack) {
         if (used + pack->decodedBytes > budget) {
-            overBudget.append(pack->id);
+            result.overBudget.append(pack->id);
             continue;
         }
         used += pack->decodedBytes;
-        kept.append(pack);
+        result.kept.append(pack);
     }
-    return kept;
+    return result;
 }
 
 // Previews of all listed packs; a file whose modification time did not change is not read again.
-QHash<QString, Preview> previewsOf(const QList<QcTexturePackLibrary::Entry> &entries, const QHash<QString, Preview> &known)
+[[nodiscard]] QHash<QString, Preview> previewsOf(const QList<QcTexturePackLibrary::Entry> &entries, const QHash<QString, Preview> &known)
 {
     QHash<QString, Preview> previews;
     for (const QcTexturePackLibrary::Entry &entry : entries) {
@@ -82,7 +89,11 @@ Result run(const Request &request)
     timer.start();
 
     result.entries = request.rescan ? QcTexturePackLibrary::scan(*request.rescan) : request.entries;
-    result.stack = withinBudget(loadPacks(request, result.entries, result.missing), request.memoryBudget, result.overBudget);
+    QcTexturePackLibrary::LoadedStack loaded = loadPacks(request, result.entries);
+    result.missing = std::move(loaded.missing);
+    Budgeted budgeted = withinBudget(loaded.stack, request.memoryBudget);
+    result.stack = std::move(budgeted.kept);
+    result.overBudget = std::move(budgeted.overBudget);
     result.previews = previewsOf(result.entries, request.previews);
     result.loadMs = timer.restart();
 

@@ -76,18 +76,7 @@ void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
         return;
     }
 
-    // A list neither the view nor the renderer holds any more: they copy the pointer only while the
-    // GUI thread waits in the renderer's synchronize(), so nobody can take it while it is filled.
-    const auto slot = std::ranges::find_if(m_dropLists, [](const auto &list) { return !list || list.use_count() == 1; });
-    std::shared_ptr<QList<QcPrecipitationDrop>> drops = slot != m_dropLists.end() ? *slot : nullptr;
-    if (!drops) {
-        drops = std::make_shared<QList<QcPrecipitationDrop>>();
-        if (slot != m_dropLists.end()) {
-            *slot = drops;
-        }
-    }
-    m_precipitation.fillDrops(session.weather().rain(), *drops);
-    m_parts.view->setPrecipitation(std::move(drops));
+    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.weather().rain()));
 }
 
 void QcRenderBridge::updateSelection()

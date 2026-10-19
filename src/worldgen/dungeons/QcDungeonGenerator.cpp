@@ -19,8 +19,8 @@ int floorDiv(int value, int divisor)
 
 } // namespace
 
-QcDungeonGenerator::QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings)
-    : m_planner(terrain, content, seed, warnings)
+QcDungeonGenerator::QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
+    : m_planner(terrain, content, seed)
     , m_seed(qcMixSeed(seed, 0x3802))
     , m_lootTable(content.terrainSettings().dungeons.lootTable)
 {

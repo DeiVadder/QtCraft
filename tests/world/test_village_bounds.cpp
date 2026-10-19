@@ -188,8 +188,8 @@ private slots:
         QFETCH(int, radius);
         QFETCH(int, rings);
         const std::shared_ptr<const QcContentRegistry> content = modded(spacing, radius);
-        QStringList warnings;
-        const QcVillageStyles styles(*content, &warnings);
+        const QcVillageStyles styles(*content);
+        const QStringList &warnings = styles.warnings();
         // The wetland is fitted into the margin, with a warning.
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"wetland reaches 28 blocks"_s); }));
         QVERIFY(styles.named(u"qtcraft:swamp"_s)->wetland.reach() <= QcVillagePlanner::freeMargin(content->villageSettings()));

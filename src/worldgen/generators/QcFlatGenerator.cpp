@@ -37,20 +37,16 @@ QcResult<QList<QcBlockId>> QcFlatGenerator::parseLayers(const QString &preset, c
     return layers;
 }
 
-QcFlatGenerator::QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset, QStringList *warnings)
+QcFlatGenerator::QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset)
     : m_content(std::move(content))
 {
     QcResult<QList<QcBlockId>> layers = parseLayers(preset.isEmpty() ? m_content->flatWorld().preset : preset, *m_content);
     if (!layers && !preset.isEmpty()) {
-        if (warnings) {
-            warnings->append(u"flat world: %1; using the default layers"_s.arg(layers.error()));
-        }
+        m_warnings.append(u"flat world: %1; using the default layers"_s.arg(layers.error()));
         layers = parseLayers(m_content->flatWorld().preset, *m_content);
     }
     if (!layers) {
-        if (warnings) {
-            warnings->append(u"flat world: %1; using stone"_s.arg(layers.error()));
-        }
+        m_warnings.append(u"flat world: %1; using stone"_s.arg(layers.error()));
         layers = QList<QcBlockId>{m_content->blockId(u"qtcraft:stone"_s).value_or(qcAirBlockId)};
     }
     m_layers = std::move(*layers);

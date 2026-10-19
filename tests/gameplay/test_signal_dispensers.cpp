@@ -57,15 +57,15 @@ private:
     // The base content after an item registered before all others: every item id is one higher.
     static std::shared_ptr<const QcContentRegistry> contentWithAnItemFirst()
     {
-        QStringList warnings;
         auto content = std::make_shared<QcContentRegistry>();
         QcItemDefinition first;
         first.name = u"aaa:first"_s;
         first.translationKey = u"item.aaa.first"_s;
-        if (!content->registerItem(first) || !QcBaseContent::loadInto(*content, warnings)) {
+        if (!content->registerItem(first) || !QcBaseContent::loadInto(*content)) {
             QcTestUtil::failCase(QStringLiteral("cannot load the content with an item first"));
         }
-        warnings += content->finish();
+        // The warnings of finishing do not matter here.
+        static_cast<void>(content->finish());
         return content;
     }
 

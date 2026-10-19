@@ -48,7 +48,7 @@ constexpr int skatingTicks = 150;
 } // namespace
 
 // The prediction of a client sliding on ice (decision E-430): the slipperiness reaches the client with
-// the content, so the client's steps (QcPhysics::stepPlayer with the content it read) slide exactly
+// the content, so the client's steps (QcEntityMotion::stepPlayer with the content it read) slide exactly
 // as the server's do, tick by tick, on ice, packed ice and blue ice. Once across a link with latency
 // in real time (blue ice): walking, sprinting, jumping and sliding needs no correction (no
 // rubber-banding).
@@ -67,7 +67,7 @@ private:
         config.viewDistance = 2;
         config.seed = 1;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, nullptr));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
 
         auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 13 + jitterMs));
@@ -171,8 +171,8 @@ private slots:
         double released = 0.0;
         double slid = 0.0;
         for (int tick = 0; tick < skatingTicks; ++tick) {
-            QcPhysics::stepPlayer(onServer, skating(tick), server, QcPhysics::tickDuration, false);
-            QcPhysics::stepPlayer(onClient, skating(tick), client, QcPhysics::tickDuration, false);
+            onServer.stepPlayer(skating(tick), server, QcPhysics::tickDuration, false);
+            onClient.stepPlayer(skating(tick), client, QcPhysics::tickDuration, false);
             QCOMPARE(onClient.position, onServer.position);
             QCOMPARE(onClient.velocity, onServer.velocity);
             QCOMPARE(onClient.onGround, onServer.onGround);

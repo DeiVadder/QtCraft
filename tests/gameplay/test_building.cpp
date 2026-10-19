@@ -790,10 +790,9 @@ private slots:
         QVERIFY(m_server->save().has_value());
         const QcWorldStorage storage(directory.path(), m_content);
         QCOMPARE(storage.readBlockUpdates()->size(), qsizetype(1024));
-        QStringList warnings;
-        const auto player = storage.readPlayer(u"Builder"_s, warnings);
-        QVERIFY(player.has_value() && player->has_value());
-        QCOMPARE(player->value().inventory.countOf(item("stone")), 5);
+        const auto read = storage.readPlayer(u"Builder"_s);
+        QVERIFY(read.has_value() && read->player.has_value());
+        QCOMPARE(read->player->inventory.countOf(item("stone")), 5);
     }
 
     void doorsAndBlocksNeverCloseOnBodies()

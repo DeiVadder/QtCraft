@@ -79,12 +79,18 @@ private:
         std::vector<QcBlockPos> dust;
         std::vector<QcBlockPos> readers;
         std::vector<QcBlockPos> observers;
+
+        // The components and dust that `change` may concern.
+        void addAround(const QcCircuitState::Change &change, const QcSignalTable &table);
+        // The observers looking at `pos`.
+        void addObservers(QcBlockPos pos, const QcServerWorld &world, const QcSignalTable &table);
+        // The comparators reading `pos`: behind it, or two behind it through a conductor.
+        void addReaders(QcBlockPos pos, const QcServerWorld &world);
+        // Sorts every list and keeps each position once.
+        void sortUnique();
     };
-    void collect(const QList<QcCircuitState::Change> &changes, Collected &collected) const;
-    void collectReaders(QcBlockPos pos, std::vector<QcBlockPos> &readers) const;
-    void collectObservers(QcBlockPos pos, std::vector<QcBlockPos> &observers) const;
+    [[nodiscard]] Collected collect(const QList<QcCircuitState::Change> &changes) const;
     void reactReadersAndObservers(const Collected &collected, QcCircuitComponents &reactions, QcCircuitPlan &plan) const;
-    void collectAround(const QcCircuitState::Change &change, std::vector<QcBlockPos> &components, std::vector<QcBlockPos> &dust) const;
     void apply(QcCircuitPlan &plan);
     void applyWrites(const QcCircuitPlan &plan);
     void applyOpenings(const QcCircuitPlan &plan);

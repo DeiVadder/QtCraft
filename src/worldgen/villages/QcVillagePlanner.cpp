@@ -14,24 +14,6 @@ namespace {
 // Pieces keep this many blocks to the region's edge besides the radius.
 constexpr int regionMargin = 8;
 
-// The lists of a finished plan without the room they grew into: the generator caches hundreds of
-// plans (QcVillageGenerator::cachedPlans).
-void squeeze(QcVillagePlan &plan)
-{
-    plan.pieces.squeeze();
-    plan.roads.squeeze();
-    plan.branchRoads.squeeze();
-    plan.thresholds.squeeze();
-    plan.runs.squeeze();
-    plan.steps.squeeze();
-    plan.decks.squeeze();
-    plan.wetland.wet.squeeze();
-    plan.wetland.dry.squeeze();
-    plan.beds.squeeze();
-    plan.workstations.squeeze();
-    plan.mobs.squeeze();
-}
-
 } // namespace
 
 QcVillagePlanner::QcVillagePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcVillageStyles &styles,
@@ -59,19 +41,6 @@ int QcVillagePlanner::freeMargin(const QcVillageSettings &settings)
 {
     // Centres keep this much to the region's edges (chooseCentre), the village the radius to its centre.
     return std::max(settings.radius + regionMargin, spacingOf(settings) / 4) - settings.radius;
-}
-
-void QcVillagePlanner::chooseRoads(QcVillageDraft &draft)
-{
-    // Indices below the variant sequence's (which starts at 0).
-    const QcVillageStyle::Road &road =
-        QcVillageRoads::choose(draft.style->roads, qcPositionRandom(draft.seeds.variant, draft.region.x, -1, draft.region.z));
-    const QcVillageStyle::Road &branch =
-        QcVillageRoads::choose(draft.style->branchRoads, qcPositionRandom(draft.seeds.variant, draft.region.x, -2, draft.region.z));
-    draft.plan.pathBlock = road.block;
-    draft.plan.branchPathBlock = branch.block;
-    draft.pathStep = road.step;
-    draft.branchStep = branch.step;
 }
 
 const QcVillageStyle *QcVillagePlanner::styleAt(int x, int z) const
@@ -113,7 +82,7 @@ std::optional<int> QcVillagePlanner::wetAround(const QcVillageStyle &style, int 
     return QcBoardwalkPlanner::wetAround(m_terrain, style, {x, z}, reach, flatnessStep);
 }
 
-void QcVillagePlanner::chooseCentre(QcVillageDraft &draft) const
+std::optional<QcVillageDraft::Centre> QcVillagePlanner::chooseCentre(int regionX, int regionZ) const
 {
     // The first of a few places in the region that is flat land of a biome with villages. Centres
     // keep a quarter of the region to its edges, so neighbouring villages lie half a region apart.
@@ -121,25 +90,23 @@ void QcVillagePlanner::chooseCentre(QcVillageDraft &draft) const
     // village over water stands where its biome has the most water.
     const int margin = m_settings.radius + freeMargin(m_settings);
     const int room = std::max(1, m_spacing - 2 * margin);
-    const int regionX = draft.region.x;
-    const int regionZ = draft.region.z;
+    std::optional<QcVillageDraft::Centre> chosen;
     int wettest = -1;
-    for (int attempt = 0; attempt < m_settings.attempts && (!draft.style || draft.style->overWater); ++attempt) {
+    for (int attempt = 0; attempt < m_settings.attempts && (!chosen || chosen->style->overWater); ++attempt) {
         const int x = regionX * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -1 - 2 * attempt, regionZ) * room);
         const int z = regionZ * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -2 - 2 * attempt, regionZ) * room);
         const QcVillageStyle *style = styleAt(x, z);
-        if (!style || (draft.style && !style->overWater)) {
+        if (!style || (chosen && !style->overWater)) {
             continue;
         }
         const std::optional<int> wet = style->overWater ? wetAround(*style, x, z) : std::nullopt;
         const bool fits = style->overWater ? wet && *wet > wettest : isFlatAround(*style, x, z);
         if (fits) {
-            draft.style = style;
-            draft.centreX = x;
-            draft.centreZ = z;
+            chosen = QcVillageDraft::Centre{style, x, z};
             wettest = wet.value_or(-1);
         }
     }
+    return chosen;
 }
 
 std::shared_ptr<const QcVillagePlan> QcVillagePlanner::plan(int regionX, int regionZ) const
@@ -147,14 +114,14 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanner::plan(int regionX, int reg
     if (qcPositionRandom(m_seeds.layout, regionX, 0, regionZ) >= m_settings.chance || m_styles.isEmpty()) {
         return nullptr;
     }
-    QcVillageDraft draft(m_seeds, {regionX, regionZ, m_spacing, m_settings.radius});
-    chooseCentre(draft);
-    if (!draft.style) {
+    const std::optional<QcVillageDraft::Centre> centre = chooseCentre(regionX, regionZ);
+    if (!centre) {
         return nullptr;
     }
 
-    startPlan(draft);
-    m_roads.chooseLayout(draft);
+    QcVillageDraft draft(m_seeds, {regionX, regionZ, m_spacing, m_settings.radius}, *centre);
+    draft.start();
+    draft.setLayout(QcRoadNetworkPlanner::chooseLayout(draft));
     m_pieces.placeCentre(draft);
     if (draft.plan.pieces.isEmpty()) {
         return nullptr;
@@ -171,38 +138,7 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanner::plan(int regionX, int reg
     // After the pieces: the forecourts of pieces at diagonal roads are side road too.
     draft.plan.steps = QcVillageRoads::steps(draft.plan, draft.pathStep, draft.branchStep);
 
-    coverArea(draft);
-    squeeze(draft.plan);
+    draft.coverArea();
+    draft.plan.squeeze();
     return std::make_shared<const QcVillagePlan>(std::move(draft.plan));
-}
-
-void QcVillagePlanner::startPlan(QcVillageDraft &draft)
-{
-    QcVillagePlan &plan = draft.plan;
-    plan.id = QcVillagePlan::regionId(draft.region.x, draft.region.z);
-    plan.style = draft.style->name;
-    chooseRoads(draft);
-    plan.foundation = draft.style->foundation;
-    if (draft.style->overWater) {
-        plan.stiltPost = draft.style->stilts.post;
-        plan.stiltSpacing = draft.style->stilts.spacing;
-    }
-    draft.counts.fill(0, draft.style->pieces.size());
-}
-
-void QcVillagePlanner::coverArea(QcVillageDraft &draft)
-{
-    QcVillagePlan &plan = draft.plan;
-    plan.minX = plan.maxX = draft.centreX;
-    plan.minZ = plan.maxZ = draft.centreZ;
-    const QList<QcVillageDraft::Rect> covered = draft.pieces + draft.roads;
-    for (const QcVillageDraft::Rect rect : covered) {
-        plan.minX = std::min(plan.minX, rect.x0);
-        plan.minZ = std::min(plan.minZ, rect.z0);
-        plan.maxX = std::max(plan.maxX, rect.x1);
-        plan.maxZ = std::max(plan.maxZ, rect.z1);
-    }
-    if (draft.style->overWater && draft.style->wetland.bottom != qcAirBlockId) {
-        QcBoardwalkPlanner::planWetland(draft);
-    }
 }

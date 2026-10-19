@@ -27,4 +27,8 @@ struct QcArcherState
 
     bool drawing() const { return drawStart >= 0; }
     bool drinking() const { return drinkStart >= 0; }
+
+    // Keeps where the target `targetId` is at `tick` and its smoothed velocity (QcArcherBrain.cpp);
+    // `dt` is the length of a tick.
+    void track(quint32 targetId, const QcVec3 &position, quint64 tick, double dt);
 };

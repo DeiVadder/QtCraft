@@ -95,8 +95,7 @@ void QcPoolPlacer::placeOnSurface(QcChunk &chunk, const QcTerrainColumnGrid &col
 
 void QcPoolPlacer::sink(QcChunk &chunk, const Pool &pool, QcBlockPos floor, int attempt) const
 {
-    QSet<int> cells = bowl(chunk, pool, floor, attempt);
-    dropUncontained(chunk, cells);
+    const QSet<int> cells = contained(chunk, bowl(chunk, pool, floor, attempt));
     if (!opensUpwards(chunk, pool, cells)) {
         return;
     }
@@ -109,44 +108,52 @@ QSet<int> QcPoolPlacer::bowl(const QcChunk &chunk, const Pool &pool, QcBlockPos 
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
     const double radius = pool.radius - 0.6 * qcPositionRandom(pool.seed, baseX + floor.x, floor.y + attempt, baseZ + floor.z);
     QSet<int> cells;
+    // Columns within the radius, one block off the chunk's edges.
+    constexpr int last = QcWorld::chunkSize - 1;
+    const int x0 = std::max(1, floor.x - pool.radius);
+    const int z0 = std::max(1, floor.z - pool.radius);
+    const int width = std::min(last - 1, floor.x + pool.radius) - x0 + 1;
+    const int length = std::min(last - 1, floor.z + pool.radius) - z0 + 1;
+    if (width <= 0 || length <= 0) {
+        return cells;
+    }
     for (int layer = 0; layer < pool.depth; ++layer) {
-        addBowlLayer(chunk, pool, {{floor.x, floor.y - 1 - layer, floor.z}, layer, radius - layer * 0.9}, cells);
+        const BowlLayer at{{floor.x, floor.y - 1 - layer, floor.z}, layer, radius - layer * 0.9};
+        for (int column = 0; column < width * length; ++column) {
+            const int x = x0 + column % width;
+            const int z = z0 + column / width;
+            if (inBowl(chunk, pool, at, x, z)) {
+                cells.insert(cellKey(x, at.centre.y, z));
+            }
+        }
     }
     return cells;
 }
 
-void QcPoolPlacer::addBowlLayer(const QcChunk &chunk, const Pool &pool, const BowlLayer &layer, QSet<int> &cells) const
+bool QcPoolPlacer::inBowl(const QcChunk &chunk, const Pool &pool, const BowlLayer &layer, int x, int z) const
 {
-    constexpr int last = QcWorld::chunkSize - 1;
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
     const auto [centreX, y, centreZ] = layer.centre;
-
-    for (int z = std::max(1, centreZ - pool.radius); z <= std::min(last - 1, centreZ + pool.radius); ++z) {
-        for (int x = std::max(1, centreX - pool.radius); x <= std::min(last - 1, centreX + pool.radius); ++x) {
-            const double distance = std::hypot(x - centreX, z - centreZ) + 0.8 * qcPositionRandom(pool.seed, baseX + x, y, baseZ + z);
-            const QcBlockId block = chunk.block(x, y, z);
-            // On the surface only ground is dug out, and the top layer only under open sky.
-            const bool fits = pool.surface ? holdsLiquid(block) && (layer.layer > 0 || !m_content->block(chunk.block(x, y + 1, z)).solid)
-                                           : block == qcAirBlockId || holdsLiquid(block);
-            if (distance <= layer.radius + 0.4 && block != m_bedrock && fits) {
-                cells.insert(cellKey(x, y, z));
-            }
-        }
-    }
+    const double distance = std::hypot(x - centreX, z - centreZ) + 0.8 * qcPositionRandom(pool.seed, baseX + x, y, baseZ + z);
+    const QcBlockId block = chunk.block(x, y, z);
+    // On the surface only ground is dug out, and the top layer only under open sky.
+    const bool fits = pool.surface ? holdsLiquid(block) && (layer.layer > 0 || !m_content->block(chunk.block(x, y + 1, z)).solid)
+                                   : block == qcAirBlockId || holdsLiquid(block);
+    return distance <= layer.radius + 0.4 && block != m_bedrock && fits;
 }
 
-void QcPoolPlacer::dropUncontained(const QcChunk &chunk, QSet<int> &cells) const
+QSet<int> QcPoolPlacer::contained(const QcChunk &chunk, QSet<int> cells) const
 {
-    const auto contained = [&](int x, int y, int z) { return cells.contains(cellKey(x, y, z)) || holdsLiquid(chunk.block(x, y, z)); };
+    const auto bounded = [&](int x, int y, int z) { return cells.contains(cellKey(x, y, z)) || holdsLiquid(chunk.block(x, y, z)); };
     for (bool changed = true; changed;) {
         changed = false;
         for (auto it = cells.begin(); it != cells.end();) {
             const auto [x, y, z] = cellPos(*it);
             // Another liquid above (an earlier pool) would meet this one.
             const bool liquidAbove = !cells.contains(cellKey(x, y + 1, z)) && isLiquid(chunk.block(x, y + 1, z));
-            if (contained(x - 1, y, z) && contained(x + 1, y, z) && contained(x, y, z - 1) && contained(x, y, z + 1)
-                && contained(x, y - 1, z) && !liquidAbove) {
+            if (bounded(x - 1, y, z) && bounded(x + 1, y, z) && bounded(x, y, z - 1) && bounded(x, y, z + 1)
+                && bounded(x, y - 1, z) && !liquidAbove) {
                 ++it;
                 continue;
             }
@@ -154,6 +161,7 @@ void QcPoolPlacer::dropUncontained(const QcChunk &chunk, QSet<int> &cells) const
             changed = true;
         }
     }
+    return cells;
 }
 
 bool QcPoolPlacer::opensUpwards(const QcChunk &chunk, const Pool &pool, const QSet<int> &cells) const

@@ -71,13 +71,12 @@ protected:
 
     QcBlockId state(const QString &text) const
     {
-        QStringList problems;
-        const std::optional<QcBlockId> parsed = m_content->stateId(text.contains(u':') ? text : QStringLiteral("qtcraft:") + text, &problems);
-        if (!parsed || !problems.isEmpty()) {
-            QcTestUtil::failCase(QStringLiteral("bad state %1: %2").arg(text, problems.join(u", ")));
-            return parsed ? *parsed : qcAirBlockId;
+        const QcContentRegistry::ParsedState parsed = m_content->parseState(text.contains(u':') ? text : QStringLiteral("qtcraft:") + text);
+        if (!parsed.id || !parsed.problems.isEmpty()) {
+            QcTestUtil::failCase(QStringLiteral("bad state %1: %2").arg(text, parsed.problems.join(u", ")));
+            return parsed.id.value_or(qcAirBlockId);
         }
-        return QcStateRotation::turned(*m_content, *parsed, m_turns);
+        return QcStateRotation::turned(*m_content, *parsed.id, m_turns);
     }
 
     // Sets a block (given as authored for no turns) like a player's change.

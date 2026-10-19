@@ -106,27 +106,39 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
     return true;
 }
 
-void addRequirement(QList<std::pair<QString, int>> &needed, const QString &item)
+// The items a recipe takes, one per unit: every non-empty cell of the pattern row by row, or the
+// ingredients of a shapeless recipe.
+[[nodiscard]] QList<QString> recipeItems(const QcRecipeDefinition &recipe)
 {
-    const auto it = std::ranges::find(needed, item, &std::pair<QString, int>::first);
-    if (it != needed.end()) {
-        ++it->second;
-    } else {
-        needed.append({item, 1});
+    if (!recipe.shaped) {
+        return recipe.ingredients;
     }
-}
 
-// Every non-empty cell of the pattern, row by row.
-void addShapedRequirements(QList<std::pair<QString, int>> &needed, const QcRecipeDefinition &recipe)
-{
+    QList<QString> items;
     for (int row = 0; row < recipe.height(); ++row) {
         for (int column = 0; column < recipe.width(); ++column) {
             const QString item = recipe.itemAt(column, row);
             if (!item.isEmpty()) {
-                addRequirement(needed, item);
+                items.append(item);
             }
         }
     }
+    return items;
+}
+
+// Each item with how often it occurs, in the order of its first occurrence.
+[[nodiscard]] QList<std::pair<QString, int>> counted(const QList<QString> &items)
+{
+    QList<std::pair<QString, int>> counts;
+    for (const QString &item : items) {
+        const auto it = std::ranges::find(counts, item, &std::pair<QString, int>::first);
+        if (it != counts.end()) {
+            ++it->second;
+        } else {
+            counts.append({item, 1});
+        }
+    }
+    return counts;
 }
 
 } // namespace
@@ -150,15 +162,7 @@ void addShapedRequirements(QList<std::pair<QString, int>> &needed, const QcRecip
 
 QList<std::pair<QString, int>> requirements(const QcRecipeDefinition &recipe)
 {
-    QList<std::pair<QString, int>> needed;
-    if (recipe.shaped) {
-        addShapedRequirements(needed, recipe);
-    } else {
-        for (const QString &item : recipe.ingredients) {
-            addRequirement(needed, item);
-        }
-    }
-
+    QList<std::pair<QString, int>> needed = counted(recipeItems(recipe));
     std::ranges::stable_partition(needed, [](const std::pair<QString, int> &entry) { return !entry.first.startsWith(u'#'); });
     return needed;
 }

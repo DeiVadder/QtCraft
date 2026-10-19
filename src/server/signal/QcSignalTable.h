@@ -74,12 +74,13 @@ private:
         std::array<int, QcSignalDefinition::maxPower + 1> powerValue{};
         std::array<int, 4> sideStride{};
         std::array<std::array<int, 3>, 4> sideValue{};
+
+        // Notes where `property` sits in the layout; false when it is neither the strength nor a side.
+        bool place(const QcBlockProperty &property, int stride);
     };
 
     static QcSignalState decode(const QcContentRegistry &content, QcBlockId id);
     [[nodiscard]] static std::optional<DustLayout> dustLayout(const QcContentRegistry &content, quint32 type);
-    // Notes where `property` sits in the layout; false when it is neither the strength nor a side.
-    static bool place(DustLayout &layout, const QcBlockProperty &property, int stride);
 
     const QcContentRegistry &m_content;
     std::vector<QcSignalState> m_states;

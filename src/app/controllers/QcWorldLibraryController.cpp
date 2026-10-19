@@ -15,21 +15,26 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-QString modState(const QcModStatus &mod, const QHash<QString, QString> &loadFailures, QString &reason)
+// The state of a mod as the mods screen shows it, and why it is not loaded.
+struct ModState
 {
-    reason = mod.reason;
+    QString state;
+    QString reason;
+};
+
+[[nodiscard]] ModState modState(const QcModStatus &mod, const QHash<QString, QString> &loadFailures)
+{
     if (mod.state == QcModStatus::State::Disabled) {
-        return u"disabled"_s;
+        return {u"disabled"_s, mod.reason};
     }
     if (mod.state == QcModStatus::State::Failed) {
-        return u"failed"_s;
+        return {u"failed"_s, mod.reason};
     }
     if (loadFailures.contains(mod.info.id)) {
         // Found fine on disk, but its content was refused when the last world started.
-        reason = loadFailures.value(mod.info.id);
-        return u"failed"_s;
+        return {u"failed"_s, loadFailures.value(mod.info.id)};
     }
-    return u"loaded"_s;
+    return {u"loaded"_s, mod.reason};
 }
 
 } // namespace
@@ -92,14 +97,13 @@ void QcWorldLibraryController::refreshMods()
     m_mods.clear();
     const QList<QcModStatus> mods = QcModLoader::discover(m_modsDirectory);
     for (const QcModStatus &mod : mods) {
-        QString reason;
-        const QString state = modState(mod, m_modLoadFailures, reason);
+        const ModState state = modState(mod, m_modLoadFailures);
         m_mods.append(QVariantMap{{u"id"_s, mod.info.id},
                                   {u"name"_s, mod.info.name.isEmpty() ? QDir(mod.info.directory).dirName() : mod.info.name},
                                   {u"version"_s, mod.info.version},
                                   {u"description"_s, mod.info.description},
-                                  {u"state"_s, state},
-                                  {u"reason"_s, reason}});
+                                  {u"state"_s, state.state},
+                                  {u"reason"_s, state.reason}});
     }
     emit modsChanged();
 }
@@ -139,10 +143,12 @@ void QcWorldLibraryController::recordLoadedMods(const QList<QcModStatus> &mods)
 const QcContentRegistry &QcWorldLibraryController::content() const
 {
     if (!m_content) {
-        QStringList warnings;
-        QcResult<QcModLoader::Result> loaded = QcModLoader::load(m_modsDirectory, warnings);
-        for (const QString &warning : std::as_const(warnings)) {
+        const QcModLoader::Loaded loaded = QcModLoader::load(m_modsDirectory);
+        for (const QString &warning : QcModLoader::warningsOf(loaded)) {
             qCWarning(lcGame) << "Content:" << warning;
+        }
+        if (!loaded) {
+            qCWarning(lcGame) << "Cannot load game content:" << loaded.error().error;
         }
         m_content = loaded ? std::shared_ptr<const QcContentRegistry>(loaded->content) : std::make_shared<const QcContentRegistry>();
     }

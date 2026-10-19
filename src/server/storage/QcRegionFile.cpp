@@ -127,27 +127,27 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
     return data;
 }
 
-[[nodiscard]] QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged)
+[[nodiscard]] QcResult<AllBlobs> readAll(const QString &path, const Index &index)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly) || file.size() > maxFileBytes) {
         return qcError(u"Cannot read %1: %2"_s.arg(path, file.errorString()));
     }
     const QByteArray all = file.readAll();
-    QList<Blob> blobs;
-    blobs.reserve(index.size());
+    AllBlobs result;
+    result.blobs.reserve(index.size());
     for (auto it = index.cbegin(); it != index.cend(); ++it) {
         const Entry &entry = it.value();
         if (qint64(entry.offset) + qint64(entry.size) > all.size()) {
             return qcError(u"%1 is damaged (chunk data)"_s.arg(path));
         }
         QByteArray data = all.mid(entry.offset, entry.size);
-        if (damaged && qcCrc32(data) != entry.crc) {
-            damaged->append(it.key());
+        if (qcCrc32(data) != entry.crc) {
+            result.damaged.append(it.key());
         }
-        blobs.append({it.key(), entry.marks, std::move(data), entry.crc});
+        result.blobs.append({it.key(), entry.marks, std::move(data), entry.crc});
     }
-    return blobs;
+    return result;
 }
 
 [[nodiscard]] QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs)

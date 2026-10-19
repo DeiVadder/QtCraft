@@ -15,8 +15,9 @@ namespace QcEntityChecks {
 namespace {
 
 // Ids given twice, and entities whose kind does not name the table they lie in.
-void checkIdsAndTables(const QcEntities &entities, QStringList &problems)
+[[nodiscard]] QStringList checkIdsAndTables(const QcEntities &entities)
 {
+    QStringList problems;
     QHash<quint32, QcEntityKind> seen;
     const auto note = [&](const QcEntity &entity, QcEntityKind table) {
         if (entity.kind != table) {
@@ -61,12 +62,13 @@ void checkIdsAndTables(const QcEntities &entities, QStringList &problems)
             note(*client, QcEntityKind::Player);
         }
     }
+    return problems;
 }
 
 template<typename Entry, typename Position>
-void checkChunks(const QList<QcEntityRecord::Ordered<Entry>> &entries, QcChunkPos chunk, const char *kind, Position position,
-                 QStringList &problems)
+[[nodiscard]] QStringList checkChunks(const QList<QcEntityRecord::Ordered<Entry>> &entries, QcChunkPos chunk, const char *kind, Position position)
 {
+    QStringList problems;
     for (const QcEntityRecord::Ordered<Entry> &ordered : entries) {
         if (QcPhysics::blockContaining(position(ordered.entry)).chunk() != chunk) {
             problems.append(u"a saved %1 (order %2) is in the record of chunk %3, %4 but not in that chunk"_s.arg(QLatin1StringView(kind))
@@ -75,11 +77,13 @@ void checkChunks(const QList<QcEntityRecord::Ordered<Entry>> &entries, QcChunkPo
                                 .arg(chunk.z));
         }
     }
+    return problems;
 }
 
 // Every rider is a player who plays and lives, in one cart only (decision E-382).
-void checkRiders(const QcEntities &entities, QStringList &problems)
+[[nodiscard]] QStringList checkRiders(const QcEntities &entities)
 {
+    QStringList problems;
     QSet<quint32> riders;
     for (const QcMinecart &cart : entities.minecarts().all()) {
         if (cart.rider == 0) {
@@ -96,6 +100,7 @@ void checkRiders(const QcEntities &entities, QStringList &problems)
         }
         riders.insert(cart.rider);
     }
+    return problems;
 }
 
 } // namespace
@@ -103,21 +108,21 @@ void checkRiders(const QcEntities &entities, QStringList &problems)
 QStringList problems(const QcEntities &entities)
 {
     QStringList problems;
-    checkIdsAndTables(entities, problems);
-    checkRiders(entities, problems);
+    problems.append(checkIdsAndTables(entities));
+    problems.append(checkRiders(entities));
 
     const QHash<QcChunkPos, QcEntityRecord> saved = QcEntityRecords::collect(entities);
     for (const QcEntityRecord &record : saved) {
-        checkChunks(record.creatures, record.chunk, "creature", [](const QcMobManager::Stored &stored) { return stored.position; }, problems);
-        checkChunks(record.items, record.chunk, "item", [](const QcItemEntityManager::Drop &drop) { return drop.position; }, problems);
-        checkChunks(record.fallingBlocks, record.chunk, "falling block", [](const QcFallingBlock &falling) { return falling.motion.position; },
-                    problems);
-        checkChunks(record.primedExplosives, record.chunk, "lit explosive", [](const QcPrimedExplosive &primed) { return primed.motion.position; },
-                    problems);
-        checkChunks(record.stands, record.chunk, "armour stand", [](const QcArmourStand &stand) { return stand.motion.position; }, problems);
-        checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }, problems);
-        checkChunks(record.orbs, record.chunk, "experience orb", [](const QcExperienceOrb &orb) { return orb.motion.position; }, problems);
-        checkChunks(record.projectiles, record.chunk, "projectile", [](const QcProjectile &shot) { return shot.motion.position; }, problems);
+        problems.append(checkChunks(record.creatures, record.chunk, "creature", [](const QcMobManager::Stored &stored) { return stored.position; }));
+        problems.append(checkChunks(record.items, record.chunk, "item", [](const QcItemEntityManager::Drop &drop) { return drop.position; }));
+        problems.append(checkChunks(record.fallingBlocks, record.chunk, "falling block",
+                                    [](const QcFallingBlock &falling) { return falling.motion.position; }));
+        problems.append(checkChunks(record.primedExplosives, record.chunk, "lit explosive",
+                                    [](const QcPrimedExplosive &primed) { return primed.motion.position; }));
+        problems.append(checkChunks(record.stands, record.chunk, "armour stand", [](const QcArmourStand &stand) { return stand.motion.position; }));
+        problems.append(checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }));
+        problems.append(checkChunks(record.orbs, record.chunk, "experience orb", [](const QcExperienceOrb &orb) { return orb.motion.position; }));
+        problems.append(checkChunks(record.projectiles, record.chunk, "projectile", [](const QcProjectile &shot) { return shot.motion.position; }));
     }
     return problems;
 }

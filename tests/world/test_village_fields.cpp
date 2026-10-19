@@ -204,8 +204,8 @@ private slots:
             content->registerVillageStyle(style);
         }
 
-        QStringList warnings;
-        const QcVillageStyles styles(*content, &warnings);
+        const QcVillageStyles styles(*content);
+        const QStringList &warnings = styles.warnings();
         QVERIFY2(warnings.join(u'\n').contains(u"'qtcraft:stone' is no crop"_s), qPrintable(warnings.join(u'\n')));
         const QcTerrainGenerator generator(content, seed);
         int beets = 0;

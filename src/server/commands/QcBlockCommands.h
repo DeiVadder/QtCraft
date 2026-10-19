@@ -29,6 +29,13 @@ public:
     void addTo(QcCommandRegistry &registry);
 
 private:
+    // Only blocks of this kind are replaced (all of its states unless the filter names states).
+    struct Filter
+    {
+        std::optional<QcBlockId> block;
+        bool explicitState = false;
+    };
+
     struct BlockArea
     {
         QcBlockPos from;
@@ -38,9 +45,7 @@ private:
         QcBlockId block = qcAirBlockId;
         // Without explicit states, connections follow the neighbours.
         bool explicitState = false;
-        // Only blocks of this kind are replaced (all of its states unless the filter names states).
-        std::optional<QcBlockId> filter;
-        bool filterState = false;
+        Filter filter;
 
         qint64 volume() const;
     };
@@ -51,8 +56,12 @@ private:
 
     // The area of /fill and /clear (or the block of /setblock) from the words; replies on errors.
     [[nodiscard]] std::optional<BlockArea> parseArea(const QcCommandContext &context, qsizetype corners, const QString &blockWord) const;
-    bool parseFilter(const QcCommandContext &context, BlockArea &area, bool clear) const;
-    [[nodiscard]] std::optional<QcBlockId> parseBlock(const QcCommandContext &context, const QString &text, QString &name) const;
+    // The filter of /fill … replace and /clear (none given: no filter); none on errors, replied to.
+    [[nodiscard]] std::optional<Filter> parseFilter(const QcCommandContext &context, bool clear) const;
+    // The full name of a block word: "name" or "name[property=value,...]", in qtcraft: without a pack.
+    [[nodiscard]] static QString blockName(const QString &text);
+    // The block state of a block word; replies on errors.
+    [[nodiscard]] std::optional<QcBlockId> parseBlock(const QcCommandContext &context, const QString &text) const;
     // Changes the blocks of the area and reports how many changed.
     void apply(const QcCommandSource &source, const BlockArea &area, bool single);
     // Sets one block of the area; false when its chunk is not loaded, the filter does not match or

@@ -12,33 +12,37 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-void parseFamilyKinds(const QJsonObject &json, QcPartFamily &family, QcJsonFieldReader &reader)
+[[nodiscard]] QStringList parseFamilyKinds(const QJsonObject &json, QcJsonFieldReader &reader)
 {
+    QStringList result;
     const QJsonArray kinds = json.value(u"kinds"_s).toArray();
     for (const auto &kind : kinds) {
-        if (!kind.isString() || kind.toString().isEmpty() || kind.toString().size() > 32 || family.kinds.size() >= 16) {
+        if (!kind.isString() || kind.toString().isEmpty() || kind.toString().size() > 32 || result.size() >= 16) {
             reader.fail(u"'kinds' must list at most 16 material kinds"_s);
             break;
         }
-        family.kinds.append(kind.toString());
+        result.append(kind.toString());
     }
 
-    if (family.kinds.isEmpty()) {
+    if (result.isEmpty()) {
         reader.fail(u"'kinds' needs at least one material kind"_s);
     }
+    return result;
 }
 
-void parseFamilyTranslations(const QJsonObject &json, QcPartFamily &family, QcJsonFieldReader &reader)
+[[nodiscard]] QList<std::pair<QString, QString>> parseFamilyTranslations(const QJsonObject &json, QcJsonFieldReader &reader)
 {
+    QList<std::pair<QString, QString>> result;
     const QJsonObject translations = json.value(u"translations"_s).toObject();
     for (auto it = translations.constBegin(); it != translations.constEnd(); ++it) {
         if (!it.value().isString() || !it.value().toString().contains(u"%1"_s) || it.value().toString().size() > 128
-            || it.key().size() > 16 || family.translations.size() >= 64) {
+            || it.key().size() > 16 || result.size() >= 64) {
             reader.fail(u"'translations' maps languages to texts with %1 for the material"_s);
             break;
         }
-        family.translations.append({it.key(), it.value().toString()});
+        result.append({it.key(), it.value().toString()});
     }
+    return result;
 }
 
 // Check the templates once with a stand-in material, so broken families fail at loading.
@@ -59,41 +63,40 @@ void parseFamilyTranslations(const QJsonObject &json, QcPartFamily &family, QcJs
     return {};
 }
 
-void parseExclusion(const QJsonObject &json, QcMaterialDefinition &material, QcJsonFieldReader &reader, const QString &packNamespace)
+// The blocks an exclusion keeps out of every family ("excluded": true).
+[[nodiscard]] QStringList parseExcludedBlocks(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
+    QStringList result;
     const QJsonArray blocks = json.value(u"blocks"_s).toArray();
     for (const auto &entry : blocks) {
         const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
-        if (name.isEmpty() || material.excludedBlocks.size() >= 1024) {
+        if (name.isEmpty() || result.size() >= 1024) {
             reader.fail(u"'blocks' must list at most 1024 block names"_s);
             break;
         }
-        material.excludedBlocks.append(name);
+        result.append(name);
     }
 
-    if (reader.ok() && material.excludedBlocks.isEmpty()) {
+    if (reader.ok() && result.isEmpty()) {
         reader.fail(u"an exclusion needs 'blocks'"_s);
     }
+    return result;
 }
 
-void parseMaterialBlock(const QJsonObject &json, QcMaterialDefinition &material, QcJsonFieldReader &reader,
-                        const QString &packNamespace)
+// The part families a material leaves out ("exclude").
+[[nodiscard]] QStringList parseExcludedFamilies(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
-    material.block = reader.name(u"block"_s, packNamespace);
-    material.kind = reader.string(u"kind"_s);
-    if (reader.ok() && (material.block.isEmpty() || material.kind.isEmpty() || material.kind.size() > 32)) {
-        reader.fail(u"'block' and 'kind' are required"_s);
-    }
-
+    QStringList result;
     const QJsonArray exclude = json.value(u"exclude"_s).toArray();
     for (const auto &entry : exclude) {
         const QString family = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
-        if (family.isEmpty() || material.exclude.size() >= 64) {
+        if (family.isEmpty() || result.size() >= 64) {
             reader.fail(u"'exclude' must list at most 64 part families"_s);
             break;
         }
-        material.exclude.append(family);
+        result.append(family);
     }
+    return result;
 }
 
 } // namespace
@@ -115,7 +118,7 @@ namespace QcMaterialParser {
         reader.fail(u"'suffix' must be a plain name of at most 32 characters"_s);
     }
 
-    parseFamilyKinds(json, family, reader);
+    family.kinds = parseFamilyKinds(json, reader);
     family.hardnessFactor = reader.number(u"hardness"_s, 1.0, 0.0, 100.0);
     family.fuelFactor = reader.number(u"fuel"_s, 1.0, 0.0, 100.0);
     family.block = json.value(u"block"_s).toObject();
@@ -123,7 +126,7 @@ namespace QcMaterialParser {
     if (!json.value(u"block"_s).isObject() || !json.value(u"recipe"_s).isObject()) {
         reader.fail(u"'block' and 'recipe' objects are required"_s);
     }
-    parseFamilyTranslations(json, family, reader);
+    family.translations = parseFamilyTranslations(json, reader);
 
     if (!reader.ok()) {
         return qcError(reader.error);
@@ -147,9 +150,14 @@ namespace QcMaterialParser {
     reader.context = u"material '%1'"_s.arg(material.name);
     material.excluded = reader.boolean(u"excluded"_s, false);
     if (material.excluded) {
-        parseExclusion(json, material, reader, packNamespace);
+        material.excludedBlocks = parseExcludedBlocks(json, reader, packNamespace);
     } else {
-        parseMaterialBlock(json, material, reader, packNamespace);
+        material.block = reader.name(u"block"_s, packNamespace);
+        material.kind = reader.string(u"kind"_s);
+        if (reader.ok() && (material.block.isEmpty() || material.kind.isEmpty() || material.kind.size() > 32)) {
+            reader.fail(u"'block' and 'kind' are required"_s);
+        }
+        material.exclude = parseExcludedFamilies(json, reader, packNamespace);
     }
     material.translationKey = reader.string(u"translation"_s, QcContentFields::translationKey(u"material"_s, material.name));
 

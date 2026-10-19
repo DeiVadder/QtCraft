@@ -86,14 +86,15 @@ void QcStatusEffects::write(QDataStream &stream, const QList<QcStatusEffect> &ef
     }
 }
 
-bool QcStatusEffects::read(QDataStream &stream, QList<QcStatusEffect> &effects)
+std::optional<QList<QcStatusEffect>> QcStatusEffects::read(QDataStream &stream)
 {
     quint32 count = 0;
     stream >> count;
     if (stream.status() != QDataStream::Ok || count > quint32(maxEffects)) {
-        return false;
+        return std::nullopt;
     }
-    effects.clear();
+    QList<QcStatusEffect> effects;
+    effects.reserve(count);
     for (quint32 i = 0; i < count; ++i) {
         QcStatusEffect effect;
         qint32 level = 0;
@@ -102,9 +103,9 @@ bool QcStatusEffects::read(QDataStream &stream, QList<QcStatusEffect> &effects)
         effect.level = level;
         effect.ticksLeft = ticks;
         if (stream.status() != QDataStream::Ok || !plausible(effect, QcEffectDefinition::maxLevel)) {
-            return false;
+            return std::nullopt;
         }
         effects.append(effect);
     }
-    return true;
+    return effects;
 }

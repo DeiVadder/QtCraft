@@ -12,8 +12,10 @@ namespace QcCoastalTowerParser {
 namespace {
 
 // The structures a tower is chosen from, with their weights.
-void parseStructures(const QJsonObject &json, QcCoastalTowerSettings &towers, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QList<QcCoastalTowerSettings::Structure> parseStructures(const QJsonObject &json, QcJsonFieldReader &reader,
+                                                                       const QString &packNamespace)
 {
+    QList<QcCoastalTowerSettings::Structure> result;
     const QJsonArray structures = json.value(u"structures"_s).toArray();
     for (const auto &entry : structures) {
         const QJsonObject structure = entry.toObject();
@@ -21,17 +23,19 @@ void parseStructures(const QJsonObject &json, QcCoastalTowerSettings &towers, Qc
         const int weight = structure.value(u"weight"_s).toInt(1);
         if (name.isEmpty() || weight < 1) {
             reader.fail(u"'structures' entries need a 'structure' and a positive 'weight'"_s);
-            return;
+            return result;
         }
-        towers.structures.append({QcContentNames::qualify(name, packNamespace), weight});
+        result.append({QcContentNames::qualify(name, packNamespace), weight});
     }
+    return result;
 }
 
 } // namespace
 
-void parseCoastalTowers(const QJsonObject &json, QcCoastalTowerSettings &towers, QcJsonFieldReader &reader, const QString &packNamespace)
+QcCoastalTowerSettings parseCoastalTowers(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     using Settings = QcCoastalTowerSettings;
+    Settings towers;
     towers.enabled = reader.boolean(u"enabled"_s, true);
     towers.regionSize = reader.integer(u"regionSize"_s, towers.regionSize, 48, Settings::maxRegionSize);
     towers.chance = reader.number(u"chance"_s, towers.chance, 0.0, 1.0);
@@ -44,10 +48,11 @@ void parseCoastalTowers(const QJsonObject &json, QcCoastalTowerSettings &towers,
     towers.clearance = reader.integer(u"clearance"_s, towers.clearance, 0, Settings::maxDistance);
     towers.foundation = reader.name(u"foundation"_s, packNamespace);
     towers.maxFoundation = reader.integer(u"maxFoundation"_s, towers.maxFoundation, 0, 64);
-    parseStructures(json, towers, reader, packNamespace);
+    towers.structures = parseStructures(json, reader, packNamespace);
     if (reader.ok() && (towers.foundation.isEmpty() || towers.structures.isEmpty())) {
         reader.fail(u"needs a 'foundation' and 'structures'"_s);
     }
+    return towers;
 }
 
 } // namespace QcCoastalTowerParser

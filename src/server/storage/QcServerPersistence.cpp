@@ -72,11 +72,11 @@ QcStatus QcServerPersistence::open()
         return createInfo(storage);
     }
 
-    QStringList warnings;
-    if (const QcStatus read = readInfo(storage, warnings); !read) {
-        return read;
+    const QcResult<QStringList> warnings = readInfo(storage);
+    if (!warnings) {
+        return qcError(warnings.error());
     }
-    noteWarnings(warnings);
+    noteWarnings(*warnings);
 
     // A save writes world.json, the chunks and their entities as one (decision E-373): a world whose
     // setup is not done has nothing of it stored, so the setup simply runs.
@@ -157,8 +157,9 @@ QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
     return storage.writeInfo(m_state.info());
 }
 
-QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringList &warnings)
+QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storage)
 {
+    QStringList warnings;
     QcResult<QcWorldInfo> info = storage.readInfo();
     if (!info) {
         return qcError(info.error());
@@ -180,7 +181,9 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
     m_state.config().worldName = m_state.info().name;
     // A single-player world plays with its own limits; a dedicated server's server.json decides there.
     if (!m_state.config().limitsFromServer) {
-        m_state.config().limits = QcServerLimits::fromJson(m_state.info().limits, u"world.json"_s, &warnings);
+        const QcServerLimits::Read limits = QcServerLimits::fromJson(m_state.info().limits, u"world.json"_s);
+        m_state.config().limits = limits.limits;
+        warnings.append(limits.warnings);
         m_state.applyLimits();
     }
     if (!m_state.info().unknownGameMode.isEmpty()) {
@@ -198,7 +201,7 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
     }
 
     m_state.info().packs = m_state.content().packs();
-    return {};
+    return warnings;
 }
 
 QcStatus QcServerPersistence::readBlockUpdates(const QcWorldStorage &storage)
@@ -246,25 +249,25 @@ QcStatus QcServerPersistence::lockWorld()
     return qcError(u"Cannot lock the world %1"_s.arg(directory.path()));
 }
 
-QcResult<std::optional<QcPlayerData>> QcServerPersistence::readPlayer(const QString &name, QStringList &warnings) const
+QcPlayerStorage::Result QcServerPersistence::readPlayer(const QString &name) const
 {
     if (!m_storage || !m_io) {
-        return std::optional<QcPlayerData>();
+        return QcPlayerStorage::Read{};
     }
     // Through the storage: a file handed over with a save that is not written yet is the newest.
     const QcResult<std::optional<QByteArray>> file = m_io->readFileNow(QcPlayerStorage::relativePath(name));
     if (!file) {
-        return qcError(file.error());
+        return std::unexpected(QcPlayerStorage::Failure{file.error(), {}});
     }
-    return m_storage->parsePlayer(name, *file, warnings);
+    return m_storage->parsePlayer(name, *file);
 }
 
 QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &storage, const QcServerClient &client) const
 {
     // Only joined players are saved, and their names are never empty (QcProfileValidation).
     Q_ASSERT(client.joined && !client.name.isEmpty());
-    int lost = 0;
-    QcPlayerData player = QcPlayerRecords::of(client, m_state.content(), lost);
+    QcPlayerRecords::Record record = QcPlayerRecords::of(client, m_state.content());
+    QcPlayerData &player = record.player;
     // A rider is saved where he would get out: the seat lies inside the block under the rail, and the
     // rider is not saved with the cart (decision E-383).
     if (const QcMinecart *cart = m_state.entities().minecarts().ridden(client.id)) {
@@ -272,8 +275,8 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
         player.motion.velocity = {};
         player.motion.onGround = false;
     }
-    if (lost > 0) {
-        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
+    if (record.lost > 0) {
+        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << record.lost << "items from the crafting grid were not saved";
     }
     return {QcPlayerStorage::relativePath(client.name), storage.playerBytes(player)};
 }

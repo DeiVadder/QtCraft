@@ -8,6 +8,7 @@
 #include "server/storage/QcBlockEntityRecord.h"
 #include "server/storage/QcChunkStore.h"
 #include "server/storage/QcEntityRecord.h"
+#include "server/storage/QcLoadWarnings.h"
 #include "server/storage/QcRegionFile.h"
 
 #include <QSet>
@@ -105,7 +106,10 @@ public:
     // QcRegionFile::maxBlobBytes otherwise). Set before the first request.
     void setBlockEntityLimit(quint32 limit) { m_blockEntityLimit = limit; }
 private:
-    Arrival readChunk(QcChunkPos pos);
+    // The chunk with the warnings of reading it.
+    [[nodiscard]] Arrival readChunk(QcChunkPos pos);
+    // The chunk as read; its warnings go to m_warnings.
+    [[nodiscard]] Arrival decodeChunk(QcChunkPos pos);
     // Runs `job` on the I/O thread (before the queue with `first`) and waits for it alone.
     void runAndWait(std::function<void()> job, bool first);
     void store(const Departure &departure);
@@ -116,8 +120,9 @@ private:
     Preparation m_prepare;
     // Used only by the thread of m_pool once it runs (and by open() before).
     QcChunkStore m_store;
-    // Unknown names reported so far (one warning per world and name).
-    QSet<QString> m_reported;
+    // Warnings of the chunk being read, with the unknown names reported so far (one warning per world
+    // and name).
+    QcLoadWarnings m_warnings;
     quint32 m_blockEntityLimit = QcRegionFile::maxBlobBytes;
     QcMailbox<Arrival> m_arrivals;
     QcMailbox<SaveResult> m_saves;

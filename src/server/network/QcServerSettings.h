@@ -57,7 +57,7 @@ struct QcServerSettings
 
     // The listener's address: the bind address, or Any.
     [[nodiscard]] QcResult<QHostAddress> address() const;
-    // The values that concern the game server and the listener.
-    void applyTo(QcServerConfig &config) const;
+    // The values that concern the game server and the listener (the world comes from elsewhere).
+    [[nodiscard]] QcServerConfig serverConfig() const;
     QcNetworkConfig networkConfig() const;
 };

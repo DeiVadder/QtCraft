@@ -15,7 +15,7 @@ void emitSquare(QcEntityMesh &mesh, const std::array<QcVec3, 4> &corners, const 
                                                          {float(icon.left()), float(icon.top())},
                                                          {float(icon.right()), float(icon.top())},
                                                          {float(icon.right()), float(icon.bottom())}}};
-    const auto base = quint32(mesh.vertices.size());
+    std::array<QcEntityVertex, 4> quad;
     for (std::size_t i = 0; i < corners.size(); ++i) {
         QcEntityVertex vertex;
         vertex.x = float(corners[i].x);
@@ -26,10 +26,9 @@ void emitSquare(QcEntityMesh &mesh, const std::array<QcVec3, 4> &corners, const 
         vertex.shade = 0.95f;
         vertex.skyLight = light.sky;
         vertex.blockLight = light.block;
-        mesh.vertices.append(vertex);
+        quad[i] = vertex;
     }
-    mesh.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
-    mesh.indices.append({base, base + 2, base + 1, base, base + 3, base + 2});
+    mesh.addQuad(quad, true);
 }
 
 } // namespace

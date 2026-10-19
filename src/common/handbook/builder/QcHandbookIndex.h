@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/handbook/QcHandbookEntry.h"
+#include "common/handbook/QcLinkList.h"
 
 #include <QHash>
 #include <QList>
@@ -30,10 +31,10 @@ public:
     QList<IngredientUse> recipesByIngredient(const QString &item) const { return m_recipesByIngredient.value(item); }
     QList<qsizetype> smeltingByResult(const QString &item) const { return m_smeltingByResult.value(item); }
     QList<qsizetype> smeltingByInput(const QString &item) const { return m_smeltingByInput.value(item); }
-    QList<Link> droppedBy(const QString &item) const { return m_droppedBy.value(item); }
+    QList<Link> droppedBy(const QString &item) const { return m_droppedBy.value(item).links(); }
     // Biomes, ore veins and pools a block occurs in.
-    QList<Link> foundIn(const QString &block) const { return m_foundIn.value(block); }
-    QList<Link> spawnersOn(const QString &block) const { return m_spawnersOn.value(block); }
+    QList<Link> foundIn(const QString &block) const { return m_foundIn.value(block).links(); }
+    QList<Link> spawnersOn(const QString &block) const { return m_spawnersOn.value(block).links(); }
     // Indices into the content's blocks.
     QList<qsizetype> machinesByCategory(const QString &category) const { return m_machinesByCategory.value(category); }
     QStringList partsByBase(const QString &block) const { return m_partsByBase.value(block); }
@@ -50,9 +51,9 @@ private:
     QHash<QString, QList<IngredientUse>> m_recipesByIngredient;
     QHash<QString, QList<qsizetype>> m_smeltingByResult;
     QHash<QString, QList<qsizetype>> m_smeltingByInput;
-    QHash<QString, QList<Link>> m_droppedBy;
-    QHash<QString, QList<Link>> m_foundIn;
-    QHash<QString, QList<Link>> m_spawnersOn;
+    QHash<QString, QcLinkList> m_droppedBy;
+    QHash<QString, QcLinkList> m_foundIn;
+    QHash<QString, QcLinkList> m_spawnersOn;
     QHash<QString, QList<qsizetype>> m_machinesByCategory;
     QHash<QString, QStringList> m_partsByBase;
 };

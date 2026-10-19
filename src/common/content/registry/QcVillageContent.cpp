@@ -8,10 +8,19 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Block name -> workstation kind, from the professions in the order they were registered.
-QHash<QString, QString> workstationsOf(const QcContentRegistry &registry, QStringList &warnings)
+// Block name -> workstation kind, from the professions in the order they were registered, and
+// the warnings about blocks that are no workstation or the workstation of several professions.
+struct Workstations
 {
-    QHash<QString, QString> workstations;
+    QHash<QString, QString> kinds;
+    QStringList warnings;
+};
+
+[[nodiscard]] Workstations workstationsOf(const QcContentRegistry &registry)
+{
+    Workstations result;
+    QHash<QString, QString> &workstations = result.kinds;
+    QStringList &warnings = result.warnings;
     for (const QcVillagerProfession &profession : registry.professions()) {
         for (const QString &block : profession.workstationBlocks) {
             if (!registry.blockId(block)) {
@@ -25,7 +34,7 @@ QHash<QString, QString> workstationsOf(const QcContentRegistry &registry, QStrin
             workstations.insert(block, profession.workstation);
         }
     }
-    return workstations;
+    return result;
 }
 
 // Whether `mob` names a creature kind that is a villager.
@@ -35,44 +44,71 @@ bool isVillager(const QcContentRegistry &registry, const QString &mob)
     return type && registry.mobs()[*type].villager;
 }
 
-// Gives every biome and the fallback to one style: the later registered one of those naming it.
-void settleBiomes(QList<QcVillageStyleDefinition> &styles, QStringList &warnings)
+// The style (by index) that owns each biome and the one that is the fallback (-1: none).
+struct StyleOwners
 {
-    QHash<QString, qsizetype> owners;
+    QHash<QString, qsizetype> biomes;
     qsizetype fallback = -1;
+};
+
+// Every biome and the fallback belong to one style: the later registered one of those naming it.
+[[nodiscard]] StyleOwners ownersOf(const QList<QcVillageStyleDefinition> &styles)
+{
+    StyleOwners owners;
     for (qsizetype index = 0; index < styles.size(); ++index) {
-        for (const QString &biome : std::as_const(styles[index].biomes)) {
-            const qsizetype other = owners.value(biome, -1);
+        for (const QString &biome : styles[index].biomes) {
+            const qsizetype other = owners.biomes.value(biome, -1);
             if (other < 0 || styles[other].registered < styles[index].registered) {
-                owners.insert(biome, index);
+                owners.biomes.insert(biome, index);
             }
         }
-        if (styles[index].fallback && (fallback < 0 || styles[fallback].registered < styles[index].registered)) {
-            fallback = index;
+        if (styles[index].fallback && (owners.fallback < 0 || styles[owners.fallback].registered < styles[index].registered)) {
+            owners.fallback = index;
         }
     }
+    return owners;
+}
 
-    for (qsizetype index = 0; index < styles.size(); ++index) {
-        QcVillageStyleDefinition &style = styles[index];
+// Takes from the style at `index` the biomes and the fallback it does not own; a warning for every
+// claim it lost.
+[[nodiscard]] QStringList settleStyle(QcContentRegistry &registry, const StyleOwners &owners, qsizetype index)
+{
+    QStringList warnings;
+    registry.updateVillageStyle(index, [&](QcVillageStyleDefinition &style) {
+        const QList<QcVillageStyleDefinition> &styles = std::as_const(registry).villageStyles();
         const QStringList biomes = style.biomes;
         for (const QString &biome : biomes) {
-            const qsizetype owner = owners.value(biome);
-            if (owner != index) {
+            // A biome without an owner is no claim of two styles.
+            const qsizetype owner = owners.biomes.value(biome, -1);
+            if (owner >= 0 && owner != index) {
                 warnings.append(u"village styles '%1' and '%2' both name biome '%3'; '%2', changed later, keeps it"_s.arg(
                     style.name, styles[owner].name, biome));
                 style.biomes.removeAll(biome);
             }
         }
-        if (style.fallback && index != fallback) {
-            warnings.append(u"village styles '%1' and '%2' are both the fallback; '%2', changed later, stays it"_s.arg(style.name, styles[fallback].name));
+        if (style.fallback && index != owners.fallback) {
+            warnings.append(u"village styles '%1' and '%2' are both the fallback; '%2', changed later, stays it"_s.arg(
+                style.name, styles[owners.fallback].name));
             style.fallback = false;
         }
-    }
+    });
+    return warnings;
 }
 
-// Warnings for the names of a style that the content lacks.
-void checkStyleNames(const QcContentRegistry &registry, const QcVillageStyleDefinition &style, QStringList &warnings)
+// Takes from each style of `registry` the biomes and the fallback it does not own.
+[[nodiscard]] QStringList settleBiomes(QcContentRegistry &registry)
 {
+    const StyleOwners owners = ownersOf(registry.villageStyles());
+    QStringList warnings;
+    for (qsizetype index = 0; index < registry.villageStyles().size(); ++index) {
+        warnings += settleStyle(registry, owners, index);
+    }
+    return warnings;
+}
+
+[[nodiscard]] QStringList checkStyleNames(const QcContentRegistry &registry, const QcVillageStyleDefinition &style)
+{
+    QStringList warnings;
     for (const QString &biome : style.biomes) {
         if (!registry.biome(biome)) {
             warnings.append(u"village style '%1': unknown biome '%2'"_s.arg(style.name, biome));
@@ -86,6 +122,7 @@ void checkStyleNames(const QcContentRegistry &registry, const QcVillageStyleDefi
             warnings.append(u"village style '%1': unknown resident '%2'"_s.arg(style.name, resident.mob));
         }
     }
+    return warnings;
 }
 
 } // namespace
@@ -94,20 +131,22 @@ namespace QcVillageContent {
 
 QStringList resolveSpecies(QcContentRegistry &registry)
 {
-    QStringList warnings;
+    Workstations workstations = workstationsOf(registry);
+    QStringList warnings = std::move(workstations.warnings);
     QcVillageSettings settings = registry.villageSettings();
-    settings.workstations = workstationsOf(registry, warnings);
+    settings.workstations = std::move(workstations.kinds);
     registry.setVillageSettings(std::move(settings));
 
     QStringList broken;
-    for (QcVillagerSettings &species : registry.villagerSpecies()) {
-        species.professions = registry.professions();
+    const QList<QcVillagerProfession> professions = registry.professions();
+    registry.updateVillagerSpecies([&](QcVillagerSettings &species) {
+        species.professions = professions;
         const QcVillagerProfession *unemployed = species.profession(species.unemployed);
         if (!unemployed || !unemployed->workstation.isEmpty()) {
             warnings.append(u"villager settings '%1': 'unemployed' must name a profession without workstations; left out"_s.arg(species.name));
             broken.append(species.name);
         }
-    }
+    });
     for (const QString &name : std::as_const(broken)) {
         registry.removeVillagerSettings(name);
     }
@@ -116,10 +155,9 @@ QStringList resolveSpecies(QcContentRegistry &registry)
 
 QStringList resolveStyles(QcContentRegistry &registry)
 {
-    QStringList warnings;
-    settleBiomes(registry.villageStyles(), warnings);
-    for (const QcVillageStyleDefinition &style : std::as_const(registry.villageStyles())) {
-        checkStyleNames(registry, style, warnings);
+    QStringList warnings = settleBiomes(registry);
+    for (const QcVillageStyleDefinition &style : registry.villageStyles()) {
+        warnings += checkStyleNames(registry, style);
     }
     const QString &villager = registry.villageSettings().villager;
     if (!villager.isEmpty() && !isVillager(registry, villager)) {

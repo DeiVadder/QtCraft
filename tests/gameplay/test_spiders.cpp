@@ -53,7 +53,7 @@ private:
     static QcPhysics::MoveResult step(QcEntityMotion &motion, const QcVec3 &wish, bool jump, const QcBlockAccess &world)
     {
         const QcPhysics::Steering steering{.wish = wish, .speed = 3.0, .jump = jump, .climbsWalls = true};
-        return QcPhysics::stepEntity(motion, steering, {1.3, 0.9}, world, QcPhysics::tickDuration);
+        return motion.step(steering, {1.3, 0.9}, world, QcPhysics::tickDuration);
     }
 
 private slots:
@@ -90,7 +90,7 @@ private slots:
         QcEntityMotion walker;
         walker.position = {0.35, 1.0, 0.5};
         for (int i = 0; i < 80; ++i) {
-            QcPhysics::stepEntity(walker, {.wish = {1.0, 0.0, 0.0}, .speed = 3.0}, {1.3, 0.9}, world, QcPhysics::tickDuration);
+            walker.step({.wish = {1.0, 0.0, 0.0}, .speed = 3.0}, {1.3, 0.9}, world, QcPhysics::tickDuration);
         }
         QVERIFY(walker.position.y < 2.0);
 

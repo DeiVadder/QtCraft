@@ -90,7 +90,10 @@ QcPhysics::Steering QcTameBrain::think(QcCreature &mob, const QcMobDefinition &d
     const bool mayPlan = thinkTicks <= 1;
     const QcMobManager::PlayerView *owner = ownerOf(tame, context);
     if (definition.tameable->defends) {
-        chooseTarget(mob, tame, owner, context, context.dt * thinkTicks);
+        const Target chosen = chosenTarget(mob, tame, owner, context, context.dt * thinkTicks);
+        tame.target = chosen.id;
+        tame.targetTick = chosen.tick;
+        tame.targetTimer = chosen.timer;
         if (const QcCreature *target = validTarget(mob, tame.target, context)) {
             const QcPhysics::Steering steering = attack(mob, definition, *target, context, mayPlan);
             mob.lastSpeed = steering.speed;
@@ -107,34 +110,34 @@ QcPhysics::Steering QcTameBrain::think(QcCreature &mob, const QcMobDefinition &d
     return steering;
 }
 
-void QcTameBrain::chooseTarget(const QcCreature &mob, QcTameState &tame, const QcMobManager::PlayerView *owner, const Context &context,
-                               double seconds) const
+QcTameBrain::Target QcTameBrain::chosenTarget(const QcCreature &mob, const QcTameState &tame, const QcMobManager::PlayerView *owner,
+                                              const Context &context, double seconds) const
 {
     // A valid target is kept until the owner fights anew: then the newest fight wins (what hurt the
     // owner or what they struck). Without one the pet takes up the newest foe it may attack.
+    Target target{tame.target, tame.targetTick, tame.targetTimer};
     if (owner) {
-        const bool keeps = validTarget(mob, tame.target, context) != nullptr;
+        const bool keeps = validTarget(mob, target.id, context) != nullptr;
         const std::array<std::pair<quint32, quint64>, 2> fights{{{owner->hurtBy, owner->hurtTick}, {owner->struck, owner->struckTick}}};
         const std::pair<quint32, quint64> *chosen = nullptr;
         for (const auto &fight : fights) {
-            const bool newer = !keeps || fight.second > tame.targetTick;
-            if (fight.first != 0 && fight.first != tame.target && newer && (!chosen || fight.second > chosen->second)
+            const bool newer = !keeps || fight.second > target.tick;
+            if (fight.first != 0 && fight.first != target.id && newer && (!chosen || fight.second > chosen->second)
                 && validTarget(mob, fight.first, context)) {
                 chosen = &fight;
             }
         }
         if (chosen) {
-            tame.target = chosen->first;
-            tame.targetTick = chosen->second;
-            tame.targetTimer = targetSeconds;
+            target = {chosen->first, chosen->second, targetSeconds};
         }
     }
 
-    tame.targetTimer = std::max(0.0, tame.targetTimer - seconds);
-    if (tame.target != 0 && (tame.targetTimer <= 0.0 || !validTarget(mob, tame.target, context))) {
-        tame.target = 0;
-        tame.targetTimer = 0.0;
+    target.timer = std::max(0.0, target.timer - seconds);
+    if (target.id != 0 && (target.timer <= 0.0 || !validTarget(mob, target.id, context))) {
+        target.id = 0;
+        target.timer = 0.0;
     }
+    return target;
 }
 
 const QcCreature *QcTameBrain::validTarget(const QcCreature &mob, quint32 id, const Context &context)

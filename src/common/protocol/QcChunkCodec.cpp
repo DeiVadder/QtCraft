@@ -50,10 +50,11 @@ void writeSection(QDataStream &stream, const QcChunkSection &section)
 
 bool readSection(QDataStream &stream, QcChunkSection &section)
 {
-    quint32 paletteSize = 0;
-    if (!QcStreamLimits::readCount(stream, QcWorld::blocksPerSection, paletteSize) || paletteSize == 0) {
+    const std::optional<quint32> paletteSizeRead = QcStreamLimits::readCount(stream, QcWorld::blocksPerSection);
+    if (!paletteSizeRead || *paletteSizeRead == 0) {
         return false;
     }
+    const quint32 paletteSize = *paletteSizeRead;
 
     QList<QcBlockId> palette(paletteSize);
     for (QcBlockId &id : palette) {
@@ -62,10 +63,11 @@ bool readSection(QDataStream &stream, QcChunkSection &section)
 
     QList<quint16> indices;
     if (paletteSize > 1) {
-        quint32 runCount = 0;
-        if (!QcStreamLimits::readCount(stream, QcWorld::blocksPerSection, runCount)) {
+        const std::optional<quint32> runCountRead = QcStreamLimits::readCount(stream, QcWorld::blocksPerSection);
+        if (!runCountRead) {
             return false;
         }
+        const quint32 runCount = *runCountRead;
 
         QVarLengthArray<quint16, 2 * runBufferRuns> runs(qsizetype(runCount) * 2);
         const int bytes = int(runs.size() * qsizetype(sizeof(quint16)));

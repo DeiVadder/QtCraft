@@ -145,11 +145,24 @@ private:
     void dropStackWhenHeld(QcClientSession &session);
     // Closes the radial menu; selects its slot when `select`.
     void closeRadial(QcClientSession *session, bool select);
-    void applyWalk(QcPlayerInput &intent, const QcGamepadState &shaped, bool sprintPressed, bool flying);
+    // `intent` with walking, jumping, sneaking and sprinting from the pad (it keeps the latches).
+    [[nodiscard]] QcPlayerInput walked(QcPlayerInput intent, const QcGamepadState &shaped, bool sprintPressed, bool flying);
     // Gives back the intent fields and buttons the pad holds, then stop().
     void release(QcClientSession &session);
     // Drops the queued presses and the latches and stops queueing; the sneak toggle stays.
     void stop();
+
+    // A flag of the intent the pad shares with the keyboard: the pad sets it while it wants it and
+    // gives it back (false) once when it stops; a flag the pad did not set stays as it is.
+    class SharedFlag
+    {
+    public:
+        // The flag's new value from its current one and whether the pad wants it.
+        [[nodiscard]] bool merged(bool current, bool want);
+
+    private:
+        bool m_mine = false;
+    };
 
     QPointer<QcGamepadSource> m_source;
     QcGamepadSettings m_settings;
@@ -171,9 +184,9 @@ private:
     bool m_sneakToggled = false;
     // What the pad set in the intent and on the session, to give it back once.
     bool m_walking = false;
-    bool m_jumping = false;
-    bool m_sneaking = false;
-    bool m_sprinting = false;
+    SharedFlag m_jumping;
+    SharedFlag m_sneaking;
+    SharedFlag m_sprinting;
     bool m_mining = false;
     bool m_using = false;
     bool m_playerList = false;

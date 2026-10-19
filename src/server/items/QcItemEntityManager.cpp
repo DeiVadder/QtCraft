@@ -124,7 +124,7 @@ void QcItemEntityManager::step(QcItemEntity &item, const QcBlockAccess &world, d
     item.motion.inWater = QcPhysics::isLiquidAt(world, cell);
 
     // Items float up in water and drift with its current (decision E-296), and stop on the ground. In the air they keep most of their speed:
-    // steering towards a slightly slower velocity in the flight direction makes stepEntity's air
+    // steering towards a slightly slower velocity in the flight direction makes QcEntityMotion::step's air
     // control act as weak drag (about two percent per tick) instead of the strong player control.
     QcVec3 wish;
     double speed = 0.0;
@@ -141,7 +141,7 @@ void QcItemEntityManager::step(QcItemEntity &item, const QcBlockAccess &world, d
 
     // On ice they slide farther than walkers (decision E-430).
     const QcPhysics::Steering steering{.wish = wish, .speed = speed, .jump = item.motion.inWater, .slideDrag = QcPhysics::itemDrag};
-    QcPhysics::stepEntity(item.motion, steering, QcPhysics::BodySize{itemSize, itemSize}, world, dt);
+    item.motion.step(steering, QcPhysics::BodySize{itemSize, itemSize}, world, dt);
 
     item.resting = item.motion.onGround && !item.motion.inWater && item.motion.velocity.length() < restSpeed;
     m_stirred.append(item.motion.position);

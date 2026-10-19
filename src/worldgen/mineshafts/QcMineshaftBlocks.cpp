@@ -19,14 +19,14 @@ int QcMineshaftBlocks::sideOf(int dx, int dz)
     return dz > 0 ? 2 : 3;
 }
 
-std::optional<QcMineshaftBlocks> QcMineshaftBlocks::resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content,
-                                                           QStringList *warnings)
+QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content)
 {
+    QStringList warnings;
     bool resolved = true;
     const auto state = [&](const QString &name) {
         const std::optional<QcBlockId> id = content.stateId(name);
-        if (!id && warnings) {
-            warnings->append(u"mineshafts: unknown block '%1', no mine shafts"_s.arg(name));
+        if (!id) {
+            warnings.append(u"mineshafts: unknown block '%1', no mine shafts"_s.arg(name));
         }
         resolved = resolved && id.has_value();
         return id.value_or(qcAirBlockId);
@@ -46,7 +46,7 @@ std::optional<QcMineshaftBlocks> QcMineshaftBlocks::resolve(const QcMineshaftSet
         blocks.ladders[side] = state(settings.ladder + u"[attach="_s + name + u']');
     }
     if (!resolved) {
-        return std::nullopt;
+        return {std::nullopt, warnings};
     }
 
     blocks.open.resize(std::size_t(content.stateCount()));
@@ -64,5 +64,5 @@ std::optional<QcMineshaftBlocks> QcMineshaftBlocks::resolve(const QcMineshaftSet
     blocks.areaX = spawner.areaX / 2;
     blocks.areaY = spawner.areaY / 2;
     blocks.areaZ = spawner.areaZ / 2;
-    return blocks;
+    return {std::move(blocks), warnings};
 }

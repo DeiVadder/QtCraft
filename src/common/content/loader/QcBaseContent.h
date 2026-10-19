@@ -4,6 +4,8 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
 
+#include <QStringList>
+
 #include <memory>
 
 // Loads the base game content pack (embedded as :/content/qtcraft) into a new registry.
@@ -11,9 +13,16 @@ namespace QcBaseContent {
 
 inline constexpr auto resourceDirectory = ":/content/qtcraft";
 
+// The finished base content with the warnings of loading and finishing it.
+struct Loaded
+{
+    std::shared_ptr<QcContentRegistry> registry;
+    QStringList warnings;
+};
+
 // Base pack only, with items for all blocks.
-[[nodiscard]] QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings);
+[[nodiscard]] QcResult<Loaded> load();
 // Loads the base pack into `registry` without finishing it (mods follow, then finish()).
-[[nodiscard]] QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &warnings);
+[[nodiscard]] QcResult<QcLoadedPack> loadInto(QcContentRegistry &registry);
 
 } // namespace QcBaseContent

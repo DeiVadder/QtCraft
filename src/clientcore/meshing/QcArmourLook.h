@@ -31,6 +31,6 @@ QList<QcEntityMesher::Attachment> headFillers(const QcContentRegistry &content, 
 double capeClearance(const QcModelDefinition &wearer, const QList<QcEntityMesher::Attachment> &attachments);
 
 // The layer boxes of one piece on `reference`.
-void appendLayers(QList<QcEntityMesher::Attachment> &out, const QcArmourDefinition &armour, const QcModelDefinition &reference);
+[[nodiscard]] QList<QcEntityMesher::Attachment> layers(const QcArmourDefinition &armour, const QcModelDefinition &reference);
 
 } // namespace QcArmourLook

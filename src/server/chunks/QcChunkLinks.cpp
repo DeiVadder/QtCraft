@@ -92,21 +92,21 @@ bool QcChunkLinks::Counts::isEmpty() const
     return true;
 }
 
-void QcChunkLinks::count(Counts &counts, int x, int z, QcBlockId block, int delta) const
+void QcChunkLinks::Counts::add(const QcChunkLinks &links, int x, int z, QcBlockId block, int delta)
 {
     const auto id = std::size_t(block);
-    if (id >= m_part.size()) {
+    if (id >= links.m_part.size()) {
         return;
     }
-    if (m_part[id]) {
+    if (links.m_part[id]) {
         for (int side = 0; side < sideCount; ++side) {
             if (distanceTo(side, x, z) < stripWidth) {
-                counts.strip[std::size_t(side)] += delta;
+                strip[std::size_t(side)] += delta;
             }
         }
     }
-    if (const int side = int(static_cast<unsigned char>(m_piston[id])) - 1; side >= 0 && distanceTo(side, x, z) < pistonReach) {
-        counts.reach[std::size_t(side)] += delta;
+    if (const int side = int(static_cast<unsigned char>(links.m_piston[id])) - 1; side >= 0 && distanceTo(side, x, z) < pistonReach) {
+        reach[std::size_t(side)] += delta;
     }
 }
 
@@ -121,18 +121,18 @@ QcChunkLinks::Counts QcChunkLinks::countChunk(const QcChunk &chunk) const
     for (int s = 0; s < QcWorld::sectionCount; ++s) {
         const QcChunkSection &section = chunk.section(s);
         if (std::ranges::any_of(section.palette(), [this](QcBlockId id) { return matters(id); })) {
-            countSection(counts, section);
+            counts.addSection(*this, section);
         }
     }
     return counts;
 }
 
-void QcChunkLinks::countSection(Counts &counts, const QcChunkSection &section) const
+void QcChunkLinks::Counts::addSection(const QcChunkLinks &links, const QcChunkSection &section)
 {
     for (int y = 0; y < QcWorld::sectionHeight; ++y) {
         for (int z = 0; z < QcWorld::chunkSize; ++z) {
             for (int x = 0; x < QcWorld::chunkSize; ++x) {
-                count(counts, x, z, section.block(x, y, z), 1);
+                add(links, x, z, section.block(x, y, z), 1);
             }
         }
     }
@@ -156,8 +156,8 @@ void QcChunkLinks::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
     }
     Counts &counts = m_counts[pos.chunk()];
     const quint16 marks = marksOf(counts);
-    count(counts, pos.localX(), pos.localZ(), before, -1);
-    count(counts, pos.localX(), pos.localZ(), after, 1);
+    counts.add(*this, pos.localX(), pos.localZ(), before, -1);
+    counts.add(*this, pos.localX(), pos.localZ(), after, 1);
     if (marksOf(counts) != marks) {
         ++m_changes;
     }

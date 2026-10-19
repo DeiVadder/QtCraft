@@ -131,9 +131,8 @@ private slots:
     void stylesComeFromDataWithAFallback()
     {
         // Every structure, choice and part of the base game's styles resolves without a warning.
-        QStringList warnings;
-        const QcVillageStyles styles(*m_content, &warnings);
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u"; "_s)));
+        const QcVillageStyles styles(*m_content);
+        QVERIFY2(styles.warnings().isEmpty(), qPrintable(styles.warnings().join(u"; "_s)));
         const auto styleOf = [&](const char *biome) {
             const QcVillageStyle *style = styles.forBiome(*m_content->biome(QString::fromLatin1(biome)));
             return style ? style->name : QString();
@@ -204,8 +203,8 @@ private slots:
         plains.lamp = chest.name;
         content->registerVillageStyle(plains);
 
-        QStringList warnings;
-        const QcVillageStyles styles(*content, &warnings);
+        const QcVillageStyles styles(*content);
+        const QStringList &warnings = styles.warnings();
         QCOMPARE(warnings.size(), 1);
         QVERIFY2(warnings.front().contains(u"'mod:chest_lamp' has contents"_s), qPrintable(warnings.front()));
         QVERIFY(!styles.named(u"qtcraft:plains"_s)->lamp.blueprints.isEmpty());
@@ -301,7 +300,7 @@ private slots:
         // A pitched roof: every stair's high side (its facing) points up the slope, so the cell
         // beyond its low side is open sky, in every turn of every house blueprint, with all its
         // optional parts (the chimneys stand on the ridge) and with every roof material.
-        const QcVillageStyles styles(*m_content, nullptr);
+        const QcVillageStyles styles(*m_content);
         const QcVillageStyle *plains = styles.named(u"qtcraft:plains"_s);
         QVERIFY(plains);
         int houses = 0;
@@ -330,7 +329,7 @@ private slots:
         // The watchtower's platform rests on upside-down stairs around the shaft: each one's low
         // side (its facing) leans against the wall, open air outside it and the platform above, in
         // every turn and stone choice of both towers.
-        const QcVillageStyles styles(*m_content, nullptr);
+        const QcVillageStyles styles(*m_content);
         for (const char *name : {"qtcraft:plains", "qtcraft:desert"}) {
             const QcVillageStyle *style = styles.named(QString::fromLatin1(name));
             QVERIFY(style);

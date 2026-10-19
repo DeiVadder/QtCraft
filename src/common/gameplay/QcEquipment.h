@@ -2,6 +2,8 @@
 
 #include "common/gameplay/QcItemStack.h"
 
+#include <QList>
+
 #include <array>
 #include <cstddef>
 
@@ -31,6 +33,9 @@ struct QcEquipment
     // Only the stacks of items the content knows; the others empty. The
     // client checks what the server sends before anything is drawn from it.
     QcEquipment knownTo(const QcContentRegistry &content) const;
+    // Wears every worn piece with durability by a hit of `damage` (QcArmour::wearOf); broken pieces
+    // are removed. Returns their slots.
+    [[nodiscard]] QList<QcEquipmentSlot> wear(const QcContentRegistry &content, double damage);
 
     bool operator==(const QcEquipment &) const = default;
 };

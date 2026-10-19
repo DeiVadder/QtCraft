@@ -115,17 +115,35 @@ private:
     };
 
     QString absolute(const QString &name) const;
-    // Adds what is kept of `kind` to the catalog.
-    void addToCatalog(Kind kind, QHash<QcChunkPos, Stored> &catalog) const;
+    // The chunks with data of `kind`, with their marks.
+    [[nodiscard]] QHash<QcChunkPos, quint16> chunksOf(Kind kind) const;
     [[nodiscard]] QcStatus finishJournal();
     void removeStaged() const;
     [[nodiscard]] QcStatus readIndexes();
-    // Stages the new file of `region` of `kind`; adds its step unless nothing changes.
-    [[nodiscard]] QcStatus stageRegion(Kind kind, QcChunkPos region, QList<Step> &steps, QHash<QcChunkPos, QcRegionFile::Index> &written);
-    // Stages every region with changes and the whole files; adds their steps.
-    [[nodiscard]] QcStatus stageAll(QList<Step> &steps, std::array<QHash<QcChunkPos, QcRegionFile::Index>, kindCount> &written);
-    // Notes size and checksum of the head of the file at `path` in `step`.
-    [[nodiscard]] static QcStatus stamp(const QString &path, Step &step);
+    // A region staged: its step (none when nothing changes) and its index after the commit.
+    struct StagedRegion
+    {
+        std::optional<Step> step;
+        QcRegionFile::Index index;
+    };
+    // What a commit stages: the steps of its journal and the new index of every region it writes.
+    struct Staging
+    {
+        QList<Step> steps;
+        std::array<QHash<QcChunkPos, QcRegionFile::Index>, kindCount> written;
+    };
+    // The size and the checksum of the head of a file (Step::size, Step::headCrc).
+    struct Head
+    {
+        qint64 size = 0;
+        quint32 crc = 0;
+    };
+
+    // Stages the new file of `region` of `kind`.
+    [[nodiscard]] QcResult<StagedRegion> stageRegion(Kind kind, QcChunkPos region);
+    // Stages every region with changes and the whole files.
+    [[nodiscard]] QcResult<Staging> stageAll();
+    [[nodiscard]] static QcResult<Head> headOf(const QString &path);
     [[nodiscard]] QcStatus writeJournal(const QList<Step> &steps) const;
     [[nodiscard]] QcStatus runSteps(const QList<Step> &steps);
     // After a commit broke off between its renames: finishes it from the journal and reads the

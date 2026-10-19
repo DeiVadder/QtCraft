@@ -20,9 +20,11 @@ public:
     static constexpr int firstAreaX = 6;
     static constexpr int firstRowFront = -6;
 
-    QcShowcasePlanner(const QcContentRegistry &content, QStringList *warnings);
+    explicit QcShowcasePlanner(const QcContentRegistry &content);
 
     QcShowcasePlan build();
+    // What the planner left out (unknown structures, labels beyond a chunk's limit).
+    const QStringList &warnings() const { return m_warnings; }
 
 private:
     struct Cursor
@@ -34,19 +36,24 @@ private:
     };
 
     QcShowcaseContext context() const;
-    QList<QcShowcaseAreaBuilder> builders(const QcShowcaseContext &context) const;
-    QList<QcShowcaseAreaBuilder> demoBuilders() const;
+    QList<QcShowcaseAreaBuilder> builders(const QcShowcaseContext &context);
+    QList<QcShowcaseAreaBuilder> demoBuilders();
+    // An area built and the cursor after it.
+    struct Placed
+    {
+        QcShowcaseArea area;
+        Cursor next;
+    };
     // Builds the area at the cursor, in a new row when the current one is full.
-    QcShowcaseArea placeNext(const QcShowcaseAreaBuilder &builder, Cursor &cursor) const;
+    [[nodiscard]] Placed placeNext(const QcShowcaseAreaBuilder &builder, Cursor cursor) const;
     void addArea(const QcShowcaseArea &area, int front);
     void addPlacement(QcStructurePlacement placement);
     void addLookout(const QcShowcaseArea &area, int front);
     void addLabel(const QcWorldLabel &label);
-    // Into the warnings list when there is one, else into the log.
-    void warn(const QString &warning) const;
+    void warn(const QString &warning) { m_warnings.append(warning); }
 
     const QcContentRegistry &m_content;
-    QStringList *m_warnings = nullptr;
+    QStringList m_warnings;
     QList<QcBlockId> m_groundColumn;
     std::shared_ptr<const QcStructure> m_lookout;
     QcShowcasePlan m_plan;

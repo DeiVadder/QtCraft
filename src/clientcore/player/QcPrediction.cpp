@@ -23,7 +23,7 @@ QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, boo
     input.flying = flying;
     m_previousMotion = m_motion;
     if (!m_riding.isRiding()) {
-        QcPhysics::stepPlayer(m_motion, input, world, QcPhysics::tickDuration, mayFly);
+        m_motion.stepPlayer(input, world, QcPhysics::tickDuration, mayFly);
     }
 
     if (m_pendingInputs.size() >= maxPendingInputs) {
@@ -57,7 +57,7 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
     QcEntityMotion replayed = state.motion;
     if (world) {
         for (const QcPlayerInput &input : std::as_const(m_pendingInputs)) {
-            QcPhysics::stepPlayer(replayed, input, *world, QcPhysics::tickDuration, mayFly);
+            replayed.stepPlayer(input, *world, QcPhysics::tickDuration, mayFly);
         }
     }
     m_lastCorrection = gotInOrOut || placed ? 0.0 : (replayed.position - m_motion.position).length();
@@ -69,7 +69,9 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
 void QcPrediction::followCart(const QcClientEntities &entities)
 {
     m_previousMotion = m_motion;
-    m_riding.follow(m_motion, entities);
+    if (const std::optional<QcEntityMotion> seated = m_riding.seated(entities)) {
+        m_motion = *seated;
+    }
 }
 
 void QcPrediction::mirror(const QcPrediction &core, bool current)

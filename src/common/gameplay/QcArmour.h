@@ -34,7 +34,5 @@ int points(const QcContentRegistry &content, const QcEquipment &equipment);
 double reducedDamage(double damage, int points);
 // Durability lost by every worn piece in a hit of `damage` (before the reduction).
 int wearOf(double damage);
-// Wears every worn piece with durability; broken pieces are removed. Returns their slots.
-QList<QcEquipmentSlot> wear(const QcContentRegistry &content, QcEquipment &equipment, double damage);
 
 } // namespace QcArmour

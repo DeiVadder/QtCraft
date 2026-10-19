@@ -8,7 +8,8 @@ struct QcJsonFieldReader;
 // fruit of stems) and "soil" (moisture, water reach, what it reverts to).
 namespace QcFarmingParser {
 
-void parseCrop(QcBlockDefinition &block, QcJsonFieldReader &cropReader, const QString &packNamespace);
-void parseSoil(QcBlockDefinition &block, QcJsonFieldReader &soilReader, const QString &packNamespace);
+// The crop and soil fields; `block` (read so far) must have the state properties they name.
+[[nodiscard]] QcCropDefinition parseCrop(const QcBlockDefinition &block, QcJsonFieldReader &cropReader, const QString &packNamespace);
+[[nodiscard]] QcSoilDefinition parseSoil(const QcBlockDefinition &block, QcJsonFieldReader &soilReader, const QString &packNamespace);
 
 } // namespace QcFarmingParser

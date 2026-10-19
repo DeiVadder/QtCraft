@@ -15,13 +15,16 @@ void writeAabbs(QDataStream &stream, const QList<QcAabb> &boxes)
     }
 }
 
-bool readAabbs(QDataStream &stream, QList<QcAabb> &boxes, double maxY)
+[[nodiscard]] std::optional<QList<QcAabb>> readAabbs(QDataStream &stream, double maxY)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcShapeDefinition::maxBoxesPerPart, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcShapeDefinition::maxBoxesPerPart);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
 
+    QList<QcAabb> boxes;
+    boxes.reserve(count);
     for (quint32 i = 0; i < count; ++i) {
         QcAabb box;
         stream >> box.min.x >> box.min.y >> box.min.z >> box.max.x >> box.max.y >> box.max.z;
@@ -31,12 +34,12 @@ bool readAabbs(QDataStream &stream, QList<QcAabb> &boxes, double maxY)
         if (stream.status() != QDataStream::Ok || !inside || !(box.min.x < box.max.x) || !(box.min.y < box.max.y)
             || !(box.min.z < box.max.z)) {
             stream.setStatus(QDataStream::ReadCorruptData);
-            return false;
+            return std::nullopt;
         }
         boxes.append(box);
     }
 
-    return true;
+    return boxes;
 }
 
 void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
@@ -59,53 +62,83 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     }
 }
 
-bool readShape(QDataStream &stream, QcShapeDefinition &shape)
+[[nodiscard]] std::optional<QcShapeCondition> readCondition(QDataStream &stream)
 {
-    quint32 partCount = 0;
+    QcShapeCondition condition;
+    stream >> condition.property;
+    const std::optional<quint32> valueCountRead = QcStreamLimits::readCount(stream, QcBlockProperty::maxValues);
+    if (!valueCountRead) {
+        return std::nullopt;
+    }
+
+    for (quint32 v = 0; v < *valueCountRead; ++v) {
+        QString value;
+        stream >> value;
+        condition.values.append(value);
+    }
+    return condition;
+}
+
+[[nodiscard]] std::optional<QcShapePart> readShapePart(QDataStream &stream)
+{
+    QcShapePart part;
+    const std::optional<quint32> conditionCountRead = QcStreamLimits::readCount(stream, QcShapeDefinition::maxConditions);
+    if (!conditionCountRead) {
+        return std::nullopt;
+    }
+    for (quint32 c = 0; c < *conditionCountRead; ++c) {
+        std::optional<QcShapeCondition> condition = readCondition(stream);
+        if (!condition) {
+            return std::nullopt;
+        }
+        part.when.append(std::move(*condition));
+    }
+
+    std::optional<QList<QcAabb>> boxes = readAabbs(stream, 1.0);
+    std::optional<QList<QcAabb>> crosses = boxes ? readAabbs(stream, 1.0) : std::nullopt;
+    if (!crosses) {
+        return std::nullopt;
+    }
+    stream >> part.customCollision;
+    std::optional<QList<QcAabb>> collision = readAabbs(stream, QcShapeDefinition::maxCollisionHeight);
+    if (!collision) {
+        return std::nullopt;
+    }
+
+    part.boxes = std::move(*boxes);
+    part.crosses = std::move(*crosses);
+    part.collision = std::move(*collision);
+    stream >> part.texture >> part.stretch;
+    return part;
+}
+
+[[nodiscard]] std::optional<QcShapeDefinition> readShape(QDataStream &stream)
+{
+    QcShapeDefinition shape;
     stream >> shape.name >> shape.rotate >> shape.flip;
-    if (!QcStreamLimits::readCount(stream, QcShapeDefinition::maxParts, partCount)) {
-        return false;
+    const std::optional<quint32> partCountRead = QcStreamLimits::readCount(stream, QcShapeDefinition::maxParts);
+    if (!partCountRead) {
+        return std::nullopt;
     }
 
-    for (quint32 p = 0; p < partCount; ++p) {
-        QcShapePart part;
-        quint32 conditionCount = 0;
-        if (!QcStreamLimits::readCount(stream, QcShapeDefinition::maxConditions, conditionCount)) {
-            return false;
+    for (quint32 p = 0; p < *partCountRead; ++p) {
+        std::optional<QcShapePart> part = readShapePart(stream);
+        if (!part) {
+            return std::nullopt;
         }
-
-        for (quint32 c = 0; c < conditionCount; ++c) {
-            QcShapeCondition condition;
-            quint32 valueCount = 0;
-            stream >> condition.property;
-            if (!QcStreamLimits::readCount(stream, QcBlockProperty::maxValues, valueCount)) {
-                return false;
-            }
-            for (quint32 v = 0; v < valueCount; ++v) {
-                QString value;
-                stream >> value;
-                condition.values.append(value);
-            }
-            part.when.append(std::move(condition));
-        }
-
-        if (!readAabbs(stream, part.boxes, 1.0) || !readAabbs(stream, part.crosses, 1.0)) {
-            return false;
-        }
-        stream >> part.customCollision;
-        if (!readAabbs(stream, part.collision, QcShapeDefinition::maxCollisionHeight)) {
-            return false;
-        }
-        stream >> part.texture >> part.stretch;
-        shape.parts.append(std::move(part));
+        shape.parts.append(std::move(*part));
     }
 
-    return stream.status() == QDataStream::Ok && shape.boxCount() <= QcShapeDefinition::maxBoxes;
+    if (stream.status() != QDataStream::Ok || shape.boxCount() > QcShapeDefinition::maxBoxes) {
+        return std::nullopt;
+    }
+    return shape;
 }
 
 // Reads the fixed leading fields and checks the ones that drive server-side timers and rendering.
-bool readBlockCore(QDataStream &stream, QcBlockDefinition &block)
+[[nodiscard]] std::optional<QcBlockDefinition> readBlockCore(QDataStream &stream)
 {
+    QcBlockDefinition block;
     quint8 renderLayer = 0;
     qint32 lightOpacity = 0;
     qint32 toolLevel = 0;
@@ -122,23 +155,24 @@ bool readBlockCore(QDataStream &stream, QcBlockDefinition &block)
     if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
         || !machineOk || !QcBlockSerializer::plausibleFuel(block.fuelSeconds)) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
 
     block.renderLayer = QcRenderLayer(renderLayer);
     block.lightOpacity = lightOpacity;
     block.toolLevel = toolLevel;
-    return true;
+    return block;
 }
 
-bool readDrops(QDataStream &stream, QList<QcItemDrop> &drops)
+[[nodiscard]] std::optional<QList<QcItemDrop>> readDrops(QDataStream &stream)
 {
-    quint32 dropCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, dropCount)) {
-        return false;
+    const std::optional<quint32> dropCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!dropCountRead) {
+        return std::nullopt;
     }
+    const quint32 dropCount = *dropCountRead;
 
-    drops.clear();
+    QList<QcItemDrop> drops;
     for (quint32 i = 0; i < dropCount; ++i) {
         QcItemDrop drop;
         qint32 count = 0;
@@ -149,18 +183,19 @@ bool readDrops(QDataStream &stream, QList<QcItemDrop> &drops)
         drops.append(drop);
     }
 
-    return true;
+    return drops;
 }
 
-bool readSapling(QDataStream &stream, QcSaplingDefinition &sapling)
+[[nodiscard]] std::optional<QcSaplingDefinition> readSapling(QDataStream &stream)
 {
-    quint32 groundCount = 0;
+    QcSaplingDefinition sapling;
     stream >> sapling.feature >> sapling.minSeconds >> sapling.maxSeconds >> sapling.plantChance;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, groundCount)) {
-        return false;
+    const std::optional<quint32> groundCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!groundCountRead) {
+        return std::nullopt;
     }
+    const quint32 groundCount = *groundCountRead;
 
-    sapling.plantOn.clear();
     for (quint32 i = 0; i < groundCount; ++i) {
         QString ground;
         stream >> ground;
@@ -169,25 +204,28 @@ bool readSapling(QDataStream &stream, QcSaplingDefinition &sapling)
 
     if (!std::isfinite(sapling.minSeconds) || !std::isfinite(sapling.maxSeconds) || !std::isfinite(sapling.plantChance)) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
-    return true;
+    return sapling;
 }
 
-bool readProperties(QDataStream &stream, QList<QcBlockProperty> &properties)
+[[nodiscard]] std::optional<QList<QcBlockProperty>> readProperties(QDataStream &stream)
 {
-    quint32 propertyCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcBlockProperty::maxProperties, propertyCount)) {
-        return false;
+    const std::optional<quint32> propertyCountRead = QcStreamLimits::readCount(stream, QcBlockProperty::maxProperties);
+    if (!propertyCountRead) {
+        return std::nullopt;
     }
+    const quint32 propertyCount = *propertyCountRead;
 
+    QList<QcBlockProperty> properties;
     for (quint32 i = 0; i < propertyCount; ++i) {
         QcBlockProperty property;
-        quint32 valueCount = 0;
         stream >> property.name;
-        if (!QcStreamLimits::readCount(stream, QcBlockProperty::maxValues, valueCount)) {
-            return false;
+        const std::optional<quint32> valueCountRead = QcStreamLimits::readCount(stream, QcBlockProperty::maxValues);
+        if (!valueCountRead) {
+            return std::nullopt;
         }
+        const quint32 valueCount = *valueCountRead;
 
         for (quint32 v = 0; v < valueCount; ++v) {
             QString value;
@@ -197,16 +235,18 @@ bool readProperties(QDataStream &stream, QList<QcBlockProperty> &properties)
         properties.append(std::move(property));
     }
 
-    return true;
+    return properties;
 }
 
-bool readTextureSlots(QDataStream &stream, QList<std::pair<QString, QString>> &textureSlots)
+[[nodiscard]] std::optional<QList<std::pair<QString, QString>>> readTextureSlots(QDataStream &stream)
 {
-    quint32 slotCount = 0;
-    if (!QcStreamLimits::readCount(stream, 16, slotCount)) {
-        return false;
+    const std::optional<quint32> slotCountRead = QcStreamLimits::readCount(stream, 16);
+    if (!slotCountRead) {
+        return std::nullopt;
     }
+    const quint32 slotCount = *slotCountRead;
 
+    QList<std::pair<QString, QString>> textureSlots;
     for (quint32 i = 0; i < slotCount; ++i) {
         QString slot;
         QString texture;
@@ -214,21 +254,23 @@ bool readTextureSlots(QDataStream &stream, QList<std::pair<QString, QString>> &t
         textureSlots.append({slot, texture});
     }
 
-    return true;
+    return textureSlots;
 }
 
-// Reads the trailing fields (placement, connections, storage, flow) and checks the whole block.
-bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
+// The block with its trailing fields (placement, connections, storage, flow) read and the whole block
+// checked; std::nullopt on bad data.
+[[nodiscard]] std::optional<QcBlockDefinition> withBehaviour(QDataStream &stream, QcBlockDefinition block)
 {
     qint32 lightLevel = 0;
     quint8 facingRule = 0;
     quint8 support = 0;
-    quint32 groupCount = 0;
     stream >> block.itemTexture >> lightLevel >> block.climbable >> block.toggles >> block.door >> facingRule >> support
         >> block.connectGroup;
-    if (!QcStreamLimits::readCount(stream, 16, groupCount)) {
-        return false;
+    const std::optional<quint32> groupCountRead = QcStreamLimits::readCount(stream, 16);
+    if (!groupCountRead) {
+        return std::nullopt;
     }
+    const quint32 groupCount = *groupCountRead;
 
     for (quint32 i = 0; i < groupCount; ++i) {
         QString group;
@@ -244,7 +286,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> block.slipperiness >> signalKind >> block.fire.isFire;
     if (signalKind >= quint8(qcSignalKindCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
     block.signal.kind = QcSignalKind(signalKind);
     const auto factor = [](double value, double low, double high) { return std::isfinite(value) && value >= low && value <= high; };
@@ -252,7 +294,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
         || !factor(block.slowsInside, 0.01, 1.0) || !factor(block.surfaceSpeed, 0.1, 2.0) || !factor(block.surfaceJump, 0.1, 2.0)
         || !factor(block.slipperiness, QcBlockDefinition::grippingSlipperiness, QcBlockDefinition::maxSlipperiness)) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
 
     block.flow.distance = flowDistance;
@@ -261,7 +303,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
         || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || !QcBlockStateTable::problem(block).isEmpty()) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
 
     block.lightLevel = lightLevel;
@@ -269,7 +311,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     block.support = QcBlockSupport(support);
     block.containerSlots = containerSlots;
     block.containerColumns = containerColumns;
-    return true;
+    return block;
 }
 
 } // namespace
@@ -332,21 +374,36 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.fire.isFire;
 }
 
-bool readBlock(QDataStream &stream, QcBlockDefinition &block)
+std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
 {
-    if (!readBlockCore(stream, block) || !readDrops(stream, block.drops) || !readSapling(stream, block.sapling)) {
-        return false;
+    std::optional<QcBlockDefinition> block = readBlockCore(stream);
+    std::optional<QList<QcItemDrop>> drops = block ? readDrops(stream) : std::nullopt;
+    std::optional<QcSaplingDefinition> sapling = drops ? readSapling(stream) : std::nullopt;
+    if (!sapling) {
+        return std::nullopt;
     }
+    block->drops = std::move(*drops);
+    block->sapling = std::move(*sapling);
 
-    for (QString &texture : block.faceTextures) {
+    for (QString &texture : block->faceTextures) {
         stream >> texture;
     }
 
-    if (!readProperties(stream, block.properties) || !readShape(stream, block.shape)
-        || !readTextureSlots(stream, block.textureSlots) || !readBlockBehaviour(stream, block)) {
-        return false;
+    std::optional<QList<QcBlockProperty>> properties = readProperties(stream);
+    std::optional<QcShapeDefinition> shape = properties ? readShape(stream) : std::nullopt;
+    std::optional<QList<std::pair<QString, QString>>> textureSlots = shape ? readTextureSlots(stream) : std::nullopt;
+    if (!textureSlots) {
+        return std::nullopt;
     }
-    return stream.status() == QDataStream::Ok;
+    block->properties = std::move(*properties);
+    block->shape = std::move(*shape);
+    block->textureSlots = std::move(*textureSlots);
+
+    block = withBehaviour(stream, std::move(*block));
+    if (!block || stream.status() != QDataStream::Ok) {
+        return std::nullopt;
+    }
+    return block;
 }
 
 } // namespace QcBlockSerializer

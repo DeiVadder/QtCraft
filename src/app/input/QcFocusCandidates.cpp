@@ -26,8 +26,10 @@ bool shown(const QQuickItem *item)
     return item->isVisible() && item->opacity() > 0.0;
 }
 
-void collect(const QQuickItem *item, QList<QQuickItem *> &found)
+// The shown candidates below `item`, depth first.
+[[nodiscard]] QList<QQuickItem *> collect(const QQuickItem *item)
 {
+    QList<QQuickItem *> found;
     const QList<QQuickItem *> children = item->childItems();
     for (QQuickItem *child : children) {
         if (!shown(child)) {
@@ -38,9 +40,10 @@ void collect(const QQuickItem *item, QList<QQuickItem *> &found)
         }
         // A text field's parts are not candidates of their own.
         if (!isTextInput(child)) {
-            collect(child, found);
+            found.append(collect(child));
         }
     }
+    return found;
 }
 
 // Like collect(), but stops at the first candidate.
@@ -105,11 +108,7 @@ QQuickItem *scope(QQuickWindow *window)
 
 QList<QQuickItem *> candidates(const QQuickItem *scope)
 {
-    QList<QQuickItem *> found;
-    if (scope) {
-        collect(scope, found);
-    }
-    return found;
+    return scope ? collect(scope) : QList<QQuickItem *>{};
 }
 
 bool isTextInput(QQuickItem *item)

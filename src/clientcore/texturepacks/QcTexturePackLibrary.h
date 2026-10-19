@@ -41,10 +41,17 @@ QList<Root> roots(const QString &modsDirectory);
 // Every pack folder below the roots, in the order of the roots and then by folder name.
 QList<Entry> scan(const QList<Root> &roots);
 
+// A stack as loaded, and the ids that could not be loaded.
+struct LoadedStack
+{
+    QcTexturePackStack stack;
+    QStringList missing;
+};
+
 // The packs with the given ids in that order (the first has the highest priority), loaded from the
 // scanned entries; ids without an entry or whose manifest is invalid are left out and listed in
 // `missing`.
-QcTexturePackStack loadStack(const QStringList &ids, const QList<Entry> &entries, QStringList &missing);
+[[nodiscard]] LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries);
 
 // The active ids after switching `id` on (it goes on top, with the highest priority) or off.
 QStringList withActive(QStringList active, const QString &id, bool on);

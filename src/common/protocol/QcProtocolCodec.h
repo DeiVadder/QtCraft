@@ -17,15 +17,15 @@ namespace QcProtocolCodec {
 QDataStream &operator<<(QDataStream &stream, QcVec3 value);
 QDataStream &operator>>(QDataStream &stream, QcVec3 &value);
 QDataStream &operator<<(QDataStream &stream, const QcAppearance &value);
-// Names longer than the limit fail; colours keep only their RGB bits.
-[[nodiscard]] bool readAppearance(QDataStream &stream, QcAppearance &value);
+// Names longer than the limit fail (std::nullopt); colours keep only their RGB bits.
+[[nodiscard]] std::optional<QcAppearance> readAppearance(QDataStream &stream);
 void writePos(QDataStream &stream, QcBlockPos pos);
 QcBlockPos readPos(QDataStream &stream);
 void writeStack(QDataStream &stream, QcItemStack stack);
 QcItemStack readStack(QDataStream &stream);
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
-// At most 1024 stacks.
-bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks);
+// At most 1024 stacks; std::nullopt for a larger count.
+[[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream);
 // The armour slots: always QcEquipment::slotCount stacks, without a count.
 void writeEquipment(QDataStream &stream, const QcEquipment &equipment);
 // Rotations are normalised on reading (QcStandPose::normalized).

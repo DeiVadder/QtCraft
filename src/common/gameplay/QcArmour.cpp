@@ -67,23 +67,4 @@ int wearOf(double damage)
     return std::max(1, int(std::floor(damage / damagePerWear)));
 }
 
-QList<QcEquipmentSlot> wear(const QcContentRegistry &content, QcEquipment &equipment, double damage)
-{
-    QList<QcEquipmentSlot> broken;
-    const int loss = wearOf(damage);
-    for (std::size_t i = 0; i < QcEquipment::slotCount; ++i) {
-        QcItemStack &stack = equipment.stacks[i];
-        if (stack.isEmpty() || !content.isValidItem(stack.item) || content.item(stack.item).durability <= 0) {
-            continue;
-        }
-
-        stack.damage += loss;
-        if (stack.damage >= content.item(stack.item).durability) {
-            stack = {};
-            broken.append(QcEquipmentSlot(i));
-        }
-    }
-    return broken;
-}
-
 } // namespace QcArmour

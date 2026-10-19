@@ -47,22 +47,21 @@ bool QcPlayerJoin::restore(QcServerClient &client)
         return false;
     }
 
-    QStringList warnings;
-    const QcResult<std::optional<QcPlayerData>> stored = m_parts.persistence.readPlayer(client.name, warnings);
-    for (const QString &warning : std::as_const(warnings)) {
+    const QcPlayerStorage::Result stored = m_parts.persistence.readPlayer(client.name);
+    // The warnings of reading the file come first, also when it is damaged further on.
+    for (const QString &warning : stored ? stored->warnings : stored.error().warnings) {
         qCWarning(lcServer) << warning;
     }
-
     if (!stored) {
-        QcServerLogin::refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Cannot load player data: %1"), {stored.error()}));
+        QcServerLogin::refuse(client,
+                              QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Cannot load player data: %1"), {stored.error().error}));
         return true;
     }
-
-    if (!*stored) {
+    if (!stored->player) {
         return false;
     }
 
-    QcPlayerRecords::restore(client, **stored);
+    QcPlayerRecords::restore(client, *stored->player);
 
     // Who left while dead comes back to the death screen and respawns from there.
     client.dead = client.health <= 0.0;

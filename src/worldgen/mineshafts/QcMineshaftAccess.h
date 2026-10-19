@@ -31,8 +31,12 @@ public:
 
     // Room structures that fit, with their weights.
     qsizetype roomKinds() const { return m_rooms.size(); }
-    void addRooms(QcMineshaftPlan &plan, const QcMineshaftNetwork &network, QcMineshaftSite &site, const Random &random) const;
-    void addEntrance(QcMineshaftPlan &plan, QcMineshaftSite &site, const QcMineshaftFrame &frame, const Random &random) const;
+    // Rooms at the dead ends of the laid out plan, at most `maxRooms`.
+    [[nodiscard]] QList<QcMineshaftPlan::Room> roomsOf(const QcMineshaftPlan &plan, const QcMineshaftNetwork &network, QcMineshaftSite &site,
+                                                       const Random &random) const;
+    // The surface entrance above the central room, where one may come up.
+    [[nodiscard]] std::optional<QcMineshaftPlan::Entrance> entranceOf(const QcMineshaftPlan &plan, QcMineshaftSite &site, const QcMineshaftFrame &frame,
+                                                                     const Random &random) const;
 
 private:
     struct RoomKind
@@ -50,7 +54,8 @@ private:
     // The ground under the headframe lies within one block of the shaft's top, the ground of the
     // ring around it at most one block higher.
     bool level(QcMineshaftSite &site, QcBlockPos top) const;
-    void addHeadframe(QcMineshaftPlan::Entrance &entrance) const;
+    // The headframe over the shaft's top cell `top`.
+    [[nodiscard]] QList<QcMineshaftPlan::Placed> headframe(QcBlockPos top) const;
 
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;

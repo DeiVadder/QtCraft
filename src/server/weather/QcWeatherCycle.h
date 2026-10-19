@@ -71,11 +71,12 @@ private:
     quint64 m_state = 0;
 };
 
-// One tick: with `cycle` (game rule weatherCycle) the spell runs down and the next begins when it
-// ends; the strengths fade towards the kind either way.
-void step(QcWeatherState &state, qint64 seed, bool cycle);
-// Begins a spell of `kind` (/weather): lasting `ticks`, or as long as the seed says.
-void set(QcWeatherState &state, qint64 seed, QcWeatherKind kind, std::optional<qint64> ticks);
+// The weather one tick after `state`: with `cycle` (game rule weatherCycle) the spell runs down and
+// the next begins when it ends; the strengths fade towards the kind either way.
+[[nodiscard]] QcWeatherState next(QcWeatherState state, qint64 seed, bool cycle);
+// The weather of `state` with a spell of `kind` begun (/weather): lasting `ticks`, or as long as the
+// seed says.
+[[nodiscard]] QcWeatherState begun(QcWeatherState state, qint64 seed, QcWeatherKind kind, std::optional<qint64> ticks);
 
 // world.json's "weather" object; reading clamps every value into its range, a missing or damaged
 // object reads as a world whose first spell has not begun.

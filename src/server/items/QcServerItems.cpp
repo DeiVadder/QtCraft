@@ -27,7 +27,13 @@ QList<QcItemEntity> QcServerItems::tick()
     const QList<QcItemEntity> despawned = m_state.entities().items().tick(
         m_state.world(), players, dt,
         {[this](const QcVec3 &position) { return m_state.isLoadedAt(QcPhysics::blockContaining(position)); },
-         [this, &changed](quint32 entityId, QcItemStack stack) { return giveToPlayer(entityId, stack, changed); },
+         [this, &changed](quint32 entityId, QcItemStack stack) {
+             const Given given = giveToPlayer(entityId, stack);
+             if (given.taker) {
+                 changed.insert(given.taker);
+             }
+             return given.left;
+         },
          [this] { return m_state.entities().newId(); }});
 
     for (QcServerClient *client : std::as_const(changed)) {
@@ -36,7 +42,7 @@ QList<QcItemEntity> QcServerItems::tick()
     return despawned;
 }
 
-int QcServerItems::giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed)
+QcServerItems::Given QcServerItems::giveToPlayer(quint32 entityId, QcItemStack stack)
 {
     for (const auto &client : m_state.clients()) {
         if (client->id != entityId || client->state != QcServerClient::State::Playing) {
@@ -44,11 +50,11 @@ int QcServerItems::giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServ
         }
 
         const int left = client->inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
-        if (left < stack.count) {
-            changed.insert(client.get());
-            m_sounds.play(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);
+        if (left >= stack.count) {
+            return {left, nullptr};
         }
-        return left;
+        m_sounds.play(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);
+        return {left, client.get()};
     }
-    return stack.count;
+    return {stack.count, nullptr};
 }

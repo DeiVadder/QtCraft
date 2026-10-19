@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/textures/QcTexturePaint.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 
@@ -14,8 +15,8 @@ namespace QcTextureEmblem {
 // Colour of the pixel (x, y): the palette's colour for the bitmap's character there, else cloth.
 QColor paint(const QcTextureSpec &spec, int x, int y, QColor color);
 
-// Reads "bitmap" (an array of strings) and "palette" (character -> "#rrggbb") of a texture
-// definition into `spec`; false with `problem` set when they are malformed.
-bool read(const QJsonObject &json, QcTextureSpec &spec, QString &problem);
+// `spec` with "bitmap" (an array of strings) and "palette" (character -> "#rrggbb") of a texture
+// definition; the problem when they are malformed.
+[[nodiscard]] QcResult<QcTextureSpec> read(const QJsonObject &json, QcTextureSpec spec);
 
 } // namespace QcTextureEmblem

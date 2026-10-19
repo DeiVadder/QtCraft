@@ -54,14 +54,12 @@ QcStatus QcDedicatedServer::start(const Options &options)
         return qcError(config.error());
     }
 
-    QStringList warnings;
-    std::unique_ptr<QcWorldGenerator> generator =
-        QcWorldGenerators::create(config->generator, m_content, config->seed, &warnings, config->generatorOptions);
-    for (const QString &warning : std::as_const(warnings)) {
-        std::println(stderr, "world generation warning: {}", warning.toStdString());
-    }
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config->generator, m_content, config->seed, config->generatorOptions);
     if (!generator) {
         return qcError(u"Unknown world type '%1'"_s.arg(config->generator));
+    }
+    for (const QString &warning : generator->warnings()) {
+        std::println(stderr, "world generation warning: {}", warning.toStdString());
     }
 
     m_host = std::make_unique<QcLocalServerHost>(*config, m_content, std::move(generator));
@@ -127,13 +125,12 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
         entry = *created;
     }
 
-    QcServerConfig config;
+    QcServerConfig config = settings.serverConfig();
     config.worldName = entry.info.name;
     config.seed = entry.info.seed;
     config.generator = entry.info.generator;
     config.generatorOptions = entry.info.generatorOptions;
     config.worldDirectory = entry.directory;
-    settings.applyTo(config);
     config.contentPacks = m_packs;
     return config;
 }

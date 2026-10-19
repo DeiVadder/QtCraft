@@ -41,9 +41,8 @@ private:
         const QcChunkPos chunk = QcEntities::chunkOf(*mob(creature));
         const int kindOf = mob(creature)->type;
         const QHash<QcChunkPos, QcEntityRecord> records = QcEntityRecords::take(m_server->entities(), {chunk});
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings);
         QSet<quint32> before;
         for (const QcCreature &one : m_server->entities().creatures().mobs()) {
             before.insert(one.id);

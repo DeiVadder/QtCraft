@@ -31,9 +31,16 @@ private:
     void op(const QcCommandContext &context, bool grant);
     void teleport(const QcCommandContext &context);
 
-    // Disconnects every online player of that name with `reason`; returns how many. Local players
-    // are never removed (false in `hostRefused`).
-    int disconnect(const QString &name, const QcMsg::Disconnect &reason, bool &hostRefused);
+    // What disconnect() did: how many players it removed, and whether one of that name is the
+    // world's host, which is never removed.
+    struct Disconnected
+    {
+        int count = 0;
+        bool hostRefused = false;
+    };
+
+    // Disconnects every online player of that name with `reason`, except local players.
+    Disconnected disconnect(const QString &name, const QcMsg::Disconnect &reason);
     // The fingerprint of the player's identity: of him online, else the registered one, else empty.
     QString fingerprintOf(const QString &name) const;
     // Replies when `name` does not fit into the full list.

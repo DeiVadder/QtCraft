@@ -207,7 +207,7 @@ void QcMinecartManager::tick(const QcBlockAccess &world, const QList<QcAabb> &bo
         cart.motion.velocity = cart.motion.velocity + change[i];
         moved[i] = QcMinecartMotion::step(cart, m_rails, world, dt);
     }
-    QcMinecartCollisions::keepApart(m_carts, pairs, before);
+    m_carts = QcMinecartCollisions::keptApart(std::move(m_carts), pairs, before);
 
     for (qsizetype i = 0; i < m_carts.size(); ++i) {
         const std::optional<QcMinecartMotion::Result> &step = moved[i];

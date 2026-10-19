@@ -23,7 +23,7 @@ QcPlayerInput flying()
 void run(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, int ticks, bool mayFly)
 {
     for (int i = 0; i < ticks; ++i) {
-        QcPhysics::stepPlayer(motion, input, world, dt, mayFly);
+        motion.stepPlayer(input, world, dt, mayFly);
     }
 }
 
@@ -66,7 +66,7 @@ private slots:
 
         QcPlayerInput input = flying();
         input.jump = true;
-        QcPhysics::stepPlayer(motion, input, world, dt, false);
+        motion.stepPlayer(input, world, dt, false);
         QVERIFY(!motion.flying);
 
         // An ordinary jump: up at 9 m/s minus one tick of gravity, then back on the floor.
@@ -144,7 +144,7 @@ private slots:
         down.sneak = true;
         int ticks = 0;
         while (motion.flying && ticks < 100) {
-            QcPhysics::stepPlayer(motion, down, world, dt, true);
+            motion.stepPlayer(down, world, dt, true);
             ++ticks;
         }
 

@@ -55,7 +55,7 @@ void growTree(QcStructure &structure, const QcShowcaseContext &context, const Qc
 
     const QString trunk = context.content.blockId(feature.trunkBlock) ? context.content.block(params.trunk).translationKey : feature.name;
     const int top = QcTreeShape::height(params, 0.5) + 2;
-    structure.labels.append({{x + 0.5, top + 1.5, treeZ + 0.5}, trunk, feature.name.mid(feature.name.indexOf(u':') + 1), false});
+    structure.addLabel({{x + 0.5, top + 1.5, treeZ + 0.5}, trunk, feature.name.mid(feature.name.indexOf(u':') + 1), false});
 }
 
 // The saplings that grow into `feature`, side by side south of the tree.
@@ -73,8 +73,8 @@ void plantSaplings(QcStructure &structure, const QcShowcaseContext &context, con
         const QcBlockId sapling = context.content.stateTable().firstState(quint32(type));
         structure.set(sx, 0, sz, firstKnown(context.content, block.sapling.plantOn, context.ground));
         structure.set(sx, 1, sz, sapling);
-        structure.growing.append({sx, 1, sz});
-        structure.labels.append({{sx + 0.5, 2.5, sz + 0.5}, block.translationKey, {}, false});
+        structure.addGrowing({sx, 1, sz});
+        structure.addLabel({{sx + 0.5, 2.5, sz + 0.5}, block.translationKey, {}, false});
         offset += 2;
     }
 }

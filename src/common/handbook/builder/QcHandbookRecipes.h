@@ -22,13 +22,14 @@ public:
     Recipe craftingRecipe(const QcRecipeDefinition &recipe) const;
     Recipe machineRecipe(const QcSmeltingRecipe &recipe) const;
     // Crafting, smelting, uses in recipes, drops and catching of `item`, as far as there are any.
-    void addItemSections(QcHandbookEntry &entry, const QString &item) const;
+    [[nodiscard]] QList<QcHandbookEntry::Section> itemSections(const QString &item) const;
 
 private:
-    void addShapedCells(Recipe &result, const QcRecipeDefinition &recipe) const;
-    void addShapelessCells(Recipe &result, const QcRecipeDefinition &recipe) const;
-    void addMadeSections(QcHandbookEntry &entry, const QString &item) const;
-    void addUsageSections(QcHandbookEntry &entry, const QString &item) const;
+    // A crafting recipe with only its grid: size, cells and whether it needs a crafting table.
+    [[nodiscard]] Recipe shapedGrid(const QcRecipeDefinition &recipe) const;
+    [[nodiscard]] Recipe shapelessGrid(const QcRecipeDefinition &recipe) const;
+    [[nodiscard]] QList<QcHandbookEntry::Section> madeSections(const QString &item) const;
+    [[nodiscard]] QList<QcHandbookEntry::Section> usageSections(const QString &item) const;
 
     const QcContentRegistry &m_content;
     const QcHandbookText &m_text;

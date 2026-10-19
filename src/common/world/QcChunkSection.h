@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
 #include "common/core/QcWorldConstants.h"
 
 #include <QList>
@@ -20,6 +21,22 @@ public:
     bool isEmpty() const { return isUniform() && m_palette.constFirst() == qcAirBlockId; }
 
     const QList<QcBlockId> &palette() const { return m_palette; }
+
+    // Calls `visit(pos)` for every cell whose block is `wanted`, with the section's lowest corner at
+    // `corner` in the world.
+    template<typename Wanted, typename Visit>
+    void forEachCell(QcBlockPos corner, Wanted &&wanted, Visit &&visit) const
+    {
+        constexpr int size = QcWorld::chunkSize;
+        for (int cell = 0; cell < size * size * QcWorld::sectionHeight; ++cell) {
+            const int x = cell % size;
+            const int z = cell / size % size;
+            const int y = cell / (size * size);
+            if (wanted(block(x, y, z))) {
+                visit(corner.offset(x, y, z));
+            }
+        }
+    }
     const QList<quint16> &indices() const { return m_indices; }
     // Replaces the content; returns false when the data is inconsistent (wrong size, index out of palette).
     bool assign(QList<QcBlockId> palette, QList<quint16> indices);

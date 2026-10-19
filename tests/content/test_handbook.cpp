@@ -26,15 +26,13 @@ namespace {
 
 std::shared_ptr<const QcContentRegistry> loadBase()
 {
-    QStringList warnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> loaded = QcBaseContent::load(warnings);
-    return loaded ? std::shared_ptr<const QcContentRegistry>(*loaded) : nullptr;
+    QcResult<QcBaseContent::Loaded> loaded = QcTestUtil::baseContent();
+    return loaded ? std::shared_ptr<const QcContentRegistry>(loaded->registry) : nullptr;
 }
 
 std::shared_ptr<const QcContentRegistry> loadWithMods()
 {
-    QStringList warnings;
-    QcResult<QcModLoader::Result> loaded = QcModLoader::load(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR), warnings);
+    QcModLoader::Loaded loaded = QcModLoader::load(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR));
     return loaded ? std::shared_ptr<const QcContentRegistry>(loaded->content) : nullptr;
 }
 
@@ -589,8 +587,7 @@ private slots:
         QVERIFY(write(u"lang/pt.BR.json"_s, R"({"c":"C"})"));
 
         QcContentRegistry content;
-        QStringList warnings;
-        QVERIFY(QcContentPackLoader::load(dir.path(), content, warnings).has_value());
+        QVERIFY(QcContentPackLoader::load(dir.path(), content).has_value());
 
         QStringList languages = content.languages();
         languages.sort();

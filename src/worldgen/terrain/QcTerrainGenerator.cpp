@@ -57,10 +57,10 @@ double terraced(double height, int step)
 
 } // namespace
 
-QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed, QStringList *warnings)
+QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed)
     : m_content(std::move(content))
     , m_seed(quint64(seed))
-    , m_definitions(*m_content, quint64(seed), warnings)
+    , m_definitions(*m_content, quint64(seed))
     , m_caves(quint64(seed), m_content->terrainSettings(), m_definitions)
     , m_pools(m_content, m_definitions)
     , m_continentNoise(qcMixSeed(quint64(seed), 1))
@@ -77,21 +77,23 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_terraceNoise(qcMixSeed(quint64(seed), 13))
     , m_overhangNoise(qcMixSeed(quint64(seed), 16))
 {
-    m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed, warnings);
-    m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed, warnings);
-    m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed, warnings);
-    m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed, warnings);
-    m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed, warnings);
+    m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed);
+    m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed);
+    m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed);
+    m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed);
+    m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed);
+    m_warnings = m_definitions.warnings + m_villages->styles().warnings() + m_dungeons->planner().warnings()
+                 + m_mineshafts->planner().warnings() + m_surface->planner().warnings() + m_coastalTowers->planner().warnings();
 }
 
 QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing = m_dungeons->furnishingIn(pos);
-    m_mineshafts->addFurnishing(pos, furnishing);
-    m_coastalTowers->addFurnishing(pos, furnishing);
-    m_surface->addFurnishing(pos, furnishing);
+    furnishing.add(m_mineshafts->furnishingIn(pos));
+    furnishing.add(m_coastalTowers->furnishingIn(pos));
+    furnishing.add(m_surface->furnishingIn(pos));
     if (const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos)) {
-        m_villages->addFurnishing(pos, *village, furnishing);
+        furnishing.add(QcVillageGenerator::furnishingIn(pos, *village));
     }
     return furnishing;
 }
@@ -270,19 +272,21 @@ bool QcTerrainGenerator::isCave(int x, int y, int z, const Column &column) const
     return m_caves.enabled() && y > 0 && m_caves.isCave(x, y, z, column);
 }
 
-int QcTerrainGenerator::overhangBand(int x, int z, const Column &column, std::array<bool, maxOverhangBand> &solid, int &size) const
+QcTerrainGenerator::OverhangBand QcTerrainGenerator::overhangBand(int x, int z, const Column &column) const
 {
     const double amplitude = column.overhang;
-    const int bottom = std::max(1, int(std::floor(column.height - amplitude)));
+    OverhangBand band;
+    band.bottom = std::max(1, int(std::floor(column.height - amplitude)));
     const int end = std::min(QcWorld::worldHeight, int(std::ceil(column.height + amplitude)) + 1);
-    size = std::min(end - bottom, maxOverhangBand);
+    band.size = std::min(end - band.bottom, maxOverhangBand);
 
     // A 3D noise reshapes the ground around the surface. Below the plain height it cuts hollows
     // under solid ground (overhanging cliffs, ledges, arches); above it, it only piles up blocks
     // without gaps, so nothing floats.
     bool stacked = true;
-    for (int i = 0; i < size; ++i) {
-        const int y = bottom + i;
+    std::array<bool, maxOverhangBand> &solid = band.solid;
+    for (int i = 0; i < band.size; ++i) {
+        const int y = band.bottom + i;
         const double density = (column.height - 0.5 - y) / amplitude + 3.0 * m_overhangNoise.fractal3(x / 16.0, y / 7.0, z / 16.0, 2);
         if (y < column.height - amplitude) {
             solid[std::size_t(i)] = true;
@@ -295,7 +299,7 @@ int QcTerrainGenerator::overhangBand(int x, int z, const Column &column, std::ar
             solid[std::size_t(i)] = stacked;
         }
     }
-    return bottom;
+    return band;
 }
 
 int QcTerrainGenerator::groundTop(int x, int z, const Column &column) const
@@ -304,15 +308,13 @@ int QcTerrainGenerator::groundTop(int x, int z, const Column &column) const
         return column.height - 1;
     }
 
-    std::array<bool, maxOverhangBand> solid{};
-    int size = 0;
-    const int bottom = overhangBand(x, z, column, solid, size);
-    for (int i = size - 1; i >= 0; --i) {
-        if (solid[std::size_t(i)]) {
-            return bottom + i;
+    const OverhangBand band = overhangBand(x, z, column);
+    for (int i = band.size - 1; i >= 0; --i) {
+        if (band.solid[std::size_t(i)]) {
+            return band.bottom + i;
         }
     }
-    return bottom - 1;
+    return band.bottom - 1;
 }
 
 void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, const Column &column) const
@@ -325,12 +327,10 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
     const int worldZ = chunk.pos().z * QcWorld::chunkSize + localZ;
     const QcBlockId surface = surfaceBlock(column, worldX, worldZ);
     const QcBlockId subsurface = subsurfaceBlock(column, surface);
-    std::array<bool, maxOverhangBand> band{};
-    int bandSize = 0;
     const bool overhangs = column.overhang >= 1.0;
-    const int bandBottom = overhangs ? overhangBand(worldX, worldZ, column, band, bandSize) : column.height;
-    const int highest = overhangs ? bandBottom + bandSize - 1 : column.height - 1;
-    const auto solidAt = [&](int y) { return y < bandBottom || (y - bandBottom < bandSize && band[std::size_t(y - bandBottom)]); };
+    const OverhangBand band = overhangs ? overhangBand(worldX, worldZ, column) : OverhangBand{.bottom = column.height};
+    const int highest = overhangs ? band.bottom + band.size - 1 : column.height - 1;
+    const auto solidAt = [&](int y) { return y < band.bottom || (y - band.bottom < band.size && band.solid[std::size_t(y - band.bottom)]); };
 
     // From the top down: the first solid block under air is the surface, the next ones the soil.
     int depth = -1;
@@ -381,14 +381,14 @@ QList<bool> QcTerrainGenerator::carvedColumns(const QcChunk &chunk, const QcTerr
     return carved;
 }
 
-void QcTerrainGenerator::growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const
+QcTerrainGenerator::Vein QcTerrainGenerator::grownVein(const Ore &ore, int vein, QcChunkPos pos) const
 {
     constexpr std::array<std::array<int, 3>, 6> directions{{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
     const auto random = [&](int salt) { return qcPositionRandom(ore.seed, pos.x, vein * 1024 + salt, pos.z); };
 
     // A compact clump: each block grows from a random earlier one onto a free face, kept inside
     // this chunk so veins never depend on neighbours.
-    cells.clear();
+    Vein cells;
     cells.append({int(random(0) * QcWorld::chunkSize), ore.minY + int(random(1) * (ore.maxY - ore.minY + 1)),
                   int(random(2) * QcWorld::chunkSize)});
     for (int step = 1, tries = 0; step < ore.veinSize && tries < 4 * ore.veinSize; ++tries) {
@@ -402,9 +402,10 @@ void QcTerrainGenerator::growVein(const Ore &ore, int vein, QcChunkPos pos, QLis
         cells.append(next);
         ++step;
     }
+    return cells;
 }
 
-void QcTerrainGenerator::placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const
+void QcTerrainGenerator::placeVein(QcChunk &chunk, const Ore &ore, const Vein &cells) const
 {
     for (const QcBlockPos &cell : cells) {
         if (cell.y >= 0 && cell.y < QcWorld::worldHeight && chunk.block(cell.x, cell.y, cell.z) == ore.replaces) {
@@ -416,10 +417,9 @@ void QcTerrainGenerator::placeVein(QcChunk &chunk, const Ore &ore, const QList<Q
 void QcTerrainGenerator::placeOres(QcChunk &chunk, const QcTerrainColumnGrid &columns) const
 {
     const QcChunkPos pos = chunk.pos();
-    QList<QcBlockPos> cells;
     for (const Ore &ore : m_definitions.ores) {
         for (int vein = 0; vein < ore.veins; ++vein) {
-            growVein(ore, vein, pos, cells);
+            const Vein cells = grownVein(ore, vein, pos);
             // A vein bound to biomes lies where the column of its first block has one of them.
             const int startBiome = columns.at(pos.x * QcWorld::chunkSize + cells.first().x, pos.z * QcWorld::chunkSize + cells.first().z).biome;
             if (ore.biomes.isEmpty() || ore.biomes.contains(startBiome)) {
@@ -580,45 +580,61 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     return chunk;
 }
 
-bool QcTerrainGenerator::fitsSpawn(int x, int z, const Column &column, std::shared_ptr<QcChunk> &chunk) const
+class QcTerrainGenerator::SpawnSearch
 {
-    const bool candidate =
-        column.landFactor > 0.99 && column.height > seaLevel() + 2 && column.height < seaLevel() + 30 && column.overhang < 1.0;
-    if (!candidate || isCave(x, column.height - 1, z)) {
-        return false;
+public:
+    explicit SpawnSearch(const QcTerrainGenerator &terrain)
+        : m_terrain(terrain)
+    {
     }
 
-    const QcBlockPos pos{x, column.height - 1, z};
-    if (!chunk || chunk->pos() != pos.chunk()) {
-        chunk = generate(pos.chunk());
-    }
-    return chunk->highestNonAir(pos.localX(), pos.localZ()) == pos.y
-           && isNaturalGround(chunk->block(pos.localX(), pos.y, pos.localZ()));
-}
-
-std::optional<QcBlockPos> QcTerrainGenerator::spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const
-{
-    for (int dx = -radius; dx <= radius; dx += 8) {
-        for (int dz = -radius; dz <= radius; dz += 8) {
-            if (std::max(std::abs(dx), std::abs(dz)) != radius) {
-                continue;
-            }
-            const Column info = column(dx, dz);
-            if (fitsSpawn(dx, dz, info, chunk)) {
-                return QcBlockPos{dx, info.height, dz};
+    // Spawn candidate on the square ring of `radius` around the origin, if any.
+    [[nodiscard]] std::optional<QcBlockPos> onRing(int radius)
+    {
+        for (int dx = -radius; dx <= radius; dx += 8) {
+            for (int dz = -radius; dz <= radius; dz += 8) {
+                if (std::max(std::abs(dx), std::abs(dz)) != radius) {
+                    continue;
+                }
+                const Column info = m_terrain.column(dx, dz);
+                if (fits(dx, dz, info)) {
+                    return QcBlockPos{dx, info.height, dz};
+                }
             }
         }
+        return std::nullopt;
     }
-    return std::nullopt;
-}
+
+private:
+    // Open, dry and not too high ground at a column.
+    [[nodiscard]] bool fits(int x, int z, const Column &column)
+    {
+        const int sea = m_terrain.seaLevel();
+        const bool candidate = column.landFactor > 0.99 && column.height > sea + 2 && column.height < sea + 30 && column.overhang < 1.0;
+        if (!candidate || m_terrain.isCave(x, column.height - 1, z)) {
+            return false;
+        }
+
+        const QcBlockPos pos{x, column.height - 1, z};
+        if (!m_chunk || m_chunk->pos() != pos.chunk()) {
+            m_chunk = m_terrain.generate(pos.chunk());
+        }
+        return m_chunk->highestNonAir(pos.localX(), pos.localZ()) == pos.y
+               && m_terrain.isNaturalGround(m_chunk->block(pos.localX(), pos.y, pos.localZ()));
+    }
+
+    const QcTerrainGenerator &m_terrain;
+    // The last chunk generated for the search.
+    std::shared_ptr<QcChunk> m_chunk;
+};
 
 QcBlockPos QcTerrainGenerator::spawnPoint() const
 {
     // Nearest dry, not too high open ground on a spiral of growing squares around the origin: no
     // tree crown, cave or plant above the surface block, and no overhanging mountain land.
-    std::shared_ptr<QcChunk> chunk;
+    SpawnSearch search(*this);
     for (int radius = 0; radius <= spawnSearchRadius; radius += 8) {
-        if (const std::optional<QcBlockPos> spawn = spawnOnRing(radius, chunk)) {
+        if (const std::optional<QcBlockPos> spawn = search.onRing(radius)) {
             return *spawn;
         }
     }

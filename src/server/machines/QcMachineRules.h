@@ -37,10 +37,9 @@ public:
     double burnFraction(const Machine &machine) const;
     double progressFraction(const Machine &machine, QcBlockId block) const;
 
-    // Advances all machines in loaded chunks. `changed` collects the positions whose slots or timers
-    // changed, `slotsChanged` those whose slots changed (comparators and hoppers look again).
-    void tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed = nullptr,
-              QList<QcBlockPos> *slotsChanged = nullptr) const;
+    // Advances all machines in loaded chunks. Returns the positions whose slots changed (comparators
+    // and hoppers look again).
+    [[nodiscard]] QList<QcBlockPos> tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt) const;
     // One machine for `dt` seconds; true when anything of it changed.
     bool step(Machine &machine, const QcMachineDefinition &definition, double dt) const;
 

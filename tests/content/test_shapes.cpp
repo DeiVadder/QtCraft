@@ -125,20 +125,20 @@ private slots:
             QCOMPARE(content.stateId(content.stateName(QcBlockId(id))), std::optional<QcBlockId>(QcBlockId(id)));
         }
 
-        QStringList problems;
-        QCOMPARE(content.stateId(u"t:stairs[half=top,colour=red]"_s, &problems), content.withProperty(stairs, u"half"_s, u"top"_s));
-        QCOMPARE(problems.size(), 1);
-        QVERIFY(problems.first().contains(u"colour=red"_s));
+        const QcContentRegistry::ParsedState colour = content.parseState(u"t:stairs[half=top,colour=red]"_s);
+        QCOMPARE(colour.id, content.withProperty(stairs, u"half"_s, u"top"_s));
+        QCOMPARE(colour.problems.size(), 1);
+        QVERIFY(colour.problems.first().contains(u"colour=red"_s));
         QCOMPARE(content.stateId(u"t:unknown"_s), std::nullopt);
 
         // A damaged entry without its closing bracket keeps the block, in its default state when
         // nothing else parses, and is reported.
-        problems.clear();
-        QCOMPARE(content.stateId(u"t:stairs[half=top"_s, &problems), content.withProperty(stairs, u"half"_s, u"top"_s));
-        QCOMPARE(problems.size(), 1);
-        problems.clear();
-        QCOMPARE(content.stateId(u"t:stairs[a=b"_s, &problems), stairs);
-        QCOMPARE(problems.size(), 2);
+        const QcContentRegistry::ParsedState unclosed = content.parseState(u"t:stairs[half=top"_s);
+        QCOMPARE(unclosed.id, content.withProperty(stairs, u"half"_s, u"top"_s));
+        QCOMPARE(unclosed.problems.size(), 1);
+        const QcContentRegistry::ParsedState unknown = content.parseState(u"t:stairs[a=b"_s);
+        QCOMPARE(unknown.id, stairs);
+        QCOMPARE(unknown.problems.size(), 2);
     }
 
     void stairsTurnAndFlip()
@@ -251,7 +251,7 @@ private slots:
         QcEntityMotion motion;
         motion.position = {0.5, 67.0, 0.5};
         for (int i = 0; i < 60; ++i) {
-            QcPhysics::stepEntity(motion, QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
+            motion.step(QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
         }
         QCOMPARE(motion.position.y, 64.5);
         QVERIFY(motion.onGround);
@@ -288,7 +288,7 @@ private slots:
 
         const auto walkNorth = [&](QcEntityMotion &motion, int ticks) {
             for (int i = 0; i < ticks; ++i) {
-                QcPhysics::stepEntity(motion, QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
+                motion.step(QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
             }
         };
 
@@ -308,19 +308,19 @@ private slots:
         low.onGround = true;
         world.set({2, 64, -1}, m_fixture.stone);
         for (int i = 0; i < 20; ++i) {
-            QcPhysics::stepEntity(low, QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
+            low.step(QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
         }
         QCOMPARE(low.position.y, 64.0);
         QCOMPARE(low.position.z, 0.3);
 
-        // Players (server and client prediction both run stepPlayer) walk up the same way.
+        // Players (server and client prediction both run QcEntityMotion::stepPlayer) walk up the same way.
         QcEntityMotion player;
         player.position = {0.5, 64.0, 0.5};
         player.onGround = true;
         QcPlayerInput input;
         input.forward = 1.0f;
         for (int i = 0; i < 40; ++i) {
-            QcPhysics::stepPlayer(player, input, world, dt, false);
+            player.stepPlayer(input, world, dt, false);
         }
         QCOMPARE(player.position.y, 65.0);
     }
@@ -336,7 +336,7 @@ private slots:
         QcEntityMotion motion;
         motion.position = {0.5, 64.0, 0.3};
         motion.onGround = true;
-        QcPhysics::stepEntity(motion, QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, true}, playerBody, world, dt);
+        motion.step(QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, true}, playerBody, world, dt);
         // The jump: velocity after one tick of gravity, rise by that velocity over the tick.
         const double velocity = QcPhysics::jumpVelocity - QcPhysics::gravity * dt;
         QCOMPARE(motion.velocity.y, velocity);
@@ -347,7 +347,7 @@ private slots:
         QcEntityMotion step;
         step.position = {0.5, 64.0, 0.3};
         step.onGround = true;
-        QcPhysics::stepEntity(step, QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
+        step.step(QcPhysics::Steering{{0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false}, playerBody, world, dt);
         QCOMPARE(step.position.y, 64.5);
     }
 
@@ -517,7 +517,7 @@ private slots:
         motion.position = {0.5, 64.0, 0.5};
         // Pushing against the wall behind the ladder climbs at climbSpeed (2.4 m/s).
         for (int i = 0; i < 40; ++i) {
-            QcPhysics::stepEntity(motion, QcPhysics::Steering{{0.0, 0.0, -1.0}, 4.3, false}, playerBody, world, dt);
+            motion.step(QcPhysics::Steering{{0.0, 0.0, -1.0}, 4.3, false}, playerBody, world, dt);
         }
         QVERIFY(motion.climbing);
         // Two seconds of climbing, minus the first ticks spent reaching the wall: well above 3 m.
@@ -526,22 +526,22 @@ private slots:
 
         // Letting go slides down no faster than climbDownSpeed.
         for (int i = 0; i < 10; ++i) {
-            QcPhysics::stepEntity(motion, QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
+            motion.step(QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
             QVERIFY(motion.velocity.y >= -QcPhysics::climbDownSpeed);
         }
 
         // Holding (sneaking) stays in place.
         const double held = motion.position.y;
         for (int i = 0; i < 10; ++i) {
-            QcPhysics::stepEntity(motion, QcPhysics::Steering{{}, 0.0, false, true}, playerBody, world, dt);
+            motion.step(QcPhysics::Steering{{}, 0.0, false, true}, playerBody, world, dt);
         }
         QCOMPARE(motion.position.y, held);
 
         // Without a ladder the same body falls freely.
         QcEntityMotion free;
         free.position = {2.5, 70.0, 0.5};
-        QcPhysics::stepEntity(free, QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
-        QcPhysics::stepEntity(free, QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
+        free.step(QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
+        free.step(QcPhysics::Steering{{}, 0.0, false}, playerBody, world, dt);
         QVERIFY(!free.climbing);
         QVERIFY(free.velocity.y < -QcPhysics::gravity * dt * 1.5);
     }

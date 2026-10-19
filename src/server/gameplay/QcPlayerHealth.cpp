@@ -179,7 +179,7 @@ double QcPlayerHealth::throughArmour(QcServerClient &client, double amount)
     }
 
     QcEquipment worn = client.equipment;
-    const bool broke = !QcArmour::wear(content, worn, amount).isEmpty();
+    const bool broke = !worn.wear(content, amount).isEmpty();
     m_inventory.equipmentWorn(client, worn, broke);
     return QcArmour::reducedDamage(amount, points);
 }

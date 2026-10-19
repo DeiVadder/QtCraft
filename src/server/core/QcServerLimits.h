@@ -153,13 +153,21 @@ struct QcServerLimits
     qint64 waterCreaturesPerPlayer = 5;
 
     static std::span<const Field> fields();
-    // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,
-    // prefixed with `source` (e.g. "server.json").
-    static QcServerLimits fromJson(const QJsonObject &json, const QString &source, QStringList *warnings);
+    // Limits read from a file, and what was clamped or unknown in it.
+    struct Read;
+    // The defaults with the values of `json` (clamped); the warnings are prefixed with `source`
+    // (e.g. "server.json").
+    [[nodiscard]] static Read fromJson(const QJsonObject &json, const QString &source);
     QJsonObject toJson() const;
     // "key = value (range low..high): description" per limit.
     QStringList lines() const;
 
     qint64 scheduleReserve() const { return signalBudget * signalScheduleReservePercent / 100; }
     bool operator==(const QcServerLimits &) const = default;
+};
+
+struct QcServerLimits::Read
+{
+    QcServerLimits limits;
+    QStringList warnings;
 };

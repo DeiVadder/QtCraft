@@ -155,11 +155,11 @@ QcGameSettings QcGameSettings::load(const QString &path)
         return ok ? clampVolume(value, fallback) : fallback;
     };
 
-    settings.masterVolume = volume(u"audio/master"_s, defaultMasterVolume);
-    settings.effectsVolume = volume(u"audio/effects"_s, defaultEffectsVolume);
-    settings.musicVolume = volume(u"audio/music"_s, defaultMusicVolume);
-    settings.ambientVolume = volume(u"audio/ambient"_s, defaultAmbientVolume);
-    settings.muted = file.value(u"audio/muted"_s, false).toBool();
+    settings.audio.master = volume(u"audio/master"_s, defaultMasterVolume);
+    settings.audio.effects = volume(u"audio/effects"_s, defaultEffectsVolume);
+    settings.audio.music = volume(u"audio/music"_s, defaultMusicVolume);
+    settings.audio.ambient = volume(u"audio/ambient"_s, defaultAmbientVolume);
+    settings.audio.muted = file.value(u"audio/muted"_s, false).toBool();
     settings.keys = loadKeys(file);
     settings.gamepad = QcGamepadSettings::load(file);
     settings.texturePacks = loadTexturePacks(file);
@@ -187,11 +187,11 @@ QcStatus QcGameSettings::save(const QString &path) const
     QcCharacterProfile::saveAppearance(file, u"character"_s, appearance);
     QcCharacterProfile::savePresets(file, characterPresets);
 
-    file.setValue(u"audio/master"_s, masterVolume);
-    file.setValue(u"audio/effects"_s, effectsVolume);
-    file.setValue(u"audio/music"_s, musicVolume);
-    file.setValue(u"audio/ambient"_s, ambientVolume);
-    file.setValue(u"audio/muted"_s, muted);
+    file.setValue(u"audio/master"_s, audio.master);
+    file.setValue(u"audio/effects"_s, audio.effects);
+    file.setValue(u"audio/music"_s, audio.music);
+    file.setValue(u"audio/ambient"_s, audio.ambient);
+    file.setValue(u"audio/muted"_s, audio.muted);
     gamepad.save(file);
 
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {

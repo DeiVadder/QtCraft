@@ -50,11 +50,18 @@ struct QcGameSettings
     QcAppearance appearance;
     // Looks the player saved under a name (at most QcCharacterProfile::maxPresets).
     QList<QcCharacterPreset> characterPresets;
-    double masterVolume = defaultMasterVolume;
-    double effectsVolume = defaultEffectsVolume;
-    double musicVolume = defaultMusicVolume;
-    double ambientVolume = defaultAmbientVolume;
-    bool muted = false;
+    // The volumes of the sound and whether it is muted, stored as audio/<key>.
+    struct AudioVolumes
+    {
+        double master = defaultMasterVolume;
+        double effects = defaultEffectsVolume;
+        double music = defaultMusicVolume;
+        double ambient = defaultAmbientVolume;
+        bool muted = false;
+
+        bool operator==(const AudioVolumes &) const = default;
+    };
+    AudioVolumes audio;
     // Stored as "keys/<action>" (primary) and "keys/<action>.2" (secondary) with portable key names,
     // "" for no key. A missing or unknown name gives that slot's default; keys an earlier action
     // already uses are dropped. The pause key (Esc) is fixed.

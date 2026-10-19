@@ -20,10 +20,9 @@ int regionOf(int block, int spacing)
 
 } // namespace
 
-QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed,
-                                       QStringList *warnings)
+QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
-    , m_styles(*m_content, warnings)
+    , m_styles(*m_content)
     , m_planner(terrain, *m_content, m_styles, seed)
     , m_wetland(terrain, seed)
 {
@@ -40,8 +39,9 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::planFor(QcChunkPos chun
     return regionPlan(regionOf(chunk.x * QcWorld::chunkSize, spacing), regionOf(chunk.z * QcWorld::chunkSize, spacing));
 }
 
-void QcVillageGenerator::addFurnishing(QcChunkPos pos, const QcVillagePlan &plan, QcChunkFurnishing &furnishing) const
+QcChunkFurnishing QcVillageGenerator::furnishingIn(QcChunkPos pos, const QcVillagePlan &plan)
 {
+    QcChunkFurnishing furnishing;
     for (const QcStructurePlacement &piece : plan.pieces) {
         if (piece.structure().loot.isEmpty() || !piece.overlaps(pos)) {
             continue;
@@ -53,6 +53,7 @@ void QcVillageGenerator::addFurnishing(QcChunkPos pos, const QcVillagePlan &plan
             }
         }
     }
+    return furnishing;
 }
 
 QList<QcGuardSite> QcVillageGenerator::sitesNear(QcBlockPos from, int reach) const

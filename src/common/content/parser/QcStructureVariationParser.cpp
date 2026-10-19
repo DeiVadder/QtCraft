@@ -32,47 +32,6 @@ using Structure = QcStructureDefinition;
     return swaps;
 }
 
-void parseChoices(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
-{
-    const QJsonValue value = json.value(u"choices"_s);
-    if (value.isUndefined()) {
-        return;
-    }
-    if (!value.isObject() || value.toObject().size() > Structure::maxChoices) {
-        reader.fail(u"'choices' must be an object of at most %1 choices"_s.arg(Structure::maxChoices));
-        return;
-    }
-
-    const QJsonObject choices = value.toObject();
-    for (auto it = choices.constBegin(); it != choices.constEnd(); ++it) {
-        const QJsonArray options = it.value().toArray();
-        if (!it.value().isArray() || options.isEmpty() || options.size() > Structure::maxOptions) {
-            reader.fail(u"choice '%1' must be an array of 1 to %2 options"_s.arg(it.key()).arg(Structure::maxOptions));
-            return;
-        }
-
-        Structure::Choice choice{it.key(), {}};
-        for (const auto &option : options) {
-            std::optional<QHash<QString, QString>> swaps = readOption(option, packNamespace);
-            if (!swaps) {
-                reader.fail(u"every option of choice '%1' must be an object of name -> name"_s.arg(it.key()));
-                return;
-            }
-            choice.options.append(std::move(*swaps));
-        }
-        structure.choices.append(std::move(choice));
-    }
-}
-
-// What reading one part needs: the palette keys, the structure, the part and the reader.
-struct PartReading
-{
-    const QHash<QChar, qint16> &keys;
-    const Structure &structure;
-    Structure::Part &part;
-    QcJsonFieldReader &reader;
-};
-
 // The cell index of `cell` in the structure; std::nullopt where it lies outside.
 [[nodiscard]] std::optional<qsizetype> cellIndexOf(QcBlockPos cell, const Structure &structure)
 {
@@ -82,47 +41,107 @@ struct PartReading
     return structure.cellIndex(cell.x, cell.y, cell.z);
 }
 
-// One row of a part starting at `start` in the structure; false (with the reader failed) when it
-// uses an unknown key or leaves the structure.
-bool readPartRow(const QString &row, QcBlockPos start, PartReading &reading)
+// Reads the layers of one part: owns the part being built, whose cells span the whole structure.
+class PartReader
 {
-    for (int x = 0; x < row.size(); ++x) {
-        if (row[x] == u' ') {
-            continue;
-        }
-        const std::optional<qsizetype> cell = cellIndexOf(start.offset(x, 0, 0), reading.structure);
-        if (!reading.keys.contains(row[x]) || !cell) {
-            reading.reader.fail(u"part '%1' uses '%2' outside the structure or not in the palette"_s.arg(reading.part.name).arg(row[x]));
-            return false;
-        }
-        reading.part.cells[*cell] = reading.keys.value(row[x]);
+public:
+    PartReader(const QHash<QChar, qint16> &keys, const Structure &structure, Structure::Part part)
+        : m_keys(keys)
+        , m_structure(structure)
+        , m_part(std::move(part))
+    {
+        m_part.cells.fill(Structure::keep, structure.cells.size());
     }
-    return true;
-}
 
-// The layers of one part, written into its cells with their north west bottom corner at `at`.
-void readPartLayers(const QJsonArray &layers, QcBlockPos at, PartReading &reading)
-{
-    for (int y = 0; y < layers.size(); ++y) {
-        const QJsonArray rows = layers[y].toArray();
-        for (int z = 0; z < rows.size(); ++z) {
-            if (!readPartRow(rows[z].toString(), at.offset(0, y, z), reading)) {
-                return;
+    // The layers of the part, written into its cells with their north west bottom corner at `at`.
+    void readLayers(const QJsonArray &layers, QcBlockPos at, QcJsonFieldReader &reader)
+    {
+        for (int y = 0; y < layers.size(); ++y) {
+            const QJsonArray rows = layers[y].toArray();
+            for (int z = 0; z < rows.size(); ++z) {
+                if (!readRow(rows[z].toString(), at.offset(0, y, z), reader)) {
+                    return;
+                }
             }
         }
     }
+
+    [[nodiscard]] Structure::Part take() { return std::move(m_part); }
+
+private:
+    // One row of the part starting at `start` in the structure; false (with the reader failed) when
+    // it uses an unknown key or leaves the structure.
+    bool readRow(const QString &row, QcBlockPos start, QcJsonFieldReader &reader)
+    {
+        for (int x = 0; x < row.size(); ++x) {
+            if (row[x] == u' ') {
+                continue;
+            }
+            const std::optional<qsizetype> cell = cellIndexOf(start.offset(x, 0, 0), m_structure);
+            if (!m_keys.contains(row[x]) || !cell) {
+                reader.fail(u"part '%1' uses '%2' outside the structure or not in the palette"_s.arg(m_part.name).arg(row[x]));
+                return false;
+            }
+            m_part.cells[*cell] = m_keys.value(row[x]);
+        }
+        return true;
+    }
+
+    const QHash<QChar, qint16> &m_keys;
+    const Structure &m_structure;
+    Structure::Part m_part;
+};
+
+} // namespace
+
+namespace QcStructureVariationParser {
+
+QList<QcStructureDefinition::Choice> parseChoices(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<Structure::Choice> result;
+    const QJsonValue value = json.value(u"choices"_s);
+    if (value.isUndefined()) {
+        return result;
+    }
+    if (!value.isObject() || value.toObject().size() > Structure::maxChoices) {
+        reader.fail(u"'choices' must be an object of at most %1 choices"_s.arg(Structure::maxChoices));
+        return result;
+    }
+
+    const QJsonObject choices = value.toObject();
+    for (auto it = choices.constBegin(); it != choices.constEnd(); ++it) {
+        const QJsonArray options = it.value().toArray();
+        if (!it.value().isArray() || options.isEmpty() || options.size() > Structure::maxOptions) {
+            reader.fail(u"choice '%1' must be an array of 1 to %2 options"_s.arg(it.key()).arg(Structure::maxOptions));
+            return result;
+        }
+
+        Structure::Choice choice{it.key(), {}};
+        for (const auto &option : options) {
+            std::optional<QHash<QString, QString>> swaps = readOption(option, packNamespace);
+            if (!swaps) {
+                reader.fail(u"every option of choice '%1' must be an object of name -> name"_s.arg(it.key()));
+                return result;
+            }
+            choice.options.append(std::move(*swaps));
+        }
+        result.append(std::move(choice));
+    }
+    return result;
 }
 
-void parseParts(const QJsonObject &json, const QHash<QChar, qint16> &keys, Structure &structure, QcJsonFieldReader &reader)
+QList<QcStructureDefinition::Part> parseParts(const QJsonObject &json, const QHash<QChar, qint16> &keys, const QcStructureDefinition &structure,
+                                              QcJsonFieldReader &reader)
 {
+    QList<Structure::Part> result;
     const QJsonValue value = json.value(u"parts"_s);
     if (value.isUndefined()) {
-        return;
+        return result;
     }
     const QJsonArray parts = value.toArray();
     if (!value.isArray() || parts.size() > Structure::maxParts) {
         reader.fail(u"'parts' must be an array of at most %1 parts"_s.arg(Structure::maxParts));
-        return;
+        return result;
     }
 
     for (const auto &entry : parts) {
@@ -135,31 +154,18 @@ void parseParts(const QJsonObject &json, const QHash<QChar, qint16> &keys, Struc
         if (!entry.isObject() || at.size() != 3 || !layers.isArray()) {
             nested.fail(u"every part needs 'at' ([x, y, z]) and 'layers'"_s);
         }
-        part.cells.fill(Structure::keep, structure.cells.size());
+        PartReader partReader(keys, structure, std::move(part));
         const QcBlockPos corner{at[0].toInt(), at[1].toInt(), at[2].toInt()};
         if (nested.ok()) {
-            PartReading reading{keys, structure, part, nested};
-            readPartLayers(layers.toArray(), corner, reading);
+            partReader.readLayers(layers.toArray(), corner, nested);
         }
         reader.adopt(nested);
         if (!reader.ok()) {
-            return;
+            return result;
         }
-        structure.parts.append(std::move(part));
+        result.append(partReader.take());
     }
-}
-
-} // namespace
-
-namespace QcStructureVariationParser {
-
-void parseVariation(const QJsonObject &json, const QHash<QChar, qint16> &keys, QcStructureDefinition &structure, QcJsonFieldReader &reader,
-                    const QString &packNamespace)
-{
-    parseChoices(json, structure, reader, packNamespace);
-    if (reader.ok()) {
-        parseParts(json, keys, structure, reader);
-    }
+    return result;
 }
 
 } // namespace QcStructureVariationParser

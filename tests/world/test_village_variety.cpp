@@ -167,7 +167,7 @@ private slots:
     {
         // Drawn many times, every part comes with about its chance and every option of every choice
         // about equally often.
-        const QcVillageStyles styles(*m_content, nullptr);
+        const QcVillageStyles styles(*m_content);
         const QcVillageStyle *plains = styles.named(u"qtcraft:plains"_s);
         QVERIFY(plains);
         const QcPieceVariation &variation = plains->pieces.front().blueprints[1].variation;

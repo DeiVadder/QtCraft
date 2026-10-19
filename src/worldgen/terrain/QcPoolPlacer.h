@@ -40,11 +40,12 @@ private:
     };
 
     // A bowl below the floor that narrows with depth and has a ragged rim, as cell keys.
-    QSet<int> bowl(const QcChunk &chunk, const Pool &pool, QcBlockPos floor, int attempt) const;
-    void addBowlLayer(const QcChunk &chunk, const Pool &pool, const BowlLayer &layer, QSet<int> &cells) const;
-    // Liquid must not flow anywhere: drops cells until every remaining one is bounded below and on
-    // its sides by other cells or by blocks that hold liquid.
-    void dropUncontained(const QcChunk &chunk, QSet<int> &cells) const;
+    [[nodiscard]] QSet<int> bowl(const QcChunk &chunk, const Pool &pool, QcBlockPos floor, int attempt) const;
+    // Whether the cell (x, z) of a layer of the bowl is dug out (chunk-local).
+    [[nodiscard]] bool inBowl(const QcChunk &chunk, const Pool &pool, const BowlLayer &layer, int x, int z) const;
+    // Liquid must not flow anywhere: the cells left after dropping cells until every remaining one is
+    // bounded below and on its sides by other cells or by blocks that hold liquid.
+    [[nodiscard]] QSet<int> contained(const QcChunk &chunk, QSet<int> cells) const;
     // Only pools open to the cave (or sky) above are worth the liquid.
     bool opensUpwards(const QcChunk &chunk, const Pool &pool, const QSet<int> &cells) const;
     void fill(QcChunk &chunk, const Pool &pool, const QSet<int> &cells, int floorY) const;

@@ -29,7 +29,21 @@ public:
         std::shared_ptr<QcContentRegistry> content;
         // Every mod directory found, in load order for loaded mods, then the others by directory.
         QList<QcModStatus> mods;
+        // Warnings of the base game, of the mods (also failed ones) and of references between packs.
+        QStringList warnings;
     };
+
+    // A load that failed: why, and the warnings collected until then.
+    struct Failure
+    {
+        QString error;
+        QStringList warnings;
+    };
+
+    using Loaded = std::expected<Result, Failure>;
+
+    // The warnings of a load, whether it succeeded or not (callers report them before the outcome).
+    static const QStringList &warningsOf(const Loaded &loaded) { return loaded ? loaded->warnings : loaded.error().warnings; }
 
     // <data root>/mods (see QcWorldLibrary::dataRoot()).
     static QString defaultDirectory();
@@ -46,7 +60,7 @@ public:
 
     // Base game plus every loadable mod. Fails only when the base game cannot be loaded; an empty
     // `modsDirectory` loads no mods.
-    [[nodiscard]] static QcResult<Result> load(const QString &modsDirectory, QStringList &warnings);
+    [[nodiscard]] static Loaded load(const QString &modsDirectory);
 
     static QStringList disabledMods(const QString &modsDirectory);
     // Writes the disabled list; takes effect the next time content is loaded.

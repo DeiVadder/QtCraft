@@ -232,6 +232,51 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
     }
 }
 
+template<typename Visit>
+void QcChunkLoading::forPlayerChunks(Visit visit) const
+{
+    for (const auto &client : m_state.clients()) {
+        for (const QcChunkPos &chunk : std::as_const(client->view.sentChunks)) {
+            visit(chunk);
+        }
+        const QcChunkPos centre = QcChunkStreaming::chunkOf(client->motion.position);
+        const int radius = client->view.distance > 0 ? client->view.distance : m_state.config().viewDistance;
+        for (int dx = -radius; dx <= radius; ++dx) {
+            for (int dz = -radius; dz <= radius; ++dz) {
+                visit(QcChunkPos{centre.x + dx, centre.z + dz});
+            }
+        }
+    }
+}
+
+template<typename Visit>
+void QcChunkLoading::forSpawnChunks(Visit visit) const
+{
+    const int radius = m_state.info().spawnChunkRadius;
+    if (radius <= 0) {
+        return;
+    }
+    const QcChunkPos spawn = m_state.spawnPoint().column().chunk();
+    for (int dx = 1 - radius; dx < radius; ++dx) {
+        for (int dz = 1 - radius; dz < radius; ++dz) {
+            visit(QcChunkPos{spawn.x + dx, spawn.z + dz});
+        }
+    }
+}
+
+template<typename Visit>
+void QcChunkLoading::forKeptChunks(Visit visit) const
+{
+    forSpawnChunks(visit);
+    for (const QcChunkPos &chunk : std::as_const(m_state.info().forcedChunks)) {
+        visit(chunk);
+    }
+    const QList<QcChunkPos> loaders = m_state.world().loaders().chunks(qsizetype(m_state.config().limits.chunkLoaders));
+    for (const QcChunkPos &chunk : loaders) {
+        visit(chunk);
+    }
+}
+
 void QcChunkLoading::updateTickets()
 {
     const quint64 now = m_state.clock().tick();
@@ -252,13 +297,11 @@ void QcChunkLoading::updateTickets()
                      });
 
     // Forced chunks, spawn chunks and those of chunk loaders load like those around a player.
-    QSet<QcChunkPos> kept;
-    addKeptChunks(kept);
-    for (const QcChunkPos &chunk : std::as_const(kept)) {
+    forKeptChunks([this](QcChunkPos chunk) {
         if (!m_state.world().chunk(chunk) && !m_state.world().isRequested(chunk) && !m_waiting.contains(chunk)) {
             request(chunk);
         }
-    }
+    });
 
     // A signal that reached a part of its line that is not loaded asks for that chunk (decision E-376).
     // A refused wish is asked again in the following ticks while the signal waits, so a signal is
@@ -312,51 +355,12 @@ void QcChunkLoading::requestStrays(const QSet<QcChunkPos> &strays)
     }
 }
 
-void QcChunkLoading::addPlayerChunks(QSet<QcChunkPos> &needed) const
-{
-    for (const auto &client : m_state.clients()) {
-        needed.unite(client->view.sentChunks);
-        const QcChunkPos centre = QcChunkStreaming::chunkOf(client->motion.position);
-        const int radius = client->view.distance > 0 ? client->view.distance : m_state.config().viewDistance;
-        for (int dx = -radius; dx <= radius; ++dx) {
-            for (int dz = -radius; dz <= radius; ++dz) {
-                needed.insert({centre.x + dx, centre.z + dz});
-            }
-        }
-    }
-}
-
-void QcChunkLoading::addSpawnChunks(QSet<QcChunkPos> &needed) const
-{
-    const int radius = m_state.info().spawnChunkRadius;
-    if (radius <= 0) {
-        return;
-    }
-    const QcChunkPos spawn = m_state.spawnPoint().column().chunk();
-    for (int dx = 1 - radius; dx < radius; ++dx) {
-        for (int dz = 1 - radius; dz < radius; ++dz) {
-            needed.insert({spawn.x + dx, spawn.z + dz});
-        }
-    }
-}
-
-void QcChunkLoading::addKeptChunks(QSet<QcChunkPos> &needed) const
-{
-    addSpawnChunks(needed);
-    for (const QcChunkPos &chunk : std::as_const(m_state.info().forcedChunks)) {
-        needed.insert(chunk);
-    }
-    const QList<QcChunkPos> loaders = m_state.world().loaders().chunks(qsizetype(m_state.config().limits.chunkLoaders));
-    for (const QcChunkPos &chunk : loaders) {
-        needed.insert(chunk);
-    }
-}
-
 QSet<QcChunkPos> QcChunkLoading::neededChunks() const
 {
     QSet<QcChunkPos> needed;
-    addPlayerChunks(needed);
-    addKeptChunks(needed);
+    const auto add = [&needed](QcChunkPos chunk) { needed.insert(chunk); };
+    forPlayerChunks(add);
+    forKeptChunks(add);
     needed.unite(waitingSignalChunks());
     const QList<QcChunkPos> tickets = m_tickets.chunks();
     for (const QcChunkPos &chunk : tickets) {
@@ -440,7 +444,9 @@ void QcChunkLoading::unloadUnneeded()
     }
     // A signal on its way finishes before its chunk leaves (decision E-410); a pass that kept one
     // is not settled, the next tick looks again.
-    const bool holding = holdPassingSignals(candidates);
+    const QSet<QcChunkPos> held = passingSignals(candidates);
+    candidates.subtract(held);
+    const bool holding = !held.isEmpty();
     m_circuitChunks = circuitChunks();
     if (candidates.isEmpty()) {
         if (!holding) {
@@ -516,7 +522,7 @@ QSet<QcChunkPos> QcChunkLoading::circuitChunks() const
     return chunks;
 }
 
-bool QcChunkLoading::holdPassingSignals(QSet<QcChunkPos> &candidates)
+QSet<QcChunkPos> QcChunkLoading::passingSignals(const QSet<QcChunkPos> &candidates)
 {
     // A chunk the circuits kept until this tick without a ticket of its own (with the group of one,
     // or held by a signal that waited there) would take a signal that runs on now into storage
@@ -526,7 +532,7 @@ bool QcChunkLoading::holdPassingSignals(QSet<QcChunkPos> &candidates)
     // are; their machines resume when they come back (decision E-374).
     if (candidates.isEmpty()) {
         m_passingSince.clear();
-        return false;
+        return {};
     }
     QSet<QcChunkPos> passing = chunksWithSignals();
     for (const QList<QcBlockPos> &updates : {m_updates.playerUpdates(), m_updates.commandUpdates()}) {
@@ -539,7 +545,7 @@ bool QcChunkLoading::holdPassingSignals(QSet<QcChunkPos> &candidates)
     const quint64 limit = quint64(m_state.config().limits.chunkTicketTicks);
     const QcSignalSchedule &schedule = m_state.blockEntities().schedule();
     QHash<QcChunkPos, quint64> since;
-    bool holding = false;
+    QSet<QcChunkPos> held;
     const QList<QcChunkPos> ordered = sorted(candidates);
     for (const QcChunkPos &chunk : ordered) {
         const bool forCircuits = m_circuitChunks.contains(chunk) || m_passingSince.contains(chunk);
@@ -550,12 +556,11 @@ bool QcChunkLoading::holdPassingSignals(QSet<QcChunkPos> &candidates)
         const quint64 start = m_passingSince.value(chunk, now);
         since.insert(chunk, start);
         if (now - start < limit) {
-            candidates.remove(chunk);
-            holding = true;
+            held.insert(chunk);
         }
     }
     m_passingSince = std::move(since);
-    return holding;
+    return held;
 }
 
 void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
@@ -579,13 +584,13 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         departure.pos = pos;
         departure.blockEntities.chunk = pos;
         departure.blockEntities.kept = world.takeBlockEntityParts(pos);
-        QcBlockEntityRecords::take(departure.blockEntities, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
+        departure.blockEntities.takeFrom(m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
         departure.blockEntities.blockUpdates = updates.value(pos);
         departure.blockEntities.blockUpdates.append(flows.value(pos));
         departure.blockEntities.fires = world.fires().takeChunk(pos, now);
         departure.blockEntities.spawners = world.spawners().takeChunk(pos);
         departure.blockEntities.furnished = world.isFurnished(pos);
-        QcBlockEntityRecords::pruneKept(departure.blockEntities);
+        departure.blockEntities.pruneKept();
         departure.entities = entities.value(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);
@@ -654,7 +659,7 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blockEntities.furnished = world.isFurnished(pos);
         // Kept parts go back with the record; tails of entries gone since are dropped for good.
         departure.blockEntities.kept = world.blockEntityParts().value(pos);
-        QcBlockEntityRecords::pruneKept(departure.blockEntities);
+        departure.blockEntities.pruneKept();
         world.keepBlockEntityParts(pos, departure.blockEntities.kept);
         departure.entities = entities.take(pos);
         departure.entities.chunk = pos;

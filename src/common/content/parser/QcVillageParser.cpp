@@ -68,21 +68,19 @@ QList<QcVillageBlueprint> readBlueprints(const QJsonObject &json, const QString 
     return blueprints;
 }
 
-// The rules of a kind (decision E-404, E-408): chance, minRoadLength, water with its jetty (oak by
-// default).
-void readRules(QcVillagePiece &piece, const QString &packNamespace, QcJsonFieldReader &reader)
+// The jetty of a kind at the water (decision E-408), oak by default.
+[[nodiscard]] QcVillageJetty readJetty(const QString &packNamespace, QcJsonFieldReader &reader)
 {
-    piece.chance = reader.number(u"chance"_s, 1.0, 0.0, 1.0);
-    piece.minRoadLength = reader.integer(u"minRoadLength"_s, 0, 0, 4096);
-    piece.water = reader.integer(u"water"_s, 0, 0, 32);
-    piece.jetty.deck = u"qtcraft:oak_planks"_s;
-    piece.jetty.post = u"qtcraft:oak_log"_s;
-    reader.nestedObject(u"jetty"_s, [&piece, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        piece.jetty.deck = nested.name(u"deck"_s, packNamespace, piece.jetty.deck);
-        piece.jetty.post = nested.name(u"post"_s, packNamespace, piece.jetty.post);
-        piece.jetty.width = nested.integer(u"width"_s, 1, 1, 5) | 1;
-        piece.jetty.over = nested.integer(u"over"_s, 4, 1, 16);
+    QcVillageJetty jetty;
+    jetty.deck = u"qtcraft:oak_planks"_s;
+    jetty.post = u"qtcraft:oak_log"_s;
+    reader.nestedObject(u"jetty"_s, [&jetty, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        jetty.deck = nested.name(u"deck"_s, packNamespace, jetty.deck);
+        jetty.post = nested.name(u"post"_s, packNamespace, jetty.post);
+        jetty.width = nested.integer(u"width"_s, 1, 1, 5) | 1;
+        jetty.over = nested.integer(u"over"_s, 4, 1, 16);
     });
+    return jetty;
 }
 
 // The pieces of a style: [{"structure" or "structures", "weight", "max", rules}].
@@ -101,7 +99,11 @@ QList<QcVillagePiece> readPieces(const QJsonObject &json, const QString &packNam
         piece.blueprints = readBlueprints(value.toObject(), packNamespace, nested);
         piece.weight = nested.integer(u"weight"_s, 1, 1, 1000);
         piece.max = nested.integer(u"max"_s, 0, 0, 64);
-        readRules(piece, packNamespace, nested);
+        // The rules of a kind (decision E-404, E-408): chance, minRoadLength, water with its jetty.
+        piece.chance = nested.number(u"chance"_s, 1.0, 0.0, 1.0);
+        piece.minRoadLength = nested.integer(u"minRoadLength"_s, 0, 0, 4096);
+        piece.water = nested.integer(u"water"_s, 0, 0, 32);
+        piece.jetty = readJetty(packNamespace, nested);
         const bool named = std::ranges::all_of(piece.blueprints, [](const QcVillageBlueprint &b) { return !b.structure.isEmpty(); });
         if (!value.isObject() || piece.blueprints.isEmpty() || !named) {
             nested.fail(u"every piece needs a 'structure'"_s);
@@ -177,42 +179,72 @@ QList<Entry> readWeightedList(const QJsonObject &json, const QString &key, const
     return entries;
 }
 
+// Reads one village style over a default style or a copy of the base it extends: owns the style being
+// built and the reader of its JSON object.
+class StyleReader
+{
+public:
+    StyleReader(QcVillageStyleDefinition style, const QJsonObject &json, const QString &packNamespace, bool extending)
+        : m_json(json)
+        , m_namespace(packNamespace)
+        , m_extending(extending)
+        , m_reader{json, u"village style '%1'"_s.arg(style.name), {}}
+        , m_style(std::move(style))
+    {
+    }
+
+    [[nodiscard]] QcResult<QcVillageStyleDefinition> read();
+
+private:
+    void readGround();
+    void readPlacement();
+    void readBuildings();
+    void readAdditions();
+    void readRemovals();
+
+    const QJsonObject &m_json;
+    const QString &m_namespace;
+    const bool m_extending;
+    QcJsonFieldReader m_reader;
+    QcVillageStyleDefinition m_style;
+};
+
 // Where the style stands (decision E-407): "ground" "land" (default) or "water", the latter with its
 // "stilts" (posts and stairs of spruce by default) and an optional "wetland" (the ground it shapes).
-void readGround(QcVillageStyleDefinition &style, const QString &packNamespace, QcJsonFieldReader &reader)
+void StyleReader::readGround()
 {
-    const QString ground = reader.string(u"ground"_s, u"land"_s);
+    const QString ground = m_reader.string(u"ground"_s, u"land"_s);
     if (ground != u"land"_s && ground != u"water"_s) {
-        reader.fail(u"'ground' must be \"land\" or \"water\""_s);
+        m_reader.fail(u"'ground' must be \"land\" or \"water\""_s);
         return;
     }
-    style.ground = ground == u"water"_s ? QcVillageStyleDefinition::Ground::Water : QcVillageStyleDefinition::Ground::Land;
+    m_style.ground = ground == u"water"_s ? QcVillageStyleDefinition::Ground::Water : QcVillageStyleDefinition::Ground::Land;
 
-    QcVillageStilts &stilts = style.stilts;
+    QcVillageStilts &stilts = m_style.stilts;
     stilts.post = u"qtcraft:spruce_log"_s;
     stilts.stair = u"qtcraft:spruce_stairs"_s;
-    reader.nestedObject(u"stilts"_s, [&stilts, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+    m_reader.nestedObject(u"stilts"_s, [this, &stilts](const QJsonObject &, QcJsonFieldReader &nested) {
         stilts.height = nested.integer(u"height"_s, stilts.height, 2, 8);
         stilts.spacing = nested.integer(u"spacing"_s, stilts.spacing, 1, 8);
         stilts.maxDepth = nested.integer(u"maxDepth"_s, stilts.maxDepth, 0, 16);
         stilts.water = nested.number(u"water"_s, stilts.water, 0.0, 1.0);
-        stilts.post = nested.name(u"post"_s, packNamespace, stilts.post);
-        stilts.stair = nested.name(u"stair"_s, packNamespace, stilts.stair);
+        stilts.post = nested.name(u"post"_s, m_namespace, stilts.post);
+        stilts.stair = nested.name(u"stair"_s, m_namespace, stilts.stair);
     });
 
-    QcVillageWetland &wetland = style.wetland;
+    QcVillageWetland &wetland = m_style.wetland;
     wetland.bottom = u"qtcraft:mud"_s;
-    reader.nestedObject(u"wetland"_s, [&wetland, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+    m_reader.nestedObject(u"wetland"_s, [this, &wetland](const QJsonObject &, QcJsonFieldReader &nested) {
         wetland.enabled = true;
         wetland.depth = nested.integer(u"depth"_s, wetland.depth, 1, 4);
         wetland.margin = nested.integer(u"margin"_s, wetland.margin, 0, 12);
         wetland.fray = nested.integer(u"fray"_s, wetland.fray, 0, 8);
         wetland.blend = nested.integer(u"blend"_s, wetland.blend, 1, 8);
-        wetland.bottom = nested.name(u"bottom"_s, packNamespace, wetland.bottom);
+        wetland.bottom = nested.name(u"bottom"_s, m_namespace, wetland.bottom);
         wetland.water = nested.number(u"water"_s, wetland.water, 0.0, 1.0);
         wetland.mudBand = nested.integer(u"mudBand"_s, wetland.mudBand, 0, 4);
         wetland.scale = nested.number(u"scale"_s, wetland.scale, 2.0, 64.0);
-        wetland.plant = nested.name(u"plant"_s, packNamespace, wetland.plant);
+        wetland.plant = nested.name(u"plant"_s, m_namespace, wetland.plant);
         wetland.plantChance = nested.number(u"plantChance"_s, wetland.plantChance, 0.0, 1.0);
     });
 }
@@ -242,9 +274,11 @@ constexpr int maxGolemVillagers = 1024;
 constexpr double maxGolemDistance = 64.0;
 constexpr double maxGolemSeconds = 86400.0;
 
-// The golem fields of `nested` over `golem` (decisions E-415, E-470).
-void readGolemFields(QcVillageGolemSettings &golem, const QString &packNamespace, QcJsonFieldReader &nested)
+// The golem fields of `nested`; the missing ones keep those of `defaults` (decisions E-415, E-470).
+[[nodiscard]] QcVillageGolemSettings readGolemFields(const QcVillageGolemSettings &defaults, const QString &packNamespace,
+                                                     QcJsonFieldReader &nested)
 {
+    QcVillageGolemSettings golem = defaults;
     golem.mob = nested.name(u"mob"_s, packNamespace, golem.mob);
     golem.minVillagers = nested.integer(u"minVillagers"_s, golem.minVillagers, 1, maxGolemVillagers);
     golem.gossipVillagers = nested.integer(u"gossipVillagers"_s, golem.gossipVillagers, 1, maxGolemVillagers);
@@ -256,12 +290,16 @@ void readGolemFields(QcVillageGolemSettings &golem, const QString &packNamespace
     golem.cooldownSeconds = nested.number(u"cooldownSeconds"_s, golem.cooldownSeconds, 0.0, maxGolemSeconds);
     golem.spawnRadius = nested.integer(u"spawnRadius"_s, golem.spawnRadius, 2, 32);
     golem.grudgeSeconds = nested.number(u"grudgeSeconds"_s, golem.grudgeSeconds, 0.0, maxGolemSeconds);
+    return golem;
 }
 
-// The fields of a style's "golem" object that it gives (decision E-421): each over the settings'.
-void readGolemPatch(const QJsonObject &object, QcVillageGolemPatch &patch, const QString &packNamespace, QcJsonFieldReader &nested)
+// The fields of a style's "golem" object that it gives (decision E-421): each over the settings'; the
+// fields it does not give keep those of `base`.
+[[nodiscard]] QcVillageGolemPatch readGolemPatch(const QJsonObject &object, const QcVillageGolemPatch &base, const QString &packNamespace,
+                                                 QcJsonFieldReader &nested)
 {
     const QcVillageGolemSettings defaults;
+    QcVillageGolemPatch patch = base;
     const auto number = [&](const QString &key, std::optional<double> &field, double fallback, double low, double high) {
         if (object.contains(key)) {
             field = nested.number(key, fallback, low, high);
@@ -286,6 +324,7 @@ void readGolemPatch(const QJsonObject &object, QcVillageGolemPatch &patch, const
     number(u"gossipChance"_s, patch.gossipChance, defaults.gossipChance, 0.0, 1.0);
     number(u"cooldownSeconds"_s, patch.cooldownSeconds, defaults.cooldownSeconds, 0.0, maxGolemSeconds);
     number(u"grudgeSeconds"_s, patch.grudgeSeconds, defaults.grudgeSeconds, 0.0, maxGolemSeconds);
+    return patch;
 }
 
 // A style's own golems (decision E-421): false for none, or an object of the fields it gives over
@@ -304,9 +343,9 @@ std::optional<QcVillageGolemPatch> readStyleGolem(const QJsonObject &json, const
         return golem;
     }
 
-    QcVillageGolemPatch patch = golem.value_or(QcVillageGolemPatch{});
-    reader.nestedObject(u"golem"_s, [&patch, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        readGolemPatch(object, patch, packNamespace, nested);
+    QcVillageGolemPatch patch;
+    reader.nestedObject(u"golem"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
+        patch = readGolemPatch(object, golem.value_or(QcVillageGolemPatch{}), packNamespace, nested);
     });
     return patch;
 }
@@ -343,91 +382,89 @@ bool reads(const QJsonObject &json, const QString &key, bool extending)
 
 // Where a style stands and what its roads and fields are made of (all fields for a new style,
 // only the given ones for an extension, which keeps the others of its base).
-void readPlacement(QcVillageStyleDefinition &style, const QJsonObject &json, const QString &packNamespace, bool extending,
-                   QcJsonFieldReader &reader)
+void StyleReader::readPlacement()
 {
-    if (reads(json, u"biomes"_s, extending)) {
-        style.biomes = readBiomes(json, packNamespace, reader);
+    if (reads(m_json, u"biomes"_s, m_extending)) {
+        m_style.biomes = readBiomes(m_json, m_namespace, m_reader);
     }
-    style.fallback = reader.boolean(u"fallback"_s, extending && style.fallback);
-    style.centre = reader.name(u"centre"_s, packNamespace, extending ? style.centre : QString());
-    style.lamp = reader.name(u"lamp"_s, packNamespace, extending ? style.lamp : QString());
-    reader.nestedObject(u"rareCentre"_s, [&style, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        style.rareCentre = nested.name(u"structure"_s, packNamespace);
-        style.rareCentreChance = nested.number(u"chance"_s, 0.25, 0.0, 1.0);
-        if (style.rareCentre.isEmpty()) {
+    m_style.fallback = m_reader.boolean(u"fallback"_s, m_extending && m_style.fallback);
+    m_style.centre = m_reader.name(u"centre"_s, m_namespace, m_extending ? m_style.centre : QString());
+    m_style.lamp = m_reader.name(u"lamp"_s, m_namespace, m_extending ? m_style.lamp : QString());
+    m_reader.nestedObject(u"rareCentre"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_style.rareCentre = nested.name(u"structure"_s, m_namespace);
+        m_style.rareCentreChance = nested.number(u"chance"_s, 0.25, 0.0, 1.0);
+        if (m_style.rareCentre.isEmpty()) {
             nested.fail(u"needs a 'structure'"_s);
         }
     });
-    if (reads(json, u"path"_s, extending)) {
-        style.roads = readWeightedList<QcVillageRoad>(json, u"path"_s, packNamespace, QcVillageStyleDefinition::maxRoads, reader);
-        if (style.roads.isEmpty()) {
-            style.roads.append({u"qtcraft:gravel"_s, {}, 1});
+    if (reads(m_json, u"path"_s, m_extending)) {
+        m_style.roads = readWeightedList<QcVillageRoad>(m_json, u"path"_s, m_namespace, QcVillageStyleDefinition::maxRoads, m_reader);
+        if (m_style.roads.isEmpty()) {
+            m_style.roads.append({u"qtcraft:gravel"_s, {}, 1});
         }
     }
-    if (reads(json, u"branchPath"_s, extending)) {
-        style.branchRoads = readWeightedList<QcVillageRoad>(json, u"branchPath"_s, packNamespace, QcVillageStyleDefinition::maxRoads, reader);
-        if (style.branchRoads.isEmpty()) {
-            style.branchRoads = style.roads;
+    if (reads(m_json, u"branchPath"_s, m_extending)) {
+        m_style.branchRoads = readWeightedList<QcVillageRoad>(m_json, u"branchPath"_s, m_namespace, QcVillageStyleDefinition::maxRoads, m_reader);
+        if (m_style.branchRoads.isEmpty()) {
+            m_style.branchRoads = m_style.roads;
         }
     }
-    if (reads(json, u"crops"_s, extending)) {
-        style.crops = readWeightedList<QcVillageCrop>(json, u"crops"_s, packNamespace, QcVillageStyleDefinition::maxCrops, reader);
+    if (reads(m_json, u"crops"_s, m_extending)) {
+        m_style.crops = readWeightedList<QcVillageCrop>(m_json, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, m_reader);
     }
-    style.foundationBlock = reader.name(u"foundation"_s, packNamespace, extending ? style.foundationBlock : u"cobblestone"_s);
+    m_style.foundationBlock = m_reader.name(u"foundation"_s, m_namespace, m_extending ? m_style.foundationBlock : u"cobblestone"_s);
 }
 
 // What a style builds and who lives there (as readPlacement for an extension).
-void readBuildings(QcVillageStyleDefinition &style, const QJsonObject &json, const QString &packNamespace, bool extending,
-                   QcJsonFieldReader &reader)
+void StyleReader::readBuildings()
 {
-    if (reads(json, u"pieces"_s, extending)) {
-        style.pieces = readPieces(json, packNamespace, reader);
+    if (reads(m_json, u"pieces"_s, m_extending)) {
+        m_style.pieces = readPieces(m_json, m_namespace, m_reader);
     }
-    if (reads(json, u"layouts"_s, extending)) {
-        style.layouts = QcVillageLayoutParser::read(json, reader);
+    if (reads(m_json, u"layouts"_s, m_extending)) {
+        m_style.layouts = QcVillageLayoutParser::read(m_json, m_reader);
     }
     // Ground, stilts and wetland are read together.
-    if (!extending || json.contains(u"ground"_s) || json.contains(u"stilts"_s) || json.contains(u"wetland"_s)) {
-        readGround(style, packNamespace, reader);
+    if (!m_extending || m_json.contains(u"ground"_s) || m_json.contains(u"stilts"_s) || m_json.contains(u"wetland"_s)) {
+        readGround();
     }
-    if (reads(json, u"palette"_s, extending)) {
-        style.palette = nameMap(json, u"palette"_s, packNamespace, QcVillageStyleDefinition::maxPaletteEntries, reader);
+    if (reads(m_json, u"palette"_s, m_extending)) {
+        m_style.palette = nameMap(m_json, u"palette"_s, m_namespace, QcVillageStyleDefinition::maxPaletteEntries, m_reader);
     }
-    if (reads(json, u"look"_s, extending)) {
-        style.look = QcVillagerParser::readLook(u"look"_s, packNamespace, reader);
+    if (reads(m_json, u"look"_s, m_extending)) {
+        m_style.look = QcVillagerParser::readLook(u"look"_s, m_namespace, m_reader);
     }
-    style.villager = reader.name(u"villager"_s, packNamespace, extending ? style.villager : QString());
-    if (json.contains(u"golem"_s)) {
-        style.golem = readStyleGolem(json, packNamespace, extending ? style.golem : std::nullopt, reader);
+    m_style.villager = m_reader.name(u"villager"_s, m_namespace, m_extending ? m_style.villager : QString());
+    if (m_json.contains(u"golem"_s)) {
+        m_style.golem = readStyleGolem(m_json, m_namespace, m_extending ? m_style.golem : std::nullopt, m_reader);
     }
-    if (json.contains(u"residents"_s)) {
-        style.residents = readResidents(json, packNamespace, reader);
+    if (m_json.contains(u"residents"_s)) {
+        m_style.residents = readResidents(m_json, m_namespace, m_reader);
     }
 }
 
 // The lists of `add` appended to the style's (decision E-421): biomes (once each), crops, pieces
 // and layouts, each within its limit.
-void readAdditions(QcVillageStyleDefinition &style, const QString &packNamespace, QcJsonFieldReader &reader)
+void StyleReader::readAdditions()
 {
-    reader.nestedObject(u"add"_s, [&style, &packNamespace](const QJsonObject &add, QcJsonFieldReader &nested) {
-        const QStringList biomes = readBiomes(add, packNamespace, nested);
+    m_reader.nestedObject(u"add"_s, [this](const QJsonObject &add, QcJsonFieldReader &nested) {
+        const QStringList biomes = readBiomes(add, m_namespace, nested);
         for (const QString &biome : biomes) {
-            if (!style.biomes.contains(biome)) {
-                style.biomes.append(biome);
+            if (!m_style.biomes.contains(biome)) {
+                m_style.biomes.append(biome);
             }
         }
         if (add.contains(u"crops"_s)) {
-            style.crops += readWeightedList<QcVillageCrop>(add, u"crops"_s, packNamespace, QcVillageStyleDefinition::maxCrops, nested);
+            m_style.crops += readWeightedList<QcVillageCrop>(add, u"crops"_s, m_namespace, QcVillageStyleDefinition::maxCrops, nested);
         }
         if (add.contains(u"pieces"_s)) {
-            style.pieces += readPieces(add, packNamespace, nested);
+            m_style.pieces += readPieces(add, m_namespace, nested);
         }
         if (add.contains(u"layouts"_s)) {
-            style.layouts += QcVillageLayoutParser::read(add, nested);
+            m_style.layouts += QcVillageLayoutParser::read(add, nested);
         }
-        if (style.biomes.size() > QcVillageStyleDefinition::maxBiomes || style.crops.size() > QcVillageStyleDefinition::maxCrops
-            || style.pieces.size() > QcVillageStyleDefinition::maxPieces || style.layouts.size() > QcVillageStyleDefinition::maxLayouts) {
+        if (m_style.biomes.size() > QcVillageStyleDefinition::maxBiomes || m_style.crops.size() > QcVillageStyleDefinition::maxCrops
+            || m_style.pieces.size() > QcVillageStyleDefinition::maxPieces || m_style.layouts.size() > QcVillageStyleDefinition::maxLayouts) {
             nested.fail(u"the style holds too many biomes, crops, pieces or layouts with these"_s);
         }
     });
@@ -435,43 +472,40 @@ void readAdditions(QcVillageStyleDefinition &style, const QString &packNamespace
 
 // The lists of `remove` taken from the style's (decision E-421): biomes, so a mod moves a biome of
 // a base style to its own.
-void readRemovals(QcVillageStyleDefinition &style, const QString &packNamespace, QcJsonFieldReader &reader)
+void StyleReader::readRemovals()
 {
-    reader.nestedObject(u"remove"_s, [&style, &packNamespace](const QJsonObject &remove, QcJsonFieldReader &nested) {
-        const QStringList biomes = readBiomes(remove, packNamespace, nested);
+    m_reader.nestedObject(u"remove"_s, [this](const QJsonObject &remove, QcJsonFieldReader &nested) {
+        const QStringList biomes = readBiomes(remove, m_namespace, nested);
         for (const QString &biome : biomes) {
-            style.biomes.removeAll(biome);
+            m_style.biomes.removeAll(biome);
         }
     });
 }
 
-// A style read over `style` (a default one, or a copy of the base it extends).
-QcResult<QcVillageStyleDefinition> readStyle(QcVillageStyleDefinition style, const QJsonObject &json, const QString &packNamespace,
-                                             bool extending)
+QcResult<QcVillageStyleDefinition> StyleReader::read()
 {
-    QcJsonFieldReader reader{json, u"village style '%1'"_s.arg(style.name), {}};
-    QcContentFields::checkFormatVersion(QcContentFields::villageFormatVersion, reader);
-    if (json.contains(u"villagers"_s)) {
-        reader.fail(u"'villagers' (the look of the villagers) is now 'look'"_s);
+    QcContentFields::checkFormatVersion(QcContentFields::villageFormatVersion, m_reader);
+    if (m_json.contains(u"villagers"_s)) {
+        m_reader.fail(u"'villagers' (the look of the villagers) is now 'look'"_s);
     }
-    readPlacement(style, json, packNamespace, extending, reader);
-    readBuildings(style, json, packNamespace, extending, reader);
-    if (extending) {
-        readRemovals(style, packNamespace, reader);
-        readAdditions(style, packNamespace, reader);
-    } else if (json.contains(u"add"_s) || json.contains(u"remove"_s)) {
-        reader.fail(u"'add' and 'remove' need 'extends'"_s);
+    readPlacement();
+    readBuildings();
+    if (m_extending) {
+        readRemovals();
+        readAdditions();
+    } else if (m_json.contains(u"add"_s) || m_json.contains(u"remove"_s)) {
+        m_reader.fail(u"'add' and 'remove' need 'extends'"_s);
     }
-    if (reader.ok() && style.biomes.size() > QcVillageStyleDefinition::maxBiomes) {
-        reader.fail(u"'biomes' lists at most %1 biomes"_s.arg(QcVillageStyleDefinition::maxBiomes));
+    if (m_reader.ok() && m_style.biomes.size() > QcVillageStyleDefinition::maxBiomes) {
+        m_reader.fail(u"'biomes' lists at most %1 biomes"_s.arg(QcVillageStyleDefinition::maxBiomes));
     }
-    if (style.centre.isEmpty()) {
-        reader.fail(u"'centre' is required"_s);
+    if (m_style.centre.isEmpty()) {
+        m_reader.fail(u"'centre' is required"_s);
     }
-    if (!reader.ok()) {
-        return qcError(reader.error);
+    if (!m_reader.ok()) {
+        return qcError(m_reader.error);
     }
-    return style;
+    return std::move(m_style);
 }
 
 } // namespace
@@ -489,7 +523,7 @@ QcResult<QcVillageStyleDefinition> parseVillageStyle(const QJsonObject &json, co
     if (json.contains(u"extends"_s)) {
         return qcError(u"village style '%1': 'extends' is read with the style it extends"_s.arg(style.name));
     }
-    return readStyle(std::move(style), json, packNamespace, false);
+    return StyleReader(std::move(style), json, packNamespace, false).read();
 }
 
 QcResult<QString> extendedStyle(const QJsonObject &json, const QString &packNamespace)
@@ -516,7 +550,7 @@ QcResult<QcVillageStyleDefinition> extendVillageStyle(const QJsonObject &json, c
         style.biomes.clear();
         style.fallback = false;
     }
-    return readStyle(std::move(style), json, packNamespace, true);
+    return StyleReader(std::move(style), json, packNamespace, true).read();
 }
 
 QcResult<QcVillageSettings> parseVillageSettings(const QJsonObject &json, const QString &packNamespace)
@@ -542,7 +576,7 @@ QcResult<QcVillageSettings> parseVillageSettings(const QJsonObject &json, const 
     settings.bell = reader.name(u"bell"_s, packNamespace, settings.bell);
     settings.villager = reader.name(u"villager"_s, packNamespace, settings.villager);
     reader.nestedObject(u"golem"_s, [&settings, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
-        readGolemFields(settings.golem, packNamespace, nested);
+        settings.golem = readGolemFields(settings.golem, packNamespace, nested);
     });
     if (!reader.ok()) {
         return qcError(reader.error);

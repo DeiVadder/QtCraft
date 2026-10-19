@@ -11,6 +11,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcCrc32.h"
 #include "common/physics/QcPhysics.h"
+#include "QcTestUtil.h"
 
 #include <QDataStream>
 #include <QIODevice>
@@ -314,10 +315,9 @@ private slots:
 
     void worldMeshWithoutHeadYawIsUnchanged()
     {
-        QStringList warnings;
-        const auto base = QcBaseContent::load(warnings);
+        const auto base = QcTestUtil::baseContent();
         QVERIFY(base);
-        const QcContentRegistry &content = **base;
+        const QcContentRegistry &content = *base->registry;
 
         // The world's figures (head yaw 0) are drawn exactly as before the head could turn: these
         // fingerprints were taken from the meshes of the commit before stage 22 (78618f4).
@@ -345,10 +345,9 @@ private slots:
 
     void othersArmourIsCheckedBeforeItIsDrawn()
     {
-        QStringList warnings;
-        const auto base = QcBaseContent::load(warnings);
+        const auto base = QcTestUtil::baseContent();
         QVERIFY(base);
-        const QcContentRegistry &content = **base;
+        const QcContentRegistry &content = *base->registry;
         const QcItemId helmet = *content.itemId(u"qtcraft:iron_pickaxe"_s);
 
         // A player keeps what the content knows; an unknown item id is dropped (decision E-232).
@@ -378,10 +377,9 @@ private slots:
 
     void sceneIsTheWorldsFigure()
     {
-        QStringList warnings;
-        const auto base = QcBaseContent::load(warnings);
+        const auto base = QcTestUtil::baseContent();
         QVERIFY2(base, qPrintable(base ? QString() : base.error()));
-        const QcContentRegistry &content = **base;
+        const QcContentRegistry &content = *base->registry;
 
         QcAppearance look;
         look.outfit = u"qtcraft:miner"_s;
@@ -416,16 +414,15 @@ private slots:
 
     void headYawTurnsOnlyTheHead()
     {
-        QStringList warnings;
-        const auto base = QcBaseContent::load(warnings);
+        const auto base = QcTestUtil::baseContent();
         QVERIFY(base);
         const QcAppearance look;
         QcEntityPose straight;
         QcEntityPose turned;
         turned.headYaw = 60.0f;
         // Facing -Z (yaw 0): turning to the right moves the face, which sits in front of the head, to +X.
-        const QcEntityMesh a = QcPreviewScene::build(**base, {look, qcNoItem, straight, 0.0, 0.0}, anyUv);
-        const QcEntityMesh b = QcPreviewScene::build(**base, {look, qcNoItem, turned, 0.0, 0.0}, anyUv);
+        const QcEntityMesh a = QcPreviewScene::build(*base->registry, {look, qcNoItem, straight, 0.0, 0.0}, anyUv);
+        const QcEntityMesh b = QcPreviewScene::build(*base->registry, {look, qcNoItem, turned, 0.0, 0.0}, anyUv);
         QCOMPARE(a.vertices.size(), b.vertices.size());
         // The body below the neck stays where it was; the face moved to +X.
         QVERIFY(std::abs(meanX(a, 0.75, 1.3) - meanX(b, 0.75, 1.3)) < 1e-4);

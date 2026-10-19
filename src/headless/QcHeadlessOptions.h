@@ -125,8 +125,15 @@ struct Options
 void printError(const QString &message);
 void printLines(const QStringList &lines);
 
-// Seed, world name, view distance, spawn column, game mode and the time limit; false on a bad value.
-bool readConfig(const QCommandLineParser &parser, const Options &options, QcServerConfig &config, int &timeLimit);
+// What a local or joining run starts with: the server's configuration and the time limit in seconds.
+struct RunConfig
+{
+    QcServerConfig server;
+    int timeLimit = 0;
+};
+
+// Seed, world name, view distance, spawn column, game mode and the time limit; nullopt on a bad value.
+[[nodiscard]] std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Options &options);
 // The data directory: --data-dir, else QcDataRoot.
 QString dataDirectory(const QCommandLineParser &parser, const Options &options);
 // The base game with the mods of --mods-dir, else of the data directory's mods folder (none with

@@ -1,6 +1,7 @@
 #include "common/gameplay/QcEquipment.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcArmour.h"
 
 QcEquipment QcEquipment::knownTo(const QcContentRegistry &content) const
 {
@@ -37,4 +38,23 @@ QString qcEquipmentSlotName(QcEquipmentSlot slot)
         }
     }
     return std::nullopt;
+}
+
+QList<QcEquipmentSlot> QcEquipment::wear(const QcContentRegistry &content, double damage)
+{
+    QList<QcEquipmentSlot> broken;
+    const int loss = QcArmour::wearOf(damage);
+    for (std::size_t i = 0; i < slotCount; ++i) {
+        QcItemStack &stack = stacks[i];
+        if (stack.isEmpty() || !content.isValidItem(stack.item) || content.item(stack.item).durability <= 0) {
+            continue;
+        }
+
+        stack.damage += loss;
+        if (stack.damage >= content.item(stack.item).durability) {
+            stack = {};
+            broken.append(QcEquipmentSlot(i));
+        }
+    }
+    return broken;
 }

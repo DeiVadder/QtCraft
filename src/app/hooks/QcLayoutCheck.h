@@ -21,7 +21,8 @@ public:
     static QStringList chatOverlaps(const QQuickItem &root);
 
 private:
-    static void collect(const QQuickItem &item, const QRectF &bounds, QStringList &found);
+    // `item` and the items below it that reach outside `bounds` (clipping items hide what is below them).
+    [[nodiscard]] static QStringList outside(const QQuickItem &item, const QRectF &bounds);
     static QList<const QQuickItem *> statusRows(const QQuickItem &hud);
     static const QQuickItem *findItem(const QQuickItem &root, const QString &name);
     static bool shown(const QQuickItem &item);

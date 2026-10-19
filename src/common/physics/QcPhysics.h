@@ -137,11 +137,6 @@ struct BodySize
     double height = playerHeight;
 };
 
-// Advances any entity by one tick. The caller updates motion.inWater before the call.
-MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt);
-
-// Advances a player by one tick of `dt` seconds. `mayFly` comes from the player's game mode
-// (QcGameModes::Rules); without it a wish to fly is ignored and a flight ends.
-void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly);
+// The steps of a body are methods of QcEntityMotion (step, stepPlayer).
 
 } // namespace QcPhysics

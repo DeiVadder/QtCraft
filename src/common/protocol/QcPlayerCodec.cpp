@@ -168,13 +168,17 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
 {
     QcMsg::InventoryState m;
-    if (!readStacks(stream, m.stacks)) {
+    std::optional<QList<QcItemStack>> stacks = readStacks(stream);
+    if (!stacks) {
         return qcError(u"Corrupt inventory"_s);
     }
+    m.stacks = std::move(*stacks);
     stream >> m.selected;
-    if (!readStacks(stream, m.craftingGrid)) {
+    std::optional<QList<QcItemStack>> craftingGrid = readStacks(stream);
+    if (!craftingGrid) {
         return qcError(u"Corrupt crafting grid"_s);
     }
+    m.craftingGrid = std::move(*craftingGrid);
     stream >> m.craftingSize;
     m.craftingResult = readStack(stream);
     m.equipment = readEquipment(stream);
@@ -222,9 +226,11 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     if (!std::isfinite(m.health) || !std::isfinite(m.maxHealth)) {
         return qcError(u"Non-finite health"_s);
     }
-    if (!QcStatusEffects::read(stream, m.effects)) {
+    std::optional<QList<QcStatusEffect>> effects = QcStatusEffects::read(stream);
+    if (!effects) {
         return qcError(u"Damaged status effects"_s);
     }
+    m.effects = std::move(*effects);
     return m;
 }
 
@@ -236,9 +242,11 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream)
 {
     QcMsg::SetAppearance m;
-    if (!readAppearance(stream, m.appearance)) {
+    std::optional<QcAppearance> appearance = readAppearance(stream);
+    if (!appearance) {
         return qcError(u"Invalid appearance"_s);
     }
+    m.appearance = std::move(*appearance);
     return m;
 }
 

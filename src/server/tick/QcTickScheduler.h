@@ -56,8 +56,15 @@ public:
     bool sprinting() const { return m_sprintRemaining > 0; }
     quint64 sprintRemaining() const { return m_sprintRemaining; }
     quint64 sprintDone() const { return m_sprintDone; }
-    // True once after a sprint ended (finished or stopped); the ticks it ran and its real time.
-    bool takeSprintEnded(quint64 &ticks, qint64 &elapsedNs);
+    // A sprint that ended: the ticks it ran and its real time.
+    struct SprintEnd
+    {
+        quint64 ticks = 0;
+        qint64 elapsedNs = 0;
+    };
+
+    // Once after a sprint ended (finished or stopped), else nullopt.
+    [[nodiscard]] std::optional<SprintEnd> takeSprintEnded();
     // Ticks per second of the running sprint so far (0 before its first tick).
     double sprintRate() const;
     // The real time the running tick stands for: one interval, during a sprint the real time since

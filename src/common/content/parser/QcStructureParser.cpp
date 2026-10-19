@@ -62,48 +62,96 @@ QJsonArray extraArray(const QJsonObject &json, const QString &key, QcJsonFieldRe
     return value.toArray();
 }
 
-QHash<QChar, qint16> parsePalette(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+// The cells listed under `key`; on an invalid entry the reader fails and the cells read so far come back.
+[[nodiscard]] QList<QcBlockPos> parseCells(const QJsonObject &json, const QString &key, const Structure &structure, QcJsonFieldReader &reader)
 {
-    QHash<QChar, qint16> keys;
-    const QJsonObject palette = json.value(u"palette"_s).toObject();
-    if (!json.value(u"palette"_s).isObject() || palette.isEmpty() || palette.size() > Structure::maxPaletteEntries) {
-        reader.fail(u"'palette' must be an object with 1 to %1 entries"_s.arg(Structure::maxPaletteEntries));
-        return keys;
+    QList<QcBlockPos> cells;
+    const QJsonArray entries = extraArray(json, key, reader);
+    for (const auto &entry : entries) {
+        const std::optional<QcBlockPos> cell = readCell(entry, structure);
+        if (!cell) {
+            reader.fail(u"'%1' entries must be [x, y, z] cells inside the structure"_s.arg(key));
+            return cells;
+        }
+        cells.append(*cell);
+    }
+    return cells;
+}
+
+// Reads one structure: owns the definition being built, the reader of its JSON object and the keys of
+// its palette. The palette and the layers come first, the extras are checked against the size.
+class StructureReader
+{
+public:
+    StructureReader(const QJsonObject &json, const QString &packNamespace)
+        : m_json(json)
+        , m_namespace(packNamespace)
+        , m_reader{json, u"structure"_s, {}}
+    {
+    }
+
+    [[nodiscard]] QcResult<QcStructureDefinition> read();
+
+private:
+    void parsePalette();
+    bool measureLayers(const QJsonArray &layers);
+    bool parseRow(const QString &row, QcBlockPos start);
+    void parseLayers();
+    void parseMobs();
+    void parseStands();
+    void parseContents();
+    void parseLabels();
+    void parseCarts();
+    void parseSpawnersAndLoot();
+    void parseExtras();
+
+    const QJsonObject &m_json;
+    const QString &m_namespace;
+    QcJsonFieldReader m_reader;
+    QHash<QChar, qint16> m_keys;
+    Structure m_structure;
+};
+
+void StructureReader::parsePalette()
+{
+    const QJsonObject palette = m_json.value(u"palette"_s).toObject();
+    if (!m_json.value(u"palette"_s).isObject() || palette.isEmpty() || palette.size() > Structure::maxPaletteEntries) {
+        m_reader.fail(u"'palette' must be an object with 1 to %1 entries"_s.arg(Structure::maxPaletteEntries));
+        return;
     }
 
     for (auto it = palette.constBegin(); it != palette.constEnd(); ++it) {
-        const QString state = it.value().isString() ? QcStructureParser::qualifiedStateName(it.value().toString(), packNamespace) : QString();
+        const QString state = it.value().isString() ? QcStructureParser::qualifiedStateName(it.value().toString(), m_namespace) : QString();
         if (it.key().size() != 1 || it.key() == u" "_s || state.isEmpty()) {
-            reader.fail(u"palette entry '%1' needs a single character other than space and a block name"_s.arg(it.key()));
-            return keys;
+            m_reader.fail(u"palette entry '%1' needs a single character other than space and a block name"_s.arg(it.key()));
+            return;
         }
-        keys.insert(it.key().front(), qint16(structure.palette.size()));
-        structure.palette.append(state);
+        m_keys.insert(it.key().front(), qint16(m_structure.palette.size()));
+        m_structure.palette.append(state);
     }
-    return keys;
 }
 
 // The size of the layers: every layer has the same rows, every row the same length.
-bool measureLayers(const QJsonArray &layers, Structure &structure)
+bool StructureReader::measureLayers(const QJsonArray &layers)
 {
     if (layers.isEmpty() || layers.size() > Structure::maxSize || !layers[0].isArray()) {
         return false;
     }
 
-    structure.sizeY = int(layers.size());
-    structure.sizeZ = int(layers[0].toArray().size());
-    structure.sizeX = structure.sizeZ > 0 ? int(layers[0].toArray()[0].toString().size()) : 0;
-    if (structure.sizeZ < 1 || structure.sizeZ > Structure::maxSize || structure.sizeX < 1 || structure.sizeX > Structure::maxSize) {
+    m_structure.sizeY = int(layers.size());
+    m_structure.sizeZ = int(layers[0].toArray().size());
+    m_structure.sizeX = m_structure.sizeZ > 0 ? int(layers[0].toArray()[0].toString().size()) : 0;
+    if (m_structure.sizeZ < 1 || m_structure.sizeZ > Structure::maxSize || m_structure.sizeX < 1 || m_structure.sizeX > Structure::maxSize) {
         return false;
     }
 
     for (const auto &layer : layers) {
         const QJsonArray rows = layer.toArray();
-        if (!layer.isArray() || rows.size() != structure.sizeZ) {
+        if (!layer.isArray() || rows.size() != m_structure.sizeZ) {
             return false;
         }
         for (const auto &row : rows) {
-            if (!row.isString() || row.toString().size() != structure.sizeX) {
+            if (!row.isString() || row.toString().size() != m_structure.sizeX) {
                 return false;
             }
         }
@@ -112,75 +160,75 @@ bool measureLayers(const QJsonArray &layers, Structure &structure)
 }
 
 // One row of a layer (`start` is its first cell); a space keeps the cell.
-bool parseRow(const QString &row, QcBlockPos start, const QHash<QChar, qint16> &keys, Structure &structure, QcJsonFieldReader &reader)
+bool StructureReader::parseRow(const QString &row, QcBlockPos start)
 {
-    for (int x = 0; x < structure.sizeX; ++x) {
+    for (int x = 0; x < m_structure.sizeX; ++x) {
         if (row[x] == u' ') {
             continue;
         }
-        if (!keys.contains(row[x])) {
-            reader.fail(u"layer %1 uses '%2', which the palette does not define"_s.arg(start.y).arg(row[x]));
+        if (!m_keys.contains(row[x])) {
+            m_reader.fail(u"layer %1 uses '%2', which the palette does not define"_s.arg(start.y).arg(row[x]));
             return false;
         }
-        structure.cells[structure.cellIndex(x, start.y, start.z)] = keys.value(row[x]);
+        m_structure.cells[m_structure.cellIndex(x, start.y, start.z)] = m_keys.value(row[x]);
     }
     return true;
 }
 
-void parseLayers(const QJsonObject &json, const QHash<QChar, qint16> &keys, Structure &structure, QcJsonFieldReader &reader)
+void StructureReader::parseLayers()
 {
-    const QJsonArray layers = json.value(u"layers"_s).toArray();
-    if (!measureLayers(layers, structure)) {
-        reader.fail(u"'layers' must be 1 to %1 layers of equally many rows of equal length (at most %1 each)"_s.arg(Structure::maxSize));
+    const QJsonArray layers = m_json.value(u"layers"_s).toArray();
+    if (!measureLayers(layers)) {
+        m_reader.fail(u"'layers' must be 1 to %1 layers of equally many rows of equal length (at most %1 each)"_s.arg(Structure::maxSize));
         return;
     }
 
-    structure.cells.resize(qsizetype(structure.sizeX) * structure.sizeY * structure.sizeZ, Structure::keep);
-    for (int y = 0; y < structure.sizeY; ++y) {
+    m_structure.cells.resize(qsizetype(m_structure.sizeX) * m_structure.sizeY * m_structure.sizeZ, Structure::keep);
+    for (int y = 0; y < m_structure.sizeY; ++y) {
         const QJsonArray rows = layers[y].toArray();
-        for (int z = 0; z < structure.sizeZ; ++z) {
-            if (!parseRow(rows[z].toString(), {0, y, z}, keys, structure, reader)) {
+        for (int z = 0; z < m_structure.sizeZ; ++z) {
+            if (!parseRow(rows[z].toString(), {0, y, z})) {
                 return;
             }
         }
     }
 }
 
-void parseMobs(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+void StructureReader::parseMobs()
 {
-    const QJsonArray mobs = extraArray(json, u"mobs"_s, reader);
+    const QJsonArray mobs = extraArray(m_json, u"mobs"_s, m_reader);
     for (const auto &entry : mobs) {
         const QJsonObject object = entry.toObject();
-        const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), packNamespace);
-        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), structure);
+        const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), m_namespace);
+        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), m_structure);
         if (mob.isEmpty() || !at) {
-            reader.fail(u"'mobs' entries need 'mob' and 'at' inside the structure"_s);
+            m_reader.fail(u"'mobs' entries need 'mob' and 'at' inside the structure"_s);
             return;
         }
-        QcJsonFieldReader entryReader{object, reader.context + u" mobs"_s, {}};
+        QcJsonFieldReader entryReader{object, m_reader.context + u" mobs"_s, {}};
         const bool confined = entryReader.boolean(u"confined"_s, false);
         const QString owner = entryReader.string(u"owner"_s);
         const bool sitting = entryReader.boolean(u"sitting"_s, true);
         const bool noAi = entryReader.boolean(u"noAi"_s, false);
-        reader.adopt(entryReader);
-        if (!reader.ok()) {
+        m_reader.adopt(entryReader);
+        if (!m_reader.ok()) {
             return;
         }
-        structure.mobs.append({mob, *at, confined, owner, sitting, noAi});
+        m_structure.mobs.append({mob, *at, confined, owner, sitting, noAi});
     }
 }
 
-void parseStands(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader)
+void StructureReader::parseStands()
 {
     constexpr qsizetype maxProperties = 32;
-    const QJsonArray stands = extraArray(json, u"stands"_s, reader);
+    const QJsonArray stands = extraArray(m_json, u"stands"_s, m_reader);
     for (const auto &entry : stands) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), structure);
+        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), m_structure);
         const double yaw = object.value(u"yaw"_s).toDouble(0.0);
         const QJsonArray properties = object.value(u"properties"_s).toArray();
         if (!at || !std::isfinite(yaw) || properties.size() > maxProperties) {
-            reader.fail(u"'stands' entries need 'at' inside the structure, a 'yaw' and at most %1 'properties'"_s.arg(maxProperties));
+            m_reader.fail(u"'stands' entries need 'at' inside the structure, a 'yaw' and at most %1 'properties'"_s.arg(maxProperties));
             return;
         }
 
@@ -188,7 +236,7 @@ void parseStands(const QJsonObject &json, Structure &structure, QcJsonFieldReade
         for (const auto &property : properties) {
             stand.properties.append(property.toString().left(256));
         }
-        structure.stands.append(stand);
+        m_structure.stands.append(stand);
     }
 }
 
@@ -204,102 +252,142 @@ void parseStands(const QJsonObject &json, Structure &structure, QcJsonFieldReade
     return Structure::Stack{item, amount};
 }
 
-void parseContents(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+void StructureReader::parseContents()
 {
-    const QJsonArray contents = extraArray(json, u"contents"_s, reader);
+    const QJsonArray contents = extraArray(m_json, u"contents"_s, m_reader);
     for (const auto &entry : contents) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcBlockPos> at = readCell(object.value(u"at"_s), structure);
+        const std::optional<QcBlockPos> at = readCell(object.value(u"at"_s), m_structure);
         const QJsonArray items = object.value(u"items"_s).toArray();
         if (!at || items.size() > Structure::maxItemsPerContainer) {
-            reader.fail(u"'contents' entries need 'at' inside the structure and at most %1 'items'"_s.arg(Structure::maxItemsPerContainer));
+            m_reader.fail(u"'contents' entries need 'at' inside the structure and at most %1 'items'"_s.arg(Structure::maxItemsPerContainer));
             return;
         }
 
         Structure::Contents placed{*at, {}};
         for (const auto &item : items) {
-            const std::optional<Structure::Stack> stack = readStack(item, packNamespace);
+            const std::optional<Structure::Stack> stack = readStack(item, m_namespace);
             if (!stack) {
-                reader.fail(u"'items' entries need 'item' and a 'count' of 1 to 64"_s);
+                m_reader.fail(u"'items' entries need 'item' and a 'count' of 1 to 64"_s);
                 return;
             }
             placed.items.append(*stack);
         }
-        structure.contents.append(placed);
+        m_structure.contents.append(placed);
     }
 }
 
-void parseLabels(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader)
+void StructureReader::parseLabels()
 {
-    const QJsonArray labels = extraArray(json, u"labels"_s, reader);
+    const QJsonArray labels = extraArray(m_json, u"labels"_s, m_reader);
     for (const auto &entry : labels) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), structure);
+        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), m_structure);
         const QString text = object.value(u"text"_s).toString();
         const QString detail = object.value(u"detail"_s).toString();
         if (!at || text.isEmpty() || text.size() > 256 || detail.size() > 256) {
-            reader.fail(u"'labels' entries need 'at' inside the structure and a 'text' (at most 256 characters)"_s);
+            m_reader.fail(u"'labels' entries need 'at' inside the structure and a 'text' (at most 256 characters)"_s);
             return;
         }
-        structure.labels.append({*at, text, detail, object.value(u"heading"_s).toBool(false)});
-    }
-}
-
-void parseCells(const QJsonObject &json, const QString &key, QList<QcBlockPos> &cells, const Structure &structure, QcJsonFieldReader &reader)
-{
-    const QJsonArray entries = extraArray(json, key, reader);
-    for (const auto &entry : entries) {
-        const std::optional<QcBlockPos> cell = readCell(entry, structure);
-        if (!cell) {
-            reader.fail(u"'%1' entries must be [x, y, z] cells inside the structure"_s.arg(key));
-            return;
-        }
-        cells.append(*cell);
+        m_structure.labels.append({*at, text, detail, object.value(u"heading"_s).toBool(false)});
     }
 }
 
 // "minecarts": [x, y, z] for a plain cart or {"at": [x, y, z], "item": "chest_minecart"}.
-void parseCarts(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+void StructureReader::parseCarts()
 {
-    const QJsonArray entries = extraArray(json, u"minecarts"_s, reader);
+    const QJsonArray entries = extraArray(m_json, u"minecarts"_s, m_reader);
     for (const auto &entry : entries) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcBlockPos> cell = readCell(entry.isObject() ? object.value(u"at"_s) : entry, structure);
+        const std::optional<QcBlockPos> cell = readCell(entry.isObject() ? object.value(u"at"_s) : entry, m_structure);
         const QString item = QcContentNames::qualify(entry.isObject() ? object.value(u"item"_s).toString(u"qtcraft:minecart"_s) : u"qtcraft:minecart"_s,
-                                                     packNamespace);
+                                                     m_namespace);
         if (!cell || item.isEmpty()) {
-            reader.fail(u"'minecarts' entries must be [x, y, z] cells inside the structure or objects with 'at' and 'item'"_s);
+            m_reader.fail(u"'minecarts' entries must be [x, y, z] cells inside the structure or objects with 'at' and 'item'"_s);
             return;
         }
-        structure.minecarts.append({*cell, item});
+        m_structure.minecarts.append({*cell, item});
     }
 }
 
 // "spawners": {"at": [x, y, z], "mob": "zombie", "confined": true}; "loot": {"at": [x, y, z], "table":
 // "dungeon_chest"} (decisions E-520, E-521).
-void parseSpawnersAndLoot(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+void StructureReader::parseSpawnersAndLoot()
 {
-    const QJsonArray spawners = extraArray(json, u"spawners"_s, reader);
+    const QJsonArray spawners = extraArray(m_json, u"spawners"_s, m_reader);
     for (const auto &entry : spawners) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), structure);
-        const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), packNamespace);
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
+        const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), m_namespace);
         if (!cell || object.value(u"mob"_s).toString().isEmpty()) {
-            reader.fail(u"'spawners' entries need 'at' inside the structure and a 'mob'"_s);
+            m_reader.fail(u"'spawners' entries need 'at' inside the structure and a 'mob'"_s);
             return;
         }
-        structure.spawners.append({*cell, mob, object.value(u"confined"_s).toBool(false)});
+        m_structure.spawners.append({*cell, mob, object.value(u"confined"_s).toBool(false)});
     }
-    const QJsonArray loot = extraArray(json, u"loot"_s, reader);
+    const QJsonArray loot = extraArray(m_json, u"loot"_s, m_reader);
     for (const auto &entry : loot) {
         const QJsonObject object = entry.toObject();
-        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), structure);
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
         if (!cell || object.value(u"table"_s).toString().isEmpty()) {
-            reader.fail(u"'loot' entries need 'at' inside the structure and a 'table'"_s);
+            m_reader.fail(u"'loot' entries need 'at' inside the structure and a 'table'"_s);
             return;
         }
-        structure.loot.append({*cell, QcContentNames::qualify(object.value(u"table"_s).toString(), packNamespace)});
+        m_structure.loot.append({*cell, QcContentNames::qualify(object.value(u"table"_s).toString(), m_namespace)});
     }
+}
+
+// The creatures, stands, contents, labels, cells, carts, spawners, variation and site, all within the size.
+void StructureReader::parseExtras()
+{
+    parseMobs();
+    parseStands();
+    parseContents();
+    parseLabels();
+    m_structure.updates += parseCells(m_json, u"updates"_s, m_structure, m_reader);
+    m_structure.growing += parseCells(m_json, u"growing"_s, m_structure, m_reader);
+    parseCarts();
+    parseSpawnersAndLoot();
+    m_structure.choices = QcStructureVariationParser::parseChoices(m_json, m_reader, m_namespace);
+    if (m_reader.ok()) {
+        m_structure.parts = QcStructureVariationParser::parseParts(m_json, m_keys, m_structure, m_reader);
+    }
+
+    QcStructureSiteParser::Site site = QcStructureSiteParser::parseSite(m_json, m_structure, m_reader, m_namespace);
+    m_structure.groundLayer = site.groundLayer;
+    m_structure.surface = std::move(site.surface);
+    m_structure.guardians = std::move(site.guardians);
+}
+
+QcResult<QcStructureDefinition> StructureReader::read()
+{
+    m_structure.name = m_reader.name(u"name"_s, m_namespace);
+    if (m_structure.name.isEmpty()) {
+        return qcError(m_reader.ok() ? u"structure: 'name' is required"_s : m_reader.error);
+    }
+
+    m_reader.context = u"structure '%1'"_s.arg(m_structure.name);
+    m_structure.translationKey = m_reader.string(u"translation"_s, QcContentFields::translationKey(u"structure"_s, m_structure.name));
+    m_reader.nestedObject(u"showcase"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_structure.showcase = true;
+        m_structure.showcaseOrder = nested.integer(u"order"_s, 0, -10000, 10000);
+    });
+    m_reader.nestedObject(u"mineshaft"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_structure.mineshaftWeight = nested.integer(u"weight"_s, 1, 1, 1000);
+    });
+
+    parsePalette();
+    if (m_reader.ok()) {
+        parseLayers();
+    }
+    if (m_reader.ok()) {
+        parseExtras();
+    }
+
+    if (!m_reader.ok()) {
+        return qcError(m_reader.error);
+    }
+    return std::move(m_structure);
 }
 
 } // namespace
@@ -318,44 +406,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
 
 [[nodiscard]] QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace)
 {
-    QcJsonFieldReader reader{json, u"structure"_s, {}};
-    Structure structure;
-    structure.name = reader.name(u"name"_s, packNamespace);
-    if (structure.name.isEmpty()) {
-        return qcError(reader.ok() ? u"structure: 'name' is required"_s : reader.error);
-    }
-
-    reader.context = u"structure '%1'"_s.arg(structure.name);
-    structure.translationKey = reader.string(u"translation"_s, QcContentFields::translationKey(u"structure"_s, structure.name));
-    reader.nestedObject(u"showcase"_s, [&structure](const QJsonObject &, QcJsonFieldReader &nested) {
-        structure.showcase = true;
-        structure.showcaseOrder = nested.integer(u"order"_s, 0, -10000, 10000);
-    });
-    reader.nestedObject(u"mineshaft"_s, [&structure](const QJsonObject &, QcJsonFieldReader &nested) {
-        structure.mineshaftWeight = nested.integer(u"weight"_s, 1, 1, 1000);
-    });
-
-    const QHash<QChar, qint16> keys = parsePalette(json, structure, reader, packNamespace);
-    if (reader.ok()) {
-        parseLayers(json, keys, structure, reader);
-    }
-    if (reader.ok()) {
-        parseMobs(json, structure, reader, packNamespace);
-        parseStands(json, structure, reader);
-        parseContents(json, structure, reader, packNamespace);
-        parseLabels(json, structure, reader);
-        parseCells(json, u"updates"_s, structure.updates, structure, reader);
-        parseCells(json, u"growing"_s, structure.growing, structure, reader);
-        parseCarts(json, structure, reader, packNamespace);
-        parseSpawnersAndLoot(json, structure, reader, packNamespace);
-        QcStructureVariationParser::parseVariation(json, keys, structure, reader, packNamespace);
-        QcStructureSiteParser::parseSite(json, structure, reader, packNamespace);
-    }
-
-    if (!reader.ok()) {
-        return qcError(reader.error);
-    }
-    return structure;
+    return StructureReader(json, packNamespace).read();
 }
 
 } // namespace QcStructureParser

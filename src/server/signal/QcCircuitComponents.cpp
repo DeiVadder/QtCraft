@@ -57,7 +57,7 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     }
 
     const QcSignalState &state = table().at(*block);
-    ++plan.work;
+    plan.addWork(1);
     switch (state.kind) {
     case QcSignalKind::Torch:
         reactTorch(pos, state, plan);
@@ -95,7 +95,7 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Igniter:
         // An explosive lights as soon as it gets power (decision E-601).
         if (m_context.power.input(pos) > 0) {
-            plan.ignitions.append(pos);
+            plan.ignite(pos);
         }
         break;
     default:
@@ -111,7 +111,7 @@ void QcCircuitComponents::scheduled(QcBlockPos pos, QcCircuitPlan &plan)
     }
 
     const QcSignalState &state = table().at(*block);
-    ++plan.work;
+    plan.addWork(1);
     switch (state.kind) {
     case QcSignalKind::Torch:
         switchTorch(pos, *block, state, plan);
@@ -121,12 +121,12 @@ void QcCircuitComponents::scheduled(QcBlockPos pos, QcCircuitPlan &plan)
         break;
     case QcSignalKind::Lamp:
         if (state.on && m_context.power.input(pos) == 0) {
-            plan.writes.insert(pos, table().counterpartOf(*block));
+            plan.write(pos, table().counterpartOf(*block));
         }
         break;
     case QcSignalKind::Button:
         if (state.on) {
-            plan.writes.insert(pos, table().withFlag(*block, u"powered"_s, false));
+            plan.write(pos, table().withFlag(*block, u"powered"_s, false));
         }
         break;
     case QcSignalKind::Plate:
@@ -154,7 +154,7 @@ void QcCircuitComponents::scheduledMachine(QcBlockPos pos, QcBlockId block, QcSi
         switchObserver(pos, block, state, plan);
         break;
     case QcSignalKind::Dispenser:
-        plan.fires.append(pos);
+        plan.fire(pos);
         break;
     default:
         break;
@@ -163,7 +163,7 @@ void QcCircuitComponents::scheduledMachine(QcBlockPos pos, QcBlockId block, QcSi
 
 void QcCircuitComponents::observed(QcBlockPos pos, QcCircuitPlan &plan) const
 {
-    ++plan.work;
+    plan.addWork(1);
     observedChange(pos, plan);
 }
 
@@ -178,7 +178,7 @@ bool QcCircuitComponents::torchShouldLight(QcBlockPos pos, QcSignalState state) 
 void QcCircuitComponents::reactTorch(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const
 {
     if (torchShouldLight(pos, state) != state.on) {
-        plan.schedules.append({pos, torchDelayTicks, Priority::Diode});
+        plan.schedule(pos, torchDelayTicks, Priority::Diode);
     }
 }
 
@@ -193,7 +193,7 @@ void QcCircuitComponents::switchTorch(QcBlockPos pos, QcBlockId block, QcSignalS
     if (light == state.on) {
         return;
     }
-    plan.writes.insert(pos, table().counterpartOf(block));
+    plan.write(pos, table().counterpartOf(block));
     if (light) {
         return;
     }
@@ -206,8 +206,8 @@ void QcCircuitComponents::switchTorch(QcBlockPos pos, QcBlockId block, QcSignalS
     if (offTicks.size() >= burnoutToggles) {
         memory.torchOffTicks.clear();
         memory.burntOutUntil = m_context.now + burnoutTicks;
-        plan.schedules.append({pos, burnoutTicks, Priority::Release});
-        plan.burntOut.append(pos);
+        plan.schedule(pos, burnoutTicks, Priority::Release);
+        plan.burnOut(pos);
     }
 }
 
@@ -232,7 +232,7 @@ void QcCircuitComponents::reactRepeater(QcBlockPos pos, QcBlockId block, QcSigna
 {
     const bool locked = repeaterLocked(pos, state);
     if (locked != state.locked) {
-        plan.writes.insert(pos, table().withFlag(block, u"locked"_s, locked));
+        plan.write(pos, table().withFlag(block, u"locked"_s, locked));
     }
     if (locked || !state.facing) {
         return;
@@ -240,7 +240,7 @@ void QcCircuitComponents::reactRepeater(QcBlockPos pos, QcBlockId block, QcSigna
 
     const bool input = m_context.power.inputFrom(pos, QcBlockRules::opposite(*state.facing)) > 0;
     if (input != state.on && !m_context.entities.schedule().contains(pos)) {
-        plan.schedules.append({pos, state.delay * repeaterStepTicks, Priority::Diode});
+        plan.schedule(pos, state.delay * repeaterStepTicks, Priority::Diode);
     }
 }
 
@@ -254,11 +254,11 @@ void QcCircuitComponents::switchRepeater(QcBlockPos pos, QcBlockId block, QcSign
     // pulses come out stretched to the delay.
     const bool input = m_context.power.inputFrom(pos, QcBlockRules::opposite(*state.facing)) > 0;
     if (state.on && !input) {
-        plan.writes.insert(pos, table().withFlag(block, u"powered"_s, false));
+        plan.write(pos, table().withFlag(block, u"powered"_s, false));
     } else if (!state.on) {
-        plan.writes.insert(pos, table().withFlag(block, u"powered"_s, true));
+        plan.write(pos, table().withFlag(block, u"powered"_s, true));
         if (!input) {
-            plan.schedules.append({pos, state.delay * repeaterStepTicks, Priority::Diode});
+            plan.schedule(pos, state.delay * repeaterStepTicks, Priority::Diode);
         }
     }
 }
@@ -267,13 +267,13 @@ void QcCircuitComponents::reactLamp(QcBlockPos pos, QcBlockId block, QcSignalSta
 {
     const bool powered = m_context.power.input(pos) > 0;
     if (powered && !state.on) {
-        plan.writes.insert(pos, table().counterpartOf(block));
+        plan.write(pos, table().counterpartOf(block));
     } else if (!powered && state.on) {
         const int delay = definition(block).offDelayTicks;
         if (delay > 0) {
-            plan.schedules.append({pos, delay, Priority::Release});
+            plan.schedule(pos, delay, Priority::Release);
         } else {
-            plan.writes.insert(pos, table().counterpartOf(block));
+            plan.write(pos, table().counterpartOf(block));
         }
     }
 }
@@ -291,7 +291,7 @@ void QcCircuitComponents::reactOpener(QcBlockPos pos, QcBlockId block, QcSignalS
     }
     m_context.entities.memoryAt(bottom).powered = powered;
     if (state.on != powered) {
-        plan.openings.append({bottom, powered});
+        plan.open(bottom, powered);
     }
 }
 
@@ -322,11 +322,11 @@ void QcCircuitComponents::reactPiston(QcBlockPos pos, QcBlockId block, QcSignalS
     const bool powered = pistonPowered(pos, state);
     if (powered && !state.on && (acts & extendedThisTick) == 0) {
         if (std::optional<QcPistonPlan> extension = QcPistonPlanner::extension(m_context.power, pos, state, definition(block))) {
-            plan.work += extension->moved.size();
-            plan.pistons.append(std::move(*extension));
+            plan.addWork(extension->moved.size());
+            plan.movePiston(std::move(*extension));
         } else {
             // Blocked (too many blocks, an immovable one, an unloaded chunk): it looks again next tick.
-            plan.schedules.append({pos, 1, Priority::Diode});
+            plan.schedule(pos, 1, Priority::Diode);
         }
         return;
     }
@@ -336,7 +336,7 @@ void QcCircuitComponents::reactPiston(QcBlockPos pos, QcBlockId block, QcSignalS
         // lets go of its block.
         const QcBlockEntities::Memory *memory = m_context.entities.memory(pos);
         const bool letGo = memory && memory->extendingSince && m_context.now < *memory->extendingSince + QcMovingBlocks::moveTicks;
-        plan.pistons.append(QcPistonPlanner::retraction(m_context.power, pos, state, definition(block), letGo));
+        plan.movePiston(QcPistonPlanner::retraction(m_context.power, pos, state, definition(block), letGo));
         return;
     }
 
@@ -344,7 +344,7 @@ void QcCircuitComponents::reactPiston(QcBlockPos pos, QcBlockId block, QcSignalS
     const QcBlockPos headPos = qcNeighbour(pos, *state.facing);
     const QcSignalState &head = m_context.power.at(headPos);
     if (state.on && m_context.power.blockAt(headPos) && (head.kind != QcSignalKind::PistonHead || head.facing != state.facing)) {
-        plan.writes.insert(pos, table().withFlag(block, u"extended"_s, false));
+        plan.write(pos, table().withFlag(block, u"extended"_s, false));
     }
 }
 
@@ -359,16 +359,16 @@ void QcCircuitComponents::reactHead(QcBlockPos pos, QcSignalState state, QcCircu
     const QcSignalState &base = m_context.power.at(basePos);
     const bool held = base.kind == QcSignalKind::Piston && base.on && base.facing == state.facing;
     if (!held && m_context.power.blockAt(basePos)) {
-        plan.writes.insert(pos, qcAirBlockId);
+        plan.write(pos, qcAirBlockId);
     }
 }
 
 void QcCircuitComponents::releasePlate(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
 {
     if (m_context.plates.pressing(definition(block)).contains(pos)) {
-        plan.schedules.append({pos, plateCheckTicks, Priority::Release});
+        plan.schedule(pos, plateCheckTicks, Priority::Release);
     } else if (state.on) {
-        plan.writes.insert(pos, table().withFlag(block, u"powered"_s, false));
+        plan.write(pos, table().withFlag(block, u"powered"_s, false));
     }
 }
 
@@ -422,7 +422,7 @@ int QcCircuitComponents::comparatorOutput(QcBlockPos pos, QcSignalState state) c
 void QcCircuitComponents::reactComparator(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const
 {
     if (!std::cmp_equal(comparatorOutput(pos, state), state.power) && !m_context.entities.schedule().contains(pos)) {
-        plan.schedules.append({pos, comparatorDelayTicks, Priority::Diode});
+        plan.schedule(pos, comparatorDelayTicks, Priority::Diode);
     }
 }
 
@@ -435,29 +435,29 @@ void QcCircuitComponents::switchComparator(QcBlockPos pos, QcBlockId block, QcSi
 
     const QcContentRegistry &content = table().content();
     const QcBlockId powered = table().withFlag(block, u"powered"_s, output > 0);
-    plan.writes.insert(pos, content.withProperty(powered, u"power"_s, QString::number(output)));
+    plan.write(pos, content.withProperty(powered, u"power"_s, QString::number(output)));
 }
 
 void QcCircuitComponents::reactObserver(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const
 {
     // A pulse never stays on (a world loaded in the middle of one, a moved observer).
     if (state.on && !m_context.entities.schedule().contains(pos)) {
-        plan.schedules.append({pos, observerPulseTicks, Priority::Diode});
+        plan.schedule(pos, observerPulseTicks, Priority::Diode);
     }
 }
 
 void QcCircuitComponents::observedChange(QcBlockPos pos, QcCircuitPlan &plan) const
 {
     if (!m_context.entities.schedule().contains(pos)) {
-        plan.schedules.append({pos, observerPulseTicks, Priority::Diode});
+        plan.schedule(pos, observerPulseTicks, Priority::Diode);
     }
 }
 
 void QcCircuitComponents::switchObserver(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
 {
-    plan.writes.insert(pos, table().withFlag(block, u"powered"_s, !state.on));
+    plan.write(pos, table().withFlag(block, u"powered"_s, !state.on));
     if (!state.on) {
-        plan.schedules.append({pos, observerPulseTicks, Priority::Diode});
+        plan.schedule(pos, observerPulseTicks, Priority::Diode);
     }
 }
 
@@ -465,7 +465,7 @@ void QcCircuitComponents::reactHopper(QcBlockPos pos, QcBlockId block, QcSignalS
 {
     const bool powered = m_context.power.input(pos) > 0;
     if (powered != state.locked) {
-        plan.writes.insert(pos, table().withFlag(block, u"enabled"_s, !powered));
+        plan.write(pos, table().withFlag(block, u"enabled"_s, !powered));
     }
 }
 
@@ -473,10 +473,10 @@ void QcCircuitComponents::reactDispenser(QcBlockPos pos, QcBlockId block, QcSign
 {
     const bool powered = poweredOrQuasi(pos, 0);
     if (powered && !state.on) {
-        plan.writes.insert(pos, table().withFlag(block, u"triggered"_s, true));
-        plan.schedules.append({pos, dispenserDelayTicks, Priority::Diode});
+        plan.write(pos, table().withFlag(block, u"triggered"_s, true));
+        plan.schedule(pos, dispenserDelayTicks, Priority::Diode);
     } else if (!powered && state.on) {
-        plan.writes.insert(pos, table().withFlag(block, u"triggered"_s, false));
+        plan.write(pos, table().withFlag(block, u"triggered"_s, false));
     }
 }
 
@@ -489,7 +489,7 @@ void QcCircuitComponents::reactRail(QcBlockPos pos, QcBlockId block, QcCircuitPl
     const int reach = definition(block).railReach;
     const QcRails::Line line = QcRails::lineOf(m_context.power.world(), m_context.rails, pos, 2 * reach);
     const qsizetype count = line.cells.size();
-    plan.work += count;
+    plan.addWork(count);
     QList<int> fed(count + 1);
     for (qsizetype i = 0; i < count; ++i) {
         fed[i + 1] = fed[i] + (m_context.power.input(line.cells[i]) > 0 ? 1 : 0);
@@ -503,7 +503,7 @@ void QcCircuitComponents::reactRail(QcBlockPos pos, QcBlockId block, QcCircuitPl
         const bool powered = fed[to + 1] - fed[from] > 0;
         const QcBlockId rail = m_context.power.blockAt(line.cells[i]).value_or(qcAirBlockId);
         if (table().at(rail).on != powered) {
-            plan.writes.insert(line.cells[i], table().withFlag(rail, u"powered"_s, powered));
+            plan.write(line.cells[i], table().withFlag(rail, u"powered"_s, powered));
         }
     }
 }

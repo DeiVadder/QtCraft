@@ -45,9 +45,16 @@ public:
 private:
     // The carts that act now, in the order of their ids after the last one of the previous tick.
     QList<qsizetype> actors();
-    // A hopper cart takes one item from the container above it; false when nothing moved or there is
-    // no container (then it may pick up items).
-    bool pullFromAbove(QcMinecart &cart, QcInventoryAccess &access, bool &container);
+    // What a hopper cart's pull from above did.
+    enum class Pull
+    {
+        NoContainer, // nothing above to pull from (then it may pick up items)
+        Nothing,     // a container, but nothing could move
+        Moved,
+    };
+
+    // A hopper cart takes one item from the container above it.
+    [[nodiscard]] Pull pullFromAbove(QcMinecart &cart, QcInventoryAccess &access);
     bool pickUp(QcMinecart &cart);
     // The hopper under the cart takes one item from it.
     bool unloadInto(QcMinecart &cart, QcBlockPos hopper, QcInventoryAccess &access);

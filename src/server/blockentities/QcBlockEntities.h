@@ -90,6 +90,8 @@ public:
         std::optional<quint64> extendingSince;
 
         bool isEmpty() const { return torchOffTicks.isEmpty() && burntOutUntil == 0 && !powered && !extendingSince; }
+        // Forgets what does not belong to a component of `kind`; whether nothing is left.
+        bool forgetUnfitting(QcSignalKind kind);
     };
 
     // Everything of one chunk (a copy, see chunk()).
@@ -258,6 +260,11 @@ private:
     // Files `pos` under its chunk in the list `list` of the index, or takes it out again.
     void index(QcBlockPos pos, QList<QcBlockPos> ChunkIndex::*list);
     void unindex(QcBlockPos pos, QList<QcBlockPos> ChunkIndex::*list);
+    // Moves the entry of `table` at `from` to `to`, with its place in the chunk index; it stays where
+    // it is when `to` has one. Whether it moved.
+    template<typename Entry>
+    bool relocateEntry(QHash<QcBlockPos, Entry> QcBlockEntities::*table, QList<QcBlockPos> ChunkIndex::*positions, QcBlockPos from,
+                       QcBlockPos to);
     void removeContainer(QcBlockPos pos);
     void removeMachine(QcBlockPos pos);
     void removeMemory(QcBlockPos pos);
@@ -266,8 +273,6 @@ private:
     void placedContainer(QcBlockPos pos, QcBlockId after);
     void placedMachine(QcBlockPos pos, QcBlockId after);
     void placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after);
-    // Clears what the memory keeps that does not fit a component of `kind`; true when nothing is left.
-    static bool forgetUnfitting(Memory &memory, QcSignalKind kind);
     QcSignalKind kindOf(QcBlockId block) const;
     // A block state that holds no entry of any kind (no container, machine or sapling).
     bool isPlain(QcBlockId block) const { return std::size_t(block) < m_plain.size() && m_plain[std::size_t(block)]; }

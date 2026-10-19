@@ -253,6 +253,7 @@ target_sources(qc_server PRIVATE
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
+    storage/QcLoadWarnings.h
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
     storage/QcRegionFile.h storage/QcRegionFile.cpp

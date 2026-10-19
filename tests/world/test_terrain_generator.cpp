@@ -528,8 +528,8 @@ private:
 private slots:
     void baseContentResolvesWithoutWarnings()
     {
-        QStringList warnings;
-        const QcTerrainGenerator generator(m_base, 1, &warnings);
+        const QcTerrainGenerator generator(m_base, 1);
+        const QStringList &warnings = generator.warnings();
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
     }
 
@@ -556,8 +556,8 @@ private slots:
     void surfaceAndLayersComeFromBiomeData()
     {
         const auto content = flatContent(false);
-        QStringList warnings;
-        const QcTerrainGenerator generator(content, 5, &warnings);
+        const QcTerrainGenerator generator(content, 5);
+        const QStringList &warnings = generator.warnings();
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         const QcBlockId red = *content->blockId(u"t:red"_s);
         const QcBlockId stone = *content->blockId(u"t:stone"_s);
@@ -895,8 +895,8 @@ private slots:
     void generatedLiquidsStayStill()
     {
         const std::shared_ptr<QcContentRegistry> content = contentWithManyPools();
-        QStringList warnings;
-        const QcTerrainGenerator generator(content, 2468, &warnings);
+        const QcTerrainGenerator generator(content, 2468);
+        const QStringList &warnings = generator.warnings();
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
 
         constexpr int size = 10;
@@ -964,8 +964,8 @@ private slots:
         QcBiomeDefinition biome = content->biomes().constFirst();
         biome.features.append({u"t:pond"_s, 0.5});
         content->registerBiome(biome);
-        QStringList warnings;
-        const QcTerrainGenerator generator(content, 77, &warnings);
+        const QcTerrainGenerator generator(content, 77);
+        const QStringList &warnings = generator.warnings();
         QCOMPARE(warnings.size(), qsizetype(1));
         QVERIFY(warnings.constFirst().contains(u"t:pond"_s));
 

@@ -509,10 +509,9 @@ private slots:
         village.uid = 13;
         village.playerBuilt = false;
         record.creatures = {{built, 0}, {village, 1}};
-        QStringList warnings;
-        QSet<QString> reported;
+        QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> decoded =
-            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings, reported);
+            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings);
         QVERIFY(decoded && decoded->creatures.size() == 2);
         QVERIFY(decoded->creatures[0].entry.playerBuilt);
         QVERIFY(!decoded->creatures[1].entry.playerBuilt);

@@ -78,13 +78,16 @@ private:
         QHash<int, int> perType;
         bool animalsNear = false;
 
-        int &of(const QcMobDefinition &definition)
-        {
-            return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
-        }
         int of(const QcMobDefinition &definition) const
         {
             return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
+        }
+        // Counts one more creature of kind `type`.
+        void add(const QcMobDefinition &definition, int type)
+        {
+            int &count = definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
+            count += 1;
+            perType[type] += 1;
         }
     };
 
@@ -99,6 +102,10 @@ private:
         QcBlockId ground = qcAirBlockId;
         std::optional<QString> biome;
         std::optional<int> light;
+
+        // The biome and the block light above the floor, looked up once.
+        const QString &biomeIn(const QcServerWorld &world);
+        int lightIn(const QcServerWorld &world);
     };
 
     // A kind that may spawn at a place, with the first of its rules that allows it.

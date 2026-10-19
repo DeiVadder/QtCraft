@@ -49,6 +49,9 @@ private:
         // Distances of the last search and its scratch queue.
         std::vector<int> distance;
         std::vector<int> queue;
+
+        // Fills `distance` with the steps from `start` along the roads (-1: not reachable).
+        void measureFrom(int start);
     };
 
     Graph &graphOf(const QcVillagePlan &plan);
@@ -57,7 +60,6 @@ private:
     // own cell (`walker`) is one it can step onto, at most a block higher or lower, if there is one
     // at all: not the boardwalk overhead of a villager in the water below it.
     static int nearest(const Graph &graph, QcBlockPos pos, bool walker);
-    static void measureFrom(Graph &graph, int start);
 
     QHash<qint64, std::shared_ptr<Graph>> m_graphs;
     // Villages by last use, the oldest first.

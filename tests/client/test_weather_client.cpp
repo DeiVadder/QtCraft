@@ -1,6 +1,7 @@
 #include "clientcore/light/QcSky.h"
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/weather/QcClientWeather.h"
+#include "clientcore/weather/QcDropPool.h"
 #include "clientcore/weather/QcPrecipitationField.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/protocol/QcProtocol.h"
@@ -165,20 +166,24 @@ private slots:
         QVERIFY(checked > 5000);
 
         // One drop per particle at its position; the streak reaches up from it, never below.
-        QList<QcPrecipitationDrop> drops;
-        field.fillDrops(1.0f, drops);
-        QCOMPARE(drops.size(), field.particles().size());
+        QcDropPool pool;
+        std::shared_ptr<const QList<QcPrecipitationDrop>> drops = pool.fill(field, 1.0f);
+        QCOMPARE(drops->size(), field.particles().size());
         for (qsizetype i = 0; i < field.particles().size(); ++i) {
-            QCOMPARE(drops[i].y, float(field.particles()[i].position.y));
-            QCOMPARE(drops[i].snow, quint8(0));
+            QCOMPARE((*drops)[i].y, float(field.particles()[i].position.y));
+            QCOMPARE((*drops)[i].snow, quint8(0));
         }
         QVERIFY(QcPrecipitationField::rainStreak().y > 0.0);
 
-        // A reused list keeps its memory: filling it again allocates nothing.
-        const QcPrecipitationDrop *memory = drops.constData();
-        field.fillDrops(0.5f, drops);
-        QCOMPARE(drops.constData(), memory);
-        QVERIFY(drops.constFirst().alpha < 190);
+        // A list nobody holds any more keeps its memory: filling it again allocates nothing. A list
+        // still held is left alone.
+        const QcPrecipitationDrop *memory = drops->constData();
+        drops.reset();
+        drops = pool.fill(field, 0.5f);
+        QCOMPARE(drops->constData(), memory);
+        QVERIFY(drops->constFirst().alpha < 190);
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> next = pool.fill(field, 0.5f);
+        QVERIFY(next->constData() != memory);
         QCOMPARE(field.columnTop(*world, 3, 3), 70);
         QCOMPARE(field.columnTop(*world, -3, 3), 60);
         QCOMPARE(field.columnTop(*world, 40, 3), QcWorld::worldHeight);
@@ -202,13 +207,12 @@ private slots:
         QVERIFY(!snow.particles().isEmpty());
         QVERIFY(std::ranges::all_of(snow.particles(), &QcPrecipitationField::Particle::snow));
         // One drop per flake; flakes fade in with the strength like rain.
-        QList<QcPrecipitationDrop> flakes;
-        snow.fillDrops(1.0f, flakes);
-        QCOMPARE(flakes.size(), snow.particles().size());
-        QVERIFY(std::ranges::all_of(flakes, [](QcPrecipitationDrop drop) { return drop.snow != 0; }));
-        QList<QcPrecipitationDrop> faint;
-        snow.fillDrops(0.1f, faint);
-        QVERIFY(faint.constFirst().alpha < flakes.constFirst().alpha);
+        QcDropPool pool;
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> flakes = pool.fill(snow, 1.0f);
+        QCOMPARE(flakes->size(), snow.particles().size());
+        QVERIFY(std::ranges::all_of(*flakes, [](QcPrecipitationDrop drop) { return drop.snow != 0; }));
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> faint = pool.fill(snow, 0.1f);
+        QVERIFY(faint->constFirst().alpha < flakes->constFirst().alpha);
 
         // A shower that stops in a dry climate: what is falling lands, nothing new starts.
         QcPrecipitationField dry(600);
@@ -235,12 +239,11 @@ private slots:
             constexpr int frames = 3000;
             QElapsedTimer clock;
             clock.start();
-            QList<QcPrecipitationDrop> drops;
+            QcDropPool pool;
             qsizetype bytes = 0;
             for (int frame = 0; frame < frames; ++frame) {
                 field.update(*world, weather, eye, 1.0 / 60.0);
-                field.fillDrops(1.0f, drops);
-                bytes += drops.size() * qsizetype(sizeof(QcPrecipitationDrop));
+                bytes += pool.fill(field, 1.0f)->size() * qsizetype(sizeof(QcPrecipitationDrop));
             }
             qInfo("%s: %lld particles, %.4f ms per frame, %lld bytes uploaded per frame", climate.snowFrom == 0 ? "snow" : "rain",
                   qint64(field.particles().size()), double(clock.nsecsElapsed()) / 1e6 / frames, qint64(bytes / frames));

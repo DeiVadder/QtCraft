@@ -195,8 +195,7 @@ private slots:
         writeText(dir.filePath(u"outside.txt"_s), "secret");
         QVERIFY(QFile::link(dir.filePath(u"outside.txt"_s), dir.filePath(u"rubies/textures/leak.png"_s)));
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QCOMPARE(loadedIds(loaded->mods), QStringList{u"rubies"_s});
         QCOMPARE(loaded->mods.size(), 4);
@@ -243,8 +242,7 @@ private slots:
         writeJson(dir.filePath(u"needs_huge/pack.json"_s),
                   {{u"id"_s, u"needs_huge"_s}, {u"version"_s, u"1"_s}, {u"dependencies"_s, QJsonArray{u"huge"_s}}});
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QCOMPARE(loadedIds(loaded->mods), QStringList{u"rubies"_s});
         QVERIFY(find(loaded->mods, u"huge"_s)->reason.contains(u"MiB"_s));
@@ -282,11 +280,9 @@ private slots:
         writeJson(dir.filePath(u"outside/terrain.json"_s), {{u"seaLevel"_s, 3}});
         writeJson(dir.filePath(u"wg/pack.json"_s), {{u"id"_s, u"wg"_s}, {u"version"_s, u"1"_s}});
         QVERIFY(QFile::link(dir.filePath(u"outside"_s), dir.filePath(u"wg/worldgen"_s)));
-
-        QStringList warnings;
         QElapsedTimer timer;
         timer.start();
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY(timer.elapsed() < 20000);
         QVERIFY(find(loaded->mods, u"links"_s)->reason.contains(u"MiB left"_s));
@@ -318,8 +314,7 @@ private slots:
             }
         }
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
 
         // 16 MiB per mod: the first four fit the 64 MiB budget, the rest do not.
@@ -339,9 +334,7 @@ private slots:
                       {{u"name"_s, u"o%1"_s.arg(i)}, {u"block"_s, u"qtcraft:stone"_s}, {u"replaces"_s, u"qtcraft:dirt"_s},
                        {u"veinsPerChunk"_s, 64}, {u"veinSize"_s, 16}});
         }
-
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY(find(loaded->mods, u"ores"_s)->reason.contains(u"too many ores"_s));
         QVERIFY(std::ranges::none_of(loaded->content->ores(), [](const QcOreDefinition &ore) { return ore.name.startsWith(u"ores:"_s); }));
@@ -353,8 +346,7 @@ private slots:
             writeJson(dir.filePath(i < 7 ? u"pools/features/p%1.json"_s.arg(i) : u"more/features/p%1.json"_s.arg(i)),
                       {{u"name"_s, u"p%1"_s.arg(i)}, {u"type"_s, u"pool"_s}, {u"block"_s, u"qtcraft:lava"_s}, {u"attempts"_s, 8}});
         }
-        warnings.clear();
-        const QcResult<QcModLoader::Result> pools = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded pools = QcModLoader::load(dir.path());
         QVERIFY(pools.has_value());
         QVERIFY2(find(pools->mods, u"pools"_s)->reason.isEmpty(), qPrintable(find(pools->mods, u"pools"_s)->reason));
         QVERIFY(find(pools->mods, u"more"_s)->reason.contains(u"too many pools"_s));
@@ -394,9 +386,8 @@ private slots:
                    {u"underwater"_s, u"qtcraft:sand"_s},
                    {u"beach"_s, u"qtcraft:sand"_s},
                    {u"features"_s, placements}});
-
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
+        const QStringList warnings = loaded ? loaded->warnings : QStringList();
         QVERIFY(loaded.has_value());
         QCOMPARE(loadedIds(loaded->mods), (QStringList{u"a0"_s, u"a2"_s, u"a3"_s}));
         QVERIFY(find(loaded->mods, u"a1"_s)->reason.contains(u"clients would reject"_s));
@@ -434,8 +425,7 @@ private slots:
             }
         }
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY(loadedIds(loaded->mods).isEmpty());
 
@@ -460,10 +450,9 @@ private slots:
 
         // b0 fills the English table almost up (500 entries stay free next to the base game's); b1 and
         // b3 each tip it over, b2 and b4 are harmless, b5 depends on b3.
-        QStringList baseWarnings;
-        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+        const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
         QVERIFY(base.has_value());
-        const int baseEntries = int((*base)->translationCount(u"en"_s));
+        const int baseEntries = int(base->registry->translationCount(u"en"_s));
 
         writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
         writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, int(QcStreamLimits::maxDefinitions) - baseEntries - 500));
@@ -478,8 +467,7 @@ private slots:
         writeJson(dir.filePath(u"b5/pack.json"_s),
                   {{u"id"_s, u"b5"_s}, {u"version"_s, u"1"_s}, {u"dependencies"_s, QJsonArray{u"b3"_s}}});
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QCOMPARE(loadedIds(loaded->mods), (QStringList{u"b0"_s, u"b2"_s, u"b4"_s}));
         QVERIFY(find(loaded->mods, u"b1"_s)->reason.contains(u"clients would reject"_s));
@@ -501,8 +489,7 @@ private slots:
                       {{u"name"_s, name}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:stone"_s}}}});
         }
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY2(find(loaded->mods, u"long"_s)->reason.contains(u"exceeds"_s), qPrintable(find(loaded->mods, u"long"_s)->reason));
 
@@ -521,8 +508,7 @@ private slots:
             writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
         }
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QCOMPARE(loadedIds(loaded->mods).size(), QcModLoader::maxLoadedMods);
         QVERIFY(find(loaded->mods, u"m65"_s)->reason.contains(u"at most 64 mods are loaded"_s));
@@ -532,8 +518,8 @@ private slots:
     {
         QTemporaryDir dir;
         copyExampleMod(dir.filePath(u"rubies"_s));
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
+        const QStringList warnings = loaded ? loaded->warnings : QStringList();
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         const QcContentRegistry &content = *loaded->content;
@@ -608,14 +594,12 @@ private slots:
     {
         QTemporaryDir dir;
         copyExampleMod(dir.filePath(u"rubies"_s));
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
 
         // The mod's demo structure, its creature and its blocks join the showcase without extra data.
-        QStringList generatorWarnings;
-        const QcShowcaseGenerator generator(loaded->content, &generatorWarnings);
-        QVERIFY2(generatorWarnings.isEmpty(), qPrintable(generatorWarnings.join(u'\n')));
+        const QcShowcaseGenerator generator(loaded->content);
+        QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
         const QList<QcShowcaseAreaInfo> &areas = generator.plan().areas;
         QVERIFY(std::ranges::any_of(areas, [](const QcShowcaseAreaInfo &area) { return area.name == u"demo-ruby_shrine"_s; }));
         QVERIFY(std::ranges::any_of(generator.setup().mobs, [](const QcWorldSetup::Mob &mob) { return mob.mob == u"rubies:crystal_beetle"_s; }));
@@ -630,8 +614,8 @@ private slots:
     {
         QTemporaryDir dir;
         copyExampleMod(dir.filePath(u"rubies"_s));
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
+        const QStringList warnings = loaded ? loaded->warnings : QStringList();
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
 
@@ -680,9 +664,8 @@ private slots:
         }));
 
         // Pools of molten ruby sink into cave floors next to the base game's lava pools.
-        QStringList generatorWarnings;
-        const QcTerrainGenerator generator(content, 12345, &generatorWarnings);
-        QVERIFY2(generatorWarnings.isEmpty(), qPrintable(generatorWarnings.join(u'\n')));
+        const QcTerrainGenerator generator(content, 12345);
+        QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
         const QcBlockId moltenSource = state(u"rubies:molten_ruby"_s);
         const QcBlockId lavaSource = state(u"qtcraft:lava"_s);
         int moltenCells = 0;
@@ -728,9 +711,8 @@ private slots:
         writeJson(mill + u"/smelting/iron_flour.json"_s,
                   {{u"name"_s, u"iron_flour"_s}, {u"input"_s, u"qtcraft:iron_ore"_s},
                    {u"result"_s, QJsonObject{{u"item"_s, u"flour"_s}}}});
-
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
+        const QStringList warnings = loaded ? loaded->warnings : QStringList();
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"broken.json"_s); }));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) {
@@ -801,9 +783,8 @@ private slots:
         writeJson(tweak + u"/recipes/ghost.json"_s,
                   {{u"name"_s, u"ghost"_s}, {u"type"_s, u"shapeless"_s}, {u"ingredients"_s, QJsonArray{u"nothing"_s}},
                    {u"result"_s, QJsonObject{{u"item"_s, u"qtcraft:stick"_s}}}});
-
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
+        const QStringList warnings = loaded ? loaded->warnings : QStringList();
         QVERIFY(loaded.has_value());
         const QcContentRegistry &content = *loaded->content;
 
@@ -826,9 +807,7 @@ private slots:
         copyExampleMod(dir.filePath(u"rubies"_s));
         QVERIFY(QcModLoader::setModEnabled(dir.path(), u"rubies"_s, false).has_value());
         QCOMPARE(QcModLoader::discover(dir.path()).constFirst().state, QcModStatus::State::Disabled);
-
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY(!loaded->content->blockId(u"rubies:ruby_ore"_s));
 
@@ -837,7 +816,7 @@ private slots:
 
         // No mods directory at all is fine.
         QVERIFY(QcModLoader::discover(dir.filePath(u"missing"_s)).isEmpty());
-        QVERIFY(QcModLoader::load(QString(), warnings).has_value());
+        QVERIFY(QcModLoader::load(QString()).has_value());
     }
 
     void worldsSurviveARemovedMod()
@@ -845,8 +824,7 @@ private slots:
         QTemporaryDir mods;
         QTemporaryDir world;
         copyExampleMod(mods.filePath(u"rubies"_s));
-        QStringList warnings;
-        const std::shared_ptr<const QcContentRegistry> withMod = QcModLoader::load(mods.path(), warnings)->content;
+        const std::shared_ptr<const QcContentRegistry> withMod = QcModLoader::load(mods.path())->content;
 
         QcServerConfig config;
         config.worldDirectory = world.path();
@@ -865,7 +843,7 @@ private slots:
         QVERIFY(info.has_value());
         QCOMPARE(info->packs, withMod->packs());
 
-        const std::shared_ptr<const QcContentRegistry> without = QcModLoader::load(QString(), warnings)->content;
+        const std::shared_ptr<const QcContentRegistry> without = QcModLoader::load(QString())->content;
         QcServer server(config, without, std::make_unique<QcTestTerrainGenerator>(without));
         QVERIFY(server.openWorld().has_value());
         QVERIFY(std::ranges::any_of(server.openWarnings(), [](const QString &w) { return w.contains(u"Rubies"_s); }));

@@ -132,15 +132,10 @@ void QcPrecipitationField::update(const QcClientWorld &world, const QcClientWeat
     }
 }
 
-void QcPrecipitationField::fillDrops(float strength, QList<QcPrecipitationDrop> &drops) const
+QcPrecipitationDrop QcPrecipitationField::dropOf(const Particle &particle, float strength)
 {
-    drops.clear();
-    drops.reserve(m_particles.size());
     const float shown = std::clamp(strength, 0.0f, 1.0f);
-    const auto rainAlpha = quint8(shown * 150.0f + 40.0f);
-    const auto snowAlpha = quint8(shown * 190.0f + 40.0f);
-    for (const Particle &particle : m_particles) {
-        const QcVec3 &p = particle.position;
-        drops.append({float(p.x), float(p.y), float(p.z), quint8(particle.snow ? 1 : 0), particle.snow ? snowAlpha : rainAlpha, {0, 0}});
-    }
+    const QcVec3 &p = particle.position;
+    const auto alpha = quint8(particle.snow ? shown * 190.0f + 40.0f : shown * 150.0f + 40.0f);
+    return {float(p.x), float(p.y), float(p.z), quint8(particle.snow ? 1 : 0), alpha, {0, 0}};
 }

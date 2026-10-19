@@ -11,10 +11,11 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Copies the regular files and real directories below `from` into `to`; `files` counts all copied
-// files against QcBundledMods::maxFiles.
-[[nodiscard]] QcStatus copyTree(const QString &from, const QString &to, int depth, int &files)
+// Copies the regular files and real directories below `from` into `to`. The files copied before
+// (`copied`) and here count against QcBundledMods::maxFiles; returns that count.
+[[nodiscard]] QcResult<int> copyTree(const QString &from, const QString &to, int depth, int copied)
 {
+    int files = copied;
     if (depth > QcBundledMods::maxDepth) {
         return qcError(u"%1 is nested too deeply"_s.arg(from));
     }
@@ -31,9 +32,11 @@ namespace {
 
         const QString target = QDir(to).filePath(entry.fileName());
         if (entry.isDir()) {
-            if (const QcStatus copied = copyTree(entry.filePath(), target, depth + 1, files); !copied) {
-                return copied;
+            const QcResult<int> below = copyTree(entry.filePath(), target, depth + 1, files);
+            if (!below) {
+                return below;
             }
+            files = *below;
         } else if (entry.isFile()) {
             if (++files > QcBundledMods::maxFiles) {
                 return qcError(u"More than %1 files in the bundled mods"_s.arg(QcBundledMods::maxFiles));
@@ -43,7 +46,7 @@ namespace {
             }
         }
     }
-    return {};
+    return files;
 }
 
 } // namespace
@@ -94,9 +97,11 @@ QString directory(const QString &applicationDirectory)
 
     int files = 0;
     for (const QFileInfo &mod : std::as_const(mods)) {
-        if (const QcStatus copied = copyTree(mod.filePath(), staging.filePath(mod.fileName()), 0, files); !copied) {
+        const QcResult<int> copied = copyTree(mod.filePath(), staging.filePath(mod.fileName()), 0, files);
+        if (!copied) {
             return std::unexpected(copied.error());
         }
+        files = *copied;
     }
 
     QStringList ids;

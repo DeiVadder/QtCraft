@@ -42,11 +42,12 @@ QString QcAccessList::key(const QString &name)
     return QcProfileValidation::playerName(name).toCaseFolded();
 }
 
-void QcAccessList::open(const QString &directory, const QStringList &initialOperators, QStringList &warnings)
+QStringList QcAccessList::open(const QString &directory, const QStringList &initialOperators)
 {
+    QStringList warnings;
     m_path = directory.isEmpty() ? QString() : QDir(directory).filePath(fileName.toString());
     if (!m_path.isEmpty() && QFile::exists(m_path)) {
-        read(m_path, warnings);
+        warnings = read(m_path);
     }
 
     for (const QString &name : initialOperators) {
@@ -56,6 +57,7 @@ void QcAccessList::open(const QString &directory, const QStringList &initialOper
             warnings.append(u"Invalid operator name '%1' in the server configuration left out"_s.arg(name));
         }
     }
+    return warnings;
 }
 
 bool QcAccessList::isFullFor(List list, const QString &name) const
@@ -112,7 +114,7 @@ QStringList QcAccessList::whitelist() const
     return names;
 }
 
-void QcAccessList::read(const QString &path, QStringList &warnings)
+QStringList QcAccessList::read(const QString &path)
 {
     QFile file(path);
     QJsonParseError error{};
@@ -125,15 +127,19 @@ void QcAccessList::read(const QString &path, QStringList &warnings)
     const QJsonObject root = document.object();
     if (!document.isObject() || error.error != QJsonParseError::NoError || root.value(u"format"_s).toInt() != formatVersion) {
         openDamaged(path);
-        return;
+        return {};
     }
 
-    readNames(root.value(u"operators"_s), m_operators, u"operators"_s, warnings);
-    readNames(root.value(u"configOperators"_s), m_configBindings, u"configOperators"_s, warnings);
-    readBans(root.value(u"bans"_s), warnings);
+    Names operators = readNames(root.value(u"operators"_s), u"operators"_s);
+    Names bindings = readNames(root.value(u"configOperators"_s), u"configOperators"_s);
+    m_operators = std::move(operators.entries);
+    m_configBindings = std::move(bindings.entries);
+    const QStringList warnings = operators.warnings + bindings.warnings + readBans(root.value(u"bans"_s));
     const QJsonObject whitelist = root.value(u"whitelist"_s).toObject();
     m_whitelistEnabled = whitelist.value(u"enabled"_s).toBool(false);
-    readNames(whitelist.value(u"names"_s), m_whitelist, u"whitelist"_s, warnings);
+    Names listed = readNames(whitelist.value(u"names"_s), u"whitelist"_s);
+    m_whitelist = std::move(listed.entries);
+    return warnings + listed.warnings;
 }
 
 void QcAccessList::openDamaged(const QString &path)
@@ -152,25 +158,28 @@ void QcAccessList::openDamaged(const QString &path)
     }
 }
 
-void QcAccessList::readNames(const QJsonValue &value, QMap<QString, Entry> &names, const QString &list, QStringList &warnings)
+QcAccessList::Names QcAccessList::readNames(const QJsonValue &value, const QString &list)
 {
+    Names names;
     const QJsonArray array = value.toArray();
     for (const auto &item : array) {
         const QJsonObject object = item.toObject();
         const Entry entry{object.value(u"name"_s).toString(), object.value(u"fingerprint"_s).toString()};
         if (entry.name.isEmpty() || QcProfileValidation::playerName(entry.name) != entry.name || !validFingerprint(entry.fingerprint)) {
-            warnings.append(u"access.json: invalid name in %1 left out"_s.arg(list));
-        } else if (names.size() >= maxEntries) {
-            warnings.append(u"access.json: more than %1 entries in %2, the rest is left out"_s.arg(maxEntries).arg(list));
-            return;
+            names.warnings.append(u"access.json: invalid name in %1 left out"_s.arg(list));
+        } else if (names.entries.size() >= maxEntries) {
+            names.warnings.append(u"access.json: more than %1 entries in %2, the rest is left out"_s.arg(maxEntries).arg(list));
+            return names;
         } else {
-            names.insert(key(entry.name), entry);
+            names.entries.insert(key(entry.name), entry);
         }
     }
+    return names;
 }
 
-void QcAccessList::readBans(const QJsonValue &value, QStringList &warnings)
+QStringList QcAccessList::readBans(const QJsonValue &value)
 {
+    QStringList warnings;
     const QJsonArray array = value.toArray();
     for (const auto &entry : array) {
         const QJsonObject object = entry.toObject();
@@ -181,11 +190,12 @@ void QcAccessList::readBans(const QJsonValue &value, QStringList &warnings)
             warnings.append(u"access.json: invalid name in bans left out"_s);
         } else if (m_bans.size() >= maxEntries) {
             warnings.append(u"access.json: more than %1 bans, the rest is left out"_s.arg(maxEntries));
-            return;
+            return warnings;
         } else {
             m_bans.insert(key(ban.name), ban);
         }
     }
+    return warnings;
 }
 
 QcStatus QcAccessList::write() const
@@ -231,7 +241,7 @@ QcResult<bool> QcAccessList::setOperator(const QString &name, bool isOperator, c
 {
     const QString cleaned = QcProfileValidation::playerName(name);
     if (isOperator) {
-        return written(insertEntry(m_operators, {cleaned, fingerprint}));
+        return written(insertEntry(List::Operators, {cleaned, fingerprint}));
     }
     const bool configured = m_configOperators.remove(key(cleaned)) > 0;
     const QcResult<bool> changed = written(m_operators.remove(key(cleaned)) > 0);
@@ -283,13 +293,15 @@ QcResult<bool> QcAccessList::setWhitelisted(const QString &name, bool listed, co
 {
     const QString cleaned = QcProfileValidation::playerName(name);
     if (listed) {
-        return written(insertEntry(m_whitelist, {cleaned, fingerprint}));
+        return written(insertEntry(List::Whitelist, {cleaned, fingerprint}));
     }
     return written(m_whitelist.remove(key(cleaned)) > 0);
 }
 
-bool QcAccessList::insertEntry(QMap<QString, Entry> &entries, const Entry &entry)
+bool QcAccessList::insertEntry(List list, const Entry &entry)
 {
+    Q_ASSERT(list != List::Bans);
+    QMap<QString, Entry> &entries = list == List::Operators ? m_operators : m_whitelist;
     // A listed name keeps its entry; a newly known fingerprint binds it.
     const auto found = entries.find(key(entry.name));
     if (found != entries.end()) {

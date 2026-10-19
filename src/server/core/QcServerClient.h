@@ -25,7 +25,7 @@
 // Server-internal state of one connected client, shared by the parts of QcServer, grouped by what it
 // is for (decision E-367). Its player is an
 // entity like the others (decision E-364): id, motion and yaw are the player's; only its inputs move
-// it (QcPhysics::stepPlayer), and it never rests.
+// it (QcEntityMotion::stepPlayer), and it never rests.
 struct QcServerClient : QcEntity
 {
     // The kind of every entity of this type (QcEntity::as).

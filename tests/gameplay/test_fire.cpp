@@ -559,14 +559,13 @@ private slots:
         record.chunk = {3, -2};
         record.fires = {{{50, 70, -30}, {44, 70, -28}, 7, 12}, {{49, 71, -30}, {49, 71, -30}, 0, 31}};
         const QByteArray blob = QcBlockEntityCodec::encode(record, *m_content);
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcBlockEntityRecord> read = QcBlockEntityCodec::decode(blob, record.chunk, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = QcBlockEntityCodec::decode(blob, record.chunk, *m_content, warnings);
         QVERIFY(read.has_value());
         QCOMPARE(read->fires, record.fires);
         // A fire outside the record's chunk is damage.
         record.fires.append({{10, 70, 10}, {10, 70, 10}, 0, 1});
-        QVERIFY(!QcBlockEntityCodec::decode(QcBlockEntityCodec::encode(record, *m_content), record.chunk, *m_content, warnings, reported));
+        QVERIFY(!QcBlockEntityCodec::decode(QcBlockEntityCodec::encode(record, *m_content), record.chunk, *m_content, warnings));
     }
 
 private:

@@ -39,12 +39,20 @@ int highestArgument(const QString &line)
     return highest;
 }
 
-void parseLines(const QJsonObject &json, Macro &macro, QcJsonFieldReader &reader)
+// The command lines of "run" and the highest argument they use.
+struct Lines
 {
+    QStringList lines;
+    int requiredArguments = 0;
+};
+
+[[nodiscard]] Lines parseLines(const QJsonObject &json, QcJsonFieldReader &reader)
+{
+    Lines result;
     const QJsonArray lines = json.value(u"run"_s).toArray();
     if (!json.value(u"run"_s).isArray() || lines.isEmpty() || lines.size() > Macro::maxLines) {
         reader.fail(u"'run' must be an array of 1 to %1 command lines"_s.arg(Macro::maxLines));
-        return;
+        return result;
     }
 
     for (const auto &value : lines) {
@@ -53,11 +61,12 @@ void parseLines(const QJsonObject &json, Macro &macro, QcJsonFieldReader &reader
         if (!value.isString() || !line.startsWith(u'/') || line.size() > Macro::maxLineLength || highest < 0) {
             reader.fail(u"each line of 'run' must be a command starting with '/' of at most %1 characters, with $1..$9 or $* only"_s.arg(
                 Macro::maxLineLength));
-            return;
+            return result;
         }
-        macro.requiredArguments = std::max(macro.requiredArguments, highest);
-        macro.lines.append(line);
+        result.requiredArguments = std::max(result.requiredArguments, highest);
+        result.lines.append(line);
     }
+    return result;
 }
 
 } // namespace
@@ -83,7 +92,9 @@ namespace QcCommandMacroParser {
     macro.usage = reader.string(u"usage"_s, u"/"_s + macro.name).left(Macro::maxTextLength);
     macro.description = reader.string(u"description"_s).left(Macro::maxTextLength);
     if (reader.ok()) {
-        parseLines(json, macro, reader);
+        Lines lines = parseLines(json, reader);
+        macro.lines = std::move(lines.lines);
+        macro.requiredArguments = lines.requiredArguments;
     }
 
     if (!reader.ok()) {

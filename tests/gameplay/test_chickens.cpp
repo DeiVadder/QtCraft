@@ -117,10 +117,9 @@ private slots:
         unchosen.uid = 10;
         unchosen.layTimer = -1.0;
         record.creatures.append({unchosen, 2});
-        QStringList warnings;
-        QSet<QString> reported;
+        QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> read =
-            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings, reported);
+            QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings);
         QVERIFY(read);
         QCOMPARE(read->creatures.size(), 2);
         QCOMPARE(read->creatures.at(0).entry.layTimer, 123.25);

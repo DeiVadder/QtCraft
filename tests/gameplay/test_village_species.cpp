@@ -80,10 +80,13 @@ private:
         if (!result.plan) {
             return result;
         }
-        QcVillageStyleDefinition &style = *std::ranges::find(content.villageStyles(), result.plan->style, &QcVillageStyleDefinition::name);
-        style.villager = u"test:gnome"_s;
-        style.golem = QcVillageGolemPatch{};
-        style.golem->mob = u"test:golem_b"_s;
+        const QList<QcVillageStyleDefinition> &styles = content.villageStyles();
+        const auto planned = std::ranges::find(styles, result.plan->style, &QcVillageStyleDefinition::name);
+        content.updateVillageStyle(planned - styles.begin(), [](QcVillageStyleDefinition &style) {
+            style.villager = u"test:gnome"_s;
+            style.golem = QcVillageGolemPatch{};
+            style.golem->mob = u"test:golem_b"_s;
+        });
 
         result.world = std::make_unique<QcServerWorld>(result.content, std::make_unique<QcVillageFixture::Terrain>(result.content, QList{result.plan}));
         result.mobs = std::make_unique<QcMobManager>(result.content, seed);

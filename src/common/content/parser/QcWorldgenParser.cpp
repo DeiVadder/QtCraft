@@ -16,30 +16,114 @@ namespace {
 
 constexpr int maxPoolAttempts = 8;
 
-void parsePool(const QJsonObject &json, QcFeatureDefinition &feature, QcJsonFieldReader &reader, const QString &packNamespace)
+// Reads one feature: owns the definition being built and the reader of its JSON object.
+class FeatureReader
 {
-    feature.minY = reader.integer(u"minY"_s, feature.minY, 1, QcWorld::worldHeight - 2);
-    feature.maxY = reader.integer(u"maxY"_s, std::max(feature.minY, feature.maxY), feature.minY, QcWorld::worldHeight - 2);
-    feature.attempts = reader.integer(u"attempts"_s, feature.attempts, 1, maxPoolAttempts);
-    feature.chance = reader.number(u"chance"_s, feature.chance, 0.0, 1.0);
-    feature.radius = reader.integer(u"radius"_s, feature.radius, 1, 6);
-    feature.depth = reader.integer(u"depth"_s, feature.depth, 1, 4);
-    feature.surface = reader.boolean(u"surface"_s, false);
+public:
+    FeatureReader(const QJsonObject &json, const QString &packNamespace)
+        : m_json(json)
+        , m_namespace(packNamespace)
+        , m_reader{json, u"feature"_s, {}}
+    {
+    }
 
-    const QJsonValue biomes = json.value(u"biomes"_s);
+    [[nodiscard]] QcResult<QcFeatureDefinition> read();
+
+private:
+    void readPool();
+
+    const QJsonObject &m_json;
+    const QString &m_namespace;
+    QcJsonFieldReader m_reader;
+    QcFeatureDefinition m_feature;
+};
+
+// The heights, tries, size and biomes of a pool.
+void FeatureReader::readPool()
+{
+    m_feature.minY = m_reader.integer(u"minY"_s, m_feature.minY, 1, QcWorld::worldHeight - 2);
+    m_feature.maxY = m_reader.integer(u"maxY"_s, std::max(m_feature.minY, m_feature.maxY), m_feature.minY, QcWorld::worldHeight - 2);
+    m_feature.attempts = m_reader.integer(u"attempts"_s, m_feature.attempts, 1, maxPoolAttempts);
+    m_feature.chance = m_reader.number(u"chance"_s, m_feature.chance, 0.0, 1.0);
+    m_feature.radius = m_reader.integer(u"radius"_s, m_feature.radius, 1, 6);
+    m_feature.depth = m_reader.integer(u"depth"_s, m_feature.depth, 1, 4);
+    m_feature.surface = m_reader.boolean(u"surface"_s, false);
+
+    const QJsonValue biomes = m_json.value(u"biomes"_s);
     if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
-        reader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
+        m_reader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
     }
     const QJsonArray biomeList = biomes.toArray();
     for (const auto &entry : biomeList) {
-        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), m_namespace) : QString();
         if (name.isEmpty()) {
-            reader.fail(u"invalid 'biomes' entry"_s);
+            m_reader.fail(u"invalid 'biomes' entry"_s);
             break;
         }
-        feature.biomes.append(name);
+        m_feature.biomes.append(name);
     }
 }
+
+QcResult<QcFeatureDefinition> FeatureReader::read()
+{
+    m_feature.name = m_reader.name(u"name"_s, m_namespace);
+    if (m_feature.name.isEmpty()) {
+        return qcError(m_reader.ok() ? u"feature: 'name' is required"_s : m_reader.error);
+    }
+
+    m_reader.context = u"feature '%1'"_s.arg(m_feature.name);
+    const QString type = m_reader.string(u"type"_s, u"tree"_s);
+    if (type == u"tree"_s) {
+        m_feature.type = QcFeatureDefinition::Type::Tree;
+    } else if (type == u"column"_s) {
+        m_feature.type = QcFeatureDefinition::Type::Column;
+    } else if (type == u"plant"_s) {
+        m_feature.type = QcFeatureDefinition::Type::Plant;
+    } else if (type == u"pool"_s) {
+        m_feature.type = QcFeatureDefinition::Type::Pool;
+    } else {
+        m_reader.fail(u"'type' must be tree, column, plant or pool"_s);
+    }
+
+    const bool singleBlock = m_feature.type == QcFeatureDefinition::Type::Plant || m_feature.type == QcFeatureDefinition::Type::Pool;
+    m_feature.trunkBlock = m_reader.name(singleBlock ? u"block"_s : u"trunk"_s, m_namespace);
+    if (m_feature.type == QcFeatureDefinition::Type::Pool) {
+        readPool();
+    }
+
+    m_feature.nearWater = m_reader.boolean(u"nearWater"_s, false);
+    m_feature.patchSize = m_reader.integer(u"patchSize"_s, 0, 0, 512);
+    m_feature.leavesBlock = m_reader.name(u"leaves"_s, m_namespace);
+    m_feature.minHeight = m_reader.integer(u"minHeight"_s, 4, 1, 32);
+    m_feature.maxHeight = m_reader.integer(u"maxHeight"_s, m_feature.minHeight, m_feature.minHeight, 32);
+
+    m_feature.shape = m_reader.string(u"shape"_s, u"round"_s);
+    if (m_feature.shape != u"round"_s && m_feature.shape != u"cone"_s) {
+        m_reader.fail(u"'shape' must be round or cone"_s);
+    }
+    if (m_feature.trunkBlock.isEmpty()) {
+        m_reader.fail(singleBlock ? u"'block' is required"_s : u"'trunk' is required"_s);
+    }
+    if (m_feature.type == QcFeatureDefinition::Type::Tree && m_feature.leavesBlock.isEmpty()) {
+        m_reader.fail(u"trees need 'leaves'"_s);
+    }
+
+    const QJsonArray ground = m_json.value(u"ground"_s).toArray();
+    for (const auto &entry : ground) {
+        const QString name = QcContentNames::qualify(entry.toString(), m_namespace);
+        if (name.isEmpty()) {
+            m_reader.fail(u"invalid 'ground' entry"_s);
+            break;
+        }
+        m_feature.groundBlocks.append(name);
+    }
+
+    if (!m_reader.ok()) {
+        return qcError(m_reader.error);
+    }
+    return std::move(m_feature);
+}
+
 
 } // namespace
 
@@ -116,64 +200,7 @@ namespace QcWorldgenParser {
 
 [[nodiscard]] QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace)
 {
-    QcJsonFieldReader reader{json, u"feature"_s, {}};
-    QcFeatureDefinition feature;
-    feature.name = reader.name(u"name"_s, packNamespace);
-    if (feature.name.isEmpty()) {
-        return qcError(reader.ok() ? u"feature: 'name' is required"_s : reader.error);
-    }
-
-    reader.context = u"feature '%1'"_s.arg(feature.name);
-    const QString type = reader.string(u"type"_s, u"tree"_s);
-    if (type == u"tree"_s) {
-        feature.type = QcFeatureDefinition::Type::Tree;
-    } else if (type == u"column"_s) {
-        feature.type = QcFeatureDefinition::Type::Column;
-    } else if (type == u"plant"_s) {
-        feature.type = QcFeatureDefinition::Type::Plant;
-    } else if (type == u"pool"_s) {
-        feature.type = QcFeatureDefinition::Type::Pool;
-    } else {
-        reader.fail(u"'type' must be tree, column, plant or pool"_s);
-    }
-
-    const bool singleBlock = feature.type == QcFeatureDefinition::Type::Plant || feature.type == QcFeatureDefinition::Type::Pool;
-    feature.trunkBlock = reader.name(singleBlock ? u"block"_s : u"trunk"_s, packNamespace);
-    if (feature.type == QcFeatureDefinition::Type::Pool) {
-        parsePool(json, feature, reader, packNamespace);
-    }
-
-    feature.nearWater = reader.boolean(u"nearWater"_s, false);
-    feature.patchSize = reader.integer(u"patchSize"_s, 0, 0, 512);
-    feature.leavesBlock = reader.name(u"leaves"_s, packNamespace);
-    feature.minHeight = reader.integer(u"minHeight"_s, 4, 1, 32);
-    feature.maxHeight = reader.integer(u"maxHeight"_s, feature.minHeight, feature.minHeight, 32);
-
-    feature.shape = reader.string(u"shape"_s, u"round"_s);
-    if (feature.shape != u"round"_s && feature.shape != u"cone"_s) {
-        reader.fail(u"'shape' must be round or cone"_s);
-    }
-    if (feature.trunkBlock.isEmpty()) {
-        reader.fail(singleBlock ? u"'block' is required"_s : u"'trunk' is required"_s);
-    }
-    if (feature.type == QcFeatureDefinition::Type::Tree && feature.leavesBlock.isEmpty()) {
-        reader.fail(u"trees need 'leaves'"_s);
-    }
-
-    const QJsonArray ground = json.value(u"ground"_s).toArray();
-    for (const auto &entry : ground) {
-        const QString name = QcContentNames::qualify(entry.toString(), packNamespace);
-        if (name.isEmpty()) {
-            reader.fail(u"invalid 'ground' entry"_s);
-            break;
-        }
-        feature.groundBlocks.append(name);
-    }
-
-    if (!reader.ok()) {
-        return qcError(reader.error);
-    }
-    return feature;
+    return FeatureReader(json, packNamespace).read();
 }
 
 [[nodiscard]] QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace)
@@ -208,9 +235,10 @@ namespace QcWorldgenParser {
 namespace {
 
 // The dungeons of the terrain (decision E-522); the blocks are checked by the generator.
-void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QcDungeonSettings parseDungeons(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     using Settings = QcDungeonSettings;
+    Settings dungeons;
     dungeons.enabled = reader.boolean(u"enabled"_s, true);
     dungeons.regionSize = reader.integer(u"regionSize"_s, dungeons.regionSize, 24, Settings::maxRegionSize);
     dungeons.chance = reader.number(u"chance"_s, dungeons.chance, 0.0, 1.0);
@@ -241,7 +269,7 @@ void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonF
         const int weight = mob.value(u"weight"_s).toInt(1);
         if (name.isEmpty() || weight < 1) {
             reader.fail(u"'mobs' entries need a 'mob' and a positive 'weight'"_s);
-            return;
+            return dungeons;
         }
         dungeons.mobs.append({QcContentNames::qualify(name, packNamespace), weight});
     }
@@ -250,76 +278,99 @@ void parseDungeons(const QJsonObject &json, QcDungeonSettings &dungeons, QcJsonF
                         || dungeons.chest.isEmpty() || dungeons.light.isEmpty() || dungeons.mobs.isEmpty())) {
         reader.fail(u"needs odd room sizes that fit the region, 'wall', 'spawner', 'chest', 'light' and 'mobs'"_s);
     }
+    return dungeons;
 }
 
 // The blocks, items and names of the mine shafts (decision E-570); the blocks are checked by the
 // generator, the creature and the loot table with the spawners (QcSpawnerContent).
-void parseMineshaftNames(QcMineshaftSettings &shafts, QcJsonFieldReader &reader, const QString &packNamespace)
+// Reads the mine shafts of the terrain (decision E-570): owns the settings being built.
+class MineshaftReader
 {
-    shafts.planks = reader.name(u"planks"_s, packNamespace);
-    shafts.post = reader.name(u"post"_s, packNamespace);
-    shafts.rail = reader.name(u"rail"_s, packNamespace);
-    shafts.cobweb = reader.name(u"cobweb"_s, packNamespace);
-    shafts.light = reader.name(u"light"_s, packNamespace);
-    shafts.ladder = reader.name(u"ladder"_s, packNamespace);
-    shafts.seal = reader.name(u"seal"_s, packNamespace);
-    shafts.spawner = reader.name(u"spawner"_s, packNamespace);
-    shafts.mob = reader.name(u"mob"_s, packNamespace);
-    shafts.cart = reader.name(u"cart"_s, packNamespace);
-    shafts.lootTable = reader.name(u"lootTable"_s, packNamespace);
+public:
+    MineshaftReader(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+        : m_json(json)
+        , m_reader(reader)
+        , m_namespace(packNamespace)
+    {
+    }
+
+    [[nodiscard]] QcMineshaftSettings read();
+
+private:
+    void parseMineshaftNames();
+
+    const QJsonObject &m_json;
+    QcJsonFieldReader &m_reader;
+    const QString &m_namespace;
+    QcMineshaftSettings m_shafts;
+};
+
+void MineshaftReader::parseMineshaftNames()
+{
+    m_shafts.planks = m_reader.name(u"planks"_s, m_namespace);
+    m_shafts.post = m_reader.name(u"post"_s, m_namespace);
+    m_shafts.rail = m_reader.name(u"rail"_s, m_namespace);
+    m_shafts.cobweb = m_reader.name(u"cobweb"_s, m_namespace);
+    m_shafts.light = m_reader.name(u"light"_s, m_namespace);
+    m_shafts.ladder = m_reader.name(u"ladder"_s, m_namespace);
+    m_shafts.seal = m_reader.name(u"seal"_s, m_namespace);
+    m_shafts.spawner = m_reader.name(u"spawner"_s, m_namespace);
+    m_shafts.mob = m_reader.name(u"mob"_s, m_namespace);
+    m_shafts.cart = m_reader.name(u"cart"_s, m_namespace);
+    m_shafts.lootTable = m_reader.name(u"lootTable"_s, m_namespace);
 }
 
-// The mine shafts of the terrain (decision E-570).
-void parseMineshafts(const QJsonObject &json, QcMineshaftSettings &shafts, QcJsonFieldReader &reader, const QString &packNamespace)
+QcMineshaftSettings MineshaftReader::read()
 {
     using Settings = QcMineshaftSettings;
-    shafts.enabled = reader.boolean(u"enabled"_s, true);
-    shafts.regionSize = reader.integer(u"regionSize"_s, shafts.regionSize, 32, Settings::maxRegionSize);
-    shafts.chance = reader.number(u"chance"_s, shafts.chance, 0.0, 1.0);
-    shafts.minY = reader.integer(u"minY"_s, shafts.minY, 2, QcWorld::worldHeight - 32);
-    shafts.maxY = reader.integer(u"maxY"_s, shafts.maxY, shafts.minY, QcWorld::worldHeight - 32);
-    shafts.attempts = reader.integer(u"attempts"_s, shafts.attempts, 1, 64);
-    shafts.minLevels = reader.integer(u"minLevels"_s, shafts.minLevels, 1, Settings::maxLevelCount);
-    shafts.maxLevels = reader.integer(u"maxLevels"_s, shafts.maxLevels, shafts.minLevels, Settings::maxLevelCount);
-    shafts.levelSpacing = reader.integer(u"levelSpacing"_s, shafts.levelSpacing, 5, 12);
-    shafts.radius = reader.integer(u"radius"_s, shafts.radius, 1, Settings::maxRadius);
-    shafts.minNodes = reader.integer(u"minNodes"_s, shafts.minNodes, 1, 80);
-    shafts.maxNodes = reader.integer(u"maxNodes"_s, shafts.maxNodes, shafts.minNodes, 80);
-    shafts.loopChance = reader.number(u"loopChance"_s, shafts.loopChance, 0.0, 1.0);
-    shafts.extraStairChance = reader.number(u"extraStairChance"_s, shafts.extraStairChance, 0.0, 1.0);
-    shafts.roomHalf = reader.integer(u"roomHalf"_s, shafts.roomHalf, 1, 4);
-    shafts.roomHeight = reader.integer(u"roomHeight"_s, shafts.roomHeight, 3, 8);
-    shafts.groundCover = reader.integer(u"groundCover"_s, shafts.groundCover, 1, 32);
-    shafts.maxPillar = reader.integer(u"maxPillar"_s, shafts.maxPillar, 1, 64);
-    shafts.supportSpacing = reader.integer(u"supportSpacing"_s, shafts.supportSpacing, 2, 16);
-    shafts.railChance = reader.number(u"railChance"_s, shafts.railChance, 0.0, 1.0);
-    shafts.cobwebChance = reader.number(u"cobwebChance"_s, shafts.cobwebChance, 0.0, 1.0);
-    shafts.lightChance = reader.number(u"lightChance"_s, shafts.lightChance, 0.0, 1.0);
-    shafts.lightDistance = reader.integer(u"lightDistance"_s, shafts.lightDistance, 0, 32);
-    shafts.minSpawners = reader.integer(u"minSpawners"_s, shafts.minSpawners, 0, 8);
-    shafts.maxSpawners = reader.integer(u"maxSpawners"_s, shafts.maxSpawners, shafts.minSpawners, 8);
-    shafts.cartChance = reader.number(u"cartChance"_s, shafts.cartChance, 0.0, 1.0);
-    shafts.entranceChance = reader.number(u"entranceChance"_s, shafts.entranceChance, 0.0, 1.0);
-    shafts.roomChance = reader.number(u"roomChance"_s, shafts.roomChance, 0.0, 1.0);
-    shafts.maxRooms = reader.integer(u"maxRooms"_s, shafts.maxRooms, 0, 16);
-    parseMineshaftNames(shafts, reader, packNamespace);
-    const QJsonObject biomes = json.value(u"entranceBiomes"_s).toObject();
+    m_shafts.enabled = m_reader.boolean(u"enabled"_s, true);
+    m_shafts.regionSize = m_reader.integer(u"regionSize"_s, m_shafts.regionSize, 32, Settings::maxRegionSize);
+    m_shafts.chance = m_reader.number(u"chance"_s, m_shafts.chance, 0.0, 1.0);
+    m_shafts.minY = m_reader.integer(u"minY"_s, m_shafts.minY, 2, QcWorld::worldHeight - 32);
+    m_shafts.maxY = m_reader.integer(u"maxY"_s, m_shafts.maxY, m_shafts.minY, QcWorld::worldHeight - 32);
+    m_shafts.attempts = m_reader.integer(u"attempts"_s, m_shafts.attempts, 1, 64);
+    m_shafts.minLevels = m_reader.integer(u"minLevels"_s, m_shafts.minLevels, 1, Settings::maxLevelCount);
+    m_shafts.maxLevels = m_reader.integer(u"maxLevels"_s, m_shafts.maxLevels, m_shafts.minLevels, Settings::maxLevelCount);
+    m_shafts.levelSpacing = m_reader.integer(u"levelSpacing"_s, m_shafts.levelSpacing, 5, 12);
+    m_shafts.radius = m_reader.integer(u"radius"_s, m_shafts.radius, 1, Settings::maxRadius);
+    m_shafts.minNodes = m_reader.integer(u"minNodes"_s, m_shafts.minNodes, 1, 80);
+    m_shafts.maxNodes = m_reader.integer(u"maxNodes"_s, m_shafts.maxNodes, m_shafts.minNodes, 80);
+    m_shafts.loopChance = m_reader.number(u"loopChance"_s, m_shafts.loopChance, 0.0, 1.0);
+    m_shafts.extraStairChance = m_reader.number(u"extraStairChance"_s, m_shafts.extraStairChance, 0.0, 1.0);
+    m_shafts.roomHalf = m_reader.integer(u"roomHalf"_s, m_shafts.roomHalf, 1, 4);
+    m_shafts.roomHeight = m_reader.integer(u"roomHeight"_s, m_shafts.roomHeight, 3, 8);
+    m_shafts.groundCover = m_reader.integer(u"groundCover"_s, m_shafts.groundCover, 1, 32);
+    m_shafts.maxPillar = m_reader.integer(u"maxPillar"_s, m_shafts.maxPillar, 1, 64);
+    m_shafts.supportSpacing = m_reader.integer(u"supportSpacing"_s, m_shafts.supportSpacing, 2, 16);
+    m_shafts.railChance = m_reader.number(u"railChance"_s, m_shafts.railChance, 0.0, 1.0);
+    m_shafts.cobwebChance = m_reader.number(u"cobwebChance"_s, m_shafts.cobwebChance, 0.0, 1.0);
+    m_shafts.lightChance = m_reader.number(u"lightChance"_s, m_shafts.lightChance, 0.0, 1.0);
+    m_shafts.lightDistance = m_reader.integer(u"lightDistance"_s, m_shafts.lightDistance, 0, 32);
+    m_shafts.minSpawners = m_reader.integer(u"minSpawners"_s, m_shafts.minSpawners, 0, 8);
+    m_shafts.maxSpawners = m_reader.integer(u"maxSpawners"_s, m_shafts.maxSpawners, m_shafts.minSpawners, 8);
+    m_shafts.cartChance = m_reader.number(u"cartChance"_s, m_shafts.cartChance, 0.0, 1.0);
+    m_shafts.entranceChance = m_reader.number(u"entranceChance"_s, m_shafts.entranceChance, 0.0, 1.0);
+    m_shafts.roomChance = m_reader.number(u"roomChance"_s, m_shafts.roomChance, 0.0, 1.0);
+    m_shafts.maxRooms = m_reader.integer(u"maxRooms"_s, m_shafts.maxRooms, 0, 16);
+    parseMineshaftNames();
+    const QJsonObject biomes = m_json.value(u"entranceBiomes"_s).toObject();
     for (auto it = biomes.begin(); it != biomes.end(); ++it) {
         const double chance = it.value().toDouble(-1.0);
         if (chance < 0.0 || chance > 1.0) {
-            reader.fail(u"'entranceBiomes' values are chances from 0 to 1"_s);
-            return;
+            m_reader.fail(u"'entranceBiomes' values are chances from 0 to 1"_s);
+            return m_shafts;
         }
-        shafts.entranceBiomes.append({QcContentNames::qualify(it.key(), packNamespace), chance});
+        m_shafts.entranceBiomes.append({QcContentNames::qualify(it.key(), m_namespace), chance});
     }
-    const bool fits = shafts.regionSize >= 2 * shafts.extent() + 2 && shafts.maxY - (shafts.maxLevels - 1) * shafts.levelSpacing >= shafts.minY;
-    const bool named = !shafts.planks.isEmpty() && !shafts.post.isEmpty() && !shafts.rail.isEmpty() && !shafts.cobweb.isEmpty()
-                       && !shafts.light.isEmpty() && !shafts.ladder.isEmpty() && !shafts.seal.isEmpty() && !shafts.spawner.isEmpty()
-                       && !shafts.mob.isEmpty() && !shafts.cart.isEmpty();
-    if (reader.ok() && (!fits || !named)) {
-        reader.fail(u"needs a network that fits the region and the heights, and 'planks', 'post', 'rail', 'cobweb', 'light', "
+    const bool fits = m_shafts.regionSize >= 2 * m_shafts.extent() + 2 && m_shafts.maxY - (m_shafts.maxLevels - 1) * m_shafts.levelSpacing >= m_shafts.minY;
+    const bool named = !m_shafts.planks.isEmpty() && !m_shafts.post.isEmpty() && !m_shafts.rail.isEmpty() && !m_shafts.cobweb.isEmpty()
+                       && !m_shafts.light.isEmpty() && !m_shafts.ladder.isEmpty() && !m_shafts.seal.isEmpty() && !m_shafts.spawner.isEmpty()
+                       && !m_shafts.mob.isEmpty() && !m_shafts.cart.isEmpty();
+    if (m_reader.ok() && (!fits || !named)) {
+        m_reader.fail(u"needs a network that fits the region and the heights, and 'planks', 'post', 'rail', 'cobweb', 'light', "
                     "'ladder', 'seal', 'spawner', 'mob' and 'cart'"_s);
     }
+    return m_shafts;
 }
 
 } // namespace
@@ -342,13 +393,13 @@ void parseMineshafts(const QJsonObject &json, QcMineshaftSettings &shafts, QcJso
     settings.caveEntrances = reader.number(u"caveEntrances"_s, settings.caveEntrances, 0.0, 1.0);
     settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        parseDungeons(object, settings.dungeons, nested, packNamespace);
+        settings.dungeons = parseDungeons(object, nested, packNamespace);
     });
     reader.nestedObject(u"mineshafts"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        parseMineshafts(object, settings.mineshafts, nested, packNamespace);
+        settings.mineshafts = MineshaftReader(object, nested, packNamespace).read();
     });
     reader.nestedObject(u"coastalTowers"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        QcCoastalTowerParser::parseCoastalTowers(object, settings.coastalTowers, nested, packNamespace);
+        settings.coastalTowers = QcCoastalTowerParser::parseCoastalTowers(object, nested, packNamespace);
     });
 
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {

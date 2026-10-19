@@ -149,11 +149,10 @@ private slots:
         QCOMPARE(simulation.ticks, quint64(1000));
 
         // One second passed for 1000 ticks; afterwards the normal grid starts anew without catching up.
-        quint64 ran = 0;
-        qint64 elapsed = 0;
-        QVERIFY(simulation.scheduler.takeSprintEnded(ran, elapsed));
-        QCOMPARE(ran, quint64(1000));
-        QVERIFY(!simulation.scheduler.takeSprintEnded(ran, elapsed));
+        const std::optional<QcTickScheduler::SprintEnd> ended = simulation.scheduler.takeSprintEnded();
+        QVERIFY(ended);
+        QCOMPARE(ended->ticks, quint64(1000));
+        QVERIFY(!simulation.scheduler.takeSprintEnded());
         // The last slice asked for one interval of rest: the next tick is due exactly then.
         QCOMPARE(simulation.scheduler.nextDueNs(), simulation.now);
         simulation.fire([](quint64) { return ms; }, 0);
@@ -202,10 +201,9 @@ private slots:
         simulation.fire([](quint64) { return ms; }, 0);
         simulation.scheduler.stopSprint();
         QVERIFY(!simulation.scheduler.sprinting());
-        quint64 ran = 0;
-        qint64 elapsed = 0;
-        QVERIFY(simulation.scheduler.takeSprintEnded(ran, elapsed));
-        QCOMPARE(ran, quint64(20));
+        const std::optional<QcTickScheduler::SprintEnd> ended = simulation.scheduler.takeSprintEnded();
+        QVERIFY(ended);
+        QCOMPARE(ended->ticks, quint64(20));
         QCOMPARE(simulation.scheduler.nextDueNs() - simulation.now, QcTickScheduler::intervalNs);
     }
 

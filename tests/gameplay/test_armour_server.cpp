@@ -285,11 +285,10 @@ private slots:
         player.equipment.at(QcEquipmentSlot::Feet) = {item("qtcraft:leather_boots"), 1, 0};
         QVERIFY(storage.writePlayer(u"Knight"_s, player).has_value());
 
-        QStringList warnings;
-        const auto read = storage.readPlayer(u"Knight"_s, warnings);
+        const auto read = storage.readPlayer(u"Knight"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE((*read)->equipment, player.equipment);
-        QVERIFY(warnings.isEmpty());
+        QCOMPARE(read->player->equipment, player.equipment);
+        QVERIFY(read->warnings.isEmpty());
 
         // A file of format 2 (before armour) is refused, not converted (decision E-356).
         QByteArray payload;
@@ -311,9 +310,9 @@ private slots:
         old.write(file);
         old.close();
 
-        const auto oldRead = storage.readPlayer(u"Old"_s, warnings);
+        const auto oldRead = storage.readPlayer(u"Old"_s);
         QVERIFY(!oldRead.has_value());
-        QVERIFY2(oldRead.error().contains(u"older development version"_s), qPrintable(oldRead.error()));
+        QVERIFY2(oldRead.error().error.contains(u"older development version"_s), qPrintable(oldRead.error().error));
     }
 
     void armourOfAnotherSlotGoesIntoTheInventory()
@@ -326,11 +325,10 @@ private slots:
         player.equipment.at(QcEquipmentSlot::Head) = {item("qtcraft:iron_chestplate"), 1, 3};
         QVERIFY(storage.writePlayer(u"Odd"_s, player).has_value());
 
-        QStringList warnings;
-        const auto read = storage.readPlayer(u"Odd"_s, warnings);
+        const auto read = storage.readPlayer(u"Odd"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QVERIFY((*read)->equipment.isEmpty());
-        QCOMPARE((*read)->inventory.slot(0), (QcItemStack{item("qtcraft:iron_chestplate"), 1, 3}));
+        QVERIFY(read->player->equipment.isEmpty());
+        QCOMPARE(read->player->inventory.slot(0), (QcItemStack{item("qtcraft:iron_chestplate"), 1, 3}));
     }
 
     void armourComesBackAfterRejoining()

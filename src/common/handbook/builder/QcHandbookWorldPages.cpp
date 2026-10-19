@@ -3,6 +3,7 @@
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbookLinks.h"
+#include "common/handbook/QcLinkList.h"
 
 #include <algorithm>
 #include <array>
@@ -19,8 +20,9 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
 }
 
 // The blocks a biome is made of, top to bottom.
-void addLayerFacts(const QcHandbookContext &context, const QcBiomeDefinition &biome, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> layerFacts(const QcHandbookContext &context, const QcBiomeDefinition &biome)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     const auto layer = [&](const QString &block, const QString &key, const QString &note = {}) {
         if (!block.isEmpty()) {
@@ -37,11 +39,13 @@ void addLayerFacts(const QcHandbookContext &context, const QcBiomeDefinition &bi
     if (biome.snowLine > 0) {
         layer(biome.snowBlock, u"biome.snow"_s, text.label(u"value.above"_s).arg(biome.snowLine));
     }
+    return facts;
 }
 
 // The features placed in a biome and the creatures spawning there.
-void addBiomeSections(const QcHandbookContext &context, const QcBiomeDefinition &biome, QList<Section> &sections)
+[[nodiscard]] QList<Section> biomeSections(const QcHandbookContext &context, const QcBiomeDefinition &biome)
 {
+    QList<Section> sections;
     QcHandbookText &text = context.text;
     const QcContentRegistry &content = context.content;
 
@@ -54,7 +58,7 @@ void addBiomeSections(const QcHandbookContext &context, const QcBiomeDefinition 
         }
         features.links.append(context.links.featureLink(*feature, perColumn(text, placement)));
     }
-    QcHandbookLinks::sortLinks(features.links);
+    features.links = QcHandbookLinks::sortedLinks(std::move(features.links));
     if (!features.links.isEmpty()) {
         sections.append(std::move(features));
     }
@@ -68,10 +72,11 @@ void addBiomeSections(const QcHandbookContext &context, const QcBiomeDefinition 
             creatures.links.append(context.links.mobLink(mob));
         }
     }
-    QcHandbookLinks::sortLinks(creatures.links);
+    creatures.links = QcHandbookLinks::sortedLinks(std::move(creatures.links));
     if (!creatures.links.isEmpty()) {
         sections.append(std::move(creatures));
     }
+    return sections;
 }
 
 QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinition &biome)
@@ -94,8 +99,8 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.facts.append({text.label(u"fact.height"_s),
                         text.label(u"value.height"_s).arg(text.number(biome.baseHeight), text.number(biome.heightVariation)), {}});
 
-    addLayerFacts(context, biome, entry.facts);
-    addBiomeSections(context, biome, entry.sections);
+    entry.facts += layerFacts(context, biome);
+    entry.sections += biomeSections(context, biome);
     entry.englishTitle = context.content.translate(biome.translationKey, QcHandbookText::english());
     return entry;
 }
@@ -126,14 +131,14 @@ QcHandbookEntry terrainPage(const QcHandbookContext &context)
     for (const QcOreDefinition &ore : context.content.ores()) {
         ores.links.append(links.oreLink(ore, text.heightRange(ore.minY, ore.maxY)));
     }
-    QcHandbookLinks::sortLinks(ores.links);
+    ores.links = QcHandbookLinks::sortedLinks(std::move(ores.links));
     entry.sections.append(std::move(ores));
 
     Section biomes{text.label(u"section.biomes"_s), {}, {}, {}};
     for (const QcBiomeDefinition &biome : context.content.biomes()) {
         biomes.links.append(links.biomeLink(biome));
     }
-    QcHandbookLinks::sortLinks(biomes.links);
+    biomes.links = QcHandbookLinks::sortedLinks(std::move(biomes.links));
     entry.sections.append(std::move(biomes));
     entry.englishTitle = context.content.translate(u"handbook.world.terrain"_s, QcHandbookText::english());
     return entry;
@@ -167,8 +172,9 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
 }
 
 // Type, blocks, size and where a feature may stand.
-void addShapeFacts(const QcHandbookContext &context, const QcFeatureDefinition &feature, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> shapeFacts(const QcHandbookContext &context, const QcFeatureDefinition &feature)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     static constexpr std::array<const char16_t *, 4> types{u"tree", u"column", u"plant", u"pool"};
     const QString kind = feature.type == QcFeatureDefinition::Type::Pool && feature.surface
@@ -206,31 +212,32 @@ void addShapeFacts(const QcHandbookContext &context, const QcFeatureDefinition &
     if (feature.nearWater) {
         facts.append({text.label(u"fact.nearWater"_s), text.yesNo(true), {}});
     }
+    return facts;
 }
 
 // The biomes placing a feature (pools: every chunk unless they list their biomes).
 Section featureBiomes(const QcHandbookContext &context, const QcFeatureDefinition &feature)
 {
     const QcHandbookText &text = context.text;
-    Section biomes{text.label(u"section.inBiomes"_s), {}, {}, {}};
+    QcLinkList placing;
     for (const QcBiomeDefinition &biome : context.content.biomes()) {
         for (const QcFeaturePlacement &placement : biome.features) {
             if (placement.feature == feature.name) {
-                QcHandbookLinks::appendUnique(biomes.links, context.links.biomeLink(biome, perColumn(text, placement)));
+                placing.addUnique(context.links.biomeLink(biome, perColumn(text, placement)));
             }
         }
     }
 
-    QcHandbookLinks::sortLinks(biomes.links);
+    Section biomes{text.label(u"section.inBiomes"_s), {}, {}, {}};
     if (feature.type == QcFeatureDefinition::Type::Pool) {
         for (const QcBiomeDefinition &biome : context.content.biomes()) {
             if (feature.biomes.contains(biome.name)) {
-                QcHandbookLinks::appendUnique(biomes.links, context.links.biomeLink(biome));
+                placing.addUnique(context.links.biomeLink(biome));
             }
         }
-        QcHandbookLinks::sortLinks(biomes.links);
         biomes.text = feature.biomes.isEmpty() ? text.label(u"value.everyChunk"_s) : text.label(u"value.poolBiomes"_s);
     }
+    biomes.links = placing.sorted();
     return biomes;
 }
 
@@ -247,7 +254,7 @@ QcHandbookEntry featurePage(const QcHandbookContext &context, const QcFeatureDef
     entry.icon = links.itemIcon(feature.trunkBlock);
 
     entry.facts.append({text.label(u"fact.id"_s), feature.name, {}});
-    addShapeFacts(context, feature, entry.facts);
+    entry.facts += shapeFacts(context, feature);
 
     Section biomes = featureBiomes(context, feature);
     for (const QcBlockDefinition &block : context.content.blocks()) {

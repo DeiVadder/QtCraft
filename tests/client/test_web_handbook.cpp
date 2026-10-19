@@ -7,6 +7,7 @@
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookWeb.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcHandbookRules.h"
 
 #include <QDir>
@@ -134,10 +135,9 @@ private:
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        QcResult<std::shared_ptr<QcContentRegistry>> loaded = QcBaseContent::load(warnings);
+        QcResult<QcBaseContent::Loaded> loaded = QcTestUtil::baseContent();
         QVERIFY(loaded);
-        m_content = *loaded;
+        m_content = loaded->registry;
     }
 
     void dataMatchesRepository_data()

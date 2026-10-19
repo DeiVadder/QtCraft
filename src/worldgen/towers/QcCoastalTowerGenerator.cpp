@@ -20,9 +20,8 @@ int floorDiv(int value, int divisor)
 
 } // namespace
 
-QcCoastalTowerGenerator::QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed,
-                                                 QStringList *warnings)
-    : m_planner(terrain, content, seed, warnings)
+QcCoastalTowerGenerator::QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
+    : m_planner(terrain, content, seed)
     , m_seed(qcMixSeed(seed, 0x5102))
 {
     m_ground.resize(std::size_t(content.stateCount()));
@@ -136,8 +135,9 @@ void QcCoastalTowerGenerator::prepareColumn(QcChunk &chunk, const QcCoastalTower
     }
 }
 
-void QcCoastalTowerGenerator::addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const
+QcChunkFurnishing QcCoastalTowerGenerator::furnishingIn(QcChunkPos pos) const
 {
+    QcChunkFurnishing furnishing;
     const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansTouching(pos);
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : plans) {
         const QcStructurePlacement &placement = plan->placement;
@@ -153,4 +153,5 @@ void QcCoastalTowerGenerator::addFurnishing(QcChunkPos pos, QcChunkFurnishing &f
             }
         }
     }
+    return furnishing;
 }

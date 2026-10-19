@@ -135,8 +135,11 @@ struct QcVillageStyle
 class QcVillageStyles
 {
 public:
-    // Styles with an unknown structure or block are left out with a warning.
-    QcVillageStyles(const QcContentRegistry &content, QStringList *warnings);
+    // Styles with an unknown structure or block are left out with a warning (warnings()).
+    explicit QcVillageStyles(const QcContentRegistry &content);
+
+    // What resolving the styles left out or changed.
+    const QStringList &warnings() const { return m_warnings; }
 
     bool isEmpty() const { return m_styles.isEmpty(); }
     // The style of a biome: the one that names it, else the fallback; null for biomes without
@@ -145,21 +148,35 @@ public:
     const QcVillageStyle *named(const QString &name) const;
     const QcVillageBlocks &blocks() const { return m_blocks; }
 
-    // The beds and workstations of a structure; `bell` gets its meeting point block.
-    QList<QcVillageSpot> spotsOf(const QcStructure &structure, std::optional<QcBlockPos> &bell) const;
+    // The beds and workstations of a structure, and its meeting point block (the bell) if it has one.
+    struct Spots
+    {
+        QList<QcVillageSpot> spots;
+        std::optional<QcBlockPos> bell;
+    };
+    [[nodiscard]] Spots spotsOf(const QcStructure &structure) const;
 
 private:
-    [[nodiscard]] std::optional<QcVillageStyle> resolve(const QcVillageStyleDefinition &definition, const QcContentRegistry &content,
-                                                        QStringList *warnings) const;
+    // The parts of resolving a style; what they leave out goes to m_warnings.
+    [[nodiscard]] std::optional<QcVillageStyle> resolve(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
     // A kind with its blueprints, rules and jetty; std::nullopt when no blueprint resolves.
     [[nodiscard]] std::optional<QcVillageStyle::Piece> piece(const QcVillagePiece &entry, const QcVillageStyleDefinition &style,
-                                                             const QcContentRegistry &content, QStringList *warnings) const;
+                                                             const QcContentRegistry &content);
     [[nodiscard]] std::optional<QcVillageStyle::Blueprint> blueprint(const QString &name, const QcVillageStyleDefinition &style,
-                                                                     const QcContentRegistry &content, QStringList *warnings) const;
+                                                                     const QcContentRegistry &content);
+    [[nodiscard]] QList<QcVillageStyle::Road> resolveRoads(const QList<QcVillageRoad> &entries, const QcContentRegistry &content,
+                                                           const QString &style);
+    [[nodiscard]] QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content,
+                                                           const QString &style);
+    [[nodiscard]] std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
+    [[nodiscard]] QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVillageSettings &settings, const QString &style);
+    [[nodiscard]] std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefinition &definition,
+                                                                         const QcContentRegistry &content);
 
     QList<QcVillageStyle> m_styles;
     QHash<QString, qsizetype> m_byBiome;
     QHash<QString, qsizetype> m_byName;
     qsizetype m_fallback = -1;
     QcVillageBlocks m_blocks;
+    QStringList m_warnings;
 };

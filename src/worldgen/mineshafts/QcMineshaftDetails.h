@@ -24,38 +24,55 @@ public:
     // `carts`: whether the content has the cart item (QcSpawnerContent warns otherwise).
     QcMineshaftDetails(const QcMineshaftSettings &settings, const QcMineshaftBlocks &blocks, bool carts);
 
-    void add(QcMineshaftPlan &plan, const Random &random) const;
+    // What the details add to a laid out plan (QcMineshaftPlan blocks, spawners, carts, pillars).
+    struct Furnishing
+    {
+        QList<QcMineshaftPlan::Placed> blocks;
+        QList<QcMineshaftPlan::Spawner> spawners;
+        QList<QcBlockPos> carts;
+        QList<QcBlockPos> pillars;
+        // Indices of the corridors with rails (QcMineshaftPlan::Corridor::rails).
+        QList<int> railed;
+    };
+
+    [[nodiscard]] Furnishing furnish(const QcMineshaftPlan &plan, const Random &random) const;
 
 private:
-    // Cells holding a block already, or inside a room.
-    struct Taken
+    // The furnishing of a plan under way, with the cells holding a block already.
+    struct Work
     {
         const QcMineshaftPlan &plan;
         QSet<QcBlockPos> cells;
+        Furnishing furnishing;
 
+        // Whether a cell holds a block already or lies inside a room.
         bool contains(QcBlockPos pos) const;
+        void place(QcBlockPos at, QcBlockId block);
+        void addSpawner(const QcMineshaftPlan::Spawner &spawner) { furnishing.spawners.append(spawner); }
+        void addCart(QcBlockPos at) { furnishing.carts.append(at); }
+        void addPillar(QcBlockPos at) { furnishing.pillars.append(at); }
+        void addRails(int corridor) { furnishing.railed.append(corridor); }
     };
 
     // Whether a corridor may take a spawner or rails: on a level, away from the central room and
     // from rooms.
     static bool isPlain(const QcMineshaftPlan &plan, const QcMineshaftPlan::Corridor &corridor);
-    void placeSpawners(QcMineshaftPlan &plan, Taken &taken, const Random &random) const;
-    void placeRails(QcMineshaftPlan &plan, Taken &taken, const Random &random) const;
-    void placeSupports(QcMineshaftPlan &plan, Taken &taken) const;
+    void placeSpawners(Work &work, const Random &random) const;
+    void placeRails(Work &work, const Random &random) const;
+    void placeSupports(Work &work) const;
     // Two posts and a beam at a cell along the corridor, unless a post's cell is taken; the posts'
     // pillars where the corridor bridges a cave.
-    void placeSupport(QcMineshaftPlan &plan, Taken &taken, const QcMineshaftPlan::Corridor &corridor, int along) const;
-    void placeLights(QcMineshaftPlan &plan, Taken &taken, const Random &random) const;
-    void placeCobwebs(QcMineshaftPlan &plan, Taken &taken, const Random &random) const;
-    void placeCobwebsIn(QcMineshaftPlan &plan, Taken &taken, int index, const Random &random) const;
+    void placeSupport(Work &work, const QcMineshaftPlan::Corridor &corridor, int along) const;
+    void placeLights(Work &work, const Random &random) const;
+    void placeCobwebs(Work &work, const Random &random) const;
+    void placeCobwebsIn(Work &work, int index, const Random &random) const;
     // Dense cobwebs around the spawner in the middle of a corridor.
-    void placeSpawnerWebs(QcMineshaftPlan &plan, Taken &taken, const QcMineshaftPlan::Corridor &corridor, const Random &random) const;
-    static void place(QcMineshaftPlan &plan, Taken &taken, QcBlockPos at, QcBlockId block);
+    void placeSpawnerWebs(Work &work, const QcMineshaftPlan::Corridor &corridor, const Random &random) const;
     // The spawner's cell in a corridor: the middle or the next cell without a support, in the right
     // lane.
     static QcBlockPos spawnerCell(const QcMineshaftPlan::Corridor &corridor);
     // Taxicab distance from a cell to the nearest spawn area.
-    static int distanceToSpawners(const QcMineshaftPlan &plan, QcBlockPos pos);
+    static int distanceToSpawners(const QList<QcMineshaftPlan::Spawner> &spawners, QcBlockPos pos);
 
     const QcMineshaftSettings &m_settings;
     const QcMineshaftBlocks &m_blocks;

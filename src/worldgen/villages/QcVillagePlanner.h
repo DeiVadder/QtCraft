@@ -36,8 +36,6 @@ private:
     // The ground around a centre is sampled this far apart for the flatness and wetness checks.
     static constexpr int flatnessStep = 8;
 
-    // The road surfaces of both ranks, drawn from the variant seed before any building's variation.
-    static void chooseRoads(QcVillageDraft &draft);
     // The style of the centre column when it is land (or, for a style over water, wet ground too) of a
     // biome with villages.
     const QcVillageStyle *styleAt(int x, int z) const;
@@ -45,12 +43,8 @@ private:
     bool isFlatAround(const QcVillageStyle &style, int x, int z) const;
     // Over water: QcBoardwalkPlanner::wetAround() around the centre.
     [[nodiscard]] std::optional<int> wetAround(const QcVillageStyle &style, int x, int z) const;
-    // The style and centre of the region's village, if any (QcVillageDraft::style null: none).
-    void chooseCentre(QcVillageDraft &draft) const;
-    // The plan's settings from the style, before the street plan.
-    static void startPlan(QcVillageDraft &draft);
-    // The columns the village covers (pieces, roads and jetties; over water with the wetland's reach).
-    static void coverArea(QcVillageDraft &draft);
+    // The style and centre of the region's village; none when no place in the region fits.
+    [[nodiscard]] std::optional<QcVillageDraft::Centre> chooseCentre(int regionX, int regionZ) const;
 
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;

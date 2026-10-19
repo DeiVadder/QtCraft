@@ -102,8 +102,9 @@ QList<QcShapeCondition> parseConditions(const QJsonObject &json, QcJsonFieldRead
 }
 
 
-void parseShapeBody(const QJsonObject &json, QcShapeDefinition &shape, QcJsonFieldReader &reader)
+QcShapeDefinition parseShapeBody(const QJsonObject &json, QcJsonFieldReader &reader)
 {
+    QcShapeDefinition shape;
     shape.rotate = reader.string(u"rotate"_s);
     shape.flip = reader.string(u"flip"_s);
 
@@ -112,13 +113,13 @@ void parseShapeBody(const QJsonObject &json, QcShapeDefinition &shape, QcJsonFie
         const QJsonArray list = parts.toArray();
         if (!parts.isArray() || list.isEmpty() || list.size() > QcShapeDefinition::maxParts) {
             reader.fail(u"'parts' must be an array of 1..%1 parts"_s.arg(QcShapeDefinition::maxParts));
-            return;
+            return shape;
         }
 
         for (const auto &entry : list) {
             if (!entry.isObject()) {
                 reader.fail(u"'parts' entries must be objects"_s);
-                return;
+                return shape;
             }
             shape.parts.append(parseShapePart(entry.toObject(), reader));
         }
@@ -135,19 +136,20 @@ void parseShapeBody(const QJsonObject &json, QcShapeDefinition &shape, QcJsonFie
     if (reader.ok() && shape.boxCount() > QcShapeDefinition::maxBoxes) {
         reader.fail(u"a shape has at most %1 boxes, crosses and collision boxes in all parts together"_s.arg(QcShapeDefinition::maxBoxes));
     }
+    return shape;
 }
 
 [[nodiscard]] QcResult<QcShapeDefinition> parseShape(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"shape"_s, {}};
-    QcShapeDefinition shape;
-    shape.name = reader.name(u"name"_s, packNamespace);
-    if (shape.name.isEmpty()) {
+    const QString name = reader.name(u"name"_s, packNamespace);
+    if (name.isEmpty()) {
         return qcError(reader.ok() ? u"shape: 'name' is required"_s : reader.error);
     }
 
-    reader.context = u"shape '%1'"_s.arg(shape.name);
-    parseShapeBody(json, shape, reader);
+    reader.context = u"shape '%1'"_s.arg(name);
+    QcShapeDefinition shape = parseShapeBody(json, reader);
+    shape.name = name;
 
     if (!reader.ok()) {
         return qcError(reader.error);

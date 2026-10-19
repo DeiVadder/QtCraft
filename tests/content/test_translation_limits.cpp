@@ -2,6 +2,7 @@
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "QcTestUtil.h"
 #include "server/content/QcModLoader.h"
 
 #include <QDataStream>
@@ -60,16 +61,14 @@ const QcModStatus *find(const QList<QcModStatus> &mods, const QString &id)
 qsizetype baseTotalWhileReading()
 {
     QcContentRegistry base;
-    QStringList warnings;
-    return QcBaseContent::loadInto(base, warnings) ? base.translationTotal() : 0;
+    return QcBaseContent::loadInto(base) ? base.translationTotal() : 0;
 }
 
 // The base game's translations after finish(), with the names of its building parts.
 qsizetype baseTotalFinished()
 {
-    QStringList warnings;
-    const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(warnings);
-    return base ? (*base)->translationTotal() : 0;
+    const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
+    return base ? base->registry->translationTotal() : 0;
 }
 
 } // namespace
@@ -155,8 +154,7 @@ private slots:
         // Overriding keys that exist adds nothing and always fits.
         writeJson(mod + u"/lang/en.json"_s, {{u"block.qtcraft.stone"_s, u"Rock"_s}});
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         const QcModStatus *status = find(loaded->mods, u"many"_s);
         QVERIFY(status);
@@ -198,8 +196,7 @@ private slots:
             room -= count;
         }
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         const QcModStatus *status = find(loaded->mods, u"pillars"_s);
         QVERIFY(status);

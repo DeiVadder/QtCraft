@@ -55,89 +55,93 @@ std::expected<QByteArray, Problem> readFile(const QString &path, const QString &
     return bytes;
 }
 
+// The entries of a folder and whether there were more than the limit.
+struct Entries
+{
+    QFileInfoList list;
+    bool truncated = false;
+};
+
 // Up to `limit` entries of a folder, sorted by name; the folder is read lazily, so a folder with
 // millions of entries costs no more than `limit` of them. Hidden entries are not listed.
-QFileInfoList entriesOf(const QString &path, qsizetype limit, bool &truncated)
+[[nodiscard]] Entries entriesOf(const QString &path, qsizetype limit)
 {
-    QFileInfoList entries;
+    Entries entries;
     QDirIterator iterator(path, QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::System);
     while (iterator.hasNext()) {
-        if (entries.size() >= limit) {
-            truncated = true;
+        if (entries.list.size() >= limit) {
+            entries.truncated = true;
             break;
         }
         iterator.next();
-        entries.append(iterator.fileInfo());
+        entries.list.append(iterator.fileInfo());
     }
-    std::ranges::sort(entries, {}, [](const QFileInfo &entry) { return entry.fileName(); });
+    std::ranges::sort(entries.list, {}, [](const QFileInfo &entry) { return entry.fileName(); });
     return entries;
 }
 
+// Texture files and what was wrong where they were listed.
+struct Listing
+{
+    QList<TextureFile> files;
+    QcTexturePackProblems problems;
+};
+
 // Plain files of one namespace folder; links and odd names are reported and left out. Only
 // lower-case file names and suffixes are accepted.
-void listNamespace(const QFileInfo &folder, qsizetype limit, QList<TextureFile> &files, QcTexturePackProblems &problems)
+[[nodiscard]] Listing listNamespace(const QFileInfo &folder, qsizetype limit)
 {
+    Listing listing;
     const QString space = folder.fileName();
-    bool truncated = false;
-    const QFileInfoList entries = entriesOf(folder.filePath(), limit, truncated);
-    for (const QFileInfo &entry : entries) {
+    const Entries entries = entriesOf(folder.filePath(), limit);
+    for (const QFileInfo &entry : entries.list) {
         const QString relative = u"textures/%1/%2"_s.arg(space, entry.fileName());
         const QString suffix = entry.suffix();
         const QString name = entry.completeBaseName();
         const bool known = suffix == u"png"_s || suffix == u"json"_s;
         if (entry.isSymLink() || !entry.isFile() || !known || !QcContentNames::isValidPart(name) || name.contains(u'/')) {
-            problems.append({relative, QT_TRANSLATE_NOOP("QcTexturePack",
-                                                         "Not a texture file (expected <name>.png or <name>.json with a-z, 0-9, _, - and .)")});
+            listing.problems.append({relative, QT_TRANSLATE_NOOP("QcTexturePack",
+                                                                 "Not a texture file (expected <name>.png or <name>.json with a-z, 0-9, _, - and .)")});
             continue;
         }
-        files.append({space + u':' + name, entry.filePath(), relative, suffix == u"png"_s});
+        listing.files.append({space + u':' + name, entry.filePath(), relative, suffix == u"png"_s});
     }
-    if (truncated) {
-        problems.append({u"textures/%1"_s.arg(space), QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 entries; the rest was not read"),
+    if (entries.truncated) {
+        listing.problems.append({u"textures/%1"_s.arg(space), QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 entries; the rest was not read"),
                          {QString::number(limit)}});
     }
+    return listing;
 }
 
-QList<TextureFile> listTextures(const QString &directory, const Limits &limits, QcTexturePackProblems &problems)
+[[nodiscard]] Listing listTextures(const QString &directory, const Limits &limits)
 {
-    QList<TextureFile> files;
+    Listing listing;
     const QFileInfo textures(QDir(directory).filePath(u"textures"_s));
     if (!textures.exists()) {
-        return files;
+        return listing;
     }
     if (textures.isSymLink() || !textures.isDir()) {
-        problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "Expected a folder 'textures' (links are not followed)")});
-        return files;
+        listing.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "Expected a folder 'textures' (links are not followed)")});
+        return listing;
     }
 
-    bool truncated = false;
-    const QFileInfoList folders = entriesOf(textures.filePath(), limits.maxNamespaces, truncated);
-    for (const QFileInfo &folder : folders) {
+    const Entries folders = entriesOf(textures.filePath(), limits.maxNamespaces);
+    for (const QFileInfo &folder : folders.list) {
         const QString relative = u"textures/%1"_s.arg(folder.fileName());
         if (folder.isSymLink() || !folder.isDir() || !QcContentNames::isValidPart(folder.fileName())) {
-            problems.append({relative, QT_TRANSLATE_NOOP("QcTexturePack", "Expected a namespace folder such as textures/qtcraft")});
+            listing.problems.append({relative, QT_TRANSLATE_NOOP("QcTexturePack", "Expected a namespace folder such as textures/qtcraft")});
             continue;
         }
         // Twice the file limit: room for reporting wrong files without reading an endless folder.
-        listNamespace(folder, std::max<qsizetype>(0, 2 * qsizetype(limits.maxFiles) - files.size()), files, problems);
+        const Listing space = listNamespace(folder, std::max<qsizetype>(0, 2 * qsizetype(limits.maxFiles) - listing.files.size()));
+        listing.files.append(space.files);
+        listing.problems.append(space.problems);
     }
-    if (truncated) {
-        problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 entries; the rest was not read"),
-                         {QString::number(limits.maxNamespaces)}});
+    if (folders.truncated) {
+        listing.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 entries; the rest was not read"),
+                                 {QString::number(limits.maxNamespaces)}});
     }
-    return files;
-}
-
-// At most maxProblems problems and one line for the rest.
-void capProblems(QcTexturePackProblems &problems, int maxProblems)
-{
-    if (problems.size() <= maxProblems) {
-        return;
-    }
-
-    const qsizetype more = problems.size() - maxProblems;
-    problems.resize(maxProblems);
-    problems.append({{}, QT_TRANSLATE_NOOP("QcTexturePack", "… and %1 more problems"), {QString::number(more)}});
+    return listing;
 }
 
 std::expected<QJsonObject, Problem> readSpec(const TextureFile &file, const Limits &limits)
@@ -164,40 +168,105 @@ std::expected<QJsonObject, Problem> readSpec(const TextureFile &file, const Limi
     return definition->procedural;
 }
 
-// Adds one texture file to the pack, or a problem.
-void addTexture(QcTexturePack &pack, const TextureFile &file, const Limits &limits)
+// Loads one pack: owns the pack being built and adds its textures within the limits.
+class PackLoader
+{
+public:
+    explicit PackLoader(const Limits &limits)
+        : m_limits(limits)
+    {
+    }
+
+    [[nodiscard]] std::expected<QcTexturePack, QcTexturePackProblem> load(const QString &directory, const QString &id, QcTexturePack::Origin origin);
+
+private:
+    // Adds one texture file to the pack, or a problem.
+    void addTexture(const TextureFile &file);
+    // At most maxProblems problems and one line for the rest.
+    void capProblems();
+
+    const Limits &m_limits;
+    QcTexturePack m_pack;
+};
+
+void PackLoader::addTexture(const TextureFile &file)
 {
     if (!file.image) {
-        const std::expected<QJsonObject, Problem> spec = readSpec(file, limits);
+        const std::expected<QJsonObject, Problem> spec = readSpec(file, m_limits);
         if (spec) {
-            pack.specs.insert(file.key, *spec);
+            m_pack.specs.insert(file.key, *spec);
         } else {
-            pack.problems.append(spec.error());
+            m_pack.problems.append(spec.error());
         }
         return;
     }
 
-    const std::expected<QByteArray, Problem> bytes = readFile(file.path, file.relative, limits.maxImageFileBytes);
-    std::expected<Image, Problem> image = bytes ? readImage(*bytes, pack.manifest.resolution, limits) : std::unexpected(bytes.error());
+    const std::expected<QByteArray, Problem> bytes = readFile(file.path, file.relative, m_limits.maxImageFileBytes);
+    std::expected<Image, Problem> image = bytes ? readImage(*bytes, m_pack.manifest.resolution, m_limits) : std::unexpected(bytes.error());
     if (!image) {
         image.error().file = file.relative;
-        pack.problems.append(image.error());
+        m_pack.problems.append(image.error());
         return;
     }
 
     const qint64 bytesNeeded = qint64(image->image.sizeInBytes());
-    if (pack.decodedBytes + bytesNeeded > limits.memoryBudget) {
-        pack.problems.append({file.relative, QT_TRANSLATE_NOOP("QcTexturePack", "Skipped: the pack's images exceed the memory budget of %1 MiB"),
-                              {QString::number(limits.memoryBudget / (qint64(1024) * 1024))}});
+    if (m_pack.decodedBytes + bytesNeeded > m_limits.memoryBudget) {
+        m_pack.problems.append({file.relative, QT_TRANSLATE_NOOP("QcTexturePack", "Skipped: the pack's images exceed the memory budget of %1 MiB"),
+                              {QString::number(m_limits.memoryBudget / (qint64(1024) * 1024))}});
         return;
     }
     if (image->frames > 1) {
-        pack.problems.append({file.relative,
+        m_pack.problems.append({file.relative,
                               QT_TRANSLATE_NOOP("QcTexturePack", "Has %1 animation frames; textures are not animated yet, the first frame is used"),
                               {QString::number(image->frames)}});
     }
-    pack.decodedBytes += bytesNeeded;
-    pack.images.insert(file.key, image->image);
+    m_pack.decodedBytes += bytesNeeded;
+    m_pack.images.insert(file.key, image->image);
+}
+
+void PackLoader::capProblems()
+{
+    QcTexturePackProblems &problems = m_pack.problems;
+    if (problems.size() <= m_limits.maxProblems) {
+        return;
+    }
+
+    const qsizetype more = problems.size() - m_limits.maxProblems;
+    problems.resize(m_limits.maxProblems);
+    problems.append({{}, QT_TRANSLATE_NOOP("QcTexturePack", "… and %1 more problems"), {QString::number(more)}});
+}
+
+std::expected<QcTexturePack, QcTexturePackProblem> PackLoader::load(const QString &directory, const QString &id, QcTexturePack::Origin origin)
+{
+    std::expected<QcTexturePackManifest, Problem> manifest = readManifest(directory);
+    if (!manifest) {
+        return std::unexpected(manifest.error());
+    }
+
+    m_pack.id = id;
+    m_pack.origin = origin;
+    m_pack.directory = directory;
+    m_pack.manifest = std::move(*manifest);
+
+    Listing listing = listTextures(directory, m_limits);
+    m_pack.problems = std::move(listing.problems);
+    if (listing.files.size() > m_limits.maxFiles) {
+        m_pack.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 texture files; the rest was skipped"),
+                                {QString::number(m_limits.maxFiles)}});
+        listing.files.resize(m_limits.maxFiles);
+    }
+    for (const TextureFile &file : std::as_const(listing.files)) {
+        addTexture(file);
+    }
+
+    std::expected<QImage, Problem> preview = readPreview(directory, m_pack.manifest, m_limits);
+    if (preview) {
+        m_pack.preview = std::move(*preview);
+    } else {
+        m_pack.problems.append(preview.error());
+    }
+    capProblems();
+    return std::move(m_pack);
 }
 
 } // namespace
@@ -250,35 +319,7 @@ std::expected<QcTexturePackManifest, QcTexturePackProblem> readManifest(const QS
 std::expected<QcTexturePack, QcTexturePackProblem> load(const QString &directory, const QString &id, QcTexturePack::Origin origin,
                                                         const Limits &limits)
 {
-    std::expected<QcTexturePackManifest, Problem> manifest = readManifest(directory);
-    if (!manifest) {
-        return std::unexpected(manifest.error());
-    }
-
-    QcTexturePack pack;
-    pack.id = id;
-    pack.origin = origin;
-    pack.directory = directory;
-    pack.manifest = std::move(*manifest);
-
-    QList<TextureFile> files = listTextures(directory, limits, pack.problems);
-    if (files.size() > limits.maxFiles) {
-        pack.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 texture files; the rest was skipped"),
-                              {QString::number(limits.maxFiles)}});
-        files.resize(limits.maxFiles);
-    }
-    for (const TextureFile &file : std::as_const(files)) {
-        addTexture(pack, file, limits);
-    }
-
-    std::expected<QImage, Problem> preview = readPreview(directory, pack.manifest, limits);
-    if (preview) {
-        pack.preview = std::move(*preview);
-    } else {
-        pack.problems.append(preview.error());
-    }
-    capProblems(pack.problems, limits.maxProblems);
-    return pack;
+    return PackLoader(limits).load(directory, id, origin);
 }
 
 std::expected<Image, QcTexturePackProblem> readImage(const QByteArray &bytes, int resolution, const Limits &limits)

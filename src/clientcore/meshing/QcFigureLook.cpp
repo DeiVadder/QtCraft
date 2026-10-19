@@ -29,7 +29,7 @@ QcEntityMesher::ModelLook player(const QcContentRegistry &content, const QcAppea
     return look;
 }
 
-QList<QcEntityMesher::Attachment> armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look)
+Dressed armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook look)
 {
     const QcItemStack &head = equipment.at(QcEquipmentSlot::Head);
     if (!head.isEmpty() && QcArmour::of(content, head.item)) {
@@ -37,7 +37,7 @@ QList<QcEntityMesher::Attachment> armour(const QcContentRegistry &content, const
     }
     QList<QcEntityMesher::Attachment> attachments = QcArmourLook::attachments(content, equipment);
     look.capeClearance = look.model ? QcArmourLook::capeClearance(*look.model, attachments) : 0.0;
-    return attachments;
+    return {std::move(look), std::move(attachments)};
 }
 
 QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandPose &pose)
@@ -49,21 +49,22 @@ QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandP
     return look;
 }
 
-QList<QcEntityMesher::Attachment> standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look)
+Dressed standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook look)
 {
-    QList<QcEntityMesher::Attachment> attachments = armour(content, equipment, look);
-    if (!look.model || !look.outfit) {
-        return attachments;
+    Dressed dressed = armour(content, equipment, std::move(look));
+    const QcEntityMesher::ModelLook &worn = dressed.look;
+    if (!worn.model || !worn.outfit) {
+        return dressed;
     }
 
     // The filler takes the texture the outfit gives the stand's own head.
-    const auto head = std::ranges::find(look.model->bones, QcBoneRole::Head, &QcModelBone::role);
-    const QcAppearanceLayer *wood = head == look.model->bones.end() || head->boxes.isEmpty() ? nullptr : look.outfit->layer(head->boxes.constFirst().slot);
+    const auto head = std::ranges::find(worn.model->bones, QcBoneRole::Head, &QcModelBone::role);
+    const QcAppearanceLayer *wood = head == worn.model->bones.end() || head->boxes.isEmpty() ? nullptr : worn.outfit->layer(head->boxes.constFirst().slot);
     if (wood) {
         // Drawn before the helmet, which covers it everywhere but at the opening.
-        attachments = QcArmourLook::headFillers(content, equipment, wood->texture) + attachments;
+        dressed.armour = QcArmourLook::headFillers(content, equipment, wood->texture) + dressed.armour;
     }
-    return attachments;
+    return dressed;
 }
 
 quint8 standHiddenBones(const QcStandPose &pose)

@@ -5,10 +5,12 @@
 
 #include <algorithm>
 
-QcShowcaseGenerator::QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content, QStringList *warnings)
+QcShowcaseGenerator::QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
-    , m_plan(QcShowcasePlanner(*m_content, warnings).build())
 {
+    QcShowcasePlanner planner(*m_content);
+    m_plan = planner.build();
+    m_warnings = planner.warnings();
 }
 
 std::shared_ptr<QcChunk> QcShowcaseGenerator::generate(QcChunkPos pos) const

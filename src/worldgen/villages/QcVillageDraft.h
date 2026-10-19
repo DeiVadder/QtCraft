@@ -83,7 +83,40 @@ struct QcVillageDraft
         int radius = 0;
     };
 
-    QcVillageDraft(const Seeds &draws, Region area) : seeds(draws), region(area) {}
+    // The style and centre column of the region's village.
+    struct Centre
+    {
+        const QcVillageStyle *style = nullptr;
+        int x = 0;
+        int z = 0;
+    };
+
+    // The street plan of the style chosen by weight, the direction its main road leaves the centre
+    // in and whether its roads wind.
+    struct Layout
+    {
+        const QcVillageLayout *shape = nullptr;
+        int mainDirection = 0;
+        bool winding = false;
+    };
+
+    // Over water: the stairs from a boardwalk's end down to land, their extent and the strip
+    // beyond them the wetland keeps dry.
+    struct Stairs
+    {
+        QList<QcVillagePlan::Deck> flight;
+        Rect extent;
+        Rect dry;
+    };
+
+    QcVillageDraft(const Seeds &draws, Region area, Centre centre)
+        : seeds(draws)
+        , region(area)
+        , style(centre.style)
+        , centreX(centre.x)
+        , centreZ(centre.z)
+    {
+    }
 
     static qint64 cellKey(int x, int z) { return (qint64(x) << 32) | quint32(z); }
     // The quarter turns clockwise after which the door of a piece (the south side of its first
@@ -107,6 +140,34 @@ struct QcVillageDraft
     // most one block above or below it (decision E-409); over water a boardwalk deck. Cells under a
     // piece or already a road stay as they are: the first rank laid on a cell keeps it.
     void addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<int> level = std::nullopt);
+
+    // The plan's settings from the style, its road surfaces drawn from the variant sequence before
+    // any building's variation.
+    void start();
+    // Takes the street plan (before the centre piece, which faces the main road).
+    void setLayout(Layout layout);
+    // The plan names this kind of street plan (a plaza whose ring could not be laid is a cross).
+    void setLayoutKind(QcVillageLayout::Kind kind);
+    // The arm number of the next road laid.
+    [[nodiscard]] int nextArm() const;
+    // A laid run of road arm `arm`: its extent, its run in the plan and its length.
+    void addRun(const Road &run, int arm);
+    // Over water: stairs down to land, kept off by pieces, with their dry strip.
+    void addStairs(const Stairs &laid);
+    // A jetty's decks; `deck` (its cells) is kept off by pieces and lamps.
+    void addJetty(const QList<QcVillagePlan::Deck> &decks, Rect deck);
+    // A building over `rect`, with its beds and workstations (`spots`, local), its creatures and its
+    // crop cells (`crops`, local); the placed piece, valid until the next piece is added.
+    [[nodiscard]] const QcStructurePlacement &addPiece(QcStructurePlacement piece, Rect rect, const QList<QcVillageSpot> &spots,
+                                         const QList<QcBlockPos> &crops);
+    // On land: doorsteps of a placed piece, as side road where no road lies yet.
+    void addThresholds(const QList<QcBlockPos> &steps);
+    // The meeting point of the village (its bell).
+    void setCentre(QcBlockPos centre) { plan.centre = centre; }
+    // One more piece of kind `index` placed.
+    void countPiece(int index) { ++counts[index]; }
+    // The columns the village covers (pieces, roads and jetties; over water with the wetland's reach).
+    void coverArea();
 
     QcVillagePlan plan;
     Seeds seeds;
@@ -133,4 +194,9 @@ struct QcVillageDraft
     QList<int> counts;
     QcBlockId pathStep = qcAirBlockId;
     QcBlockId branchStep = qcAirBlockId;
+
+private:
+    // Over water: the areas the wetland spreads from (pieces and boardwalks, not the stairs), and the
+    // village's columns grown by its reach within its region.
+    void spreadWetland();
 };

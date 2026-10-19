@@ -16,23 +16,25 @@ void writePacks(QDataStream &stream, const QList<QcPackFingerprint> &packs)
     }
 }
 
-bool readPacks(QDataStream &stream, QList<QcPackFingerprint> &packs)
+[[nodiscard]] std::optional<QList<QcPackFingerprint>> readPacks(QDataStream &stream)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, quint32(QcMsg::LoginChallenge::maxPacks), count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcMsg::LoginChallenge::maxPacks));
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
 
+    QList<QcPackFingerprint> packs;
     for (quint32 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
         QcPackFingerprint pack;
         stream >> pack.id >> pack.version >> pack.hash;
         const qsizetype limit = QcPackFingerprint::maxTextLength;
         if (pack.id.size() > limit || pack.version.size() > limit || pack.hash.size() > limit) {
-            return false;
+            return std::nullopt;
         }
         packs.append(pack);
     }
-    return stream.status() == QDataStream::Ok;
+    return stream.status() == QDataStream::Ok ? std::optional(std::move(packs)) : std::nullopt;
 }
 
 bool withinProofSize(const QByteArray &bytes)
@@ -78,9 +80,11 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
     if (m.maxViewDistance < 1 || m.maxViewDistance > QcMsg::Welcome::maxViewDistance) {
         return qcError(u"Invalid view distance"_s);
     }
-    if (!readPacks(stream, m.packs)) {
+    std::optional<QList<QcPackFingerprint>> packs = readPacks(stream);
+    if (!packs) {
         return qcError(u"Invalid content pack list"_s);
     }
+    m.packs = std::move(*packs);
     return m;
 }
 
@@ -94,19 +98,22 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
     if (m.viewDistance < 0 || m.viewDistance > QcMsg::Welcome::maxViewDistance) {
         return qcError(u"Invalid view distance"_s);
     }
-    if (!readPacks(stream, m.packs)) {
+    std::optional<QList<QcPackFingerprint>> packs = readPacks(stream);
+    if (!packs) {
         return qcError(u"Invalid content pack list"_s);
     }
+    m.packs = std::move(*packs);
     return m;
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream)
 {
     QcMsg::PlayerList m;
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, quint32(QcMsg::PlayerList::maxPlayers), count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcMsg::PlayerList::maxPlayers));
+    if (!countRead) {
         return qcError(u"Too many players"_s);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
         QcMsg::PlayerList::Entry entry;

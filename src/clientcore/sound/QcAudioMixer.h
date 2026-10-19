@@ -7,7 +7,9 @@
 
 #include <array>
 #include <memory>
+#include <span>
 #include <utility>
+#include <vector>
 
 // Software mixer: plays sample buffers as voices with their own gain, stereo position and speed,
 // grouped into buses with a volume each, under a master volume and a mute switch. Produces
@@ -66,9 +68,10 @@ public:
     void setMuted(bool muted) { m_muted = muted; }
     bool isMuted() const { return m_muted; }
 
-    // Overwrites `frames` interleaved stereo frames (left, right) of `out` with the mix and
-    // advances all voices; voices that ran out are removed.
-    void mix(float *out, int frames);
+    // Mixes the next `frames` interleaved stereo frames (left, right) into the mixer's own buffer
+    // (it keeps its capacity, so mixing allocates nothing once it has grown) and advances all voices;
+    // voices that ran out are removed. The view stays valid until the next call.
+    [[nodiscard]] std::span<const float> mix(int frames);
 
     // Left and right gain of a stereo position (constant power: both 1/sqrt(2) in the centre).
     static std::pair<float, float> panGains(float pan);
@@ -78,6 +81,7 @@ public:
 private:
     int m_outputRate = 44100;
     QList<Voice> m_voices;
+    std::vector<float> m_output;
     VoiceId m_nextId = 1;
     std::array<float, qcSoundBusCount> m_busVolumes{1.0f, 1.0f, 1.0f};
     float m_master = 1.0f;

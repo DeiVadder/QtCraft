@@ -20,17 +20,24 @@ QcEntityMesher::ModelLook player(const QcContentRegistry &content, const QcAppea
 // The cape called `name`; none for an empty name, an unknown one or another kind of appearance.
 const QcAppearanceDefinition *cape(const QcContentRegistry &content, const QString &name);
 
-// What a figure wears: the attachments of its armour (QcArmourLook); under a helmet the hair of
-// `look` is left out, so it does not poke through, and a cape of `look` hangs outside a chest
-// layer (ModelLook::capeClearance).
-QList<QcEntityMesher::Attachment> armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look);
+// A figure's look with what it wears.
+struct Dressed
+{
+    QcEntityMesher::ModelLook look;
+    QList<QcEntityMesher::Attachment> armour;
+};
+
+// What a figure wears: the attachments of its armour (QcArmourLook) and `look` with it: under a
+// helmet the hair is left out, so it does not poke through, and a cape hangs outside a chest layer
+// (ModelLook::capeClearance).
+[[nodiscard]] Dressed armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook look);
 
 // An armour stand (decision E-238): the stand model with its wooden outfit, half size when small.
 // Not valid when the content has no stand model.
 QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandPose &pose);
 // What a stand wears: armour() and, under a head piece, a filler in the stand's wood
 // (QcArmourLook::headFillers) that closes the helmet's face opening.
-QList<QcEntityMesher::Attachment> standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look);
+[[nodiscard]] Dressed standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook look);
 // The bones a stand leaves out: the arms and the base plate when switched off.
 quint8 standHiddenBones(const QcStandPose &pose);
 // The stand's pose as bone rotations (it does not animate); a cape sways gently as on a figure

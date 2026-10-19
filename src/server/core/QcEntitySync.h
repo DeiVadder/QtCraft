@@ -30,21 +30,35 @@ public:
     void sync(QcServerClient &client);
 
 private:
+    // An entity the client knows: its entry in QcServerClient::View::known and its count now.
+    struct Known
+    {
+        QHash<quint32, QcServerClient::SentEntity>::iterator entry;
+        int count = 0;
+    };
+    // One sync of one client: the entities it sees this tick and the moves to send.
     struct Pass
     {
+        const QcEntitySync &sync;
         QcServerClient &client;
         QSet<quint32> visible;
         QcMsg::EntityMoves moves;
+
+        void consider(const QcEntity &entity);
+        // Sends what changed of an entity the client knows: a spawn when its count or look changed,
+        // a move when it moved.
+        void update(const QcEntity &entity, const QcMsg::EntityMove &now, const Known &known);
+        // Removes what the client no longer sees, in the order of the ids.
+        void removeUnseen();
     };
 
-    void consider(Pass &pass, const QcEntity &entity) const;
     // What the client sees of the entity now, as a move (also the base of its spawn).
     QcMsg::EntityMove seen(const QcEntity &entity) const;
     QcMsg::EntitySpawn spawnOf(const QcEntity &entity, const QcMsg::EntityMove &now) const;
-    // Items, orbs and carts: a move when the entity moved more than `threshold` since the last one
-    // sent, and one more in the tick it stopped.
-    static void sendChangedMove(Pass &pass, QcServerClient::SentEntity &known, const QcMsg::EntityMove &now, double threshold);
-    void removeUnseen(Pass &pass) const;
+    // Items, orbs and carts: what the client knows after a move to `now`, when one is sent (the entity
+    // moved more than `threshold` since the last one sent, or it stopped in this tick); none otherwise.
+    [[nodiscard]] static std::optional<QcServerClient::SentEntity> changedMove(const QcServerClient::SentEntity &known, const QcMsg::EntityMove &now,
+                                                                               double threshold);
 
     QcServerState &m_state;
 };

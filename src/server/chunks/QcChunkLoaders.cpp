@@ -34,7 +34,8 @@ void QcChunkLoaders::noteChunk(const QcChunk &chunk)
     for (int s = 0; s < QcWorld::sectionCount; ++s) {
         const QcChunkSection &section = chunk.section(s);
         if (std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isLoader(id); })) {
-            findIn(section, {pos.x * QcWorld::chunkSize, s * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize}, found);
+            const QcBlockPos corner{pos.x * QcWorld::chunkSize, s * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize};
+            section.forEachCell(corner, [this](QcBlockId id) { return isLoader(id); }, [&found](QcBlockPos block) { found.insert(block); });
         }
     }
 
@@ -52,19 +53,6 @@ void QcChunkLoaders::noteChunk(const QcChunk &chunk)
     for (const QcBlockPos &block : std::as_const(fresh)) {
         if (!m_byPos.contains(block)) {
             add(block, {});
-        }
-    }
-}
-
-void QcChunkLoaders::findIn(const QcChunkSection &section, QcBlockPos corner, QSet<QcBlockPos> &found) const
-{
-    constexpr int side = QcWorld::chunkSize;
-    for (int cell = 0; cell < side * side * QcWorld::sectionHeight; ++cell) {
-        const int x = cell % side;
-        const int z = cell / side % side;
-        const int y = cell / (side * side);
-        if (isLoader(section.block(x, y, z))) {
-            found.insert(corner.offset(x, y, z));
         }
     }
 }

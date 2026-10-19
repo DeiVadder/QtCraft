@@ -14,8 +14,9 @@ QString at(QcBlockPos pos)
 }
 
 // Entries of a loaded chunk against its blocks.
-void checkEntries(const QcBlockEntities &entities, const QcChunk &chunk, const QcBlockEntities::Chunk &kept, QStringList &problems)
+[[nodiscard]] QStringList checkEntries(const QcBlockEntities &entities, const QcChunk &chunk, const QcBlockEntities::Chunk &kept)
 {
+    QStringList problems;
     const QcContentRegistry &content = entities.content();
     const auto blockAt = [&chunk](QcBlockPos pos) { return chunk.block(pos.localX(), pos.y, pos.localZ()); };
     const auto kindAt = [&](QcBlockPos pos) { return content.block(blockAt(pos)).signal.kind; };
@@ -44,11 +45,13 @@ void checkEntries(const QcBlockEntities &entities, const QcChunk &chunk, const Q
             problems.append(u"memory at %1 does not fit its block"_s.arg(at(it.key())));
         }
     }
+    return problems;
 }
 
 // Blocks of one section of a loaded chunk that should have a container or machine.
-void checkSection(const QcBlockEntities &entities, const QcChunk &chunk, int index, QStringList &problems)
+[[nodiscard]] QStringList checkSection(const QcBlockEntities &entities, const QcChunk &chunk, int index)
 {
+    QStringList problems;
     constexpr int cells = QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::sectionHeight;
     for (int cell = 0; cell < cells; ++cell) {
         const int x = cell % QcWorld::chunkSize;
@@ -63,22 +66,26 @@ void checkSection(const QcBlockEntities &entities, const QcChunk &chunk, int ind
             problems.append(u"machine block at %1 without a machine"_s.arg(at(pos)));
         }
     }
+    return problems;
 }
 
 // Blocks of a loaded chunk that should have a container or machine.
-void checkBlocks(const QcServerWorld &world, const QcChunk &chunk, QStringList &problems)
+[[nodiscard]] QStringList checkBlocks(const QcServerWorld &world, const QcChunk &chunk)
 {
+    QStringList problems;
     const quint32 sections = world.marks().sectionsOf(chunk.pos(), QcBlockTrait::BlockEntity);
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
         if ((sections & (1u << index)) != 0) {
-            checkSection(world.blockEntities(), chunk, index, problems);
+            problems.append(checkSection(world.blockEntities(), chunk, index));
         }
     }
+    return problems;
 }
 
 // The counts and indexes of the register against its entries.
-void checkBookkeeping(const QcBlockEntities &entities, QStringList &problems)
+[[nodiscard]] QStringList checkBookkeeping(const QcBlockEntities &entities)
 {
+    QStringList problems;
     qsizetype containers = 0;
     qsizetype machines = 0;
     qsizetype saplings = 0;
@@ -121,12 +128,14 @@ void checkBookkeeping(const QcBlockEntities &entities, QStringList &problems)
     if (scheduled != entities.schedule().size()) {
         problems.append(u"scheduled ticks missing from their chunks"_s);
     }
+    return problems;
 }
 
 // Every burning fire lies on a fire block of a loaded chunk, knows whether its ground is eternal, and
 // the fires that count stay within the caps (decisions E-392, E-394).
-void checkFires(const QcServerWorld &world, QStringList &found)
+[[nodiscard]] QStringList checkFires(const QcServerWorld &world)
 {
+    QStringList found;
     const QcFireQueue &fires = world.fires();
     const QList<QcFireQueue::Fire> all = fires.fires();
     for (const QcFireQueue::Fire &fire : all) {
@@ -147,6 +156,7 @@ void checkFires(const QcServerWorld &world, QStringList &found)
     if (fires.counted() > fires.limits().total) {
         found.append(u"%1 fires burn, more than the world allows"_s.arg(fires.counted()));
     }
+    return found;
 }
 
 } // namespace
@@ -157,15 +167,15 @@ QStringList problems(const QcServerWorld &world)
 {
     QStringList found;
     const QcBlockEntities &entities = world.blockEntities();
-    checkBookkeeping(entities, found);
-    checkFires(world, found);
+    found.append(checkBookkeeping(entities));
+    found.append(checkFires(world));
     const QList<QcChunkPos> loaded = world.loadedChunks();
     for (const QcChunkPos &pos : loaded) {
         const std::shared_ptr<const QcChunk> chunk = world.chunk(pos);
         if (const std::optional<QcBlockEntities::Chunk> kept = entities.chunk(pos)) {
-            checkEntries(entities, *chunk, *kept, found);
+            found.append(checkEntries(entities, *chunk, *kept));
         }
-        checkBlocks(world, *chunk, found);
+        found.append(checkBlocks(world, *chunk));
     }
     return found;
 }

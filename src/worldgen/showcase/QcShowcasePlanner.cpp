@@ -1,6 +1,5 @@
 #include "worldgen/showcase/QcShowcasePlanner.h"
 
-#include "worldgen/generators/QcWorldgenLogging.h"
 #include "worldgen/showcase/QcShowcaseArmourArea.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
 #include "worldgen/showcase/QcShowcaseCategories.h"
@@ -68,21 +67,21 @@ qsizetype QcShowcasePlan::labelCount() const
     return count;
 }
 
-QcShowcasePlanner::QcShowcasePlanner(const QcContentRegistry &content, QStringList *warnings)
+QcShowcasePlanner::QcShowcasePlanner(const QcContentRegistry &content)
     : m_content(content)
-    , m_warnings(warnings)
     , m_groundColumn(groundColumnOf(content))
 {
     const QString lookout = content.showcase().lookout;
     if (const QcStructureDefinition *definition = lookout.isEmpty() ? nullptr : content.structure(lookout)) {
-        QcResult<QcStructure> structure = QcStructure::fromDefinition(*definition, content, warnings);
+        QcStructure::Loaded structure = QcStructure::fromDefinition(*definition, content);
+        m_warnings.append(QcStructure::warningsOf(structure));
         if (structure) {
             m_lookout = std::make_shared<const QcStructure>(std::move(*structure));
-        } else if (warnings) {
-            warnings->append(structure.error());
+        } else {
+            m_warnings.append(structure.error().error);
         }
-    } else if (!lookout.isEmpty() && warnings) {
-        warnings->append(u"showcase: unknown lookout structure '%1'"_s.arg(lookout));
+    } else if (!lookout.isEmpty()) {
+        m_warnings.append(u"showcase: unknown lookout structure '%1'"_s.arg(lookout));
     }
 }
 
@@ -98,7 +97,7 @@ QcShowcaseContext QcShowcasePlanner::context() const
             resolved(m_content, settings.container, u"qtcraft:chest"_s)};
 }
 
-QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders() const
+QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders()
 {
     QList<const QcStructureDefinition *> demos;
     for (const QcStructureDefinition &structure : m_content.structures()) {
@@ -112,11 +111,10 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders() const
 
     QList<QcShowcaseAreaBuilder> builders;
     for (const QcStructureDefinition *definition : std::as_const(demos)) {
-        QcResult<QcStructure> structure = QcStructure::fromDefinition(*definition, m_content, m_warnings);
+        QcStructure::Loaded structure = QcStructure::fromDefinition(*definition, m_content);
+        m_warnings.append(QcStructure::warningsOf(structure));
         if (!structure) {
-            if (m_warnings) {
-                m_warnings->append(structure.error());
-            }
+            m_warnings.append(structure.error().error);
             continue;
         }
 
@@ -130,7 +128,7 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders() const
     return builders;
 }
 
-QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext &context) const
+QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext &context)
 {
     QList<QcShowcaseAreaBuilder> builders = demoBuilders();
     builders.append([context](QcBlockPos anchor) { return QcShowcaseTreeArea::build(context, anchor); });
@@ -162,7 +160,7 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
     return builders;
 }
 
-QcShowcaseArea QcShowcasePlanner::placeNext(const QcShowcaseAreaBuilder &builder, Cursor &cursor) const
+QcShowcasePlanner::Placed QcShowcasePlanner::placeNext(const QcShowcaseAreaBuilder &builder, Cursor cursor) const
 {
     const int rowEnd = firstAreaX + m_content.showcase().rowWidth;
     QcShowcaseArea area = builder({cursor.x, int(m_groundColumn.size()) - 1, cursor.front});
@@ -173,7 +171,7 @@ QcShowcaseArea QcShowcasePlanner::placeNext(const QcShowcaseAreaBuilder &builder
 
     cursor.x += area.structure->sizeX() + areaGap;
     cursor.north = std::min(cursor.north, area.origin.z);
-    return area;
+    return {std::move(area), cursor};
 }
 
 QcShowcasePlan QcShowcasePlanner::build()
@@ -198,9 +196,10 @@ QcShowcasePlan QcShowcasePlanner::build()
     Cursor cursor;
     const QList<QcShowcaseAreaBuilder> areaBuilders = builders(areaContext);
     for (const QcShowcaseAreaBuilder &builder : areaBuilders) {
-        // placeNext() moves the cursor along the row; its front is the one the area was built at.
-        const QcShowcaseArea area = placeNext(builder, cursor);
-        addArea(area, cursor.front);
+        // The cursor moves along the row; its front is the one the area was built at.
+        const Placed placed = placeNext(builder, cursor);
+        cursor = placed.next;
+        addArea(placed.area, cursor.front);
     }
     return std::move(m_plan);
 }
@@ -299,11 +298,3 @@ void QcShowcasePlanner::addLabel(const QcWorldLabel &label)
     labels.append(label.limited());
 }
 
-void QcShowcasePlanner::warn(const QString &warning) const
-{
-    if (m_warnings) {
-        m_warnings->append(warning);
-    } else {
-        qCWarning(lcWorldgen).noquote() << warning;
-    }
-}

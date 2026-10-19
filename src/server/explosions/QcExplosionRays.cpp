@@ -34,27 +34,33 @@ bool onSurface(int i, int j, int k)
     return i == 0 || i == last || j == 0 || j == last || k == 0 || k == last;
 }
 
-// Walks one ray and adds the cells it breaks.
-void walk(QcBlastField &field, const QcVec3 &centre, QcVec3 direction, double force, QSet<QcBlockPos> &broken)
+// The cells the rays of a blast break, collected ray by ray.
+struct BrokenCells
 {
-    direction = direction * (QcExplosionRays::stepLength / direction.length());
-    QcVec3 point = centre;
-    while (force > 0.0) {
-        const QcBlockPos cell = QcPhysics::blockContaining(point);
-        const QcBlastField::Cell &at = field.at(cell);
-        if (!at.loaded) {
-            return;
-        }
-        if (at.block != qcAirBlockId) {
-            force -= (double(at.resistance) + 0.3) * QcExplosionRays::stepLength;
-            if (force > 0.0 && at.resistance < float(QcBlastDefinition::unbreakable)) {
-                broken.insert(cell);
+    QSet<QcBlockPos> cells;
+
+    // Walks one ray and adds the cells it breaks.
+    void addRay(QcBlastField &field, const QcVec3 &centre, QcVec3 direction, double force)
+    {
+        direction = direction * (QcExplosionRays::stepLength / direction.length());
+        QcVec3 point = centre;
+        while (force > 0.0) {
+            const QcBlockPos cell = QcPhysics::blockContaining(point);
+            const QcBlastField::Cell &at = field.at(cell);
+            if (!at.loaded) {
+                return;
             }
+            if (at.block != qcAirBlockId) {
+                force -= (double(at.resistance) + 0.3) * QcExplosionRays::stepLength;
+                if (force > 0.0 && at.resistance < float(QcBlastDefinition::unbreakable)) {
+                    cells.insert(cell);
+                }
+            }
+            point += direction;
+            force -= QcExplosionRays::stepCost;
         }
-        point += direction;
-        force -= QcExplosionRays::stepCost;
     }
-}
+};
 
 double distanceSquared(QcBlockPos cell, const QcVec3 &centre)
 {
@@ -87,7 +93,7 @@ QSet<QcBlockPos> castRays(QcBlastField &field, const QcExplosionRays::Blast &bla
 {
     constexpr int grid = QcExplosionRays::grid;
     constexpr double half = (grid - 1) / 2.0;
-    QSet<QcBlockPos> cells;
+    BrokenCells broken;
     const QcBlockPos centre = QcPhysics::blockContaining(blast.centre);
     int ray = 0;
     // The cells of the grid in the order i, j, k; only those on its surface send a ray.
@@ -97,10 +103,10 @@ QSet<QcBlockPos> castRays(QcBlastField &field, const QcExplosionRays::Blast &bla
         const int k = cell % grid;
         if (onSurface(i, j, k)) {
             const QcVec3 direction{i / half - 1.0, j / half - 1.0, k / half - 1.0};
-            walk(field, blast.centre, direction, forceOf(blast, centre, ray++), cells);
+            broken.addRay(field, blast.centre, direction, forceOf(blast, centre, ray++));
         }
     }
-    return cells;
+    return std::move(broken.cells);
 }
 
 } // namespace

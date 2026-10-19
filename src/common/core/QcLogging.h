@@ -7,3 +7,5 @@
 
 // "qtcraft.connection": sending and receiving protocol frames.
 Q_DECLARE_LOGGING_CATEGORY(lcConnection)
+// "qtcraft.registry": changes to the content registry that it refuses.
+Q_DECLARE_LOGGING_CATEGORY(lcRegistry)

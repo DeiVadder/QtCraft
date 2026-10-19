@@ -10,6 +10,6 @@ struct QcJsonFieldReader;
 // E-605); the structures and the foundation block are checked by the generator.
 namespace QcCoastalTowerParser {
 
-void parseCoastalTowers(const QJsonObject &json, QcCoastalTowerSettings &towers, QcJsonFieldReader &reader, const QString &packNamespace);
+[[nodiscard]] QcCoastalTowerSettings parseCoastalTowers(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace);
 
 } // namespace QcCoastalTowerParser

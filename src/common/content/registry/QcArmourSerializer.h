@@ -11,7 +11,8 @@
 namespace QcArmourSerializer {
 
 void write(QDataStream &stream, const std::optional<QcArmourDefinition> &armour);
-// False when the data is corrupt or out of the parser's limits.
-bool read(QDataStream &stream, std::optional<QcArmourDefinition> &armour);
+// The armour of one item: an engaged optional holding std::nullopt for an item without armour,
+// std::nullopt when the data is corrupt or out of the parser's limits.
+[[nodiscard]] std::optional<std::optional<QcArmourDefinition>> read(QDataStream &stream);
 
 } // namespace QcArmourSerializer

@@ -1,6 +1,7 @@
 #include "clientcore/icons/QcAppIcon.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 
 #include <QTemporaryDir>
 #include <QTest>
@@ -75,10 +76,9 @@ private slots:
 
     void deterministicAndWrittenFromTheBaseGame()
     {
-        QStringList warnings;
-        const auto base = QcBaseContent::load(warnings);
+        const auto base = QcTestUtil::baseContent();
         QVERIFY2(base, qPrintable(base ? QString() : base.error()));
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**base);
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*base->registry);
         const QImage first = QcAppIcon::render(atlas.tile(u"qtcraft:grass_top"_s), atlas.tile(u"qtcraft:grass_side"_s),
                                                atlas.tile(u"qtcraft:iron_pickaxe"_s), 256);
         const QImage second = QcAppIcon::render(atlas.tile(u"qtcraft:grass_top"_s), atlas.tile(u"qtcraft:grass_side"_s),

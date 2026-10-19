@@ -36,6 +36,23 @@ int highestDimming(const QcChunk &chunk, const QcBlockRenderTable &table, int x,
     return -1;
 }
 
+// Calls `visit(chunk, section)` for the sections of the 3 x 3 chunks around `centre` whose sky light
+// the cells low..high reach (whose light volume meets low..high).
+template<typename Visit>
+void forSkyLightSections(QcChunkPos centre, int low, int high, Visit visit)
+{
+    constexpr int margin = QcChunkMesher::lightMargin;
+    const int firstSection = std::max(0, qcFloorDiv(low - margin, QcWorld::sectionHeight));
+    const int lastSection = std::min(QcWorld::sectionCount - 1, qcFloorDiv(high + margin, QcWorld::sectionHeight));
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int index = firstSection; index <= lastSection; ++index) {
+                visit(QcChunkPos{centre.x + dx, centre.z + dz}, index);
+            }
+        }
+    }
+}
+
 } // namespace
 
 QcMeshScheduler::QcMeshScheduler(QObject *parent)
@@ -190,21 +207,6 @@ std::pair<int, int> QcMeshScheduler::skyLightRange(const QcClientWorld &world, Q
     return {low, high};
 }
 
-void QcMeshScheduler::appendSkyLightSections(QList<SectionAddress> &dirty, QcChunkPos chunk, int low, int high)
-{
-    // Sections whose light volume meets low..high.
-    constexpr int margin = QcChunkMesher::lightMargin;
-    const int firstSection = std::max(0, qcFloorDiv(low - margin, QcWorld::sectionHeight));
-    const int lastSection = std::min(QcWorld::sectionCount - 1, qcFloorDiv(high + margin, QcWorld::sectionHeight));
-    for (int dx = -1; dx <= 1; ++dx) {
-        for (int dz = -1; dz <= 1; ++dz) {
-            for (int index = firstSection; index <= lastSection; ++index) {
-                dirty.append({{chunk.x + dx, chunk.z + dz}, index});
-            }
-        }
-    }
-}
-
 void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous)
 {
     const qint64 now = m_clock.nsecsElapsed();
@@ -217,7 +219,7 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         const QcBlockRenderTable::Entry &after = m_renderTable->entry(current);
         if (before.lightDiffers(after)) {
             const auto [low, high] = skyLightRange(world, pos, before, after);
-            appendSkyLightSections(dirty, pos.chunk(), low, high);
+            forSkyLightSections(pos.chunk(), low, high, [&dirty](QcChunkPos chunk, int section) { dirty.append({chunk, section}); });
         }
         lightChanges = before.lightDiffers(after) || before.lightLevel != after.lightLevel;
     }

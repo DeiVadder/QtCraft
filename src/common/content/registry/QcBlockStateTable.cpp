@@ -102,9 +102,16 @@ struct SideRect
 using SideRects = QVarLengthArray<SideRect, 16>;
 using SideCuts = QVarLengthArray<double, 34>;
 
-// The faces of `boxes` lying on the cell side `face`, and their edges along axis A (with 0 and 1).
-void collectSide(const QList<QcAabb> &boxes, QcBlockFace face, SideRects &onSide, SideCuts &cuts)
+// The faces of boxes lying on one cell side, and their edges along axis A (with 0 and 1).
+struct Side
 {
+    SideRects rects;
+    SideCuts cuts{0.0, 1.0};
+};
+
+[[nodiscard]] Side sideOf(const QList<QcAabb> &boxes, QcBlockFace face)
+{
+    Side side;
     const QcFaceOffset offset = qcFaceOffset(face);
     const int normal = offset.dx != 0 ? 0 : (offset.dy != 0 ? 1 : 2);
     const int axisA = normal == 0 ? 1 : 0;
@@ -115,11 +122,12 @@ void collectSide(const QList<QcAabb> &boxes, QcBlockFace face, SideRects &onSide
         if (positive ? high(box, normal) >= 1.0 : low(box, normal) <= 0.0) {
             const SideRect rect{std::clamp(low(box, axisA), 0.0, 1.0), std::clamp(high(box, axisA), 0.0, 1.0),
                                 std::clamp(low(box, axisB), 0.0, 1.0), std::clamp(high(box, axisB), 0.0, 1.0)};
-            onSide.append(rect);
-            cuts.append(rect.a0);
-            cuts.append(rect.a1);
+            side.rects.append(rect);
+            side.cuts.append(rect.a0);
+            side.cuts.append(rect.a1);
         }
     }
+    return side;
 }
 
 // Whether the rectangles spanning the strip [from, to] along axis A cover [0, 1] along axis B.
@@ -149,9 +157,9 @@ bool stripCovered(const SideRects &onSide, double from, double to)
 // cover [0, 1] along the other axis.
 bool coversSide(const QList<QcAabb> &boxes, QcBlockFace face)
 {
-    SideRects onSide;
-    SideCuts cuts{0.0, 1.0};
-    collectSide(boxes, face, onSide, cuts);
+    Side side = sideOf(boxes, face);
+    const SideRects &onSide = side.rects;
+    SideCuts &cuts = side.cuts;
     if (onSide.isEmpty()) {
         return false;
     }
@@ -184,9 +192,11 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
     return quint64(mask) | (quint64(turns) << 32) | (quint64(flip ? 1 : 0) << 35);
 }
 
-// Places the boxes of the parts that apply to state `index`, turned and flipped as its properties say.
-void addShapeBoxes(QcBlockState &state, const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+// State `index` with the boxes of the parts that apply to it, turned and flipped as its properties say.
+[[nodiscard]] QcBlockState shapedState(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
 {
+    QcBlockState state;
+    state.index = index;
     const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(QcBlockStateTable::value(block, index, shape.rotate));
     const bool flip = !shape.flip.isEmpty() && QcBlockStateTable::value(block, index, shape.flip) == u"top"_s;
     const auto place = [turns, flip](const QcAabb &box) { return turned(flip ? flipped(box) : box, turns); };
@@ -216,6 +226,7 @@ void addShapeBoxes(QcBlockState &state, const QcBlockDefinition &block, const Qc
     for (const QcBlockFace face : qcAllBlockFaces) {
         state.faceSource[std::size_t(turnedFace(face, turns))] = face;
     }
+    return state;
 }
 
 // Characters that structure saved state names ("name[a=x,b=y]").
@@ -417,14 +428,12 @@ QString QcBlockStateTable::describe(const QcBlockDefinition &block, quint32 inde
 
 QcBlockState QcBlockStateTable::compute(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
 {
-    QcBlockState state;
+    QcBlockState state = shape.isEmpty() ? QcBlockState{} : shapedState(block, shape, index);
     state.index = index;
     if (shape.isEmpty()) {
         state.boxes = {unitBox};
         state.boxTextures = {QString()};
         state.boxStretch = {false};
-    } else {
-        addShapeBoxes(state, block, shape, index);
     }
 
     if (shape.isEmpty()) {

@@ -6,6 +6,7 @@
 #include <QList>
 #include <QRandomGenerator>
 
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -38,9 +39,9 @@ public:
     explicit QcFishSwimming(QRandomGenerator &random);
 
     // Files the awake water creatures of this tick into the neighbour grid.
-    void startTick(const QList<QcCreature> &mobs, const QcContentRegistry &content);
+    void startTick(std::span<const QcCreature> mobs, const QcContentRegistry &content);
     // One tick of the water creature `mobs[index]`.
-    void swim(qsizetype index, QList<QcCreature> &mobs, const QcMobDefinition &definition, const QcBlockAccess &world, double dt);
+    void swim(qsizetype index, std::span<QcCreature> mobs, const QcMobDefinition &definition, const QcBlockAccess &world, double dt);
 
     // The steering a school adds to one member at `position` moving with `velocity`: towards the
     // centre of the `others` (cohesion), along their mean heading (alignment) and away from those
@@ -61,9 +62,9 @@ private:
 
     // The nearest creatures of the same kind within the school radius of `mobs[index]`, at most
     // `neighbours` of them; valid until the next call.
-    const QList<const QcCreature *> &neighboursOf(const QList<QcCreature> &mobs, qsizetype index, const QcAquaticDefinition &aquatic);
+    const QList<const QcCreature *> &neighboursOf(std::span<const QcCreature> mobs, qsizetype index, const QcAquaticDefinition &aquatic);
     // Adds the creatures of the grid cell `cell` that school with `mobs[index]` to m_candidates.
-    void collectFrom(const QList<QcCreature> &mobs, qsizetype index, CellKey cell, double radius);
+    void collectFrom(std::span<const QcCreature> mobs, qsizetype index, CellKey cell, double radius);
     void swimInWater(QcCreature &mob, const QcMobDefinition &definition, const QcVec3 &school, const QcBlockAccess &world, double dt);
     void flopOnLand(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, double dt);
     // Keeps a wish from leading out of the water: no rising above the surface, turning at shores.

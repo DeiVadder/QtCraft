@@ -125,7 +125,7 @@ bool hasStyles(const QcContentRegistry &content)
 
 QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
 {
-    const QcVillageStyles styles(context.content, nullptr);
+    const QcVillageStyles styles(context.content);
     QList<std::pair<const QcVillageStyle *, QList<std::shared_ptr<const QcStructure>>>> rows;
     int width = 1;
     int depth = frontGap;

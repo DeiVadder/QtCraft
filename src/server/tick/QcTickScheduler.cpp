@@ -57,14 +57,12 @@ void QcTickScheduler::endSprint()
     m_tickStarts.clear();
 }
 
-bool QcTickScheduler::takeSprintEnded(quint64 &ticks, qint64 &elapsedNs)
+std::optional<QcTickScheduler::SprintEnd> QcTickScheduler::takeSprintEnded()
 {
     if (!std::exchange(m_sprintEnded, false)) {
-        return false;
+        return std::nullopt;
     }
-    ticks = m_sprintDone;
-    elapsedNs = m_clock() - m_sprintStartedNs;
-    return true;
+    return SprintEnd{m_sprintDone, m_clock() - m_sprintStartedNs};
 }
 
 void QcTickScheduler::noteTickStart(qint64 started)

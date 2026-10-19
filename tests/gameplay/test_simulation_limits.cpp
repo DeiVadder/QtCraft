@@ -104,20 +104,22 @@ private slots:
         QCOMPARE(limits.spawnerCreatures, 256);
         QCOMPARE(limits.guardians, 64);
         QCOMPARE(keys.size(), qsizetype(70));
-        QStringList warnings;
-        QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
-        QVERIFY(warnings.isEmpty());
+        const QcServerLimits::Read defaults = QcServerLimits::fromJson({}, u"server.json"_s);
+        QCOMPARE(defaults.limits, limits);
+        QVERIFY(defaults.warnings.isEmpty());
         // What a server writes reads back the same.
-        QCOMPARE(QcServerLimits::fromJson(limits.toJson(), u"server.json"_s, &warnings), limits);
-        QVERIFY(warnings.isEmpty());
+        const QcServerLimits::Read written = QcServerLimits::fromJson(limits.toJson(), u"server.json"_s);
+        QCOMPARE(written.limits, limits);
+        QVERIFY(written.warnings.isEmpty());
     }
 
     void outOfRangeIsClamped()
     {
         const QJsonObject json{{u"hopperBudget"_s, 0}, {u"signalBudget"_s, 1e12}, {u"hopperCooldownTicks"_s, 2.5},
                                {u"signalMinimumStep"_s, u"many"_s}, {u"noSuchLimit"_s, 3}};
-        QStringList warnings;
-        const QcServerLimits limits = QcServerLimits::fromJson(json, u"server.json"_s, &warnings);
+        const QcServerLimits::Read read = QcServerLimits::fromJson(json, u"server.json"_s);
+        const QcServerLimits &limits = read.limits;
+        const QStringList &warnings = read.warnings;
         QCOMPARE(limits.hopperBudget, 1);
         QCOMPARE(limits.signalBudget, qint64(1) << 22);
         QCOMPARE(limits.hopperCooldownTicks, 3);
@@ -131,8 +133,7 @@ private slots:
         const QcResult<QcServerSettings> settings = QcServerSettings::fromJson(
             QJsonDocument::fromJson(R"({"limits": {"hopperBudget": 10, "hopperCooldownTicks": 20}})").object());
         QVERIFY(settings.has_value());
-        QcServerConfig config;
-        settings->applyTo(config);
+        QcServerConfig config = settings->serverConfig();
         QVERIFY(config.limitsFromServer);
         buildArea(config);
         readyHoppers();

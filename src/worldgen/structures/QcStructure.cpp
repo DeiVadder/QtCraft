@@ -13,25 +13,23 @@ QcStructure::QcStructure(QString name, int sizeX, int sizeY, int sizeZ)
 {
 }
 
-QcResult<QcStructure> QcStructure::fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content,
-                                                  QStringList *warnings)
+QcStructure::Loaded QcStructure::fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content)
 {
     QList<QcBlockId> states;
+    QStringList warnings;
     for (const QString &name : definition.palette) {
-        QStringList problems;
-        const std::optional<QcBlockId> state = content.stateId(name, &problems);
-        if (!state) {
-            return qcError(u"structure '%1': unknown block '%2'"_s.arg(definition.name, name));
+        const QcContentRegistry::ParsedState parsed = content.parseState(name);
+        if (!parsed.id) {
+            return std::unexpected(Failure{u"structure '%1': unknown block '%2'"_s.arg(definition.name, name), std::move(warnings)});
         }
-        if (warnings) {
-            for (const QString &problem : std::as_const(problems)) {
-                warnings->append(u"structure '%1': %2"_s.arg(definition.name, problem));
-            }
+        for (const QString &problem : parsed.problems) {
+            warnings.append(u"structure '%1': %2"_s.arg(definition.name, problem));
         }
-        states.append(*state);
+        states.append(*parsed.id);
     }
 
     QcStructure structure(definition.name, definition.sizeX, definition.sizeY, definition.sizeZ);
+    structure.m_warnings = std::move(warnings);
     for (qsizetype cell = 0; cell < definition.cells.size(); ++cell) {
         const qint16 index = definition.cells[cell];
         if (index >= 0 && index < states.size()) {

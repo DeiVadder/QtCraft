@@ -22,9 +22,8 @@ std::shared_ptr<const QcSampleBuffer> constant(float value, std::size_t count, i
 
 std::vector<float> mixFrames(QcAudioMixer &mixer, int frames)
 {
-    std::vector<float> out(std::size_t(frames) * 2, -7.0f);
-    mixer.mix(out.data(), frames);
-    return out;
+    const std::span<const float> mixed = mixer.mix(frames);
+    return {mixed.begin(), mixed.end()};
 }
 
 const auto centre = float(1.0 / std::numbers::sqrt2);

@@ -401,17 +401,16 @@ private slots:
         player.keptEquipment.stacks[0] = {item("qtcraft:diamond_helmet"), 1, 3};
         QVERIFY(storage.writePlayer(u"Ann"_s, player));
 
-        QStringList warnings;
-        const QcResult<std::optional<QcPlayerData>> read = storage.readPlayer(u"Ann"_s, warnings);
-        QVERIFY(read && *read);
-        const QcPlayerData &loaded = **read;
+        const QcPlayerStorage::Result read = storage.readPlayer(u"Ann"_s);
+        QVERIFY(read && read->player);
+        const QcPlayerData &loaded = *read->player;
         QCOMPARE(loaded.gameMode, QcGameMode::Creative);
         QVERIFY(loaded.motion.flying);
         QCOMPARE(loaded.inventory.slot(2), (QcItemStack{item("qtcraft:diamond"), 64, 0}));
         QCOMPARE(loaded.keptInventory.slot(7), (QcItemStack{item("qtcraft:stone"), 12, 0}));
         QCOMPARE(loaded.keptInventory.selectedHotbarSlot(), 7);
         QCOMPARE(loaded.keptEquipment.stacks[0], (QcItemStack{item("qtcraft:diamond_helmet"), 1, 3}));
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(read->warnings.isEmpty());
     }
 
     void catalogueItemsStayOutOfTheWorld()
@@ -482,8 +481,7 @@ private slots:
 
         // Hungry, one jump away from losing the next food point.
         const QcWorldStorage storage(directory.path(), m_content);
-        QStringList warnings;
-        QcPlayerData player = **storage.readPlayer(u"Raw"_s, warnings);
+        QcPlayerData player = *storage.readPlayer(u"Raw"_s)->player;
         player.food = 3;
         player.exhaustion = QcHunger::exhaustionPerFood - 0.01;
         QVERIFY(storage.writePlayer(u"Raw"_s, player));
@@ -545,10 +543,9 @@ private slots:
 
         // Refused, not converted (decision E-356): a player of an older development version would
         // otherwise come back without the game mode he had.
-        QStringList warnings;
-        const QcResult<std::optional<QcPlayerData>> read = QcWorldStorage(directory.path(), m_content).readPlayer(u"Ann"_s, warnings);
+        const QcPlayerStorage::Result read = QcWorldStorage(directory.path(), m_content).readPlayer(u"Ann"_s);
         QVERIFY(!read.has_value());
-        QVERIFY2(read.error().contains(u"older development version"_s), qPrintable(read.error()));
+        QVERIFY2(read.error().error.contains(u"older development version"_s), qPrintable(read.error().error));
     }
 
     void defaultGameModeReachesNewPlayersAfterARestart()
@@ -647,8 +644,7 @@ private slots:
         QcServerSettings settings;
         settings.defaultGameMode = QcGameMode::Creative;
         QCOMPARE(QcServerSettings::fromJson(settings.toJson())->defaultGameMode, QcGameMode::Creative);
-        QcServerConfig config;
-        settings.applyTo(config);
+        const QcServerConfig config = settings.serverConfig();
         QCOMPARE(config.defaultGameMode, QcGameMode::Creative);
     }
 };

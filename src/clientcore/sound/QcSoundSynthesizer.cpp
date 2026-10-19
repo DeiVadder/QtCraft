@@ -162,21 +162,28 @@ private:
     double m_crackle = 0.0;
 };
 
-void renderLayer(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleRate, std::vector<float> &out)
+// The samples of a sound while its layers are added up.
+struct Mix
 {
-    const auto first = std::size_t(std::max(0LL, std::llround(layer.start * sampleRate)));
-    const auto count = std::size_t(std::max(0LL, std::llround(layer.duration * sampleRate)));
-    if (count == 0 || first >= out.size()) {
-        return;
-    }
+    std::vector<float> samples;
 
-    LayerVoice voice(layer, seed, loop, sampleRate, count);
-    const std::size_t end = std::min(count, out.size() - first);
-    for (std::size_t i = 0; i < end; ++i) {
-        const double x = voice.signal(i);
-        out[first + i] += float(layer.gain * voice.envelope(i) * x);
+    // Adds one layer, cut off at the end of the samples.
+    void addLayer(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleRate)
+    {
+        const auto first = std::size_t(std::max(0LL, std::llround(layer.start * sampleRate)));
+        const auto count = std::size_t(std::max(0LL, std::llround(layer.duration * sampleRate)));
+        if (count == 0 || first >= samples.size()) {
+            return;
+        }
+
+        LayerVoice voice(layer, seed, loop, sampleRate, count);
+        const std::size_t end = std::min(count, samples.size() - first);
+        for (std::size_t i = 0; i < end; ++i) {
+            const double x = voice.signal(i);
+            samples[first + i] += float(layer.gain * voice.envelope(i) * x);
+        }
     }
-}
+};
 
 } // namespace
 
@@ -213,11 +220,12 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
         return buffer;
     }
 
-    std::vector<float> &out = buffer.samples;
-    out.assign(std::size_t(std::llround(seconds * sampleRate)), 0.0f);
+    Mix mix{std::vector<float>(std::size_t(std::llround(seconds * sampleRate)), 0.0f)};
     for (qsizetype index = 0; index < layers.size(); ++index) {
-        renderLayer(layers[index], seed ^ (quint32(index + 1) * 0x85EBCA6Bu), loop, sampleRate, out);
+        mix.addLayer(layers[index], seed ^ (quint32(index + 1) * 0x85EBCA6Bu), loop, sampleRate);
     }
+    buffer.samples = std::move(mix.samples);
+    std::vector<float> &out = buffer.samples;
 
     if (loop) {
         // Blend the tail into the head and cut the tail off: the last sample then leads straight

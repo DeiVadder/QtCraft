@@ -11,6 +11,7 @@
 #include "server/signal/QcDustNetwork.h"
 
 #include <algorithm>
+#include <array>
 
 using namespace Qt::StringLiterals;
 
@@ -23,23 +24,28 @@ bool before(QcBlockPos a, QcBlockPos b)
     return std::tuple{a.y, a.z, a.x} < std::tuple{b.y, b.z, b.x};
 }
 
-void sortUnique(std::vector<QcBlockPos> &positions)
+// The positions in that order, each once (moved in and out, no copy).
+[[nodiscard]] std::vector<QcBlockPos> sortedUnique(std::vector<QcBlockPos> positions)
 {
     std::ranges::sort(positions, before);
     const auto [first, last] = std::ranges::unique(positions);
     positions.erase(first, last);
+    return positions;
 }
 
 // The 27 cells within one block of `pos`.
-void addCube(QcBlockPos pos, std::vector<QcBlockPos> &cells)
+[[nodiscard]] std::array<QcBlockPos, 27> cubeAround(QcBlockPos pos)
 {
+    std::array<QcBlockPos, 27> cells{};
+    std::size_t next = 0;
     for (int dx = -1; dx <= 1; ++dx) {
         for (int dy = -1; dy <= 1; ++dy) {
             for (int dz = -1; dz <= 1; ++dz) {
-                cells.push_back(pos.offset(dx, dy, dz));
+                cells[next++] = pos.offset(dx, dy, dz);
             }
         }
     }
+    return cells;
 }
 
 QcVec3 centreOf(QcBlockPos pos)
@@ -187,8 +193,8 @@ void QcServerCircuits::pressPlates()
     for (const QcBlockPos &cell : std::as_const(m_plates.anything)) {
         const QcBlockId block = m_state.world().blockAt(cell).value_or(qcAirBlockId);
         if (m_plates.pressing(m_table.content().block(block).signal).contains(cell) && !m_table.at(block).on) {
-            plan.writes.insert(cell, m_table.withFlag(block, u"powered"_s, true));
-            plan.schedules.append({cell, QcCircuitComponents::plateCheckTicks, QcSignalSchedule::Priority::Release});
+            plan.write(cell, m_table.withFlag(block, u"powered"_s, true));
+            plan.schedule(cell, QcCircuitComponents::plateCheckTicks, QcSignalSchedule::Priority::Release);
         }
     }
     apply(plan);
@@ -221,54 +227,58 @@ void QcServerCircuits::settle(qsizetype reserve)
     }
 }
 
-void QcServerCircuits::collect(const QList<QcCircuitState::Change> &changes, Collected &collected) const
+QcServerCircuits::Collected QcServerCircuits::collect(const QList<QcCircuitState::Change> &changes) const
 {
+    Collected collected;
     for (const QcCircuitState::Change &change : changes) {
         collected.components.push_back(change.pos);
         if (change.selfOnly) {
             collected.dust.push_back(change.pos);
             continue;
         }
-        collectAround(change, collected.components, collected.dust);
+        collected.addAround(change, m_table);
         if (change.before != change.after) {
-            collectObservers(change.pos, collected.observers);
+            collected.addObservers(change.pos, m_state.world(), m_table);
             // A block placed or broken two behind a comparator, behind a conductor.
-            collectReaders(change.pos, collected.readers);
+            collected.addReaders(change.pos, m_state.world());
         }
     }
-
-    sortUnique(collected.components);
-    sortUnique(collected.dust);
-    sortUnique(collected.readers);
-    sortUnique(collected.observers);
+    collected.sortUnique();
+    return collected;
 }
 
-void QcServerCircuits::collectReaders(QcBlockPos pos, std::vector<QcBlockPos> &readers) const
+void QcServerCircuits::Collected::sortUnique()
 {
-    // A comparator reads the block behind it, or two behind it through a conductor.
-    const QList<QcBlockPos> found = QcCircuitState::readersOf(m_state.world(), pos);
+    components = sortedUnique(std::move(components));
+    dust = sortedUnique(std::move(dust));
+    readers = sortedUnique(std::move(readers));
+    observers = sortedUnique(std::move(observers));
+}
+
+void QcServerCircuits::Collected::addReaders(QcBlockPos pos, const QcServerWorld &world)
+{
+    const QList<QcBlockPos> found = QcCircuitState::readersOf(world, pos);
     readers.insert(readers.end(), found.begin(), found.end());
 }
 
-void QcServerCircuits::collectObservers(QcBlockPos pos, std::vector<QcBlockPos> &observers) const
+void QcServerCircuits::Collected::addObservers(QcBlockPos pos, const QcServerWorld &world, const QcSignalTable &table)
 {
     for (const QcBlockFace face : qcAllBlockFaces) {
         const QcBlockPos next = qcNeighbour(pos, face);
-        const QcSignalState &state = m_table.at(m_state.world().blockAt(next).value_or(qcAirBlockId));
+        const QcSignalState &state = table.at(world.blockAt(next).value_or(qcAirBlockId));
         if (state.kind == QcSignalKind::Observer && state.facing == QcBlockRules::opposite(face)) {
             observers.push_back(next);
         }
     }
 }
 
-void QcServerCircuits::collectAround(const QcCircuitState::Change &change, std::vector<QcBlockPos> &components,
-                                     std::vector<QcBlockPos> &dust) const
+void QcServerCircuits::Collected::addAround(const QcCircuitState::Change &change, const QcSignalTable &table)
 {
     for (const QcBlockFace face : qcAllBlockFaces) {
         components.push_back(qcNeighbour(change.pos, face));
     }
     // A rail slot's line goes on up and down slopes: the rails one higher or lower beside it look too.
-    if (m_table.at(change.before).kind == QcSignalKind::Rail || m_table.at(change.after).kind == QcSignalKind::Rail) {
+    if (table.at(change.before).kind == QcSignalKind::Rail || table.at(change.after).kind == QcSignalKind::Rail) {
         const std::array<QcBlockPos, 8> slopes = QcRails::slopeNeighbours(change.pos);
         components.insert(components.end(), slopes.begin(), slopes.end());
     }
@@ -277,13 +287,14 @@ void QcServerCircuits::collectAround(const QcCircuitState::Change &change, std::
     // connections only depend on where dust lies. Everything else lets the dust within one block
     // reconnect (slopes, cut lines), and the neighbours of what the block powered or now powers
     // take note.
-    const bool strengthOnly = m_table.at(change.before).kind == QcSignalKind::Dust && m_table.at(change.after).kind == QcSignalKind::Dust;
+    const bool strengthOnly = table.at(change.before).kind == QcSignalKind::Dust && table.at(change.after).kind == QcSignalKind::Dust;
     if (!strengthOnly) {
-        addCube(change.pos, dust);
+        const std::array<QcBlockPos, 27> cube = cubeAround(change.pos);
+        dust.insert(dust.end(), cube.begin(), cube.end());
     }
 
-    QcSignalPower::Positions targets = QcSignalPower::targets(change.pos, m_table.at(change.before));
-    const QcSignalPower::Positions after = QcSignalPower::targets(change.pos, m_table.at(change.after));
+    QcSignalPower::Positions targets = QcSignalPower::targets(change.pos, table.at(change.before));
+    const QcSignalPower::Positions after = QcSignalPower::targets(change.pos, table.at(change.after));
     targets.append(after.constData(), after.size());
     for (const QcBlockPos &target : std::as_const(targets)) {
         for (const QcBlockFace face : qcAllBlockFaces) {
@@ -323,15 +334,13 @@ QList<QcCircuitState::Change> QcServerCircuits::takeChanges(qsizetype limit)
 void QcServerCircuits::runWave(qsizetype limit)
 {
     const QList<QcCircuitState::Change> changes = takeChanges(limit);
-    Collected collected;
-    collect(changes, collected);
+    const Collected collected = collect(changes);
     const std::vector<QcBlockPos> &components = collected.components;
     const std::vector<QcBlockPos> &dust = collected.dust;
 
     const QcSignalPower power(m_state.world(), m_table);
     const QcDustNetwork network(power);
-    QcDustNetwork::Result wired;
-    network.recompute(dust, wired);
+    const QcDustNetwork::Result wired = network.recompute(dust);
 
     QcCircuitPlan plan;
     plan.work = changes.size() + wired.visited;
@@ -344,7 +353,7 @@ void QcServerCircuits::runWave(qsizetype limit)
         }
     }
     for (const QcDustNetwork::Change &change : std::as_const(wired.changes)) {
-        plan.writes.insert(change.pos, change.state);
+        plan.write(change.pos, change.state);
     }
 
     const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
@@ -399,7 +408,7 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
         // Next to an unloaded chunk the component waits for it and then looks again.
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
             m_state.circuits().waitOn(*missing, pos, true);
-            ++plan.work;
+            plan.addWork(1);
             continue;
         }
         reactions.scheduled(pos, plan);

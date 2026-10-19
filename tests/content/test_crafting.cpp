@@ -1,6 +1,7 @@
 #include "common/content/parser/QcContentParser.h"
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcSlotList.h"
 #include "QcTestUtil.h"
 
 #include <QJsonDocument>
@@ -207,25 +208,26 @@ private slots:
 
     void moveBetweenSplitsMergesAndSwaps()
     {
-        QList<QcItemStack> stacks(4);
+        QcSlotList slotList{QList<QcItemStack>(4)};
+        QList<QcItemStack> &stacks = slotList.stacks;
         stacks[0] = {m_plank, 10, 0};
         stacks[1] = {m_stone, 3, 0};
-        QVERIFY(QcInventory::moveBetween(stacks, 0, 2, 1, m_content));
+        QVERIFY(slotList.moveBetween(0, 2, 1, m_content));
         QCOMPARE(stacks[0].count, 9);
         QCOMPARE(stacks[2], (QcItemStack{m_plank, 1, 0}));
 
-        QVERIFY(QcInventory::moveBetween(stacks, 0, 2, 0, m_content));
+        QVERIFY(slotList.moveBetween(0, 2, 0, m_content));
         QCOMPARE(stacks[2].count, 10);
         QVERIFY(stacks[0].isEmpty());
 
         // Different items: a partial move does nothing, a whole-stack move swaps.
-        QVERIFY(QcInventory::moveBetween(stacks, 1, 2, 1, m_content));
+        QVERIFY(slotList.moveBetween(1, 2, 1, m_content));
         QCOMPARE(stacks[1].count, 3);
-        QVERIFY(QcInventory::moveBetween(stacks, 1, 2, 0, m_content));
+        QVERIFY(slotList.moveBetween(1, 2, 0, m_content));
         QCOMPARE(stacks[1].item, m_plank);
         QCOMPARE(stacks[2].item, m_stone);
-        QVERIFY(!QcInventory::moveBetween(stacks, 0, 9, 0, m_content));
-        QVERIFY(!QcInventory::moveBetween(stacks, -1, 0, 0, m_content));
+        QVERIFY(!slotList.moveBetween(0, 9, 0, m_content));
+        QVERIFY(!slotList.moveBetween(-1, 0, 0, m_content));
     }
 };
 

@@ -5,13 +5,19 @@
 
 namespace {
 
-quint64 splitMix(quint64 &state)
+// SplitMix64 generator: each next() advances the state and returns a well mixed value.
+struct SplitMix
 {
-    quint64 z = (state += 0x9E3779B97F4A7C15ull);
-    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
-    z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
-    return z ^ (z >> 31);
-}
+    quint64 state = 0;
+
+    [[nodiscard]] quint64 next()
+    {
+        quint64 z = (state += 0x9E3779B97F4A7C15ull);
+        z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
+        z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
+        return z ^ (z >> 31);
+    }
+};
 
 double fade(double t)
 {
@@ -63,10 +69,10 @@ QcNoise::QcNoise(quint64 seed)
         values[std::size_t(i)] = quint8(i);
     }
 
-    quint64 state = seed;
+    SplitMix random{seed};
     // Fisher-Yates shuffle driven by SplitMix64: platform independent, unlike std::shuffle.
     for (int i = 255; i > 0; --i) {
-        const auto j = std::size_t(splitMix(state) % quint64(i + 1));
+        const auto j = std::size_t(random.next() % quint64(i + 1));
         std::swap(values[std::size_t(i)], values[j]);
     }
 
@@ -164,8 +170,8 @@ double QcNoise::fractal3(double x, double y, double z, int octaves, double persi
 
 quint64 qcMixSeed(quint64 seed, quint64 salt)
 {
-    quint64 state = seed ^ (salt * 0xD6E8FEB86659FD93ull);
-    return splitMix(state);
+    SplitMix random{seed ^ (salt * 0xD6E8FEB86659FD93ull)};
+    return random.next();
 }
 
 quint64 qcNameSalt(const QString &name)
@@ -180,7 +186,7 @@ quint64 qcNameSalt(const QString &name)
 
 double qcPositionRandom(quint64 seed, int x, int y, int z)
 {
-    quint64 state = seed ^ (quint64(quint32(x)) * 0x9E3779B97F4A7C15ull) ^ (quint64(quint32(y)) * 0xC2B2AE3D27D4EB4Full)
-                    ^ (quint64(quint32(z)) * 0x165667B19E3779F9ull);
-    return double(splitMix(state) >> 11) * (1.0 / 9007199254740992.0);
+    SplitMix random{seed ^ (quint64(quint32(x)) * 0x9E3779B97F4A7C15ull) ^ (quint64(quint32(y)) * 0xC2B2AE3D27D4EB4Full)
+                    ^ (quint64(quint32(z)) * 0x165667B19E3779F9ull)};
+    return double(random.next() >> 11) * (1.0 / 9007199254740992.0);
 }

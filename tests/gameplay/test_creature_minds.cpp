@@ -47,9 +47,8 @@ private:
     {
         const QcChunkPos chunk = QcEntities::chunkOf(*mob(creature));
         const QHash<QcChunkPos, QcEntityRecord> records = QcEntityRecords::take(m_server->entities(), {chunk});
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings);
         if (!back.has_value() || !QcEntityRecords::apply(*back, m_server->entities()).isEmpty()) {
             return nullptr;
         }

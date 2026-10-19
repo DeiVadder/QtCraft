@@ -60,7 +60,7 @@ private:
         config.generator = type;
         config.generatorOptions = options;
         config.viewDistance = 1;
-        QcServer server(config, m_content, QcWorldGenerators::create(type, m_content, 0, nullptr, options));
+        QcServer server(config, m_content, QcWorldGenerators::create(type, m_content, 0, options));
         if (!server.openWorld()) {
             return {};
         }
@@ -114,17 +114,16 @@ private slots:
         if (!preset.isEmpty()) {
             QVERIFY(!QcWorldGenerators::checkOptions(u"flat"_s, preset, *m_content));
             // A world that has them anyway (edited world.json) falls back to the default.
-            QStringList warnings;
-            const QcFlatGenerator generator(m_content, preset, &warnings);
-            QCOMPARE(warnings.size(), 1);
+            const QcFlatGenerator generator(m_content, preset);
+            QCOMPARE(generator.warnings().size(), 1);
             QCOMPARE(generator.layers().size(), 64);
         }
     }
 
     void flatWorldIsTheSameEverywhere()
     {
-        const auto generator = QcWorldGenerators::create(u"flat"_s, m_content, 1, nullptr, u"bedrock,3*dirt,grass_block"_s);
-        const auto again = QcWorldGenerators::create(u"flat"_s, m_content, 99, nullptr, u"bedrock,3*dirt,grass_block"_s);
+        const auto generator = QcWorldGenerators::create(u"flat"_s, m_content, 1, u"bedrock,3*dirt,grass_block"_s);
+        const auto again = QcWorldGenerators::create(u"flat"_s, m_content, 99, u"bedrock,3*dirt,grass_block"_s);
         const std::shared_ptr<QcChunk> origin = generator->generate({0, 0});
         QCOMPARE(nonAirBlocks(*origin), 5 * QcWorld::chunkSize * QcWorld::chunkSize);
         QCOMPARE(origin->highestNonAir(7, 7), 4);
@@ -198,7 +197,7 @@ private slots:
         for (const QString &bad : {u"stone"_s, u"platform=nothing"_s, u"radius=17"_s, u"y=0"_s, u"height=3"_s, u"radius=x"_s}) {
             QVERIFY2(!QcWorldGenerators::checkOptions(u"void"_s, bad, *m_content), qPrintable(bad));
         }
-        const auto platform = QcWorldGenerators::create(u"void"_s, m_content, 0, nullptr, u"platform=glass,radius=1,y=20"_s);
+        const auto platform = QcWorldGenerators::create(u"void"_s, m_content, 0, u"platform=glass,radius=1,y=20"_s);
         QCOMPARE(nonAirBlocks(*platform->generate({0, 0})), 4);
         QCOMPARE(platform->generate({0, 0})->block(1, 20, 1), id("qtcraft:glass"));
         QCOMPARE(platform->spawnPoint(), (QcBlockPos{0, 21, 0}));
@@ -236,8 +235,7 @@ private slots:
         QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .gameMode = QcGameMode::Survival}));
 
         // Then an update or a mod changes those defaults.
-        QStringList warnings;
-        const std::shared_ptr<QcContentRegistry> changed = *QcBaseContent::load(warnings);
+        const std::shared_ptr<QcContentRegistry> changed = QcTestUtil::baseContent()->registry;
         changed->setFlatWorld({u"bedrock,3*sand"_s, changed->flatWorld().rules});
         changed->setVoidWorld({u"qtcraft:glass"_s, 0, 10, changed->voidWorld().rules});
 
@@ -250,12 +248,12 @@ private slots:
             config.seed = entry.info.seed;
             config.generator = entry.info.generator;
             config.generatorOptions = entry.info.generatorOptions;
-            std::shared_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, changed, config.seed, nullptr, config.generatorOptions);
+            std::shared_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions);
             const std::shared_ptr<QcChunk> origin = generator->generate({0, 0});
             QCOMPARE(origin->highestNonAir(0, 0), 63);
             QCOMPARE(origin->block(0, 63, 0), id(entry.info.generator == u"flat"_s ? "qtcraft:grass_block" : "qtcraft:stone"));
 
-            QcServer server(config, changed, QcWorldGenerators::create(config.generator, changed, config.seed, nullptr, config.generatorOptions));
+            QcServer server(config, changed, QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions));
             QVERIFY(server.openWorld());
             QVERIFY(server.stop());
         }
@@ -277,7 +275,7 @@ private slots:
         config.generator = u"flat"_s;
         config.generatorOptions = u"bedrock,grass_block"_s;
         {
-            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, nullptr, config.generatorOptions));
+            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions));
             QVERIFY(server.openWorld());
             server.tick();
             QVERIFY(!server.mobs().naturalSpawning());
@@ -286,7 +284,7 @@ private slots:
 
         // Other layers are another world.
         config.generatorOptions = u"bedrock,sand"_s;
-        QcServer other(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, nullptr, config.generatorOptions));
+        QcServer other(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions));
         QVERIFY(!other.openWorld());
     }
 };

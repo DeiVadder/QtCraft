@@ -18,22 +18,28 @@ void writeSpot(QDataStream &stream, std::optional<QcBlockPos> spot)
     }
 }
 
-// False for a spot outside the world.
-bool readSpot(QDataStream &stream, std::optional<QcBlockPos> &spot)
+// A spot as read; `valid` is false for one outside the world.
+struct Spot
+{
+    std::optional<QcBlockPos> pos;
+    bool valid = true;
+};
+
+[[nodiscard]] Spot readSpot(QDataStream &stream)
 {
     bool present = false;
     stream >> present;
     if (!present) {
-        spot.reset();
-        return true;
+        return {};
     }
     qint32 x = 0;
     qint32 y = 0;
     qint32 z = 0;
     stream >> x >> y >> z;
     const QcBlockPos pos{x, y, z};
-    spot = pos;
-    return pos.isInsideWorldHeight() && std::abs(qint64(x)) <= QcWorld::maxHorizontalBlock && std::abs(qint64(z)) <= QcWorld::maxHorizontalBlock;
+    const bool inside = pos.isInsideWorldHeight() && std::abs(qint64(x)) <= QcWorld::maxHorizontalBlock
+                        && std::abs(qint64(z)) <= QcWorld::maxHorizontalBlock;
+    return {pos, inside};
 }
 
 void writeOffers(QDataStream &stream, const QcVillagerRecord &villager)
@@ -45,35 +51,47 @@ void writeOffers(QDataStream &stream, const QcVillagerRecord &villager)
     stream << villager.lastRestock << qint32(villager.restocks);
 }
 
-// False for more offers than a villager has, uses or demand out of range or a broken time.
-bool readOffers(QDataStream &stream, QcVillagerRecord &villager)
+// The saved state of a villager's offers (QcVillagerRecord::offers, lastRestock, restocks).
+struct Offers
+{
+    QList<QcVillagerOffer> offers;
+    double lastRestock = -1.0;
+    int restocks = 0;
+};
+
+// std::nullopt for more offers than a villager has, uses or demand out of range or a broken time.
+[[nodiscard]] std::optional<Offers> readOffers(QDataStream &stream)
 {
     quint32 count = 0;
     stream >> count;
     if (stream.status() != QDataStream::Ok || count > quint32(QcVillagerRecord::maxOffers)) {
-        return false;
+        return std::nullopt;
     }
+    Offers read;
     for (quint32 i = 0; i < count; ++i) {
-        QcVillagerOffer offer;
+        std::optional<QString> id = QcComponentFrames::readText(stream, maxText);
+        if (!id) {
+            return std::nullopt;
+        }
         qint32 uses = 0;
         qint32 demand = 0;
-        if (!QcComponentFrames::readText(stream, offer.id, maxText)) {
-            return false;
-        }
         stream >> uses >> demand;
         if (uses < 0 || uses > QcTradeOffer::maxUsesLimit || demand < 0 || demand > QcVillagerOffer::maxDemand) {
-            return false;
+            return std::nullopt;
         }
+        QcVillagerOffer offer;
+        offer.id = std::move(*id);
         offer.uses = uses;
         offer.demand = demand;
-        villager.offers.append(offer);
+        read.offers.append(offer);
     }
 
     qint32 restocks = 0;
-    stream >> villager.lastRestock >> restocks;
-    villager.restocks = restocks;
-    return std::isfinite(villager.lastRestock) && villager.lastRestock >= -1.0 && villager.lastRestock <= QcVillagerRecord::maxRestockTime
-           && restocks >= 0 && restocks <= 64;
+    stream >> read.lastRestock >> restocks;
+    read.restocks = restocks;
+    const bool valid = std::isfinite(read.lastRestock) && read.lastRestock >= -1.0 && read.lastRestock <= QcVillagerRecord::maxRestockTime
+                       && restocks >= 0 && restocks <= 64;
+    return valid ? std::optional(std::move(read)) : std::nullopt;
 }
 
 } // namespace
@@ -99,24 +117,37 @@ std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
     qint32 produce = 0;
     // Texts are checked before they are read (QcComponentFrames::readText), every other field after.
     stream >> villager.village;
-    const bool spots = readSpot(stream, villager.home) && readSpot(stream, villager.work);
-    if (!QcComponentFrames::readText(stream, villager.profession, maxText)) {
+    const Spot home = readSpot(stream);
+    const Spot work = readSpot(stream);
+    villager.home = home.pos;
+    villager.work = work.pos;
+    std::optional<QString> profession = QcComponentFrames::readText(stream, maxText);
+    if (!profession) {
         return std::nullopt;
     }
+    villager.profession = std::move(*profession);
     stream >> level >> experience >> villager.look;
-    if (!QcComponentFrames::readText(stream, villager.style, maxText)) {
+    std::optional<QString> style = QcComponentFrames::readText(stream, maxText);
+    if (!style) {
         return std::nullopt;
     }
+    villager.style = std::move(*style);
     stream >> produce;
     // Version 1 has no offers yet: none are traded, it never restocked.
-    if (version >= 2 && !readOffers(stream, villager)) {
-        return std::nullopt;
+    if (version >= 2) {
+        std::optional<Offers> offers = readOffers(stream);
+        if (!offers) {
+            return std::nullopt;
+        }
+        villager.offers = std::move(offers->offers);
+        villager.lastRestock = offers->lastRestock;
+        villager.restocks = offers->restocks;
     }
     // Version 3 knows when it last slept (decision E-470); older ones never slept.
     if (version >= 3) {
         stream >> villager.sleptAt;
     }
-    if (stream.status() != QDataStream::Ok || !spots || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0
+    if (stream.status() != QDataStream::Ok || !home.valid || !work.valid || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0
         || experience > QcVillagerRecord::maxExperience || produce < 0 || produce > QcVillagerRecord::maxProduce
         || !(villager.sleptAt <= QcVillagerRecord::maxRestockTime)) {
         return std::nullopt;

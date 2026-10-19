@@ -53,13 +53,15 @@ private:
         std::array<int, sideCount> reach{};
 
         bool isEmpty() const;
+        // Adds `delta` times what the block at local `x`, `z` adds to its chunk (by the parts and
+        // pistons `links` knows).
+        void add(const QcChunkLinks &links, int x, int z, QcBlockId block, int delta);
+        // Adds the blocks of one section.
+        void addSection(const QcChunkLinks &links, const QcChunkSection &section);
     };
 
     Counts countChunk(const QcChunk &chunk) const;
-    void countSection(Counts &counts, const QcChunkSection &section) const;
     static quint16 marksOf(const Counts &counts);
-    // Adds `delta` to the counts the block at local `x`, `z` adds to its chunk.
-    void count(Counts &counts, int x, int z, QcBlockId block, int delta) const;
     bool matters(QcBlockId block) const { return std::size_t(block) < m_part.size() && (m_part[std::size_t(block)] || m_piston[std::size_t(block)] != 0); }
 
     // Per block state: a circuit part, and the side a piston faces plus one (0: none or up/down).

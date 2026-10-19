@@ -20,9 +20,15 @@ public:
     QList<QcItemEntity> tick();
 
 private:
-    // Puts the stack into the inventory of the playing player with this entity id; returns what
-    // did not fit and remembers players whose inventory changed.
-    int giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed);
+    // What did not fit of a stack given to a player, and the player when his inventory took some.
+    struct Given
+    {
+        int left = 0;
+        QcServerClient *taker = nullptr;
+    };
+
+    // Puts the stack into the inventory of the playing player with this entity id.
+    [[nodiscard]] Given giveToPlayer(quint32 entityId, QcItemStack stack);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

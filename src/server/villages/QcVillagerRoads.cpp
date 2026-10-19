@@ -34,7 +34,7 @@ std::optional<QcBlockPos> QcVillagerRoads::nextLeg(const QcVillagePlan &plan, Qc
         return std::nullopt;
     }
 
-    measureFrom(graph, goal);
+    graph.measureFrom(goal);
     ++m_planned;
     // The road cell within reach nearest to the goal along the roads; one no closer than the
     // walker's own road cell is no help.
@@ -143,18 +143,18 @@ int QcVillagerRoads::nearest(const Graph &graph, QcBlockPos pos, bool walker)
     return best;
 }
 
-void QcVillagerRoads::measureFrom(Graph &graph, int start)
+void QcVillagerRoads::Graph::measureFrom(int start)
 {
-    std::ranges::fill(graph.distance, -1);
-    graph.queue.clear();
-    graph.distance[std::size_t(start)] = 0;
-    graph.queue.push_back(start);
-    for (std::size_t head = 0; head < graph.queue.size(); ++head) {
-        const int cell = graph.queue[head];
-        for (const int next : graph.neighbours[std::size_t(cell)]) {
-            if (next >= 0 && graph.distance[std::size_t(next)] < 0) {
-                graph.distance[std::size_t(next)] = graph.distance[std::size_t(cell)] + 1;
-                graph.queue.push_back(next);
+    std::ranges::fill(distance, -1);
+    queue.clear();
+    distance[std::size_t(start)] = 0;
+    queue.push_back(start);
+    for (std::size_t head = 0; head < queue.size(); ++head) {
+        const int cell = queue[head];
+        for (const int next : neighbours[std::size_t(cell)]) {
+            if (next >= 0 && distance[std::size_t(next)] < 0) {
+                distance[std::size_t(next)] = distance[std::size_t(cell)] + 1;
+                queue.push_back(next);
             }
         }
     }

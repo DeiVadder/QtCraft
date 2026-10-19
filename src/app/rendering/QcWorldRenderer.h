@@ -52,7 +52,6 @@ private:
                                                               const QRhiVertexInputLayout &inputLayout, bool translucent);
     void createOutlinePipeline();
     void uploadOutline(QRhiResourceUpdateBatch *updates);
-    void uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, QcGpuBuffers &buffers);
     void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
     // Benchmark: CPU time of the render thread since the last frame and the GPU time.
     void startSample(QRhiCommandBuffer *commandBuffer);

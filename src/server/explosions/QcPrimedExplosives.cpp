@@ -38,7 +38,7 @@ QList<QcPrimedExplosive> QcPrimedExplosives::tick(const QcBlockAccess &world, do
 
         QcEntityMotion &motion = primed.motion;
         motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(motion.position + QcVec3{0.0, size * 0.5, 0.0}));
-        QcPhysics::stepEntity(motion, QcPhysics::Steering{}, QcPhysics::BodySize{size, size}, world, dt);
+        motion.step(QcPhysics::Steering{}, QcPhysics::BodySize{size, size}, world, dt);
         if (QcWorld::isInVoid(motion.position.y)) {
             continue;
         }

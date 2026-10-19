@@ -13,7 +13,7 @@
 class QcShowcaseGenerator : public QcWorldGenerator
 {
 public:
-    explicit QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content, QStringList *warnings = nullptr);
+    explicit QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content);
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override { return m_plan.spawn; }

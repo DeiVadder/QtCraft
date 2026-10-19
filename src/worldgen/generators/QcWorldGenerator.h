@@ -7,6 +7,8 @@
 #include "worldgen/generators/QcWorldSetup.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
+#include <QStringList>
+
 #include <memory>
 #include <optional>
 
@@ -102,4 +104,11 @@ public:
         Q_UNUSED(pos);
         return {};
     }
+    // What could not be resolved when the generator was made (unknown blocks or structures, replaced
+    // by fallbacks or left out); its creator reports it.
+    const QStringList &warnings() const { return m_warnings; }
+
+protected:
+    // Filled by the constructors of the generators.
+    QStringList m_warnings;
 };

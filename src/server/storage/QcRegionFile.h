@@ -59,10 +59,15 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
 [[nodiscard]] QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView magic, quint16 version);
 // One blob, checked against its crc.
 [[nodiscard]] QcResult<QByteArray> readBlob(const QString &path, Entry entry);
+// Every blob of a file, and the chunks whose bytes do not match their checksum.
+struct AllBlobs
+{
+    QList<Blob> blobs;
+    QList<QcChunkPos> damaged;
+};
 // Every blob of the file in one read with the marks and checksum of its entry (rewriting a region
-// keeps the blobs that did not change, damaged ones included); `damaged` gets the chunks whose
-// bytes do not match their checksum.
-[[nodiscard]] QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged = nullptr);
+// keeps the blobs that did not change, damaged ones included).
+[[nodiscard]] QcResult<AllBlobs> readAll(const QString &path, const Index &index);
 // Writes a whole file at `path` (no staging; QcChunkStore stages and renames). Returns the index
 // of what was written.
 [[nodiscard]] QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs);

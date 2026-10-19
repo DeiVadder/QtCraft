@@ -418,27 +418,29 @@ private slots:
         QcEntityRecord record;
         record.chunk = {0, -1};
         record.stands.append({stand, 0});
-        const auto roundTrip = [this](const QcEntityRecord &written, QStringList &warnings) {
-            QSet<QString> reported;
-            return QcEntityCodec::decode(QcEntityCodec::encode(written, *m_content), written.chunk, *m_content, warnings, reported);
+        // The record read back and the warnings of reading it.
+        const auto roundTrip = [this](const QcEntityRecord &written) {
+            QcLoadWarnings warnings;
+            QcResult<QcEntityRecord> read = QcEntityCodec::decode(QcEntityCodec::encode(written, *m_content), written.chunk, *m_content, warnings);
+            return std::pair{std::move(read), warnings.texts()};
         };
-        QStringList warnings;
-        const auto read = roundTrip(record, warnings);
+        const auto [read, warnings] = roundTrip(record);
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         QCOMPARE(read->stands.size(), 1);
         QCOMPARE(read->stands.first().entry, stand);
 
         // A cape the content no longer offers is dropped with a warning; the stand stays.
         record.stands.first().entry.cape = u"oldmod:cape"_s;
-        QCOMPARE(roundTrip(record, warnings)->stands.first().entry, stand);
-        QCOMPARE(warnings.size(), 1);
+        const auto [withCape, capeWarnings] = roundTrip(record);
+        QCOMPARE(withCape->stands.first().entry, stand);
+        QCOMPARE(capeWarnings.size(), 1);
 
         // Armour that does not fit its slot any more is dropped with a warning.
         record.stands.first().entry = stand;
         record.stands.first().entry.equipment.at(QcEquipmentSlot::Feet) = {item("qtcraft:iron_helmet"), 1, 0};
-        warnings.clear();
-        QCOMPARE(roundTrip(record, warnings)->stands.first().entry, stand);
-        QCOMPARE(warnings.size(), 1);
+        const auto [misfit, misfitWarnings] = roundTrip(record);
+        QCOMPARE(misfit->stands.first().entry, stand);
+        QCOMPARE(misfitWarnings.size(), 1);
     }
 
 private:
@@ -574,9 +576,9 @@ private slots:
         QCOMPARE(QcShowcaseArmourArea::sets(*m_content),
                  (QStringList{u"qtcraft:leather"_s, u"qtcraft:golden"_s, u"qtcraft:iron"_s, u"qtcraft:diamond"_s}));
 
-        QStringList warnings;
-        const QcShowcasePlan plan = QcShowcasePlanner(*m_content, &warnings).build();
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        QcShowcasePlanner planner(*m_content);
+        const QcShowcasePlan plan = planner.build();
+        QVERIFY2(planner.warnings().isEmpty(), qPrintable(planner.warnings().join(u'\n')));
         QStringList equipped;
         for (const QcWorldSetup::Stand &stand : plan.setup.stands) {
             for (const QString &property : stand.properties) {

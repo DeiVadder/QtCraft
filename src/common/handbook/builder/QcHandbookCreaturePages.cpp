@@ -6,6 +6,8 @@
 #include "common/handbook/QcHandbookLinks.h"
 
 #include <algorithm>
+#include <optional>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 using Fact = QcHandbookEntry::Fact;
@@ -38,8 +40,9 @@ QString behaviourOf(const QcMobDefinition &mob)
 }
 
 // Behaviour, health, size, speeds and how it attacks.
-void addBodyFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> bodyFacts(const QcHandbookText &text, const QcMobDefinition &mob)
 {
+    QList<Fact> facts;
     facts.append({text.label(u"fact.behaviour"_s), text.label(u"value.mob."_s + behaviourOf(mob)), {}});
     facts.append({text.label(u"fact.health"_s), text.healthPoints(mob.maxHealth), {}});
     facts.append({text.label(u"fact.size"_s), text.label(u"unit.size"_s).arg(text.number(mob.width), text.number(mob.height)), {}});
@@ -60,19 +63,21 @@ void addBodyFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<
         }
         facts.append({text.label(u"fact.sight"_s), text.label(u"unit.metres"_s).arg(text.number(mob.sightRange)), {}});
     }
+    return facts;
 }
 
-// The creature's own cap and the cap of its category from the rules.
-void addCapFact(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fact> &facts)
+// The creature's own cap and the cap of its category from the rules; std::nullopt when it has neither.
+[[nodiscard]] std::optional<Fact> capFact(const QcHandbookText &text, const QcMobDefinition &mob)
 {
     const QString kind = kindOf(mob);
     if (const std::optional<double> cap = text.rule(u"mobs.%1Cap"_s.arg(kind))) {
         const QString categoryCap = text.label(u"value.categoryCap."_s + kind).arg(text.number(*cap));
-        facts.append({text.label(u"fact.cap"_s),
-                      mob.maxCount > 0 ? text.label(u"value.cap"_s).arg(mob.maxCount) + u"; "_s + categoryCap : categoryCap, {}});
-    } else if (mob.maxCount > 0) {
-        facts.append({text.label(u"fact.cap"_s), text.label(u"value.cap"_s).arg(mob.maxCount), {}});
+        return Fact{text.label(u"fact.cap"_s), mob.maxCount > 0 ? text.label(u"value.cap"_s).arg(mob.maxCount) + u"; "_s + categoryCap : categoryCap, {}};
     }
+    if (mob.maxCount > 0) {
+        return Fact{text.label(u"fact.cap"_s), text.label(u"value.cap"_s).arg(mob.maxCount), {}};
+    }
+    return std::nullopt;
 }
 
 // Whether the pieces of the village style place the creature or the style names it among its residents.
@@ -104,13 +109,14 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
 }
 
 // When, where, how many and how often it spawns.
-void addSpawnFacts(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> spawnFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     if (!mob.spawnsNaturally()) {
         const bool villages = !villageStylesOf(context.content, mob).isEmpty();
         facts.append({text.label(u"fact.spawnTime"_s), text.label(villages ? u"value.time.villages"_s : u"value.time.never"_s), {}});
-        return;
+        return facts;
     }
 
     const QString time = mob.spawnTime == QcMobDefinition::SpawnTime::Day     ? u"day"_s
@@ -136,12 +142,16 @@ void addSpawnFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
 
     facts.append({text.label(u"fact.group"_s), text.label(u"value.group"_s).arg(mob.maxGroup), {}});
     facts.append({text.label(u"fact.weight"_s), text.number(mob.spawnWeight), {}});
-    addCapFact(text, mob, facts);
+    if (std::optional<Fact> cap = capFact(text, mob)) {
+        facts.append(std::move(*cap));
+    }
+    return facts;
 }
 
 // Flying, glowing, catching and drops.
-void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> traitFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     const QcHandbookLinks &links = context.links;
 
@@ -179,11 +189,13 @@ void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
         drops.value = text.label(u"value.nothing"_s);
     }
     facts.append(std::move(drops));
+    return facts;
 }
 
 // Taming, what a pet does, shyness and packs (decision E-480).
-void addCompanionFacts(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Fact> &facts)
+[[nodiscard]] QList<Fact> companionFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
+    QList<Fact> facts;
     const QcHandbookText &text = context.text;
     if (mob.tameable) {
         const QcTameDefinition &tame = *mob.tameable;
@@ -222,14 +234,16 @@ void addCompanionFacts(const QcHandbookContext &context, const QcMobDefinition &
     if (mob.packRange > 0.0) {
         facts.append({text.label(u"fact.pack"_s), text.label(u"value.pack"_s).arg(text.number(mob.packRange)), {}});
     }
+    return facts;
 }
 
 // The blocks and biomes it spawns on.
-void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Section> &sections)
+[[nodiscard]] QList<Section> spawnSections(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
+    QList<Section> sections;
     const QcHandbookText &text = context.text;
     if (!mob.spawnsNaturally()) {
-        return;
+        return sections;
     }
 
     Section spawnsOn{text.label(u"section.spawnBlocks"_s), {}, {}, {}};
@@ -239,7 +253,7 @@ void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &m
     if (spawnsOn.links.isEmpty()) {
         spawnsOn.text = text.label(mob.flying ? u"value.anySolidOrLiquid"_s : u"value.anySolid"_s);
     }
-    QcHandbookLinks::sortLinks(spawnsOn.links);
+    spawnsOn.links = QcHandbookLinks::sortedLinks(std::move(spawnsOn.links));
     sections.append(std::move(spawnsOn));
 
     Section biomes{text.label(u"section.spawnBiomes"_s), {}, {}, {}};
@@ -248,19 +262,21 @@ void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &m
             biomes.links.append(context.links.biomeLink(biome));
         }
     }
-    QcHandbookLinks::sortLinks(biomes.links);
+    biomes.links = QcHandbookLinks::sortedLinks(std::move(biomes.links));
     if (mob.spawnBiomes.isEmpty()) {
         biomes.text = text.label(u"value.allBiomes"_s);
     }
     sections.append(std::move(biomes));
+    return sections;
 }
 
-// The biomes of the village styles that place it (a cat in the large houses).
-void addVillageSection(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Section> &sections)
+// The biomes of the village styles that place it (a cat in the large houses); std::nullopt when
+// none does.
+[[nodiscard]] std::optional<Section> villageSection(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
     const QList<const QcVillageStyleDefinition *> styles = villageStylesOf(context.content, mob);
     if (styles.isEmpty()) {
-        return;
+        return std::nullopt;
     }
 
     Section villages{context.text.label(u"section.villages"_s), {}, {}, {}};
@@ -269,11 +285,11 @@ void addVillageSection(const QcHandbookContext &context, const QcMobDefinition &
             villages.links.append(context.links.biomeLink(biome));
         }
     }
-    QcHandbookLinks::sortLinks(villages.links);
+    villages.links = QcHandbookLinks::sortedLinks(std::move(villages.links));
     if (std::ranges::any_of(styles, &QcVillageStyleDefinition::fallback)) {
         villages.text = context.text.label(u"value.villageFallback"_s);
     }
-    sections.append(std::move(villages));
+    return villages;
 }
 
 // Further places and times (slimes on swamp surfaces at night): conditions as text, biomes and
@@ -329,13 +345,15 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.text = text.description(mob.descriptionKey, mob.name);
     entry.facts.append({text.label(u"fact.id"_s), mob.name, {}});
 
-    addBodyFacts(text, mob, entry.facts);
-    addSpawnFacts(context, mob, entry.facts);
-    addTraitFacts(context, mob, entry.facts);
-    addCompanionFacts(context, mob, entry.facts);
+    entry.facts += bodyFacts(text, mob);
+    entry.facts += spawnFacts(context, mob);
+    entry.facts += traitFacts(context, mob);
+    entry.facts += companionFacts(context, mob);
 
-    addSpawnSections(context, mob, entry.sections);
-    addVillageSection(context, mob, entry.sections);
+    entry.sections += spawnSections(context, mob);
+    if (std::optional<Section> villages = villageSection(context, mob)) {
+        entry.sections.append(std::move(*villages));
+    }
     for (const QcMobDefinition::SpawnRule &rule : mob.extraSpawns) {
         entry.sections.append(extraSpawnSection(context, rule));
     }

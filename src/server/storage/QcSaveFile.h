@@ -20,11 +20,15 @@ inline constexpr quint16 baseVersion = 1;
 [[nodiscard]] QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion);
 // The bytes write() puts into a file.
 QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion);
-// `version` receives the file's format version, at most `newestVersion`.
-[[nodiscard]] QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion, quint16 *version = nullptr);
+// The payload of a file and its format version (at most the newest one the reader asked for).
+struct Payload
+{
+    QByteArray bytes;
+    quint16 version = baseVersion;
+};
+[[nodiscard]] QcResult<Payload> read(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion);
 // The same for the bytes of a file (`path` names it in messages).
-[[nodiscard]] QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion,
-                           quint16 *version = nullptr);
+[[nodiscard]] QcResult<Payload> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion);
 // An item stack by item name, count and damage; empty stacks and invalid items as an empty name.
 void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content);
 

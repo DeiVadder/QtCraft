@@ -18,15 +18,15 @@ QString swappedState(const QString &state, const QHash<QString, QString> &swaps)
 
 } // namespace
 
-QcResult<QcPieceVariation> QcPieceVariation::resolve(const QcStructureDefinition &definition, const QcContentRegistry &content,
-                                                     QStringList *warnings)
+QcPieceVariation::Resolved QcPieceVariation::resolve(const QcStructureDefinition &definition, const QcContentRegistry &content)
 {
-    QcResult<QcStructure> base = QcStructure::fromDefinition(definition, content, warnings);
+    QcStructure::Loaded base = QcStructure::fromDefinition(definition, content);
     if (!base) {
-        return qcError(base.error());
+        return std::unexpected(std::move(base.error()));
     }
 
     QcPieceVariation variation;
+    variation.m_warnings = base->warnings();
     variation.m_base = std::make_shared<const QcStructure>(std::move(*base));
     if (definition.choices.isEmpty() && definition.parts.isEmpty()) {
         return variation;
@@ -40,7 +40,7 @@ QcResult<QcPieceVariation> QcPieceVariation::resolve(const QcStructureDefinition
     for (const QcStructureDefinition::Choice &choice : definition.choices) {
         QList<Option> options;
         for (const QHash<QString, QString> &swaps : choice.options) {
-            options.append(resolveOption(definition, swaps, content, warnings));
+            options.append(variation.resolveOption(definition, swaps, content));
         }
         variation.m_choices.append(std::move(options));
     }
@@ -49,7 +49,7 @@ QcResult<QcPieceVariation> QcPieceVariation::resolve(const QcStructureDefinition
 }
 
 QcPieceVariation::Option QcPieceVariation::resolveOption(const QcStructureDefinition &definition, const QHash<QString, QString> &swaps,
-                                                         const QcContentRegistry &content, QStringList *warnings)
+                                                         const QcContentRegistry &content)
 {
     Option option;
     option.mobs = swaps;
@@ -60,8 +60,8 @@ QcPieceVariation::Option QcPieceVariation::resolveOption(const QcStructureDefini
         }
         if (const std::optional<QcBlockId> id = content.stateId(state)) {
             option.states.append({i, *id});
-        } else if (warnings) {
-            warnings->append(u"structure '%1': unknown block '%2' in a choice"_s.arg(definition.name, state));
+        } else {
+            m_warnings.append(u"structure '%1': unknown block '%2' in a choice"_s.arg(definition.name, state));
         }
     }
     return option;

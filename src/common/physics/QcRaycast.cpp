@@ -108,6 +108,27 @@ struct Traversal
     double travelled = 0.0;
     // Face through which the ray entered the current cell.
     QcBlockFace face = QcBlockFace::Up;
+
+    // Moves to the next cell along the ray.
+    void advance()
+    {
+        if (nextX < nextY && nextX < nextZ) {
+            cell.x += stepX;
+            travelled = nextX;
+            nextX += deltaX;
+            face = stepX > 0 ? QcBlockFace::West : QcBlockFace::East;
+        } else if (nextY < nextZ) {
+            cell.y += stepY;
+            travelled = nextY;
+            nextY += deltaY;
+            face = stepY > 0 ? QcBlockFace::Down : QcBlockFace::Up;
+        } else {
+            cell.z += stepZ;
+            travelled = nextZ;
+            nextZ += deltaZ;
+            face = stepZ > 0 ? QcBlockFace::North : QcBlockFace::South;
+        }
+    }
 };
 
 Traversal startTraversal(const QcVec3 &origin, const QcVec3 &dir)
@@ -127,27 +148,6 @@ Traversal startTraversal(const QcVec3 &origin, const QcVec3 &dir)
     t.nextY = t.stepY > 0 ? (t.cell.y + 1 - origin.y) * t.deltaY : (t.stepY < 0 ? (origin.y - t.cell.y) * t.deltaY : infinity);
     t.nextZ = t.stepZ > 0 ? (t.cell.z + 1 - origin.z) * t.deltaZ : (t.stepZ < 0 ? (origin.z - t.cell.z) * t.deltaZ : infinity);
     return t;
-}
-
-// Moves to the next cell along the ray.
-void advance(Traversal &t)
-{
-    if (t.nextX < t.nextY && t.nextX < t.nextZ) {
-        t.cell.x += t.stepX;
-        t.travelled = t.nextX;
-        t.nextX += t.deltaX;
-        t.face = t.stepX > 0 ? QcBlockFace::West : QcBlockFace::East;
-    } else if (t.nextY < t.nextZ) {
-        t.cell.y += t.stepY;
-        t.travelled = t.nextY;
-        t.nextY += t.deltaY;
-        t.face = t.stepY > 0 ? QcBlockFace::Down : QcBlockFace::Up;
-    } else {
-        t.cell.z += t.stepZ;
-        t.travelled = t.nextZ;
-        t.nextZ += t.deltaZ;
-        t.face = t.stepZ > 0 ? QcBlockFace::North : QcBlockFace::South;
-    }
 }
 
 bool isTarget(const QcBlockDefinition &definition, Targets targets)
@@ -250,7 +250,7 @@ FaceHit nearestHit(const Ray &ray, const QList<QcAabb> &boxes, QcBlockPos cell, 
                 return hit;
             }
         }
-        advance(t);
+        t.advance();
     }
     return std::nullopt;
 }

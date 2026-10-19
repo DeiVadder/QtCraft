@@ -68,10 +68,9 @@ void QcServerHoppers::tick()
         return;
     }
 
-    QSet<QcBlockPos> moved;
     QcInventoryAccess access(m_state);
-    push(hoppers, access, moved);
-    pull(hoppers, access, moved);
+    QSet<QcBlockPos> moved = push(hoppers, access);
+    moved.unite(pull(hoppers, access));
 
     // Moved: rest for the cooldown, then look again. Nothing to do: sleep until woken.
     for (const QcBlockPos &hopper : std::as_const(moved)) {
@@ -132,8 +131,7 @@ void QcServerHoppers::wakeAround()
 QList<QcBlockPos> QcServerHoppers::actors()
 {
     QcHopperQueue &hoppers = m_state.hoppers();
-    QSet<QcBlockPos> due;
-    hoppers.takeDue(m_state.clock().tick(), due);
+    const QSet<QcBlockPos> due = hoppers.takeDue(m_state.clock().tick());
     m_stats.woken = due.size();
 
     QList<QcBlockPos> ready;
@@ -170,8 +168,9 @@ QList<QcBlockPos> QcServerHoppers::actors()
     return ready;
 }
 
-void QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access, QSet<QcBlockPos> &moved)
+QSet<QcBlockPos> QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access)
 {
+    QSet<QcBlockPos> moved;
     QList<QcInventoryAccess::Insertion> wanted;
     QList<std::pair<QcBlockPos, int>> sources;
     for (const QcBlockPos &hopper : hoppers) {
@@ -217,9 +216,10 @@ void QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
             startCooldown(target);
         }
     }
+    return moved;
 }
 
-void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access, QSet<QcBlockPos> &moved)
+QSet<QcBlockPos> QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access)
 {
     // All decided on the world after the pushes, then applied: an item moves one hopper per step.
     // A hopper that was empty and got an item in the push step rests now (as in the reference).
@@ -229,8 +229,11 @@ void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
         if (readyAt(hopper) > m_state.clock().tick()) {
             continue;
         }
-        if (std::optional<Pull> pull = pullFor(hopper, access, searching)) {
-            pulls.append(*pull);
+        const Intake intake = pullFor(hopper, access);
+        if (intake.pull) {
+            pulls.append(*intake.pull);
+        } else if (intake.searches) {
+            searching.append(hopper);
         }
     }
 
@@ -242,12 +245,14 @@ void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
         }
     }
 
+    QSet<QcBlockPos> moved;
     for (const Pull &pull : std::as_const(pulls)) {
         if (apply(pull, access)) {
             moved.insert(pull.hopper);
         }
     }
     access.finish();
+    return moved;
 }
 
 bool QcServerHoppers::apply(const Pull &pull, QcInventoryAccess &access)
@@ -272,11 +277,11 @@ bool QcServerHoppers::apply(const Pull &pull, QcInventoryAccess &access)
     return true;
 }
 
-std::optional<QcServerHoppers::Pull> QcServerHoppers::pullFor(QcBlockPos hopper, QcInventoryAccess &access, QList<QcBlockPos> &searching) const
+QcServerHoppers::Intake QcServerHoppers::pullFor(QcBlockPos hopper, QcInventoryAccess &access) const
 {
     // The hopper gets its entry before it decides to take anything.
     if (!access.ensure(hopper)) {
-        return std::nullopt;
+        return {};
     }
 
     const QcBlockPos above = hopper.offset(0, 1, 0);
@@ -289,17 +294,14 @@ std::optional<QcServerHoppers::Pull> QcServerHoppers::pullFor(QcBlockPos hopper,
             const bool takes = !source[slot].isEmpty() && access.mayTakeOut(above, slot, unit);
             const int into = takes ? access.slotFor(hopper, stacks, allSlots(stacks.size()), unit) : -1;
             if (into >= 0) {
-                return Pull{hopper, above, slot, 0, unit, {{into, 1}}};
+                return {Pull{hopper, above, slot, 0, unit, {{into, 1}}}, false};
             }
         }
-        return std::nullopt;
+        return {};
     }
 
     // A block filling its cell leaves no room for items above the hopper: no search at all.
-    if (!fillsCell(m_state.world().blockAt(above).value_or(qcAirBlockId))) {
-        searching.append(hopper);
-    }
-    return std::nullopt;
+    return {std::nullopt, !fillsCell(m_state.world().blockAt(above).value_or(qcAirBlockId))};
 }
 
 std::optional<QcServerHoppers::Pull> QcServerHoppers::pickUp(QcBlockPos hopper, QcInventoryAccess &access)

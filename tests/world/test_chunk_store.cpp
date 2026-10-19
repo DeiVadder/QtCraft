@@ -114,17 +114,16 @@ private slots:
         QVERIFY(again.catalog().value({5, -3}).has(QcChunkStore::Kind::Blocks));
         const QcResult<QcChunkStore::Blobs> blobs = again.read({5, -3});
         QVERIFY(blobs.has_value());
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<std::shared_ptr<QcChunk>> back = QcChunkCodec::decode(*blobs->data[0], {5, -3}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<std::shared_ptr<QcChunk>> back = QcChunkCodec::decode(*blobs->data[0], {5, -3}, *m_content, warnings);
         QVERIFY(back.has_value());
         QCOMPARE((*back)->block(1, 70, 1), *m_content->blockId(u"qtcraft:glass"_s));
-        const QcResult<QcBlockEntityRecord> entries = QcBlockEntityCodec::decode(*blobs->data[1], {5, -3}, *m_content, warnings, reported);
+        const QcResult<QcBlockEntityRecord> entries = QcBlockEntityCodec::decode(*blobs->data[1], {5, -3}, *m_content, warnings);
         QCOMPARE(entries->blockUpdates, record.blockUpdates);
 
         // Data at the wrong place is damage.
-        QVERIFY(!QcChunkCodec::decode(*blobs->data[0], {6, -3}, *m_content, warnings, reported).has_value());
-        QVERIFY(!QcBlockEntityCodec::decode(*blobs->data[1], {6, -3}, *m_content, warnings, reported).has_value());
+        QVERIFY(!QcChunkCodec::decode(*blobs->data[0], {6, -3}, *m_content, warnings).has_value());
+        QVERIFY(!QcBlockEntityCodec::decode(*blobs->data[1], {6, -3}, *m_content, warnings).has_value());
     }
 
     // A save is written as one (decision E-373): before its journal nothing of it counts, after it
@@ -273,18 +272,16 @@ private slots:
         for (const QcChunkPos &pos : chunks) {
             const QcResult<QcChunkStore::Blobs> blobs = again.read(pos);
             QVERIFY2(blobs.has_value(), qcErrorText(blobs).constData());
-            QStringList warnings;
-            QSet<QString> reported;
-            const QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*blobs->data[0], pos, *m_content, warnings, reported);
+            QcLoadWarnings warnings;
+            const QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*blobs->data[0], pos, *m_content, warnings);
             QVERIFY2(chunk.has_value(), qPrintable(u"chunk %1, %2"_s.arg(pos.x).arg(pos.z)));
             if (expected.contains(pos)) {
                 QCOMPARE((*chunk)->block(0, expected.value(pos), 0), glass);
             }
         }
         const QcResult<QcChunkStore::Blobs> grown = again.read({1, 0});
-        QStringList warnings;
-        QSet<QString> reported;
-        QCOMPARE((*QcChunkCodec::decode(*grown->data[0], {1, 0}, *m_content, warnings, reported))->block(95 % 16, 95, 3), glass);
+        QcLoadWarnings warnings;
+        QCOMPARE((*QcChunkCodec::decode(*grown->data[0], {1, 0}, *m_content, warnings))->block(95 % 16, 95, 3), glass);
     }
 
     // A damaged blob kept while its region is written again keeps its old checksum, so it stays

@@ -6,6 +6,7 @@
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "QcTestUtil.h"
 
 #include <QBuffer>
 #include <QJsonObject>
@@ -201,10 +202,9 @@ private slots:
     // alpha 1 and leave their background alone; checked on 28-inventory-*.png, decision E-332.)
     void iconsDoNotShowTheTransparentColours()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**content);
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry);
         const QImage &level = atlas.levelForTile(QcBlockIcon::sourceTileSize);
         QImage black = level;
         for (int y = 0; y < black.height(); ++y) {
@@ -217,10 +217,10 @@ private slots:
         }
         QVERIFY(black != level);
 
-        const QcBlockRenderTable table(**content, atlas);
-        const std::optional<QcBlockId> leaves = (*content)->blockId(u"qtcraft:oak_leaves"_s);
+        const QcBlockRenderTable table(*content->registry, atlas);
+        const std::optional<QcBlockId> leaves = content->registry->blockId(u"qtcraft:oak_leaves"_s);
         QVERIFY(leaves.has_value());
-        const QcBlockRenderTable::Entry &entry = table.entry(QcFigureLook::itemState(**content, *leaves));
+        const QcBlockRenderTable::Entry &entry = table.entry(QcFigureLook::itemState(*content->registry, *leaves));
         const QImage filledIcon = QcBlockIcon::render(entry, QcBlockIcon::shadedAtlases(level));
         const QImage blackIcon = QcBlockIcon::render(entry, QcBlockIcon::shadedAtlases(black));
         QCOMPARE(filledIcon.convertToFormat(QImage::Format_ARGB32_Premultiplied), blackIcon.convertToFormat(QImage::Format_ARGB32_Premultiplied));
@@ -236,10 +236,9 @@ private slots:
     // carry their colour into their transparent texels and the smaller levels.
     void plantTilesHaveNoBlackTransparentTexels()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**content, {});
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, {});
         for (const QString &name : {u"qtcraft:tall_grass"_s, u"qtcraft:poppy"_s, u"qtcraft:oak_leaves"_s, u"qtcraft:dandelion"_s}) {
             const QRectF uv = atlas.uv(name);
             QVERIFY2(uv != atlas.uv(u"t:unknown"_s), qPrintable(name));

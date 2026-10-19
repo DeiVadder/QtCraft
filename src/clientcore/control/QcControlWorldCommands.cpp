@@ -28,31 +28,32 @@ QJsonObject stateJson(const QcContentRegistry &content, QcBlockId id)
     return state;
 }
 
-// Appends the block at `pos` unless it is air or not loaded.
-void appendBlock(QJsonArray &blocks, const QcClientWorld &world, QcBlockPos pos)
+// The block at `pos`; none for air or a block that is not loaded.
+[[nodiscard]] std::optional<QJsonObject> blockJson(const QcClientWorld &world, QcBlockPos pos)
 {
     const QcContentRegistry &content = world.content();
     const std::optional<QcBlockId> id = world.blockAt(pos);
     if (!id || *id == qcAirBlockId) {
-        return;
+        return std::nullopt;
     }
 
     QJsonObject entry{{u"x"_s, pos.x}, {u"y"_s, pos.y}, {u"z"_s, pos.z}, {u"block"_s, content.block(*id).name}};
     if (!content.block(*id).properties.isEmpty()) {
         entry.insert(u"state"_s, stateJson(content, *id));
     }
-    blocks.append(entry);
+    return entry;
 }
 
 // Every non-air block in the cube of `radius` around `centre`.
 QJsonArray blocksAround(const QcClientWorld &world, QcBlockPos centre, int radius)
 {
     QJsonArray blocks;
-    for (int dx = -radius; dx <= radius; ++dx) {
-        for (int dy = -radius; dy <= radius; ++dy) {
-            for (int dz = -radius; dz <= radius; ++dz) {
-                appendBlock(blocks, world, centre.offset(dx, dy, dz));
-            }
+    // The cells of the cube in the order x, y, z (z fastest).
+    const int side = 2 * radius + 1;
+    for (int cell = 0; cell < side * side * side; ++cell) {
+        const QcBlockPos pos = centre.offset(cell / (side * side) - radius, cell / side % side - radius, cell % side - radius);
+        if (const std::optional<QJsonObject> block = blockJson(world, pos)) {
+            blocks.append(*block);
         }
     }
     return blocks;

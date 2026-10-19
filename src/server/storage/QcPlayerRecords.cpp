@@ -7,10 +7,10 @@
 
 namespace QcPlayerRecords {
 
-QcPlayerData of(const QcServerClient &client, const QcContentRegistry &content, int &lost)
+Record of(const QcServerClient &client, const QcContentRegistry &content)
 {
-    lost = 0;
-    QcPlayerData player;
+    Record record;
+    QcPlayerData &player = record.player;
     player.motion = client.motion;
     player.yaw = client.yaw;
     player.pitch = client.pitch;
@@ -20,7 +20,7 @@ QcPlayerData of(const QcServerClient &client, const QcContentRegistry &content, 
     // open grid itself is not saved.
     for (const QcItemStack &cell : client.crafting.grid) {
         if (!cell.isEmpty()) {
-            lost += player.inventory.add(cell.item, cell.count, content, cell.damage);
+            record.lost += player.inventory.add(cell.item, cell.count, content, cell.damage);
         }
     }
 
@@ -33,7 +33,7 @@ QcPlayerData of(const QcServerClient &client, const QcContentRegistry &content, 
     player.keptEquipment = client.keptEquipment;
     player.experience = client.experience;
     player.effects = client.effects.all();
-    return player;
+    return record;
 }
 
 void restore(QcServerClient &client, const QcPlayerData &player)

@@ -2,18 +2,21 @@
 
 namespace {
 
-// A channel with differing cells keeps them; a uniform one is reduced to its level.
-void reduce(std::shared_ptr<const QcLightNibbles> &cells, quint8 &uniform)
+// One channel of a section: its cells, or null when all cells have the level `uniform`.
+struct ReducedChannel
 {
-    if (!cells) {
-        return;
-    }
+    std::shared_ptr<const QcLightNibbles> cells;
+    quint8 uniform = 0;
+};
 
-    const int level = cells->uniformLevel();
+// A channel with differing cells keeps them; a uniform one is reduced to its level.
+[[nodiscard]] ReducedChannel reduced(std::shared_ptr<const QcLightNibbles> cells, quint8 uniform)
+{
+    const int level = cells ? cells->uniformLevel() : -1;
     if (level >= 0) {
-        uniform = quint8(level);
-        cells.reset();
+        return {nullptr, quint8(level)};
     }
+    return {std::move(cells), uniform};
 }
 
 } // namespace
@@ -33,9 +36,11 @@ QByteArray QcSectionLight::texels() const
 QcSectionLight QcSectionLight::fromChannels(std::shared_ptr<const QcLightNibbles> block, std::shared_ptr<const QcLightNibbles> sky)
 {
     QcSectionLight light;
-    light.block = std::move(block);
-    light.sky = std::move(sky);
-    reduce(light.block, light.uniformBlock);
-    reduce(light.sky, light.uniformSky);
+    ReducedChannel blockChannel = reduced(std::move(block), light.uniformBlock);
+    ReducedChannel skyChannel = reduced(std::move(sky), light.uniformSky);
+    light.block = std::move(blockChannel.cells);
+    light.uniformBlock = blockChannel.uniform;
+    light.sky = std::move(skyChannel.cells);
+    light.uniformSky = skyChannel.uniform;
     return light;
 }

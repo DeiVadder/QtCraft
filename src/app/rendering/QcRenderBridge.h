@@ -3,6 +3,7 @@
 #include "app/rendering/QcEntityFrameBuilder.h"
 #include "clientcore/camera/QcFovEffect.h"
 #include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/weather/QcDropPool.h"
 #include "clientcore/weather/QcPrecipitationField.h"
 
 #include <QString>
@@ -57,9 +58,7 @@ private:
     QcEntityFrameBuilder m_entities;
     QcFovEffect m_fov;
     QcPrecipitationField m_precipitation{QcPrecipitationField::selectedBudget()};
-    // Lists of drops handed to the view: the view keeps the latest, the renderer the one it last
-    // copied, so a third is always free to be filled again and a frame allocates nothing (E-397).
-    std::array<std::shared_ptr<QList<QcPrecipitationDrop>>, 3> m_dropLists;
+    QcDropPool m_drops;
     bool m_outlineHidden = false;
     bool m_handHidden = false;
 };

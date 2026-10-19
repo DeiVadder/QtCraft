@@ -2,6 +2,8 @@
 
 #include <QDataStream>
 
+#include <optional>
+
 // Bounds for counts read from untrusted streams (network, save files), so corrupt input cannot
 // trigger huge allocations.
 namespace QcStreamLimits {
@@ -14,18 +16,20 @@ inline constexpr quint32 maxDefinitions = 1u << 16;
 // copy) through; the base game holds about 2,600.
 inline constexpr quint32 maxTranslations = 1u << 18;
 
-// Reads a quint32 count and checks it against `limit`; sets the stream to ReadCorruptData otherwise.
-inline bool readCount(QDataStream &stream, quint32 limit, quint32 &count)
+// Reads a quint32 count and checks it against `limit`: the count, or std::nullopt when the stream
+// fails or the count is above the limit (the stream is then set to ReadCorruptData).
+[[nodiscard]] inline std::optional<quint32> readCount(QDataStream &stream, quint32 limit)
 {
+    quint32 count = 0;
     stream >> count;
     if (stream.status() != QDataStream::Ok) {
-        return false;
+        return std::nullopt;
     }
     if (count > limit) {
         stream.setStatus(QDataStream::ReadCorruptData);
-        return false;
+        return std::nullopt;
     }
-    return true;
+    return count;
 }
 
 } // namespace QcStreamLimits

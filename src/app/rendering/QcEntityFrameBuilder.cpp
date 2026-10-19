@@ -209,8 +209,8 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         body.capeSway = cape.sway;
     }
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
-    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(frame.content, entity.equipment, look);
-    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body, placement, frame.uv);
+    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
@@ -292,8 +292,8 @@ void QcEntityFrameBuilder::appendStand(QcEntityMesh &mesh, const QcClientEntity 
 
     look.cape = QcFigureLook::cape(frame.content, entity.appearance.cape);
     const std::optional<QcEntityMesher::ItemLook> held = entity.stand.arms ? heldLook(entity.held) : std::nullopt;
-    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::standArmour(frame.content, entity.equipment, look);
-    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour, QcFigureLook::standHiddenBones(entity.stand)},
+    const QcFigureLook::Dressed dressed = QcFigureLook::standArmour(frame.content, entity.equipment, std::move(look));
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour, QcFigureLook::standHiddenBones(entity.stand)},
                                 QcFigureLook::standBody(entity.stand, frame.seconds), placement, frame.uv);
 }
 
@@ -316,12 +316,11 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
     const QcVec3 feet = lerp(session.previousPlayerMotion().position, session.playerMotion().position, frame.alpha);
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    QcEntityMesher::ModelLook look = playerLook(m_settings.character()->appearance());
-    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(frame.content, session.equipment(), look);
+    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.equipment(), playerLook(m_settings.character()->appearance()));
     const QcEntityPose pose = localPose(frame.alpha);
 
     QcAnimator::BodyPose body = QcAnimator::animateBody(pose, frame.seconds);
-    if (look.cape) {
+    if (dressed.look.cape) {
         const QcCapeDrive drive = localCapeDrive(pose);
         QcCapeSwing::Angles cape = m_capes.advance(QcCapeTracker::localPlayer, drive);
         if (!m_forcedPose.isEmpty()) {
@@ -331,7 +330,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeLift = cape.lift;
         body.capeSway = cape.sway;
     }
-    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body,
+    QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
                                 {feet, double(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});

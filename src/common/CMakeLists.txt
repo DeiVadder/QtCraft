@@ -20,7 +20,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcFarmingDefinitions.h
     content/definitions/QcFireDefinition.h
     content/definitions/QcHitEffect.h
-    content/definitions/QcItemDefinition.h
+    content/definitions/QcItemDefinition.h content/definitions/QcItemDefinition.cpp
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
     content/definitions/QcLootTableDefinition.h
@@ -70,7 +70,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcLootTableParser.h content/parser/QcLootTableParser.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
-    content/parser/QcMobTraitsParser.h content/parser/QcMobTraitsParser.cpp
+    content/parser/QcMobReader.h content/parser/QcMobReader.cpp content/parser/QcMobReaderTraits.cpp
     content/parser/QcProjectileParser.h content/parser/QcProjectileParser.cpp
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
@@ -98,6 +98,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
     content/registry/QcLootTables.h content/registry/QcLootTables.cpp
     content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
+    content/registry/QcNamedList.h
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
     content/registry/QcSpawnerContent.h content/registry/QcSpawnerContent.cpp
@@ -137,6 +138,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcMining.h gameplay/QcMining.cpp
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
+    gameplay/QcSlotList.h gameplay/QcSlotList.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcStatusEffects.h gameplay/QcStatusEffects.cpp
 )
@@ -148,6 +150,7 @@ target_sources(qc_common PRIVATE
     handbook/QcHandbookLinks.h handbook/QcHandbookLinks.cpp
     handbook/QcHandbookMarkdown.h handbook/QcHandbookMarkdown.cpp
     handbook/QcHandbookWeb.h handbook/QcHandbookWeb.cpp
+    handbook/QcLinkList.h handbook/QcLinkList.cpp
 )
 target_sources(qc_common PRIVATE
     handbook/builder/QcHandbookBlockPages.h handbook/builder/QcHandbookBlockPages.cpp

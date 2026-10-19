@@ -63,7 +63,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
             m_brains.push_back(&m_guardians);
             break;
         }
-        // A tameable kind (passive or neutral, QcMobTraitsParser) thinks tame or wild (decision E-480).
+        // A tameable kind (passive or neutral, QcMobReader) thinks tame or wild (decision E-480).
         if (definition.tameable) {
             m_brains.back() = definition.ai == QcMobDefinition::Ai::Neutral ? &m_tameNeutral : &m_tamePassive;
         }
@@ -75,7 +75,7 @@ void QcMobBehaviour::setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, q
     m_paths.setLimits(nodesPerTick, nodesPerSearch, pathLength);
 }
 
-QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world,
+QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, QcServerWorld &world,
                                                     const QList<QcMobManager::PlayerView> &players, Clock clock)
 {
     QList<QcMobManager::PlayerHit> hits;
@@ -86,7 +86,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(QList<QcCreature> &mobs, QcS
     m_tiers = {};
     ++m_tick;
 
-    for (qsizetype i = 0; i < mobs.size(); ++i) {
+    for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
         if (!mobs[i].dormant) {
@@ -174,8 +174,7 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
         steering = withoutThinking(mob, definition, context, false);
         break;
     }
-    steerApart(index, mob, context.world, steering);
-    walk(mob, definition, context.world, steering);
+    walk(mob, definition, context.world, withCrowd(index, mob, context.world, steering));
 }
 
 void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world)
@@ -190,15 +189,17 @@ void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDe
     // falls, sinks and is knocked back, but never steers, jumps or swims (walk).
     QcMobUpkeep::leaveBlocks(mob, definition, world);
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
-    QcPhysics::Steering steering{{}, 0.0};
-    steerApart(index, mob, world, steering);
-    walk(mob, definition, world, steering);
+    walk(mob, definition, world, withCrowd(index, mob, world, QcPhysics::Steering{{}, 0.0}));
 }
 
 QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
                                                     bool coasts)
 {
-    if (QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world, *context.hits)) {
+    const QcMobSteering::Melee melee = QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world);
+    if (melee.hit) {
+        context.hits->append(*melee.hit);
+    }
+    if (melee.struck) {
         return {{}, definition.chaseSpeed};
     }
     if (!coasts) {
@@ -216,12 +217,13 @@ QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMob
     return steering;
 }
 
-void QcMobBehaviour::steerApart(qsizetype index, const QcCreature &mob, const QcServerWorld &world, QcPhysics::Steering &steering) const
+QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature &mob, const QcServerWorld &world,
+                                              QcPhysics::Steering steering) const
 {
     // The crowd pushes apart, but not off a cliff.
     const QcVec3 push = m_crowd.push(index, mob, m_content->mobs()[mob.type].width * 0.5);
     if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[std::size_t(mob.type)]})) {
-        return;
+        return steering;
     }
 
     steering.wish += push * QcMobCrowd::strength;
@@ -229,6 +231,7 @@ void QcMobBehaviour::steerApart(qsizetype index, const QcCreature &mob, const Qc
         steering.wish = steering.wish.normalized();
     }
     steering.speed = std::max(steering.speed, m_content->mobs()[mob.type].walkSpeed);
+    return steering;
 }
 
 void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering)
@@ -249,7 +252,7 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
     }
     const bool climbsWalls = definition.abilities.climbs == QcMobAbilities::Climbing::Walls;
     const QcPhysics::MoveResult move =
-        QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{.wish = steering.wish,
+        mob.motion.step(QcPhysics::Steering{.wish = steering.wish,
                                                     .speed = steering.speed,
                                                     .jump = jump,
                                                     .hold = steering.hold,

@@ -107,6 +107,9 @@ struct QcWorldInfo
     QList<QcChunkPos> forcedChunks;
     // Every chunk loader block of the world in the order they were placed (decision E-377).
     QList<QcChunkLoaders::Loader> chunkLoaders;
+
+    // Takes the game rules of world.json ("gameRules"); a missing rule gets its default.
+    void readGameRules(const QJsonObject &rules);
 };
 
 // Reads and writes the files of one world directory besides its chunks: world.json, players
@@ -137,15 +140,12 @@ public:
 
     // Player files (QcPlayerStorage).
     static QString playerFileName(const QString &playerName) { return QcPlayerStorage::fileName(playerName); }
-    [[nodiscard]] QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const
-    {
-        return m_players.read(playerName, warnings);
-    }
+    [[nodiscard]] QcPlayerStorage::Result readPlayer(const QString &playerName) const { return m_players.read(playerName); }
     [[nodiscard]] QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
     QByteArray playerBytes(const QcPlayerData &player) const { return m_players.bytes(player); }
-    [[nodiscard]] QcResult<std::optional<QcPlayerData>> parsePlayer(const QString &playerName, const std::optional<QByteArray> &file, QStringList &warnings) const
+    [[nodiscard]] QcPlayerStorage::Result parsePlayer(const QString &playerName, const std::optional<QByteArray> &file) const
     {
-        return m_players.parse(playerName, file, warnings);
+        return m_players.parse(playerName, file);
     }
 
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing

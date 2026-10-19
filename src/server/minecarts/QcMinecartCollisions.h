@@ -37,7 +37,8 @@ struct Pair
 // After the carts moved from `before` (their positions at the start of the tick, by table index):
 // takes back as much of each cart's step as it needs so no pair of `pairs` ends closer along its line
 // than it started, sharing the take-back between the carts that moved towards each other. A cart
-// keeps the same share of its speed as of its step.
-void keepApart(QList<QcMinecart> &carts, const QList<Pair> &pairs, const QList<QcVec3> &before);
+// keeps the same share of its speed as of its step. Takes the carts and gives them back (moved in
+// and out, no copy).
+[[nodiscard]] QList<QcMinecart> keptApart(QList<QcMinecart> carts, const QList<Pair> &pairs, const QList<QcVec3> &before);
 
 } // namespace QcMinecartCollisions

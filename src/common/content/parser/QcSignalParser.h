@@ -9,7 +9,9 @@ struct QcJsonFieldReader;
 // `power` and its four sides, a repeater `facing`, `delay`, `powered` and `locked` ...).
 namespace QcSignalParser {
 
-void parseSignal(QcBlockDefinition &block, QcJsonFieldReader &signalReader, const QString &packNamespace);
+// The signal definition; `block` is the block read so far (its state properties and container).
+[[nodiscard]] QcSignalDefinition parseSignal(const QcBlockDefinition &block, QcJsonFieldReader &signalReader,
+                                             const QString &packNamespace);
 
 // Name of a kind as written in data ("dust", "lever", ...), empty for None.
 QString kindName(QcSignalKind kind);

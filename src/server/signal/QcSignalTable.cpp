@@ -119,12 +119,12 @@ QcSignalTable::QcSignalTable(const QcContentRegistry &content)
     }
 }
 
-bool QcSignalTable::place(DustLayout &layout, const QcBlockProperty &property, int stride)
+bool QcSignalTable::DustLayout::place(const QcBlockProperty &property, int stride)
 {
     if (property.name == u"power"_s) {
-        layout.powerStride = stride;
+        powerStride = stride;
         for (int power = 0; power <= QcSignalDefinition::maxPower; ++power) {
-            layout.powerValue[std::size_t(power)] = int(property.values.indexOf(QString::number(power)));
+            powerValue[std::size_t(power)] = int(property.values.indexOf(QString::number(power)));
         }
         return true;
     }
@@ -134,9 +134,9 @@ bool QcSignalTable::place(DustLayout &layout, const QcBlockProperty &property, i
         return false;
     }
     const auto index = std::size_t(side - sideNames().begin());
-    layout.sideStride[index] = stride;
+    sideStride[index] = stride;
     for (const QcDustSide value : {QcDustSide::None, QcDustSide::Side, QcDustSide::Up}) {
-        layout.sideValue[index][std::size_t(value)] = int(property.values.indexOf(sideName(value)));
+        sideValue[index][std::size_t(value)] = int(property.values.indexOf(sideName(value)));
     }
     return true;
 }
@@ -150,7 +150,7 @@ std::optional<QcSignalTable::DustLayout> QcSignalTable::dustLayout(const QcConte
     int found = 0;
 
     for (const QcBlockProperty &property : block.properties) {
-        found += place(layout, property, stride) ? 1 : 0;
+        found += layout.place(property, stride) ? 1 : 0;
         stride *= int(property.values.size());
     }
 

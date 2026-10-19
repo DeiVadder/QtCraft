@@ -17,7 +17,7 @@ public:
     [[nodiscard]] static QcResult<QList<QcBlockId>> parseLayers(const QString &preset, const QcContentRegistry &content);
 
     // An invalid `preset` falls back to the content's default with a warning; empty takes the default.
-    QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset, QStringList *warnings = nullptr);
+    QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset);
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override { return {0, int(m_layers.size()), 0}; }

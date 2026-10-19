@@ -68,22 +68,22 @@ void QcServerInventory::send(QcServerClient &client)
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
     OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), {}};
-    open.combined = client.inventory.allSlots();
-    open.combined.append(client.crafting.grid);
+    open.combined.stacks = client.inventory.allSlots();
+    open.combined.stacks.append(client.crafting.grid);
     if (open.machine) {
-        open.combined.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
+        open.combined.stacks.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
     } else if (open.container) {
-        open.combined.append(*open.container->stacks);
+        open.combined.stacks.append(*open.container->stacks);
     }
     // The armour slots follow at their own numbers; the cells between them stay unusable.
-    open.combined.resize(equipmentSlot);
-    open.combined.append(QList<QcItemStack>(client.equipment.stacks.begin(), client.equipment.stacks.end()));
+    open.combined.stacks.resize(equipmentSlot);
+    open.combined.stacks.append(QList<QcItemStack>(client.equipment.stacks.begin(), client.equipment.stacks.end()));
     return open;
 }
 
 void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
 {
-    if (!armourFits(open.combined)) {
+    if (!armourFits(open.combined.stacks)) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -94,16 +94,16 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
                                       : open.machine ? QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end())
                                                      : QList<QcItemStack>();
     if (open.machine) {
-        if (!machineAccepts(*open.machine, open.combined)) {
+        if (!machineAccepts(*open.machine, open.combined.stacks)) {
             send(client);
             m_screens.send(client, true);
             return;
         }
         // A player taking from the output gets the experience the machine gathered (decision E-398).
         const auto countOf = [](QcItemStack stack) { return stack.isEmpty() ? 0 : stack.count; };
-        const bool tookOutput = countOf(open.combined[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
+        const bool tookOutput = countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
-            open.machine->stacks[std::size_t(slot)] = open.combined[machineSlot + slot];
+            open.machine->stacks[std::size_t(slot)] = open.combined.stacks[machineSlot + slot];
         }
         if (tookOutput) {
             const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
@@ -112,14 +112,14 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     }
 
     for (int i = 0; i < QcInventory::slotCount; ++i) {
-        client.inventory.setSlot(i, open.combined[i]);
+        client.inventory.setSlot(i, open.combined.stacks[i]);
     }
-    client.crafting.grid = open.combined.mid(QcInventory::slotCount, 9);
+    client.crafting.grid = open.combined.stacks.mid(QcInventory::slotCount, 9);
     if (open.container) {
-        *open.container->stacks = open.combined.mid(machineSlot, open.container->stacks->size());
+        *open.container->stacks = open.combined.stacks.mid(machineSlot, open.container->stacks->size());
     }
     QcEquipment equipment;
-    std::ranges::copy(open.combined.mid(equipmentSlot, QcEquipment::slotCount), equipment.stacks.begin());
+    std::ranges::copy(open.combined.stacks.mid(equipmentSlot, QcEquipment::slotCount), equipment.stacks.begin());
     setEquipment(client, equipment);
 
     send(client);
@@ -147,14 +147,14 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
     }
 
     // Both slots are usable and differ (checked above), so the move cannot fail.
-    [[maybe_unused]] const bool moved = QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), m_state.content());
+    [[maybe_unused]] const bool moved = open.combined.moveBetween(move.from, move.to, std::max(0, move.count), m_state.content());
     applyOpenSlots(client, open);
 }
 
 void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem move)
 {
     OpenSlots open = openSlots(client);
-    if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined[move.slot].isEmpty()) {
+    if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined.stacks[move.slot].isEmpty()) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -163,16 +163,16 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     QcQuickMove::Situation situation;
     situation.containerSlots = open.container ? int(open.container->stacks->size()) : 0;
     situation.machineOpen = open.machine != nullptr;
-    situation.freeArmourSlot = freeArmourSlotFor(client, open.combined[move.slot]);
+    situation.freeArmourSlot = freeArmourSlotFor(client, open.combined.stacks[move.slot]);
     if (open.machine) {
-        const QcItemId item = open.combined[move.slot].item;
+        const QcItemId item = open.combined.stacks[move.slot].item;
         const std::optional<QcBlockId> block = m_state.world().blockAt(open.machine->pos);
         const QcMachineDefinition *definition = block ? m_state.machineRules().machineOf(*block) : nullptr;
         situation.smeltable = definition && m_state.machineRules().recipeFor(*definition, item);
         situation.fuel = m_state.machineRules().fuelSeconds(item) > 0.0;
     }
 
-    QcInventory::moveInto(open.combined, move.slot, QcQuickMove::targets(move.slot, situation), m_state.content());
+    open.combined.moveInto(move.slot, QcQuickMove::targets(move.slot, situation), m_state.content());
     applyOpenSlots(client, open);
 }
 

@@ -32,18 +32,17 @@ QcVillagePiece single(const QString &structure)
     return piece;
 }
 
+} // namespace
+
 // The road surfaces of one rank; unknown blocks are left out, unknown steps dropped, with a warning.
-QList<QcVillageStyle::Road> resolveRoads(const QList<QcVillageRoad> &entries, const QcContentRegistry &content, const QString &style,
-                                         QStringList *warnings)
+QList<QcVillageStyle::Road> QcVillageStyles::resolveRoads(const QList<QcVillageRoad> &entries, const QcContentRegistry &content, const QString &style)
 {
     QList<QcVillageStyle::Road> roads;
     for (const QcVillageRoad &entry : entries) {
         const std::optional<QcBlockId> block = content.stateId(entry.block);
         const std::optional<QcBlockId> step = entry.step.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.stateId(entry.step);
         if (!block || !step) {
-            if (warnings) {
-                warnings->append(u"village style '%1': unknown road block '%2' or step '%3'"_s.arg(style, entry.block, entry.step));
-            }
+            m_warnings.append(u"village style '%1': unknown road block '%2' or step '%3'"_s.arg(style, entry.block, entry.step));
         }
         if (block) {
             roads.append({*block, step.value_or(qcAirBlockId), entry.weight});
@@ -53,8 +52,7 @@ QList<QcVillageStyle::Road> resolveRoads(const QList<QcVillageRoad> &entries, co
 }
 
 // The crops of the fields with their stages; blocks that are no crop are left out with a warning.
-QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content, const QString &style,
-                                         QStringList *warnings)
+QList<QcVillageStyle::Crop> QcVillageStyles::resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content, const QString &style)
 {
     QList<QcVillageStyle::Crop> crops;
     for (const QcVillageCrop &entry : entries) {
@@ -62,9 +60,7 @@ QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, co
         const QcBlockDefinition &definition = content.block(block);
         const QcBlockProperty *stages = definition.crop.isCrop() ? definition.property(definition.crop.property) : nullptr;
         if (!stages) {
-            if (warnings) {
-                warnings->append(u"village style '%1': '%2' is no crop, left out"_s.arg(style, entry.block));
-            }
+            m_warnings.append(u"village style '%1': '%2' is no crop, left out"_s.arg(style, entry.block));
             continue;
         }
 
@@ -80,17 +76,14 @@ QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, co
 
 // The posts and stairs of a style over water; std::nullopt (with a warning) when one is unknown or
 // the stairs have no facing.
-std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content,
-                                                    QStringList *warnings)
+std::optional<QcVillageStyle::Stilts> QcVillageStyles::resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
 {
     const QcVillageStilts &entry = definition.stilts;
     const std::optional<QcBlockId> post = content.stateId(entry.post);
     const std::optional<QcBlockId> stair = content.stateId(entry.stair);
     const bool turns = stair && content.block(*stair).property(u"facing"_s) != nullptr;
     if (!post || !turns) {
-        if (warnings) {
-            warnings->append(u"village style '%1': unknown stilt post '%2' or stairs '%3', left out"_s.arg(definition.name, entry.post, entry.stair));
-        }
+        m_warnings.append(u"village style '%1': unknown stilt post '%2' or stairs '%3', left out"_s.arg(definition.name, entry.post, entry.stair));
         return std::nullopt;
     }
     return QcVillageStyle::Stilts{*post, content.withProperty(*stair, u"facing"_s, u"north"_s), entry.height, entry.spacing, entry.maxDepth,
@@ -99,8 +92,7 @@ std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefiniti
 
 // The wetland within the margin every village keeps to its region's edge: the fray, then the blend,
 // then the margin shrink until it fits, with a warning.
-QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVillageSettings &settings, const QString &style,
-                                   QStringList *warnings)
+QcVillageStyle::Wetland QcVillageStyles::fitWetland(QcVillageStyle::Wetland wetland, const QcVillageSettings &settings, const QString &style)
 {
     const int room = QcVillagePlanner::freeMargin(settings);
     const int wanted = wetland.reach();
@@ -113,8 +105,8 @@ QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVill
     while (wetland.reach() > room && wetland.margin > 0) {
         --wetland.margin;
     }
-    if (wetland.reach() < wanted && warnings) {
-        warnings->append(u"village style '%1': the wetland reaches %2 blocks, but villages of radius %3 keep only %4 to their region's edge; "
+    if (wetland.reach() < wanted) {
+        m_warnings.append(u"village style '%1': the wetland reaches %2 blocks, but villages of radius %3 keep only %4 to their region's edge; "
                          u"it reaches %5"_s.arg(style).arg(wanted).arg(settings.radius).arg(room).arg(wetland.reach()));
     }
     return wetland;
@@ -122,8 +114,7 @@ QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVill
 
 // The style's wetland with its blocks resolved, fitted into the region's margin; std::nullopt
 // without one or with an unknown bottom block (a warning), an unknown plant is left out (a warning).
-std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefinition &definition, const QcContentRegistry &content,
-                                                      QStringList *warnings)
+std::optional<QcVillageStyle::Wetland> QcVillageStyles::resolveWetland(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
 {
     const QcVillageWetland &wetland = definition.wetland;
     if (!wetland.enabled) {
@@ -131,14 +122,12 @@ std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefini
     }
     const std::optional<QcBlockId> bottom = content.stateId(wetland.bottom);
     if (!bottom) {
-        if (warnings) {
-            warnings->append(u"village style '%1': unknown wetland bottom '%2', no wetland"_s.arg(definition.name, wetland.bottom));
-        }
+        m_warnings.append(u"village style '%1': unknown wetland bottom '%2', no wetland"_s.arg(definition.name, wetland.bottom));
         return std::nullopt;
     }
     const std::optional<QcBlockId> plant = wetland.plant.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.stateId(wetland.plant);
-    if (!plant && warnings) {
-        warnings->append(u"village style '%1': unknown wetland plant '%2', none"_s.arg(definition.name, wetland.plant));
+    if (!plant) {
+        m_warnings.append(u"village style '%1': unknown wetland plant '%2', none"_s.arg(definition.name, wetland.plant));
     }
 
     QcVillageStyle::Wetland resolved;
@@ -152,16 +141,15 @@ std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefini
     resolved.scale = wetland.scale;
     resolved.plant = plant.value_or(qcAirBlockId);
     resolved.plantChance = wetland.plantChance;
-    return fitWetland(resolved, content.villageSettings(), definition.name, warnings);
+    return fitWetland(resolved, content.villageSettings(), definition.name);
 }
 
-} // namespace
-
-QcVillageStyles::QcVillageStyles(const QcContentRegistry &content, QStringList *warnings)
-    : m_blocks(content, warnings)
+QcVillageStyles::QcVillageStyles(const QcContentRegistry &content)
+    : m_blocks(content)
+    , m_warnings(m_blocks.warnings())
 {
     for (const QcVillageStyleDefinition &definition : content.villageStyles()) {
-        std::optional<QcVillageStyle> style = resolve(definition, content, warnings);
+        std::optional<QcVillageStyle> style = resolve(definition, content);
         if (!style) {
             continue;
         }
@@ -192,33 +180,30 @@ const QcVillageStyle *QcVillageStyles::named(const QString &name) const
     return it != m_byName.cend() ? &m_styles[*it] : nullptr;
 }
 
-std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefinition &definition, const QcContentRegistry &content,
-                                                       QStringList *warnings) const
+std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
 {
     QcVillageStyle style;
     style.name = definition.name;
-    style.roads = resolveRoads(definition.roads, content, definition.name, warnings);
-    style.branchRoads = resolveRoads(definition.branchRoads, content, definition.name, warnings);
-    style.crops = resolveCrops(definition.crops, content, definition.name, warnings);
+    style.roads = resolveRoads(definition.roads, content, definition.name);
+    style.branchRoads = resolveRoads(definition.branchRoads, content, definition.name);
+    style.crops = resolveCrops(definition.crops, content, definition.name);
     const std::optional<QcBlockId> foundation = content.stateId(definition.foundationBlock);
-    std::optional<QcVillageStyle::Piece> centre = piece(single(definition.centre), definition, content, warnings);
+    std::optional<QcVillageStyle::Piece> centre = piece(single(definition.centre), definition, content);
     if (style.roads.isEmpty() || style.branchRoads.isEmpty() || !foundation || !centre) {
-        if (warnings) {
-            warnings->append(u"village style '%1': unknown path, foundation or centre, left out"_s.arg(definition.name));
-        }
+        m_warnings.append(u"village style '%1': unknown path, foundation or centre, left out"_s.arg(definition.name));
         return std::nullopt;
     }
     style.foundation = *foundation;
     style.centre = std::move(*centre);
     if (!definition.rareCentre.isEmpty()) {
-        if (std::optional<QcVillageStyle::Piece> rare = piece(single(definition.rareCentre), definition, content, warnings)) {
+        if (std::optional<QcVillageStyle::Piece> rare = piece(single(definition.rareCentre), definition, content)) {
             style.rareCentre = std::move(*rare);
             style.rareCentre.chance = definition.rareCentreChance;
         }
     }
     style.layouts = definition.layouts.isEmpty() ? QcVillageLayoutParser::defaultLayouts() : definition.layouts;
     if (definition.ground == QcVillageStyleDefinition::Ground::Water) {
-        std::optional<QcVillageStyle::Stilts> stilts = resolveStilts(definition, content, warnings);
+        std::optional<QcVillageStyle::Stilts> stilts = resolveStilts(definition, content);
         if (!stilts) {
             return std::nullopt;
         }
@@ -229,18 +214,18 @@ std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefin
             layout.diagonals = false;
             layout.winding = 0.0;
         }
-        if (std::optional<QcVillageStyle::Wetland> wetland = resolveWetland(definition, content, warnings)) {
+        if (std::optional<QcVillageStyle::Wetland> wetland = resolveWetland(definition, content)) {
             style.wetland = *wetland;
         }
     }
 
     if (!definition.lamp.isEmpty()) {
-        if (std::optional<QcVillageStyle::Piece> lamp = piece(single(definition.lamp), definition, content, warnings)) {
+        if (std::optional<QcVillageStyle::Piece> lamp = piece(single(definition.lamp), definition, content)) {
             style.lamp = std::move(*lamp);
         }
     }
     for (const QcVillagePiece &entry : definition.pieces) {
-        if (std::optional<QcVillageStyle::Piece> resolved = piece(entry, definition, content, warnings)) {
+        if (std::optional<QcVillageStyle::Piece> resolved = piece(entry, definition, content)) {
             style.pieces.append(std::move(*resolved));
         }
     }
@@ -248,11 +233,11 @@ std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefin
 }
 
 std::optional<QcVillageStyle::Piece> QcVillageStyles::piece(const QcVillagePiece &entry, const QcVillageStyleDefinition &style,
-                                                            const QcContentRegistry &content, QStringList *warnings) const
+                                                            const QcContentRegistry &content)
 {
     QcVillageStyle::Piece piece;
     for (const QcVillageBlueprint &blueprint : entry.blueprints) {
-        if (std::optional<QcVillageStyle::Blueprint> resolved = this->blueprint(blueprint.structure, style, content, warnings)) {
+        if (std::optional<QcVillageStyle::Blueprint> resolved = this->blueprint(blueprint.structure, style, content)) {
             resolved->weight = blueprint.weight;
             piece.blueprints.append(std::move(*resolved));
         }
@@ -271,9 +256,7 @@ std::optional<QcVillageStyle::Piece> QcVillageStyles::piece(const QcVillagePiece
         const std::optional<QcBlockId> deck = content.stateId(style.palette.value(entry.jetty.deck, entry.jetty.deck));
         const std::optional<QcBlockId> post = content.stateId(style.palette.value(entry.jetty.post, entry.jetty.post));
         if (!deck || !post) {
-            if (warnings) {
-                warnings->append(u"village style '%1': unknown jetty block, piece left out"_s.arg(style.name));
-            }
+            m_warnings.append(u"village style '%1': unknown jetty block, piece left out"_s.arg(style.name));
             return std::nullopt;
         }
         piece.deck = *deck;
@@ -285,13 +268,11 @@ std::optional<QcVillageStyle::Piece> QcVillageStyles::piece(const QcVillagePiece
 }
 
 std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QString &name, const QcVillageStyleDefinition &style,
-                                                                    const QcContentRegistry &content, QStringList *warnings) const
+                                                                    const QcContentRegistry &content)
 {
     const QcStructureDefinition *definition = content.structure(name);
     if (!definition) {
-        if (warnings) {
-            warnings->append(u"village style '%1': unknown structure '%2'"_s.arg(style.name, name));
-        }
+        m_warnings.append(u"village style '%1': unknown structure '%2'"_s.arg(style.name, name));
         return std::nullopt;
     }
 
@@ -301,28 +282,30 @@ std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QStrin
     const bool extras = !definition->stands.isEmpty() || !definition->contents.isEmpty() || !definition->labels.isEmpty()
                         || !definition->updates.isEmpty() || !definition->growing.isEmpty() || !definition->minecarts.isEmpty()
                         || !definition->spawners.isEmpty();
-    if (extras && warnings) {
-        warnings->append(u"village style '%1': structure '%2' has contents, armour stands, labels, minecarts, updates or growing "
+    if (extras) {
+        m_warnings.append(u"village style '%1': structure '%2' has contents, armour stands, labels, minecarts, updates or growing "
                          u"saplings, which villages leave out"_s.arg(style.name, name));
     }
 
-    QcResult<QcPieceVariation> variation = QcPieceVariation::resolve(swapped(*definition, style.palette), content, warnings);
+    QcPieceVariation::Resolved variation = QcPieceVariation::resolve(swapped(*definition, style.palette), content);
+    m_warnings.append(QcPieceVariation::warningsOf(variation));
     if (!variation) {
-        if (warnings) {
-            warnings->append(u"village style '%1': %2"_s.arg(style.name, variation.error()));
-        }
+        m_warnings.append(u"village style '%1': %2"_s.arg(style.name, variation.error().error));
         return std::nullopt;
     }
 
     QcVillageStyle::Blueprint blueprint{std::move(*variation), 1, {}, std::nullopt, false};
-    blueprint.spots = spotsOf(*blueprint.structure(), blueprint.bell);
+    Spots spots = spotsOf(*blueprint.structure());
+    blueprint.spots = std::move(spots.spots);
+    blueprint.bell = spots.bell;
     blueprint.fields = QcVillageFields::hasCrops(*blueprint.variation.build(blueprint.variation.everything()), content);
     return blueprint;
 }
 
-QList<QcVillageSpot> QcVillageStyles::spotsOf(const QcStructure &structure, std::optional<QcBlockPos> &bell) const
+QcVillageStyles::Spots QcVillageStyles::spotsOf(const QcStructure &structure) const
 {
-    QList<QcVillageSpot> spots;
+    Spots found;
+    QList<QcVillageSpot> &spots = found.spots;
     const int layer = structure.sizeX() * structure.sizeZ();
     for (int cell = 0; cell < layer * structure.sizeY(); ++cell) {
         const QcBlockPos at{cell % structure.sizeX(), cell / layer, cell % layer / structure.sizeX()};
@@ -331,12 +314,12 @@ QList<QcVillageSpot> QcVillageStyles::spotsOf(const QcStructure &structure, std:
             continue;
         }
         if (m_blocks.isBell(*block)) {
-            bell = at;
+            found.bell = at;
         } else if (m_blocks.isBedHead(*block)) {
             spots.append(QcVillageSpot{at, {}});
         } else if (const QString kind = m_blocks.workstationKind(*block); !kind.isEmpty()) {
             spots.append(QcVillageSpot{at, kind});
         }
     }
-    return spots;
+    return found;
 }

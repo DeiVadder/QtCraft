@@ -10,6 +10,7 @@
 #include "clientcore/textures/QcTextureSynthesizer.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "QcTestUtil.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -164,8 +165,7 @@ private slots:
     {
         const QcTextureDefinition definition{u"t:red"_s, procedural("noise", "#c00000"), {}};
         const QcTexturePackRef both = pack(u"both"_s, 16, {{u"t:red"_s, filled(16, Qt::white)}}, {{u"t:red"_s, procedural("noise", "#000000")}});
-        QString problem;
-        const auto resolved = QcTextureSources::resolve(definition, {both}, 16, problem);
+        const auto resolved = QcTextureSources::resolve(definition, {both}, 16);
         QVERIFY(resolved.has_value());
         QCOMPARE(resolved->pack, u"both"_s);
         QCOMPARE(resolved->image.pixelColor(3, 3), QColor(Qt::white));
@@ -375,15 +375,14 @@ private slots:
     // The tiles are drawn by several threads; one thread gives the same atlas.
     void oneThreadDrawsTheSameAtlasAsMany()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
         const QcTexturePackRef hd = pack(u"hd"_s, 32, {}, {}, true);
         QcTextureAtlas::Options one;
         one.threads = 1;
         QcTextureAtlas::Options many;
         many.threads = 6;
-        QCOMPARE(QcTextureAtlas::build(**content, {hd}, one).image(), QcTextureAtlas::build(**content, {hd}, many).image());
+        QCOMPARE(QcTextureAtlas::build(*content->registry, {hd}, one).image(), QcTextureAtlas::build(*content->registry, {hd}, many).image());
     }
 
     // Without packs every tile of the game is exactly the 16 x 16 picture of before the stage
@@ -392,12 +391,11 @@ private slots:
     // texels differs: since E-332 they take the nearest drawn colour (invisible at level 0).
     void baseTilesAreThePlainSynthesizedTextures()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**content);
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry);
         QCOMPARE(atlas.tileSize(), 16);
-        for (const QcTextureDefinition &definition : (*content)->textures()) {
+        for (const QcTextureDefinition &definition : content->registry->textures()) {
             const QcResult<QcTextureSpec> spec = QcProceduralTexture::spec(definition.procedural);
             QVERIFY2(spec.has_value(), qPrintable(definition.name));
             QImage synthesized = QcTextureSynthesizer::synthesize(*spec).convertToFormat(QImage::Format_RGBA8888);
@@ -438,13 +436,12 @@ private slots:
             QCOMPARE(*first, *QcProceduralTexture::render(ore, resolution));
         }
 
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
         const QcTexturePackRef hd = pack(u"hd"_s, 32, {}, {}, true);
-        const QcTextureAtlas first = QcTextureAtlas::build(**content, {hd});
-        QCOMPARE(first.sources().value(u"hd"_s), (*content)->textures().size());
-        QCOMPARE(first.image(), QcTextureAtlas::build(**content, {hd}).image());
+        const QcTextureAtlas first = QcTextureAtlas::build(*content->registry, {hd});
+        QCOMPARE(first.sources().value(u"hd"_s), content->registry->textures().size());
+        QCOMPARE(first.image(), QcTextureAtlas::build(*content->registry, {hd}).image());
     }
 
     // More detail without blurring: the enlarged picture keeps the 16 x 16 picture's colours on
@@ -624,9 +621,9 @@ private slots:
         QVERIFY(ids.contains(u"builtin:qtcraft_hd_128"_s));
         QVERIFY(ids.contains(u"builtin:storybook_32"_s));
 
-        QStringList missing;
-        const QcTexturePackStack stack = QcTexturePackLibrary::loadStack(ids, entries, missing);
-        QVERIFY(missing.isEmpty());
+        const QcTexturePackLibrary::LoadedStack loaded = QcTexturePackLibrary::loadStack(ids, entries);
+        QVERIFY(loaded.missing.isEmpty());
+        const QcTexturePackStack &stack = loaded.stack;
         for (const QcTexturePackRef &loaded : stack) {
             QStringList problems;
             for (const QcTexturePackProblem &problem : loaded->problems) {
@@ -645,9 +642,8 @@ private slots:
         QVERIFY((*storybook)->specs.isEmpty());
         QCOMPARE((*storybook)->images.value(u"qtcraft:stone"_s).size(), QSize(32, 32));
 
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**content, {*storybook});
+        const auto content = QcTestUtil::baseContent();
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, {*storybook});
         QCOMPARE(atlas.tileSize(), 32);
         QCOMPARE(atlas.sources().value(u"builtin:storybook_32"_s), (*storybook)->images.size());
     }
@@ -655,10 +651,9 @@ private slots:
     // Experience orbs ask the atlas for a texture it has, not for the missing tile (decision E-399).
     void experienceOrbsUseTheirOwnTile()
     {
-        QStringList warnings;
-        const auto content = QcBaseContent::load(warnings);
+        const auto content = QcTestUtil::baseContent();
         QVERIFY(content.has_value());
-        const QcTextureAtlas atlas = QcTextureAtlas::build(**content);
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry);
         QStringList asked;
         const QcEntityMesher::UvLookup uv = [&](const QString &texture) {
             asked.append(texture);

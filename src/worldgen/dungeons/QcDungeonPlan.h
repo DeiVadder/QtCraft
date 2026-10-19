@@ -4,6 +4,8 @@
 #include "common/core/QcBlockPos.h"
 
 #include <QList>
+
+#include <algorithm>
 #include <QString>
 
 #include <utility>
@@ -61,6 +63,32 @@ struct QcDungeonPlan
                && pos.z < origin.z + sizeZ;
     }
     bool touches(int x0, int z0, int x1, int z1) const { return x1 >= minX && x0 <= maxX && z1 >= minZ && z0 <= maxZ; }
+    // Sets the columns the plan touches from its room, its corridors and their lining, and one column
+    // more around every corridor cell, where liquid beside the path is sealed (the cave end has no
+    // lining; a pool across a chunk edge from it is sealed by the neighbouring chunk, which must run
+    // the plan too).
+    void bound()
+    {
+        minX = origin.x;
+        minZ = origin.z;
+        maxX = origin.x + sizeX - 1;
+        maxZ = origin.z + sizeZ - 1;
+        const auto add = [this](QcBlockPos cell) {
+            minX = std::min(minX, cell.x);
+            minZ = std::min(minZ, cell.z);
+            maxX = std::max(maxX, cell.x);
+            maxZ = std::max(maxZ, cell.z);
+        };
+        for (const QcBlockPos &cell : std::as_const(lining)) {
+            add(cell);
+        }
+        for (const Corridor &corridor : std::as_const(corridors)) {
+            for (const QcBlockPos &feet : corridor.path) {
+                add(feet.offset(-1, 0, -1));
+                add(feet.offset(1, 0, 1));
+            }
+        }
+    }
     // Taxicab distance from `pos` to the nearest cell of the spawn area.
     int distanceToArea(QcBlockPos pos) const
     {

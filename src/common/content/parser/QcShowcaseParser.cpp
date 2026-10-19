@@ -68,12 +68,13 @@ QcShowcaseMatch parseMatch(const QJsonObject &json, QcJsonFieldReader &reader)
     return match;
 }
 
-void parseCategories(const QJsonObject &json, Showcase &showcase, QcJsonFieldReader &reader)
+[[nodiscard]] QList<QcShowcaseCategory> parseCategories(const QJsonObject &json, QcJsonFieldReader &reader)
 {
+    QList<QcShowcaseCategory> result;
     const QJsonArray categories = json.value(u"categories"_s).toArray();
     if (categories.isEmpty() || categories.size() > Showcase::maxCategories) {
         reader.fail(u"'categories' must be an array of 1 to %1 categories"_s.arg(Showcase::maxCategories));
-        return;
+        return result;
     }
 
     for (const auto &entry : categories) {
@@ -83,7 +84,7 @@ void parseCategories(const QJsonObject &json, Showcase &showcase, QcJsonFieldRea
         category.name = categoryReader.string(u"name"_s);
         if (!QcContentNames::isValidPart(category.name)) {
             reader.fail(u"categories need a 'name' of lower-case letters, digits and '_'"_s);
-            return;
+            return result;
         }
 
         category.translationKey = categoryReader.string(u"translation"_s, u"showcase.category."_s + category.name);
@@ -91,16 +92,18 @@ void parseCategories(const QJsonObject &json, Showcase &showcase, QcJsonFieldRea
             category.match = parseMatch(match, nested);
         });
         reader.adopt(categoryReader);
-        showcase.categories.append(category);
+        result.append(category);
     }
+    return result;
 }
 
-void parseLayers(const QJsonObject &json, Showcase &showcase, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QList<Showcase::Layer> parseLayers(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
 {
+    QList<Showcase::Layer> result;
     const QJsonArray layers = json.value(u"layers"_s).toArray();
     if (layers.isEmpty() || layers.size() > Showcase::maxLayers) {
         reader.fail(u"'layers' must be an array of 1 to %1 layers"_s.arg(Showcase::maxLayers));
-        return;
+        return result;
     }
 
     int height = 0;
@@ -111,15 +114,16 @@ void parseLayers(const QJsonObject &json, Showcase &showcase, QcJsonFieldReader 
         reader.adopt(layerReader);
         if (layer.block.isEmpty()) {
             reader.fail(u"layers need a 'block'"_s);
-            return;
+            return result;
         }
         height += layer.depth;
-        showcase.layers.append(layer);
+        result.append(layer);
     }
 
     if (height > QcWorld::worldHeight - headroom) {
         reader.fail(u"the layers are %1 blocks high, at most %2 leave room above"_s.arg(height).arg(QcWorld::worldHeight - headroom));
     }
+    return result;
 }
 
 } // namespace
@@ -137,9 +141,9 @@ namespace QcShowcaseParser {
     showcase.lookout = reader.name(u"lookout"_s, packNamespace);
     showcase.rowWidth = reader.integer(u"rowWidth"_s, showcase.rowWidth, 32, 1024);
 
-    parseLayers(json, showcase, reader, packNamespace);
+    showcase.layers = parseLayers(json, reader, packNamespace);
     if (reader.ok()) {
-        parseCategories(json, showcase, reader);
+        showcase.categories = parseCategories(json, reader);
     }
     if (!reader.ok()) {
         return qcError(reader.error);

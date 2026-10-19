@@ -334,7 +334,7 @@ private slots:
         chat(u"/gamemode survival"_s);
         const auto definition = std::ranges::find(m_content->structures(), u"qtcraft:explosives_station"_s, &QcStructureDefinition::name);
         QVERIFY(definition != m_content->structures().end());
-        const QcResult<QcStructure> station = QcStructure::fromDefinition(*definition, *m_content);
+        const QcStructure::Loaded station = QcStructure::fromDefinition(*definition, *m_content);
         QVERIFY(station.has_value());
         // Local y 0 is the ground layer: the area's stone floor.
         const QcBlockPos origin = at(4, -1, 2);
@@ -382,7 +382,7 @@ private slots:
         chat(u"/gamemode survival"_s);
         const auto definition = std::ranges::find(m_content->structures(), u"qtcraft:coastal_tower"_s, &QcStructureDefinition::name);
         QVERIFY(definition != m_content->structures().end());
-        const QcResult<QcStructure> tower = QcStructure::fromDefinition(*definition, *m_content);
+        const QcStructure::Loaded tower = QcStructure::fromDefinition(*definition, *m_content);
         QVERIFY(tower.has_value());
         const QcBlockPos origin = at(3, 20, 3);
         for (int x = 0; x < tower->sizeX(); ++x) {
@@ -475,15 +475,14 @@ private slots:
         falling.motion.position = {5.5, 70.0, 5.5};
         record.fallingBlocks.append({falling, 2});
 
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> read = QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> read = QcEntityCodec::decode(QcEntityCodec::encode(record, *m_content), {0, 0}, *m_content, warnings);
         QVERIFY(read.has_value());
         QCOMPARE(read->primedExplosives.size(), qsizetype(1));
         QCOMPARE(read->primedExplosives.first().entry.fuse, 33);
         QCOMPARE(read->primedExplosives.first().entry.block, primed.block);
         QCOMPARE(read->fallingBlocks.size(), qsizetype(1));
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
     }
 };
 

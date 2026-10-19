@@ -70,21 +70,21 @@ QList<Entry> scan(const QList<Root> &roots)
     return entries;
 }
 
-QcTexturePackStack loadStack(const QStringList &ids, const QList<Entry> &entries, QStringList &missing)
+LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries)
 {
-    QcTexturePackStack stack;
+    LoadedStack loaded;
     for (const QString &id : ids) {
         const auto entry = std::ranges::find(entries, id, &Entry::id);
         std::expected<QcTexturePack, QcTexturePackProblem> pack = entry != entries.end()
                                                                      ? QcTexturePackLoader::load(entry->directory, id, entry->origin)
                                                                      : std::unexpected(QcTexturePackProblem{});
         if (!pack) {
-            missing.append(id);
+            loaded.missing.append(id);
             continue;
         }
-        stack.append(std::make_shared<const QcTexturePack>(std::move(*pack)));
+        loaded.stack.append(std::make_shared<const QcTexturePack>(std::move(*pack)));
     }
-    return stack;
+    return loaded;
 }
 
 QStringList withActive(QStringList active, const QString &id, bool on)

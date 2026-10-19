@@ -1,5 +1,6 @@
 #include "server/villages/QcVillages.h"
 
+#include "server/core/QcServerLogging.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
@@ -14,8 +15,9 @@ bool inChunk(QcBlockPos pos, QcChunkPos chunk)
     return pos.chunk() == chunk;
 }
 
-// A villager's claim stays on a spot that is still there.
-void keepClaims(QList<QcVillage::Spot> &now, const QList<QcVillage::Spot> &before)
+// The spots `now` with the villagers' claims of `before` on those still there (moved in and out,
+// no copy).
+[[nodiscard]] QList<QcVillage::Spot> withClaims(QList<QcVillage::Spot> now, const QList<QcVillage::Spot> &before)
 {
     for (QcVillage::Spot &spot : now) {
         const auto it = std::ranges::find_if(before, [&spot](const QcVillage::Spot &old) { return old.at == spot.at; });
@@ -23,14 +25,18 @@ void keepClaims(QList<QcVillage::Spot> &now, const QList<QcVillage::Spot> &befor
             spot.claimedBy = it->claimedBy;
         }
     }
+    return now;
 }
 
 } // namespace
 
 QcVillages::QcVillages(const QcContentRegistry &content, const QcWorldGenerator &generator)
     : m_generator(generator)
-    , m_blocks(content, nullptr)
+    , m_blocks(content)
 {
+    for (const QString &warning : m_blocks.warnings()) {
+        qCWarning(lcContent).noquote() << warning;
+    }
 }
 
 const QcVillage *QcVillages::find(qint64 id) const
@@ -323,8 +329,8 @@ void QcVillages::rescan(QcVillage &village, const QcChunk &chunk)
     village.workstations.removeIf(inside);
 
     scan(village, chunk);
-    keepClaims(village.beds, beds);
-    keepClaims(village.workstations, stations);
+    village.beds = withClaims(std::move(village.beds), beds);
+    village.workstations = withClaims(std::move(village.workstations), stations);
     if (village.beds != beds || village.workstations != stations) {
         ++m_changes;
     }

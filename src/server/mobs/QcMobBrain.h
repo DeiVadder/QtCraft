@@ -6,6 +6,8 @@
 
 #include <QList>
 
+#include <span>
+
 class QcServerWorld;
 struct QcCreature;
 struct QcMobDefinition;
@@ -22,7 +24,7 @@ public:
     struct Context
     {
         QcServerWorld &world;
-        const QList<QcCreature> &mobs;
+        std::span<const QcCreature> mobs;
         double worldTime = 0.0;
         double dt = 0.0;
         QcPathRules rules;

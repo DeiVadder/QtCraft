@@ -111,12 +111,25 @@ private:
         // Level of every cell while `cells` is null.
         quint8 uniform = 0;
     };
+    using SkyTops = std::array<qint16, std::size_t(QcWorld::chunkSize) * QcWorld::chunkSize>;
     struct Column
     {
         const QcChunk *blocks = nullptr;
         std::shared_ptr<const QcChunk> owner;
         std::array<std::array<Section, QcWorld::sectionCount>, channelCount> light;
-        std::array<qint16, std::size_t(QcWorld::chunkSize) * QcWorld::chunkSize> skyTop{};
+        SkyTops skyTop{};
+
+        // Sets the level of the cell at world `x`, `y`, `z` (inside this column) in `channel`; false
+        // when nothing is written because its section is uniform at that level already.
+        [[nodiscard]] bool setLevel(std::size_t channel, int x, int y, int z, int level);
+        // Takes `tops` as the sky tops and lights the sky channel as the open sky does: sections above
+        // every top full, sections below every top dark, the others cell by cell. Returns the
+        // sections lit cell by cell, one bit per section index.
+        [[nodiscard]] quint32 seedSky(const SkyTops &tops);
+
+    private:
+        // The sky light of the section from `low` to `high` that the tops cut: full above them, dark below.
+        [[nodiscard]] static std::unique_ptr<QcLightNibbles> skyCells(const SkyTops &tops, int low, int high);
     };
     struct Cell
     {
@@ -172,16 +185,14 @@ private:
     // neighbour's is at least as bright (nothing flows either way).
     template<Channel C, typename Visit>
     static void visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, const Column &across, Visit &&visit);
-    // Collects the lit border cells of a leaving column on its side `towards` that may have lit the
-    // neighbour `across` there, as seeds of the removal.
+    // Queues the lit border cells of a leaving column on its side `towards` that may have lit the
+    // neighbour `across` there as seeds of the removal (m_seeds of the channel).
     template<Channel C>
-    static void queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcBlockFace towards, const Column &across,
-                                  std::vector<std::pair<Cell, int>> &seeds);
+    void queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcBlockFace towards, const Column &across);
     void seedBlockSources(Column &column, QcChunkPos pos);
     void seedSky(Column &column, QcChunkPos pos);
-    // Sets the cells of one section of a new column lit by the open sky; `tops` are the lowest and
-    // the highest sky top of its columns.
-    void fillSkySection(Column &column, QcChunkPos pos, int index, std::pair<int, int> tops);
+    // The sky tops of the cell columns of `blocks` (columnTop).
+    [[nodiscard]] SkyTops skyTops(const QcChunk &blocks) const;
     // Queues the sky-lit cells of a column that border darker cells of its neighbour columns.
     void queueSkyEdges(const Column &column, QcChunkPos pos);
     int columnTop(const QcChunk &blocks, int lx, int lz) const;

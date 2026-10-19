@@ -31,7 +31,7 @@ struct QcStoredWorld
             return qcError(opened.error());
         }
         QcStoredWorld world;
-        QSet<QString> reported;
+        QcLoadWarnings warnings;
         QList<QcChunkPos> positions = store.catalog().keys();
         std::ranges::sort(positions, {}, [](QcChunkPos chunk) { return std::pair{chunk.x, chunk.z}; });
         for (const QcChunkPos &pos : std::as_const(positions)) {
@@ -39,27 +39,28 @@ struct QcStoredWorld
             if (!blobs) {
                 return qcError(blobs.error());
             }
-            if (const QcStatus read = world.add(pos, *blobs, content, reported); !read) {
+            if (const QcStatus read = world.add(pos, *blobs, content, warnings); !read) {
                 return qcError(read.error());
             }
         }
+        world.warnings = warnings.texts();
         return world;
     }
 
 private:
-    QcStatus add(QcChunkPos pos, const QcChunkStore::Blobs &blobs, const QcContentRegistry &content, QSet<QString> &reported)
+    QcStatus add(QcChunkPos pos, const QcChunkStore::Blobs &blobs, const QcContentRegistry &content, QcLoadWarnings &loadWarnings)
     {
         using Kind = QcChunkStore::Kind;
         marks.insert(pos, blobs.marks);
         if (const auto &data = blobs.data[std::size_t(Kind::Blocks)]) {
-            QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*data, pos, content, warnings, reported);
+            QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*data, pos, content, loadWarnings);
             if (!chunk) {
                 return qcError(chunk.error());
             }
             chunks.insert(pos, *chunk);
         }
         if (const auto &data = blobs.data[std::size_t(Kind::BlockEntities)]) {
-            QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*data, pos, content, warnings, reported);
+            QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*data, pos, content, loadWarnings);
             if (!record) {
                 return qcError(record.error());
             }
@@ -68,7 +69,7 @@ private:
             }
         }
         if (const auto &data = blobs.data[std::size_t(Kind::Entities)]) {
-            QcResult<QcEntityRecord> record = QcEntityCodec::decode(*data, pos, content, warnings, reported);
+            QcResult<QcEntityRecord> record = QcEntityCodec::decode(*data, pos, content, loadWarnings);
             if (!record) {
                 return qcError(record.error());
             }

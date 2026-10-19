@@ -3,7 +3,6 @@
 #include "app/debug/QcAppLogging.h"
 #include "clientcore/meshing/QcIndexPacking.h"
 
-
 #include <algorithm>
 #include <limits>
 
@@ -117,4 +116,28 @@ void QcGpuMeshStore::uploadSectionLight(QRhiResourceUpdateBatch *updates, quint6
         qCInfo(lcRenderer).nospace() << "Section light: " << m_lightPool.pageCount() << " pages, " << m_lightPool.usedSlots()
                                      << " slots used, " << m_lightPool.sections() << " sections, " << m_lightPool.bytes() / 1024 << " KiB";
     }
+}
+
+quint32 QcGpuBuffers::uploadDynamic(QRhi *rhi, QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh)
+{
+    indexCount = 0;
+    if (!mesh || mesh->indices.isEmpty()) {
+        return 0;
+    }
+
+    const auto vertexBytes = quint32(mesh->vertices.size() * qsizetype(sizeof(QcEntityVertex)));
+    const auto indexBytes = quint32(mesh->indices.size() * qsizetype(sizeof(quint32)));
+    if (!vertices || vertices->size() < vertexBytes) {
+        vertices.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
+        vertices->create();
+    }
+    if (!indices || indices->size() < indexBytes) {
+        indices.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::IndexBuffer, indexBytes * 2));
+        indices->create();
+    }
+
+    updates->updateDynamicBuffer(vertices.get(), 0, vertexBytes, mesh->vertices.constData());
+    updates->updateDynamicBuffer(indices.get(), 0, indexBytes, mesh->indices.constData());
+    indexCount = quint32(mesh->indices.size());
+    return vertexBytes + indexBytes;
 }

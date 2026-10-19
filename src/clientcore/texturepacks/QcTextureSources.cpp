@@ -71,7 +71,7 @@ int resolutionOf(const QcTexturePackStack &packs, int maxResolution)
     return std::min(resolution, std::max(maxResolution, int(QcTextureSynthesizer::tileSize)));
 }
 
-[[nodiscard]] std::optional<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution, QString &problem)
+QcResult<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution)
 {
     for (const QcTexturePackRef &pack : packs) {
         if (const std::optional<QImage> image = fromPack(*pack, definition, resolution)) {
@@ -82,8 +82,7 @@ int resolutionOf(const QcTexturePackStack &packs, int maxResolution)
     const QcResult<QImage> base = definition.png.isEmpty() ? QcProceduralTexture::render(definition.procedural, QcTextureSynthesizer::tileSize)
                                                            : contentPng(definition);
     if (!base) {
-        problem = definition.png.isEmpty() ? u"%1: %2"_s.arg(definition.name, base.error()) : base.error();
-        return std::nullopt;
+        return qcError(definition.png.isEmpty() ? u"%1: %2"_s.arg(definition.name, base.error()) : base.error());
     }
     // Content PNGs of any size are scaled pixel by pixel, as before texture packs existed.
     return Resolved{base->scaled(resolution, resolution, Qt::IgnoreAspectRatio, Qt::FastTransformation).convertToFormat(QImage::Format_RGBA8888),

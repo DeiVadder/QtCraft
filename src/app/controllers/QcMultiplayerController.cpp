@@ -131,10 +131,10 @@ QcResult<QList<QcPackFingerprint>> QcMultiplayerController::contentPacks()
         return *m_packs;
     }
 
-    QStringList warnings;
-    const QcResult<QcModLoader::Result> content = QcModLoader::load(directory, warnings);
+    // The warnings were reported when the content was loaded for the world list or a start.
+    const QcModLoader::Loaded content = QcModLoader::load(directory);
     if (!content) {
-        return qcError(content.error());
+        return qcError(content.error().error);
     }
     m_packs = QcContentFingerprint::of(*content->content, content->mods);
     m_packsDirectory = directory;

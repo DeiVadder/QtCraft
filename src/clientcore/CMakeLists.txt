@@ -181,6 +181,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     weather/QcClientWeather.h weather/QcClientWeather.cpp
+    weather/QcDropPool.h weather/QcDropPool.cpp
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
 )
 qc_configure_target(qc_clientcore)

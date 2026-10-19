@@ -54,9 +54,8 @@ namespace QcProceduralTexture {
     spec.secondary = *secondary;
     spec.variation = std::clamp(definition.value(u"variation"_s).toDouble(0.1), 0.0, 1.0);
     spec.seed = quint32(definition.value(u"seed"_s).toInteger(0));
-    QString emblemProblem;
-    if (spec.pattern == QcTextureSpec::Pattern::Emblem && !QcTextureEmblem::read(definition, spec, emblemProblem)) {
-        return qcError(emblemProblem);
+    if (spec.pattern == QcTextureSpec::Pattern::Emblem) {
+        return QcTextureEmblem::read(definition, std::move(spec));
     }
     return spec;
 }

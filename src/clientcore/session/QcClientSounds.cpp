@@ -3,10 +3,10 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 
-bool QcClientSounds::record(QcSoundCue &cue, quint64 tick)
+std::optional<QcSoundCue> QcClientSounds::record(QcSoundCue cue, quint64 tick)
 {
     if (cue.key.isEmpty()) {
-        return false;
+        return std::nullopt;
     }
 
     cue.tick = tick;
@@ -14,7 +14,7 @@ bool QcClientSounds::record(QcSoundCue &cue, quint64 tick)
         m_recent.removeFirst();
     }
     m_recent.append(cue);
-    return true;
+    return cue;
 }
 
 void QcClientSounds::updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, double rain, quint64 tick,

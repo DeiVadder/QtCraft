@@ -37,8 +37,8 @@ void QcDoorPassage::startTick()
     m_doorways = std::exchange(m_nextDoorways, {});
 }
 
-std::optional<QcBlockPos> QcDoorPassage::doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation,
-                                                   const QcBlockAccess &world, bool &inside) const
+std::optional<QcDoorPassage::Door> QcDoorPassage::doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation,
+                                                            const QcBlockAccess &world) const
 {
     const auto isDoor = [&](QcBlockPos cell) {
         const std::optional<QcBlockId> block = world.blockAt(cell);
@@ -46,43 +46,44 @@ std::optional<QcBlockPos> QcDoorPassage::doorAhead(const QcCreature &mob, const 
         return definition && definition->toggles && definition->property(u"open"_s);
     };
     const QcBlockPos feet = feetOf(mob);
-    inside = isDoor(feet);
-    if (inside) {
-        return feet;
+    if (isDoor(feet)) {
+        return Door{feet, true};
     }
     if (navigation.door) {
-        return navigation.door;
+        return Door{*navigation.door};
     }
     if (mob.path.next < mob.path.cells.size() && isDoor(mob.path.cells[mob.path.next])) {
-        return mob.path.cells[mob.path.next];
+        return Door{mob.path.cells[mob.path.next]};
     }
     return std::nullopt;
 }
 
 std::optional<QcPhysics::Steering> QcDoorPassage::waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const QcPathGround &ground)
 {
-    bool inside = false;
-    const std::optional<QcBlockPos> door = doorAhead(mob, navigation, ground.world, inside);
-    const double distance = inside ? 0.0 : door ? horizontalDistance(mob.motion.position, centreOf(*door)) : queue;
-    if (!door || distance >= queue || mob.fleeTimer > 0.0) {
+    const std::optional<Door> ahead = doorAhead(mob, navigation, ground.world);
+    const bool inside = ahead && ahead->inside;
+    const double distance = inside ? 0.0 : ahead ? horizontalDistance(mob.motion.position, centreOf(ahead->pos)) : queue;
+    if (!ahead || distance >= queue || mob.fleeTimer > 0.0) {
         return std::nullopt;
     }
 
+    const QcBlockPos door = ahead->pos;
+
     // The turn of the next tick: one in the doorway first, then the one going through now while it
     // is on its way, then the nearest.
-    const auto first = m_doorways.constFind(*door);
+    const auto first = m_doorways.constFind(door);
     const std::optional<Passer> going = first != m_doorways.constEnd() ? std::optional(*first) : std::nullopt;
     const auto rank = [&going](Passer passer) { return passer.distance <= 0.0 ? 0 : going && going->id == passer.id ? 1 : 2; };
     const Passer self{mob.id, distance};
-    const auto next = m_nextDoorways.find(*door);
+    const auto next = m_nextDoorways.find(door);
     if (next == m_nextDoorways.end() || rank(self) < rank(*next) || (rank(self) == rank(*next) && self.before(*next))) {
-        m_nextDoorways.insert(*door, self);
+        m_nextDoorways.insert(door, self);
     }
     // Its turn, or it stands in the doorway and the one going was not yet.
     if (!going || going->id == mob.id || (inside && going->distance > 0.0)) {
         return std::nullopt;
     }
-    return stepAside(mob, centreOf(*door), navigation.steering.speed, ground);
+    return stepAside(mob, centreOf(door), navigation.steering.speed, ground);
 }
 
 QcPhysics::Steering QcDoorPassage::stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const QcPathGround &ground)
@@ -107,25 +108,25 @@ QcPhysics::Steering QcDoorPassage::stepAside(QcCreature &mob, const QcVec3 &door
     return {{}, speed};
 }
 
-QcDoorPassage::Moves QcDoorPassage::use(const QcCreature &mob, std::optional<QcBlockPos> &opened, const QcMobNavigator::Navigation &navigation)
+QcDoorPassage::Moves QcDoorPassage::use(const QcCreature &mob, std::optional<QcBlockPos> opened, const QcMobNavigator::Navigation &navigation)
 {
-    Moves moves;
+    Moves moves{std::nullopt, std::nullopt, opened};
     const QcBlockPos feet = feetOf(mob);
     if (opened) {
         const QcBlockPos door = *opened;
         const bool inside = feet.x == door.x && feet.z == door.z;
         if (!inside && horizontalDistance(mob.motion.position, centreOf(door)) > passed) {
             moves.close = door;
-            opened.reset();
+            moves.opened.reset();
         }
     }
     // A closed door on the path is opened, also the one it opened itself and someone shut again.
     if (navigation.door && horizontalDistance(mob.motion.position, centreOf(*navigation.door)) < reach) {
-        if (opened && opened != navigation.door) {
-            moves.close = *opened;
+        if (moves.opened && moves.opened != navigation.door) {
+            moves.close = *moves.opened;
         }
         moves.open = navigation.door;
-        opened = navigation.door;
+        moves.opened = navigation.door;
     }
     return moves;
 }

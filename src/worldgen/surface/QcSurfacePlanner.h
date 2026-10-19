@@ -59,9 +59,11 @@ public:
     // villages and the kinds planned before this one).
     using Occupied = std::function<bool(int kind, Rect footprint, int margin)>;
 
-    // Structures with an unknown block or foundation are left out with a warning; kinds are sorted by
-    // name, so their order does not depend on the order the content was loaded in.
-    QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    // Structures with an unknown block or foundation are left out with a warning (warnings()); kinds
+    // are sorted by name, so their order does not depend on the order the content was loaded in.
+    QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
+
+    const QStringList &warnings() const { return m_warnings; }
 
     const QList<Kind> &kinds() const { return m_kinds; }
     // The index of the kind `name`, if any.
@@ -82,4 +84,5 @@ private:
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;
     QList<Kind> m_kinds;
+    QStringList m_warnings;
 };

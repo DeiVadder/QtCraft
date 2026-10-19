@@ -32,8 +32,8 @@ inline constexpr qsizetype maxOptionsLength = 4096;
 // (the flat preset, the void platform), so that later changes of those defaults by mods or updates
 // do not change existing worlds.
 [[nodiscard]] QcResult<QString> optionsToStore(const QString &type, const QString &options, const QcContentRegistry &content);
-// A generator of `type`; nullptr for unknown types.
+// A generator of `type`; nullptr for unknown types. What it could not resolve is in its warnings().
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
-                                         QStringList *warnings = nullptr, const QString &options = {});
+                                         const QString &options = {});
 
 } // namespace QcWorldGenerators

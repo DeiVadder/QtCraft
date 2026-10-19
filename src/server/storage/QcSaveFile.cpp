@@ -36,7 +36,7 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     return {};
 }
 
-[[nodiscard]] QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
+[[nodiscard]] QcResult<Payload> read(const QString &path, QByteArrayView magic, quint16 newestVersion)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -46,10 +46,10 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
         return qcError(u"%1 is too large"_s.arg(path));
     }
 
-    return parse(file.readAll(), path, magic, newestVersion, version);
+    return parse(file.readAll(), path, magic, newestVersion);
 }
 
-[[nodiscard]] QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
+[[nodiscard]] QcResult<Payload> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion)
 {
     constexpr qsizetype headerSize = 4 + 2 + 4 + 4;
     if (data.size() < headerSize || !data.startsWith(magic)) {
@@ -65,10 +65,6 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     if (fileVersion < baseVersion || fileVersion > newestVersion) {
         return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(fileVersion));
     }
-    if (version) {
-        *version = fileVersion;
-    }
-
     if (qsizetype(size) != data.size() - headerSize) {
         return qcError(u"%1 is truncated or damaged"_s.arg(path));
     }
@@ -76,7 +72,7 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     if (qcCrc32(payload) != crc) {
         return qcError(u"%1 is damaged (checksum mismatch)"_s.arg(path));
     }
-    return payload;
+    return Payload{std::move(payload), fileVersion};
 }
 
 void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content)

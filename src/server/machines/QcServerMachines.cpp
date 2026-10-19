@@ -12,8 +12,7 @@ QcServerMachines::QcServerMachines(QcServerState &state, QcServerSounds &sounds)
 
 void QcServerMachines::tick()
 {
-    QList<QcBlockPos> slotsChanged;
-    m_state.machineRules().tick(m_state.blockEntities(), m_state.world(), QcPhysics::tickDuration, nullptr, &slotsChanged);
+    const QList<QcBlockPos> slotsChanged = m_state.machineRules().tick(m_state.blockEntities(), m_state.world(), QcPhysics::tickDuration);
     for (const QcBlockPos &pos : std::as_const(slotsChanged)) {
         m_state.noteContents(pos);
     }

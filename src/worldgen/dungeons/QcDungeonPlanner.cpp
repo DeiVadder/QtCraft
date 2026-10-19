@@ -74,7 +74,7 @@ private:
     QHash<qint64, QcTerrainColumn> m_columns;
 };
 
-QcDungeonPlanner::QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed, QStringList *warnings)
+QcDungeonPlanner::QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
     , m_settings(content.terrainSettings().dungeons)
     , m_seed(qcMixSeed(seed, 0x3801))
@@ -86,8 +86,8 @@ QcDungeonPlanner::QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcCo
     bool resolved = true;
     const auto state = [&](const QString &name) {
         const std::optional<QcBlockId> id = content.stateId(name);
-        if (!id && warnings) {
-            warnings->append(u"dungeons: unknown block '%1', no dungeons"_s.arg(name));
+        if (!id) {
+            m_warnings.append(u"dungeons: unknown block '%1', no dungeons"_s.arg(name));
         }
         resolved = resolved && id.has_value();
         return id.value_or(qcAirBlockId);
@@ -112,6 +112,23 @@ double QcDungeonPlanner::random(const QcDungeonPlan &plan, int purpose, int inde
     return qcPositionRandom(qcMixSeed(m_seed, quint64(purpose)), plan.regionX, index, plan.regionZ);
 }
 
+namespace {
+
+// The cells of a plan's corridors (feet and head).
+QSet<QcBlockPos> corridorCells(const QcDungeonPlan &plan)
+{
+    QSet<QcBlockPos> inside;
+    for (const QcDungeonPlan::Corridor &corridor : plan.corridors) {
+        for (const QcBlockPos &feet : corridor.path) {
+            inside.insert(feet);
+            inside.insert(feet.offset(0, 1, 0));
+        }
+    }
+    return inside;
+}
+
+} // namespace
+
 std::shared_ptr<const QcDungeonPlan> QcDungeonPlanner::plan(int regionX, int regionZ) const
 {
     if (!m_enabled) {
@@ -134,9 +151,16 @@ std::shared_ptr<const QcDungeonPlan> QcDungeonPlanner::plan(int regionX, int reg
     }
 
     plan->origin = *origin;
-    placeContents(*plan);
-    placeCorridors(probe, *plan);
-    addLiningAndLights(*plan);
+    plan->spawner = plan->origin.offset(plan->sizeX / 2, 1, plan->sizeZ / 2);
+    plan->areaLow = plan->spawner.offset(-m_areaX, -m_areaY, -m_areaZ);
+    plan->areaHigh = plan->spawner.offset(m_areaX, m_areaY, m_areaZ);
+    plan->mob = mobOf(*plan);
+    plan->chests = chestsOf(*plan);
+    plan->corridors = corridorsOf(probe, *plan);
+    const QSet<QcBlockPos> inside = corridorCells(*plan);
+    plan->lining = liningOf(*plan, inside);
+    plan->lights = lightsOf(*plan, inside);
+    plan->bound();
     return plan;
 }
 
@@ -179,12 +203,8 @@ bool QcDungeonPlanner::fewCaves(Probe &probe, QcBlockPos origin, int sizeX, int 
     return true;
 }
 
-void QcDungeonPlanner::placeContents(QcDungeonPlan &plan) const
+QString QcDungeonPlanner::mobOf(const QcDungeonPlan &plan) const
 {
-    plan.spawner = plan.origin.offset(plan.sizeX / 2, 1, plan.sizeZ / 2);
-    plan.areaLow = plan.spawner.offset(-m_areaX, -m_areaY, -m_areaZ);
-    plan.areaHigh = plan.spawner.offset(m_areaX, m_areaY, m_areaZ);
-
     int total = 0;
     for (const QcDungeonSettings::Mob &mob : m_settings.mobs) {
         total += mob.weight;
@@ -194,13 +214,18 @@ void QcDungeonPlanner::placeContents(QcDungeonPlan &plan) const
         pick -= mob.weight;
         return pick < 0;
     });
-    plan.mob = chosen != m_settings.mobs.end() ? chosen->mob : m_settings.mobs.constLast().mob;
+    return chosen != m_settings.mobs.end() ? chosen->mob : m_settings.mobs.constLast().mob;
+}
 
+QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestsOf(const QcDungeonPlan &plan) const
+{
+    QList<QcDungeonPlan::Placed> chests;
     QList<QcDungeonPlan::Placed> places = chestPlaces(plan);
     const int count = m_settings.minChests + int(random(plan, 21) * (m_settings.maxChests - m_settings.minChests + 1));
     for (int i = 0; i < count && !places.isEmpty(); ++i) {
-        plan.chests.append(places.takeAt(qsizetype(random(plan, 22, i) * double(places.size()))));
+        chests.append(places.takeAt(qsizetype(random(plan, 22, i) * double(places.size()))));
     }
+    return chests;
 }
 
 QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestPlaces(const QcDungeonPlan &plan) const
@@ -224,7 +249,7 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestPlaces(const QcDungeonPlan &
     return places;
 }
 
-void QcDungeonPlanner::placeCorridors(Probe &probe, QcDungeonPlan &plan) const
+QList<QcDungeonPlan::Corridor> QcDungeonPlanner::corridorsOf(Probe &probe, const QcDungeonPlan &plan) const
 {
     const int y = plan.origin.y + 1;
     const int midX = plan.origin.x + plan.sizeX / 2;
@@ -238,7 +263,7 @@ void QcDungeonPlanner::placeCorridors(Probe &probe, QcDungeonPlan &plan) const
     }
     std::ranges::stable_sort(found, {}, [](const QcDungeonPlan::Corridor &corridor) { return corridor.path.size(); });
     found.resize(std::min<qsizetype>(found.size(), m_settings.corridors));
-    plan.corridors = std::move(found);
+    return found;
 }
 
 std::optional<int> QcDungeonPlanner::firstOpen(Probe &probe, QcBlockPos from, std::pair<int, int> step, int steps)
@@ -297,52 +322,8 @@ std::optional<QcDungeonPlan::Corridor> QcDungeonPlanner::corridorFrom(Probe &pro
     return corridor;
 }
 
-namespace {
-
-// The cells of a plan's corridors (feet and head).
-QSet<QcBlockPos> corridorCells(const QcDungeonPlan &plan)
+QList<QcBlockPos> QcDungeonPlanner::liningOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside)
 {
-    QSet<QcBlockPos> inside;
-    for (const QcDungeonPlan::Corridor &corridor : plan.corridors) {
-        for (const QcBlockPos &feet : corridor.path) {
-            inside.insert(feet);
-            inside.insert(feet.offset(0, 1, 0));
-        }
-    }
-    return inside;
-}
-
-// The columns a plan touches: its room, its corridors and their lining, and one column more around
-// every corridor cell, where liquid beside the path is sealed (the cave end has no lining; a pool
-// across a chunk edge from it is sealed by the neighbouring chunk, which must run the plan too).
-void bound(QcDungeonPlan &plan)
-{
-    plan.minX = plan.origin.x;
-    plan.minZ = plan.origin.z;
-    plan.maxX = plan.origin.x + plan.sizeX - 1;
-    plan.maxZ = plan.origin.z + plan.sizeZ - 1;
-    const auto add = [&plan](QcBlockPos cell) {
-        plan.minX = std::min(plan.minX, cell.x);
-        plan.minZ = std::min(plan.minZ, cell.z);
-        plan.maxX = std::max(plan.maxX, cell.x);
-        plan.maxZ = std::max(plan.maxZ, cell.z);
-    };
-    for (const QcBlockPos &cell : std::as_const(plan.lining)) {
-        add(cell);
-    }
-    for (const QcDungeonPlan::Corridor &corridor : std::as_const(plan.corridors)) {
-        for (const QcBlockPos &feet : corridor.path) {
-            add(feet.offset(-1, 0, -1));
-            add(feet.offset(1, 0, 1));
-        }
-    }
-}
-
-} // namespace
-
-void QcDungeonPlanner::addLiningAndLights(QcDungeonPlan &plan) const
-{
-    const QSet<QcBlockPos> inside = corridorCells(plan);
     QSet<QcBlockPos> lining;
     for (const QcDungeonPlan::Corridor &corridor : std::as_const(plan.corridors)) {
         // Not at the door (in the wall) nor in the cave at the end.
@@ -352,10 +333,9 @@ void QcDungeonPlanner::addLiningAndLights(QcDungeonPlan &plan) const
             std::ranges::copy_if(cells, std::inserter(lining, lining.end()), outside);
         }
     }
-    plan.lining = QList<QcBlockPos>(lining.begin(), lining.end());
-    std::ranges::sort(plan.lining);
-    addLights(plan, inside);
-    bound(plan);
+    QList<QcBlockPos> sorted(lining.begin(), lining.end());
+    std::ranges::sort(sorted);
+    return sorted;
 }
 
 QList<QcBlockPos> QcDungeonPlanner::around(const QcDungeonPlan::Corridor &corridor, qsizetype index)
@@ -376,8 +356,9 @@ QList<QcBlockPos> QcDungeonPlanner::around(const QcDungeonPlan::Corridor &corrid
     return cells;
 }
 
-void QcDungeonPlanner::addLights(QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const
+QList<QcDungeonPlan::Placed> QcDungeonPlanner::lightsOf(const QcDungeonPlan &plan, const QSet<QcBlockPos> &inside) const
 {
+    QList<QcDungeonPlan::Placed> lights;
     // From the cave end inwards every `lightSpacing` cells, never near the spawn area.
     for (const QcDungeonPlan::Corridor &corridor : std::as_const(plan.corridors)) {
         const qsizetype last = corridor.path.size() - 1;
@@ -387,10 +368,11 @@ void QcDungeonPlanner::addLights(QcDungeonPlan &plan, const QSet<QcBlockPos> &in
                 continue;
             }
             if (const std::optional<QcDungeonPlan::Placed> light = lightAt(plan, head, corridor.steps[i - 1], inside)) {
-                plan.lights.append(*light);
+                lights.append(*light);
             }
         }
     }
+    return lights;
 }
 
 std::optional<QcDungeonPlan::Placed> QcDungeonPlanner::lightAt(const QcDungeonPlan &plan, QcBlockPos head, std::pair<int, int> step,

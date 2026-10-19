@@ -2,24 +2,24 @@
 
 namespace QcBaseContent {
 
-[[nodiscard]] QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &warnings)
+QcResult<QcLoadedPack> loadInto(QcContentRegistry &registry)
 {
-    QcResult<QcContentPackInfo> info = QcContentPackLoader::load(QString::fromLatin1(resourceDirectory), registry, warnings);
-    if (info) {
-        registry.addPack({info->id, info->name, info->version});
+    QcResult<QcLoadedPack> loaded = QcContentPackLoader::load(QString::fromLatin1(resourceDirectory), registry);
+    if (loaded) {
+        registry.addPack({loaded->info.id, loaded->info.name, loaded->info.version});
     }
-    return info;
+    return loaded;
 }
 
-[[nodiscard]] QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings)
+QcResult<Loaded> load()
 {
     auto registry = std::make_shared<QcContentRegistry>();
-    const QcResult<QcContentPackInfo> info = loadInto(*registry, warnings);
-    if (!info) {
-        return qcError(info.error());
+    const QcResult<QcLoadedPack> loaded = loadInto(*registry);
+    if (!loaded) {
+        return qcError(loaded.error());
     }
-    warnings += registry->finish();
-    return registry;
+    QStringList warnings = loaded->warnings + registry->finish();
+    return Loaded{std::move(registry), std::move(warnings)};
 }
 
 } // namespace QcBaseContent

@@ -23,9 +23,8 @@ QcEntityKept newerData(QcEntityCodec::Component kind, quint16 unknownId, bool wi
 
 QcEntityRecord decoded(const QByteArray &blob, const QcContentRegistry &content)
 {
-    QStringList warnings;
-    QSet<QString> reported;
-    QcResult<QcEntityRecord> record = QcEntityCodec::decode(blob, {0, 0}, content, warnings, reported);
+    QcLoadWarnings warnings;
+    QcResult<QcEntityRecord> record = QcEntityCodec::decode(blob, {0, 0}, content, warnings);
     if (!record) {
         qWarning() << qcErrorText(record);
         return {};

@@ -23,10 +23,8 @@ public:
     static QString localPart(const QString &name);
     // "oak_tree" -> "Oak tree": the last resort for content without a translated name.
     static QString humanized(const QString &name);
-    // Sorts by text (as compared by the search), then by target.
-    static void sortLinks(QList<Link> &links);
-    // Appends the link unless one to the same target exists; that one gets the note added.
-    static void appendUnique(QList<Link> &links, Link link);
+    // The links sorted by text (as compared by the search), then by target.
+    [[nodiscard]] static QList<Link> sortedLinks(QList<Link> links);
 
     // Pack of the overviews: the first loaded pack (the base game).
     QString basePack() const;

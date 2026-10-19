@@ -2,6 +2,7 @@
 
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcItemStack.h"
+#include "common/gameplay/QcSlotList.h"
 #include "common/protocol/QcMessages.h"
 #include "server/blockentities/QcBlockEntities.h"
 #include "server/machines/QcBlockScreens.h"
@@ -63,7 +64,7 @@ private:
     {
         QcBlockEntities::Machine *machine = nullptr;
         std::optional<QcBlockScreens::OpenContainer> container;
-        QList<QcItemStack> combined;
+        QcSlotList combined;
     };
 
     OpenSlots openSlots(QcServerClient &client);

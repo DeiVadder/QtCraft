@@ -65,7 +65,7 @@ private:
                 motion.position = {target.x + 0.5 + std::sin(angle) * 1.6, double(sky), target.z + 0.5 - std::cos(angle) * 1.6};
                 const QcVec3 towards = QcVec3{target.x + 0.5 - motion.position.x, 0.0, target.z + 0.5 - motion.position.z}.normalized();
                 for (int tick = 0; tick < 40; ++tick) {
-                    QcPhysics::stepEntity(motion, {towards, 1.0, false}, body, world, QcPhysics::tickDuration);
+                    motion.step({towards, 1.0, false}, body, world, QcPhysics::tickDuration);
                     overlaps += QcBodyFit::overlapsBlocks(world, motion.position, body, QcBodyFit::Unloaded::Clear) ? 1 : 0;
                 }
             }

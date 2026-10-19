@@ -2,15 +2,15 @@
 
 using namespace Qt::StringLiterals;
 
-QcVillageBlocks::QcVillageBlocks(const QcContentRegistry &content, QStringList *warnings)
+QcVillageBlocks::QcVillageBlocks(const QcContentRegistry &content)
     : m_bedHead(std::size_t(content.stateCount()))
     , m_bell(std::size_t(content.stateCount()))
     , m_kind(std::size_t(content.stateCount()))
 {
     const QcVillageSettings &settings = content.villageSettings();
     for (auto it = settings.workstations.constBegin(); it != settings.workstations.constEnd(); ++it) {
-        if (!content.blockId(it.key()) && warnings) {
-            warnings->append(u"village settings: unknown workstation block '%1'"_s.arg(it.key()));
+        if (!content.blockId(it.key())) {
+            m_warnings.append(u"village settings: unknown workstation block '%1'"_s.arg(it.key()));
         }
     }
 

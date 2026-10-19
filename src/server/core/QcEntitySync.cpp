@@ -35,9 +35,9 @@ QcEntitySync::QcEntitySync(QcServerState &state)
 
 void QcEntitySync::sync(QcServerClient &client)
 {
-    Pass pass{client, {}, {}};
-    std::as_const(m_state.entities()).forEach([this, &pass](const QcEntity &entity) { consider(pass, entity); });
-    removeUnseen(pass);
+    Pass pass{*this, client, {}, {}};
+    std::as_const(m_state.entities()).forEach([&pass](const QcEntity &entity) { pass.consider(entity); });
+    pass.removeUnseen();
 
     if (!pass.moves.moves.isEmpty()) {
         pass.moves.timeMs = m_state.clock().playerTimeNs() / 1'000'000;
@@ -181,9 +181,8 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     return spawn;
 }
 
-void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
+void QcEntitySync::Pass::consider(const QcEntity &entity)
 {
-    QcServerClient &client = pass.client;
     // Items and orbs: small, many, seen from closer and sent again when their count or value changed.
     const bool orb = entity.kind == QcEntityKind::ExperienceOrb;
     const bool item = entity.kind == QcEntityKind::Item || orb;
@@ -192,15 +191,15 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     }
 
     const QcVec3 position = entity.kind == QcEntityKind::MovingBlock
-                                ? QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), m_state.clock().tick())
+                                ? QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), sync.m_state.clock().tick())
                                 : entity.motion.position;
     if ((position - client.motion.position).length() > (item ? itemViewDistance : entityViewDistance)) {
         return;
     }
 
-    const QcMsg::EntityMove now = seen(entity);
+    const QcMsg::EntityMove now = sync.seen(entity);
 
-    pass.visible.insert(entity.id);
+    visible.insert(entity.id);
     // Projectiles count whether they stick, so sticking and falling again send them anew.
     const bool projectile = entity.kind == QcEntityKind::Projectile;
     const int count = orb ? entity.as<QcExperienceOrb>().value
@@ -209,9 +208,17 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     const auto known = client.view.known.find(entity.id);
     if (known == client.view.known.end()) {
         client.view.known.insert(entity.id, {count, now.position});
-        client.connection->send(spawnOf(entity, now));
+        client.connection->send(sync.spawnOf(entity, now));
         return;
     }
+
+    update(entity, now, {known, count});
+}
+
+void QcEntitySync::Pass::update(const QcEntity &entity, const QcMsg::EntityMove &now, const Known &known)
+{
+    const int count = known.count;
+    const bool projectile = entity.kind == QcEntityKind::Projectile;
 
     switch (entity.kind) {
     case QcEntityKind::Item:
@@ -219,60 +226,62 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     case QcEntityKind::Projectile:
         // Sent again when the count (a projectile: whether it sticks) changed, moved only when the
         // position did.
-        if (known->count != count && projectile) {
+        if (known.entry->count != count && projectile) {
             // Stuck or falling again: the new state, a move to where it is and a stop sample after it.
-            *known = {count, now.position, true};
-            client.connection->send(spawnOf(entity, now));
-            pass.moves.moves.append(now);
-        } else if (known->count != count) {
-            *known = {count, now.position, false};
-            client.connection->send(spawnOf(entity, now));
-        } else {
-            sendChangedMove(pass, *known, now, itemMoveThreshold);
+            *known.entry = {count, now.position, true};
+            client.connection->send(sync.spawnOf(entity, now));
+            moves.moves.append(now);
+        } else if (known.entry->count != count) {
+            *known.entry = {count, now.position, false};
+            client.connection->send(sync.spawnOf(entity, now));
+        } else if (const std::optional<QcServerClient::SentEntity> moved = QcEntitySync::changedMove(*known.entry, now, itemMoveThreshold)) {
+            *known.entry = *moved;
+            moves.moves.append(now);
         }
         break;
     case QcEntityKind::Minecart:
         // A cart standing still sends nothing.
-        sendChangedMove(pass, *known, now, cartMoveThreshold);
+        if (const std::optional<QcServerClient::SentEntity> moved = QcEntitySync::changedMove(*known.entry, now, cartMoveThreshold)) {
+            *known.entry = *moved;
+            moves.moves.append(now);
+        }
         break;
     case QcEntityKind::ArmourStand:
         // Stands send no moves: a spawn when they changed or were pushed.
         if (client.view.stale.remove(entity.id)) {
-            client.connection->send(spawnOf(entity, now));
+            client.connection->send(sync.spawnOf(entity, now));
         }
         break;
     default:
         // A known entity sent again (new look) still moves, swings and flashes in this tick.
         if (client.view.stale.remove(entity.id)) {
-            client.connection->send(spawnOf(entity, now));
+            client.connection->send(sync.spawnOf(entity, now));
         }
-        pass.moves.moves.append(now);
+        moves.moves.append(now);
         break;
     }
 }
 
-void QcEntitySync::sendChangedMove(Pass &pass, QcServerClient::SentEntity &known, const QcMsg::EntityMove &now, double threshold)
+std::optional<QcServerClient::SentEntity> QcEntitySync::changedMove(const QcServerClient::SentEntity &known, const QcMsg::EntityMove &now,
+                                                                      double threshold)
 {
     if ((known.position - now.position).length() > threshold) {
-        known = {known.count, now.position, true};
-        pass.moves.moves.append(now);
-        return;
+        return QcServerClient::SentEntity{known.count, now.position, true};
     }
 
     // Came to rest: one more move where it stays (a stop sample), so the client ends its motion
     // there instead of continuing the last step past the newest snapshot (QcSnapshotBuffer).
     if (known.moving) {
-        known = {known.count, now.position, false};
-        pass.moves.moves.append(now);
+        return QcServerClient::SentEntity{known.count, now.position, false};
     }
+    return std::nullopt;
 }
 
-void QcEntitySync::removeUnseen(Pass &pass) const
+void QcEntitySync::Pass::removeUnseen()
 {
-    QcServerClient &client = pass.client;
     QList<quint32> gone;
     for (auto it = client.view.known.begin(); it != client.view.known.end();) {
-        if (!pass.visible.contains(it.key())) {
+        if (!visible.contains(it.key())) {
             gone.append(it.key());
             client.view.stale.remove(it.key());
             it = client.view.known.erase(it);
@@ -284,6 +293,6 @@ void QcEntitySync::removeUnseen(Pass &pass) const
     // In the order of the ids, so the removals of a tick reach the client in the same order every time.
     std::ranges::sort(gone);
     for (const quint32 id : std::as_const(gone)) {
-        client.connection->send(QcMsg::EntityRemove{id, m_state.entities().diedThisTick(id)});
+        client.connection->send(QcMsg::EntityRemove{id, sync.m_state.entities().diedThisTick(id)});
     }
 }

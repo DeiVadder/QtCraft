@@ -24,4 +24,8 @@ struct QcPreviewHook
 
     // An unknown key or a value out of range is an error naming it.
     [[nodiscard]] static QcResult<QcPreviewHook> parse(const QString &text);
+
+private:
+    // Sets the field of `key` from `value`; false when the key is unknown or the value invalid.
+    [[nodiscard]] bool set(const QString &key, const QString &value);
 };

@@ -47,13 +47,14 @@ struct Loaded
 Loaded load(const QStringList &packs)
 {
     Loaded loaded{std::make_shared<QcContentRegistry>(), {}};
-    if (!QcBaseContent::loadInto(*loaded.content, loaded.warnings)) {
+    const QcResult<QcLoadedPack> base = QcBaseContent::loadInto(*loaded.content);
+    if (!base) {
         return loaded;
     }
+    loaded.warnings = base->warnings;
     for (const QString &pack : packs) {
-        if (const QcResult<QcContentPackInfo> info = QcContentPackLoader::load(pack, *loaded.content, loaded.warnings); !info) {
-            loaded.warnings.append(info.error());
-        }
+        const QcResult<QcLoadedPack> read = QcContentPackLoader::load(pack, *loaded.content);
+        loaded.warnings += read ? read->warnings : QStringList{read.error()};
     }
     loaded.warnings += loaded.content->finish();
     return loaded;

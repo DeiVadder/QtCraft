@@ -18,6 +18,24 @@ namespace QcMobLegs {
 inline constexpr double arrived = 2.0;
 inline constexpr int retryTicks = 40;
 
+class Routes;
+struct Budget;
+
+// The cell to search a path to, and how many questions it asked the routes (the caller takes them
+// from its budget).
+struct Towards
+{
+    QcBlockPos cell;
+    int asked = 0;
+};
+
+// The shore to swim to (none on dry ground or while a path leads on), and whether the routes were asked.
+struct Way
+{
+    std::optional<QcBlockPos> shore;
+    bool asked = false;
+};
+
 struct State
 {
     // The cell it walks to first, and the ticks until it asks the routes again after they had none.
@@ -25,6 +43,13 @@ struct State
     int retryIn = 0;
     // In water without a path to its goal: the cell on land it gets out to first.
     std::optional<QcBlockPos> shore;
+
+    // The cell to search a path to now: the shore while it must get out of the water, the target
+    // when it lies within reach, else the leg towards it. Asks the routes only while `budget` allows.
+    [[nodiscard]] Towards towards(const QcCreature &mob, QcBlockPos target, const Routes &routes, Budget budget);
+    // The shore a walker in water swims to when it has no path from there; none while it has a path
+    // or stands on dry ground (where it forgets the shore).
+    [[nodiscard]] Way wayOutOfWater(const QcCreature &mob, const Routes &routes, Budget budget);
 };
 
 // Where legs come from.
@@ -47,13 +72,15 @@ struct Budget
     int limit = 0;
 
     bool spent() const { return used >= limit; }
+    // Takes one question; false (nothing taken) when the budget is spent.
+    [[nodiscard]] bool take()
+    {
+        if (spent()) {
+            return false;
+        }
+        ++used;
+        return true;
+    }
 };
-
-// The cell to search a path to now: the shore while it must get out of the water, the target when
-// it lies within reach, else the leg towards it.
-QcBlockPos towards(const QcCreature &mob, State &state, QcBlockPos target, const Routes &routes, Budget &budget);
-// The shore a walker in water swims to when it has no path from there; none while it has a path or
-// stands on dry ground (where it forgets the shore).
-std::optional<QcBlockPos> wayOutOfWater(const QcCreature &mob, State &state, const Routes &routes, Budget &budget);
 
 } // namespace QcMobLegs

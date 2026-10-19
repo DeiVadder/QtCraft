@@ -110,16 +110,14 @@ private slots:
 
         // Listed but switched off: the base game alone loads.
         QCOMPARE(QcModLoader::disabledMods(mods), QStringList{u"rubies"_s});
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> off = QcModLoader::load(mods, warnings);
+        const QcModLoader::Loaded off = QcModLoader::load(mods);
         QVERIFY(off);
         QCOMPARE(idsIn(off->mods, QcModStatus::State::Disabled), QStringList{u"rubies"_s});
         QVERIFY(!off->content->blockId(u"rubies:ruby_ore"_s));
 
         // Switched on in the Mods screen, it loads.
         QVERIFY(QcModLoader::setModEnabled(mods, u"rubies"_s, true));
-        warnings.clear();
-        const QcResult<QcModLoader::Result> on = QcModLoader::load(mods, warnings);
+        const QcModLoader::Loaded on = QcModLoader::load(mods);
         QVERIFY(on);
         QCOMPARE(idsIn(on->mods, QcModStatus::State::Loaded), QStringList{u"rubies"_s});
         QVERIFY(on->content->blockId(u"rubies:ruby_ore"_s));

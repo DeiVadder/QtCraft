@@ -199,10 +199,10 @@ private slots:
             QDataStream out(&bytes, QIODevice::WriteOnly);
             QcArmourSerializer::write(out, armour);
         }
-        std::optional<QcArmourDefinition> read;
         QDataStream in(bytes);
-        QVERIFY(QcArmourSerializer::read(in, read));
-        QCOMPARE(read, std::optional(armour));
+        const std::optional<std::optional<QcArmourDefinition>> read = QcArmourSerializer::read(in);
+        QVERIFY(read);
+        QCOMPARE(*read, std::optional(armour));
 
         // Points beyond the limit (written by a broken or hostile server) fail the whole read.
         armour.points = 99;
@@ -212,8 +212,7 @@ private slots:
             QcArmourSerializer::write(out, armour);
         }
         QDataStream bad(bytes);
-        std::optional<QcArmourDefinition> refused;
-        QVERIFY(!QcArmourSerializer::read(bad, refused));
+        QVERIFY(!QcArmourSerializer::read(bad));
     }
 
     void hugeCoverCountIsRefusedBeforeReserving()
@@ -226,10 +225,8 @@ private slots:
             out << true << quint8(QcEquipmentSlot::Chest) << qint32(6) << u"iron"_s << quint32(1) << quint32(0xFFFFFFF0u);
         }
         QDataStream in(bytes);
-        std::optional<QcArmourDefinition> refused;
-        QVERIFY(!QcArmourSerializer::read(in, refused));
+        QVERIFY(!QcArmourSerializer::read(in));
         QCOMPARE(in.status(), QDataStream::ReadCorruptData);
-        QVERIFY(!refused);
 
         // Seventeen slots are one more than the parser allows.
         QcArmourDefinition armour;
@@ -240,7 +237,7 @@ private slots:
             QcArmourSerializer::write(out, armour);
         }
         QDataStream tooMany(bytes);
-        QVERIFY(!QcArmourSerializer::read(tooMany, refused));
+        QVERIFY(!QcArmourSerializer::read(tooMany));
     }
 
     void pointsReduceDamageUpToTheCap()
@@ -268,12 +265,12 @@ private slots:
         worn.at(QcEquipmentSlot::Head) = {helmet, 1, helmetDurability - 2};
         worn.at(QcEquipmentSlot::Feet) = {boots, 1, 0};
 
-        QVERIFY(QcArmour::wear(*m_content, worn, 4.0).isEmpty());
+        QVERIFY(worn.wear(*m_content, 4.0).isEmpty());
         QCOMPARE(worn.at(QcEquipmentSlot::Head).damage, helmetDurability - 1);
         QCOMPARE(worn.at(QcEquipmentSlot::Feet).damage, 1);
 
         // The next hit uses the helmet up: it is gone, the boots stay.
-        QCOMPARE(QcArmour::wear(*m_content, worn, 4.0), QList<QcEquipmentSlot>{QcEquipmentSlot::Head});
+        QCOMPARE(worn.wear(*m_content, 4.0), QList<QcEquipmentSlot>{QcEquipmentSlot::Head});
         QVERIFY(worn.at(QcEquipmentSlot::Head).isEmpty());
         QCOMPARE(worn.at(QcEquipmentSlot::Feet).damage, 2);
         QCOMPARE(QcArmour::points(*m_content, worn), 2);

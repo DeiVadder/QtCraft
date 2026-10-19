@@ -5,6 +5,7 @@
 #include "common/world/QcLightPassage.h"
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 
@@ -79,18 +80,26 @@ int QcLightEngine::levelIn(const Column &column, int x, int y, int z)
     return section.cells ? section.cells->level(cellIndex(x, y, z)) : section.uniform;
 }
 
-template<QcLightEngine::Channel C>
-void QcLightEngine::setLevel(Column &column, int x, int y, int z, int level)
+bool QcLightEngine::Column::setLevel(std::size_t channel, int x, int y, int z, int level)
 {
-    Section &section = column.light[channelIndex(C)][std::size_t(y / QcWorld::sectionHeight)];
+    Section &section = light[channel][std::size_t(y / QcWorld::sectionHeight)];
     if (!section.cells) {
-        if (level == int(section.uniform)) {
-            return;
+        if (std::cmp_equal(level, section.uniform)) {
+            return false;
         }
         section.cells = std::make_unique<QcLightNibbles>(section.uniform);
     }
 
     section.cells->setLevel(cellIndex(x, y, z), level);
+    return true;
+}
+
+template<QcLightEngine::Channel C>
+void QcLightEngine::setLevel(Column &column, int x, int y, int z, int level)
+{
+    if (!column.setLevel(channelIndex(C), x, y, z, level)) {
+        return;
+    }
     if (m_options.trackChanges) {
         touch(C, x, y, z);
     } else if (level == 0 || level == maxLevel) {
@@ -310,11 +319,11 @@ void QcLightEngine::queueBorder(QcChunkPos from, QcBlockFace towards)
 }
 
 template<QcLightEngine::Channel C>
-void QcLightEngine::queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcBlockFace towards, const Column &across,
-                                      std::vector<std::pair<Cell, int>> &seeds)
+void QcLightEngine::queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcBlockFace towards, const Column &across)
 {
     // A neighbour cell at least as bright as the border cell beside it got nothing from it.
     const QcFaceOffset offset = qcFaceOffset(towards);
+    std::vector<std::pair<Cell, int>> &seeds = m_seeds[channelIndex(C)];
     visitLitBorder<C>(leaving, pos, towards, across, [&seeds, &across, offset](Cell cell, int light) {
         if (levelIn<C>(across, cell.x + offset.dx, cell.y, cell.z + offset.dz) < light) {
             seeds.emplace_back(cell, light);
@@ -363,49 +372,67 @@ int QcLightEngine::columnTop(const QcChunk &blocks, int lx, int lz) const
     return -1;
 }
 
-void QcLightEngine::seedSky(Column &column, QcChunkPos pos)
+QcLightEngine::SkyTops QcLightEngine::skyTops(const QcChunk &blocks) const
 {
-    int lowest = QcWorld::worldHeight;
-    int highest = -1;
+    SkyTops tops{};
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = columnTop(*column.blocks, lx, lz);
-            column.skyTop[std::size_t(columnIndex(lx, lz))] = qint16(top);
-            lowest = std::min(lowest, top);
-            highest = std::max(highest, top);
+            tops[std::size_t(columnIndex(lx, lz))] = qint16(columnTop(blocks, lx, lz));
         }
     }
-
-    for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        fillSkySection(column, pos, index, {lowest, highest});
-    }
+    return tops;
 }
 
-void QcLightEngine::fillSkySection(Column &column, QcChunkPos pos, int index, std::pair<int, int> tops)
+quint32 QcLightEngine::Column::seedSky(const SkyTops &tops)
 {
-    const auto [lowest, highest] = tops;
-    Section &section = column.light[channelIndex(Channel::Sky)][std::size_t(index)];
-    const int low = index * QcWorld::sectionHeight;
-    const int high = low + QcWorld::sectionHeight - 1;
+    static_assert(QcWorld::sectionCount <= 32, "one bit per section");
+    skyTop = tops;
+    const auto [lowestTop, highestTop] = std::ranges::minmax(tops);
+    const int lowest = lowestTop;
+    const int highest = highestTop;
+    quint32 lit = 0;
+    for (int index = 0; index < QcWorld::sectionCount; ++index) {
+        Section &section = light[channelIndex(Channel::Sky)][std::size_t(index)];
+        const int low = index * QcWorld::sectionHeight;
+        const int high = low + QcWorld::sectionHeight - 1;
 
-    // Sections above every top are lit by the open sky, sections below every top start dark.
-    section.cells.reset();
-    section.uniform = low > highest ? quint8(maxLevel) : 0;
-    if (low > highest || high <= lowest) {
-        return;
+        // Sections above every top are lit by the open sky, sections below every top start dark.
+        section.cells.reset();
+        section.uniform = low > highest ? quint8(maxLevel) : 0;
+        if (low > highest || high <= lowest) {
+            continue;
+        }
+
+        section.cells = skyCells(skyTop, low, high);
+        lit |= quint32(1) << index;
     }
+    return lit;
+}
 
-    section.cells = std::make_unique<QcLightNibbles>(0);
+std::unique_ptr<QcLightNibbles> QcLightEngine::Column::skyCells(const SkyTops &tops, int low, int high)
+{
+    auto cells = std::make_unique<QcLightNibbles>(0);
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = column.skyTop[std::size_t(columnIndex(lx, lz))];
+            const int top = tops[std::size_t(columnIndex(lx, lz))];
             for (int y = std::max(low, top + 1); y <= high; ++y) {
-                section.cells->setLevel(QcChunkSection::index(lx, y - low, lz), maxLevel);
+                cells->setLevel(QcChunkSection::index(lx, y - low, lz), maxLevel);
             }
         }
     }
-    if (m_options.trackChanges) {
-        touch(Channel::Sky, pos.x * QcWorld::chunkSize, low, pos.z * QcWorld::chunkSize);
+    return cells;
+}
+
+void QcLightEngine::seedSky(Column &column, QcChunkPos pos)
+{
+    const quint32 lit = column.seedSky(skyTops(*column.blocks));
+    if (!m_options.trackChanges) {
+        return;
+    }
+    for (int index = 0; index < QcWorld::sectionCount; ++index) {
+        if (lit & (quint32(1) << index)) {
+            touch(Channel::Sky, pos.x * QcWorld::chunkSize, index * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize);
+        }
     }
 }
 
@@ -562,9 +589,9 @@ void QcLightEngine::removeChunk(QcChunkPos pos)
         if (!across) {
             continue;
         }
-        queueRemovalSeeds<Channel::Block>(it->second, pos, face, *across, m_seeds[channelIndex(Channel::Block)]);
+        queueRemovalSeeds<Channel::Block>(it->second, pos, face, *across);
         if (m_options.sky) {
-            queueRemovalSeeds<Channel::Sky>(it->second, pos, face, *across, m_seeds[channelIndex(Channel::Sky)]);
+            queueRemovalSeeds<Channel::Sky>(it->second, pos, face, *across);
         }
     }
 

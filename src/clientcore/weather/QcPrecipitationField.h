@@ -72,10 +72,9 @@ public:
     // Advances the field by `seconds` around `eye`: particles fall, those that landed or left the box
     // start again above an open column; their number follows the rain's strength.
     void update(const QcClientWorld &world, const QcClientWeather &weather, const QcVec3 &eye, double seconds);
-    // The particles as instances for the renderer, written into `drops` (cleared first, its capacity
-    // kept, so a reused list allocates nothing); raindrops and flakes grow more opaque with the
-    // strength of the rain.
-    void fillDrops(float strength, QList<QcPrecipitationDrop> &drops) const;
+    // A particle as an instance for the renderer (QcDropPool collects them); raindrops and flakes grow
+    // more opaque with the strength of the rain.
+    [[nodiscard]] static QcPrecipitationDrop dropOf(const Particle &particle, float strength);
     // The streak of a raindrop: from the drop up to where it was rainStreakSeconds ago.
     static QcVec3 rainStreak() { return {-rainDrift * rainStreakSeconds, rainSpeed * rainStreakSeconds, 0.0}; }
 

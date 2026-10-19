@@ -52,9 +52,6 @@ public:
     QList<QcChunkPos> chunks(qsizetype limit) const;
 
 private:
-    // Adds the loaders of a section whose lowest corner is `corner`.
-    void findIn(const QcChunkSection &section, QcBlockPos corner, QSet<QcBlockPos> &found) const;
-
     void add(QcBlockPos pos, const QString &owner);
     void remove(QcBlockPos pos);
 

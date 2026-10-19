@@ -26,8 +26,8 @@ public:
     // around the players generating.
     static constexpr qsizetype cachedPlans = 512;
 
-    QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed,
-                       QStringList *warnings);
+    // What the styles leave out is in styles().warnings().
+    QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed);
 
     // The village of the region that holds the chunk; null when it has none.
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> planFor(QcChunkPos chunk) const;
@@ -41,9 +41,9 @@ public:
     // block, pieces after clearing the terrain above their footprint and filling the ground below it;
     // over water the wetland is shaped first (QcWetlandShaper).
     void build(QcChunk &chunk, const QcVillagePlan &plan) const;
-    // Adds the loot of the chests of `plan`'s pieces in the chunk (decision E-590: the temple at the
+    // The loot of the chests of `plan`'s pieces in the chunk (decision E-590: the temple at the
     // centre of a desert village).
-    void addFurnishing(QcChunkPos pos, const QcVillagePlan &plan, QcChunkFurnishing &furnishing) const;
+    [[nodiscard]] static QcChunkFurnishing furnishingIn(QcChunkPos pos, const QcVillagePlan &plan);
     // The guardian zones (decision E-591) of the pieces of the villages in the regions within
     // `reach` of `from`.
     QList<QcGuardSite> sitesNear(QcBlockPos from, int reach) const;

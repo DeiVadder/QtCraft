@@ -6,11 +6,12 @@
 
 #include <QList>
 #include <QSet>
+#include <QStringList>
 
 #include <utility>
 
 // The registry's terrain, biome, feature, ore and pool definitions resolved to block ids for the
-// terrain generator. Unresolvable references are reported in `warnings` and replaced by sensible
+// terrain generator. Unresolvable references are noted in `warnings` and replaced by sensible
 // fallbacks; omitted optional blocks (empty names) fall back silently.
 struct QcTerrainDefinitions
 {
@@ -78,7 +79,7 @@ struct QcTerrainDefinitions
         QSet<int> biomes;
     };
 
-    QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed, QStringList *warnings);
+    QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed);
 
     int seaLevel = 62;
     QcBlockId stone = qcAirBlockId;
@@ -97,4 +98,6 @@ struct QcTerrainDefinitions
     bool anyRidges = false;
     bool anyTerraces = false;
     bool anyOverhangs = false;
+    // What could not be resolved and was replaced by a fallback.
+    QStringList warnings;
 };

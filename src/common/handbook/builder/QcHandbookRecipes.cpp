@@ -3,6 +3,7 @@
 #include "common/handbook/builder/QcHandbookIndex.h"
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbookLinks.h"
+#include "common/handbook/QcLinkList.h"
 
 #include <algorithm>
 
@@ -22,16 +23,10 @@ QcHandbookRecipes::QcHandbookRecipes(const QcContentRegistry &content, const QcH
 
 Recipe QcHandbookRecipes::craftingRecipe(const QcRecipeDefinition &recipe) const
 {
-    Recipe result;
+    Recipe result = recipe.shaped ? shapedGrid(recipe) : shapelessGrid(recipe);
     result.kind = Recipe::Kind::Crafting;
     result.name = recipe.name;
     result.shapeless = !recipe.shaped;
-
-    if (recipe.shaped) {
-        addShapedCells(result, recipe);
-    } else {
-        addShapelessCells(result, recipe);
-    }
 
     result.result = m_links.itemLink(recipe.resultItem);
     result.resultCount = recipe.resultCount;
@@ -40,8 +35,9 @@ Recipe QcHandbookRecipes::craftingRecipe(const QcRecipeDefinition &recipe) const
     return result;
 }
 
-void QcHandbookRecipes::addShapedCells(Recipe &result, const QcRecipeDefinition &recipe) const
+Recipe QcHandbookRecipes::shapedGrid(const QcRecipeDefinition &recipe) const
 {
+    Recipe result;
     result.width = std::max(1, recipe.width());
     result.height = std::max(1, recipe.height());
 
@@ -53,10 +49,12 @@ void QcHandbookRecipes::addShapedCells(Recipe &result, const QcRecipeDefinition 
     }
 
     result.needsTable = recipe.width() > 2 || recipe.height() > 2;
+    return result;
 }
 
-void QcHandbookRecipes::addShapelessCells(Recipe &result, const QcRecipeDefinition &recipe) const
+Recipe QcHandbookRecipes::shapelessGrid(const QcRecipeDefinition &recipe) const
 {
+    Recipe result;
     const int count = int(recipe.ingredients.size());
     result.width = count <= 1 ? 1 : (count <= 4 ? 2 : 3);
     result.height = (count + result.width - 1) / result.width;
@@ -68,6 +66,7 @@ void QcHandbookRecipes::addShapelessCells(Recipe &result, const QcRecipeDefiniti
         result.cells.append(Link{});
     }
     result.needsTable = count > 4;
+    return result;
 }
 
 Recipe QcHandbookRecipes::machineRecipe(const QcSmeltingRecipe &recipe) const
@@ -100,14 +99,14 @@ Recipe QcHandbookRecipes::machineRecipe(const QcSmeltingRecipe &recipe) const
     return result;
 }
 
-void QcHandbookRecipes::addItemSections(QcHandbookEntry &entry, const QString &item) const
+QList<Section> QcHandbookRecipes::itemSections(const QString &item) const
 {
-    addMadeSections(entry, item);
-    addUsageSections(entry, item);
+    return madeSections(item) + usageSections(item);
 }
 
-void QcHandbookRecipes::addMadeSections(QcHandbookEntry &entry, const QString &item) const
+QList<Section> QcHandbookRecipes::madeSections(const QString &item) const
 {
+    QList<Section> sections;
     const QList<QcRecipeDefinition> &recipes = m_content.recipes();
     const QList<QcSmeltingRecipe> &smelting = m_content.smeltingRecipes();
 
@@ -117,7 +116,7 @@ void QcHandbookRecipes::addMadeSections(QcHandbookEntry &entry, const QString &i
         made.recipes.append(craftingRecipe(recipes[index]));
     }
     if (!made.recipes.isEmpty()) {
-        entry.sections.append(std::move(made));
+        sections.append(std::move(made));
     }
 
     Section smelted{m_text.label(u"section.smelting"_s), {}, {}, {}};
@@ -127,7 +126,7 @@ void QcHandbookRecipes::addMadeSections(QcHandbookEntry &entry, const QString &i
     }
     if (!smelted.recipes.isEmpty()) {
         smelted.links.append(m_links.tableLink(u"fuels"_s));
-        entry.sections.append(std::move(smelted));
+        sections.append(std::move(smelted));
     }
 
     Section smeltsInto{m_text.label(u"section.smeltsInto"_s), {}, {}, {}};
@@ -137,29 +136,30 @@ void QcHandbookRecipes::addMadeSections(QcHandbookEntry &entry, const QString &i
     }
     if (!smeltsInto.recipes.isEmpty()) {
         smeltsInto.links.append(m_links.tableLink(u"fuels"_s));
-        entry.sections.append(std::move(smeltsInto));
+        sections.append(std::move(smeltsInto));
     }
+    return sections;
 }
 
-void QcHandbookRecipes::addUsageSections(QcHandbookEntry &entry, const QString &item) const
+QList<Section> QcHandbookRecipes::usageSections(const QString &item) const
 {
+    QList<Section> sections;
     const QList<QcRecipeDefinition> &recipes = m_content.recipes();
 
-    Section usedIn{m_text.label(u"section.usedIn"_s), {}, {}, {}};
+    QcLinkList usedBy;
     const QList<QcHandbookIndex::IngredientUse> uses = m_index.recipesByIngredient(item);
     for (const auto &[index, tag] : uses) {
-        QcHandbookLinks::appendUnique(usedIn.links, m_links.itemLink(recipes[index].resultItem,
-                                                                     tag.isEmpty() ? QString() : m_links.tagTitle(tag, m_text.language())));
+        const QString note = tag.isEmpty() ? QString() : m_links.tagTitle(tag, m_text.language());
+        usedBy.addUnique(m_links.itemLink(recipes[index].resultItem, note));
     }
-    QcHandbookLinks::sortLinks(usedIn.links);
+    Section usedIn{m_text.label(u"section.usedIn"_s), {}, usedBy.sorted(), {}};
     if (!usedIn.links.isEmpty()) {
-        entry.sections.append(std::move(usedIn));
+        sections.append(std::move(usedIn));
     }
 
-    QList<Link> droppedBy = m_index.droppedBy(item);
-    QcHandbookLinks::sortLinks(droppedBy);
+    const QList<Link> droppedBy = QcHandbookLinks::sortedLinks(m_index.droppedBy(item));
     if (!droppedBy.isEmpty()) {
-        entry.sections.append({m_text.label(u"section.droppedBy"_s), {}, droppedBy, {}});
+        sections.append({m_text.label(u"section.droppedBy"_s), {}, droppedBy, {}});
     }
 
     QList<Link> caughtFrom;
@@ -174,9 +174,10 @@ void QcHandbookRecipes::addUsageSections(QcHandbookEntry &entry, const QString &
     }
 
     if (!caughtFrom.isEmpty()) {
-        entry.sections.append({m_text.label(u"section.caughtFrom"_s), {}, caughtFrom, {}});
+        sections.append({m_text.label(u"section.caughtFrom"_s), {}, caughtFrom, {}});
     }
     if (!catches.isEmpty()) {
-        entry.sections.append({m_text.label(u"section.catches"_s), {}, catches, {}});
+        sections.append({m_text.label(u"section.catches"_s), {}, catches, {}});
     }
+    return sections;
 }

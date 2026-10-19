@@ -195,9 +195,8 @@ private slots:
 
         const auto build = [&](const QcStandPose &standPose, const QcEquipment &equipment) {
             QcEntityMesh mesh;
-            QcEntityMesher::ModelLook standLook = QcFigureLook::stand(*m_content, standPose);
-            const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(*m_content, equipment, standLook);
-            QcEntityMesher::appendModel(mesh, {standLook, nullptr, &armour, QcFigureLook::standHiddenBones(standPose)},
+            const QcFigureLook::Dressed dressed = QcFigureLook::armour(*m_content, equipment, QcFigureLook::stand(*m_content, standPose));
+            QcEntityMesher::appendModel(mesh, {dressed.look, nullptr, &dressed.armour, QcFigureLook::standHiddenBones(standPose)},
                                         QcFigureLook::standBody(standPose, 0.0), placement, uvOf);
             return mesh;
         };
@@ -227,15 +226,14 @@ private slots:
         chest.at(QcEquipmentSlot::Chest) = {item("iron_chestplate"), 1, 0};
         QcAppearance appearance;
         appearance.cape = u"qtcraft:green_cape"_s;
-        QcEntityMesher::ModelLook look = QcFigureLook::player(*m_content, appearance);
-        QVERIFY(look.cape);
-        const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(*m_content, chest, look);
+        QVERIFY(QcFigureLook::player(*m_content, appearance).cape);
+        const QcFigureLook::Dressed dressed = QcFigureLook::armour(*m_content, chest, QcFigureLook::player(*m_content, appearance));
+        QcEntityMesher::ModelLook look = dressed.look;
+        const QList<QcEntityMesher::Attachment> &armour = dressed.armour;
         QVERIFY(std::abs(look.capeClearance - 0.035) < 1e-9);
-        QcEntityMesher::ModelLook bare = QcFigureLook::player(*m_content, appearance);
         QcEquipment boots;
         boots.at(QcEquipmentSlot::Feet) = {item("iron_boots"), 1, 0};
-        QcFigureLook::armour(*m_content, boots, bare);
-        QCOMPARE(bare.capeClearance, 0.0);
+        QCOMPARE(QcFigureLook::armour(*m_content, boots, QcFigureLook::player(*m_content, appearance)).look.capeClearance, 0.0);
 
         // ... so in the preview (the same path as players in the world) the cape lies outside it.
         QcPreviewScene::Figure figure;
@@ -255,12 +253,13 @@ private slots:
         // A stand with a cape (E-239): its pole is thin, the layer has the humanoid's size, and the
         // cape still hangs outside the layer on the body (the stand's arms are posed, so their
         // sleeves are left out of the comparison).
-        QcEntityMesher::ModelLook stand = QcFigureLook::stand(*m_content, {});
-        stand.cape = QcFigureLook::cape(*m_content, appearance.cape);
-        const QList<QcEntityMesher::Attachment> worn = QcFigureLook::armour(*m_content, chest, stand);
-        QVERIFY(stand.capeClearance > 0.1);
+        QcEntityMesher::ModelLook caped = QcFigureLook::stand(*m_content, {});
+        caped.cape = QcFigureLook::cape(*m_content, appearance.cape);
+        const QcFigureLook::Dressed stand = QcFigureLook::armour(*m_content, chest, caped);
+        const QList<QcEntityMesher::Attachment> &worn = stand.armour;
+        QVERIFY(stand.look.capeClearance > 0.1);
         QcEntityMesh standMesh;
-        QcEntityMesher::appendModel(standMesh, {stand, nullptr, &worn}, QcFigureLook::standBody({}, 0.0), placement, uvOf);
+        QcEntityMesher::appendModel(standMesh, {stand.look, nullptr, &worn}, QcFigureLook::standBody({}, 0.0), placement, uvOf);
         const double standFront = std::ranges::min(drawnWith(standMesh, capeTextures), {}, &QcEntityVertex::z).z;
         double standBack = 0.0;
         for (const QcEntityMesher::Attachment &attachment : worn) {
@@ -274,8 +273,9 @@ private slots:
     {
         QcEquipment helmet;
         helmet.at(QcEquipmentSlot::Head) = {item("iron_helmet"), 1, 0};
-        QcEntityMesher::ModelLook stand = QcFigureLook::stand(*m_content, {});
-        const QList<QcEntityMesher::Attachment> worn = QcFigureLook::standArmour(*m_content, helmet, stand);
+        const QcEntityMesher::ModelLook stand = QcFigureLook::stand(*m_content, {});
+        const QcFigureLook::Dressed dressed = QcFigureLook::standArmour(*m_content, helmet, stand);
+        const QList<QcEntityMesher::Attachment> &worn = dressed.armour;
 
         // The helmet plus one filler: the humanoid head (0.45 m cube from y 1.35) in the wood of
         // the stand's outfit, closed all round, inside the helmet.
@@ -289,16 +289,15 @@ private slots:
 
         // Through the opening of the front texture the filler's front face is seen, drawn in wood.
         QcEntityMesh mesh;
-        QcEntityMesher::appendModel(mesh, {stand, nullptr, &worn}, QcFigureLook::standBody({}, 0.0), {}, uvOf);
+        QcEntityMesher::appendModel(mesh, {dressed.look, nullptr, &worn}, QcFigureLook::standBody({}, 0.0), {}, uvOf);
         const QList<QcEntityVertex> wood = drawnWith(mesh, {u"qtcraft:armor_stand_wood"_s});
         QVERIFY(std::ranges::any_of(wood, [](const QcEntityVertex &vertex) { return std::abs(vertex.z + 0.225) < 1e-4 && vertex.y > 1.5; }));
 
         // Players and stands without a helmet get no filler.
-        QcEntityMesher::ModelLook player = QcFigureLook::player(*m_content, {});
-        QCOMPARE(QcFigureLook::armour(*m_content, helmet, player).size(), 1);
+        QCOMPARE(QcFigureLook::armour(*m_content, helmet, QcFigureLook::player(*m_content, {})).armour.size(), 1);
         QcEquipment chest;
         chest.at(QcEquipmentSlot::Chest) = {item("iron_chestplate"), 1, 0};
-        QCOMPARE(QcFigureLook::standArmour(*m_content, chest, stand).size(), QcFigureLook::armour(*m_content, chest, stand).size());
+        QCOMPARE(QcFigureLook::standArmour(*m_content, chest, stand).armour.size(), QcFigureLook::armour(*m_content, chest, stand).armour.size());
     }
 
     void standPoseTurnsTheBones()

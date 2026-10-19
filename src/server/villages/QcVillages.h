@@ -40,6 +40,7 @@ public:
     // A bed or workstation set at most this far (horizontally) from a village's box joins it.
     static constexpr int joinDistance = 32;
 
+    // Logs the warnings of the village blocks (unknown workstation blocks) in qtcraft.content.
     QcVillages(const QcContentRegistry &content, const QcWorldGenerator &generator);
 
     void setLimits(const Limits &limits) { m_limits = limits; }

@@ -134,7 +134,7 @@ void emitBox(QcEntityMesh &mesh, const QcAabb &box, const Place &place, const Su
             continue;
         }
 
-        const auto base = quint32(mesh.vertices.size());
+        std::array<QcEntityVertex, 4> quad;
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const auto &c = faceCorners[face][corner];
             const QcVec3 &world = placed[std::size_t(c[0]) + 2 * std::size_t(c[1]) + 4 * std::size_t(c[2])];
@@ -148,10 +148,9 @@ void emitBox(QcEntityMesh &mesh, const QcAabb &box, const Place &place, const Su
             vertex.skyLight = surface.light.sky;
             vertex.blockLight = surface.light.block;
             vertex.tint = surface.tint;
-            mesh.vertices.append(vertex);
+            quad[corner] = vertex;
         }
-
-        mesh.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+        mesh.addQuad(quad);
     }
 }
 
@@ -165,7 +164,7 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
         const std::array<QcVec3, 4> corners = {{{-half * side, 0.0, 0.0}, {half * side, 0.0, 0.0}, {half * side, size, 0.0},
                                                 {-half * side, size, 0.0}}};
 
-        const auto base = quint32(mesh.vertices.size());
+        std::array<QcEntityVertex, 4> quad;
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const QcVec3 world = place(corners[corner]);
             QcEntityVertex vertex;
@@ -179,10 +178,9 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
             vertex.shade = 0.95f;
             vertex.skyLight = light.sky;
             vertex.blockLight = light.block;
-            mesh.vertices.append(vertex);
+            quad[corner] = vertex;
         }
-
-        mesh.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+        mesh.addQuad(quad);
     }
 }
 

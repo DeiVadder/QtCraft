@@ -90,11 +90,10 @@ class TestCape : public QObject
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(warnings);
+        const QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
         QVERIFY(base);
-        m_base = *base;
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        m_base = base->registry;
+        QVERIFY2(base->warnings.isEmpty(), qPrintable(base->warnings.join(u'\n')));
     }
 
     void capesAreParsedFromAppearances()
@@ -199,9 +198,10 @@ private slots:
         spec.pattern = QcTextureSpec::Pattern::Emblem;
         spec.primary = QColor(0x41, 0xcd, 0x52);
         spec.variation = 0.0;
-        QString problem;
-        QVERIFY(QcTextureEmblem::read(json("{\"bitmap\":[\"x.y\",\"\",\"..x\"],\"palette\":{\"x\":\"#ff0000\",\"y\":\"#0000ff\"}}"), spec, problem));
-        const QImage image = QcTextureSynthesizer::synthesize(spec);
+        const QcResult<QcTextureSpec> read =
+            QcTextureEmblem::read(json("{\"bitmap\":[\"x.y\",\"\",\"..x\"],\"palette\":{\"x\":\"#ff0000\",\"y\":\"#0000ff\"}}"), spec);
+        QVERIFY(read);
+        const QImage image = QcTextureSynthesizer::synthesize(*read);
         QCOMPARE(image.pixelColor(0, 0), QColor(255, 0, 0));
         QCOMPARE(image.pixelColor(2, 0), QColor(0, 0, 255));
         QCOMPARE(image.pixelColor(2, 2), QColor(255, 0, 0));
@@ -213,9 +213,9 @@ private slots:
 
         // Malformed bitmaps and palettes are refused.
         QcTextureSpec bad;
-        QVERIFY(!QcTextureEmblem::read(json("{\"bitmap\":[\"xxxxxxxxxxxxxxxxx\"]}"), bad, problem));
-        QVERIFY(!QcTextureEmblem::read(json("{\"palette\":{\"xy\":\"#ff0000\"}}"), bad, problem));
-        QVERIFY(!QcTextureEmblem::read(json("{\"palette\":{\"x\":\"red\"}}"), bad, problem));
+        QVERIFY(!QcTextureEmblem::read(json("{\"bitmap\":[\"xxxxxxxxxxxxxxxxx\"]}"), bad));
+        QVERIFY(!QcTextureEmblem::read(json("{\"palette\":{\"xy\":\"#ff0000\"}}"), bad));
+        QVERIFY(!QcTextureEmblem::read(json("{\"palette\":{\"x\":\"red\"}}"), bad));
         QVERIFY(!QcContentParser::parseProceduralTexture(
             json("{\"name\":\"e\",\"pattern\":\"emblem\",\"bitmap\":[\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]}"), u"m"_s));
         QVERIFY(!QcContentParser::parseProceduralTexture(json("{\"name\":\"e\",\"pattern\":\"emblem\",\"palette\":{\"x\":5}}"), u"m"_s));

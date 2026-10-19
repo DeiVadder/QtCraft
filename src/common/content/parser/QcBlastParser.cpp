@@ -6,9 +6,9 @@ using namespace Qt::StringLiterals;
 
 namespace QcBlastParser {
 
-void parseBlast(QcBlockDefinition &block, QcJsonFieldReader &reader)
+QcBlastDefinition parseBlast(const QcBlockDefinition &block, QcJsonFieldReader &reader)
 {
-    QcBlastDefinition &blast = block.blast;
+    QcBlastDefinition blast;
     blast.resistance = reader.number(u"blastResistance"_s, -1.0, 0.0, QcBlastDefinition::unbreakable);
     reader.nestedObject(u"explosive"_s, [&blast](const QJsonObject &, QcJsonFieldReader &nested) {
         blast.power = nested.number(u"power"_s, 4.0, 0.5, QcBlastDefinition::maxPower);
@@ -23,6 +23,7 @@ void parseBlast(QcBlockDefinition &block, QcJsonFieldReader &reader)
     if (blast.isExplosive() && (block.liquid || !block.solid)) {
         reader.fail(u"an explosive must be a solid block"_s);
     }
+    return blast;
 }
 
 } // namespace QcBlastParser

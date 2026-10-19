@@ -26,8 +26,9 @@ public:
     // Internal marker of a queued request that failed to parse.
     static constexpr auto parseErrorKey = "__parseError";
 
-    // Optional hook for commands the session cannot serve itself (screenshots, world management).
-    using ExtensionHandler = std::function<bool(const QJsonObject &request, QJsonObject &response)>;
+    // Optional hook for commands the session cannot serve itself (screenshots, world management): the
+    // response (with "ok": false and "error" for a failure), none for a command it does not know.
+    using ExtensionHandler = std::function<std::optional<QJsonObject>(const QJsonObject &request)>;
 
     QcControlInterface(QcClientSession *session, QIODevice *input, QIODevice *output, QObject *parent = nullptr);
 

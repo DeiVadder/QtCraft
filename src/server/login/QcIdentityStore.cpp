@@ -21,16 +21,19 @@ QcIdentityStore::QcIdentityStore()
 {
 }
 
-void QcIdentityStore::open(const QString &directory, QStringList &warnings)
+QStringList QcIdentityStore::open(const QString &directory)
 {
     m_path = directory.isEmpty() ? QString() : QDir(directory).filePath(fileName.toString());
     if (!m_path.isEmpty() && QFile::exists(m_path)) {
-        read(m_path, warnings);
+        return read(m_path);
     }
+    return {};
 }
 
-void QcIdentityStore::read(const QString &path, QStringList &warnings)
+QStringList QcIdentityStore::read(const QString &path)
 {
+    QStringList warnings;
+
     QFile file(path);
     QJsonParseError error{};
     QJsonDocument document;
@@ -47,7 +50,7 @@ void QcIdentityStore::read(const QString &path, QStringList &warnings)
         m_readOnly = copy.isEmpty();
         warnings.append(copy.isEmpty() ? u"%1 is damaged and could not be copied aside; players register anew and it is not overwritten"_s.arg(path)
                                        : u"%1 was damaged and kept as %2; players register anew"_s.arg(path, copy));
-        return;
+        return warnings;
     }
 
     m_salt = salt;
@@ -60,11 +63,12 @@ void QcIdentityStore::read(const QString &path, QStringList &warnings)
             warnings.append(u"identities.json: invalid entry left out"_s);
         } else if (m_identities.size() >= maxEntries) {
             warnings.append(u"identities.json: more than %1 entries, the rest is left out"_s.arg(maxEntries));
-            return;
+            return warnings;
         } else {
             m_identities.insert(QcAccessList::key(identity.name), {identity.name, identity.identity, QcLoginCrypto::fingerprint(identity.identity), identity.since});
         }
     }
+    return warnings;
 }
 
 const QcIdentityStore::Identity *QcIdentityStore::find(const QString &name) const

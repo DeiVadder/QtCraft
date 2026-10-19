@@ -113,12 +113,12 @@ inline constexpr std::array<Combo, 2> combos{{
 }};
 // The combination of `action`; nullopt for an action without one.
 std::optional<Combo> comboOf(Action action);
-// Applies the combos to the held actions `now` (from held(), `before` the previous state): a
+// The held actions `now` (from held(), `before` the previous state) with the combos applied: a
 // combo's button pressed while its modifier is held holds the combo's action and not the button's
 // own; a press that began before the modifier stays the button's own. A combo whose modifier has no
 // button or the combo's button itself does nothing.
-void applyCombos(std::array<bool, actionCount> &now, const std::array<bool, actionCount> &before, const QcGamepadState &shaped,
-                 const Bindings &bindings);
+[[nodiscard]] std::array<bool, actionCount> withCombos(std::array<bool, actionCount> now, const std::array<bool, actionCount> &before,
+                                                     const QcGamepadState &shaped, const Bindings &bindings);
 
 // The id of an action in settings files and in QML ("jump", "hotbarRadial", ...).
 QString actionName(Action action);

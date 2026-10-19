@@ -17,15 +17,20 @@ void writeOffer(QDataStream &stream, const QcMsg::TradeOffer &offer)
     stream << offer.uses << offer.maxUses;
 }
 
-// False for an offer without costs or with more than TradeOffer::maxCosts, or with uses out of range.
-bool readOffer(QDataStream &stream, QcMsg::TradeOffer &offer)
+// std::nullopt for an offer without costs or with more than TradeOffer::maxCosts, or with uses out of range.
+[[nodiscard]] std::optional<QcMsg::TradeOffer> readOffer(QDataStream &stream)
 {
-    if (!QcProtocolCodec::readStacks(stream, offer.costs) || offer.costs.isEmpty() || offer.costs.size() > QcMsg::TradeOffer::maxCosts) {
-        return false;
+    std::optional<QList<QcItemStack>> costs = QcProtocolCodec::readStacks(stream);
+    if (!costs || costs->isEmpty() || costs->size() > QcMsg::TradeOffer::maxCosts) {
+        return std::nullopt;
     }
+
+    QcMsg::TradeOffer offer;
+    offer.costs = std::move(*costs);
     offer.result = QcProtocolCodec::readStack(stream);
     stream >> offer.uses >> offer.maxUses;
-    return offer.maxUses >= 0 && offer.uses >= 0 && offer.uses <= offer.maxUses;
+    const bool valid = offer.maxUses >= 0 && offer.uses >= 0 && offer.uses <= offer.maxUses;
+    return valid ? std::optional(std::move(offer)) : std::nullopt;
 }
 
 } // namespace
@@ -52,17 +57,18 @@ void encode(QDataStream &, QcMsg::CloseTrade) {}
 {
     QcMsg::TradeState m;
     stream >> m.villager >> m.profession >> m.level >> m.experience >> m.levelStart >> m.levelEnd;
-    quint32 count = 0;
-    if (m.profession.size() > maxProfessionKey || !QcStreamLimits::readCount(stream, QcMsg::TradeState::maxOffers, count)) {
+    const std::optional<quint32> count =
+        m.profession.size() > maxProfessionKey ? std::nullopt : QcStreamLimits::readCount(stream, QcMsg::TradeState::maxOffers);
+    if (!count) {
         return qcError(u"Corrupt trading screen"_s);
     }
 
-    for (quint32 i = 0; i < count; ++i) {
-        QcMsg::TradeOffer offer;
-        if (!readOffer(stream, offer)) {
+    for (quint32 i = 0; i < *count; ++i) {
+        std::optional<QcMsg::TradeOffer> offer = readOffer(stream);
+        if (!offer) {
             return qcError(u"Corrupt trade offer"_s);
         }
-        m.offers.append(offer);
+        m.offers.append(std::move(*offer));
     }
     if (m.level < 1 || m.experience < 0 || m.levelStart < 0 || m.levelEnd < m.levelStart) {
         return qcError(u"Invalid villager level"_s);

@@ -42,19 +42,17 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
 namespace {
 
 // Looks up whether the entity's chunk is loaded when it is new, moved to another chunk or the loaded
-// chunks changed (`everyone`); notes the chunk of a resting one.
-void settleOne(QcEntity &entity, const QcEntities::ChunkLoadedFunction &isLoaded, bool everyone, QSet<QcChunkPos> &strays)
+// chunks changed (`everyone`); the chunk of one that rests there, which is not loaded.
+[[nodiscard]] std::optional<QcChunkPos> settleOne(QcEntity &entity, const QcEntities::ChunkLoadedFunction &isLoaded, bool everyone)
 {
     const QcChunkPos chunk = QcEntities::chunkOf(entity);
     if (!everyone && entity.settled && entity.settledChunk == chunk) {
-        return;
+        return std::nullopt;
     }
     entity.dormant = !isLoaded(chunk);
     entity.settledChunk = chunk;
     entity.settled = true;
-    if (entity.dormant) {
-        strays.insert(chunk);
-    }
+    return entity.dormant ? std::optional(chunk) : std::nullopt;
 }
 
 } // namespace
@@ -66,7 +64,9 @@ QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64
     QSet<QcChunkPos> strays;
     const auto settleList = [&isLoaded, &strays, everyone](auto &list) {
         for (QcEntity &entity : list) {
-            settleOne(entity, isLoaded, everyone, strays);
+            if (const std::optional<QcChunkPos> stray = settleOne(entity, isLoaded, everyone)) {
+                strays.insert(*stray);
+            }
         }
     };
     settleList(m_creatures.editableMobs());

@@ -22,6 +22,13 @@ struct QcContentPackInfo
     QString directory;
 };
 
+// A pack loaded into a registry: its manifest and the warnings about the entries it skipped.
+struct QcLoadedPack
+{
+    QcContentPackInfo info;
+    QStringList warnings;
+};
+
 // Reads content packs from disk (or Qt resources) into a registry. This is the only place that
 // touches pack files; pack data never gets file-system access of its own.
 class QcContentPackLoader
@@ -50,7 +57,7 @@ public:
     static qint64 measure(const QString &directory);
 
     // Loads the content folders of the pack (shapes/, parts/, materials/, blocks/, items/, recipes/,
-    // smelting/, sounds/, textures/, lang/, handbook/, structures/, worldgen/, ...). Invalid entries are skipped and reported in
-    // `warnings`; the pack itself only fails when the manifest is unusable.
-    [[nodiscard]] static QcResult<QcContentPackInfo> load(const QString &directory, QcContentRegistry &registry, QStringList &warnings);
+    // smelting/, sounds/, textures/, lang/, handbook/, structures/, worldgen/, ...) into `registry`. Invalid entries are
+    // skipped and reported in the warnings; the pack itself only fails when the manifest is unusable.
+    [[nodiscard]] static QcResult<QcLoadedPack> load(const QString &directory, QcContentRegistry &registry);
 };

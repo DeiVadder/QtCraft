@@ -4,13 +4,15 @@
 
 #include <QDataStream>
 
+#include <optional>
+
 // Wire format of one block definition in the content sync, with its resolved shape. Reading
 // validates everything that later feeds physics, light and the mesher.
 namespace QcBlockSerializer {
 
 void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcShapeDefinition &shape);
-// Reads into `block`, which carries the read shape inline. False (and a corrupt stream) on bad data.
-bool readBlock(QDataStream &stream, QcBlockDefinition &block);
+// The block read, which carries the read shape inline; std::nullopt (and possibly a corrupt stream) on bad data.
+[[nodiscard]] std::optional<QcBlockDefinition> readBlock(QDataStream &stream);
 // The fuel time range the parser allows.
 bool plausibleFuel(double seconds);
 

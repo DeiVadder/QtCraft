@@ -21,26 +21,27 @@ bool isWater(const QcTerrainGenerator &terrain, int x, int z)
 // The walkway follows the ground down to the shore in steps of at most this much.
 constexpr int maxStep = 1;
 
-// Blocks past the road end to the first water, 0 when there is none within reach or the ground
-// before it rises or falls in steps the walkway cannot follow. `heights` gets the ground's top
-// block of every land cell before the water.
-int distanceToWater(const QcTerrainGenerator &terrain, const QcJettyPlanner::Request &request, QList<int> &heights)
+// The ground past the road end down to the first water: the top block of every land cell before it
+// (the water lies one block beyond the last). None when there is no water within reach or the ground
+// before it rises or falls in steps the walkway cannot follow.
+[[nodiscard]] std::optional<QList<int>> shoreHeights(const QcTerrainGenerator &terrain, const QcJettyPlanner::Request &request)
 {
+    QList<int> heights;
     int previous = request.deckY;
     for (int d = 1; d <= request.reach; ++d) {
         const int x = request.x + request.dx * d;
         const int z = request.z + request.dz * d;
         const QcTerrainColumn column = terrain.column(x, z);
         if (isWater(column, terrain.seaLevel())) {
-            return d;
+            return heights;
         }
         if (std::abs(column.height - 1 - previous) > maxStep || column.overhang >= 1.0) {
-            return 0;
+            return std::nullopt;
         }
         previous = column.height - 1;
         heights.append(previous);
     }
-    return 0;
+    return std::nullopt;
 }
 
 } // namespace
@@ -49,11 +50,13 @@ namespace QcJettyPlanner {
 
 std::optional<QList<QcVillagePlan::Deck>> lay(const QcTerrainGenerator &terrain, const Request &request)
 {
-    QList<int> heights;
-    const int water = distanceToWater(terrain, request, heights);
-    if (water == 0) {
+    const std::optional<QList<int>> shore = shoreHeights(terrain, request);
+    if (!shore) {
         return std::nullopt;
     }
+    const QList<int> &heights = *shore;
+    // Blocks past the road end to the first water.
+    const int water = int(heights.size()) + 1;
 
     // Out over the water, but no further than it reaches (a narrow river ends the walkway early).
     int end = water;

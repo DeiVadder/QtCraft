@@ -35,7 +35,8 @@ QStringList readBiomes(const QJsonObject &json, const QString &packNamespace, Qc
     return biomes;
 }
 
-void parseSurface(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] Structure::Surface parseSurface(const QJsonObject &json, const Structure &structure, QcJsonFieldReader &reader,
+                                              const QString &packNamespace)
 {
     Structure::Surface surface;
     surface.biomes = readBiomes(json, packNamespace, reader);
@@ -57,7 +58,7 @@ void parseSurface(const QJsonObject &json, Structure &structure, QcJsonFieldRead
     } else if (std::max(structure.sizeX, structure.sizeZ) * 2 > surface.spacing) {
         reader.fail(u"'spacing' must be at least twice the structure's width"_s);
     }
-    structure.surface = surface;
+    return surface;
 }
 
 // A corner of a guardian zone: a cell inside the structure.
@@ -72,7 +73,8 @@ std::optional<QcBlockPos> readCorner(const QJsonValue &value, const Structure &s
     return inside ? std::optional<QcBlockPos>(cell) : std::nullopt;
 }
 
-void parseGuardian(const QJsonObject &object, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] std::optional<Structure::Guardian> parseGuardian(const QJsonObject &object, const Structure &structure, QcJsonFieldReader &reader,
+                                                               const QString &packNamespace)
 {
     Structure::Guardian guardian;
     guardian.mob = reader.name(u"mob"_s, packNamespace);
@@ -80,7 +82,7 @@ void parseGuardian(const QJsonObject &object, Structure &structure, QcJsonFieldR
     const std::optional<QcBlockPos> to = readCorner(object.value(u"to"_s), structure);
     if (guardian.mob.isEmpty() || !from || !to) {
         reader.fail(u"needs a 'mob' and the corners 'from' and 'to' inside the structure"_s);
-        return;
+        return std::nullopt;
     }
     guardian.from = {std::min(from->x, to->x), std::min(from->y, to->y), std::min(from->z, to->z)};
     guardian.to = {std::max(from->x, to->x), std::max(from->y, to->y), std::max(from->z, to->z)};
@@ -91,49 +93,54 @@ void parseGuardian(const QJsonObject &object, Structure &structure, QcJsonFieldR
     guardian.maxLight = reader.integer(u"maxLight"_s, guardian.maxLight, 0, 15);
     if (guardian.minPlayerDistance >= guardian.maxPlayerDistance) {
         reader.fail(u"needs 'minPlayerDistance' < 'maxPlayerDistance'"_s);
-        return;
+        return std::nullopt;
     }
-    structure.guardians.append(guardian);
+    return guardian;
 }
 
-void parseGuardians(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+[[nodiscard]] QList<Structure::Guardian> parseGuardians(const QJsonObject &json, const Structure &structure, QcJsonFieldReader &reader,
+                                                        const QString &packNamespace)
 {
+    QList<Structure::Guardian> result;
     const QJsonValue value = json.value(u"guardians"_s);
     if (value.isUndefined()) {
-        return;
+        return result;
     }
     if (!value.isArray() || value.toArray().size() > maxGuardians) {
         reader.fail(u"'guardians' must be an array of at most %1 zones"_s.arg(maxGuardians));
-        return;
+        return result;
     }
     const QJsonArray entries = value.toArray();
     for (const auto &entry : entries) {
         QcJsonFieldReader nested{entry.toObject(), reader.context + u" guardians"_s, {}};
         if (!entry.isObject()) {
             nested.fail(u"entries must be objects"_s);
-        } else {
-            parseGuardian(entry.toObject(), structure, nested, packNamespace);
+        } else if (const std::optional<Structure::Guardian> guardian = parseGuardian(entry.toObject(), structure, nested, packNamespace)) {
+            result.append(*guardian);
         }
         reader.adopt(nested);
         if (!reader.ok()) {
-            return;
+            return result;
         }
     }
+    return result;
 }
 
 } // namespace
 
 namespace QcStructureSiteParser {
 
-void parseSite(const QJsonObject &json, QcStructureDefinition &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+Site parseSite(const QJsonObject &json, const QcStructureDefinition &structure, QcJsonFieldReader &reader, const QString &packNamespace)
 {
-    structure.groundLayer = reader.integer(u"groundLayer"_s, 0, 0, std::max(0, structure.sizeY - 1));
-    reader.nestedObject(u"surface"_s, [&structure, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
-        parseSurface(object, structure, nested, packNamespace);
+    Site site;
+    site.groundLayer = reader.integer(u"groundLayer"_s, 0, 0, std::max(0, structure.sizeY - 1));
+    reader.nestedObject(u"surface"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
+        site.surface = parseSurface(object, structure, nested, packNamespace);
     });
     if (reader.ok()) {
-        parseGuardians(json, structure, reader, packNamespace);
+        site.guardians = parseGuardians(json, structure, reader, packNamespace);
     }
+    return site;
 }
 
 } // namespace QcStructureSiteParser

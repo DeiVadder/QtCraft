@@ -3,10 +3,9 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
 #include "common/world/QcChunk.h"
+#include "server/storage/QcLoadWarnings.h"
 
 #include <QByteArray>
-#include <QSet>
-#include <QStringList>
 
 #include <memory>
 
@@ -17,9 +16,9 @@
 namespace QcChunkCodec {
 
 QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content);
-// `chunk` is where the blob says it belongs; anything else is damage. `reported` holds the names
-// warned about so far, so each unknown name is reported once per world.
+// `chunk` is where the blob says it belongs; anything else is damage. Each unknown name is reported
+// once to `warnings` (which reads the whole world).
 [[nodiscard]] QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
-                                          QStringList &warnings, QSet<QString> &reported);
+                                          QcLoadWarnings &warnings);
 
 } // namespace QcChunkCodec

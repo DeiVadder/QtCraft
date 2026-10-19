@@ -2,7 +2,17 @@
 
 #include "common/core/QcVec3.h"
 
-// Kinematic state of an entity. Position is the centre of the bottom face (feet).
+class QcBlockAccess;
+struct QcPlayerInput;
+
+namespace QcPhysics {
+struct BodySize;
+struct MoveResult;
+struct Steering;
+} // namespace QcPhysics
+
+// Kinematic state of an entity. Position is the centre of the bottom face (feet). The steps are
+// the shared physics of server and client (QcPhysics.cpp).
 struct QcEntityMotion
 {
     QcVec3 position;
@@ -17,5 +27,21 @@ struct QcEntityMotion
     // landing. Only players fly this way.
     bool flying = false;
 
+    // Advances any entity by one tick. The caller updates inWater before the call. Returns the move,
+    // whose blocked axes a walking creature reads (QcMobBehaviour); other bodies ignore it.
+    QcPhysics::MoveResult step(const QcPhysics::Steering &steering, QcPhysics::BodySize size, const QcBlockAccess &world, double dt);
+    // Advances a player by one tick of `dt` seconds. `mayFly` comes from the player's game mode
+    // (QcGameModes::Rules); without it a wish to fly is ignored and a flight ends.
+    void stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly);
+
     bool operator==(const QcEntityMotion &) const = default;
+
+private:
+    // The vertical velocity in air after one tick: gravity, jumping and ladders.
+    [[nodiscard]] double airVelocityY(const QcPhysics::Steering &steering, QcPhysics::BodySize size, const QcBlockAccess &world,
+                                      double dt) const;
+    // Takes over a move: the new position, standing on ground and the velocity blocked by walls.
+    void applyMove(const QcPhysics::MoveResult &move);
+    // One tick of creative flight towards `wish`.
+    void stepFlying(const QcPlayerInput &input, const QcVec3 &wish, const QcBlockAccess &world, double dt);
 };

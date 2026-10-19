@@ -36,9 +36,17 @@ public:
     static const QcMobManager::PlayerView *ownerOf(const QcTameState &tame, const Context &context);
 
 private:
-    // Takes up what hurt its owner or what its owner struck, keeps its target while it is valid.
-    void chooseTarget(const QcCreature &mob, QcTameState &tame, const QcMobManager::PlayerView *owner, const Context &context,
-                      double seconds) const;
+    // What a pet attacks for its owner (QcTameState::target, targetTick and targetTimer).
+    struct Target
+    {
+        quint32 id = 0;
+        quint64 tick = 0;
+        double timer = 0.0;
+    };
+    // Takes up what hurt its owner or what its owner struck, keeps its target while it is valid;
+    // `seconds` have passed since the last choice.
+    [[nodiscard]] Target chosenTarget(const QcCreature &mob, const QcTameState &tame, const QcMobManager::PlayerView *owner,
+                                      const Context &context, double seconds) const;
     // The creature with entity id `id` if a pet may attack it: there, awake, not this pet and no
     // pet at all (neither of the same owner nor of another player), within targetRange.
     static const QcCreature *validTarget(const QcCreature &mob, quint32 id, const Context &context);

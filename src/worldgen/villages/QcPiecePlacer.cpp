@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <tuple>
 
 using namespace Qt::StringLiterals;
 
@@ -89,9 +90,8 @@ bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blu
     }
 
     // A centre with a cellar (decision E-590) has its ground layer at the floor.
-    addPiece(draft, centre, rect, {rect.x0, *floor - centre.structure()->groundLayer, rect.z0}, turns);
-    const QcStructurePlacement &placed = draft.plan.pieces.back();
-    draft.plan.centre = centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, *floor + 1, draft.centreZ};
+    const QcStructurePlacement &placed = addPiece(draft, centre, rect, {rect.x0, *floor - centre.structure()->groundLayer, rect.z0}, turns);
+    draft.setCentre(centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, *floor + 1, draft.centreZ});
     return true;
 }
 
@@ -115,7 +115,7 @@ void QcPiecePlacer::placeRulePieces(QcVillageDraft &draft, const QList<Road> &ro
             if (!placed) {
                 break;
             }
-            ++draft.counts[i];
+            draft.countPiece(int(i));
         }
     }
 }
@@ -166,8 +166,7 @@ bool QcPiecePlacer::placeAtWater(QcVillageDraft &draft, const QList<Road> &roads
         }
 
         if (placeBesideEnd(draft, road, index)) {
-            draft.plan.decks.append(*decks);
-            draft.markRoad({jetty.x0 + 2, jetty.z0 + 2, jetty.x1 - 2, jetty.z1 - 2});
+            draft.addJetty(*decks, {jetty.x0 + 2, jetty.z0 + 2, jetty.x1 - 2, jetty.z1 - 2});
             return true;
         }
     }
@@ -215,7 +214,7 @@ int QcPiecePlacer::tryPiece(QcVillageDraft &draft, const Road &road, int along, 
     }
     const int reach = placeAt(draft, road, {along, side}, index);
     if (reach > 0) {
-        ++draft.counts[index];
+        draft.countPiece(index);
     }
     return reach;
 }
@@ -257,7 +256,7 @@ int QcPiecePlacer::placeAt(QcVillageDraft &draft, const Road &road, std::pair<in
         return 0;
     }
 
-    addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
+    std::ignore = addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
     return alongSize;
 }
 
@@ -294,7 +293,7 @@ int QcPiecePlacer::placeAtDiagonal(QcVillageDraft &draft, const Road &road, std:
         if (!floor || court.isEmpty()) {
             return 0;
         }
-        addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
+        std::ignore = addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
         for (const std::pair<int, int> &cell : court) {
             draft.addRoadCell(m_terrain, cell, true);
         }
@@ -354,7 +353,7 @@ void QcPiecePlacer::placeLamps(QcVillageDraft &draft, const Road &road) const
             // Inside the radius like the pieces: a wide lamp never crosses the region's edge.
             const std::optional<int> floor = free && draft.insideRadius(rect) ? floorFor(draft, rect, 0) : std::nullopt;
             if (floor) {
-                addPiece(draft, lamp, rect, {x, *floor, z}, 0);
+                std::ignore = addPiece(draft, lamp, rect, {x, *floor, z}, 0);
             }
             break;
         }
@@ -381,50 +380,24 @@ const QcVillageStyle::Blueprint &QcPiecePlacer::chooseBlueprint(QcVillageDraft &
     return piece.blueprints.back();
 }
 
-void QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin, int turns) const
+const QcStructurePlacement &QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin, int turns) const
 {
     std::shared_ptr<const QcStructure> structure = blueprint.structure();
     QList<QcVillageSpot> spots = blueprint.spots;
     if (blueprint.variation.varies()) {
         structure = blueprint.variation.build(blueprint.variation.choose([&draft] { return draft.variantRandom(); }));
-        std::optional<QcBlockPos> bell;
-        spots = m_styles.spotsOf(*structure, bell);
+        spots = m_styles.spotsOf(*structure).spots;
     }
     if (blueprint.fields && !draft.style->crops.isEmpty()) {
         structure = QcVillageFields::plant(*structure, draft.style->crops, m_content, [&draft] { return draft.cropRandom(); });
     }
 
-    draft.plan.pieces.append(QcStructurePlacement(structure, origin, turns, m_content));
-    draft.pieces.append(rect);
-    const QcStructurePlacement &placed = draft.plan.pieces.back();
-    for (const QcVillageSpot &spot : std::as_const(spots)) {
-        QList<QcVillagePlan::Spot> &list = spot.kind.isEmpty() ? draft.plan.beds : draft.plan.workstations;
-        list.append(QcVillageSpot{placed.toWorld(spot.at), spot.kind});
-    }
-    for (const QcStructure::Mob &mob : structure->mobs) {
-        draft.plan.mobs.append({mob.mob, placed.toWorld(mob.at), mob.confined, mob.noAi});
-    }
-    if (blueprint.fields) {
-        const QList<QcBlockPos> crops = QcVillageFields::cropCells(*structure, m_content);
-        for (const QcBlockPos &cell : crops) {
-            draft.plan.fields.insert(placed.toWorld(cell));
-        }
-    }
+    const QList<QcBlockPos> crops = blueprint.fields ? QcVillageFields::cropCells(*structure, m_content) : QList<QcBlockPos>();
+    const QcStructurePlacement &placed = draft.addPiece(QcStructurePlacement(structure, origin, turns, m_content), rect, spots, crops);
     if (!draft.style->overWater) {
-        addThresholds(draft, placed);
+        draft.addThresholds(doorsteps(placed));
     }
-}
-
-void QcPiecePlacer::addThresholds(QcVillageDraft &draft, const QcStructurePlacement &piece) const
-{
-    const QList<QcBlockPos> steps = doorsteps(piece);
-    for (const QcBlockPos &at : steps) {
-        if (!draft.roadCells.contains(QcVillageDraft::cellKey(at.x, at.z))) {
-            draft.roadCells.insert(QcVillageDraft::cellKey(at.x, at.z));
-            draft.plan.thresholds.append(at);
-            draft.plan.branchRoads.append(at);
-        }
-    }
+    return placed;
 }
 
 QList<QcBlockPos> QcPiecePlacer::doorsteps(const QcStructurePlacement &piece) const

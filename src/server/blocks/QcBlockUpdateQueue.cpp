@@ -43,6 +43,20 @@ struct QcBlockUpdateQueue::BorderScan
     QcBlockFace towards = QcBlockFace::North;
     SourceCheck lastCheck;
     bool checked = false;
+
+    // The answer of the last check when it was for the same block and neighbour.
+    std::optional<bool> remembered(QcBlockId block, std::optional<QcBlockId> neighbour) const
+    {
+        return checked && lastCheck.block == block && lastCheck.neighbour == neighbour ? std::optional<bool>(lastCheck.stays) : std::nullopt;
+    }
+
+    // Keeps the answer for the next cell and returns it.
+    bool remember(QcBlockId block, std::optional<QcBlockId> neighbour, bool stays)
+    {
+        lastCheck = SourceCheck{block, neighbour, stays};
+        checked = true;
+        return stays;
+    }
 };
 
 QcBlockUpdateQueue::QcBlockUpdateQueue(QcServerState &state)
@@ -292,8 +306,8 @@ bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcB
     }
 
     const std::optional<QcBlockId> neighbour = m_state.world().blockAt(qcNeighbour(pos, scan.towards));
-    if (scan.checked && scan.lastCheck.block == block && scan.lastCheck.neighbour == neighbour) {
-        return scan.lastCheck.stays;
+    if (const std::optional<bool> stays = scan.remembered(block, neighbour)) {
+        return *stays;
     }
 
     bool reacts = false;
@@ -305,7 +319,5 @@ bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcB
 
     const bool stays = QcLiquidFlow::isSource(content, block) && !reacts
                        && !QcLiquidFlow::canReplace(content, neighbour, QcLiquidFlow::stateWith(content, block, 1, false));
-    scan.lastCheck = SourceCheck{block, neighbour, stays};
-    scan.checked = true;
-    return stays;
+    return scan.remember(block, neighbour, stays);
 }

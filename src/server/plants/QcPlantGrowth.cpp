@@ -19,6 +19,28 @@ QcPlantGrowth::QcPlantGrowth(std::shared_ptr<const QcContentRegistry> content, q
     }
 }
 
+template<typename Visit>
+void QcPlantGrowth::forRandomPlants(const QcChunk &chunk, quint32 sections, Visit visit)
+{
+    const QcChunkPos pos = chunk.pos();
+    for (int index = 0; index < QcWorld::sectionCount; ++index) {
+        if ((sections & (1u << index)) == 0 || !mayHoldPlants(chunk.section(index))) {
+            continue;
+        }
+
+        for (int i = 0; i < m_randomTicksPerSection; ++i) {
+            // A random cell of the section: x, z and y in 16 values each.
+            const int cell = int(m_random.bounded(4096u));
+            const int x = cell % 16;
+            const int z = cell / 16 % 16;
+            const int y = index * QcWorld::sectionHeight + cell / 256;
+            if (m_growing.contains(chunk.block(x, y, z))) {
+                visit(QcBlockPos{pos.x * QcWorld::chunkSize + x, y, pos.z * QcWorld::chunkSize + z});
+            }
+        }
+    }
+}
+
 void QcPlantGrowth::tick(const QcServerWorld &world, const SetBlock &setBlock)
 {
     // Only sections that may hold a growing plant: a scan of every loaded section per tick cost
@@ -36,33 +58,12 @@ void QcPlantGrowth::tick(const QcServerWorld &world, const SetBlock &setBlock)
     QList<QcBlockPos> ticked;
     for (const QcChunkPos pos : std::as_const(order)) {
         if (const std::shared_ptr<const QcChunk> chunk = world.chunk(pos)) {
-            pickRandomPlants(*chunk, marks.sectionsOf(pos, QcBlockTrait::RandomTicks), ticked);
+            forRandomPlants(*chunk, marks.sectionsOf(pos, QcBlockTrait::RandomTicks), [&ticked](QcBlockPos plant) { ticked.append(plant); });
         }
     }
 
     for (const QcBlockPos &pos : std::as_const(ticked)) {
         randomTick(world, pos, setBlock);
-    }
-}
-
-void QcPlantGrowth::pickRandomPlants(const QcChunk &chunk, quint32 sections, QList<QcBlockPos> &ticked)
-{
-    const QcChunkPos pos = chunk.pos();
-    for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        if ((sections & (1u << index)) == 0 || !mayHoldPlants(chunk.section(index))) {
-            continue;
-        }
-
-        for (int i = 0; i < m_randomTicksPerSection; ++i) {
-            // A random cell of the section: x, z and y in 16 values each.
-            const int cell = int(m_random.bounded(4096u));
-            const int x = cell % 16;
-            const int z = cell / 16 % 16;
-            const int y = index * QcWorld::sectionHeight + cell / 256;
-            if (m_growing.contains(chunk.block(x, y, z))) {
-                ticked.append({pos.x * QcWorld::chunkSize + x, y, pos.z * QcWorld::chunkSize + z});
-            }
-        }
     }
 }
 

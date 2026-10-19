@@ -32,6 +32,13 @@ QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> QcChunkIo::open()
 
 QcChunkIo::Arrival QcChunkIo::readChunk(QcChunkPos pos)
 {
+    Arrival arrival = decodeChunk(pos);
+    arrival.warnings = m_warnings.takeTexts();
+    return arrival;
+}
+
+QcChunkIo::Arrival QcChunkIo::decodeChunk(QcChunkPos pos)
+{
     using Kind = QcChunkStore::Kind;
     Arrival arrival;
     arrival.pos = pos;
@@ -43,7 +50,7 @@ QcChunkIo::Arrival QcChunkIo::readChunk(QcChunkPos pos)
     arrival.marks = blobs->marks;
     const auto &data = blobs->data;
     if (const auto &blocks = data[std::size_t(Kind::Blocks)]) {
-        QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*blocks, pos, *m_content, arrival.warnings, m_reported);
+        QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*blocks, pos, *m_content, m_warnings);
         if (!chunk) {
             arrival.error = u"blocks of chunk %1, %2: %3"_s.arg(pos.x).arg(pos.z).arg(chunk.error());
             return arrival;
@@ -51,7 +58,7 @@ QcChunkIo::Arrival QcChunkIo::readChunk(QcChunkPos pos)
         arrival.blocks = std::move(*chunk);
     }
     if (const auto &entries = data[std::size_t(Kind::BlockEntities)]) {
-        QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*entries, pos, *m_content, arrival.warnings, m_reported);
+        QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*entries, pos, *m_content, m_warnings);
         if (!record) {
             arrival.error = record.error();
             return arrival;
@@ -60,7 +67,7 @@ QcChunkIo::Arrival QcChunkIo::readChunk(QcChunkPos pos)
     }
     arrival.blockEntities.chunk = pos;
     if (const auto &entities = data[std::size_t(Kind::Entities)]) {
-        QcResult<QcEntityRecord> record = QcEntityCodec::decode(*entities, pos, *m_content, arrival.warnings, m_reported);
+        QcResult<QcEntityRecord> record = QcEntityCodec::decode(*entities, pos, *m_content, m_warnings);
         if (!record) {
             arrival.error = record.error();
             return arrival;
@@ -96,16 +103,15 @@ void QcChunkIo::storeBlockEntities(const Departure &departure)
 {
     // A blob beyond what a region file reads would make the whole region unreadable on the next
     // open (decision E-440): what was stored before stays instead, with a warning.
-    QStringList warnings;
-    const QcResult<QByteArray> blob = QcBlockEntityCodec::encodeWithin(departure.blockEntities, *m_content, warnings, m_blockEntityLimit);
-    for (const QString &warning : std::as_const(warnings)) {
-        qCWarning(lcServer, "%s", qPrintable(warning));
-    }
-    if (!blob) {
-        qCWarning(lcServer, "%s; the block entities saved before stay", qPrintable(blob.error()));
+    const QcResult<QcBlockEntityCodec::Fitted> fitted = QcBlockEntityCodec::encodeWithin(departure.blockEntities, *m_content, m_blockEntityLimit);
+    if (!fitted) {
+        qCWarning(lcServer, "%s; the block entities saved before stay", qPrintable(fitted.error()));
         return;
     }
-    m_store.put(QcChunkStore::Kind::BlockEntities, departure.pos, *blob, departure.marks);
+    if (fitted->warning) {
+        qCWarning(lcServer, "%s", qPrintable(*fitted->warning));
+    }
+    m_store.put(QcChunkStore::Kind::BlockEntities, departure.pos, fitted->blob, departure.marks);
 }
 
 void QcChunkIo::read(QcChunkPos pos, quint64 request)

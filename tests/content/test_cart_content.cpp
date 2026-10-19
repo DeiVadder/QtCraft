@@ -40,10 +40,9 @@ private slots:
                                                      R"("minecarts":[[0,0,0],{"at":[1,0,0],"item":"tank_minecart"},)"
                                                      R"({"at":[2,0,0],"item":"chest_minecrat"},{"at":[2,0,0],"item":"qtcraft:stick"}]})");
 
-        QStringList warnings;
-        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
-        const QString all = warnings.join(u'\n');
+        const QString all = loaded->warnings.join(u'\n');
         QVERIFY2(all.contains(u"item trains:barrel_minecart: carries unknown block 'trains:barel'"_s), qPrintable(all));
         QVERIFY2(all.contains(u"structure trains:depot: 'trains:chest_minecrat' is no minecart"_s), qPrintable(all));
         QVERIFY2(all.contains(u"structure trains:depot: 'qtcraft:stick' is no minecart"_s), qPrintable(all));

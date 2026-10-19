@@ -296,13 +296,14 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
 
 namespace {
 
-void applyWaterVertical(QcEntityMotion &motion, bool jump, double factor, double dt)
+// The vertical velocity in water after one tick: sinking, swimming up with `jump`.
+[[nodiscard]] double waterVelocityY(double velocityY, bool jump, double factor, double dt)
 {
-    motion.velocity.y -= waterGravity * dt;
+    velocityY -= waterGravity * dt;
     if (jump) {
-        motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed * factor);
+        velocityY = std::min(velocityY + swimUpAcceleration * dt, swimUpSpeed * factor);
     }
-    motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed * factor);
+    return std::max(velocityY, -waterSinkSpeed * factor);
 }
 
 // Whether walking in the wished direction runs into a wall right away.
@@ -312,31 +313,14 @@ bool pushesIntoWall(const QcEntityMotion &motion, const QcVec3 &wish, BodySize s
     return probe.blockedX || probe.blockedZ;
 }
 
-void applyAirVertical(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
-{
-    if (steering.jump && motion.onGround) {
-        // Mud keeps a jump low (decision E-207).
-        motion.velocity.y = jumpVelocity * surfaceUnder(world, motion.position).jump;
-    }
-    motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
-
-    if (motion.climbing) {
-        motion.velocity.y = std::max(motion.velocity.y, steering.hold ? 0.0 : -climbDownSpeed);
-        // Jumping or walking into the wall behind the ladder climbs it.
-        const bool pushing = steering.wish.length() > 0.0 && pushesIntoWall(motion, steering.wish, size, world);
-        if (steering.jump || pushing) {
-            motion.velocity.y = climbSpeed;
-        }
-    }
-}
-
 // A low lift for a step under a low ceiling: from a dirt path or farmland (a sixteenth lower) up
 // to a full block through a door, whose lintel stops the full step.
 constexpr double lowStepHeight = 0.125;
 
-// Walking into something low (a slab, a stair step): tries the same move lifted by up to stepHeight
-// (or lowStepHeight when the full lift gets no further) and keeps it in `move` when it gets further.
-void tryStepUp(MoveResult &move, QcEntityMotion &motion, BodySize size, const QcBlockAccess &world, double dt)
+// Walking into something low (a slab, a stair step): the same move lifted by up to stepHeight (or
+// lowStepHeight when the full lift gets no further) when it gets further than `move`; none otherwise.
+[[nodiscard]] std::optional<MoveResult> steppedUp(const MoveResult &move, const QcEntityMotion &motion, BodySize size, const QcBlockAccess &world,
+                                                  double dt)
 {
     const QcAabb start = boxAt(motion.position, size.width, size.height);
     const double plain = std::hypot(move.applied.x, move.applied.z);
@@ -349,108 +333,128 @@ void tryStepUp(MoveResult &move, QcEntityMotion &motion, BodySize size, const Qc
 
         const double stepped = std::hypot(across.applied.x, across.applied.z);
         if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
-            move.applied = up.applied + across.applied + down.applied;
-            move.blockedX = across.blockedX;
-            move.blockedZ = across.blockedZ;
-            move.blockedY = true;
-            motion.velocity.y = std::min(motion.velocity.y, 0.0);
-            return;
+            MoveResult result = move;
+            result.applied = up.applied + across.applied + down.applied;
+            result.blockedX = across.blockedX;
+            result.blockedZ = across.blockedZ;
+            result.blockedY = true;
+            return result;
         }
     }
-}
-
-void applyMove(QcEntityMotion &motion, const MoveResult &move)
-{
-    motion.position += move.applied;
-    motion.onGround = move.blockedY && motion.velocity.y < 0.0;
-
-    // Deep in the void a body stops sinking, without standing on anything (decision E-288).
-    if (motion.position.y < QcWorld::voidFloorY) {
-        motion.position.y = QcWorld::voidFloorY;
-        motion.velocity.y = std::max(0.0, motion.velocity.y);
-    }
-
-    if (move.blockedY) {
-        motion.velocity.y = 0.0;
-    }
-    if (move.blockedX) {
-        motion.velocity.x = 0.0;
-    }
-    if (move.blockedZ) {
-        motion.velocity.z = 0.0;
-    }
+    return std::nullopt;
 }
 
 } // namespace
 
-MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
+} // namespace QcPhysics
+
+using namespace QcPhysics;
+
+double QcEntityMotion::airVelocityY(const Steering &steering, BodySize size, const QcBlockAccess &world, double dt) const
 {
-    const QcAabb body = boxAt(motion.position, size.width, size.height);
-    motion.climbing = !motion.inWater && (touchesClimbable(world, body) || (steering.climbsWalls && clingsToWall(world, body)));
-    const double inside = slowdownInside(world, body);
-    motion.slowed = inside < 1.0;
-    const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
-    const SurfaceFactors ground = motion.onGround ? surfaceUnder(world, motion.position) : SurfaceFactors{};
-    // On slippery ground (ice) the body keeps most of its velocity: it gains speed and stops slowly.
-    const double keep = motion.inWater ? 0.0 : slideKeep(ground.slipperiness, steering.slideDrag, dt);
-    const double blend = std::min(1.0, acceleration * dt) * (1.0 - keep);
-    // Thick liquids (lava) slow every movement inside them, cobwebs too, and mud slows walking on it.
-    const double liquid = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
-    const double factor = liquid * inside * ground.speed;
-    motion.velocity.x += (steering.wish.x * steering.speed * factor - motion.velocity.x) * blend;
-    motion.velocity.z += (steering.wish.z * steering.speed * factor - motion.velocity.z) * blend;
+    double velocityY = velocity.y;
+    if (steering.jump && onGround) {
+        // Mud keeps a jump low (decision E-207).
+        velocityY = jumpVelocity * surfaceUnder(world, position).jump;
+    }
+    velocityY = std::max(velocityY - gravity * dt, -terminalVelocity);
 
-    if (motion.inWater) {
-        applyWaterVertical(motion, steering.jump, factor, dt);
-    } else {
-        applyAirVertical(motion, steering, size, world, dt);
+    if (climbing) {
+        velocityY = std::max(velocityY, steering.hold ? 0.0 : -climbDownSpeed);
+        // Jumping or walking into the wall behind the ladder climbs it.
+        const bool pushing = steering.wish.length() > 0.0 && pushesIntoWall(*this, steering.wish, size, world);
+        if (steering.jump || pushing) {
+            velocityY = climbSpeed;
+        }
     }
-    if (motion.slowed) {
-        // Sinks slowly through a cobweb and hardly jumps in it.
-        motion.velocity.y *= inside;
-    }
-
-    MoveResult move = moveBox(boxAt(motion.position, size.width, size.height), motion.velocity * dt, world);
-    // A body that just jumped keeps its jump instead of stepping up.
-    if (motion.onGround && !motion.inWater && motion.velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
-        tryStepUp(move, motion, size, world, dt);
-    }
-    applyMove(motion, move);
-    return move;
+    return velocityY;
 }
 
-namespace {
+void QcEntityMotion::applyMove(const MoveResult &move)
+{
+    position += move.applied;
+    onGround = move.blockedY && velocity.y < 0.0;
+
+    // Deep in the void a body stops sinking, without standing on anything (decision E-288).
+    if (position.y < QcWorld::voidFloorY) {
+        position.y = QcWorld::voidFloorY;
+        velocity.y = std::max(0.0, velocity.y);
+    }
+
+    if (move.blockedY) {
+        velocity.y = 0.0;
+    }
+    if (move.blockedX) {
+        velocity.x = 0.0;
+    }
+    if (move.blockedZ) {
+        velocity.z = 0.0;
+    }
+}
+
+MoveResult QcEntityMotion::step(const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
+{
+    const QcAabb body = boxAt(position, size.width, size.height);
+    climbing = !inWater && (touchesClimbable(world, body) || (steering.climbsWalls && clingsToWall(world, body)));
+    const double inside = slowdownInside(world, body);
+    slowed = inside < 1.0;
+    const double acceleration = inWater ? waterAcceleration : (onGround ? groundAcceleration : airAcceleration);
+    const SurfaceFactors ground = onGround ? surfaceUnder(world, position) : SurfaceFactors{};
+    // On slippery ground (ice) the body keeps most of its velocity: it gains speed and stops slowly.
+    const double keep = inWater ? 0.0 : slideKeep(ground.slipperiness, steering.slideDrag, dt);
+    const double blend = std::min(1.0, acceleration * dt) * (1.0 - keep);
+    // Thick liquids (lava) slow every movement inside them, cobwebs too, and mud slows walking on it.
+    const double liquid = inWater ? liquidFactorAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    const double factor = liquid * inside * ground.speed;
+    velocity.x += (steering.wish.x * steering.speed * factor - velocity.x) * blend;
+    velocity.z += (steering.wish.z * steering.speed * factor - velocity.z) * blend;
+
+    velocity.y = inWater ? waterVelocityY(velocity.y, steering.jump, factor, dt) : airVelocityY(steering, size, world, dt);
+    if (slowed) {
+        // Sinks slowly through a cobweb and hardly jumps in it.
+        velocity.y *= inside;
+    }
+
+    MoveResult move = moveBox(boxAt(position, size.width, size.height), velocity * dt, world);
+    // A body that just jumped keeps its jump instead of stepping up.
+    if (onGround && !inWater && velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
+        if (const std::optional<MoveResult> stepped = steppedUp(move, *this, size, world, dt)) {
+            move = *stepped;
+            velocity.y = std::min(velocity.y, 0.0);
+        }
+    }
+    applyMove(move);
+    return move;
+}
 
 // One tick of creative flight (decision E-284): the velocity eases towards the wished one in all
 // three directions, without gravity, ladders or stepping up; landing ends the flight. Liquids and
 // cobwebs slow it like walking.
-void stepFlying(QcEntityMotion &motion, const QcPlayerInput &input, const QcVec3 &wish, const QcBlockAccess &world, double dt)
+void QcEntityMotion::stepFlying(const QcPlayerInput &input, const QcVec3 &wish, const QcBlockAccess &world, double dt)
 {
-    const QcAabb body = boxAt(motion.position, playerWidth, playerHeight);
+    const QcAabb body = boxAt(position, playerWidth, playerHeight);
     const double inside = slowdownInside(world, body);
-    motion.climbing = false;
-    motion.slowed = inside < 1.0;
+    climbing = false;
+    slowed = inside < 1.0;
 
-    const double liquid = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    const double liquid = inWater ? liquidFactorAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
     const double factor = liquid * inside;
     const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
     const double vertical = double(int(input.jump) - int(input.sneak)) * flyVerticalSpeed * factor;
     const double blend = std::min(1.0, flyAcceleration * dt);
-    motion.velocity.x += (wish.x * speed - motion.velocity.x) * blend;
-    motion.velocity.z += (wish.z * speed - motion.velocity.z) * blend;
-    motion.velocity.y += (vertical - motion.velocity.y) * blend;
+    velocity.x += (wish.x * speed - velocity.x) * blend;
+    velocity.z += (wish.z * speed - velocity.z) * blend;
+    velocity.y += (vertical - velocity.y) * blend;
 
-    applyMove(motion, moveBox(body, motion.velocity * dt, world));
-    if (motion.onGround) {
-        motion.flying = false;
+    applyMove(moveBox(body, velocity * dt, world));
+    if (onGround) {
+        flying = false;
     }
 }
 
-} // namespace
-
-void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly)
+void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly)
 {
-    motion.inWater = isLiquidAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0}));
+    inWater = isLiquidAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0}));
 
     const double yaw = qDegreesToRadians(double(input.yaw));
     const QcVec3 forward{std::sin(yaw), 0.0, -std::cos(yaw)};
@@ -460,14 +464,14 @@ void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBloc
         wish = wish.normalized();
     }
 
-    motion.flying = input.flying && mayFly;
-    if (motion.flying) {
-        stepFlying(motion, input, wish, world, dt);
+    flying = input.flying && mayFly;
+    if (flying) {
+        stepFlying(input, wish, world, dt);
         return;
     }
 
     double speed = walkSpeed;
-    if (motion.inWater) {
+    if (inWater) {
         speed = swimSpeed;
     } else if (input.sneak) {
         speed = sneakSpeed;
@@ -475,7 +479,5 @@ void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBloc
         speed = sprintSpeed;
     }
 
-    stepEntity(motion, {wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
+    step({wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
 }
-
-} // namespace QcPhysics

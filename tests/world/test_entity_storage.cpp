@@ -24,8 +24,7 @@ namespace {
 // The base content with a mod item, a mod creature and a mod block that falls.
 std::shared_ptr<const QcContentRegistry> contentWithMod()
 {
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+    std::shared_ptr<QcContentRegistry> content = QcTestUtil::baseContent()->registry;
     QcItemDefinition gem = content->item(*content->itemId(u"qtcraft:diamond"_s));
     gem.name = u"mod:gem"_s;
     QcMobDefinition beetle = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)];
@@ -441,11 +440,10 @@ private slots:
         record.stands.first().entry.kept.components = {{901, 1, false, QByteArray(1000, 'x')}};
         const QByteArray blob = QcEntityCodec::encode(record, *m_content);
 
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings);
         QVERIFY2(back.has_value(), qcErrorText(back).constData());
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
         QCOMPARE(back->creatures.size(), 1);
         QVERIFY(back->creatures.first().entry == pig);
         QCOMPARE(back->creatures.first().entry.health, 7.5);
@@ -468,9 +466,8 @@ private slots:
         const quint16 villagerId = quint16(QcEntityCodec::Component::Villager);
         const QByteArray blob = creatureBlob(u"qtcraft:villager"_s, 12, {{villagerId, 1, first, {}}}, 1);
 
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings);
         QVERIFY2(back.has_value(), qcErrorText(back).constData());
         const QcMobManager::Stored &mob = back->creatures.first().entry;
         QCOMPARE(mob.uid, 12u);
@@ -490,9 +487,8 @@ private slots:
         const quint16 body = quint16(QcEntityCodec::Component::Creature);
         const QByteArray fields = payloadOf([](QDataStream &out) { out << 10.0 << 0.0 << 0.0 << false; });
         const auto decodes = [this](const QByteArray &blob) {
-            QStringList warnings;
-            QSet<QString> reported;
-            return QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported).has_value();
+            QcLoadWarnings warnings;
+            return QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings).has_value();
         };
         QVERIFY(decodes(creatureBlob(u"qtcraft:pig"_s, 3, {{body, 1, fields, {}}}, 1)));
 
@@ -522,21 +518,20 @@ private slots:
         }
         const QByteArray blob = creatureBlob(u"qtcraft:pig"_s, 3, unknown, quint16(unknown.size()));
 
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings);
         QVERIFY2(back.has_value(), qcErrorText(back).constData());
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY(warnings.first().contains(u"16 of them dropped"_s));
+        const QStringList first = warnings.takeTexts();
+        QCOMPARE(first.size(), 1);
+        QVERIFY(first.first().contains(u"16 of them dropped"_s));
         const QcEntityComponents &kept = back->creatures.first().entry.kept.components;
         QCOMPARE(kept.size(), qsizetype(QcComponentFrames::maxKept));
         QCOMPARE(kept.last().id, quint16(1000 + QcComponentFrames::maxKept - 1));
 
         const QByteArray again = QcEntityCodec::encode(*back, *m_content);
-        warnings.clear();
-        const QcResult<QcEntityRecord> twice = QcEntityCodec::decode(again, {0, 0}, *m_content, warnings, reported);
+        const QcResult<QcEntityRecord> twice = QcEntityCodec::decode(again, {0, 0}, *m_content, warnings);
         QVERIFY2(twice.has_value(), qcErrorText(twice).constData());
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(warnings.texts().isEmpty());
         QCOMPARE(twice->creatures.first().entry.kept.components, kept);
     }
 

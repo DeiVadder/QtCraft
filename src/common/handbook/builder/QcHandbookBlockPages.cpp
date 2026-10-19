@@ -495,21 +495,19 @@ void BlockPage::addSections()
         for (const QString &part : partNames) {
             parts.links.append(m_links.blockLink(part));
         }
-        QcHandbookLinks::sortLinks(parts.links);
+        parts.links = QcHandbookLinks::sortedLinks(std::move(parts.links));
         m_entry.sections.append(std::move(parts));
     }
 
-    m_recipes.addItemSections(m_entry, name);
+    m_entry.sections += m_recipes.itemSections(name);
     m_entry.sections += m_later;
 
-    QList<Link> found = m_index.foundIn(name);
-    QcHandbookLinks::sortLinks(found);
+    const QList<Link> found = QcHandbookLinks::sortedLinks(m_index.foundIn(name));
     if (!found.isEmpty()) {
         m_entry.sections.append({label(u"section.foundIn"_s), {}, found, {}});
     }
 
-    QList<Link> spawners = m_index.spawnersOn(name);
-    QcHandbookLinks::sortLinks(spawners);
+    const QList<Link> spawners = QcHandbookLinks::sortedLinks(m_index.spawnersOn(name));
     if (!spawners.isEmpty()) {
         m_entry.sections.append({label(u"section.spawnsOn"_s), {}, spawners, {}});
     }

@@ -283,8 +283,7 @@ private slots:
             for (std::size_t index = 0; index < now.size(); ++index) {
                 now[index] = QcGamepadMapping::held(Action(index), state, bindings, before[index]);
             }
-            QcGamepadMapping::applyCombos(now, before, state, bindings);
-            return now;
+            return QcGamepadMapping::withCombos(now, before, state, bindings);
         };
         const auto on = [](const Held &held, Action action) { return held[std::size_t(action)]; };
 

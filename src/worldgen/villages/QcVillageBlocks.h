@@ -12,8 +12,10 @@
 class QcVillageBlocks
 {
 public:
-    // Unknown workstation blocks are reported in `warnings` and left out.
-    QcVillageBlocks(const QcContentRegistry &content, QStringList *warnings);
+    // Unknown workstation blocks are left out with a warning (warnings()).
+    explicit QcVillageBlocks(const QcContentRegistry &content);
+
+    const QStringList &warnings() const { return m_warnings; }
 
     bool isBedHead(QcBlockId block) const { return block < m_bedHead.size() && m_bedHead[block]; }
     bool isBell(QcBlockId block) const { return block < m_bell.size() && m_bell[block]; }
@@ -26,4 +28,5 @@ private:
     std::vector<bool> m_bedHead;
     std::vector<bool> m_bell;
     std::vector<QString> m_kind;
+    QStringList m_warnings;
 };

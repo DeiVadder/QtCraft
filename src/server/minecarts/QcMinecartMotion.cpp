@@ -101,15 +101,16 @@ bool headsIntoUnloaded(const QcMinecart &cart, const QcBlockAccess &world, doubl
 
 // Off the rails: falls and slides like a body without a will of its own (decision E-430). In the air
 // it keeps its momentum (flying off the end of a track): steering towards a slightly slower velocity
-// in its direction makes stepEntity's air control act as weak drag. On the ground it stops within a
+// in its direction makes QcEntityMotion::step's air control act as weak drag. On the ground it stops within a
 // few ticks where the ground grips and coasts far on slippery ground, and stands still below
 // `restSpeed`. Heading into a chunk that is not loaded, it waits there with its speed, as at the end
 // of a track.
-void freeStep(QcMinecart &cart, Result &result, const QcBlockAccess &world, double dt)
+[[nodiscard]] Result freeStep(QcMinecart &cart, const QcBlockAccess &world, double dt)
 {
+    Result result;
     if (headsIntoUnloaded(cart, world, dt)) {
         result.waiting = true;
-        return;
+        return result;
     }
 
     cart.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(cart.motion.position));
@@ -129,7 +130,8 @@ void freeStep(QcMinecart &cart, Result &result, const QcBlockAccess &world, doub
         coasting.wish = {cart.motion.velocity.x / horizontal, 0.0, cart.motion.velocity.z / horizontal};
         coasting.speed = horizontal * std::max(0.0, 1.0 - flightDrag * dt * QcPhysics::tickRate / blend);
     }
-    QcPhysics::stepEntity(cart.motion, coasting, {QcMinecartBody::width, QcMinecartBody::height}, world, dt);
+    cart.motion.step(coasting, {QcMinecartBody::width, QcMinecartBody::height}, world, dt);
+    return result;
 }
 
 // Whether a block level with end `end` of the segment (where the cart would go on, one higher at a
@@ -183,15 +185,6 @@ double nextSpeed(const QcMinecart &cart, const Segment &segment, const QcRails::
     return speed;
 }
 
-// Notes the activator rail of `segment`, if it is one.
-void noteActivator(Result &result, const Segment &segment, const QcRails::Table &rails, const QcBlockAccess &world)
-{
-    const QcRails::Behaviour rail = rails.behaviourOf(world.blockAt(segment.cell).value_or(qcAirBlockId));
-    if (rail.action == QcRailAction::Activate) {
-        (rail.powered ? result.activated : result.deactivated) = true;
-    }
-}
-
 // Where a cart is on its way through a tick: the track, how far along it and its speed along it;
 // after it left the track, how much of the tick's way it had left.
 struct Run
@@ -202,53 +195,86 @@ struct Run
     double overshoot = 0.0;
 };
 
-// The cart reached end `forward` of its track and no rail goes on there: it waits with its speed
-// while the chunk beyond is not loaded (the track may go on there), it stops just inside the last
-// rail before a block level with the end, and else it leaves the track with its speed (decision
-// E-430).
-void reachEnd(Run &run, bool forward, Result &result, const QcBlockAccess &world)
+// One cart's way along the rails through a tick: where it is and what happened on the way.
+class Ride
 {
-    const int end = forward ? 1 : 0;
-    if (!beyondUnloaded(run.segment, end, world) && !blockedBeyond(run.segment, end, world)) {
-        run.along = forward ? run.segment.length : 0.0;
-        result.derailed = true;
-        return;
+public:
+    // Starts on `run` and notes the activator rail it starts on.
+    Ride(const Run &run, const QcRails::Table &rails, const QcBlockAccess &world)
+        : m_run(run)
+        , m_rails(rails)
+        , m_world(world)
+    {
+        m_result.onRail = true;
+        noteActivator();
     }
 
-    run.along = forward ? run.segment.length - endInset : endInset;
-    if (beyondUnloaded(run.segment, end, world)) {
-        result.waiting = true;
-        return;
-    }
-    run.speed = 0.0;
-    result.stoppedAtEnd = true;
-    result.heldAtEnd = forward ? run.segment.direction.y < 0.0 : run.segment.direction.y > 0.0;
-}
+    // Moves the cart `distance` metres along the track and on into the rails that join it.
+    void roll(double distance)
+    {
+        for (int hop = 0; hop < maxHops && distance > 0.0; ++hop) {
+            const bool forward = m_run.speed >= 0.0;
+            const double room = forward ? m_run.segment.length - m_run.along : m_run.along;
+            if (distance <= room) {
+                m_run.along += forward ? distance : -distance;
+                return;
+            }
 
-// Moves the cart `distance` metres along the track and on into the rails that join it.
-void roll(Run &run, double distance, Result &result, const QcRails::Table &rails, const QcBlockAccess &world)
-{
-    for (int hop = 0; hop < maxHops && distance > 0.0; ++hop) {
-        const bool forward = run.speed >= 0.0;
-        const double room = forward ? run.segment.length - run.along : run.along;
-        if (distance <= room) {
-            run.along += forward ? distance : -distance;
+            distance -= room;
+            const std::optional<Continuation> next = continuation(m_run.segment, forward ? 1 : 0, m_rails, m_world);
+            if (!next) {
+                m_run.overshoot = distance;
+                reachEnd(forward);
+                return;
+            }
+            m_run.segment = next->segment;
+            noteActivator();
+            m_run.along = next->entry == 0 ? 0.0 : m_run.segment.length;
+            m_run.speed = next->entry == 0 ? std::abs(m_run.speed) : -std::abs(m_run.speed);
+        }
+    }
+
+    [[nodiscard]] const Run &run() const { return m_run; }
+    [[nodiscard]] const Result &result() const { return m_result; }
+
+private:
+    // Notes the activator rail of the segment it is on, if it is one.
+    void noteActivator()
+    {
+        const QcRails::Behaviour rail = m_rails.behaviourOf(m_world.blockAt(m_run.segment.cell).value_or(qcAirBlockId));
+        if (rail.action == QcRailAction::Activate) {
+            (rail.powered ? m_result.activated : m_result.deactivated) = true;
+        }
+    }
+
+    // The cart reached end `forward` of its track and no rail goes on there: it waits with its speed
+    // while the chunk beyond is not loaded (the track may go on there), it stops just inside the last
+    // rail before a block level with the end, and else it leaves the track with its speed (decision
+    // E-430).
+    void reachEnd(bool forward)
+    {
+        const int end = forward ? 1 : 0;
+        if (!beyondUnloaded(m_run.segment, end, m_world) && !blockedBeyond(m_run.segment, end, m_world)) {
+            m_run.along = forward ? m_run.segment.length : 0.0;
+            m_result.derailed = true;
             return;
         }
 
-        distance -= room;
-        const std::optional<Continuation> next = continuation(run.segment, forward ? 1 : 0, rails, world);
-        if (!next) {
-            run.overshoot = distance;
-            reachEnd(run, forward, result, world);
+        m_run.along = forward ? m_run.segment.length - endInset : endInset;
+        if (beyondUnloaded(m_run.segment, end, m_world)) {
+            m_result.waiting = true;
             return;
         }
-        run.segment = next->segment;
-        noteActivator(result, run.segment, rails, world);
-        run.along = next->entry == 0 ? 0.0 : run.segment.length;
-        run.speed = next->entry == 0 ? std::abs(run.speed) : -std::abs(run.speed);
+        m_run.speed = 0.0;
+        m_result.stoppedAtEnd = true;
+        m_result.heldAtEnd = forward ? m_run.segment.direction.y < 0.0 : m_run.segment.direction.y > 0.0;
     }
-}
+
+    Run m_run;
+    Result m_result;
+    const QcRails::Table &m_rails;
+    const QcBlockAccess &m_world;
+};
 
 // The velocity of a cart leaving its track at end `end`: horizontally straight out of the end (off a
 // curve along the side of that end, not diagonally) with the horizontal part of its speed along the
@@ -329,16 +355,14 @@ Result step(QcMinecart &cart, const QcRails::Table &rails, const QcBlockAccess &
     // In the air it gets on a track only from above or level with it, not up onto one above it.
     const std::optional<Segment> start = segmentAt(cart.motion.position, rails, world, !cart.motion.onGround);
     if (!start) {
-        Result result;
-        freeStep(cart, result, world, dt);
-        return result;
+        return freeStep(cart, world, dt);
     }
 
-    Run run{*start, alongOf(*start, cart.motion.position), nextSpeed(cart, *start, rails, world, dt)};
-    Result result;
-    result.onRail = true;
-    noteActivator(result, run.segment, rails, world);
-    roll(run, std::abs(run.speed) * dt, result, rails, world);
+    const double speed = nextSpeed(cart, *start, rails, world, dt);
+    Ride ride(Run{*start, alongOf(*start, cart.motion.position), speed}, rails, world);
+    ride.roll(std::abs(speed) * dt);
+    const Run &run = ride.run();
+    Result result = ride.result();
     if (result.derailed) {
         leaveTrack(cart, run, world);
         result.onRail = false;

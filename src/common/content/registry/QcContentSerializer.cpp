@@ -40,22 +40,24 @@ void writeBoxes(QDataStream &stream, const QList<QcModelBox> &boxes)
     }
 }
 
-bool readBoxes(QDataStream &stream, quint32 limit, QList<QcModelBox> &boxes)
+[[nodiscard]] std::optional<QList<QcModelBox>> readBoxes(QDataStream &stream, quint32 limit)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, limit, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, limit);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
 
+    QList<QcModelBox> boxes;
     for (quint32 i = 0; i < count; ++i) {
         QcModelBox box;
         stream >> box.from.x >> box.from.y >> box.from.z >> box.to.x >> box.to.y >> box.to.z >> box.slot;
         if (stream.status() != QDataStream::Ok || !plausibleVector(box.from) || !plausibleVector(box.to)) {
-            return false;
+            return std::nullopt;
         }
         boxes.append(std::move(box));
     }
-    return true;
+    return boxes;
 }
 
 void writeItem(QDataStream &stream, const QcItemDefinition &item)
@@ -128,7 +130,10 @@ void writeRecipe(QDataStream &stream, const QcRecipeDefinition &recipe)
     stream << recipe.resultItem << qint32(recipe.resultCount);
 }
 
-void writeTranslations(QDataStream &stream, const QHash<QString, QHash<QString, QString>> &translations)
+// Texts per language, then per key.
+using Translations = QHash<QString, QHash<QString, QString>>;
+
+void writeTranslations(QDataStream &stream, const Translations &translations)
 {
     stream << quint32(translations.size());
     for (auto language = translations.constBegin(); language != translations.constEnd(); ++language) {
@@ -175,10 +180,11 @@ void writeSound(QDataStream &stream, const QcSoundDefinition &sound)
 template<typename ReadEntry>
 [[nodiscard]] QcStatus readTable(QDataStream &stream, quint32 limit, const QString &tableError, const QString &entryError, ReadEntry readEntry)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, limit, count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, limit);
+    if (!countRead) {
         return qcError(tableError);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count; ++i) {
         if (!readEntry()) {
@@ -195,12 +201,13 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     qint32 toolLevel = 0;
     qint32 durability = 0;
     qint32 food = 0;
-    quint32 tagCount = 0;
     stream >> item.name >> item.translationKey >> item.texture >> maxStack >> item.placesBlock >> item.tool >> toolLevel
         >> item.toolSpeed >> durability >> item.attackDamage >> food >> item.fuelSeconds;
-    if (!QcStreamLimits::readCount(stream, 16, tagCount)) {
+    const std::optional<quint32> tagCountRead = QcStreamLimits::readCount(stream, 16);
+    if (!tagCountRead) {
         return false;
     }
+    const quint32 tagCount = *tagCountRead;
 
     for (quint32 t = 0; t < tagCount; ++t) {
         QString tag;
@@ -209,9 +216,11 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     }
 
     stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand >> item.cartBlock >> item.ignites;
-    if (!QcArmourSerializer::read(stream, item.armour)) {
+    std::optional<std::optional<QcArmourDefinition>> armour = QcArmourSerializer::read(stream);
+    if (!armour) {
         return false;
     }
+    item.armour = std::move(*armour);
     bool launcher = false;
     stream >> launcher;
     if (launcher) {
@@ -273,13 +282,16 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     return {};
 }
 
-bool readMob(QDataStream &stream, QcMobDefinition &mob)
+[[nodiscard]] std::optional<QcMobDefinition> readMob(QDataStream &stream)
 {
-    quint32 partCount = 0;
+    QcMobDefinition mob;
+
     stream >> mob.name >> mob.translationKey >> mob.maxHealth >> mob.width >> mob.height >> mob.hostile;
-    if (!QcStreamLimits::readCount(stream, 256, partCount)) {
-        return false;
+    const std::optional<quint32> partCountRead = QcStreamLimits::readCount(stream, 256);
+    if (!partCountRead) {
+        return std::nullopt;
     }
+    const quint32 partCount = *partCountRead;
 
     for (quint32 p = 0; p < partCount; ++p) {
         QcMobPart part;
@@ -287,7 +299,7 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
         stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
             >> part.sitOffset.y >> part.sitOffset.z;
         if (tint != quint8(QcTint::None) && tint != quint8(QcTint::Collar)) {
-            return false;
+            return std::nullopt;
         }
         part.tint = QcTint(tint);
         mob.parts.append(part);
@@ -298,10 +310,11 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
         >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
     mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
     // What it eats for breeding, so the client knows to use it on the creature (decision E-293).
-    quint32 foodCount = 0;
-    if (!QcStreamLimits::readCount(stream, 64, foodCount)) {
-        return false;
+    const std::optional<quint32> foodCountRead = QcStreamLimits::readCount(stream, 64);
+    if (!foodCountRead) {
+        return std::nullopt;
     }
+    const quint32 foodCount = *foodCountRead;
     for (quint32 f = 0; f < foodCount; ++f) {
         QString food;
         stream >> food;
@@ -322,33 +335,46 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
         valid = valid && plausible(part.from.x) && plausible(part.from.y) && plausible(part.from.z)
                 && plausible(part.to.x) && plausible(part.to.y) && plausible(part.to.z) && part.sitOffset.length() <= 1.0;
     }
-    return stream.status() == QDataStream::Ok && valid;
+    if (stream.status() != QDataStream::Ok || !valid) {
+        return std::nullopt;
+    }
+    return mob;
 }
 
 // Bounded reads: QDataStream's own list operator would reserve whatever count arrives.
-bool readRecipeStrings(QDataStream &stream, QList<QString> &list)
+[[nodiscard]] std::optional<QStringList> readRecipeStrings(QDataStream &stream)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, 9, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, 9);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
 
+    QStringList list;
     for (quint32 n = 0; n < count; ++n) {
         QString text;
         stream >> text;
         list.append(text);
     }
-    return true;
+    return list;
 }
 
-bool readRecipe(QDataStream &stream, QcRecipeDefinition &recipe)
+[[nodiscard]] std::optional<QcRecipeDefinition> readRecipe(QDataStream &stream)
 {
-    quint32 keyCount = 0;
+    QcRecipeDefinition recipe;
+
     qint32 resultCount = 0;
     stream >> recipe.name >> recipe.shaped;
-    if (!readRecipeStrings(stream, recipe.pattern) || !QcStreamLimits::readCount(stream, 9, keyCount)) {
-        return false;
+    std::optional<QStringList> pattern = readRecipeStrings(stream);
+    if (!pattern) {
+        return std::nullopt;
     }
+    recipe.pattern = std::move(*pattern);
+    const std::optional<quint32> keyCountRead = QcStreamLimits::readCount(stream, 9);
+    if (!keyCountRead) {
+        return std::nullopt;
+    }
+    const quint32 keyCount = *keyCountRead;
 
     for (quint32 k = 0; k < keyCount; ++k) {
         QChar key;
@@ -357,9 +383,11 @@ bool readRecipe(QDataStream &stream, QcRecipeDefinition &recipe)
         recipe.keys.append({key, item});
     }
 
-    if (!readRecipeStrings(stream, recipe.ingredients)) {
-        return false;
+    std::optional<QStringList> ingredients = readRecipeStrings(stream);
+    if (!ingredients) {
+        return std::nullopt;
     }
+    recipe.ingredients = std::move(*ingredients);
 
     stream >> recipe.resultItem >> resultCount;
     recipe.resultCount = resultCount;
@@ -368,39 +396,43 @@ bool readRecipe(QDataStream &stream, QcRecipeDefinition &recipe)
     const bool rectangular = std::ranges::all_of(recipe.pattern, [&recipe](const QString &row) {
         return row.size() == recipe.pattern.first().size() && row.size() <= 3;
     });
-    return stream.status() == QDataStream::Ok && recipe.pattern.size() <= 3
-           && !(recipe.shaped && (recipe.pattern.isEmpty() || !rectangular)) && !(!recipe.shaped && recipe.ingredients.isEmpty())
-           && recipe.ingredients.size() <= 9 && resultCount >= 1;
+    const bool valid = stream.status() == QDataStream::Ok && recipe.pattern.size() <= 3
+                       && !(recipe.shaped && (recipe.pattern.isEmpty() || !rectangular))
+                       && !(!recipe.shaped && recipe.ingredients.isEmpty()) && recipe.ingredients.size() <= 9 && resultCount >= 1;
+    return valid ? std::optional(std::move(recipe)) : std::nullopt;
 }
 
-bool readTexture(QDataStream &stream, QcTextureDefinition &texture)
+[[nodiscard]] std::optional<QcTextureDefinition> readTexture(QDataStream &stream)
 {
+    QcTextureDefinition texture;
+
     QByteArray procedural;
     stream >> texture.name >> procedural >> texture.png;
     if (stream.status() != QDataStream::Ok) {
-        return false;
+        return std::nullopt;
     }
 
     texture.procedural = QJsonDocument::fromJson(procedural).object();
-    return true;
+    return texture;
 }
 
 [[nodiscard]] QcStatus readTranslations(QDataStream &stream, QcContentRegistry &registry)
 {
-    quint32 languageCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, languageCount)) {
+    const std::optional<quint32> languageCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!languageCountRead) {
         return qcError(u"Corrupt content: translations"_s);
     }
+    const quint32 languageCount = *languageCountRead;
 
     quint32 total = 0;
     for (quint32 i = 0; i < languageCount; ++i) {
         QString language;
-        quint32 entryCount = 0;
         stream >> language;
-        if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, entryCount)
-            || entryCount > QcStreamLimits::maxTranslations - total) {
+        const std::optional<quint32> entryCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+        if (!entryCountRead || *entryCountRead > QcStreamLimits::maxTranslations - total) {
             return qcError(u"Corrupt content: translations"_s);
         }
+        const quint32 entryCount = *entryCountRead;
         total += entryCount;
 
         QHash<QString, QString> entries;
@@ -416,44 +448,59 @@ bool readTexture(QDataStream &stream, QcTextureDefinition &texture)
     return {};
 }
 
-bool readPack(QDataStream &stream, QcPackReference &pack)
+[[nodiscard]] std::optional<QcPackReference> readPack(QDataStream &stream)
 {
+    QcPackReference pack;
+
     stream >> pack.id >> pack.name >> pack.version;
-    return !pack.id.isEmpty() && pack.id.size() <= 64 && pack.name.size() <= 256 && pack.version.size() <= 64;
+    const bool valid = !pack.id.isEmpty() && pack.id.size() <= 64 && pack.name.size() <= 256 && pack.version.size() <= 64;
+    return valid ? std::optional(std::move(pack)) : std::nullopt;
 }
 
-bool readModel(QDataStream &stream, QcModelDefinition &model)
+[[nodiscard]] std::optional<QcModelDefinition> readModel(QDataStream &stream)
 {
-    quint32 boneCount = 0;
+    QcModelDefinition model;
+
     stream >> model.name;
-    if (!QcStreamLimits::readCount(stream, QcModelDefinition::maxBones, boneCount)) {
-        return false;
+    const std::optional<quint32> boneCountRead = QcStreamLimits::readCount(stream, QcModelDefinition::maxBones);
+    if (!boneCountRead) {
+        return std::nullopt;
     }
+    const quint32 boneCount = *boneCountRead;
 
     for (quint32 b = 0; b < boneCount; ++b) {
         QcModelBone bone;
         quint8 role = 0;
         stream >> bone.name >> role >> bone.pivot.x >> bone.pivot.y >> bone.pivot.z;
-        if (role > quint8(QcBoneRole::LeftLeg) || !plausibleVector(bone.pivot)
-            || !readBoxes(stream, QcModelDefinition::maxBoxesPerBone, bone.boxes)) {
-            return false;
+        if (role > quint8(QcBoneRole::LeftLeg) || !plausibleVector(bone.pivot)) {
+            return std::nullopt;
         }
+        std::optional<QList<QcModelBox>> boxes = readBoxes(stream, QcModelDefinition::maxBoxesPerBone);
+        if (!boxes) {
+            return std::nullopt;
+        }
+        bone.boxes = std::move(*boxes);
 
         bone.role = QcBoneRole(role);
         model.bones.append(std::move(bone));
     }
-    return stream.status() == QDataStream::Ok;
+    return stream.status() == QDataStream::Ok ? std::optional(std::move(model)) : std::nullopt;
 }
 
-bool readAppearance(QDataStream &stream, QcAppearanceDefinition &appearance)
+[[nodiscard]] std::optional<QcAppearanceDefinition> readAppearance(QDataStream &stream)
 {
+    QcAppearanceDefinition appearance;
+
     quint8 kind = 0;
-    quint32 layerCount = 0;
     stream >> appearance.name >> appearance.translationKey >> kind >> appearance.playable;
-    if (kind > quint8(QcAppearanceDefinition::Kind::Cape)
-        || !QcStreamLimits::readCount(stream, QcAppearanceDefinition::maxLayers, layerCount)) {
-        return false;
+    if (kind > quint8(QcAppearanceDefinition::Kind::Cape)) {
+        return std::nullopt;
     }
+    const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcAppearanceDefinition::maxLayers);
+    if (!layerCountRead) {
+        return std::nullopt;
+    }
+    const quint32 layerCount = *layerCountRead;
 
     appearance.kind = QcAppearanceDefinition::Kind(kind);
 
@@ -462,41 +509,49 @@ bool readAppearance(QDataStream &stream, QcAppearanceDefinition &appearance)
         quint8 tint = 0;
         stream >> layer.slot >> layer.texture >> tint;
         if (tint > quint8(QcTint::Pants)) {
-            return false;
+            return std::nullopt;
         }
         layer.tint = QcTint(tint);
         appearance.layers.append(std::move(layer));
     }
-    if (!readBoxes(stream, QcAppearanceDefinition::maxBoxes, appearance.boxes)) {
-        return false;
+    std::optional<QList<QcModelBox>> boxes = readBoxes(stream, QcAppearanceDefinition::maxBoxes);
+    if (!boxes) {
+        return std::nullopt;
     }
+    appearance.boxes = std::move(*boxes);
 
     QcCapeShape &cape = appearance.cape;
     stream >> cape.width >> cape.length >> cape.thickness >> cape.offset;
     const bool shapeValid = cape.width >= QcCapeShape::minSize && cape.width <= QcCapeShape::maxWidth && cape.length >= QcCapeShape::minSize
                             && cape.length <= QcCapeShape::maxLength && cape.thickness > 0.0 && cape.thickness <= QcCapeShape::maxThickness
                             && cape.offset >= 0.0 && cape.offset <= QcCapeShape::maxOffset;
-    return shapeValid && stream.status() == QDataStream::Ok;
+    return shapeValid && stream.status() == QDataStream::Ok ? std::optional(std::move(appearance)) : std::nullopt;
 }
 
-bool readSmeltingRecipe(QDataStream &stream, QcSmeltingRecipe &recipe)
+[[nodiscard]] std::optional<QcSmeltingRecipe> readSmeltingRecipe(QDataStream &stream)
 {
+    QcSmeltingRecipe recipe;
+
     qint32 resultCount = 0;
     stream >> recipe.name >> recipe.category >> recipe.inputItem >> recipe.resultItem >> resultCount >> recipe.seconds;
     recipe.resultCount = resultCount;
-    return stream.status() == QDataStream::Ok && resultCount >= 1 && resultCount <= 64 && std::isfinite(recipe.seconds)
-           && recipe.seconds >= QcSmeltingRecipe::minSeconds && recipe.seconds <= QcSmeltingRecipe::maxSeconds;
+    const bool valid = stream.status() == QDataStream::Ok && resultCount >= 1 && resultCount <= 64 && std::isfinite(recipe.seconds)
+                       && recipe.seconds >= QcSmeltingRecipe::minSeconds && recipe.seconds <= QcSmeltingRecipe::maxSeconds;
+    return valid ? std::optional(std::move(recipe)) : std::nullopt;
 }
 
-bool readSound(QDataStream &stream, QcSoundDefinition &sound)
+[[nodiscard]] std::optional<QcSoundDefinition> readSound(QDataStream &stream)
 {
+    QcSoundDefinition sound;
+
     quint8 bus = 0;
     qint32 variants = 0;
-    quint32 layerCount = 0;
     stream >> sound.name >> bus >> sound.volume >> sound.pitchVariation >> variants >> sound.loop >> sound.range;
-    if (!QcStreamLimits::readCount(stream, QcSoundDefinition::maxLayers, layerCount)) {
-        return false;
+    const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcSoundDefinition::maxLayers);
+    if (!layerCountRead) {
+        return std::nullopt;
     }
+    const quint32 layerCount = *layerCountRead;
 
     sound.bus = QcSoundBus(bus);
     sound.variants = variants;
@@ -511,17 +566,17 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
     }
 
     // The synthesizer's work and memory follow from these values: the same limits as for content files.
-    return stream.status() == QDataStream::Ok && sound.problem().isEmpty();
+    return stream.status() == QDataStream::Ok && sound.problem().isEmpty() ? std::optional(std::move(sound)) : std::nullopt;
 }
 
 [[nodiscard]] QcStatus readMobs(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: mob table"_s, u"Corrupt content: mob %1"_s, [&] {
-        QcMobDefinition definition;
-        if (!readMob(stream, definition)) {
+        std::optional<QcMobDefinition> definition = readMob(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerMob(std::move(definition));
+        registry.registerMob(std::move(*definition));
         return true;
     });
 }
@@ -529,11 +584,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readRecipes(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: recipe table"_s, u"Corrupt content: recipe %1"_s, [&] {
-        QcRecipeDefinition definition;
-        if (!readRecipe(stream, definition)) {
+        std::optional<QcRecipeDefinition> definition = readRecipe(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerRecipe(std::move(definition));
+        registry.registerRecipe(std::move(*definition));
         return true;
     });
 }
@@ -541,11 +596,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readTextures(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: texture table"_s, u"Corrupt content: texture %1"_s, [&] {
-        QcTextureDefinition definition;
-        if (!readTexture(stream, definition)) {
+        std::optional<QcTextureDefinition> definition = readTexture(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerTexture(std::move(definition));
+        registry.registerTexture(std::move(*definition));
         return true;
     });
 }
@@ -553,11 +608,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readPacks(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, 1024, u"Corrupt content: pack list"_s, u"Corrupt content: pack %1"_s, [&] {
-        QcPackReference definition;
-        if (!readPack(stream, definition)) {
+        std::optional<QcPackReference> definition = readPack(stream);
+        if (!definition) {
             return false;
         }
-        registry.addPack(std::move(definition));
+        registry.addPack(std::move(*definition));
         return true;
     });
 }
@@ -565,11 +620,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readModels(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: model table"_s, u"Corrupt content: model %1"_s, [&] {
-        QcModelDefinition definition;
-        if (!readModel(stream, definition)) {
+        std::optional<QcModelDefinition> definition = readModel(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerModel(std::move(definition));
+        registry.registerModel(std::move(*definition));
         return true;
     });
 }
@@ -577,11 +632,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readAppearances(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: appearance table"_s, u"Corrupt content: appearance %1"_s, [&] {
-        QcAppearanceDefinition definition;
-        if (!readAppearance(stream, definition)) {
+        std::optional<QcAppearanceDefinition> definition = readAppearance(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerAppearance(std::move(definition));
+        registry.registerAppearance(std::move(*definition));
         return true;
     });
 }
@@ -589,11 +644,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readSmeltingRecipes(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: smelting recipes"_s, u"Corrupt content: smelting recipe %1"_s, [&] {
-        QcSmeltingRecipe definition;
-        if (!readSmeltingRecipe(stream, definition)) {
+        std::optional<QcSmeltingRecipe> definition = readSmeltingRecipe(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerSmeltingRecipe(std::move(definition));
+        registry.registerSmeltingRecipe(std::move(*definition));
         return true;
     });
 }
@@ -601,11 +656,11 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
 [[nodiscard]] QcStatus readSounds(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: sound table"_s, u"Corrupt content: sound %1"_s, [&] {
-        QcSoundDefinition definition;
-        if (!readSound(stream, definition)) {
+        std::optional<QcSoundDefinition> definition = readSound(stream);
+        if (!definition) {
             return false;
         }
-        registry.registerSound(std::move(definition));
+        registry.registerSound(std::move(*definition));
         return true;
     });
 }
@@ -659,33 +714,35 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     writeList(stream, content.effects(), writeEffect);
 }
 
-QcStatus QcContentSerializer::readBlocks(QDataStream &stream, QcContentRegistry &registry)
+QcStatus QcContentRegistry::readBlockTable(QDataStream &stream)
 {
-    registry.m_blocks.clear();
-    registry.m_blockIds.clear();
-    registry.m_states.clear();
+    m_blocks.clear();
+    m_blockIds.clear();
+    m_states.clear();
 
-    quint32 blockCount = 0;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, blockCount) || blockCount == 0) {
+    const std::optional<quint32> blockCountRead = QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions);
+    if (!blockCountRead || *blockCountRead == 0) {
         return qcError(u"Corrupt content: block table"_s);
     }
+    const quint32 blockCount = *blockCountRead;
 
     for (quint32 i = 0; i < blockCount; ++i) {
-        QcBlockDefinition block;
-        if (!QcBlockSerializer::readBlock(stream, block) || registry.m_blockIds.contains(block.name)
-            || registry.m_states.size() + QcBlockStateTable::stateCountOf(block) > QcBlockStateTable::maxStates
-            || !registry.m_states.fits(std::nullopt, QcBlockStateTable::derivedBoxes(block, block.shape))) {
+        std::optional<QcBlockDefinition> read = QcBlockSerializer::readBlock(stream);
+        if (!read || m_blockIds.contains(read->name)
+            || m_states.size() + QcBlockStateTable::stateCountOf(*read) > QcBlockStateTable::maxStates
+            || !m_states.fits(std::nullopt, QcBlockStateTable::derivedBoxes(*read, read->shape))) {
             return qcError(u"Corrupt content: block %1"_s.arg(i));
         }
+        QcBlockDefinition block = std::move(*read);
 
         // The sender resolved the shape; the receiver has no shape table of its own.
         block.shapeName.clear();
-        registry.m_blockIds.insert(block.name, i);
-        registry.m_blocks.append(std::move(block));
-        registry.m_states.append(registry.m_blocks.constLast(), registry.m_blocks.constLast().shape);
+        m_blockIds.insert(block.name, i);
+        m_blocks.append(std::move(block));
+        m_states.append(m_blocks.constLast(), m_blocks.constLast().shape);
     }
 
-    if (registry.m_blocks.constFirst().name != QLatin1StringView(QcContentRegistry::airName)) {
+    if (m_blocks.constFirst().name != QLatin1StringView(airName)) {
         return qcError(u"Corrupt content: block 0 must be air"_s);
     }
     return {};
@@ -695,7 +752,8 @@ QcResult<QcContentRegistry> QcContentSerializer::read(QDataStream &stream)
 {
     using ReadStep = QcStatus (*)(QDataStream &, QcContentRegistry &);
     // The order of the tables in the stream.
-    constexpr std::array<ReadStep, 12> steps{&readBlocks,      &readItems,           &readMobs,   &readRecipes,
+    constexpr ReadStep readBlocks = [](QDataStream &in, QcContentRegistry &registry) { return registry.readBlockTable(in); };
+    constexpr std::array<ReadStep, 12> steps{readBlocks,       &readItems,           &readMobs,   &readRecipes,
                                              &readTextures,    &readTranslations,    &readPacks,  &readModels,
                                              &readAppearances, &readSmeltingRecipes, &readSounds, &readEffects};
 

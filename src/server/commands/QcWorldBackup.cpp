@@ -99,8 +99,9 @@ QString freeTarget(const QDir &root, const QString &base)
 #endif
 }
 
-// Copies every listed file below `from` into `to` (made first), with hard links where `link`.
-bool copyFiles(const QString &from, const QString &to, const QStringList &files, bool link, QString &failed)
+// Copies every listed file below `from` into `to` (made first), with hard links where `link`; the
+// file that could not be copied, std::nullopt when all were.
+[[nodiscard]] std::optional<QString> copyFiles(const QString &from, const QString &to, const QStringList &files, bool link)
 {
     const QDir source(from);
     for (const QString &file : files) {
@@ -108,11 +109,10 @@ bool copyFiles(const QString &from, const QString &to, const QStringList &files,
         const bool made = QDir().mkpath(QFileInfo(destination).absolutePath())
                           && ((link && hardLink(source.filePath(file), destination)) || QFile::copy(source.filePath(file), destination));
         if (!made) {
-            failed = file;
-            return false;
+            return file;
         }
     }
-    return true;
+    return std::nullopt;
 }
 
 } // namespace
@@ -163,16 +163,15 @@ bool isValidLabel(const QString &label)
     snapshot.staging = stagingOf(snapshot.target);
 
     // Hard links where the file system has them (the first file tells), copies otherwise.
-    QString failed;
     snapshot.linked = !listing->files.isEmpty() && QDir().mkpath(QFileInfo(QDir(snapshot.staging).filePath(listing->files.first())).absolutePath())
                       && hardLink(QDir(worldDirectory).filePath(listing->files.first()), QDir(snapshot.staging).filePath(listing->files.first()));
     QStringList rest = listing->files;
     if (snapshot.linked) {
         rest.removeFirst();
     }
-    if (!copyFiles(worldDirectory, snapshot.staging, rest, snapshot.linked, failed)) {
+    if (const std::optional<QString> failed = copyFiles(worldDirectory, snapshot.staging, rest, snapshot.linked)) {
         QDir(snapshot.staging).removeRecursively();
-        return qcError(u"Cannot copy %1, the incomplete backup was removed"_s.arg(failed));
+        return qcError(u"Cannot copy %1, the incomplete backup was removed"_s.arg(*failed));
     }
     return snapshot;
 }
@@ -182,14 +181,21 @@ bool isValidLabel(const QString &label)
     // Written under a hidden name: an interrupted copy never looks like a backup. A snapshot of
     // copies already is the backup.
     const QString incomplete = incompleteOf(snapshot.target);
-    QString failed;
-    const bool copied = snapshot.linked ? copyFiles(snapshot.staging, incomplete, snapshot.files, false, failed)
-                                        : QDir().rename(snapshot.staging, incomplete);
+    QString problem;
+    if (snapshot.linked) {
+        if (const std::optional<QString> failed = copyFiles(snapshot.staging, incomplete, snapshot.files, false)) {
+            problem = u"Cannot copy %1, the incomplete backup was removed"_s.arg(*failed);
+        }
+    } else if (!QDir().rename(snapshot.staging, incomplete)) {
+        problem = u"Cannot move the copied files from %1 to %2, the incomplete backup was removed"_s.arg(snapshot.staging, incomplete);
+    }
     QDir(snapshot.staging).removeRecursively();
-    if (!copied || !QDir().rename(incomplete, snapshot.target)) {
+    if (problem.isEmpty() && !QDir().rename(incomplete, snapshot.target)) {
+        problem = u"Cannot rename the backup to %1"_s.arg(snapshot.target);
+    }
+    if (!problem.isEmpty()) {
         QDir(incomplete).removeRecursively();
-        return qcError(copied ? u"Cannot rename the backup to %1"_s.arg(snapshot.target)
-                              : u"Cannot copy %1, the incomplete backup was removed"_s.arg(failed));
+        return qcError(problem);
     }
     return Summary{snapshot.target, int(snapshot.files.size()), snapshot.bytes};
 }

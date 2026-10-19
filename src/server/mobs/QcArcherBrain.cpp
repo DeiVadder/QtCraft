@@ -48,13 +48,15 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
         return steering;
     }
 
-    track(*mob.archer, *target, context);
+    mob.archer->track(target->entityId, target->position, context.tick, context.dt);
     const QcVec3 aimPoint = target->position + QcVec3{0.0, aimHeight, 0.0};
     const bool sees = QcLineOfSight::seesPoint(context.world, eyeOf(mob, definition), aimPoint);
     const double distance = horizontal(target->position - mob.motion.position).length();
     // Cornered: a blow at a target in melee, besides backing off (not without blows, the witch).
     if (definition.attackDamage > 0.0 && QcMobSteering::inMelee(mob, definition, *target, context.world)) {
-        QcMobSteering::strike(mob, definition, *target, *context.hits);
+        if (const std::optional<QcMobManager::PlayerHit> hit = QcMobSteering::strike(mob, definition, *target)) {
+            context.hits->append(*hit);
+        }
     }
     drawAndShoot(mob, definition, *target, sees && distance <= definition.archer.range, context);
 
@@ -67,25 +69,25 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
     return steering;
 }
 
-void QcArcherBrain::track(QcArcherState &state, const QcMobManager::PlayerView &target, const Context &context)
+void QcArcherState::track(quint32 targetId, const QcVec3 &position, quint64 tick, double dt)
 {
     // A new target, one not seen for a while or one that jumped (a teleport) starts at rest.
-    const quint64 since = context.tick - state.seenTick;
-    const double elapsed = double(since) * context.dt;
-    const double moved = (target.position - state.targetPosition).length();
-    if (state.target != target.entityId || since == 0 || since > quint64(QcMobSteering::sightCheckTicks)
-        || moved > maxTargetSpeed * elapsed + targetJump) {
-        state.targetVelocity = {};
+    const quint64 since = tick - seenTick;
+    const double elapsed = double(since) * dt;
+    const double moved = (position - targetPosition).length();
+    if (target != targetId || since == 0 || since > quint64(QcMobSteering::sightCheckTicks)
+        || moved > QcArcherBrain::maxTargetSpeed * elapsed + QcArcherBrain::targetJump) {
+        targetVelocity = {};
     } else {
-        QcVec3 estimate = (target.position - state.targetPosition) * (1.0 / elapsed);
-        if (estimate.length() > maxTargetSpeed) {
-            estimate = estimate.normalized() * maxTargetSpeed;
+        QcVec3 estimate = (position - targetPosition) * (1.0 / elapsed);
+        if (estimate.length() > QcArcherBrain::maxTargetSpeed) {
+            estimate = estimate.normalized() * QcArcherBrain::maxTargetSpeed;
         }
-        state.targetVelocity = state.targetVelocity + (estimate - state.targetVelocity) * velocitySmoothing;
+        targetVelocity = targetVelocity + (estimate - targetVelocity) * QcArcherBrain::velocitySmoothing;
     }
-    state.target = target.entityId;
-    state.seenTick = context.tick;
-    state.targetPosition = target.position;
+    target = targetId;
+    seenTick = tick;
+    targetPosition = position;
 }
 
 void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,

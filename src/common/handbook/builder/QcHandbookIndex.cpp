@@ -71,7 +71,7 @@ void QcHandbookIndex::indexBlocks(const QcHandbookText &text, const QcHandbookLi
 
         for (const QcItemDrop &drop : block.drops) {
             if (drop.item != block.name) {
-                QcHandbookLinks::appendUnique(m_droppedBy[drop.item], links.blockLink(block.name, text.dropNote(drop)));
+                m_droppedBy[drop.item].addUnique(links.blockLink(block.name, text.dropNote(drop)));
             }
         }
 
@@ -91,16 +91,16 @@ void QcHandbookIndex::indexMobs(const QcHandbookText &text, const QcHandbookLink
 {
     for (const QcMobDefinition &mob : m_content.mobs()) {
         for (const QcItemDrop &drop : mob.drops) {
-            QcHandbookLinks::appendUnique(m_droppedBy[drop.item], links.mobLink(mob, text.dropNote(drop)));
+            m_droppedBy[drop.item].addUnique(links.mobLink(mob, text.dropNote(drop)));
         }
 
         for (const QString &block : mob.spawnBlocks) {
-            QcHandbookLinks::appendUnique(m_spawnersOn[block], links.mobLink(mob));
+            m_spawnersOn[block].addUnique(links.mobLink(mob));
         }
 
         for (const QcMobDefinition::SpawnRule &rule : mob.extraSpawns) {
             for (const QString &block : rule.blocks) {
-                QcHandbookLinks::appendUnique(m_spawnersOn[block], links.mobLink(mob));
+                m_spawnersOn[block].addUnique(links.mobLink(mob));
             }
         }
     }
@@ -114,13 +114,13 @@ void QcHandbookIndex::indexOccurrences(const QcHandbookText &text, const QcHandb
     }
 
     for (const QcOreDefinition &ore : m_content.ores()) {
-        QcHandbookLinks::appendUnique(m_foundIn[ore.block], links.oreLink(ore, text.heightRange(ore.minY, ore.maxY)));
+        m_foundIn[ore.block].addUnique(links.oreLink(ore, text.heightRange(ore.minY, ore.maxY)));
     }
 
     for (const QcFeatureDefinition &feature : m_content.features()) {
         if (feature.type == QcFeatureDefinition::Type::Pool) {
-            QcHandbookLinks::appendUnique(m_foundIn[feature.trunkBlock],
-                                          links.featureLink(feature, text.heightRange(feature.minY, feature.maxY)));
+            const Link link = links.featureLink(feature, text.heightRange(feature.minY, feature.maxY));
+            m_foundIn[feature.trunkBlock].addUnique(link);
         }
     }
 }
@@ -137,7 +137,7 @@ void QcHandbookIndex::indexBiome(const QcBiomeDefinition &biome, const QcHandboo
 
     for (const auto &[block, role] : layers) {
         if (!block.isEmpty()) {
-            QcHandbookLinks::appendUnique(m_foundIn[block], links.biomeLink(biome, text.label(u"fact."_s + role)));
+            m_foundIn[block].addUnique(links.biomeLink(biome, text.label(u"fact."_s + role)));
         }
     }
 
@@ -149,7 +149,7 @@ void QcHandbookIndex::indexBiome(const QcBiomeDefinition &biome, const QcHandboo
 
         for (const QString &block : {feature->trunkBlock, feature->leavesBlock}) {
             if (!block.isEmpty()) {
-                QcHandbookLinks::appendUnique(m_foundIn[block], links.biomeLink(biome, links.featureTitle(*feature, text.language())));
+                m_foundIn[block].addUnique(links.biomeLink(biome, links.featureTitle(*feature, text.language())));
             }
         }
     }

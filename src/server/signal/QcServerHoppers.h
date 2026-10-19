@@ -68,11 +68,17 @@ private:
     // The awake hoppers that act now, at most QcServerLimits::hopperBudget; the rest waits for the
     // next tick, taken from where this one stopped (only then is a step not simultaneous for all).
     QList<QcBlockPos> actors();
-    void push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access, QSet<QcBlockPos> &moved);
-    void pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access, QSet<QcBlockPos> &moved);
-    // The pull from a container above; a hopper that has to look for item entities is added to
-    // `searching` instead.
-    [[nodiscard]] std::optional<Pull> pullFor(QcBlockPos hopper, QcInventoryAccess &access, QList<QcBlockPos> &searching) const;
+    // Every hopper pushes; the hoppers that moved an item.
+    [[nodiscard]] QSet<QcBlockPos> push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access);
+    // Every hopper not resting pulls; the hoppers that moved an item.
+    [[nodiscard]] QSet<QcBlockPos> pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access);
+    // What a hopper takes from above: the pull from a container, or whether it looks for item entities.
+    struct Intake
+    {
+        std::optional<Pull> pull;
+        bool searches = false;
+    };
+    [[nodiscard]] Intake pullFor(QcBlockPos hopper, QcInventoryAccess &access) const;
     std::optional<Pull> pickUp(QcBlockPos hopper, QcInventoryAccess &access);
     // Carries out a pull; false when nothing moved.
     bool apply(const Pull &pull, QcInventoryAccess &access);

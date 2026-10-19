@@ -367,8 +367,8 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
 
 void QcClientSession::cue(QcSoundCue cue)
 {
-    if (m_sounds.record(cue, m_tickCount)) {
-        emit soundCue(cue);
+    if (const std::optional<QcSoundCue> recorded = m_sounds.record(std::move(cue), m_tickCount)) {
+        emit soundCue(*recorded);
     }
 }
 

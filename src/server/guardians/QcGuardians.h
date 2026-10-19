@@ -42,8 +42,9 @@ public:
     [[nodiscard]] std::optional<quint64> readyAt(quint64 site) const;
 
 private:
-    // Gives the zone a guardian when its rule allows one now.
-    void serve(const QcGuardSite &site, const QList<QcVec3> &players, int &total);
+    // Gives the zone a guardian when its rule allows one now (`total`: guardians in the world so
+    // far); whether it did.
+    [[nodiscard]] bool serve(const QcGuardSite &site, const QList<QcVec3> &players, int total);
     // Whether the players are where the zone's rule wants them.
     static bool playersAllow(const QcGuardSite &site, const QList<QcVec3> &players);
     bool zoneLoaded(const QcGuardSite &site) const;

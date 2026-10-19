@@ -50,27 +50,36 @@ public:
     // File of a player in players/: the name in lower case (other characters than letters, digits,
     // '_' and '-' replaced) and a hash of the exact name, "<name>-<hash>.qcp".
     static QString fileName(const QString &playerName);
-    // std::nullopt without error when the player has never been saved; a file of an older development
-    // version is an error (decision E-356).
-    [[nodiscard]] QcResult<std::optional<QcPlayerData>> read(const QString &playerName, QStringList &warnings) const;
+    // A player as read, with the warnings of reading his file (unknown items dropped, an unknown game
+    // mode played as survival).
+    struct Read
+    {
+        // std::nullopt: the player has never been saved.
+        std::optional<QcPlayerData> player;
+        QStringList warnings;
+    };
+
+    // A player file that cannot be read: why, and the warnings of reading it up to there.
+    struct Failure
+    {
+        QString error;
+        QStringList warnings;
+    };
+    using Result = std::expected<Read, Failure>;
+
+    // A file of an older development version is an error (decision E-356).
+    [[nodiscard]] Result read(const QString &playerName) const;
     [[nodiscard]] QcStatus write(const QString &playerName, const QcPlayerData &player) const;
     // The file of a player relative to the world directory ("players/<file name>").
     static QString relativePath(const QString &playerName);
     // The contents of a player file, for a save that writes it with the world (decision E-378).
     QByteArray bytes(const QcPlayerData &player) const;
     // A player from the contents of his file (none: never saved).
-    [[nodiscard]] QcResult<std::optional<QcPlayerData>> parse(const QString &playerName, const std::optional<QByteArray> &contents, QStringList &warnings) const;
+    [[nodiscard]] Result parse(const QString &playerName, const std::optional<QByteArray> &contents) const;
 
 private:
     void writeSlots(QDataStream &stream, const QcInventory &inventory) const;
     void writeEquipment(QDataStream &stream, const QcEquipment &equipment) const;
-    // Inventory slots after the selected slot; false when they are damaged.
-    bool readSlots(QDataStream &stream, const QString &path, QcInventory &inventory, QStringList &warnings) const;
-    // The armour slots; pieces that no longer fit their slot go into `inventory`. False when damaged.
-    bool readEquipment(QDataStream &stream, const QString &path, QcEquipment &equipment, QcInventory &inventory,
-                       QStringList &warnings) const;
-    // Game mode, flight and the kept inventory set.
-    bool readGameMode(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const;
     // Whether the read values are finite and inside the world.
     static bool isPlausible(const QcPlayerData &player);
     QString path(const QString &playerName) const;

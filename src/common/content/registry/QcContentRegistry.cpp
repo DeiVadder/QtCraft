@@ -169,23 +169,24 @@ QString QcContentRegistry::stateName(QcBlockId id) const
     return definition.name + QcBlockStateTable::describe(definition, info.index);
 }
 
-std::optional<QcBlockId> QcContentRegistry::stateId(const QString &text, QStringList *problems) const
+QcContentRegistry::ParsedState QcContentRegistry::parseState(const QString &text) const
 {
     const qsizetype open = text.indexOf(u'[');
     const QString name = open < 0 ? text : text.left(open);
     const auto type = m_blockIds.constFind(name);
     if (type == m_blockIds.constEnd()) {
-        return std::nullopt;
+        return {};
     }
 
     QcBlockId id = m_states.firstState(*type);
     if (open < 0) {
-        return id;
+        return {id, {}};
     }
 
+    QStringList problems;
     const bool closed = text.endsWith(u']');
-    if (!closed && problems) {
-        problems->append(u"%1: unterminated state '%2'"_s.arg(name, text.mid(open)));
+    if (!closed) {
+        problems.append(u"%1: unterminated state '%2'"_s.arg(name, text.mid(open)));
     }
 
     const QStringList assignments = text.mid(open + 1, text.size() - open - (closed ? 2 : 1)).split(u',', Qt::SkipEmptyParts);
@@ -195,15 +196,13 @@ std::optional<QcBlockId> QcContentRegistry::stateId(const QString &text, QString
         const QString value = equals < 0 ? QString() : assignment.mid(equals + 1);
         const QcBlockId changed = withProperty(id, property, value);
         if (changed == id && QcBlockStateTable::value(m_blocks[qsizetype(*type)], state(id).index, property) != value) {
-            if (problems) {
-                problems->append(u"%1: unknown state '%2'"_s.arg(name, assignment));
-            }
+            problems.append(u"%1: unknown state '%2'"_s.arg(name, assignment));
             continue;
         }
         id = changed;
     }
 
-    return id;
+    return {id, problems};
 }
 
 QcResult<QcItemId> QcContentRegistry::registerItem(QcItemDefinition definition)
@@ -289,74 +288,84 @@ void QcContentRegistry::addTranslations(const QString &language, const QHash<QSt
 
 namespace {
 
-// Replaces the entry with the same name or appends; `index` maps names to positions in `list`.
-template<typename Definition>
-void registerByName(QList<Definition> &list, QHash<QString, qsizetype> &index, Definition definition)
+// A fishing rod checked against the content (decision E-503): what is left of its fishing and the
+// warnings.
+struct ResolvedFishing
 {
-    const auto existing = index.constFind(definition.name);
-    if (existing != index.constEnd()) {
-        list[*existing] = std::move(definition);
-    } else {
-        index.insert(definition.name, list.size());
-        list.append(std::move(definition));
-    }
-}
-
-// What does not go together with the projectile uses of `item`, left out with a warning each.
-QStringList checkProjectileUses(QcItemDefinition &item)
-{
-    // The use button throws a throwable item (QcClientLauncher::uses), so its other uses would never
-    // happen: they are left out (decision E-427).
+    std::optional<QcFishingDefinition> fishing;
     QStringList warnings;
-    if (item.throwable && (item.ignites || item.fertilizes || item.scoops || item.bottles || !item.emptiesTo.isEmpty())) {
-        warnings.append(u"item '%1': a 'throwable' item neither ignites, fertilizes, scoops nor bottles; it is only thrown"_s.arg(item.name));
-        item.ignites = false;
-        item.fertilizes = false;
-        item.scoops = false;
-        item.bottles = false;
-        item.emptiesTo.clear();
-    }
-    if (item.launcher && item.launcher->emptyAmmunitionList) {
-        warnings.append(u"item '%1': an empty 'ammunition' list means none: the launcher takes all ammunition that is not thrown"_s.arg(item.name));
-        item.launcher->emptyAmmunitionList = false;
-    }
-    return warnings;
-}
+};
 
-// Checks a fishing rod's bobber and loot (decision E-503); the warnings. Only the content's public
-// lookups are needed.
-QStringList resolveFishing(const QcContentRegistry &content, QcItemDefinition &item)
+// Checks a fishing rod's bobber and loot. Only the content's public lookups are needed.
+[[nodiscard]] ResolvedFishing resolveFishing(const QcContentRegistry &content, const QcItemDefinition &item)
 {
     // A rod whose bobber no pack has does not fish; loot no pack has is left out, and a rod without
     // any loot left does not fish either (decision E-503).
-    QStringList warnings;
-    if (!item.fishing) {
-        return warnings;
+    ResolvedFishing result{item.fishing, {}};
+    if (!result.fishing) {
+        return result;
     }
-    item.fishing->loot.removeIf([&](const QcFishingLoot &loot) {
+    result.fishing->loot.removeIf([&](const QcFishingLoot &loot) {
         const bool known = content.itemId(loot.item).has_value();
         if (!known) {
-            warnings.append(u"item '%1': fishing loot names no item '%2'; left out"_s.arg(item.name, loot.item));
+            result.warnings.append(u"item '%1': fishing loot names no item '%2'; left out"_s.arg(item.name, loot.item));
         }
         return !known;
     });
-    if (!content.projectile(item.fishing->bobber) || item.fishing->loot.isEmpty()) {
-        warnings.append(u"item '%1': fishing without a known bobber '%2' or loot; it does not fish"_s.arg(item.name, item.fishing->bobber));
-        item.fishing.reset();
+    if (!content.projectile(result.fishing->bobber) || result.fishing->loot.isEmpty()) {
+        result.warnings.append(u"item '%1': fishing without a known bobber '%2' or loot; it does not fish"_s.arg(item.name, result.fishing->bobber));
+        result.fishing.reset();
     }
-    return warnings;
+    return result;
+}
+
+// What an archer shoots and what a creature holds, checked against the content (finish).
+struct ResolvedArms
+{
+    QcMobDefinition::Ai ai;
+    QList<QcArcherDefinition::Choice> choices;
+    QString heldItem;
+    QcItemId heldItemId = qcNoItem;
+    QStringList warnings;
+};
+
+[[nodiscard]] ResolvedArms resolveArms(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    // An archer whose projectile no pack has fights in melee like other hostile creatures, and a
+    // held item no pack has is not shown (decision E-426).
+    ResolvedArms result{mob.ai, {}, mob.heldItem, qcNoItem, {}};
+    if (mob.ai == QcMobDefinition::Ai::Archer && !content.projectile(mob.archer.projectile)) {
+        result.warnings.append(u"mob '%1': no projectile '%2'; it fights in melee"_s.arg(mob.name, mob.archer.projectile));
+        result.ai = QcMobDefinition::Ai::Hostile;
+    }
+    // A choice with a projectile or effect no pack has is left out (decision E-623).
+    for (const QcArcherDefinition::Choice &choice : mob.archer.choices) {
+        if (content.projectile(choice.projectile) && content.effect(choice.unlessTargetHas)) {
+            result.choices.append(choice);
+        } else {
+            result.warnings.append(
+                u"mob '%1': no projectile '%2' or effect '%3'; the choice is left out"_s.arg(mob.name, choice.projectile, choice.unlessTargetHas));
+        }
+    }
+    const std::optional<QcItemId> held = mob.heldItem.isEmpty() ? std::nullopt : content.itemId(mob.heldItem);
+    if (!mob.heldItem.isEmpty() && !held) {
+        result.warnings.append(u"mob '%1': no item '%2' to hold"_s.arg(mob.name, mob.heldItem));
+        result.heldItem.clear();
+    }
+    result.heldItemId = held.value_or(qcNoItem);
+    return result;
 }
 
 } // namespace
 
 void QcContentRegistry::registerPartFamily(QcPartFamily family)
 {
-    registerByName(m_partFamilies, m_partFamilyIndex, std::move(family));
+    m_partFamilies.set(std::move(family));
 }
 
 void QcContentRegistry::registerMaterial(QcMaterialDefinition material)
 {
-    registerByName(m_materials, m_materialIndex, std::move(material));
+    m_materials.set(std::move(material));
 }
 
 QStringList QcContentRegistry::finish()
@@ -378,9 +387,9 @@ QStringList QcContentRegistry::finish()
     // A creature naming villager settings no pack has is no villager (decision E-421); the others
     // keep the index of theirs. It keeps its abilities except opening doors, which only the villager
     // AI carries out (decision E-423).
-    for (QcMobDefinition &mob : m_mobs) {
-        const auto it = m_villagerSettingsIndex.constFind(mob.villagerSettings);
-        mob.villagerSettingsIndex = mob.villager && it != m_villagerSettingsIndex.constEnd() ? int(*it) : -1;
+    m_mobs.updateAll([this, &warnings](QcMobDefinition &mob) {
+        const std::optional<qsizetype> settings = m_villagerSettings.indexOf(mob.villagerSettings);
+        mob.villagerSettingsIndex = mob.villager && settings ? int(*settings) : -1;
         if (mob.villager && mob.villagerSettingsIndex < 0) {
             warnings.append(u"mob '%1': no villager settings '%2'; it is no villager%3"_s.arg(mob.name, mob.villagerSettings,
                                                                                              mob.abilities.opensDoors ? u" and opens no doors"_s : QString()));
@@ -389,40 +398,25 @@ QStringList QcContentRegistry::finish()
             mob.ai = QcMobDefinition::Ai::Passive;
             mob.abilities.opensDoors = false;
         }
-        warnings.append(resolveArcher(mob));
-        warnings.append(QcMobTraitsContent::resolve(*this, mob));
-    }
+        ResolvedArms arms = resolveArms(*this, mob);
+        mob.ai = arms.ai;
+        mob.archer.choices = std::move(arms.choices);
+        mob.heldItem = std::move(arms.heldItem);
+        mob.heldItemId = arms.heldItemId;
+        warnings.append(arms.warnings);
+
+        QcMobTraitsContent::Resolved traits = QcMobTraitsContent::resolve(*this, mob);
+        mob.tameable = std::move(traits.tameable);
+        mob.crumbles = std::move(traits.crumbles);
+        mob.drinks = std::move(traits.drinks);
+        mob.carries = std::move(traits.carries);
+        warnings.append(traits.warnings);
+    });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(QcSpawnerContent::resolve(*this));
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
-    return warnings;
-}
-
-QStringList QcContentRegistry::resolveArcher(QcMobDefinition &mob) const
-{
-    // An archer whose projectile no pack has fights in melee like other hostile creatures, and a
-    // held item no pack has is not shown (decision E-426).
-    QStringList warnings;
-    if (mob.ai == QcMobDefinition::Ai::Archer && !projectile(mob.archer.projectile)) {
-        warnings.append(u"mob '%1': no projectile '%2'; it fights in melee"_s.arg(mob.name, mob.archer.projectile));
-        mob.ai = QcMobDefinition::Ai::Hostile;
-    }
-    // A choice with a projectile or effect no pack has is left out (decision E-623).
-    const auto unknown = [this](const QcArcherDefinition::Choice &choice) { return !projectile(choice.projectile) || !effect(choice.unlessTargetHas); };
-    for (const QcArcherDefinition::Choice &choice : std::as_const(mob.archer.choices)) {
-        if (unknown(choice)) {
-            warnings.append(u"mob '%1': no projectile '%2' or effect '%3'; the choice is left out"_s.arg(mob.name, choice.projectile, choice.unlessTargetHas));
-        }
-    }
-    mob.archer.choices.removeIf(unknown);
-    const std::optional<QcItemId> held = mob.heldItem.isEmpty() ? std::nullopt : itemId(mob.heldItem);
-    if (!mob.heldItem.isEmpty() && !held) {
-        warnings.append(u"mob '%1': no item '%2' to hold"_s.arg(mob.name, mob.heldItem));
-        mob.heldItem.clear();
-    }
-    mob.heldItemId = held.value_or(qcNoItem);
     return warnings;
 }
 
@@ -443,10 +437,12 @@ QStringList QcContentRegistry::resolveProjectiles()
             warnings.append(u"item '%1': 'throwable' without a projectile; it is not thrown"_s.arg(item.name));
             item.throwable.reset();
         }
-        warnings.append(checkProjectileUses(item));
-        warnings.append(resolveFishing(*this, item));
+        warnings.append(item.settleProjectileUses());
+        ResolvedFishing fishing = resolveFishing(*this, item);
+        item.fishing = std::move(fishing.fishing);
+        warnings.append(fishing.warnings);
     }
-    for (QcProjectileDefinition &kind : m_projectiles) {
+    m_projectiles.updateAll([this, &warnings](QcProjectileDefinition &kind) {
         if (!itemId(kind.item)) {
             warnings.append(u"projectile '%1': no item '%2'"_s.arg(kind.name, kind.item));
         }
@@ -464,128 +460,116 @@ QStringList QcContentRegistry::resolveProjectiles()
             }
             return !known || !named;
         });
-    }
+    });
     return warnings;
 }
 
 void QcContentRegistry::registerMob(QcMobDefinition definition)
 {
-    registerByName(m_mobs, m_mobIndex, std::move(definition));
+    m_mobs.set(std::move(definition));
 }
 
 std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
 {
-    const auto it = m_mobIndex.constFind(name);
-    if (it == m_mobIndex.constEnd()) {
-        return std::nullopt;
-    }
-    return int(*it);
+    const std::optional<qsizetype> index = m_mobs.indexOf(name);
+    return index ? std::optional<int>(int(*index)) : std::nullopt;
 }
 
 void QcContentRegistry::registerModel(QcModelDefinition definition)
 {
-    registerByName(m_models, m_modelIndex, std::move(definition));
+    m_models.set(std::move(definition));
 }
 
 const QcModelDefinition *QcContentRegistry::model(const QString &name) const
 {
-    const auto it = m_modelIndex.constFind(name);
-    return it == m_modelIndex.constEnd() ? nullptr : &m_models[*it];
+    return m_models.find(name);
 }
 
 void QcContentRegistry::registerAppearance(QcAppearanceDefinition definition)
 {
-    registerByName(m_appearances, m_appearanceIndex, std::move(definition));
+    m_appearances.set(std::move(definition));
 }
 
 const QcAppearanceDefinition *QcContentRegistry::appearance(const QString &name) const
 {
-    const auto it = m_appearanceIndex.constFind(name);
-    return it == m_appearanceIndex.constEnd() ? nullptr : &m_appearances[*it];
+    return m_appearances.find(name);
 }
 
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
 {
-    registerByName(m_recipes, m_recipeIndex, std::move(definition));
+    m_recipes.set(std::move(definition));
 }
 
 std::optional<qsizetype> QcContentRegistry::recipeIndex(const QString &name) const
 {
-    const auto it = m_recipeIndex.constFind(name);
-    if (it == m_recipeIndex.constEnd()) {
-        return std::nullopt;
-    }
-    return *it;
+    return m_recipes.indexOf(name);
 }
 
 void QcContentRegistry::registerSmeltingRecipe(QcSmeltingRecipe recipe)
 {
-    registerByName(m_smeltingRecipes, m_smeltingIndex, std::move(recipe));
+    m_smeltingRecipes.set(std::move(recipe));
 }
 
 const QcSmeltingRecipe *QcContentRegistry::smeltingRecipe(const QString &category, const QString &inputItem) const
 {
-    const auto it = std::ranges::find_if(m_smeltingRecipes, [&](const QcSmeltingRecipe &recipe) {
+    const auto it = std::ranges::find_if(m_smeltingRecipes.items(), [&](const QcSmeltingRecipe &recipe) {
         return recipe.inputItem == inputItem && recipe.category == category;
     });
-    return it == m_smeltingRecipes.end() ? nullptr : &*it;
+    return it == m_smeltingRecipes.items().end() ? nullptr : &*it;
 }
 
 void QcContentRegistry::registerSound(QcSoundDefinition definition)
 {
-    registerByName(m_sounds, m_soundIndex, std::move(definition));
+    m_sounds.set(std::move(definition));
 }
 
 const QcSoundDefinition *QcContentRegistry::sound(const QString &name) const
 {
-    const auto it = m_soundIndex.constFind(name);
-    return it == m_soundIndex.constEnd() ? nullptr : &m_sounds[*it];
+    return m_sounds.find(name);
 }
 
 const QcBiomeDefinition *QcContentRegistry::biome(const QString &name) const
 {
-    const auto it = m_biomeIndex.constFind(name);
-    return it == m_biomeIndex.constEnd() ? nullptr : &m_biomes[*it];
+    return m_biomes.find(name);
 }
 
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
-    registerByName(m_biomes, m_biomeIndex, std::move(definition));
+    m_biomes.set(std::move(definition));
 }
 
 void QcContentRegistry::registerHandbookChapter(QcHandbookChapter chapter)
 {
-    registerByName(m_handbookChapters, m_handbookChapterIndex, std::move(chapter));
+    m_handbookChapters.set(std::move(chapter));
 }
 
 void QcContentRegistry::registerFeature(QcFeatureDefinition definition)
 {
-    registerByName(m_features, m_featureIndex, std::move(definition));
+    m_features.set(std::move(definition));
 }
 
 void QcContentRegistry::registerOre(QcOreDefinition definition)
 {
-    registerByName(m_ores, m_oreIndex, std::move(definition));
+    m_ores.set(std::move(definition));
 }
 
 void QcContentRegistry::registerVillageStyle(QcVillageStyleDefinition style)
 {
-    const auto latest = std::ranges::max_element(m_villageStyles, {}, &QcVillageStyleDefinition::registered);
-    style.registered = latest == m_villageStyles.end() ? 1 : latest->registered + 1;
-    registerByName(m_villageStyles, m_villageStyleIndex, std::move(style));
+    const auto latest = std::ranges::max_element(m_villageStyles.items(), {}, &QcVillageStyleDefinition::registered);
+    style.registered = latest == m_villageStyles.items().end() ? 1 : latest->registered + 1;
+    m_villageStyles.set(std::move(style));
 }
 
 const QcVillageStyleDefinition *QcContentRegistry::villageStyle(const QString &name) const
 {
-    const auto it = m_villageStyleIndex.constFind(name);
-    return it == m_villageStyleIndex.constEnd() ? nullptr : &m_villageStyles[*it];
+    return m_villageStyles.find(name);
 }
 
 std::optional<int> QcContentRegistry::villagerOfStyle(const QString &style) const
 {
     const QcVillageStyleDefinition *definition = villageStyle(style);
     const std::optional<int> type = mobIndex(definition && !definition->villager.isEmpty() ? definition->villager : m_villageSettings.villager);
-    return type && m_mobs[*type].villager ? type : std::nullopt;
+    return type && m_mobs.items()[*type].villager ? type : std::nullopt;
 }
 
 QcVillageGolemSettings QcContentRegistry::golemOfStyle(const QString &style) const
@@ -596,40 +580,32 @@ QcVillageGolemSettings QcContentRegistry::golemOfStyle(const QString &style) con
 
 void QcContentRegistry::registerVillagerSettings(QcVillagerSettings settings)
 {
-    registerByName(m_villagerSettings, m_villagerSettingsIndex, std::move(settings));
+    m_villagerSettings.set(std::move(settings));
 }
 
 const QcVillagerSettings *QcContentRegistry::villagerSettings(const QString &name) const
 {
-    const auto it = m_villagerSettingsIndex.constFind(name);
-    return it == m_villagerSettingsIndex.constEnd() ? nullptr : &m_villagerSettings[*it];
+    return m_villagerSettings.find(name);
 }
 
 void QcContentRegistry::removeVillagerSettings(const QString &name)
 {
-    const auto it = m_villagerSettingsIndex.constFind(name);
-    if (it == m_villagerSettingsIndex.constEnd()) {
-        return;
-    }
-    m_villagerSettings.removeAt(*it);
-    m_villagerSettingsIndex.clear();
-    for (qsizetype index = 0; index < m_villagerSettings.size(); ++index) {
-        m_villagerSettingsIndex.insert(m_villagerSettings[index].name, index);
-    }
+    m_villagerSettings.remove(name);
 }
 
 const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) const
 {
     static const QcVillagerSettings none;
-    if (mobType < 0 || mobType >= m_mobs.size()) {
+    if (mobType < 0 || mobType >= m_mobs.items().size()) {
         return none;
     }
 
     // The index finish() keeps, while it still names these settings; else by name.
-    const QcMobDefinition &mob = m_mobs[mobType];
+    const QcMobDefinition &mob = m_mobs.items()[mobType];
+    const QList<QcVillagerSettings> &all = m_villagerSettings.items();
     const qsizetype index = mob.villagerSettingsIndex;
-    if (index >= 0 && index < m_villagerSettings.size() && m_villagerSettings[index].name == mob.villagerSettings) {
-        return m_villagerSettings[index];
+    if (index >= 0 && index < all.size() && all[index].name == mob.villagerSettings) {
+        return all[index];
     }
     const QcVillagerSettings *settings = villagerSettings(mob.villagerSettings);
     return settings ? *settings : none;
@@ -637,62 +613,57 @@ const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) con
 
 void QcContentRegistry::registerProfession(QcVillagerProfession profession)
 {
-    registerByName(m_professions, m_professionIndex, std::move(profession));
+    m_professions.set(std::move(profession));
 }
 
 const QcVillagerProfession *QcContentRegistry::profession(const QString &name) const
 {
-    const auto it = m_professionIndex.constFind(name);
-    return it == m_professionIndex.constEnd() ? nullptr : &m_professions[*it];
+    return m_professions.find(name);
 }
 
 void QcContentRegistry::registerProjectile(QcProjectileDefinition projectile)
 {
-    registerByName(m_projectiles, m_projectileIndex, std::move(projectile));
+    m_projectiles.set(std::move(projectile));
 }
 
 const QcProjectileDefinition *QcContentRegistry::projectile(const QString &name) const
 {
-    const auto it = m_projectileIndex.constFind(name);
-    return it == m_projectileIndex.constEnd() ? nullptr : &m_projectiles[*it];
+    return m_projectiles.find(name);
 }
 
 void QcContentRegistry::registerEffect(QcEffectDefinition effect)
 {
-    registerByName(m_effects, m_effectIndex, std::move(effect));
+    m_effects.set(std::move(effect));
 }
 
 const QcEffectDefinition *QcContentRegistry::effect(const QString &name) const
 {
-    const auto it = m_effectIndex.constFind(name);
-    return it == m_effectIndex.constEnd() ? nullptr : &m_effects[*it];
+    return m_effects.find(name);
 }
 
 void QcContentRegistry::registerTradeSet(QcTradeSet set)
 {
-    registerByName(m_tradeSets, m_tradeSetIndex, std::move(set));
+    m_tradeSets.set(std::move(set));
 }
 
 void QcContentRegistry::registerStructure(QcStructureDefinition structure)
 {
-    registerByName(m_structures, m_structureIndex, std::move(structure));
+    m_structures.set(std::move(structure));
 }
 
 const QcStructureDefinition *QcContentRegistry::structure(const QString &name) const
 {
-    const auto it = m_structureIndex.constFind(name);
-    return it != m_structureIndex.constEnd() ? &m_structures[*it] : nullptr;
+    return m_structures.find(name);
 }
 
 void QcContentRegistry::registerCommandMacro(QcCommandMacroDefinition macro)
 {
-    registerByName(m_commandMacros, m_commandMacroIndex, std::move(macro));
+    m_commandMacros.set(std::move(macro));
 }
 
 const QcCommandMacroDefinition *QcContentRegistry::commandMacro(const QString &name) const
 {
-    const auto it = m_commandMacroIndex.constFind(name);
-    return it != m_commandMacroIndex.constEnd() ? &m_commandMacros[*it] : nullptr;
+    return m_commandMacros.find(name);
 }
 
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const

@@ -79,28 +79,6 @@ QStringList filesIn(const QString &directory, const QString &filter)
     return files;
 }
 
-template<typename Parser, typename Register>
-void loadDefinitions(const QString &directory, const QString &packNamespace, QStringList &warnings, Parser parse,
-                     Register registerDefinition)
-{
-    const QStringList files = filesIn(directory, u"*.json"_s);
-    for (const QString &path : files) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
-        if (!json) {
-            warnings.append(json.error());
-            continue;
-        }
-
-        auto definition = parse(*json, packNamespace);
-        if (!definition) {
-            warnings.append(u"%1: %2"_s.arg(path, definition.error()));
-            continue;
-        }
-
-        registerDefinition(std::move(*definition));
-    }
-}
-
 } // namespace
 
 bool QcContentPackLoader::isValidPackId(const QString &id)
@@ -209,58 +187,156 @@ qint64 QcContentPackLoader::measure(const QString &directory)
 
 namespace {
 
-void loadTextures(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+// Loads the content folders of one pack into a registry and collects the warnings about the
+// entries it leaves out.
+class PackReader
 {
-    const QStringList textureFiles = filesIn(root.filePath(u"textures"_s), u"*.json"_s);
-    for (const QString &path : textureFiles) {
-        const QcResult<QJsonObject> json = readJsonObject(path);
-        const QcResult<QcTextureDefinition> texture =
-            json ? QcContentParser::parseProceduralTexture(*json, packId) : QcResult<QcTextureDefinition>(qcError(json.error()));
-        if (!texture) {
-            warnings.append(u"%1: %2"_s.arg(path, texture.error()));
-            continue;
-        }
-
-        registry.registerTexture(*texture);
+public:
+    PackReader(const QString &directory, QString packId, QcContentRegistry &registry)
+        : m_root(directory)
+        , m_packId(std::move(packId))
+        , m_registry(registry)
+    {
     }
 
-    const QStringList pngFiles = filesIn(root.filePath(u"textures"_s), u"*.png"_s);
-    for (const QString &path : pngFiles) {
-        const QcResult<QByteArray> png = QcContentPackLoader::readPackFile(path);
-        if (!png) {
-            warnings.append(png.error());
+    void loadTextures();
+    void loadShapes();
+    void loadBlocks();
+    void loadLaterDefinitions();
+    void loadWorldgenSettings();
+    void loadWeatherSettings();
+    void loadTranslations();
+
+    [[nodiscard]] const QStringList &warnings() const { return m_warnings; }
+
+private:
+    template<typename Parser, typename Register>
+    void loadDefinitions(const QString &folder, Parser parse, Register registerDefinition);
+    template<typename Parse>
+    [[nodiscard]] auto readSettingsFile(const QString &file, Parse parse)
+        -> std::optional<typename std::invoke_result_t<Parse, const QJsonObject &, const QString &>::value_type>;
+    void loadVillageStyles();
+    void applyStyleExtensions(const QList<std::pair<QString, QJsonObject>> &extensions);
+
+    QDir m_root;
+    QString m_packId;
+    QcContentRegistry &m_registry;
+    QStringList m_warnings;
+};
+
+// The definitions in <folder>/*.json, each parsed and handed to `registerDefinition`; a register
+// function that returns a QcStatus reports a refused definition as a warning.
+template<typename Parser, typename Register>
+void PackReader::loadDefinitions(const QString &folder, Parser parse, Register registerDefinition)
+{
+    const QStringList files = filesIn(m_root.filePath(folder), u"*.json"_s);
+    for (const QString &path : files) {
+        const QcResult<QJsonObject> json = readJsonObject(path);
+        if (!json) {
+            m_warnings.append(json.error());
             continue;
         }
 
-        const QString name = QcContentNames::qualify(QFileInfo(path).completeBaseName(), packId);
-        if (name.isEmpty()) {
-            warnings.append(u"%1: invalid texture file name"_s.arg(path));
+        auto definition = parse(*json, m_packId);
+        if (!definition) {
+            m_warnings.append(u"%1: %2"_s.arg(path, definition.error()));
             continue;
         }
 
-        registry.registerTexture({name, {}, *png});
+        using Registered = std::invoke_result_t<Register, decltype(std::move(*definition))>;
+        if constexpr (std::is_void_v<Registered>) {
+            registerDefinition(std::move(*definition));
+        } else if (const Registered registered = registerDefinition(std::move(*definition)); !registered) {
+            m_warnings.append(registered.error());
+        }
     }
 }
 
-void loadBlocks(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+// <file> (relative to the pack, e.g. worldgen/terrain.json): one settings object of the pack,
+// parsed; std::nullopt (with a warning when it is broken) when there is none. Neither the file nor
+// its folder may be a symbolic link.
+template<typename Parse>
+auto PackReader::readSettingsFile(const QString &file, Parse parse)
+    -> std::optional<typename std::invoke_result_t<Parse, const QJsonObject &, const QString &>::value_type>
 {
-    const QStringList blockFiles = filesIn(root.filePath(u"blocks"_s), u"*.json"_s);
+    const QString path = m_root.filePath(file);
+    const QString folder = QFileInfo(file).path();
+    if ((folder != u"."_s && QFileInfo(m_root.filePath(folder)).isSymLink()) || QFileInfo(path).isSymLink() || !QFileInfo::exists(path)) {
+        return std::nullopt;
+    }
+
+    const QcResult<QJsonObject> json = readJsonObject(path);
+    if (!json) {
+        m_warnings.append(u"%1: %2"_s.arg(path, json.error()));
+        return std::nullopt;
+    }
+
+    auto parsed = parse(*json, m_packId);
+    if (!parsed) {
+        m_warnings.append(u"%1: %2"_s.arg(path, parsed.error()));
+        return std::nullopt;
+    }
+    return std::move(*parsed);
+}
+
+void PackReader::loadTextures()
+{
+    const QStringList textureFiles = filesIn(m_root.filePath(u"textures"_s), u"*.json"_s);
+    for (const QString &path : textureFiles) {
+        const QcResult<QJsonObject> json = readJsonObject(path);
+        const QcResult<QcTextureDefinition> texture =
+            json ? QcContentParser::parseProceduralTexture(*json, m_packId) : QcResult<QcTextureDefinition>(qcError(json.error()));
+        if (!texture) {
+            m_warnings.append(u"%1: %2"_s.arg(path, texture.error()));
+            continue;
+        }
+
+        m_registry.registerTexture(*texture);
+    }
+
+    const QStringList pngFiles = filesIn(m_root.filePath(u"textures"_s), u"*.png"_s);
+    for (const QString &path : pngFiles) {
+        const QcResult<QByteArray> png = QcContentPackLoader::readPackFile(path);
+        if (!png) {
+            m_warnings.append(png.error());
+            continue;
+        }
+
+        const QString name = QcContentNames::qualify(QFileInfo(path).completeBaseName(), m_packId);
+        if (name.isEmpty()) {
+            m_warnings.append(u"%1: invalid texture file name"_s.arg(path));
+            continue;
+        }
+
+        m_registry.registerTexture({name, {}, *png});
+    }
+}
+
+void PackReader::loadShapes()
+{
+    loadDefinitions(u"shapes"_s, QcContentParser::parseShape,
+                    [this](QcShapeDefinition shape) { return m_registry.registerShape(std::move(shape)); });
+}
+
+void PackReader::loadBlocks()
+{
+    const QStringList blockFiles = filesIn(m_root.filePath(u"blocks"_s), u"*.json"_s);
     for (const QString &path : blockFiles) {
         const QcResult<QJsonObject> json = readJsonObject(path);
         if (!json) {
-            warnings.append(json.error());
+            m_warnings.append(json.error());
             continue;
         }
 
-        QcResult<QcBlockDefinition> block = QcContentParser::parseBlock(*json, packId);
+        QcResult<QcBlockDefinition> block = QcContentParser::parseBlock(*json, m_packId);
         if (!block) {
-            warnings.append(u"%1: %2"_s.arg(path, block.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, block.error()));
             continue;
         }
 
-        const QcResult<QcBlockId> id = registry.registerBlock(std::move(*block));
+        const QcResult<QcBlockId> id = m_registry.registerBlock(std::move(*block));
         if (!id) {
-            warnings.append(u"%1: %2"_s.arg(path, id.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, id.error()));
         }
     }
 }
@@ -282,156 +358,129 @@ QString laterDefinition(const QList<std::pair<QString, QJsonObject>> &extensions
 // Applies the extensions of a pack in file-name order, each over the style as the earlier packs and
 // files left it. An extension of an unknown style is left out with a warning (which names the
 // later file of the pack that defines it, if one does).
-void applyStyleExtensions(const QList<std::pair<QString, QJsonObject>> &extensions, const QString &packId, QcContentRegistry &registry,
-                          QStringList &warnings)
+void PackReader::applyStyleExtensions(const QList<std::pair<QString, QJsonObject>> &extensions)
 {
     for (qsizetype index = 0; index < extensions.size(); ++index) {
         const auto &[path, json] = extensions[index];
-        const QcResult<QString> baseName = QcVillageParser::extendedStyle(json, packId);
-        const QcVillageStyleDefinition *base = baseName ? registry.villageStyle(*baseName) : nullptr;
+        const QcResult<QString> baseName = QcVillageParser::extendedStyle(json, m_packId);
+        const QcVillageStyleDefinition *base = baseName ? m_registry.villageStyle(*baseName) : nullptr;
         if (!baseName) {
-            warnings.append(u"%1: %2"_s.arg(path, baseName.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, baseName.error()));
             continue;
         }
         if (!base) {
-            const QString later = laterDefinition(extensions, index, *baseName, packId);
-            warnings.append(later.isEmpty() ? u"%1: 'extends' names no village style: '%2'"_s.arg(path, json.value(u"extends"_s).toString())
-                                            : u"%1: 'extends' names '%2', which the later file %3 defines; rename this file to sort after it"_s
-                                                  .arg(path, *baseName, later));
+            const QString later = laterDefinition(extensions, index, *baseName, m_packId);
+            m_warnings.append(later.isEmpty() ? u"%1: 'extends' names no village style: '%2'"_s.arg(path, json.value(u"extends"_s).toString())
+                                              : u"%1: 'extends' names '%2', which the later file %3 defines; rename this file to sort after it"_s
+                                                    .arg(path, *baseName, later));
             continue;
         }
 
-        QcResult<QcVillageStyleDefinition> style = QcVillageParser::extendVillageStyle(json, packId, *base);
+        QcResult<QcVillageStyleDefinition> style = QcVillageParser::extendVillageStyle(json, m_packId, *base);
         if (!style) {
-            warnings.append(u"%1: %2"_s.arg(path, style.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, style.error()));
             continue;
         }
-        registry.registerVillageStyle(std::move(*style));
+        m_registry.registerVillageStyle(std::move(*style));
     }
 }
 
 // The village styles of a pack (decision E-421): first the files without "extends" (each replaces a
 // style of the same name whole), then those with it (applyStyleExtensions).
-void loadVillageStyles(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+void PackReader::loadVillageStyles()
 {
     QList<std::pair<QString, QJsonObject>> extensions;
-    const QStringList files = filesIn(root.filePath(u"villages"_s), u"*.json"_s);
+    const QStringList files = filesIn(m_root.filePath(u"villages"_s), u"*.json"_s);
     for (const QString &path : files) {
         const QcResult<QJsonObject> json = readJsonObject(path);
         if (!json) {
-            warnings.append(json.error());
+            m_warnings.append(json.error());
         } else if (json->contains(u"extends"_s)) {
             extensions.append({path, *json});
-        } else if (QcResult<QcVillageStyleDefinition> style = QcVillageParser::parseVillageStyle(*json, packId)) {
-            registry.registerVillageStyle(std::move(*style));
+        } else if (QcResult<QcVillageStyleDefinition> style = QcVillageParser::parseVillageStyle(*json, m_packId)) {
+            m_registry.registerVillageStyle(std::move(*style));
         } else {
-            warnings.append(u"%1: %2"_s.arg(path, style.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, style.error()));
         }
     }
-    applyStyleExtensions(extensions, packId, registry, warnings);
+    applyStyleExtensions(extensions);
 }
 
 // Definition folders loaded after the blocks, in this order.
-void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+void PackReader::loadLaterDefinitions()
 {
-    loadDefinitions(root.filePath(u"items"_s), packId, warnings, QcContentParser::parseItem,
-                    [&registry, &warnings](QcItemDefinition item) {
+    loadDefinitions(u"items"_s, QcContentParser::parseItem,
+                    [this](QcItemDefinition item) -> QcStatus {
                         const QString name = item.name;
-                        if (const QcResult<QcItemId> id = registry.registerItem(std::move(item)); !id) {
-                            warnings.append(u"item %1: %2"_s.arg(name, id.error()));
+                        if (const QcResult<QcItemId> id = m_registry.registerItem(std::move(item)); !id) {
+                            return qcError(u"item %1: %2"_s.arg(name, id.error()));
                         }
+                        return {};
                     });
 
-    loadDefinitions(root.filePath(u"recipes"_s), packId, warnings, QcContentParser::parseRecipe,
-                    [&registry](QcRecipeDefinition recipe) { registry.registerRecipe(std::move(recipe)); });
-    loadDefinitions(root.filePath(u"smelting"_s), packId, warnings, QcContentParser::parseSmeltingRecipe,
-                    [&registry](QcSmeltingRecipe recipe) { registry.registerSmeltingRecipe(std::move(recipe)); });
-    loadDefinitions(root.filePath(u"parts"_s), packId, warnings, QcContentParser::parsePartFamily,
-                    [&registry](QcPartFamily family) { registry.registerPartFamily(std::move(family)); });
-    loadDefinitions(root.filePath(u"materials"_s), packId, warnings, QcContentParser::parseMaterial,
-                    [&registry](QcMaterialDefinition material) { registry.registerMaterial(std::move(material)); });
-    loadDefinitions(root.filePath(u"mobs"_s), packId, warnings, QcContentParser::parseMob,
-                    [&registry](QcMobDefinition mob) { registry.registerMob(std::move(mob)); });
-    loadDefinitions(root.filePath(u"models"_s), packId, warnings, QcContentParser::parseModel,
-                    [&registry](QcModelDefinition model) { registry.registerModel(std::move(model)); });
-    loadDefinitions(root.filePath(u"appearance"_s), packId, warnings, QcContentParser::parseAppearance,
-                    [&registry](QcAppearanceDefinition appearance) { registry.registerAppearance(std::move(appearance)); });
-    loadDefinitions(root.filePath(u"sounds"_s), packId, warnings, QcContentParser::parseSound,
-                    [&registry](QcSoundDefinition sound) { registry.registerSound(std::move(sound)); });
-    loadDefinitions(root.filePath(u"biomes"_s), packId, warnings, QcContentParser::parseBiome,
-                    [&registry](QcBiomeDefinition biome) { registry.registerBiome(std::move(biome)); });
-    loadDefinitions(root.filePath(u"features"_s), packId, warnings, QcContentParser::parseFeature,
-                    [&registry](QcFeatureDefinition feature) { registry.registerFeature(std::move(feature)); });
-    loadDefinitions(root.filePath(u"ores"_s), packId, warnings, QcContentParser::parseOre,
-                    [&registry](QcOreDefinition ore) { registry.registerOre(std::move(ore)); });
-    loadDefinitions(root.filePath(u"handbook"_s), packId, warnings, QcContentParser::parseHandbookChapter,
-                    [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
-    loadDefinitions(root.filePath(u"structures"_s), packId, warnings, QcContentParser::parseStructure,
-                    [&registry](QcStructureDefinition structure) { registry.registerStructure(std::move(structure)); });
-    loadVillageStyles(root, packId, registry, warnings);
-    loadDefinitions(root.filePath(u"professions"_s), packId, warnings, QcContentParser::parseProfession,
-                    [&registry](QcVillagerProfession profession) { registry.registerProfession(std::move(profession)); });
-    loadDefinitions(root.filePath(u"villagers"_s), packId, warnings, QcContentParser::parseVillagerSettings,
-                    [&registry](QcVillagerSettings settings) { registry.registerVillagerSettings(std::move(settings)); });
-    loadDefinitions(root.filePath(u"trades"_s), packId, warnings, QcContentParser::parseTradeSet,
-                    [&registry](QcTradeSet set) { registry.registerTradeSet(std::move(set)); });
-    loadDefinitions(root.filePath(u"projectiles"_s), packId, warnings, QcContentParser::parseProjectile,
-                    [&registry](QcProjectileDefinition projectile) { registry.registerProjectile(std::move(projectile)); });
-    loadDefinitions(root.filePath(u"effects"_s), packId, warnings, QcContentParser::parseEffect,
-                    [&registry](QcEffectDefinition effect) { registry.registerEffect(std::move(effect)); });
-    loadDefinitions(root.filePath(u"loot"_s), packId, warnings, QcContentParser::parseLootTable,
-                    [&registry](QcLootTableDefinition table) { registry.lootTables().add(std::move(table)); });
-    loadDefinitions(root.filePath(u"commands"_s), packId, warnings, QcContentParser::parseCommandMacro,
-                    [&registry](QcCommandMacroDefinition macro) { registry.registerCommandMacro(std::move(macro)); });
+    loadDefinitions(u"recipes"_s, QcContentParser::parseRecipe,
+                    [this](QcRecipeDefinition recipe) { m_registry.registerRecipe(std::move(recipe)); });
+    loadDefinitions(u"smelting"_s, QcContentParser::parseSmeltingRecipe,
+                    [this](QcSmeltingRecipe recipe) { m_registry.registerSmeltingRecipe(std::move(recipe)); });
+    loadDefinitions(u"parts"_s, QcContentParser::parsePartFamily,
+                    [this](QcPartFamily family) { m_registry.registerPartFamily(std::move(family)); });
+    loadDefinitions(u"materials"_s, QcContentParser::parseMaterial,
+                    [this](QcMaterialDefinition material) { m_registry.registerMaterial(std::move(material)); });
+    loadDefinitions(u"mobs"_s, QcContentParser::parseMob,
+                    [this](QcMobDefinition mob) { m_registry.registerMob(std::move(mob)); });
+    loadDefinitions(u"models"_s, QcContentParser::parseModel,
+                    [this](QcModelDefinition model) { m_registry.registerModel(std::move(model)); });
+    loadDefinitions(u"appearance"_s, QcContentParser::parseAppearance,
+                    [this](QcAppearanceDefinition appearance) { m_registry.registerAppearance(std::move(appearance)); });
+    loadDefinitions(u"sounds"_s, QcContentParser::parseSound,
+                    [this](QcSoundDefinition sound) { m_registry.registerSound(std::move(sound)); });
+    loadDefinitions(u"biomes"_s, QcContentParser::parseBiome,
+                    [this](QcBiomeDefinition biome) { m_registry.registerBiome(std::move(biome)); });
+    loadDefinitions(u"features"_s, QcContentParser::parseFeature,
+                    [this](QcFeatureDefinition feature) { m_registry.registerFeature(std::move(feature)); });
+    loadDefinitions(u"ores"_s, QcContentParser::parseOre,
+                    [this](QcOreDefinition ore) { m_registry.registerOre(std::move(ore)); });
+    loadDefinitions(u"handbook"_s, QcContentParser::parseHandbookChapter,
+                    [this](QcHandbookChapter chapter) { m_registry.registerHandbookChapter(std::move(chapter)); });
+    loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
+                    [this](QcStructureDefinition structure) { m_registry.registerStructure(std::move(structure)); });
+    loadVillageStyles();
+    loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
+                    [this](QcVillagerProfession profession) { m_registry.registerProfession(std::move(profession)); });
+    loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
+                    [this](QcVillagerSettings settings) { m_registry.registerVillagerSettings(std::move(settings)); });
+    loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
+                    [this](QcTradeSet set) { m_registry.registerTradeSet(std::move(set)); });
+    loadDefinitions(u"projectiles"_s, QcContentParser::parseProjectile,
+                    [this](QcProjectileDefinition projectile) { m_registry.registerProjectile(std::move(projectile)); });
+    loadDefinitions(u"effects"_s, QcContentParser::parseEffect,
+                    [this](QcEffectDefinition effect) { m_registry.registerEffect(std::move(effect)); });
+    loadDefinitions(u"loot"_s, QcContentParser::parseLootTable,
+                    [this](QcLootTableDefinition table) { m_registry.lootTables().add(std::move(table)); });
+    loadDefinitions(u"commands"_s, QcContentParser::parseCommandMacro,
+                    [this](QcCommandMacroDefinition macro) { m_registry.registerCommandMacro(std::move(macro)); });
 }
 
-// <file> (relative to the pack, e.g. worldgen/terrain.json): one settings object of the pack,
-// parsed; std::nullopt (with a warning when it is broken) when there is none. Neither the file nor
-// its folder may be a symbolic link.
-template<typename Parse>
-auto readSettingsFile(const QDir &root, const QString &file, const QString &packId, QStringList &warnings, Parse parse)
-    -> std::optional<typename std::invoke_result_t<Parse, const QJsonObject &, const QString &>::value_type>
+void PackReader::loadWorldgenSettings()
 {
-    const QString path = root.filePath(file);
-    const QString folder = QFileInfo(file).path();
-    if ((folder != u"."_s && QFileInfo(root.filePath(folder)).isSymLink()) || QFileInfo(path).isSymLink() || !QFileInfo::exists(path)) {
-        return std::nullopt;
+    if (auto terrain = readSettingsFile(u"worldgen/terrain.json"_s, QcContentParser::parseTerrainSettings)) {
+        m_registry.setTerrainSettings(std::move(*terrain));
     }
-
-    const QcResult<QJsonObject> json = readJsonObject(path);
-    if (!json) {
-        warnings.append(u"%1: %2"_s.arg(path, json.error()));
-        return std::nullopt;
+    if (auto showcase = readSettingsFile(u"worldgen/showcase.json"_s, QcContentParser::parseShowcase)) {
+        m_registry.setShowcase(std::move(*showcase));
     }
-
-    auto parsed = parse(*json, packId);
-    if (!parsed) {
-        warnings.append(u"%1: %2"_s.arg(path, parsed.error()));
-        return std::nullopt;
-    }
-    return std::move(*parsed);
-}
-
-void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
-{
-    if (auto terrain = readSettingsFile(root, u"worldgen/terrain.json"_s, packId, warnings, QcContentParser::parseTerrainSettings)) {
-        registry.setTerrainSettings(std::move(*terrain));
-    }
-    if (auto showcase = readSettingsFile(root, u"worldgen/showcase.json"_s, packId, warnings, QcContentParser::parseShowcase)) {
-        registry.setShowcase(std::move(*showcase));
-    }
-    if (auto flat = readSettingsFile(root, u"worldgen/flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
-        registry.setFlatWorld(std::move(*flat));
+    if (auto flat = readSettingsFile(u"worldgen/flat.json"_s, QcContentParser::parseFlat)) {
+        m_registry.setFlatWorld(std::move(*flat));
     }
     // Read over the earlier packs' settings: a pack changes the fields it gives (decision E-421).
-    const auto villageSettings = [&registry](const QJsonObject &json, const QString &pack) {
-        return QcVillageParser::parseVillageSettings(json, pack, registry.villageSettings());
+    const auto villageSettings = [this](const QJsonObject &json, const QString &pack) {
+        return QcVillageParser::parseVillageSettings(json, pack, m_registry.villageSettings());
     };
-    if (auto villages = readSettingsFile(root, u"worldgen/villages.json"_s, packId, warnings, villageSettings)) {
-        registry.setVillageSettings(std::move(*villages));
+    if (auto villages = readSettingsFile(u"worldgen/villages.json"_s, villageSettings)) {
+        m_registry.setVillageSettings(std::move(*villages));
     }
-    if (auto empty = readSettingsFile(root, u"worldgen/void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
-        registry.setVoidWorld(std::move(*empty));
+    if (auto empty = readSettingsFile(u"worldgen/void.json"_s, QcContentParser::parseVoid)) {
+        m_registry.setVoidWorld(std::move(*empty));
     }
 }
 
@@ -451,20 +500,20 @@ QString unfitSnowLayer(const QcContentRegistry &registry, const QString &name)
     return {};
 }
 
-void loadWeatherSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+void PackReader::loadWeatherSettings()
 {
-    if (QFileInfo::exists(root.filePath(u"villagers.json"_s))) {
-        warnings.append(u"%1: moved to villagers/<name>.json and professions/<name>.json; the file is left out"_s.arg(root.filePath(u"villagers.json"_s)));
+    if (QFileInfo::exists(m_root.filePath(u"villagers.json"_s))) {
+        m_warnings.append(u"%1: moved to villagers/<name>.json and professions/<name>.json; the file is left out"_s.arg(m_root.filePath(u"villagers.json"_s)));
     }
-    auto weather = readSettingsFile(root, u"weather.json"_s, packId, warnings, QcContentParser::parseWeather);
+    auto weather = readSettingsFile(u"weather.json"_s, QcContentParser::parseWeather);
     if (!weather) {
         return;
     }
-    if (const QString unfit = unfitSnowLayer(registry, weather->snow.layer); !unfit.isEmpty()) {
-        warnings.append(u"%1: %2"_s.arg(root.filePath(u"weather.json"_s), unfit));
+    if (const QString unfit = unfitSnowLayer(m_registry, weather->snow.layer); !unfit.isEmpty()) {
+        m_warnings.append(u"%1: %2"_s.arg(m_root.filePath(u"weather.json"_s), unfit));
         return;
     }
-    registry.setWeather(std::move(*weather));
+    m_registry.setWeather(std::move(*weather));
 }
 
 // Whether the new keys of a language file keep all languages within QcStreamLimits::maxTranslations
@@ -478,15 +527,15 @@ void loadWeatherSettings(const QDir &root, const QString &packId, QcContentRegis
     return registry.translationTotal() + added <= qsizetype(QcStreamLimits::maxTranslations);
 }
 
-void loadTranslations(const QDir &root, QcContentRegistry &registry, QStringList &warnings)
+void PackReader::loadTranslations()
 {
-    const QStringList languageFiles = filesIn(root.filePath(u"lang"_s), u"*.json"_s);
+    const QStringList languageFiles = filesIn(m_root.filePath(u"lang"_s), u"*.json"_s);
     for (const QString &path : languageFiles) {
         const QcResult<QJsonObject> json = readJsonObject(path);
         const QcResult<QHash<QString, QString>> entries =
             json ? QcContentParser::parseTranslations(*json) : QcResult<QHash<QString, QString>>(qcError(json.error()));
         if (!entries) {
-            warnings.append(u"%1: %2"_s.arg(path, entries.error()));
+            m_warnings.append(u"%1: %2"_s.arg(path, entries.error()));
             continue;
         }
 
@@ -496,37 +545,31 @@ void loadTranslations(const QDir &root, QcContentRegistry &registry, QStringList
         if (language.endsWith(suffix)) {
             language.chop(suffix.size());
         }
-        if (fitsTranslationBudget(registry, language, *entries)) {
-            registry.addTranslations(language, *entries);
+        if (fitsTranslationBudget(m_registry, language, *entries)) {
+            m_registry.addTranslations(language, *entries);
         } else {
-            warnings.append(u"%1: more than %2 translations in all languages"_s.arg(path).arg(QcStreamLimits::maxTranslations));
+            m_warnings.append(u"%1: more than %2 translations in all languages"_s.arg(path).arg(QcStreamLimits::maxTranslations));
         }
     }
 }
 
 } // namespace
 
-QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, QcContentRegistry &registry,
-                                                      QStringList &warnings)
+QcResult<QcLoadedPack> QcContentPackLoader::load(const QString &directory, QcContentRegistry &registry)
 {
     QcResult<QcContentPackInfo> info = readManifest(directory);
     if (!info) {
-        return info;
+        return qcError(info.error());
     }
 
-    const QDir root(directory);
-    loadTextures(root, info->id, registry, warnings);
-    loadDefinitions(root.filePath(u"shapes"_s), info->id, warnings, QcContentParser::parseShape,
-                    [&registry, &warnings](QcShapeDefinition shape) {
-                        if (const QcStatus registered = registry.registerShape(std::move(shape)); !registered) {
-                            warnings.append(registered.error());
-                        }
-                    });
-    loadBlocks(root, info->id, registry, warnings);
-    loadLaterDefinitions(root, info->id, registry, warnings);
-    loadWorldgenSettings(root, info->id, registry, warnings);
-    loadWeatherSettings(root, info->id, registry, warnings);
-    loadTranslations(root, registry, warnings);
+    PackReader pack(directory, info->id, registry);
+    pack.loadTextures();
+    pack.loadShapes();
+    pack.loadBlocks();
+    pack.loadLaterDefinitions();
+    pack.loadWorldgenSettings();
+    pack.loadWeatherSettings();
+    pack.loadTranslations();
 
-    return info;
+    return QcLoadedPack{std::move(*info), pack.warnings()};
 }

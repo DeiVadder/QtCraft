@@ -201,12 +201,13 @@ private:
         }
     }
 
-    // Only the lit cells next to the shadowed part of the volume can spread light further.
-    void queueSkyEdge(QList<std::array<int, 3>> &queue, const QList<int> &skyTop, int x, int z) const
+    // Only the lit cells next to the shadowed part of the volume can spread light further; queues
+    // those of column (x, z) for the flood.
+    void queueSkyEdge(const QList<int> &skyTop, int x, int z)
     {
         const int top = skyTop[z * extent + x];
         for (int y = std::max(m_minY, top + 1); y <= std::min(m_maxY, top + 2); ++y) {
-            queue.append({x, y, z});
+            m_queue.append({x, y, z});
         }
 
         for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}) {
@@ -217,7 +218,7 @@ private:
             }
             const int neighbourTop = skyTop[nz * extent + nx];
             for (int y = std::max(m_minY, top + 3); y <= std::min(m_maxY, neighbourTop); ++y) {
-                queue.append({x, y, z});
+                m_queue.append({x, y, z});
             }
         }
     }
@@ -225,12 +226,13 @@ private:
     void propagate(const QList<int> &skyTop)
     {
         // Breadth-first flood from lit cells into darker ones; each step costs at least one level.
-        QList<std::array<int, 3>> queue;
         for (int z = 0; z < extent; ++z) {
             for (int x = 0; x < extent; ++x) {
-                queueSkyEdge(queue, skyTop, x, z);
+                queueSkyEdge(skyTop, x, z);
             }
         }
+
+        QList<std::array<int, 3>> &queue = m_queue;
 
         for (qsizetype head = 0; head < queue.size(); ++head) {
             const auto [x, y, z] = queue[head];
@@ -260,6 +262,8 @@ private:
                 }
             }
         }
+        // The queue is only needed while flooding.
+        m_queue = {};
     }
 
     int m_minY = 0;
@@ -268,6 +272,8 @@ private:
     QList<quint8> m_levels;
     QList<quint8> m_opacity;
     QList<quint8> m_blockedFaces;
+    // Cells of the sky light flood (only while the constructor floods).
+    QList<std::array<int, 3>> m_queue;
     // Without light snapshots in the input the block light is flooded here.
     bool m_floodsBlockLight = false;
     QcLightVolume m_blockLight;
@@ -314,21 +320,21 @@ struct Output
     QList<quint32> &indices;
     QList<quint32> *runs = nullptr;
     int runKind = 0;
-};
 
-// Six more indices of the kind `kind` in the runs: the last run grows or a new one starts (the
-// first run is water, possibly empty).
-void noteRun(QList<quint32> &runs, int kind)
-{
-    if (runs.isEmpty() && kind == 1) {
-        runs.append(0);
+    // Six more indices of the kind `runKind` in the runs: the last run grows or a new one starts
+    // (the first run is water, possibly empty).
+    void noteRun() const
+    {
+        if (runs->isEmpty() && runKind == 1) {
+            runs->append(0);
+        }
+        if (!runs->isEmpty() && (runs->size() - 1) % 2 == runKind) {
+            runs->back() += 6;
+        } else {
+            runs->append(6);
+        }
     }
-    if (!runs.isEmpty() && (runs.size() - 1) % 2 == kind) {
-        runs.back() += 6;
-    } else {
-        runs.append(6);
-    }
-}
+};
 
 // Normal and material written into the surface byte of a quad's vertices (decision E-390).
 struct Surface
@@ -358,7 +364,7 @@ void appendQuad(const Output &out, const std::array<QcBlockVertex, 4> &corners, 
         out.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
     }
     if (out.runs) {
-        noteRun(*out.runs, out.runKind);
+        out.noteRun();
     }
 }
 
@@ -522,7 +528,7 @@ private:
             if (!neighbour || QcBlockRenderTable::hides(block.entry, quad.rect, quad.face, m_table.entry(*neighbour))) {
                 return;
             }
-            shadePartOfFace(corners, quad, open, shade);
+            corners = shadedPartOfFace(quad, open, shade);
         } else {
             // Inside the cell: lit like the open space in front of the face.
             const float sky = std::max(ownSky, float(m_light.sky(open.x, open.y, open.z))) / maxLevel;
@@ -545,9 +551,11 @@ private:
         appendQuad(outputFor(block.entry, quad.boundary ? open : block.cell), corners, false, {quad.face, block.entry.material});
     }
 
-    // Values of the full face, interpolated at the corners of the part `quad`.
-    void shadePartOfFace(std::array<QcBlockVertex, 4> &corners, const QcBlockRenderTable::Quad &quad, Cell open, float shade) const
+    // Corners of the part `quad` with shading and light of the full face interpolated at them (their
+    // positions and texture coordinates are left at zero).
+    [[nodiscard]] std::array<QcBlockVertex, 4> shadedPartOfFace(const QcBlockRenderTable::Quad &quad, Cell open, float shade) const
     {
+        std::array<QcBlockVertex, 4> corners{};
         const FaceCorners full = cornersOf(open, quad.face);
         const auto [axisA, axisB] = QcBlockRenderTable::axes(quad.face);
         for (std::size_t corner = 0; corner < 4; ++corner) {
@@ -568,6 +576,7 @@ private:
             corners[corner].setSkyLight(sky);
             corners[corner].setBlockLight(block);
         }
+        return corners;
     }
 
     // A liquid's surface sinks with its level unless liquid lies on top of it.

@@ -156,12 +156,13 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
     QcMsg::ChunkLabels m;
     qint32 x = 0;
     qint32 z = 0;
-    quint32 count = 0;
     stream >> x >> z;
     m.pos = {x, z};
-    if (!QcStreamLimits::readCount(stream, quint32(QcWorldLabel::maxPerChunk), count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcWorldLabel::maxPerChunk));
+    if (!countRead) {
         return qcError(u"Too many labels"_s);
     }
+    const quint32 count = *countRead;
 
     for (quint32 i = 0; i < count; ++i) {
         QcWorldLabel label;
@@ -219,10 +220,11 @@ void encode(QDataStream &stream, const QcMsg::BlockBatch &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockBatch>, QDataStream &stream)
 {
     QcMsg::BlockBatch m;
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcMsg::BlockBatch::maxUpdates, count)) {
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::BlockBatch::maxUpdates);
+    if (!countRead) {
         return qcError(u"Invalid block batch"_s);
     }
+    const quint32 count = *countRead;
     m.updates.reserve(count);
     for (quint32 index = 0; index < count && stream.status() == QDataStream::Ok; ++index) {
         QcMsg::BlockUpdate update;

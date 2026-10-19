@@ -26,8 +26,10 @@ void printLines(const QStringList &lines)
     }
 }
 
-bool readConfig(const QCommandLineParser &parser, const Options &options, QcServerConfig &config, int &timeLimit)
+std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Options &options)
 {
+    RunConfig run;
+    QcServerConfig &config = run.server;
     bool seedOk = false;
     config.seed = parser.value(options.seed).toLongLong(&seedOk);
     config.worldName = parser.value(options.world);
@@ -36,7 +38,7 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
     bool viewOk = false;
     config.viewDistance = std::clamp(parser.value(options.view).toInt(&viewOk), 1, 32);
     bool timeOk = false;
-    timeLimit = parser.value(options.time).toInt(&timeOk);
+    run.timeLimit = parser.value(options.time).toInt(&timeOk);
 
     bool modeOk = true;
     if (parser.isSet(options.gameMode)) {
@@ -54,7 +56,8 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
         }
         spawnOk = xOk && zOk;
     }
-    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk && modeOk && QcWorldGenerators::isKnown(config.generator);
+    const bool valid = seedOk && viewOk && timeOk && run.timeLimit > 0 && spawnOk && modeOk && QcWorldGenerators::isKnown(config.generator);
+    return valid ? std::optional<RunConfig>(std::move(run)) : std::nullopt;
 }
 
 QString dataDirectory(const QCommandLineParser &parser, const Options &options)
@@ -64,7 +67,6 @@ QString dataDirectory(const QCommandLineParser &parser, const Options &options)
 
 [[nodiscard]] std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options)
 {
-    QStringList warnings;
     QString modsDirectory = parser.value(options.mods);
     if (modsDirectory.isEmpty()) {
         modsDirectory = parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"mods"_s) : QcModLoader::defaultDirectory();
@@ -73,12 +75,12 @@ QString dataDirectory(const QCommandLineParser &parser, const Options &options)
         modsDirectory.clear();
     }
 
-    QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
-    for (const QString &warning : std::as_const(warnings)) {
+    QcModLoader::Loaded content = QcModLoader::load(modsDirectory);
+    for (const QString &warning : QcModLoader::warningsOf(content)) {
         printError(u"content warning: "_s + warning);
     }
     if (!content) {
-        printError(u"Cannot load content: "_s + content.error());
+        printError(u"Cannot load content: "_s + content.error().error);
         return std::nullopt;
     }
     return std::move(*content);
@@ -86,8 +88,9 @@ QString dataDirectory(const QCommandLineParser &parser, const Options &options)
 
 namespace {
 
-// The options given on the command line over the file's values; false on a bad number.
-bool applyServerOptions(const QCommandLineParser &parser, const Options &options, QcServerSettings &settings)
+// `settings` (the file's values) with the options given on the command line; none on a bad number.
+[[nodiscard]] std::optional<QcServerSettings> withServerOptions(const QCommandLineParser &parser, const Options &options,
+                                                                QcServerSettings settings)
 {
     bool ok = true;
     const auto number = [&](const QCommandLineOption &option, int low, int high, int fallback) {
@@ -103,16 +106,14 @@ bool applyServerOptions(const QCommandLineParser &parser, const Options &options
     settings.port = quint16(number(options.port, 0, 65535, settings.port));
     settings.maxPlayers = number(options.maxPlayers, 1, QcServerSettings::maxPlayersLimit, settings.maxPlayers);
     settings.viewDistance = number(options.view, 1, QcServerSettings::maxViewDistance, settings.viewDistance);
-    const auto text = [&](const QCommandLineOption &option, QString &value) {
-        if (parser.isSet(option)) {
-            value = parser.value(option);
-        }
+    const auto text = [&parser](const QCommandLineOption &option, const QString &fallback) {
+        return parser.isSet(option) ? parser.value(option) : fallback;
     };
-    text(options.bind, settings.bindAddress);
-    text(options.password, settings.password);
-    text(options.motd, settings.motd);
-    text(options.world, settings.world);
-    text(options.generator, settings.worldType);
+    settings.bindAddress = text(options.bind, settings.bindAddress);
+    settings.password = text(options.password, settings.password);
+    settings.motd = text(options.motd, settings.motd);
+    settings.world = text(options.world, settings.world);
+    settings.worldType = text(options.generator, settings.worldType);
     if (parser.isSet(options.gameMode)) {
         settings.defaultGameMode = QcGameModes::parse(parser.value(options.gameMode));
         ok = ok && settings.defaultGameMode.has_value();
@@ -122,7 +123,10 @@ bool applyServerOptions(const QCommandLineParser &parser, const Options &options
     if (parser.isSet(options.seed)) {
         settings.seed = parser.value(options.seed).toLongLong(&seedValid);
     }
-    return ok && seedValid;
+    if (!ok || !seedValid) {
+        return std::nullopt;
+    }
+    return settings;
 }
 
 } // namespace
@@ -151,15 +155,16 @@ bool applyServerOptions(const QCommandLineParser &parser, const Options &options
     if (const QString password = qEnvironmentVariable("QTCRAFT_SERVER_PASSWORD"); !password.isEmpty()) {
         settings->password = password;
     }
-    if (!applyServerOptions(parser, options, *settings)) {
+    std::optional<QcServerSettings> given = withServerOptions(parser, options, std::move(*settings));
+    if (!given) {
         printError(u"Invalid number in the server options"_s);
         return std::nullopt;
     }
-    if (const QcResult<QHostAddress> address = settings->address(); !address) {
+    if (const QcResult<QHostAddress> address = given->address(); !address) {
         printError(address.error());
         return std::nullopt;
     }
-    return std::move(*settings);
+    return given;
 }
 
 } // namespace QcHeadlessOptions

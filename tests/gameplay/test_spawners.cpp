@@ -347,9 +347,8 @@ private slots:
         record.spawners = {{{3, 20, 5}, u"qtcraft:zombie"_s, 123, false}, {{4, 21, 5}, u"mod:ghost"_s, 7, true}};
         record.furnished = true;
         const QByteArray blob = QcBlockEntityCodec::encode(record, *m_content);
-        QStringList warnings;
-        QSet<QString> reported;
-        const QcResult<QcBlockEntityRecord> read = QcBlockEntityCodec::decode(blob, {0, 0}, *m_content, warnings, reported);
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> read = QcBlockEntityCodec::decode(blob, {0, 0}, *m_content, warnings);
         QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
         QCOMPARE(read->spawners, record.spawners);
         QVERIFY(read->furnished);
@@ -357,7 +356,7 @@ private slots:
         // An entry of a later version (2) with a field this one does not know comes back unchanged.
         const QcBlockPos pos{6, 30, 2};
         const QByteArray future = futureBlob(pos);
-        const QcResult<QcBlockEntityRecord> later = QcBlockEntityCodec::decode(future, {0, 0}, *m_content, warnings, reported);
+        const QcResult<QcBlockEntityRecord> later = QcBlockEntityCodec::decode(future, {0, 0}, *m_content, warnings);
         QVERIFY2(later.has_value(), qPrintable(later ? QString() : later.error()));
         QCOMPARE(later->spawners.size(), 1);
         QCOMPARE(later->spawners[0], (QcSpawners::Entry{pos, u"qtcraft:zombie"_s, 9, true}));

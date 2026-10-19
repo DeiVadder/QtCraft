@@ -165,4 +165,22 @@ struct QcVillagePlan
         return x0 + QcWorld::chunkSize - 1 >= minX - margin && x0 <= maxX + margin && z0 + QcWorld::chunkSize - 1 >= minZ - margin
                && z0 <= maxZ + margin;
     }
+
+    // The lists of a finished plan without the room they grew into: the generator caches hundreds of
+    // plans (QcVillageGenerator::cachedPlans).
+    void squeeze()
+    {
+        pieces.squeeze();
+        roads.squeeze();
+        branchRoads.squeeze();
+        thresholds.squeeze();
+        runs.squeeze();
+        steps.squeeze();
+        decks.squeeze();
+        wetland.wet.squeeze();
+        wetland.dry.squeeze();
+        beds.squeeze();
+        workstations.squeeze();
+        mobs.squeeze();
+    }
 };

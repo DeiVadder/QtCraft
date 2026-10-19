@@ -190,6 +190,10 @@ private:
     void depart(const QcCreature &mob, Departure why);
     // Erases the mob at `it` after its departure.
     void erase(QList<QcCreature>::iterator it, Departure why);
+    // The id a loaded creature keeps: its saved one, unless `taken` has it. A copied chunk (by hand
+    // or by a tool) brings creatures whose ids are already in the world; the copy gets the next free
+    // one, so every id names one creature.
+    [[nodiscard]] quint64 uniqueUid(quint64 saved, const QSet<quint64> &taken);
     // Takes the mobs `leaves` gives a reason for out of the store: first all of them are found, then
     // the listeners hear of each in store order, then they are erased.
     void departWhere(const std::function<std::optional<Departure>(const QcCreature &mob)> &leaves);

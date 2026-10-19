@@ -103,7 +103,7 @@ private:
     static void run(Machines &machines, const QcTestWorld &world, int ticks)
     {
         for (int i = 0; i < ticks; ++i) {
-            machines.rules.tick(machines.entities, world, dt);
+            [[maybe_unused]] const QList<QcBlockPos> changed = machines.rules.tick(machines.entities, world, dt);
         }
     }
 

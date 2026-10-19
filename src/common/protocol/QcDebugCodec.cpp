@@ -33,21 +33,24 @@ bool validTimes(const QcMsg::ServerDebug &m)
     return true;
 }
 
-bool readRecentTicks(QDataStream &stream, QList<float> &ticks)
+[[nodiscard]] std::optional<QList<float>> readRecentTicks(QDataStream &stream)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcMsg::ServerDebug::maxRecentTicks, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::ServerDebug::maxRecentTicks);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
+    QList<float> ticks;
+    ticks.reserve(count);
     for (quint32 i = 0; i < count; ++i) {
         float ms = 0.0f;
         stream >> ms;
         if (!validTime(ms)) {
-            return false;
+            return std::nullopt;
         }
         ticks.append(ms);
     }
-    return true;
+    return ticks;
 }
 
 // A goal is only drawn: one far outside the world moves to its edge instead of reaching the
@@ -59,25 +62,27 @@ QcVec3 clampedToWorld(const QcVec3 &goal)
     return {std::clamp(goal.x, -horizontal, horizontal), std::clamp(goal.y, -vertical, 2.0 * vertical), std::clamp(goal.z, -horizontal, horizontal)};
 }
 
-bool readGoals(QDataStream &stream, QList<QcMsg::MobGoal> &goals)
+[[nodiscard]] std::optional<QList<QcMsg::MobGoal>> readGoals(QDataStream &stream)
 {
     using QcProtocolCodec::operator>>;
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcMsg::ServerDebug::maxGoals, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, QcMsg::ServerDebug::maxGoals);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
+    QList<QcMsg::MobGoal> goals;
     for (quint32 i = 0; i < count; ++i) {
         QcMsg::MobGoal goal;
         quint8 kind = 0;
         stream >> goal.entityId >> kind >> goal.goal;
         if (kind >= QcMsg::MobGoal::kindCount || !QcProtocolCodec::isFinite(goal.goal)) {
-            return false;
+            return std::nullopt;
         }
         goal.kind = QcMsg::MobGoal::Kind(kind);
         goal.goal = clampedToWorld(goal.goal);
         goals.append(goal);
     }
-    return true;
+    return goals;
 }
 
 } // namespace
@@ -130,9 +135,11 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
         stream >> m.phaseMeanMs[phase] >> m.phaseMaxMs[phase];
     }
     stream >> m.tickMeanMs >> m.tickMaxMs >> m.lateMeanMs >> m.lateMaxMs;
-    if (!validTimes(m) || !readRecentTicks(stream, m.recentTickMs)) {
+    std::optional<QList<float>> recentTicks = validTimes(m) ? readRecentTicks(stream) : std::nullopt;
+    if (!recentTicks) {
         return qcError(u"Invalid tick times"_s);
     }
+    m.recentTickMs = std::move(*recentTicks);
 
     stream >> m.tick >> m.skippedTicks >> m.loadedChunks >> m.players >> m.mobs >> m.items >> m.fallingBlocks >> m.pendingBlockUpdates
         >> m.waitingBlockUpdates >> m.biome >> m.worldType;
@@ -143,9 +150,11 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
         return qcError(u"Invalid server debug text"_s);
     }
 
-    if (!readGoals(stream, m.goals)) {
+    std::optional<QList<QcMsg::MobGoal>> goals = readGoals(stream);
+    if (!goals) {
         return qcError(u"Invalid creature goals"_s);
     }
+    m.goals = std::move(*goals);
     return m;
 }
 

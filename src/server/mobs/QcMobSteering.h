@@ -2,6 +2,8 @@
 
 #include "server/mobs/QcMobManager.h"
 
+#include <optional>
+
 // How creatures of QcMobManager pick a player to chase and strike it.
 namespace QcMobSteering {
 
@@ -50,13 +52,20 @@ const QcMobManager::PlayerView *provoker(const QcCreature &mob, const QcMobDefin
 bool calm(const QcCreature &mob, const QcMobDefinition &definition, double worldTime);
 // A leaper on the ground leaps at a target within its range now and then; true when it leapt.
 bool leap(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target, QRandomGenerator &random);
-// Turns towards a target in melee (inMelee) and strikes it when the attack is ready.
-void strike(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
-            QList<QcMobManager::PlayerHit> &hits);
+// Turns towards a target in melee (inMelee) and strikes it when the attack is ready; the hit, if any.
+[[nodiscard]] std::optional<QcMobManager::PlayerHit> strike(QcCreature &mob, const QcMobDefinition &definition,
+                                                            const QcMobManager::PlayerView &target);
 // A hostile creature without AI of its own (a crowd, QcMobCrowd) strikes the nearest player in
 // melee (inMelee) when its attack is ready, so a knot of creatures is no safe place (a neutral one only
-// the player that provoked it); true when it struck.
-bool strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
-                    const QcBlockAccess &world, QList<QcMobManager::PlayerHit> &hits);
+// the player that provoked it).
+struct Melee
+{
+    // A player was in melee: the creature struck at him.
+    bool struck = false;
+    // The blow, when it landed.
+    std::optional<QcMobManager::PlayerHit> hit;
+};
+[[nodiscard]] Melee strikeAdjacent(QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
+                                   const QcBlockAccess &world);
 
 } // namespace QcMobSteering

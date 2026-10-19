@@ -155,7 +155,7 @@ private slots:
             ++counts[plan->style][plan->layout];
             ++totals[plan->style];
         }
-        const QcVillageStyles styles(*m_content, nullptr);
+        const QcVillageStyles styles(*m_content);
         QSet<QString> seen;
         for (auto it = totals.cbegin(); it != totals.cend(); ++it) {
             const QcVillageStyle *style = styles.named(it.key());

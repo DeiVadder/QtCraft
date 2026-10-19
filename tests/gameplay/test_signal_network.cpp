@@ -87,8 +87,7 @@ private:
     qsizetype settle(QcTestWorld &world, const std::vector<QcBlockPos> &seeds) const
     {
         const QcSignalPower power(world, m_table);
-        QcDustNetwork::Result result;
-        QcDustNetwork(power).recompute(seeds, result);
+        const QcDustNetwork::Result result = QcDustNetwork(power).recompute(seeds);
         for (const QcDustNetwork::Change &change : std::as_const(result.changes)) {
             world.set(change.pos, change.state);
         }
@@ -316,13 +315,12 @@ private slots:
     void brokenLinksSwitchTheBlockOff()
     {
         // The base game's links are all valid.
-        QStringList warnings;
-        QVERIFY(QcBaseContent::load(warnings).has_value());
-        QVERIFY2(!warnings.join(u'\n').contains(u"circuits"_s), qPrintable(warnings.join(u'\n')));
+        const QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
+        QVERIFY(base.has_value());
+        QVERIFY2(!base->warnings.join(u'\n').contains(u"circuits"_s), qPrintable(base->warnings.join(u'\n')));
 
         QcContentRegistry content;
-        warnings.clear();
-        QVERIFY(QcBaseContent::loadInto(content, warnings));
+        QVERIFY(QcBaseContent::loadInto(content));
         const auto copy = [&content](const char *from, const char *name) {
             QcBlockDefinition block = content.block(*content.blockId(QLatin1StringView(from)));
             block.name = QLatin1StringView(name);
@@ -343,7 +341,7 @@ private slots:
             QVERIFY(content.registerBlock(block));
         }
 
-        warnings = content.finish();
+        const QStringList warnings = content.finish();
         for (const char *name : {"test:no_head", "test:same_active", "test:missing", "test:other_states"}) {
             QCOMPARE(content.block(*content.blockId(QLatin1StringView(name))).signal.kind, QcSignalKind::None);
             QVERIFY2(warnings.join(u'\n').contains(QLatin1StringView(name)), name);

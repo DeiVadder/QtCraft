@@ -1,6 +1,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcHandbookRules.h"
 #include "server/signal/QcCircuitComponents.h"
 
@@ -17,9 +18,8 @@ namespace {
 
 std::shared_ptr<const QcContentRegistry> loadBase()
 {
-    QStringList warnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> loaded = QcBaseContent::load(warnings);
-    return loaded ? std::shared_ptr<const QcContentRegistry>(*loaded) : nullptr;
+    QcResult<QcBaseContent::Loaded> loaded = QcTestUtil::baseContent();
+    return loaded ? std::shared_ptr<const QcContentRegistry>(loaded->registry) : nullptr;
 }
 
 const Section *section(const QcHandbookEntry &entry, const QString &title)

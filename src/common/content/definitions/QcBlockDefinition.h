@@ -207,7 +207,7 @@ struct QcBlockDefinition
     double surfaceSpeed = 1.0;
     double surfaceJump = 1.0;
     // How slippery the block is to bodies on it, in the units of the original game (decision E-430):
-    // the default 0.6 grips, ice 0.98; above 0.6 bodies keep their momentum (QcPhysics::stepEntity).
+    // the default 0.6 grips, ice 0.98; above 0.6 bodies keep their momentum (QcEntityMotion::step).
     // Reaches the client.
     double slipperiness = grippingSlipperiness;
     // Touching a block named `hardensWith` (any state, e.g. water) turns this block into

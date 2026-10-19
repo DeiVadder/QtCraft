@@ -9,39 +9,54 @@ QcAudioSettings::QcAudioSettings(QcAudioEngine *audio, QObject *parent)
 {
 }
 
-void QcAudioSettings::changeVolume(double &volume, double requested)
+double QcAudioSettings::checkedVolume(double requested, double current)
 {
-    const double asked = requested;
-    requested = QcGameSettings::clampVolume(requested, volume);
+    const double checked = QcGameSettings::clampVolume(requested, current);
     // The sliders stay inside 0..1; anything else came from outside and is corrected.
-    if (asked != requested) {
-        qCWarning(lcGame) << "Volume" << asked << "is not in 0..1: using" << requested;
+    if (checked != requested) {
+        qCWarning(lcGame) << "Volume" << requested << "is not in 0..1: using" << checked;
     }
-    if (volume != requested) {
-        volume = requested;
+    return checked;
+}
+
+void QcAudioSettings::setMasterVolume(double volume)
+{
+    const double checked = checkedVolume(volume, m_masterVolume);
+    if (m_masterVolume != checked) {
+        m_masterVolume = checked;
         apply();
         emit changed();
     }
 }
 
-void QcAudioSettings::setMasterVolume(double volume)
-{
-    changeVolume(m_masterVolume, volume);
-}
-
 void QcAudioSettings::setEffectsVolume(double volume)
 {
-    changeVolume(m_effectsVolume, volume);
+    const double checked = checkedVolume(volume, m_effectsVolume);
+    if (m_effectsVolume != checked) {
+        m_effectsVolume = checked;
+        apply();
+        emit changed();
+    }
 }
 
 void QcAudioSettings::setMusicVolume(double volume)
 {
-    changeVolume(m_musicVolume, volume);
+    const double checked = checkedVolume(volume, m_musicVolume);
+    if (m_musicVolume != checked) {
+        m_musicVolume = checked;
+        apply();
+        emit changed();
+    }
 }
 
 void QcAudioSettings::setAmbientVolume(double volume)
 {
-    changeVolume(m_ambientVolume, volume);
+    const double checked = checkedVolume(volume, m_ambientVolume);
+    if (m_ambientVolume != checked) {
+        m_ambientVolume = checked;
+        apply();
+        emit changed();
+    }
 }
 
 void QcAudioSettings::setMuted(bool muted)
@@ -53,24 +68,20 @@ void QcAudioSettings::setMuted(bool muted)
     }
 }
 
-void QcAudioSettings::load(const QcGameSettings &settings)
+void QcAudioSettings::load(const QcGameSettings::AudioVolumes &volumes)
 {
-    m_masterVolume = settings.masterVolume;
-    m_effectsVolume = settings.effectsVolume;
-    m_musicVolume = settings.musicVolume;
-    m_ambientVolume = settings.ambientVolume;
-    m_muted = settings.muted;
+    m_masterVolume = volumes.master;
+    m_effectsVolume = volumes.effects;
+    m_musicVolume = volumes.music;
+    m_ambientVolume = volumes.ambient;
+    m_muted = volumes.muted;
     apply();
     emit changed();
 }
 
-void QcAudioSettings::store(QcGameSettings &settings) const
+QcGameSettings::AudioVolumes QcAudioSettings::volumes() const
 {
-    settings.masterVolume = m_masterVolume;
-    settings.effectsVolume = m_effectsVolume;
-    settings.musicVolume = m_musicVolume;
-    settings.ambientVolume = m_ambientVolume;
-    settings.muted = m_muted;
+    return {m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted};
 }
 
 void QcAudioSettings::apply() const

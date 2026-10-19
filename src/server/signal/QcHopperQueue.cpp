@@ -1,15 +1,17 @@
 #include "server/signal/QcHopperQueue.h"
 
-void QcHopperQueue::takeDue(quint64 now, QSet<QcBlockPos> &woken)
+#include <utility>
+
+QSet<QcBlockPos> QcHopperQueue::takeDue(quint64 now)
 {
-    woken.unite(awake);
-    awake.clear();
+    QSet<QcBlockPos> woken = std::exchange(awake, {});
     while (!timers.empty() && timers.begin()->first <= now) {
         for (const QcBlockPos &pos : std::as_const(timers.begin()->second)) {
             woken.insert(pos);
         }
         timers.erase(timers.begin());
     }
+    return woken;
 }
 
 void QcHopperQueue::forgetChunk(QcChunkPos chunk)

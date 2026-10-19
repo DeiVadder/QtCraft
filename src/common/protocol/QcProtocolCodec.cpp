@@ -22,14 +22,17 @@ QDataStream &operator<<(QDataStream &stream, const QcAppearance &value)
     return stream << value.outfit << value.hair << value.skinColor << value.hairColor << value.shirtColor << value.pantsColor << value.cape;
 }
 
-[[nodiscard]] bool readAppearance(QDataStream &stream, QcAppearance &value)
+std::optional<QcAppearance> readAppearance(QDataStream &stream)
 {
+    QcAppearance value;
+
     stream >> value.outfit >> value.hair >> value.skinColor >> value.hairColor >> value.shirtColor >> value.pantsColor >> value.cape;
     for (quint32 *color : {&value.skinColor, &value.hairColor, &value.shirtColor, &value.pantsColor}) {
         *color &= 0xFFFFFFu;
     }
-    return value.outfit.size() <= QcAppearance::maxNameLength && value.hair.size() <= QcAppearance::maxNameLength
-           && value.cape.size() <= QcAppearance::maxNameLength;
+    const bool valid = value.outfit.size() <= QcAppearance::maxNameLength && value.hair.size() <= QcAppearance::maxNameLength
+                       && value.cape.size() <= QcAppearance::maxNameLength;
+    return valid ? std::optional(std::move(value)) : std::nullopt;
 }
 
 void writePos(QDataStream &stream, QcBlockPos pos)
@@ -70,16 +73,19 @@ void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks)
     }
 }
 
-bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks)
+std::optional<QList<QcItemStack>> readStacks(QDataStream &stream)
 {
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, 1024, count)) {
-        return false;
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, 1024);
+    if (!countRead) {
+        return std::nullopt;
     }
+    const quint32 count = *countRead;
+    QList<QcItemStack> stacks;
+    stacks.reserve(count);
     for (quint32 i = 0; i < count; ++i) {
         stacks.append(readStack(stream));
     }
-    return true;
+    return stacks;
 }
 
 void writeEquipment(QDataStream &stream, const QcEquipment &equipment)

@@ -160,8 +160,7 @@ QcNaturalSpawner::NearbyCounts QcNaturalSpawner::countNear(const QcVec3 &centre)
         }
         counts.animalsNear = counts.animalsNear || (isAnimal(kind) && (mob.motion.position - centre).length() < animalSearchDistance);
         if ((mob.motion.position - centre).length() < spawnRadiusMax + 16.0) {
-            counts.of(kind) += 1;
-            counts.perType[mob.type] += 1;
+            counts.add(kind, mob.type);
         }
     }
     return counts;
@@ -266,22 +265,27 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
         return false;
     }
 
-    if (!rule.biomes.isEmpty()) {
-        if (!place.biome) {
-            place.biome = world.generator().biomeAt(place.x, place.z);
-        }
-        if (!rule.biomes.contains(*place.biome)) {
-            return false;
-        }
+    if (!rule.biomes.isEmpty() && !rule.biomes.contains(place.biomeIn(world))) {
+        return false;
     }
     // The light only matters for mobs that shun it.
-    if (rule.maxLight < QcLightEngine::maxLevel) {
-        if (!place.light) {
-            place.light = world.blockLight({place.x, place.floorY + 1, place.z});
-        }
-        return *place.light <= rule.maxLight;
+    return rule.maxLight >= QcLightEngine::maxLevel || place.lightIn(world) <= rule.maxLight;
+}
+
+const QString &QcNaturalSpawner::SpawnPlace::biomeIn(const QcServerWorld &world)
+{
+    if (!biome) {
+        biome = world.generator().biomeAt(x, z);
     }
-    return true;
+    return *biome;
+}
+
+int QcNaturalSpawner::SpawnPlace::lightIn(const QcServerWorld &world)
+{
+    if (!light) {
+        light = world.blockLight({x, floorY + 1, z});
+    }
+    return *light;
 }
 
 QcNaturalSpawner::SpawnCandidate QcNaturalSpawner::pick(const QList<SpawnCandidate> &candidates)
@@ -310,8 +314,7 @@ void QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place,
 
     // The group stands on neighbouring blocks of the same height, never inside walls.
     for (int i = 0; i < group && i < std::ssize(groupOffsets); ++i) {
-        int &count = counts.of(definition);
-        if (count >= cap || (definition.maxCount > 0 && counts.perType.value(chosen.type) >= definition.maxCount)) {
+        if (counts.of(definition) >= cap || (definition.maxCount > 0 && counts.perType.value(chosen.type) >= definition.maxCount)) {
             break;
         }
 
@@ -319,8 +322,7 @@ void QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place,
                              : definition.flying ? spawnFlyer(world, place, i, chosen, nextEntityId)
                                                  : spawnWalker(world, place, i, chosen, nextEntityId);
         if (spawned) {
-            count += 1;
-            counts.perType[chosen.type] += 1;
+            counts.add(definition, chosen.type);
         }
     }
 }

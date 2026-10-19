@@ -92,40 +92,41 @@ void addPartTranslations(QcContentRegistry &registry, const PartSource &source, 
     }
 }
 
-// Registers the block, recipe and translations of one part; problems become warnings.
-void generatePart(QcContentRegistry &registry, const PartSource &source, QStringList &warnings)
+// Registers the block, recipe and translations of one part; the error is the warning about a
+// problem that left it or its recipe out.
+[[nodiscard]] QcStatus generatePart(QcContentRegistry &registry, const PartSource &source)
 {
     const QcMaterialDefinition &material = source.material;
     const QcPartFamily &family = source.family;
     const QString materialNamespace = namespaceOf(material.name);
     const QString name = u"%1:%2_%3"_s.arg(materialNamespace, localPart(material.name), family.suffix);
     if (const std::optional<QcBlockId> existing = registry.blockId(name); existing && registry.block(*existing).partOf.isEmpty()) {
-        return;
+        return {};
     }
 
     const QString translationKey = u"block.%1.%2"_s.arg(materialNamespace, localPart(name).replace(u'/', u'.'));
     QcResult<QcBlockDefinition> block = QcContentParser::parseBlock(partBlockJson(source, name, translationKey), materialNamespace);
     if (!block) {
-        warnings.append(u"material %1, part %2: %3"_s.arg(material.name, family.name, block.error()));
-        return;
+        return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, block.error()));
     }
 
     block->partOf = material.name + u'/' + family.name;
     if (const QcResult<QcBlockId> id = registry.registerBlock(std::move(*block)); !id) {
-        warnings.append(u"material %1, part %2: %3"_s.arg(material.name, family.name, id.error()));
-        return;
+        return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, id.error()));
     }
 
     const QcResult<QcRecipeDefinition> recipe =
         QcContentParser::parseRecipe(QcContentParser::partRecipeJson(family, material.block, name), materialNamespace);
-    if (!recipe) {
-        warnings.append(u"material %1, part %2: %3"_s.arg(material.name, family.name, recipe.error()));
-    } else if (!registry.recipeIndex(recipe->name)) {
+    if (recipe && !registry.recipeIndex(recipe->name)) {
         // A recipe a pack defines under the part's name wins over the generated one.
         registry.registerRecipe(*recipe);
     }
 
     addPartTranslations(registry, source, translationKey);
+    if (!recipe) {
+        return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, recipe.error()));
+    }
+    return {};
 }
 
 } // namespace
@@ -183,8 +184,11 @@ QStringList generate(QcContentRegistry &registry)
 
         const QcBlockDefinition base = registry.block(*baseId);
         for (const QcPartFamily &family : families) {
-            if (family.kinds.contains(material.kind) && !material.exclude.contains(family.name)) {
-                generatePart(registry, {material, family, base}, warnings);
+            if (!family.kinds.contains(material.kind) || material.exclude.contains(family.name)) {
+                continue;
+            }
+            if (const QcStatus part = generatePart(registry, {material, family, base}); !part) {
+                warnings.append(part.error());
             }
         }
     }

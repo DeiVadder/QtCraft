@@ -52,9 +52,10 @@ public:
     };
 
     // Reads <directory>/access.json (an empty directory keeps the lists in memory). Never fails:
-    // problems end up in `warnings`. `initialOperators` (server configuration) are operators too;
-    // invalid names among them are left out with a warning.
-    void open(const QString &directory, const QStringList &initialOperators, QStringList &warnings);
+    // the problems are the warnings it returns. `initialOperators` (server configuration) are
+    // operators too; invalid names among them are left out with a warning. Runs once, on a fresh
+    // list, when the server starts (QcServer).
+    [[nodiscard]] QStringList open(const QString &directory, const QStringList &initialOperators);
 
     // The comparison key of a name: cleaned and case-folded.
     static QString key(const QString &name);
@@ -96,15 +97,25 @@ public:
 private:
     [[nodiscard]] QcStatus write() const;
     [[nodiscard]] QcResult<bool> written(bool changed) const;
-    void read(const QString &path, QStringList &warnings);
+    // The lists of the file at `path`, with the warnings about entries left out; they replace the
+    // empty lists of a fresh object (open() runs once).
+    [[nodiscard]] QStringList read(const QString &path);
     void openDamaged(const QString &path);
-    static void readNames(const QJsonValue &value, QMap<QString, Entry> &names, const QString &list, QStringList &warnings);
+    // The valid names of a list in the file (at most maxEntries) and the warnings about the others.
+    struct Names
+    {
+        QMap<QString, Entry> entries;
+        QStringList warnings;
+    };
+    [[nodiscard]] static Names readNames(const QJsonValue &value, const QString &list);
     // An entry with this fingerprint, or one without any, matches.
     static bool matches(const QString &entryFingerprint, const QString &fingerprint);
     const Ban *banOf(const QString &name, const QString &fingerprint) const;
-    // Adds the entry, or binds a listed one without a fingerprint to the entry's; whether it changed.
-    static bool insertEntry(QMap<QString, Entry> &entries, const Entry &entry);
-    void readBans(const QJsonValue &value, QStringList &warnings);
+    // Adds the entry to the operators or the whitelist, or binds a listed one without a fingerprint to
+    // the entry's; whether it changed.
+    [[nodiscard]] bool insertEntry(List list, const Entry &entry);
+    // Reads the bans of the file; the warnings about bans left out.
+    [[nodiscard]] QStringList readBans(const QJsonValue &value);
 
     QString m_path;
     // Key -> name as given with its fingerprint.

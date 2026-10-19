@@ -37,13 +37,19 @@ struct QcMineshaftBlocks
     int areaY = 1;
     int areaZ = 4;
 
-    // Unresolvable blocks are reported in `warnings`; none then.
-    [[nodiscard]] static std::optional<QcMineshaftBlocks> resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content,
-                                                                  QStringList *warnings);
+    // The blocks of `settings`; none when one is unknown, with a warning each.
+    struct Resolved;
+    [[nodiscard]] static Resolved resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content);
     // The side index of a unit step (north, east, south, west).
     static int sideOf(int dx, int dz);
     bool isOpen(QcBlockId block) const { return open[std::size_t(block)]; }
     bool isLiquid(QcBlockId block) const { return liquid[std::size_t(block)]; }
     bool falls(QcBlockId block) const { return falling[std::size_t(block)]; }
     bool isFoliage(QcBlockId block) const { return foliage[std::size_t(block)]; }
+};
+
+struct QcMineshaftBlocks::Resolved
+{
+    std::optional<QcMineshaftBlocks> blocks;
+    QStringList warnings;
 };

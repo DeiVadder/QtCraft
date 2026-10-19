@@ -63,16 +63,22 @@ private:
     [[nodiscard]] QcStatus startWorld(const QcServerConfig &config);
     // Opens a world and switches the bot to it, replacing the running one only on success.
     [[nodiscard]] QcStatus openWorld(const QcServerConfig &config);
-    bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
+    // The response to a world command (QcControlInterface::ExtensionHandler); none for another command.
+    [[nodiscard]] std::optional<QJsonObject> worldCommand(const QJsonObject &request);
     // --join: the handbook; world commands are refused.
-    bool handleRemoteCommand(const QJsonObject &request, QJsonObject &response);
+    [[nodiscard]] std::optional<QJsonObject> remoteCommand(const QJsonObject &request);
     QJsonArray worldList() const;
-    // The configuration of a new world (`worldCreate`) or a listed one (`worldLoad`); sets the
-    // response's folder.
-    [[nodiscard]] QcResult<QcServerConfig> createdWorld(const QJsonObject &request, QJsonObject &response) const;
-    [[nodiscard]] QcResult<QcServerConfig> listedWorld(const QJsonObject &request, QJsonObject &response) const;
+    // A world to start and its folder.
+    struct WorldChoice
+    {
+        QcServerConfig config;
+        QString folder;
+    };
+    // The configuration of a new world (`worldCreate`) or a listed one (`worldLoad`).
+    [[nodiscard]] QcResult<WorldChoice> createdWorld(const QJsonObject &request) const;
+    [[nodiscard]] QcResult<WorldChoice> listedWorld(const QJsonObject &request) const;
     // The `handbook` command: categories, a category's entries, a search or one entry.
-    void handleHandbookCommand(const QJsonObject &request, QJsonObject &response);
+    [[nodiscard]] QJsonObject handbookCommand(const QJsonObject &request);
     const QcHandbook &handbook(const QString &language);
 
     std::unique_ptr<QcDedicatedServer> m_dedicated;

@@ -2,6 +2,7 @@
 
 #include "app/rendering/QcSectionLightPool.h"
 #include "clientcore/meshing/QcChunkMesh.h"
+#include "clientcore/meshing/QcEntityMesh.h"
 
 #include <QList>
 #include <QVector3D>
@@ -19,6 +20,10 @@ struct QcGpuBuffers
     quint32 indexCount = 0;
     QRhiCommandBuffer::IndexFormat indexFormat = QRhiCommandBuffer::IndexUInt32;
     quint64 bytes() const { return (vertices ? vertices->size() : 0) + (indices ? indices->size() : 0); }
+
+    // Uploads an entity mesh into dynamic buffers that grow on demand and are reused every frame;
+    // nothing to draw without a mesh. The bytes uploaded.
+    [[nodiscard]] quint32 uploadDynamic(QRhi *rhi, QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh);
 };
 
 // The lists of one section on the GPU.
