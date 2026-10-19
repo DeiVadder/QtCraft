@@ -260,7 +260,7 @@ Rectangle {
                                 Layout.preferredWidth: 24
                                 Layout.preferredHeight: 24
                                 visible: !entryRow.header
-                                source: !entryRow.header && entryRow.modelData.icon.length > 0 ? "image://items/" + entryRow.modelData.icon : ""
+                                source: !entryRow.header && entryRow.modelData.icon.length > 0 ? ItemIcons.source(entryRow.modelData.icon, ItemIcons.generation) : ""
                                 sourceSize: Qt.size(24, 24)
                                 smooth: false
                             }
@@ -325,7 +325,7 @@ Rectangle {
                                 Image {
                                     anchors.fill: parent
                                     anchors.margins: 6
-                                    source: parent.visible ? "image://items/" + screen.page.icon : ""
+                                    source: parent.visible ? ItemIcons.source(screen.page.icon, ItemIcons.generation) : ""
                                     sourceSize: Qt.size(44, 44)
                                     smooth: false
                                 }

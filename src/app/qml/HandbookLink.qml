@@ -30,7 +30,7 @@ Rectangle {
             Layout.preferredWidth: 20
             Layout.preferredHeight: 20
             visible: chip.link.icon.length > 0
-            source: visible ? "image://items/" + chip.link.icon : ""
+            source: visible ? ItemIcons.source(chip.link.icon, ItemIcons.generation) : ""
             sourceSize: Qt.size(20, 20)
             smooth: false
         }

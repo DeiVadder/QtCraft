@@ -1,6 +1,7 @@
 #include "app/controllers/QcPlayerController.h"
 
 #include "app/controllers/QcSettingsController.h"
+#include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/gameplay/QcArmour.h"
@@ -18,6 +19,13 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_inventory(new QcInventoryModel(this))
     , m_creativeItems(new QcCreativeItemModel(this))
 {
+    // The craftable recipes carry icon URLs, which change with new icons (decision E-650).
+    connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
+        if (m_parts.session) {
+            updateCraftableRecipes();
+            emit craftingChanged();
+        }
+    });
 }
 
 bool QcPlayerController::creative() const
@@ -261,7 +269,7 @@ void QcPlayerController::updateCraftableRecipes()
         const QcItemDefinition &definition = content->item(*result);
         m_craftableRecipes.append(QVariantMap{{u"recipe"_s, recipe.name},
                                               {u"label"_s, content->translate(definition.translationKey, m_settings.contentLanguage())},
-                                              {u"icon"_s, QString(u"image://items/"_s + definition.name)},
+                                              {u"icon"_s, QcItemIconUrls::url(definition.name)},
                                               {u"count"_s, recipe.resultCount},
                                               {u"possible"_s, possible}});
     }

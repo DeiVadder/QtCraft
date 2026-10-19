@@ -178,8 +178,7 @@ Item {
 
                 Image {
                     anchors.fill: parent
-                    source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
-                    cache: false
+                    source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? ItemIcons.source(hud.game.player.armourIcon, ItemIcons.generation) : ""
                     sourceSize: Qt.size(20, 20)
                     smooth: false
                     opacity: 0.3
@@ -193,8 +192,7 @@ Item {
                     Image {
                         width: plate.width
                         height: plate.height
-                        source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
-                        cache: false
+                        source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? ItemIcons.source(hud.game.player.armourIcon, ItemIcons.generation) : ""
                         sourceSize: Qt.size(20, 20)
                         smooth: false
                     }
@@ -326,8 +324,7 @@ Item {
                 Image {
                     anchors.fill: parent
                     // Icons exist once the content arrived; the provider is asked again then.
-                    source: hud.game.phase === GameController.Phase.Playing ? "image://items/qtcraft:cooked_porkchop" : ""
-                    cache: false
+                    source: hud.game.phase === GameController.Phase.Playing ? ItemIcons.source("qtcraft:cooked_porkchop", ItemIcons.generation) : ""
                     sourceSize: Qt.size(22, 22)
                     smooth: false
                     opacity: 0.3
@@ -343,8 +340,7 @@ Item {
                         anchors.right: parent.right
                         width: drumstick.width
                         height: drumstick.height
-                        source: hud.game.phase === GameController.Phase.Playing ? "image://items/qtcraft:cooked_porkchop" : ""
-                        cache: false
+                        source: hud.game.phase === GameController.Phase.Playing ? ItemIcons.source("qtcraft:cooked_porkchop", ItemIcons.generation) : ""
                         sourceSize: Qt.size(22, 22)
                         smooth: false
                     }
@@ -394,7 +390,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 2
                         visible: effectRow.modelData.icon !== ""
-                        source: visible ? "image://items/" + effectRow.modelData.icon : ""
+                        source: visible ? ItemIcons.source(effectRow.modelData.icon, ItemIcons.generation) : ""
                         smooth: false
                     }
                 }

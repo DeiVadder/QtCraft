@@ -1,5 +1,7 @@
 #include "app/models/QcInventoryModel.h"
 
+#include "app/models/QcItemIconUrls.h"
+
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcMessages.h"
 
@@ -8,6 +10,12 @@ using namespace Qt::StringLiterals;
 QcInventoryModel::QcInventoryModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    // New icons come with new URLs (decision E-650).
+    connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
+        if (rowCount() > 0) {
+            emit dataChanged(index(0), index(rowCount() - 1), {IconRole});
+        }
+    });
 }
 
 int QcInventoryModel::rowCount(const QModelIndex &parent) const
@@ -50,7 +58,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case CountRole:
         return stack.count;
     case IconRole:
-        return QString(u"image://items/"_s + item.name);
+        return QcItemIconUrls::url(item.name);
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
     case TooltipRole:

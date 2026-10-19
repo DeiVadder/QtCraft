@@ -35,7 +35,7 @@ ColumnLayout {
             anchors.fill: parent
             anchors.margins: 6
             visible: cell.link !== null && cell.link.icon.length > 0
-            source: visible ? "image://items/" + cell.link.icon : ""
+            source: visible ? ItemIcons.source(cell.link.icon, ItemIcons.generation) : ""
             sourceSize: Qt.size(32, 32)
             smooth: false
         }

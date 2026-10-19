@@ -49,7 +49,7 @@ SlotScreen {
                         owner: screen
                         // Icons exist once the content arrived.
                         placeholderIcon: screen.game.phase === GameController.Phase.Playing && screen.game.player.armourPlaceholders[index]
-                                         ? "image://items/" + screen.game.player.armourPlaceholders[index] : ""
+                                         ? ItemIcons.source(screen.game.player.armourPlaceholders[index], ItemIcons.generation) : ""
                     }
                 }
 

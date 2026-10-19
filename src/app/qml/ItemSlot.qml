@@ -49,9 +49,6 @@ Rectangle {
         anchors.margins: 10
         visible: slot.slotEmpty && slot.placeholderIcon.length > 0
         opacity: 0.25
-        // Not cached: an icon asked for before the content arrived would stay empty for every other
-        // image of the same item and size (handbook recipes).
-        cache: false
         source: slot.placeholderIcon
         smooth: false
         sourceSize: Qt.size(32, 32)

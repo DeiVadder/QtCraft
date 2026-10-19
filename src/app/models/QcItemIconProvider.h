@@ -4,9 +4,14 @@
 #include <QImage>
 #include <QMutex>
 #include <QQuickImageProvider>
+#include <QSize>
 
-// Serves item icons to QML as image://items/<item name>. Icons are set from the GUI thread when
-// content arrives; Qt Quick may request them from loader threads, hence the mutex.
+#include <utility>
+
+// Serves item icons to QML as image://items/<item name>?g=<generation> (QcItemIconUrls builds the
+// URLs, decision E-650). Icons are set from the GUI thread when content arrives; Qt Quick may request
+// them from loader threads, hence the mutex. Scaled icons are kept per item and size until new icons
+// arrive.
 class QcItemIconProvider : public QQuickImageProvider
 {
     Q_OBJECT
@@ -23,4 +28,5 @@ public:
 private:
     QMutex m_mutex;
     QHash<QString, QImage> m_icons;
+    QHash<std::pair<QString, QSize>, QImage> m_scaled;
 };

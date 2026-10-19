@@ -8,6 +8,8 @@ qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES q
 qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_base_content qc_clientcore)
 # The settings' texture pack controller at model level (decision E-301), from the app's library.
 qc_add_test(test_texture_pack_controller SOURCES client/test_texture_pack_controller.cpp LIBRARIES qc_app_core)
+# Item icons in QML's pixmap cache (decision E-650): new icons reach shown and newly created images.
+qc_add_test(test_item_icon_cache SOURCES client/test_item_icon_cache.cpp LIBRARIES qc_app_core)
 # The hitch window of a texture pack switch in a benchmark run (decision E-332), from the app's library.
 qc_add_test(test_pack_switch_hitch SOURCES client/test_pack_switch_hitch.cpp LIBRARIES qc_app_core)
 qc_add_test(test_camera SOURCES client/test_camera.cpp LIBRARIES qc_clientcore)

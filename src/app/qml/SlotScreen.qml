@@ -118,7 +118,7 @@ Rectangle {
         visible: screen.carriedItem.length > 0
         enabled: false
         carried: true
-        slotIcon: visible ? "image://items/" + screen.carriedItem : ""
+        slotIcon: visible ? ItemIcons.source(screen.carriedItem, ItemIcons.generation) : ""
         slotCount: screen.carriedCount
         slotEmpty: !visible
     }

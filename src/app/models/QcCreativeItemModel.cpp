@@ -1,5 +1,7 @@
 #include "app/models/QcCreativeItemModel.h"
 
+#include "app/models/QcItemIconUrls.h"
+
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
@@ -9,6 +11,12 @@ using namespace Qt::StringLiterals;
 QcCreativeItemModel::QcCreativeItemModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    // New icons come with new URLs (decision E-650).
+    connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
+        if (rowCount() > 0) {
+            emit dataChanged(index(0), index(rowCount() - 1), {IconRole});
+        }
+    });
 }
 
 int QcCreativeItemModel::rowCount(const QModelIndex &parent) const
@@ -30,7 +38,7 @@ QVariant QcCreativeItemModel::data(const QModelIndex &index, int role) const
     case LabelRole:
         return entry.label;
     case IconRole:
-        return QString(u"image://items/"_s + item.name);
+        return QcItemIconUrls::url(item.name);
     case MaxStackRole:
         return item.maxStack;
     default:

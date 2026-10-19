@@ -1,6 +1,7 @@
 #include "app/controllers/QcTradeController.h"
 
 #include "app/controllers/QcSettingsController.h"
+#include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -14,6 +15,12 @@ QcTradeController::QcTradeController(const QcSessionParts &parts, const QcSettin
     , m_parts(parts)
     , m_settings(settings)
 {
+    // The offers carry icon URLs, which change with new icons (decision E-650).
+    connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
+        if (m_parts.session) {
+            update();
+        }
+    });
 }
 
 bool QcTradeController::isOpen() const
@@ -90,7 +97,7 @@ QVariantMap QcTradeController::stackMap(QcItemStack stack) const
         return {{u"icon"_s, QString()}, {u"count"_s, 0}, {u"label"_s, QString()}};
     }
     const QcItemDefinition &item = content->item(stack.item);
-    return {{u"icon"_s, QString(u"image://items/"_s + item.name)},
+    return {{u"icon"_s, QcItemIconUrls::url(item.name)},
             {u"count"_s, stack.count},
             {u"label"_s, content->translate(item.translationKey, m_settings.contentLanguage())}};
 }

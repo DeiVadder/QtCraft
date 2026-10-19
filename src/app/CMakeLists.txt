@@ -54,6 +54,7 @@ target_sources(qc_app_core PRIVATE
     models/QcInventoryModel.h models/QcInventoryModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
+    models/QcItemIconUrls.h models/QcItemIconUrls.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     models/QcUiTheme.h
