@@ -32,6 +32,16 @@ SlotScreen {
         carriedCount = button === Qt.RightButton ? 1 : maxStack;
     }
 
+    // The pad's shoulders switch the catalogue's tabs (decision E-583).
+    function gamepadCommand(command: string): bool {
+        if (command !== "tabPrevious" && command !== "tabNext")
+            return false;
+        const count = catalogue.categoryNames.length;
+        if (count > 0)
+            catalogue.category = (catalogue.category + (command === "tabNext" ? 1 : -1) + count) % count;
+        return true;
+    }
+
     function binClicked() {
         if (pickedSlot >= 0)
             game.player.clearSlot(pickedSlot);
@@ -210,7 +220,8 @@ SlotScreen {
             Label {
                 Layout.maximumWidth: 9 * 54
                 wrapMode: Text.Wrap
-                text: qsTr("Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).").arg(screen.game.settings.keys.labels.inventory)
+                text: screen.game.gamepad.active ? qsTr("A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.")
+                      : qsTr("Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).").arg(screen.game.settings.keys.labels.inventory)
                 color: Theme.textSecondary
             }
         }

@@ -58,6 +58,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
     , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
+    , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render})
     , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, m_screens, *m_startup, m_worldAtlas})
@@ -76,6 +77,8 @@ QcGameController::QcGameController(QObject *parent)
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
     m_gamepad.setSettings(m_settings->gamepad());
+    // The pad asks for screens as their keys do (decision E-580).
+    connect(&m_gamepad, &QcGamepadControls::worldAction, m_input.get(), &QcGameInput::worldAction);
     connect(m_settings.get(), &QcSettingsController::settingsChanged, this, [this] { m_gamepad.setSettings(m_settings->gamepad()); });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
     // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
@@ -150,6 +153,7 @@ void QcGameController::attachWindow(QQuickWindow *window)
         disconnect(m_parts.window, nullptr, this, nullptr);
     }
     m_parts.window = window;
+    m_gamepadUi.setWindow(window);
     if (m_parts.window) {
         connect(m_parts.window, &QQuickWindow::afterAnimating, this, [this] { m_frame.onFrame(); });
         connect(m_parts.window, &QWindow::activeChanged, this, [this] {
@@ -180,7 +184,16 @@ void QcGameController::startGamepads(bool enabled)
     if (enabled && !m_gamepadSource) {
         m_gamepadSource = QcGamepadBackend::create();
         m_gamepad.setSource(m_gamepadSource.get());
+        m_gamepadUi.setSource(m_gamepadSource.get());
     }
+}
+
+void QcGameController::useScriptedGamepad(QcGamepadSource *source)
+{
+    m_gamepad.setSource(source);
+    m_gamepadUi.setSource(source);
+    m_gamepadUi.setIgnoreWindowFocus(true);
+    m_input->setScriptedPad(true);
 }
 
 void QcGameController::setLanguage(const QString &language)

@@ -43,10 +43,13 @@ target_sources(qc_clientcore PRIVATE
 target_sources(qc_clientcore PRIVATE
     input/QcGamepadControls.h input/QcGamepadControls.cpp
     input/QcGamepadMapping.h input/QcGamepadMapping.cpp
+    input/QcGamepadMenuInput.h input/QcGamepadMenuInput.cpp
     input/QcGamepadResponse.h input/QcGamepadResponse.cpp
     input/QcGamepadSource.h input/QcGamepadSource.cpp
     input/QcGamepadState.h input/QcGamepadState.cpp
     input/QcGamepadTypeDetection.h input/QcGamepadTypeDetection.cpp
+    input/QcHotbarRadial.h input/QcHotbarRadial.cpp
+    input/QcSpatialNavigation.h input/QcSpatialNavigation.cpp
     input/QcVirtualGamepadSource.h input/QcVirtualGamepadSource.cpp
 )
 target_sources(qc_clientcore PRIVATE

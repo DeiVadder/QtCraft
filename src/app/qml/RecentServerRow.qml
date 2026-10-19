@@ -15,6 +15,7 @@ Rectangle {
     signal removeRequested(string address)
 
     height: 56
+    activeFocusOnTab: true
     radius: 4
     color: hover.hovered ? Theme.rowHighlight : Theme.scrim
 

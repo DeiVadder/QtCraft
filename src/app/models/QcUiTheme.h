@@ -38,6 +38,7 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor slotPicked MEMBER m_slotPicked CONSTANT FINAL)
     Q_PROPERTY(QColor iconBackdrop MEMBER m_iconBackdrop CONSTANT FINAL)
     Q_PROPERTY(QColor selection MEMBER m_selection CONSTANT FINAL)
+    Q_PROPERTY(QColor focusRing MEMBER m_focusRing CONSTANT FINAL)
     Q_PROPERTY(QColor crosshair MEMBER m_crosshair CONSTANT FINAL)
     Q_PROPERTY(QColor progress MEMBER m_progress CONSTANT FINAL)
     Q_PROPERTY(QColor health MEMBER m_health CONSTANT FINAL)
@@ -91,6 +92,7 @@ private:
     QColor m_slotPicked = QcUiPalette::color(QcUiPalette::Role::SlotPicked);
     QColor m_iconBackdrop = QcUiPalette::color(QcUiPalette::Role::IconBackdrop);
     QColor m_selection = QcUiPalette::color(QcUiPalette::Role::Selection);
+    QColor m_focusRing = QcUiPalette::color(QcUiPalette::Role::FocusRing);
     QColor m_crosshair = QcUiPalette::color(QcUiPalette::Role::Crosshair);
     QColor m_progress = QcUiPalette::color(QcUiPalette::Role::Progress);
     QColor m_health = QcUiPalette::color(QcUiPalette::Role::Health);

@@ -147,7 +147,12 @@
 <context>
     <name>ChatOverlay</name>
     <message>
-        <location filename="../src/app/qml/ChatOverlay.qml" line="26"/>
+        <location filename="../src/app/qml/ChatOverlay.qml" line="28"/>
+        <source>Chat or /command (e.g. /help), Start on the keyboard sends, B cancels</source>
+        <translation>Chat oder /Befehl (z. B. /help), Start auf der Tastatur sendet, B bricht ab</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/ChatOverlay.qml" line="29"/>
         <source>Chat or /command (e.g. /help), Enter to send, Esc to cancel</source>
         <translation>Chat oder /Befehl (z. B. /help), Enter sendet, Esc bricht ab</translation>
     </message>
@@ -161,6 +166,11 @@
     </message>
     <message>
         <location filename="../src/app/qml/ChestScreen.qml" line="61"/>
+        <source>A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.</source>
+        <translation>A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel zwischen diesem Block und dem Inventar verschieben. B schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/ChestScreen.qml" line="62"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen diesem Block und dem Inventar verschieben. %1 oder Esc schließt. Wer den Block abbaut, verstreut seinen Inhalt.</translation>
     </message>
@@ -204,37 +214,42 @@
 <context>
     <name>CreativeScreen</name>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="54"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="64"/>
         <source>Creative items</source>
         <translation>Kreativ-Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="86"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="96"/>
         <source>Search items (name or id) …</source>
         <translation>Gegenstände suchen (Name oder ID) …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="148"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="158"/>
         <source>No item matches the search.</source>
         <translation>Kein Gegenstand passt zur Suche.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="155"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="165"/>
         <source>Items shown: %1</source>
         <translation>Angezeigt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="169"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="179"/>
         <source>Crafting and armour</source>
         <translation>Herstellen und Rüstung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="193"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="203"/>
         <source>Bin: drop a stack here to delete it</source>
         <translation>Mülleimer: hier abgelegte Stapel werden gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="213"/>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="223"/>
+        <source>A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.</source>
+        <translation>A auf einem Item: ein voller Stapel, X: eins, Y: direkt ins Inventar. A auf einem Feld legt es dort ab. LB/RB wechseln die Reiter, B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="224"/>
         <source>Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).</source>
         <translation>Linksklick auf einen Gegenstand: ein voller Stapel, Rechtsklick: einer, Umschalt-Klick: direkt ins Inventar. Ein Klick auf ein Feld legt ihn dort ab. %1 oder Esc schließt (Esc beim Tippen in der Suche).</translation>
     </message>
@@ -387,6 +402,11 @@
     </message>
     <message>
         <location filename="../src/app/qml/FurnaceScreen.qml" line="145"/>
+        <source>Put something to smelt on top and fuel below. A: pick up and put down. X: put down one. Y: move the stack across. B closes.</source>
+        <translation>Oben etwas zum Schmelzen hineinlegen, unten Brennstoff. A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben. B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/FurnaceScreen.qml" line="146"/>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
         <translation>Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. Umschalt-Klick: den Stapel hinüberlegen. %1 oder Esc schließt.</translation>
     </message>
@@ -424,19 +444,37 @@
     </message>
     <message>
         <location filename="../src/app/qml/HandbookScreen.qml" line="497"/>
+        <source>A on a name or an item opens its page. B closes.</source>
+        <translation>A auf einem Namen oder Item öffnet seine Seite. B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="498"/>
         <source>Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.</source>
         <translation>Klicke auf einen Namen oder ein Item, um seine Seite zu öffnen. Rücktaste geht zurück, Esc oder %1 schließt.</translation>
     </message>
 </context>
 <context>
+    <name>HotbarRadial</name>
+    <message>
+        <location filename="../src/app/qml/HotbarRadial.qml" line="69"/>
+        <source>Empty hand</source>
+        <translation>Leere Hand</translation>
+    </message>
+</context>
+<context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="454"/>
+        <location filename="../src/app/qml/Hud.qml" line="457"/>
+        <source>RT: mine/attack  LT: use/place  B: drop  X: pick block  LB/RB or hold ◀: select  Y: inventory  ▼: chat  Start: menu</source>
+        <translation>RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="459"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="456"/>
+        <location filename="../src/app/qml/Hud.qml" line="461"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
@@ -469,21 +507,26 @@
     </message>
     <message>
         <location filename="../src/app/qml/InventoryScreen.qml" line="151"/>
+        <source>A: pick up and put down. X: put down one. Y: move the stack across (on the result: craft as many as possible). B closes.</source>
+        <translation>A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben (auf dem Ergebnis: so viele wie möglich herstellen). B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="152"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across (on the result: craft as many as possible). %1 or Esc closes.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberlegen (auf dem Ergebnis: so oft wie möglich herstellen). %1 oder Esc schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="162"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="163"/>
         <source>Can craft now</source>
         <translation>Jetzt herstellbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="180"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="181"/>
         <source>Collect materials to see recipes here.</source>
         <translation>Sammle Material, um hier Rezepte zu sehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="192"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="193"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
@@ -569,12 +612,12 @@
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="108"/>
+        <location filename="../src/app/qml/Main.qml" line="117"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="108"/>
+        <location filename="../src/app/qml/Main.qml" line="117"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -925,6 +968,47 @@
         <location filename="../src/app/qml/MultiplayerScreen.qml" line="213"/>
         <source>Close</source>
         <translation>Schließen</translation>
+    </message>
+</context>
+<context>
+    <name>OnScreenKeyboard</name>
+    <message>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="181"/>
+        <source>Shift</source>
+        <translation>Umschalt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="190"/>
+        <source>Space</source>
+        <translation>Leertaste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="196"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="202"/>
+        <source>Done</source>
+        <translation>Fertig</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="210"/>
+        <source>X: delete  Y: space  LB/RB: cursor  Start: done  B: close</source>
+        <translation>X: löschen  Y: Leerzeichen  LB/RB: Cursor  Start: fertig  B: schließen</translation>
+    </message>
+</context>
+<context>
+    <name>PadHints</name>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="29"/>
+        <source>A: take/put down  X: one item  Y: quick move  B: close  Right stick: scroll</source>
+        <translation>A: nehmen/ablegen  X: ein Item  Y: schnell verschieben  B: schließen  Rechter Stick: scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="30"/>
+        <source>A: select  B: back  LB/RB: tabs  Right stick: scroll</source>
+        <translation>A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen</translation>
     </message>
 </context>
 <context>
@@ -1408,14 +1492,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="197"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="222"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="216"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="241"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="217"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="226"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="236"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="245"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -1424,22 +1508,22 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="245"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="245"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="309"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="290"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="334"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="315"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -1484,12 +1568,12 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="319"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="300"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="434"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -1753,27 +1837,27 @@
 <context>
     <name>QcMultiplayerController</name>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="86"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="92"/>
         <source>Enter a player name</source>
         <translation>Gib einen Spielernamen ein</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="91"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="97"/>
         <source>Player names may not contain &lt;, &gt; or &amp;</source>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="96"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="102"/>
         <source>Invalid address: %1</source>
         <translation>Ungültige Adresse: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="112"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="118"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="169"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="176"/>
         <source>Only a running single-player world can be opened to the network</source>
         <translation>Nur eine laufende Einzelspielerwelt kann für das Netzwerk geöffnet werden</translation>
     </message>
@@ -3682,27 +3766,27 @@
 <context>
     <name>RecentServerRow</name>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="55"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="56"/>
         <source>%1 · last joined %2</source>
         <translation>%1 · zuletzt beigetreten %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="56"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="57"/>
         <source>last joined %1</source>
         <translation>zuletzt beigetreten %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="63"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="64"/>
         <source>Join</source>
         <translation>Beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="71"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="72"/>
         <source>Remove %1 from the list</source>
         <translation>%1 aus der Liste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="76"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="77"/>
         <source>Remove from the list</source>
         <translation>Aus der Liste entfernen</translation>
     </message>
@@ -3939,22 +4023,27 @@
 <context>
     <name>TradeScreen</name>
     <message>
-        <location filename="../src/app/qml/TradeScreen.qml" line="90"/>
+        <location filename="../src/app/qml/TradeScreen.qml" line="95"/>
         <source>sold out</source>
         <translation>ausverkauft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/TradeScreen.qml" line="116"/>
+        <location filename="../src/app/qml/TradeScreen.qml" line="121"/>
         <source>Offers</source>
         <translation>Angebote</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/TradeScreen.qml" line="140"/>
+        <location filename="../src/app/qml/TradeScreen.qml" line="145"/>
         <source>%1 – %2</source>
         <translation>%1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/TradeScreen.qml" line="214"/>
+        <location filename="../src/app/qml/TradeScreen.qml" line="221"/>
+        <source>Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.</source>
+        <translation>Links ein Angebot wählen. A auf dem Ergebnis handelt einmal, Y so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz nach. B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="222"/>
         <source>Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.</source>
         <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
     </message>

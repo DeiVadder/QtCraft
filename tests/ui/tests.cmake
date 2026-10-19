@@ -155,3 +155,51 @@ if(NOT QC_SANITIZERS)
     set_tests_properties(app_offscreen_open_to_lan_qml PROPERTIES TIMEOUT 120
         ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LAN_BIND=127.0.0.1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_open_to_lan_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lan.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 endif()
+# The pad on the real screens (decisions E-581 to E-584), played by a scripted virtual pad
+# (--overlay "@<ms> pad:<step>"): the log names the focused item after each step. The inventory
+# moves the focus and carries a picked-up stack along, the radial menu chooses with the right
+# stick, the chat types on the on-screen keyboard and the main menu moves between its buttons;
+# each run keeps its screenshot (focus ring, radial menu, keyboard) and loads without QML errors.
+set(pad_qml_errors "qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Cannot assign|Unable to)")
+add_test(NAME app_offscreen_pad_inventory
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--no-audio;--chat;@200 /give stone 5;--overlay;@1000 pad:north;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:dpadDown;--overlay;@2500 pad:dpadDown;--overlay;@3000 pad:dpadRight;--overlay;@3500 pad:dpadDown;--overlay;@4000 pad:dpadDown;--overlay;@4500 pad:dpadDown;--overlay;@5000 pad:south;--overlay;@5500 pad:dpadUp"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFocus: slot:100.*padFocus: slot:103.*padFocus: slot:0.*padFocus: slot:27"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-inventory.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_offscreen_pad_radial
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--no-audio;--chat;@200 /give stone 5;--chat;@300 /give oak_planks 7;--chat;@400 /give torch 3;--overlay;@1000 pad:+dpadLeft;--overlay;@1500 pad:rightX=0.9;--overlay;@2000 pad:rightY=0.5"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padRadial: 0.*padRadial: 3"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-radial.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_offscreen_pad_keyboard
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--no-audio;--overlay;@1000 pad:dpadDown;--overlay;@1500 pad:south;--overlay;@2000 pad:dpadRight;--overlay;@2500 pad:south;--overlay;@3000 pad:north;--overlay;@3500 pad:dpadUp;--overlay;@4000 pad:south;--overlay;@4500 pad:west"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFocus: key_q.*padKeyboard: qw 2"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-keyboard.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_offscreen_pad_menu
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadDown;--overlay;@1300 pad:dpadRight"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFocus: createWorldButton.*padFocus: Button:.*padFocus: Button:"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-menu.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+foreach(pad inventory radial keyboard menu)
+    # The world's runs hold the screenshot until the script has run; the menu has no world, so
+    # its screenshot waits for frames past the last step.
+    set(frames 90)
+    if(pad STREQUAL menu)
+        set(frames 300)
+    endif()
+    set_tests_properties(app_offscreen_pad_${pad} PROPERTIES TIMEOUT 180
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
+endforeach()

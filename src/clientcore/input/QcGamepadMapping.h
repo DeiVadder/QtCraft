@@ -3,9 +3,11 @@
 #include "clientcore/input/QcGamepadState.h"
 
 #include <QPointF>
+#include <QtGlobal>
 
 #include <array>
 #include <cstddef>
+#include <optional>
 
 // What the pad does in the world and the arithmetic behind it (decision E-541), without state and
 // without a session: the default bindings, the walking direction of the left stick, the turn of
@@ -13,12 +15,38 @@
 namespace QcGamepadMapping {
 
 // The player's actions on a pad. Mine and Use are the triggers, the others are buttons.
-enum class Action { Jump, Sprint, Sneak, Mine, Use, HotbarPrevious, HotbarNext, Count };
+enum class Action {
+    Jump,
+    Sprint,
+    Sneak,
+    Mine,
+    Use,
+    HotbarPrevious,
+    HotbarNext,
+    // The pause menu, the inventory, the chat line, the handbook, the camera view and the player
+    // list (held), as with their keys (QcGamepadControls::worldAction).
+    Pause,
+    Inventory,
+    Chat,
+    Handbook,
+    CameraView,
+    PlayerList,
+    // Throws one item; held for dropStackMs, the rest of the stack.
+    Drop,
+    // The targeted block's item into the hand (the middle mouse button).
+    PickBlock,
+    // Held: the radial menu of the hotbar, chosen with the right stick (QcHotbarRadial).
+    HotbarRadial,
+    Count
+};
 inline constexpr std::size_t actionCount = std::size_t(Action::Count);
 
-// Default bindings (Auftrag point 40): south jumps (double tap: creative flight), the left stick
-// click sprints, the right stick click sneaks, the shoulders step through the hotbar. The triggers
-// (right mines and attacks, left uses) are axes and not in this table.
+// Default bindings (Auftrag point 40, decisions E-541 and E-580, after the console layout of the
+// model): south jumps (double tap: creative flight), the left stick click sprints, the right stick
+// click sneaks, the shoulders step through the hotbar; start pauses, north opens the inventory,
+// east drops, west picks the block in view; the d-pad holds the radial menu (left), switches the
+// camera (up), opens the chat (down) and the handbook (right); back holds the player list. The
+// triggers (right mines and attacks, left uses) are axes and not in this table.
 struct Bindings
 {
     QcGamepadButton jump = QcGamepadButton::South;
@@ -26,7 +54,22 @@ struct Bindings
     QcGamepadButton sneak = QcGamepadButton::RightStick;
     QcGamepadButton hotbarPrevious = QcGamepadButton::LeftShoulder;
     QcGamepadButton hotbarNext = QcGamepadButton::RightShoulder;
+    QcGamepadButton pause = QcGamepadButton::Start;
+    QcGamepadButton inventory = QcGamepadButton::North;
+    QcGamepadButton chat = QcGamepadButton::DpadDown;
+    QcGamepadButton handbook = QcGamepadButton::DpadRight;
+    QcGamepadButton cameraView = QcGamepadButton::DpadUp;
+    QcGamepadButton playerList = QcGamepadButton::Back;
+    QcGamepadButton drop = QcGamepadButton::East;
+    QcGamepadButton pickBlock = QcGamepadButton::West;
+    QcGamepadButton hotbarRadial = QcGamepadButton::DpadLeft;
+
+    // The button of `action`; nullopt for the triggers.
+    std::optional<QcGamepadButton> button(Action action) const;
 };
+
+// Holding the drop button this long throws the rest of the stack.
+inline constexpr qint64 dropStackMs = 500;
 
 // A trigger counts as pressed above this (after dead zone and curve) and as released again below
 // releaseThreshold, so a trigger resting near the point does not flicker.

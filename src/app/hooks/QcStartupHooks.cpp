@@ -4,6 +4,7 @@
 #include "app/controllers/QcScreenState.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
+#include "app/hooks/QcScriptedPad.h"
 #include "app/input/QcGameInput.h"
 #include "app/rendering/QcWorldView.h"
 #include "app/session/QcSessionParts.h"
@@ -178,8 +179,8 @@ void QcStartupHooks::scheduleOverlaySteps()
 
         holdScreenshot();
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
-            // Pointer and popup steps work in the main menu as well, the others need a world.
-            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"hover:"_s)) {
+            // Pointer, popup and pad steps work in the main menu as well, the others need a world.
+            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"hover:"_s) || overlay.startsWith(u"pad:"_s)) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -189,7 +190,11 @@ void QcStartupHooks::scheduleOverlaySteps()
 
 void QcStartupHooks::runOverlayStep(const QString &step)
 {
-    if (step.startsWith(u"pick:"_s)) {
+    if (step.startsWith(u"pad:"_s)) {
+        if (m_scriptedPad) {
+            m_scriptedPad->run(QStringView(step).mid(4));
+        }
+    } else if (step.startsWith(u"pick:"_s)) {
         pickInOpenScreen(QStringView(step).mid(5).toInt());
     } else if (step.startsWith(u"open:"_s)) {
         openPopup(step.mid(5));

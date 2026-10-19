@@ -40,6 +40,7 @@ SlotScreen {
         readonly property var offer: screen.trade.offers[index] ?? screen.emptyOffer
 
         objectName: "offer" + index
+        activeFocusOnTab: true
         implicitWidth: 260
         implicitHeight: 40
         radius: 4
@@ -57,6 +58,8 @@ SlotScreen {
                 model: row.offer.costs
 
                 ItemSlot {
+                    // A picture of the trade; the row or the result takes the pad's focus.
+                    activeFocusOnTab: false
                     required property var modelData
 
                     implicitWidth: 34
@@ -74,6 +77,8 @@ SlotScreen {
             }
 
             ItemSlot {
+                // A picture of the trade; the row or the result takes the pad's focus.
+                activeFocusOnTab: false
                 implicitWidth: 34
                 implicitHeight: 34
                 slotIcon: row.offer.result.icon
@@ -171,6 +176,8 @@ SlotScreen {
                     model: screen.chosen ? screen.chosen.costs : []
 
                     ItemSlot {
+                        // A picture of the trade; the row or the result takes the pad's focus.
+                        activeFocusOnTab: false
                         required property var modelData
 
                         slotIcon: modelData.icon
@@ -211,7 +218,8 @@ SlotScreen {
             Label {
                 Layout.maximumWidth: 9 * 54
                 wrapMode: Text.Wrap
-                text: qsTr("Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
+                text: screen.game.gamepad.active ? qsTr("Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.")
+                      : qsTr("Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
                 color: Theme.textSecondary
             }
         }

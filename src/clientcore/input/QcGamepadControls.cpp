@@ -24,6 +24,7 @@ void contribute(bool &field, bool want, bool &mine)
 
 QcGamepadControls::QcGamepadControls(QObject *parent)
     : QObject(parent)
+    , m_radial(QcInventory::hotbarSize)
 {
     m_clock.start();
 }
@@ -164,11 +165,24 @@ void QcGamepadControls::applyFrame(QcClientSession &session, float seconds, bool
 
     m_active = true;
     const bool sprintPressed = runPresses(session);
+    dropStackWhenHeld(session);
     const QcGamepadState shaped = shapedState(m_pad);
     QcPlayerInput intent = session.intent();
     applyWalk(intent, shaped, sprintPressed, session.gameMode().flightWanted());
 
-    const QPointF look = QcGamepadMapping::lookDelta(shaped, m_settings.lookSpeed, double(seconds));
+    // While the radial menu is open, the right stick chooses a slot instead of looking.
+    if (m_radial.isOpen()) {
+        const QcGamepadState raw = m_source ? m_source->state(m_pad) : QcGamepadState();
+        if (m_radial.point(raw.axis(QcGamepadAxis::RightX), raw.axis(QcGamepadAxis::RightY))) {
+            emit radialChanged();
+        }
+    }
+    QPointF look = m_radial.isOpen() ? QPointF() : QcGamepadMapping::lookDelta(shaped, m_settings.lookSpeed, double(seconds));
+    m_lookWaitsForNeutral = (m_lookWaitsForNeutral || (m_radialWasOpen && !m_radial.isOpen())) && !look.isNull();
+    m_radialWasOpen = m_radial.isOpen();
+    if (m_lookWaitsForNeutral) {
+        look = QPointF();
+    }
     if (!look.isNull()) {
         intent = QcMouseLook::apply(intent, look, 1.0, m_settings.invertLook);
     }
@@ -190,6 +204,10 @@ bool QcGamepadControls::runPresses(QcClientSession &session)
 
 void QcGamepadControls::runPress(QcClientSession &session, Press press)
 {
+    if (runWorldPress(press) || runItemPress(session, press)) {
+        return;
+    }
+
     switch (press.action) {
     case Action::Jump:
         if (press.pressed && m_flight.jumpPressed(press.timeMs)) {
@@ -229,10 +247,94 @@ void QcGamepadControls::runPress(QcClientSession &session, Press press)
             session.selectHotbarSlot(QcGamepadMapping::hotbarStep(session.inventory().selectedHotbarSlot(), step, QcInventory::hotbarSize));
         }
         return;
-    case Action::Sprint:
-    case Action::Count:
+    default:
         return;
     }
+}
+
+bool QcGamepadControls::runWorldPress(Press press)
+{
+    using Key = QcKeyBindings::Action;
+    std::optional<Key> key;
+    switch (press.action) {
+    case Action::Pause:
+        key = Key::Pause;
+        break;
+    case Action::Inventory:
+        key = Key::Inventory;
+        break;
+    case Action::Chat:
+        key = Key::Chat;
+        break;
+    case Action::Handbook:
+        key = Key::Handbook;
+        break;
+    case Action::CameraView:
+        key = Key::CameraView;
+        break;
+    case Action::PlayerList:
+        // Held like its key: shown while the button is down.
+        if (press.pressed != m_playerList) {
+            m_playerList = press.pressed;
+            emit worldAction(Key::PlayerList, press.pressed);
+        }
+        return true;
+    default:
+        return false;
+    }
+
+    if (press.pressed && key) {
+        emit worldAction(*key, true);
+    }
+    return true;
+}
+
+bool QcGamepadControls::runItemPress(QcClientSession &session, Press press)
+{
+    switch (press.action) {
+    case Action::Drop:
+        m_dropPressedMs = press.pressed ? press.timeMs : -1;
+        if (press.pressed) {
+            session.dropItem(false);
+        }
+        return true;
+    case Action::PickBlock:
+        if (const std::optional<QcRaycastHit> &target = session.target(); press.pressed && target && !session.isDead()) {
+            session.gameMode().pickBlock(target->block);
+        }
+        return true;
+    case Action::HotbarRadial:
+        if (press.pressed) {
+            m_radial.open(session.inventory().selectedHotbarSlot());
+            emit radialChanged();
+        } else {
+            closeRadial(&session, true);
+        }
+        return true;
+    default:
+        return false;
+    }
+}
+
+void QcGamepadControls::dropStackWhenHeld(QcClientSession &session)
+{
+    if (m_dropPressedMs >= 0 && m_clock.elapsed() - m_dropPressedMs >= QcGamepadMapping::dropStackMs) {
+        m_dropPressedMs = -1;
+        session.dropItem(true);
+    }
+}
+
+void QcGamepadControls::closeRadial(QcClientSession *session, bool select)
+{
+    if (!m_radial.isOpen()) {
+        return;
+    }
+
+    const std::optional<int> slot = m_radial.close();
+    if (select && session && slot && *slot != session->inventory().selectedHotbarSlot()) {
+        session->selectHotbarSlot(*slot);
+    }
+    emit radialChanged();
 }
 
 void QcGamepadControls::applyWalk(QcPlayerInput &intent, const QcGamepadState &shaped, bool sprintPressed, bool flying)
@@ -301,6 +403,13 @@ void QcGamepadControls::reset()
 
 void QcGamepadControls::stop()
 {
+    // A screen opened or the pad stopped: the radial menu closes without choosing, the player list goes.
+    closeRadial(nullptr, false);
+    if (m_playerList) {
+        m_playerList = false;
+        emit worldAction(QcKeyBindings::Action::PlayerList, false);
+    }
+    m_dropPressedMs = -1;
     m_presses.clear();
     m_sprint.reset();
     m_flight.reset();

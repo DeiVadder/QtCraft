@@ -25,6 +25,7 @@
     --qc-slotPicked: rgba(0, 0, 0, 0.753);
     --qc-iconBackdrop: rgba(255, 255, 255, 0.188);
     --qc-selection: rgba(255, 255, 255, 1.000);
+    --qc-focusRing: rgba(255, 210, 122, 1.000);
     --qc-crosshair: rgba(255, 255, 255, 0.878);
     --qc-progress: rgba(255, 255, 255, 1.000);
     --qc-health: rgba(224, 40, 40, 1.000);

@@ -55,6 +55,8 @@ public:
     void syncCapture();
     // Scripted run (--background): the mouse is never captured, input comes only from the script.
     void setBackgroundRun(bool background) { m_backgroundRun = background; }
+    // A scripted run's virtual pad steers without the window's focus (it never gets it there).
+    void setScriptedPad(bool scripted) { m_scriptedPad = scripted; }
 
     // Forgets the keys held down.
     void clearKeys();
@@ -70,6 +72,12 @@ public:
     // The world takes the input and its window has the focus: a gamepad may steer (decision E-541;
     // SDL reports pads also while the window is in the background).
     bool worldFocused() const;
+    // The world takes keyboard and mouse: playing, no screen open, alive.
+    bool worldInput() const;
+    // A key action of the world that opens or shows something (pause, inventory, chat, command,
+    // handbook, camera view, debug overlay and options, labels, player list), from its key or from
+    // a pad (decision E-580); `pressed` false only ends the held player list. False for other actions.
+    bool worldAction(QcKeyBindings::Action action, bool pressed);
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -81,8 +89,6 @@ signals:
     void handbookRequested();
 
 private:
-    // The world takes keyboard and mouse: playing, no screen open, alive.
-    bool worldInput() const;
     bool filterWorldEvent(QEvent *event);
     // World keys while no screen is open; every key event is taken, so nothing else reacts to it.
     void handleWorldKey(const QKeyEvent &key);
@@ -116,5 +122,6 @@ private:
     // Flying by a double tap of jump in creative mode (decision E-284).
     QcFlightLatch m_flight;
     bool m_backgroundRun = false;
+    bool m_scriptedPad = false;
     bool m_playerListHeld = false;
 };

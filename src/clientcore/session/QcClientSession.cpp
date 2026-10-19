@@ -334,6 +334,8 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     }
     m_entities.tick();
 
+    // A hotbar selection the server dropped is sent again (decision E-582).
+    m_inventory.resendLostSelection();
     m_animation.tick(m_inventory.heldItem(), m_hand.isMining());
     m_hand.tickLauncher(*m_content, m_worldTime.speed);
     updateSounds();

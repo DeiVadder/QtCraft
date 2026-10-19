@@ -432,6 +432,7 @@ Item {
                 required property bool empty
 
                 baseColor: Theme.hudSlot
+                activeFocusOnTab: false
                 slotIcon: icon
                 slotCount: count
                 slotDurability: durability
@@ -449,8 +450,12 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
+        // The pad's hints of a screen take this place (PadHints).
+        visible: !hud.game.gamepad.focusShown
         font.pixelSize: 13
-        text: hud.game.input.mouseCaptured
+        text: hud.game.gamepad.active
+              ? qsTr("RT: mine/attack  LT: use/place  B: drop  X: pick block  LB/RB or hold ◀: select  Y: inventory  ▼: chat  Start: menu")
+              : hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
                     .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
               : qsTr("Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.")

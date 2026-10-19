@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtCraft
@@ -14,6 +16,8 @@ ApplicationWindow {
     visible: false
     title: qsTr("QtCraft")
     color: Theme.menuBottom
+    // The game for the items made by loaders (their own `game` property hides the id there).
+    readonly property GameController controller: game
 
     GameController {
         id: game
@@ -34,6 +38,18 @@ ApplicationWindow {
         anchors.fill: parent
         visible: game.phase === GameController.Phase.Playing && !game.player.dead
         game: game
+    }
+
+    // While its pad button is held in the world (decision E-581). The pad's items exist only while
+    // the pad leads (the keyboard from its first use on), so without a pad they cost nothing.
+    Loader {
+        anchors.centerIn: parent
+        active: (game.gamepad.active || game.gamepad.radialOpen) && game.phase === GameController.Phase.Playing
+        visible: game.phase === GameController.Phase.Playing && game.gamepad.radialOpen
+
+        sourceComponent: HotbarRadial {
+            game: root.controller
+        }
     }
 
     InventoryScreen {
@@ -81,6 +97,8 @@ ApplicationWindow {
     }
 
     ChatOverlay {
+        id: chat
+
         anchors.fill: parent
         visible: game.phase === GameController.Phase.Playing && game.overlay === "chat"
         game: game
@@ -119,6 +137,70 @@ ApplicationWindow {
     HandbookScreen {
         anchors.fill: parent
         game: game
+    }
+
+    // The pad on the screens (decisions E-583, E-584): its buttons, the ring around its focus and the
+    // keyboard for text fields.
+    Loader {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        active: game.gamepad.active
+
+        sourceComponent: PadHints {
+            game: root.controller
+            // The chat line lies along the bottom edge.
+            covered: ((keyboard.item as OnScreenKeyboard)?.visible ?? false) || chat.visible
+        }
+    }
+
+    // The ring's place over the screens (offscreen runs move the screens with it).
+    Item {
+        id: ringHome
+
+        anchors.fill: parent
+        z: 1000
+
+        Loader {
+            active: game.gamepad.active
+
+            sourceComponent: FocusRing {
+                game: root.controller
+                home: ringHome
+            }
+        }
+    }
+
+    // Inside an item of the content, so the keyboard opens in the window that shows the content
+    // (offscreen runs move it into another one; a popup of the window itself would stay behind).
+    // Made when a field first asks for it.
+    Item {
+        anchors.fill: parent
+
+        Loader {
+            id: keyboard
+
+            active: false
+
+            sourceComponent: OnScreenKeyboard {
+                areaWidth: root.width
+                areaHeight: root.height
+            }
+        }
+    }
+
+    Connections {
+        target: game.gamepad
+
+        function onKeyboardRequested(field) {
+            keyboard.active = true;
+            (keyboard.item as OnScreenKeyboard).openFor(field);
+        }
+
+        // The keyboard or the mouse took over: the field is typed into directly.
+        function onActiveChanged() {
+            if (!game.gamepad.active && keyboard.item)
+                (keyboard.item as OnScreenKeyboard).close();
+        }
     }
 
     // Cmd+W (elsewhere Ctrl+W or Ctrl+F4) closes the window like its close button: the world is

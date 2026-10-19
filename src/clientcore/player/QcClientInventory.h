@@ -5,6 +5,7 @@
 #include "common/gameplay/QcItemStack.h"
 #include "common/protocol/QcMessages.h"
 
+#include <QElapsedTimer>
 #include <QList>
 #include <QString>
 
@@ -16,16 +17,26 @@ struct QcItemDefinition;
 // The local player's items as the server last reported them (QcMsg::InventoryState): inventory,
 // selected hotbar slot, worn equipment and the crafting grid with its result; and the requests that
 // move items between these slots or craft (the server answers with a new InventoryState).
+// The selected slot changes at once on the client (decision E-582): while selections the server
+// has not answered yet are on their way, a state's selection is older than the local one and is
+// not taken; the server answers each selection with a state carrying it, in order. A selection
+// unanswered for pendingSelectionMs (dropped by the server's rate limit) is given up and the local
+// selection is sent again, so client and server agree once more (checked with each state and tick).
 class QcClientInventory
 {
 public:
     using Sender = std::function<void(const QcMessage &message)>;
+    // Milliseconds on a steady clock (tests pass their own).
+    using Clock = std::function<qint64()>;
 
     // `send`: how requests reach the server (the session's connection, never empty).
-    explicit QcClientInventory(Sender send)
-        : m_send(std::move(send))
-    {
-    }
+    // An unanswered selection is given up after this long, and the server's selection counts again.
+    static constexpr qint64 pendingSelectionMs = 2000;
+
+    explicit QcClientInventory(Sender send);
+    // The default clock refers to this object.
+    QcClientInventory(const QcClientInventory &) = delete;
+    QcClientInventory &operator=(const QcClientInventory &) = delete;
 
     const QcInventory &inventory() const { return m_inventory; }
     const QcEquipment &equipment() const { return m_equipment; }
@@ -43,6 +54,12 @@ public:
 
     // Selects a hotbar slot at once and tells the server.
     void selectHotbarSlot(int slot);
+    // Selections sent and not answered yet.
+    qsizetype pendingSelections() const { return m_pendingSelections.size(); }
+    // When the oldest selection has waited longer than pendingSelectionMs: gives the waiting ones
+    // up and sends the local selection again (the session's tick, and each state).
+    void resendLostSelection();
+    void setClock(Clock clock) { m_now = std::move(clock); }
     // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
     void moveItem(int from, int to, int count) const;
     // Shift-click: the server moves the stack to where it belongs (QcMsg::QuickMoveItem).
@@ -52,7 +69,21 @@ public:
     void closeCrafting() const;
 
 private:
+    struct PendingSelection
+    {
+        int slot = 0;
+        qint64 sentMs = 0;
+    };
+
+    // Takes the server's selection unless a newer local one waits for its answer.
+    void applySelection(int serverSlot);
+
+    void sendSelection();
+
     Sender m_send;
+    QElapsedTimer m_clock;
+    Clock m_now;
+    QList<PendingSelection> m_pendingSelections;
     QcInventory m_inventory;
     QcEquipment m_equipment;
     QList<QcItemStack> m_craftingGrid = QList<QcItemStack>(9);

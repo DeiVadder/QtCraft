@@ -58,7 +58,8 @@ SlotScreen {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.").arg(screen.game.settings.keys.labels.inventory)
+            text: screen.game.gamepad.active ? qsTr("A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.")
+                  : qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.").arg(screen.game.settings.keys.labels.inventory)
             color: Theme.textSecondary
         }
     }

@@ -56,7 +56,12 @@ A gamepad (Xbox, PlayStation, Switch Pro and most others) steers the player whil
 - **Press the left stick**: sprint while walking forward
 - **Press the right stick**: sneak on or off; while flying, hold it to descend
 - **Left and right shoulder buttons**: previous and next hotbar slot
-- Menus, the inventory and the other screens are still used with mouse and keyboard.
+- **Right face button**: drop one item; hold it to drop the stack
+- **Left face button**: take the block you look at into your hand: from your inventory, in creative mode from the catalogue as well
+- **Upper face button**: inventory; **Start**: pause menu; **Back**: hold to see the players
+- **D-pad**: up switches the camera view, down opens the chat, right the handbook; hold left for the hotbar wheel: point at a slot with the right stick and let go to take it
+
+In the menus, the inventory and every other screen the d-pad or the left stick moves a golden ring from button to button and slot to slot; the lower face button presses or picks up and puts down, the right one goes back, the left one puts down a single item, the upper one moves a stack across, the shoulder buttons switch tabs and the right stick scrolls. On a slider or a number field, left and right change the value. A text field opens a keyboard on the screen (Shift gives each key its second character, for example ! and ? or capitals): the left face button deletes, the upper one types a space, Start finishes. As soon as you use the mouse or the keyboard again, the ring goes away.
 
 **Moving**
 

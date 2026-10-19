@@ -25,6 +25,8 @@ ColumnLayout {
 
         implicitWidth: 44
         implicitHeight: 44
+        // Cells with a link take the pad's focus (decision E-583).
+        activeFocusOnTab: cell.link !== null
         color: hover.hovered && cell.link ? Theme.slotHover : Theme.panelRaised
         border.color: Theme.slotBorder
         radius: 2

@@ -299,7 +299,7 @@ bool QcGameInput::worldInput() const
 
 bool QcGameInput::worldFocused() const
 {
-    return worldInput() && m_parts.window && m_parts.window->isActive();
+    return worldInput() && m_parts.window && (m_scriptedPad || m_parts.window->isActive());
 }
 
 bool QcGameInput::keyDown(QcKeyBindings::Action action) const
@@ -325,50 +325,62 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     if (handlePlayerAction(*action, key)) {
         return;
     }
-    switch (*action) {
+    if (!worldAction(*action, true)) {
+        // Movement and look keys count while held (updateIntentFromKeys()).
+        m_keysDown.insert(key.key());
+    }
+}
+
+bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
+{
+    using A = QcKeyBindings::Action;
+    if (action == A::PlayerList) {
+        setPlayerListHeld(pressed);
+        return true;
+    }
+    if (!pressed || !m_parts.session) {
+        return false;
+    }
+
+    switch (action) {
     case A::Pause:
         m_screens.state.setOverlay(u"pause"_s);
-        return;
+        return true;
     case A::Inventory:
         // Creative mode opens the item catalogue; its tab leads on to crafting and armour.
         m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? u"creative"_s : u"inventory"_s);
-        return;
+        return true;
     case A::Chat:
         m_screens.state.setOverlay(u"chat"_s);
-        return;
+        return true;
     case A::Command:
         m_screens.state.openChat(u"/"_s);
-        return;
+        return true;
     case A::Handbook:
         emit handbookRequested();
-        return;
+        return true;
     case A::CameraView: {
         // Cycles first person, behind, front; the choice is kept in the settings.
         const QcCameraMode next = QcViewCamera::next(m_parts.session->cameraMode());
         m_settings.setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
         m_parts.session->setCameraMode(next);
         m_settings.saveSettings();
-        return;
+        return true;
     }
     case A::DebugOverlay:
         // Off, compact, full (decision E-225).
         m_settings.debug()->cycleLevel();
         m_settings.saveSettings();
-        return;
+        return true;
     case A::DebugOptions:
         m_screens.state.setOverlay(u"debug"_s);
-        return;
+        return true;
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());
         m_settings.saveSettings();
-        return;
-    case A::PlayerList:
-        setPlayerListHeld(true);
-        return;
+        return true;
     default:
-        // Movement and look keys count while held (updateIntentFromKeys()).
-        m_keysDown.insert(key.key());
-        return;
+        return false;
     }
 }
 

@@ -37,6 +37,7 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::SlotPicked, "slotPicked", 0xc0000000},
     {R::IconBackdrop, "iconBackdrop", 0x30ffffff},
     {R::Selection, "selection", 0xffffffff},
+    {R::FocusRing, "focusRing", 0xffffd27a},
     {R::Crosshair, "crosshair", 0xe0ffffff},
     {R::Progress, "progress", 0xffffffff},
     {R::Health, "health", 0xffe02828},

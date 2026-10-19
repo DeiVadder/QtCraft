@@ -10,6 +10,7 @@
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
+#include "app/input/QcGamepadUi.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
@@ -64,6 +65,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
+    // The pad on the screens: active input, focus ring, radial menu, on-screen keyboard (E-581 to E-584).
+    Q_PROPERTY(QcGamepadUi *gamepad READ gamepadUi CONSTANT FINAL)
     // What the character previews draw (decision E-231).
     Q_PROPERTY(QcPreviewSource *preview READ preview CONSTANT FINAL)
     Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
@@ -97,6 +100,7 @@ public:
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
+    QcGamepadUi *gamepadUi() { return &m_gamepadUi; }
     QcPreviewSource *preview() const { return m_preview.get(); }
     // Command line test hooks and the benchmark.
     QcStartupHooks *startup() const { return m_startup.get(); }
@@ -132,6 +136,9 @@ public:
     // Starts the gamepad backend (SDL3 when the build has it, decision E-540); without `enabled`
     // (screenshot runs, benchmarks, QTCRAFT_GAMEPAD=0) the game has no pads.
     void startGamepads(bool enabled);
+    // Scripted runs with pad steps: a virtual pad instead of the backend (QcStartupHooks), taken by
+    // the screens without the window's focus. The source must outlive the game or be replaced.
+    void useScriptedGamepad(QcGamepadSource *source);
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` while a
     // world runs (decision E-225); 0 leaves it off.
     void startStatsLog(int intervalMs);
@@ -181,6 +188,7 @@ private:
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
     std::unique_ptr<QcGamepadSource> m_gamepadSource;
     QcGamepadControls m_gamepad;
+    QcGamepadUi m_gamepadUi;
     QcRenderBridge m_render;
     QcWorldAtlas m_worldAtlas;
     QcSessionWiring m_wiring;

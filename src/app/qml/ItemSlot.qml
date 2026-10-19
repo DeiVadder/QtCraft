@@ -29,6 +29,8 @@ Rectangle {
 
     implicitWidth: 52
     implicitHeight: 52
+    // The pad's focus reaches slots that take clicks (decision E-583); a carried stack is a picture.
+    activeFocusOnTab: enabled && !carried
     color: carried ? Theme.clear : (picked ? Theme.slotPicked : (highlighted ? Theme.slotHover : baseColor))
     border.color: carried ? Theme.clear : (selected ? Theme.selection : Theme.slotBorder)
     border.width: selected ? 3 : 1

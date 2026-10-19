@@ -32,27 +32,56 @@ bool triggerHeld(float value, bool wasHeld)
     return wasHeld ? value >= releaseThreshold : value > pressThreshold;
 }
 
-bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld)
+std::optional<QcGamepadButton> Bindings::button(Action action) const
 {
     switch (action) {
     case Action::Jump:
-        return shaped.pressed(bindings.jump);
+        return jump;
     case Action::Sprint:
-        return shaped.pressed(bindings.sprint);
+        return sprint;
     case Action::Sneak:
-        return shaped.pressed(bindings.sneak);
-    case Action::Mine:
-        return triggerHeld(shaped.axis(QcGamepadAxis::RightTrigger), wasHeld);
-    case Action::Use:
-        return triggerHeld(shaped.axis(QcGamepadAxis::LeftTrigger), wasHeld);
+        return sneak;
     case Action::HotbarPrevious:
-        return shaped.pressed(bindings.hotbarPrevious);
+        return hotbarPrevious;
     case Action::HotbarNext:
-        return shaped.pressed(bindings.hotbarNext);
+        return hotbarNext;
+    case Action::Pause:
+        return pause;
+    case Action::Inventory:
+        return inventory;
+    case Action::Chat:
+        return chat;
+    case Action::Handbook:
+        return handbook;
+    case Action::CameraView:
+        return cameraView;
+    case Action::PlayerList:
+        return playerList;
+    case Action::Drop:
+        return drop;
+    case Action::PickBlock:
+        return pickBlock;
+    case Action::HotbarRadial:
+        return hotbarRadial;
+    case Action::Mine:
+    case Action::Use:
     case Action::Count:
         break;
     }
-    return false;
+    return std::nullopt;
+}
+
+bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld)
+{
+    if (action == Action::Mine) {
+        return triggerHeld(shaped.axis(QcGamepadAxis::RightTrigger), wasHeld);
+    }
+    if (action == Action::Use) {
+        return triggerHeld(shaped.axis(QcGamepadAxis::LeftTrigger), wasHeld);
+    }
+
+    const std::optional<QcGamepadButton> button = bindings.button(action);
+    return button && shaped.pressed(*button);
 }
 
 int hotbarStep(int slot, int steps, int size)

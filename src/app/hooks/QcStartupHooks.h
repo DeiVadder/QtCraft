@@ -15,6 +15,7 @@ class QcGameInput;
 class QcHandbookController;
 class QcScreenState;
 class QcScreenshotHook;
+class QcScriptedPad;
 struct QcSessionParts;
 
 // Test hooks from the command line for reproducible scenes: view direction, spawn column and
@@ -51,6 +52,8 @@ public:
     void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
+    // The virtual pad of "@<ms> pad:<step>" lines (QcScriptedPad); they run in the main menu too.
+    void setScriptedPad(QcScriptedPad *pad) { m_scriptedPad = pad; }
     // The screenshot to take once the world is loaded.
     void setScreenshotHook(QcScreenshotHook *hook);
     QcBenchmarkRun *benchmark() const { return m_benchmark; }
@@ -97,5 +100,6 @@ private:
     // --overlay furnace: the screenshot waits until the machine has opened and filled.
     bool m_fillMachineOnOpen = false;
     QPointer<QcScreenshotHook> m_screenshotHook;
+    QcScriptedPad *m_scriptedPad = nullptr;
     bool m_screenshotReleased = false;
 };

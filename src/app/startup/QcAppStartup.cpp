@@ -4,6 +4,7 @@
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScreenshotHook.h"
+#include "app/hooks/QcScriptedPad.h"
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "server/content/QcBundledMods.h"
@@ -145,6 +146,12 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
     // cannot steer it; QTCRAFT_GAMEPAD=0 keeps the pads out of any run.
     const bool benchmark = qEnvironmentVariableIsSet("QTCRAFT_BENCHMARK");
     game.startGamepads(screenshot == nullptr && !benchmark && qEnvironmentVariable("QTCRAFT_GAMEPAD") != u"0"_s);
+    // "@<ms> pad:<step>" lines play a virtual pad instead (decision E-583).
+    if (QcScriptedPad::wanted(options.overlays)) {
+        auto *pad = new QcScriptedPad(*game.gamepadUi(), &game);
+        game.useScriptedGamepad(pad->source());
+        game.startup()->setScriptedPad(pad);
+    }
     game.startup()->setStartupScript(options.chat, options.overlays);
     game.startup()->setStartupHandbook(options.handbook.value_or(QString()));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).

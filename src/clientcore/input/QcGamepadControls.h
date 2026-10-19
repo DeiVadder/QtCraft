@@ -1,9 +1,11 @@
 #pragma once
 
 #include "clientcore/input/QcGamepadMapping.h"
+#include "clientcore/input/QcHotbarRadial.h"
 #include "clientcore/player/QcFlightLatch.h"
 #include "clientcore/player/QcSprintLatch.h"
 #include "clientcore/settings/QcGamepadSettings.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QElapsedTimer>
 #include <QHash>
@@ -31,6 +33,10 @@ struct QcPlayerInput;
 // reports pads in the background too, and a press there never waits for the window to come back.
 // The pad that last pressed something or clearly pushed a stick leads. Driven once per frame
 // (QcFrameDriver) or per tick (the control interface); lives in one thread.
+// Beyond walking and acting (decision E-580): east drops (held: the stack), west picks the block
+// in view, the screens and the player list are asked for with worldAction() like their keys, and
+// a held button opens the hotbar's radial menu (QcHotbarRadial), where the right stick chooses a
+// slot instead of looking.
 class QcGamepadControls : public QObject
 {
     Q_OBJECT
@@ -53,6 +59,9 @@ public:
     qsizetype pendingPresses() const { return m_presses.size(); }
     // Whether a click of the sneak button toggled sneaking on.
     bool sneakToggled() const { return m_sneakToggled; }
+    // The radial menu of the hotbar is held open, and its highlighted slot (-1 while closed).
+    bool radialOpen() const { return m_radial.isOpen(); }
+    int radialSlot() const { return m_radial.highlighted(); }
 
     // One frame of `seconds`: the presses since the last frame act and the sticks walk and look.
     // While not `active`, presses are dropped; the first inactive frame gives back what the pad
@@ -64,6 +73,13 @@ public:
     void suspend(QcClientSession *session);
     // Forgets everything without a session (the session ended or changed), a toggled sneak too.
     void reset();
+
+signals:
+    // A key action of the world was pressed (or, for the held player list, released): Pause,
+    // Inventory, Chat, Handbook, CameraView or PlayerList. The game opens the screen as with the key.
+    void worldAction(QcKeyBindings::Action action, bool pressed);
+    // The radial menu opened, closed or highlights another slot.
+    void radialChanged();
 
 private:
     using Action = QcGamepadMapping::Action;
@@ -92,6 +108,14 @@ private:
     // Runs the queued presses; returns whether the sprint button was pressed among them.
     bool runPresses(QcClientSession &session);
     void runPress(QcClientSession &session, Press press);
+    // Pause, inventory, chat, handbook, camera view and player list; false for other actions.
+    bool runWorldPress(Press press);
+    // Drop, pick block and the radial menu; false for other actions.
+    bool runItemPress(QcClientSession &session, Press press);
+    // A drop button held for dropStackMs throws the rest of the stack.
+    void dropStackWhenHeld(QcClientSession &session);
+    // Closes the radial menu; selects its slot when `select`.
+    void closeRadial(QcClientSession *session, bool select);
     void applyWalk(QcPlayerInput &intent, const QcGamepadState &shaped, bool sprintPressed, bool flying);
     // Gives back the intent fields and buttons the pad holds, then stop().
     void release(QcClientSession &session);
@@ -119,4 +143,12 @@ private:
     bool m_sprinting = false;
     bool m_mining = false;
     bool m_using = false;
+    bool m_playerList = false;
+    QcHotbarRadial m_radial;
+    // The radial menu was open in the last active frame; after it closed the right stick looks
+    // again only once it was back in its dead zone (it was pointing at a slot).
+    bool m_radialWasOpen = false;
+    bool m_lookWaitsForNeutral = false;
+    // When the drop button went down (-1: not held) and whether its hold threw the stack.
+    qint64 m_dropPressedMs = -1;
 };

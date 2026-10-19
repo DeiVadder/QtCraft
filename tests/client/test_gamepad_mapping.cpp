@@ -99,6 +99,24 @@ private slots:
         QVERIFY(QcGamepadMapping::held(Action::HotbarPrevious, onlyPressed(QcGamepadButton::LeftShoulder), bindings, false));
         QVERIFY(QcGamepadMapping::held(Action::HotbarNext, onlyPressed(QcGamepadButton::RightShoulder), bindings, false));
         QVERIFY(!QcGamepadMapping::held(Action::Jump, onlyPressed(QcGamepadButton::East), bindings, false));
+        // Screens and items (decision E-580), after the console layout of the model.
+        QVERIFY(QcGamepadMapping::held(Action::Pause, onlyPressed(QcGamepadButton::Start), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::Inventory, onlyPressed(QcGamepadButton::North), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::Drop, onlyPressed(QcGamepadButton::East), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::PickBlock, onlyPressed(QcGamepadButton::West), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::HotbarRadial, onlyPressed(QcGamepadButton::DpadLeft), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::CameraView, onlyPressed(QcGamepadButton::DpadUp), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::Chat, onlyPressed(QcGamepadButton::DpadDown), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::Handbook, onlyPressed(QcGamepadButton::DpadRight), bindings, false));
+        QVERIFY(QcGamepadMapping::held(Action::PlayerList, onlyPressed(QcGamepadButton::Back), bindings, false));
+        // Every button holds exactly one action, and the triggers none of the buttons'.
+        for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
+            int actions = 0;
+            for (std::size_t action = 0; action < QcGamepadMapping::actionCount; ++action) {
+                actions += int(QcGamepadMapping::held(Action(action), onlyPressed(QcGamepadButton(button)), bindings, false));
+            }
+            QCOMPARE(actions, QcGamepadButton(button) == QcGamepadButton::Guide ? 0 : 1);
+        }
 
         QcGamepadState triggers;
         triggers.setAxis(QcGamepadAxis::RightTrigger, 1.0f);

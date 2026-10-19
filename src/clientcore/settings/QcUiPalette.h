@@ -47,6 +47,8 @@ enum class Role {
     // Faint light behind item icons, so dark items (coal, obsidian) stand out on dark slots.
     IconBackdrop,
     Selection,
+    // The ring around the item the pad's focus is on (decision E-583).
+    FocusRing,
     Crosshair,
     Progress,
     Health,

@@ -32,13 +32,17 @@ target_sources(qc_app_core PRIVATE
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
+    hooks/QcScriptedPad.h hooks/QcScriptedPad.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
     hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
 )
 target_sources(qc_app_core PRIVATE
+    input/QcFocusCandidates.h input/QcFocusCandidates.cpp
     input/QcGameInput.h input/QcGameInput.cpp
     input/QcGamepadBackend.h input/QcGamepadBackend.cpp
+    input/QcGamepadUi.h input/QcGamepadUi.cpp
     input/QcKeyControlsForeign.h
+    input/QcMenuNavigator.h input/QcMenuNavigator.cpp
     input/QcRelativeMouse.h
 )
 target_sources(qc_app_core PRIVATE
@@ -127,10 +131,12 @@ qt_add_qml_module(qc_app_core
         qml/DebugOptionsPage.qml
         qml/DebugOverlay.qml
         qml/DisconnectScreen.qml
+        qml/FocusRing.qml
         qml/FurnaceScreen.qml
         qml/HandbookLink.qml
         qml/HandbookRecipe.qml
         qml/HandbookScreen.qml
+        qml/HotbarRadial.qml
         qml/Hud.qml
         qml/HudLabel.qml
         qml/InventoryScreen.qml
@@ -142,6 +148,8 @@ qt_add_qml_module(qc_app_core
         qml/MessageScreen.qml
         qml/ModsScreen.qml
         qml/MultiplayerScreen.qml
+        qml/OnScreenKeyboard.qml
+        qml/PadHints.qml
         qml/PauseMenu.qml
         qml/PlayerListOverlay.qml
         qml/PlayerSlots.qml

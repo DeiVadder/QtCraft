@@ -2253,3 +2253,9 @@ Release-Builds, `feature/46-1e-40-controls` gegen `feature/46-2-session-thread` 
 **`@core`** (8 Chunks, 6 Runden): Bild Ø 8,38–8,40 ms bei beiden Ständen, GPU 0 bis +4 %, Render-CPU −4 bis +2 %, GUI-CPU −7 bis 0 %, Speicher ±0 %. Neue Spalten: `client_tick_late_p99` 2,1–2,7 ms, Maximum 2,3–7,4 ms, `client_ticks_missed` 0 in allen Läufen.
 
 **p99 nachgemessen** (stand und sprint, 8 Runden, ruhige Maschine am späten Abend): beide Stände zweigipflig (10–11 ms oder 15–17 ms, verpasste VSyncs), Median stand 10,5 → 10,4 ms, sprint 15,9 → 13,4 ms. Der erste Lauf (+8/+12 % in stand/sprint, −25 % in crowd) war Streuung. Keine Regression.
+
+## 40.2 (Gamepad-Oberfläche) gerendert (2026-10-19)
+
+Release-Builds, `dev` `cc50366` (38.2) gegen `feature/40-2-gamepad-ui` nach der Nachbesserung (`113cfce`: Frame-Hook und Event-Filter nur bei aktivem Pad, Pad-QML per `Loader`), `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −2 bis +3 %, Render-CPU −2 bis +2 %, GPU −3 bis +1 %, Speicher −1 bis 0 %, gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen (10–16 ms). Keine Regression.
+
+Ein erster Lauf zeigte GUI-CPU in sprint +13 % und +8 MB: Der Basis-Build stammte aus `f68af5f` (vor 38.2), der Kandidat enthielt die Minenschächte, also eine andere Welt (mehr Sektionen und Upload, ein Wesen mehr). Vor einem A/B gegen `dev` den Release-Build von `dev` auf den Stand bringen, den der Kandidat eingemergt hat.

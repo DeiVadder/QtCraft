@@ -650,5 +650,17 @@
     "Took the effects away from %1": "%1 hat die Effekte nicht mehr",
     "%1 has no such effect": "%1 hat keinen solchen Effekt",
     "Only a spawner takes a creature": "Nur ein Spawner nimmt ein Wesen",
-    "Unknown creature: %1": "Unbekanntes Wesen: %1"
+    "Unknown creature: %1": "Unbekanntes Wesen: %1",
+    "Empty hand": "Leere Hand",
+    "RT: mine/attack  LT: use/place  B: drop  X: pick block  LB/RB or hold ◀: select  Y: inventory  ▼: chat  Start: menu": "RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü",
+    "X: delete  Y: space  LB/RB: cursor  Start: done  B: close": "X: löschen  Y: Leerzeichen  LB/RB: Cursor  Start: fertig  B: schließen",
+    "A: take/put down  X: one item  Y: quick move  B: close  Right stick: scroll": "A: nehmen/ablegen  X: ein Item  Y: schnell verschieben  B: schließen  Rechter Stick: scrollen",
+    "A: select  B: back  LB/RB: tabs  Right stick: scroll": "A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen",
+    "Chat or /command (e.g. /help), Start on the keyboard sends, B cancels": "Chat oder /Befehl (z. B. /help), Start auf der Tastatur sendet, B bricht ab",
+    "A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.": "A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel zwischen diesem Block und dem Inventar verschieben. B schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.",
+    "A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.": "A auf einem Item: ein voller Stapel, X: eins, Y: direkt ins Inventar. A auf einem Feld legt es dort ab. LB/RB wechseln die Reiter, B schließt.",
+    "Put something to smelt on top and fuel below. A: pick up and put down. X: put down one. Y: move the stack across. B closes.": "Oben etwas zum Schmelzen hineinlegen, unten Brennstoff. A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben. B schließt.",
+    "A on a name or an item opens its page. B closes.": "A auf einem Namen oder Item öffnet seine Seite. B schließt.",
+    "A: pick up and put down. X: put down one. Y: move the stack across (on the result: craft as many as possible). B closes.": "A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben (auf dem Ergebnis: so viele wie möglich herstellen). B schließt.",
+    "Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.": "Links ein Angebot wählen. A auf dem Ergebnis handelt einmal, Y so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz nach. B schließt."
 }

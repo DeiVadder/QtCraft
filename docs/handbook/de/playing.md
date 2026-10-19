@@ -56,7 +56,12 @@ Ein Gamepad (Xbox, PlayStation, Switch Pro und die meisten anderen) steuert die 
 - **Linken Stick drücken**: beim Vorwärtsgehen rennen
 - **Rechten Stick drücken**: Schleichen ein oder aus; im Flug gedrückt halten, um zu sinken
 - **Linke und rechte Schultertaste**: vorheriges und nächstes Feld der Schnellleiste
-- Menüs, Inventar und die anderen Bildschirme bedienst du weiter mit Maus und Tastatur.
+- **Rechte Aktionstaste**: ein Item fallen lassen; gehalten den ganzen Stapel
+- **Linke Aktionstaste**: den Block im Blick in die Hand nehmen: aus dem Inventar, im Kreativmodus auch aus dem Katalog
+- **Obere Aktionstaste**: Inventar; **Start**: Pause-Menü; **Back**: gehalten die Spielerliste
+- **Steuerkreuz**: oben Kameraansicht, unten Chat, rechts Handbuch; links gehalten das Rad der Schnellleiste: mit dem rechten Stick auf ein Feld zeigen und loslassen
+
+In den Menüs, im Inventar und in allen anderen Bildschirmen bewegt das Steuerkreuz oder der linke Stick einen goldenen Rahmen von Knopf zu Knopf und von Feld zu Feld; die untere Aktionstaste drückt oder nimmt auf und legt ab, die rechte geht zurück, die linke legt ein einzelnes Item ab, die obere verschiebt einen Stapel hinüber, die Schultertasten wechseln Reiter und der rechte Stick scrollt. Auf einem Schieberegler oder Zahlenfeld ändern links und rechts den Wert. Ein Textfeld öffnet eine Tastatur auf dem Bildschirm (Umschalten gibt jeder Taste ihr zweites Zeichen, etwa ! und ? oder Großbuchstaben): die linke Aktionstaste löscht, die obere tippt ein Leerzeichen, Start beendet. Sobald du wieder Maus oder Tastatur benutzt, verschwindet der Rahmen.
 
 **Bewegen**
 

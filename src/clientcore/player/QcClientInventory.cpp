@@ -2,6 +2,13 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 
+QcClientInventory::QcClientInventory(Sender send)
+    : m_send(std::move(send))
+    , m_now([this] { return m_clock.elapsed(); })
+{
+    m_clock.start();
+}
+
 QcItemId QcClientInventory::heldItem() const
 {
     const QcItemStack &held = m_inventory.selectedStack();
@@ -23,7 +30,7 @@ bool QcClientInventory::apply(const QcMsg::InventoryState &state, const QcConten
     for (int i = 0; i < QcInventory::slotCount; ++i) {
         m_inventory.setSlot(i, state.stacks[i]);
     }
-    m_inventory.setSelectedHotbarSlot(state.selected);
+    applySelection(state.selected);
 
     if (state.craftingGrid.size() == 9 && (state.craftingSize == 2 || state.craftingSize == 3)) {
         m_craftingGrid = state.craftingGrid;
@@ -38,7 +45,38 @@ bool QcClientInventory::apply(const QcMsg::InventoryState &state, const QcConten
 void QcClientInventory::selectHotbarSlot(int slot)
 {
     m_inventory.setSelectedHotbarSlot(slot);
+    sendSelection();
+}
+
+void QcClientInventory::sendSelection()
+{
+    m_pendingSelections.append({m_inventory.selectedHotbarSlot(), m_now()});
     m_send(QcMsg::SelectHotbarSlot{m_inventory.selectedHotbarSlot()});
+}
+
+void QcClientInventory::resendLostSelection()
+{
+    if (m_pendingSelections.isEmpty() || m_now() - m_pendingSelections.first().sentMs <= pendingSelectionMs) {
+        return;
+    }
+
+    // The answers of the ones sent later still come, in order, before the new one's; until then
+    // the local selection counts as before.
+    m_pendingSelections.clear();
+    sendSelection();
+}
+
+void QcClientInventory::applySelection(int serverSlot)
+{
+    resendLostSelection();
+
+    // The answer to the oldest selection on its way; states before it carry an older selection.
+    if (!m_pendingSelections.isEmpty() && m_pendingSelections.first().slot == serverSlot) {
+        m_pendingSelections.removeFirst();
+    }
+    if (m_pendingSelections.isEmpty()) {
+        m_inventory.setSelectedHotbarSlot(serverSlot);
+    }
 }
 
 void QcClientInventory::moveItem(int from, int to, int count) const

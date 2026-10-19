@@ -14,6 +14,7 @@ Rectangle {
 
     implicitWidth: row.implicitWidth + 12
     implicitHeight: 28
+    activeFocusOnTab: true
     radius: 3
     color: hover.hovered ? Theme.linkHover : Theme.linkBackground
     border.color: Theme.separator
