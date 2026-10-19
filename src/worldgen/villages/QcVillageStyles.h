@@ -94,6 +94,14 @@ struct QcVillageStyle
         int margin = 4;
         int fray = 3;
         int blend = 4;
+        // The pools on the wetland (decision E-661): their share of the open ground, the band of
+        // `bottom` around them, the noise scale in blocks, the plant beside them (air: none) and its
+        // chance per column.
+        double water = 0.4;
+        int mudBand = 2;
+        double scale = 8.0;
+        QcBlockId plant = qcAirBlockId;
+        double plantChance = 0.0;
 
         // Columns farther than this from the pieces and boardwalks keep their terrain.
         int reach() const { return margin + fray + blend; }

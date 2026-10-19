@@ -32,7 +32,7 @@ qc_add_test(test_village_fields SOURCES world/test_village_fields.cpp world/QcVi
 qc_add_test(test_village_layouts SOURCES world/test_village_layouts.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_bounds SOURCES world/test_village_bounds.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_plan_hash SOURCES world/test_village_plan_hash.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_swamp SOURCES world/test_village_swamp.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_village_swamp SOURCES world/test_village_swamp.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 360)
 # Headless measurement of village generation (stage 37.2); QTCRAFT_VILLAGE_MEASURE=1 for the recorded sizes.
 qc_add_test(test_village_measure SOURCES world/test_village_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)

@@ -71,9 +71,11 @@ struct QcVillageStilts
     QString stair;
 };
 
-// The ground a village over water shapes around itself (decision E-407): within `margin` blocks of
-// its pieces and boardwalks (frayed by noise up to `fray` more) the ground lies `depth` blocks below
-// the water surface with a `bottom` of mud, blending back to the terrain over `blend` blocks; dry
+// The ground a village over water shapes around itself (decision E-407, E-660, E-661): within
+// `margin` blocks of its pieces and boardwalks (frayed by noise up to `fray` more) the ground lies at
+// the water surface, blending back to the terrain over at least `blend` blocks; on it a noise of
+// `scale` blocks forms pools `depth` blocks deep over `water` of the open ground, ringed by `mudBand`
+// blocks of the `bottom` block, grass between, with `plant` beside the pools at `plantChance`; dry
 // ground stays where stairs lead down to land.
 struct QcVillageWetland
 {
@@ -83,6 +85,11 @@ struct QcVillageWetland
     int fray = 3;
     int blend = 4;
     QString bottom;
+    double water = 0.4;
+    int mudBand = 2;
+    double scale = 8.0;
+    QString plant;
+    double plantChance = 0.0;
 };
 
 // A range a village draws one value from, uniformly (inclusive).

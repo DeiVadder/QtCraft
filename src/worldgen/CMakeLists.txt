@@ -88,6 +88,7 @@ target_sources(qc_worldgen PRIVATE
     villages/QcVillagePlanner.h villages/QcVillagePlanner.cpp
     villages/QcVillageRoads.h villages/QcVillageRoads.cpp
     villages/QcVillageStyles.h villages/QcVillageStyles.cpp
+    villages/QcWetlandPattern.h villages/QcWetlandPattern.cpp
     villages/QcWetlandShaper.h villages/QcWetlandShaper.cpp
 )
 qc_configure_target(qc_worldgen)
@@ -97,7 +98,7 @@ set(qc_worldgen_fp_sources
     terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTreeShape.cpp
     villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
     villages/QcRoadNetworkPlanner.cpp villages/QcVillageDraft.cpp villages/QcVillageForecourt.cpp villages/QcVillagePlanner.cpp
-    villages/QcWetlandShaper.cpp)
+    villages/QcWetlandPattern.cpp villages/QcWetlandShaper.cpp)
 if(MSVC)
     set_source_files_properties(${qc_worldgen_fp_sources} PROPERTIES COMPILE_OPTIONS /fp:precise)
 else()

@@ -209,6 +209,11 @@ void readGround(QcVillageStyleDefinition &style, const QString &packNamespace, Q
         wetland.fray = nested.integer(u"fray"_s, wetland.fray, 0, 8);
         wetland.blend = nested.integer(u"blend"_s, wetland.blend, 1, 8);
         wetland.bottom = nested.name(u"bottom"_s, packNamespace, wetland.bottom);
+        wetland.water = nested.number(u"water"_s, wetland.water, 0.0, 1.0);
+        wetland.mudBand = nested.integer(u"mudBand"_s, wetland.mudBand, 0, 4);
+        wetland.scale = nested.number(u"scale"_s, wetland.scale, 2.0, 64.0);
+        wetland.plant = nested.name(u"plant"_s, packNamespace, wetland.plant);
+        wetland.plantChance = nested.number(u"plantChance"_s, wetland.plantChance, 0.0, 1.0);
     });
 }
 

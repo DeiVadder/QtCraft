@@ -2,38 +2,61 @@
 
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/villages/QcVillagePlan.h"
+#include "worldgen/villages/QcWetlandPattern.h"
 
 #include <optional>
 
 class QcTerrainGenerator;
 
-// The ground a village over water shapes around itself (decision E-407, QcVillagePlan::Wetland):
-// within the wetland's margin of its pieces and boardwalks, frayed by noise, the ground lies a block
-// or two below the water surface with a bottom of mud, deep water filled up to it; over the blend
-// width beyond, the ground rises back to the terrain, so no cliff cuts the neighbouring land; the
-// land access beside the stairs stays as it is. A pure function of the seed, the plan and the
-// terrain noise per column, so every chunk shapes its own columns the same in any order. Thread-safe.
+// The ground a village over water shapes around itself (decision E-407, E-660, QcVillagePlan::Wetland):
+// within the wetland's margin of its pieces and boardwalks, frayed by noise, the ground lies at the
+// water surface, deep water filled up to it, with pools, mud and grass on it (QcWetlandPattern,
+// decision E-661). Beyond, the ground returns to the terrain at most a block per block of distance
+// (more than the terrain's own slope only where the edge's noise bends), so no cliff cuts the
+// neighbouring land however high it lies: ground far above the water is only cut a few blocks near
+// the village. The land access beside the stairs stays as it is. A pure function of the seed, the
+// plan and the terrain noise per column, so every chunk shapes its own columns the same in any
+// order. Thread-safe.
 class QcWetlandShaper
 {
 public:
+    // A shaped column: the height of its top block and what covers it.
+    struct Column
+    {
+        int top = 0;
+        QcWetlandPattern::Cover cover = QcWetlandPattern::Cover::Grass;
+    };
+
     QcWetlandShaper(const QcTerrainGenerator &terrain, quint64 seed);
 
-    // The height of the ground's top block the column gets; std::nullopt keeps the terrain (outside
-    // the wetland, in the land access, or dry ground the blend leaves as it is).
+    // The height of the ground's top block the column gets (a pool's bottom under water);
+    // std::nullopt keeps the terrain (outside the wetland, in the land access, or dry ground the
+    // blend leaves as it is).
     [[nodiscard]] std::optional<int> groundAt(const QcVillagePlan &plan, int x, int z) const;
+    // The shaped column with its cover; std::nullopt as for groundAt().
+    [[nodiscard]] std::optional<Column> columnAt(const QcVillagePlan &plan, int x, int z) const;
     // Shapes the chunk's columns of the plan's wetland, before the village is built into it: lowered
     // ground is removed (water up to the water surface, air above), raised ground filled with the
-    // bottom, the top block is the bottom under water, else the terrain's surface block.
+    // bottom, the top block is the bottom under water and on mud, else the terrain's surface block;
+    // the style's plant grows on some columns beside the pools.
     void shape(QcChunk &chunk, const QcVillagePlan &plan) const;
 
 private:
-    // groundAt() for a column whose terrain ground's top block is `ground`.
-    [[nodiscard]] std::optional<int> targetAt(const QcVillagePlan &plan, int x, int z, int ground) const;
+    // columnAt() for a column whose terrain ground's top block is `ground`.
+    [[nodiscard]] std::optional<Column> targetAt(const QcVillagePlan &plan, int x, int z, int ground) const;
+    // The height of the column's ground before pools are cut: the water surface within the edge,
+    // returning to the terrain's `ground` towards the blend's end; `ground` outside the wetland.
+    [[nodiscard]] int levelAt(const QcVillagePlan &plan, int x, int z, int ground) const;
+    // Whether a pool may be cut at the column: none of its sides lies above the water surface.
+    [[nodiscard]] bool poolFits(const QcVillagePlan &plan, int x, int z) const;
     // Shapes one column: `local` is the column in the chunk with y the terrain ground's top block.
-    void shapeColumn(QcChunk &chunk, QcBlockPos local, int target, QcBlockId bottom) const;
+    void shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, QcBlockId bottom) const;
+    // The style's plant on a column at the water surface beside a pool, where it grows.
+    void plant(QcChunk &chunk, QcBlockPos local, const QcVillagePlan &plan) const;
     // Distance from the column to the nearest piece or boardwalk (0 inside one).
     static double distanceToWet(const QcVillagePlan::Wetland &wetland, int x, int z);
 
     const QcTerrainGenerator &m_terrain;
     QcNoise m_fray;
+    QcWetlandPattern m_pattern;
 };

@@ -120,6 +120,41 @@ QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVill
     return wetland;
 }
 
+// The style's wetland with its blocks resolved, fitted into the region's margin; std::nullopt
+// without one or with an unknown bottom block (a warning), an unknown plant is left out (a warning).
+std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefinition &definition, const QcContentRegistry &content,
+                                                      QStringList *warnings)
+{
+    const QcVillageWetland &wetland = definition.wetland;
+    if (!wetland.enabled) {
+        return std::nullopt;
+    }
+    const std::optional<QcBlockId> bottom = content.stateId(wetland.bottom);
+    if (!bottom) {
+        if (warnings) {
+            warnings->append(u"village style '%1': unknown wetland bottom '%2', no wetland"_s.arg(definition.name, wetland.bottom));
+        }
+        return std::nullopt;
+    }
+    const std::optional<QcBlockId> plant = wetland.plant.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.stateId(wetland.plant);
+    if (!plant && warnings) {
+        warnings->append(u"village style '%1': unknown wetland plant '%2', none"_s.arg(definition.name, wetland.plant));
+    }
+
+    QcVillageStyle::Wetland resolved;
+    resolved.bottom = *bottom;
+    resolved.depth = wetland.depth;
+    resolved.margin = wetland.margin;
+    resolved.fray = wetland.fray;
+    resolved.blend = wetland.blend;
+    resolved.water = wetland.water;
+    resolved.mudBand = wetland.mudBand;
+    resolved.scale = wetland.scale;
+    resolved.plant = plant.value_or(qcAirBlockId);
+    resolved.plantChance = wetland.plantChance;
+    return fitWetland(resolved, content.villageSettings(), definition.name, warnings);
+}
+
 } // namespace
 
 QcVillageStyles::QcVillageStyles(const QcContentRegistry &content, QStringList *warnings)
@@ -194,14 +229,8 @@ std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefin
             layout.diagonals = false;
             layout.winding = 0.0;
         }
-        const QcVillageWetland &wetland = definition.wetland;
-        const std::optional<QcBlockId> bottom = content.stateId(wetland.bottom);
-        if (wetland.enabled && !bottom && warnings) {
-            warnings->append(u"village style '%1': unknown wetland bottom '%2', no wetland"_s.arg(definition.name, wetland.bottom));
-        }
-        if (wetland.enabled && bottom) {
-            style.wetland = fitWetland({*bottom, wetland.depth, wetland.margin, wetland.fray, wetland.blend}, content.villageSettings(),
-                                       definition.name, warnings);
+        if (std::optional<QcVillageStyle::Wetland> wetland = resolveWetland(definition, content, warnings)) {
+            style.wetland = *wetland;
         }
     }
 
