@@ -33,9 +33,12 @@ elseif(QC_SANITIZERS)
     target_link_options(qc_project_options INTERFACE -fsanitize=${_qc_sanitizer_list})
 endif()
 
-# Applies the project policy to an own target.
+include(QcSourceTree)
+
+# Applies the project policy to an own target and groups its sources by folder for IDEs.
 function(qc_configure_target target)
     target_link_libraries(${target} PRIVATE qc_project_options)
+    qc_source_tree(${target})
 endfunction()
 
 # Adds a QtTest executable registered with CTest. Every test gets its own data directory
