@@ -82,6 +82,8 @@ private:
     void runOverlayStep(const QString &step);
     // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
     void pressKey(const QString &actionId) const;
+    // `view:hide` / `view:show`: hides or shows the world view as the phase binding does.
+    void showView(bool shown) const;
     // Opens the screen of an --overlay name (QcScreenState::overlayFromName).
     void openOverlay(const QString &name) const;
     // "pick:", "open:" and "text:" steps: they act on a control of a shown screen and wait up to

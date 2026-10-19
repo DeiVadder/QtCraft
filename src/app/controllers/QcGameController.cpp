@@ -139,6 +139,11 @@ void QcGameController::setView(QcWorldView *view)
             attachWindow(m_parts.view->window());
         }
         connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
+        connect(m_parts.view, &QcWorldView::meshesLost, this, [this] {
+            if (m_parts.meshes) {
+                m_parts.meshes->remeshAll();
+            }
+        });
     }
     emit viewChanged();
 }

@@ -1,32 +1,25 @@
 #pragma once
 
-#include "app/rendering/QcDebugLineRenderer.h"
 #include "app/rendering/QcFramePlan.h"
 #include "app/rendering/QcGpuMeshStore.h"
-#include "app/rendering/QcPrecipitationRenderer.h"
 #include "app/rendering/QcRenderSample.h"
-#include "app/rendering/QcSkyRenderer.h"
-#include "clientcore/camera/QcCamera.h"
-#include "clientcore/meshing/QcChunkMesh.h"
-#include "clientcore/meshing/QcEntityMesh.h"
-#include "common/core/QcAabb.h"
-#include "common/core/QcBlockPos.h"
+#include "app/rendering/QcWorldRendererResources.h"
+#include "app/rendering/QcWorldView.h"
 
-#include <QColor>
-#include <QImage>
 #include <QQuickRhiItemRenderer>
-#include <QVector3D>
-#include <QVector4D>
 #include <rhi/qrhi.h>
 
-#include <array>
 #include <functional>
-#include <memory>
-#include <optional>
 
-// Render-thread side of QcWorldView: pipelines and the drawing of a frame, which is the list of
-// steps of the render mode (QcFramePlan, decision E-390), drawn in order into their targets. The
-// sections' buffers are in QcGpuMeshStore; the per-frame entity, hand and outline buffers are here.
+// Render-thread side of QcWorldView: the drawing of a frame, which is the list of steps of the
+// render mode (QcFramePlan, decision E-390), drawn in order into their targets. The GPU resources
+// are in two groups by lifetime (decision E-710): QcWorldDeviceResources for the QRhi,
+// QcWorldPassResources for the render pass; the sections' buffers are in QcGpuMeshStore.
+//
+// Thread contract (Qt Quick): every method runs on the render thread. synchronize() runs while the
+// GUI thread is blocked and is the only place that touches the QcWorldView: it copies the view's
+// FrameInput snapshot into m_frame and takes the queued mesh updates; initialize() and render()
+// read only m_frame and the renderer's own state, while the GUI thread may already change the view.
 class QcWorldRenderer : public QQuickRhiItemRenderer
 {
 public:
@@ -46,18 +39,15 @@ private:
         bool belowWorld = false;
     };
 
-    void createPipelines();
-    void ensureBindings();
-    std::unique_ptr<QRhiGraphicsPipeline> createBlockPipeline(const QShader &vertexShader, const QShader &fragmentShader,
-                                                              const QRhiVertexInputLayout &inputLayout, bool translucent);
-    void createOutlinePipeline();
-    void uploadOutline(QRhiResourceUpdateBatch *updates);
-    void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
+    // Both groups and the mesh store for the new rhi(), the pass group first.
+    void replaceDevice();
+    // Releases the pass group (on its own: a render target its pipelines do not fit).
+    void dropPass();
     // Benchmark: CPU time of the render thread since the last frame and the GPU time.
     void startSample(QRhiCommandBuffer *commandBuffer);
     // Atlas, pipelines and the uploads of this frame.
     void prepareResources(QRhiResourceUpdateBatch *updates);
-    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize);
+    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize) const;
     // The sections inside the view frustum.
     FrameView cull(const QMatrix4x4 &viewProjection) const;
     // The steps of the plan, one GPU render pass per target.
@@ -80,67 +70,27 @@ private:
     void drawTranslucentRuns(const QcGpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
                              QRhiCommandBuffer *commandBuffer);
 
-    // Everything built for one render pass: the pipelines and the sub-renderers that own theirs.
-    // Dropped as a unit (`m_pass = {}`) on a new QRhi or a render target whose pass they do not fit,
-    // so a new pipeline only needs a member here.
-    struct PassResources
-    {
-        std::unique_ptr<QRhiGraphicsPipeline> opaquePipeline;
-        std::unique_ptr<QRhiGraphicsPipeline> translucentPipeline;
-        // The water lists; today the same shaders and blending as translucentPipeline.
-        std::unique_ptr<QRhiGraphicsPipeline> waterPipeline;
-        std::unique_ptr<QRhiGraphicsPipeline> outlinePipeline;
-        std::unique_ptr<QRhiGraphicsPipeline> entityPipeline;
-        std::unique_ptr<QRhiGraphicsPipeline> handPipeline;
-        QcSkyRenderer skyRenderer;
-        QcDebugLineRenderer debugLineRenderer;
-        // Rain and snow, one instance per particle (decisions E-395, E-397).
-        QcPrecipitationRenderer precipitationRenderer;
-        // The pass the block and entity pipelines were created for.
-        std::unique_ptr<QRhiRenderPassDescriptor> renderPass;
-
-        // Whether the pipelines were created for a pass compatible with `target`.
-        bool fits(const QRhiRenderPassDescriptor *target) const;
-    };
-
-    QRhi *m_rhi = nullptr;
-    std::unique_ptr<QRhiBuffer> m_frameUniforms;
-    std::unique_ptr<QRhiTexture> m_atlasTexture;
-    std::unique_ptr<QRhiSampler> m_atlasSampler;
-    std::unique_ptr<QRhiShaderResourceBindings> m_bindings;
-    PassResources m_pass;
+    // GPU resources by lifetime: the pass group is dropped with the device group and on its own
+    // when the render target's pass changes (initialize()).
+    QcWorldDeviceResources m_device;
+    QcWorldPassResources m_pass;
     // m_pass.waterPipeline has the shaders, blending and resources of m_pass.translucentPipeline. A water
     // pipeline of its own (stage 45.3) sets this to false where it is created.
     bool m_waterLikeTranslucent = true;
-    std::unique_ptr<QRhiShaderResourceBindings> m_outlineBindings;
-    std::unique_ptr<QRhiBuffer> m_outlineVertices;
-    QList<QcAabb> m_selection;
-    std::optional<QList<QcAabb>> m_uploadedSelection;
-    quint32 m_outlineVertexCount = 0;
-    std::shared_ptr<const QcEntityMesh> m_entityMesh;
-    std::shared_ptr<const QcEntityMesh> m_handMesh;
-    QcGpuBuffers m_entityBuffers;
-    QcGpuBuffers m_handBuffers;
+    // The frame's input, copied from the view in synchronize().
+    QcWorldView::FrameInput m_frame;
 
     QcFramePlan m_plan = QcFramePlan::classic();
     bool m_warnedTarget = false;
 
     // The sections on the GPU and the meshes queued for them.
     QcGpuMeshStore m_meshStore;
+    // A new QRhi replaced a previous one and with it the sections on the GPU; reported to the view
+    // in the next synchronize().
+    bool m_meshesLost = false;
 
-    QcCamera m_camera;
-    QList<QImage> m_atlasLevels;
-    quint64 m_atlasVersion = 0;
-    quint64 m_uploadedAtlasVersion = 0;
-    bool m_atlasTried = false;
-    QcSkyState m_sky;
-    std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
-    std::shared_ptr<const QList<QcPrecipitationDrop>> m_precipitation;
-    float m_fogStart = 80.0f;
-    float m_fogEnd = 128.0f;
-
-    // Benchmark samples, handed to the view in synchronize() while it collects them.
-    bool m_collectSamples = false;
+    // Benchmark samples, handed to the view in synchronize() while it collects them
+    // (m_frame.collectRenderSamples).
     QList<QcRenderSample> m_samples;
     QcRenderSample m_sample;
     qint64 m_lastThreadCpuNs = -1;

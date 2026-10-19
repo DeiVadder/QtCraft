@@ -263,3 +263,15 @@ add_test(NAME app_offscreen_photo_mode
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_photo_mode PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_photo_mode;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-photo.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Hiding and showing the world view in a loaded world (as the phase binding of Main.qml does) keeps
+# its renderer and the sections on the GPU: no second renderer, no remeshing (decision E-710).
+add_test(NAME app_offscreen_view_hidden_keeps_sections
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@800 view:hide;--overlay;@1400 view:show"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=World view: renderer 1 created.*World view hidden \\([1-9][0-9]* sections\\).*World view shown \\([1-9]"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-view-hidden.png
+        "-DFORBIDDEN_ERROR=renderer [2-9] created|the GPU lost|no world view|${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_view_hidden_keeps_sections;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-view-hidden.png;QTCRAFT_SCREENSHOT_FRAMES=30")

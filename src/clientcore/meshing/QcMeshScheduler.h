@@ -68,6 +68,9 @@ public:
     // (an explosion's hundreds of blocks, decision E-604).
     void blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous);
     void clear();
+    // Marks every section of the loaded chunks dirty, so each is meshed and delivered again (the
+    // renderer lost its GPU copies, QcWorldView::meshesLost).
+    void remeshAll();
 
     // Starts jobs for dirty sections, at most `maxJobsInFlight` at a time.
     void pump(const QcClientWorld &world);

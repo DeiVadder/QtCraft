@@ -277,6 +277,15 @@ void QcMeshScheduler::clear()
     }
 }
 
+void QcMeshScheduler::remeshAll()
+{
+    for (const QcChunkPos &chunk : std::as_const(m_loadedChunks)) {
+        for (int section = 0; section < QcWorld::sectionCount; ++section) {
+            markDirty(chunk, section);
+        }
+    }
+}
+
 void QcMeshScheduler::setLight(QcChunkPos chunk, int section, std::shared_ptr<const QcChunkLight::Section> light)
 {
     const auto it = m_light.find(chunk);

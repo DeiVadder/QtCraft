@@ -22,7 +22,9 @@
 #include <utility>
 
 // Qt Quick item that renders the voxel world with QRhi.
-// All setters are called on the GUI thread; the renderer copies the state in synchronize().
+// All setters are called on the GUI thread. QcWorldRenderer::synchronize() runs on the render thread
+// while Qt Quick blocks the GUI thread: it copies the FrameInput snapshot and takes the queued mesh
+// updates and the collected benchmark samples; nothing else of the view is read on the render thread.
 class QcWorldView : public QQuickRhiItem
 {
     Q_OBJECT
@@ -36,10 +38,33 @@ public:
         std::shared_ptr<const QcChunkMesh> mesh;
     };
 
+    // The state a frame is drawn from, as one snapshot: the setters change it on the GUI thread and
+    // the renderer copies it as a whole in synchronize() (decision E-710). Small to copy by value:
+    // lists and meshes are implicitly or explicitly shared, a copy allocates nothing.
+    struct FrameInput
+    {
+        QcCamera camera;
+        // The atlas's mip levels and a counter that changes with every setAtlas().
+        QList<QImage> atlas;
+        quint64 atlasVersion = 0;
+        // Sky dome, fog colour and the daylight factor of the shaders.
+        QcSkyState sky = QcSky::at(QcDayCycle::startTime);
+        float fogStart = 80.0f;
+        float fogEnd = 128.0f;
+        // Outlined boxes of the targeted block in world space; empty for none.
+        QList<QcAabb> selection;
+        std::shared_ptr<const QcEntityMesh> entityMesh;
+        std::shared_ptr<const QcEntityMesh> handMesh;
+        std::shared_ptr<const QList<QcDebugLineVertex>> debugLines;
+        std::shared_ptr<const QList<QcPrecipitationDrop>> precipitation;
+        // Benchmark: the renderer records one QcRenderSample per frame while set.
+        bool collectRenderSamples = false;
+    };
+
     explicit QcWorldView(QQuickItem *parent = nullptr);
 
     void setCamera(const QcCamera &camera);
-    const QcCamera &camera() const { return m_camera; }
+    const QcCamera &camera() const { return m_frame.camera; }
 
     // The atlas's mip levels, level 0 first (QcTextureAtlas::levels()).
     void setAtlas(const QList<QImage> &levels);
@@ -47,7 +72,6 @@ public:
     void removeMesh(quint64 key);
     void clearMeshes();
 
-    // Block outlined as the player's target; std::nullopt hides the outline.
     // Outlined boxes of the targeted block in world space; empty for none.
     void setSelection(const QList<QcAabb> &boxes);
     // Entity triangles for this frame (replaces the previous set).
@@ -66,29 +90,32 @@ public:
     qsizetype meshCount() const { return m_meshKeys.size(); }
 
     // Benchmark: while enabled, the renderer hands over one QcRenderSample per rendered frame.
-    void setCollectRenderSamples(bool collect) { m_collectRenderSamples = collect; }
+    void setCollectRenderSamples(bool collect) { m_frame.collectRenderSamples = collect; }
     QList<QcRenderSample> takeRenderSamples() { return std::exchange(m_renderSamples, {}); }
+
+signals:
+    // The sections handed to the renderer are no longer on the GPU (a new renderer or a new QRhi);
+    // the owner of the meshes submits all of them again (QcMeshScheduler::remeshAll). Emitted on
+    // the GUI thread.
+    void meshesLost();
 
 private:
     // Called by Qt Quick on the render thread; Qt Quick owns the returned renderer and deletes it
     // there when the item or its scene graph goes away. Private on purpose: only Qt calls it.
     [[nodiscard]] QQuickRhiItemRenderer *createRenderer() final; // NOLINT(misc-override-with-different-visibility)
+    // QcWorldRenderer::synchronize() copies m_frame, takes the mesh updates and appends its samples
+    // to m_renderSamples, while the GUI thread is blocked.
     friend class QcWorldRenderer;
+    // Render thread, GUI thread blocked: queues meshesLost() for the GUI thread, when sections were
+    // submitted.
+    void meshesLostOnDevice();
 
-    QcCamera m_camera;
-    QList<QImage> m_atlas;
-    quint64 m_atlasVersion = 0;
+    FrameInput m_frame;
+    // Handed over, not copied: the renderer takes the updates and keeps the list's capacity.
     QList<MeshUpdate> m_pendingMeshUpdates;
     bool m_clearAllMeshes = false;
-    QcSkyState m_sky = QcSky::at(QcDayCycle::startTime);
-    float m_fogStart = 80.0f;
-    float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;
-    QList<QcAabb> m_selection;
-    std::shared_ptr<const QcEntityMesh> m_entityMesh;
-    std::shared_ptr<const QcEntityMesh> m_handMesh;
-    std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
-    std::shared_ptr<const QList<QcPrecipitationDrop>> m_precipitation;
-    bool m_collectRenderSamples = false;
+    // Renderers created so far: a later one starts without the sections of the earlier.
+    int m_renderers = 0;
     QList<QcRenderSample> m_renderSamples;
 };

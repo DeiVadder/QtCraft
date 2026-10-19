@@ -29,7 +29,7 @@ set(qc_concurrency_tests
     test_creative_client test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
-    app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
+    app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 

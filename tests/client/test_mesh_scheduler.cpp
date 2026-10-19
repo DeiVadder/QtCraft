@@ -12,6 +12,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -432,6 +433,31 @@ private slots:
         pumpUntilIdle(scheduler, world);
         QCOMPARE(meshes.size(), 2);
         QVERIFY(meshes.contains(qcSectionKey({0, 0}, 1)));
+    }
+
+    void remeshAllDeliversEveryMeshAgain()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        loadSquare(world, scheduler, 20);
+        pumpUntilIdle(scheduler, world);
+        const QHash<quint64, std::shared_ptr<const QcChunkMesh>> first = std::exchange(meshes, {});
+        QCOMPARE(first.size(), 2);
+
+        // Nothing changed in the world: the same sections come again, as new meshes of equal content.
+        scheduler.remeshAll();
+        pumpUntilIdle(scheduler, world);
+        QCOMPARE(meshes.size(), first.size());
+        for (auto it = first.cbegin(); it != first.cend(); ++it) {
+            const std::shared_ptr<const QcChunkMesh> again = meshes.value(it.key());
+            QVERIFY(again);
+            QVERIFY(again != it.value());
+            QCOMPARE(again->opaqueIndices.size(), it.value()->opaqueIndices.size());
+        }
     }
 
     void unloadRemovesMeshesAndDropsRunningResults()

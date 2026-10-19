@@ -202,6 +202,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         m_screens.input.setPlayerListHeld(true);
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
+    } else if (step == u"view:hide"_s || step == u"view:show"_s) {
+        showView(step == u"view:show"_s);
     } else if (step == u"fly"_s) {
         // Creative flight as after a double tap of jump (decision E-284).
         m_parts.session->gameMode().setFlightWanted(true);
@@ -223,6 +225,17 @@ void QcStartupHooks::pressKey(const QString &actionId) const
     }
     // As if its key were pressed in the world.
     m_screens.input.worldAction(*action, true);
+}
+
+void QcStartupHooks::showView(bool shown) const
+{
+    if (!m_parts.view) {
+        qCWarning(lcGame) << "--overlay view: no world view";
+        return;
+    }
+    // What the phase binding in Main.qml does when it hides the view (the binding is replaced).
+    m_parts.view->setVisible(shown);
+    qCInfo(lcGame).nospace() << (shown ? "World view shown (" : "World view hidden (") << m_parts.view->meshCount() << " sections)";
 }
 
 void QcStartupHooks::openOverlay(const QString &name) const

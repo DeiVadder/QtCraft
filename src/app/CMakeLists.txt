@@ -88,6 +88,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
+    rendering/QcWorldRendererResources.h rendering/QcWorldRendererResources.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
 target_sources(qc_app_core PRIVATE
