@@ -61,7 +61,7 @@ void QcNetworkClient::onConnected()
     m_session->setCredentials(m_request.credentials);
     connect(m_session.get(), &QcClientSession::stateChanged, this, &QcNetworkClient::onSessionState);
     setStage(Stage::LoggingIn);
-    m_session->start();
+    m_session->start(m_request.tickMode);
 }
 
 void QcNetworkClient::onSessionState()

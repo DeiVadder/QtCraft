@@ -570,7 +570,9 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
         m_control->setSession(m_session.get());
     }
 
-    m_session->start();
+    // No frames hold this thread up; every tick is applied before the next one runs, so the control
+    // interface counts ticks exactly (decision E-560).
+    m_session->start(QcClientSession::TickMode::Timer);
     return {};
 }
 

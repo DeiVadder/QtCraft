@@ -15,6 +15,12 @@ qc_add_test(test_mouse_capture SOURCES client/test_mouse_capture.cpp LIBRARIES q
 qc_add_test(test_sky SOURCES client/test_sky.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 # The prediction of the local player on its own (decision E-530): reconciliation, pending inputs, riding.
+# The client session's tick thread (decision E-560): pacer and core on a fake clock, long frames of
+# the session's thread (real time), order of commands, ending sessions, the fallback without a thread.
+qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTransport.h LIBRARIES qc_server qc_clientcore)
+# The session on its tick thread against a server: wish to fly after landing, server stop and kick,
+# death and respawn, riding, the same walk as with the timer in the session's thread.
+qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"

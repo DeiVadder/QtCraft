@@ -163,6 +163,15 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    tick/QcSessionCommand.h
+    tick/QcSessionCore.h tick/QcSessionCore.cpp
+    tick/QcSessionEvent.h
+    tick/QcSessionLink.h tick/QcSessionLink.cpp
+    tick/QcSessionTickMode.h
+    tick/QcTickPacer.h tick/QcTickPacer.cpp
+    tick/QcTickTiming.h tick/QcTickTiming.cpp
+)
+target_sources(qc_clientcore PRIVATE
     weather/QcClientWeather.h weather/QcClientWeather.cpp
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
 )

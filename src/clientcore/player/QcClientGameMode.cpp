@@ -30,6 +30,9 @@ void QcClientGameMode::toggleFlight()
 void QcClientGameMode::setFlightWanted(bool wanted)
 {
     m_flightWanted = wanted && rules().mayFly;
+    if (m_wishListener) {
+        m_wishListener(m_flightWanted);
+    }
 }
 
 std::optional<QcBlockPos> QcClientGameMode::nextInstantBreak(std::optional<QcBlockPos> mined)

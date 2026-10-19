@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/session/QcClientLogin.h"
+#include "clientcore/tick/QcSessionTickMode.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/protocol/QcSessionMessages.h"
 #include "network/QcServerAddress.h"
@@ -31,6 +32,8 @@ public:
         QcAppearance appearance;
         QcClientLogin::Credentials credentials;
         int connectTimeoutMs = 10'000;
+        // How the session ticks (the headless client ticks in its own thread, decision E-560).
+        QcSessionTickMode tickMode = QcSessionTickMode::Threaded;
     };
 
     explicit QcNetworkClient(QObject *parent = nullptr);
@@ -39,7 +42,7 @@ public:
     void join(const Request &request);
     void cancel();
     Stage stage() const { return m_stage; }
-    // The session after joined(): logged in, loading the world, its tick timer running. The caller
+    // The session after joined(): logged in, loading the world, ticking. The caller
     // takes it over; null before and once taken.
     std::unique_ptr<QcClientSession> takeSession();
 

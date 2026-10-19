@@ -68,6 +68,8 @@ private:
     // "key=value" pairs of the entities at the end: creatures and item stacks on the server, items
     // in the player's inventory.
     QString entityPairs() const;
+    // "key=value" pairs of the client session's tick punctuality (decision E-560).
+    QString clientTickPairs() const;
     void logReport(const QList<qint64> &sorted, double p99Ms) const;
 
     QcScreenState &m_screens;

@@ -7,6 +7,7 @@
 #include <QTimer>
 
 #include <algorithm>
+#include <atomic>
 #include <deque>
 #include <memory>
 
@@ -24,6 +25,10 @@ public:
         , m_jitterMs(jitterMs)
         , m_random(seed)
     {
+        // Children follow the transport into the session's tick thread (decision E-560); the members
+        // leave their parent again when they are destroyed, before it.
+        m_inner->setParent(this);
+        m_timer.setParent(this);
         m_clock.start();
         m_timer.setTimerType(Qt::PreciseTimer);
         m_timer.setInterval(1);
@@ -37,8 +42,9 @@ public:
     void close() override { m_inner->close(); }
     bool isOpen() const override { return m_inner->isOpen(); }
 
-    // The longest one-way delay a frame got so far.
-    qint64 largestDelayMs() const { return m_largestDelayMs; }
+    // The longest one-way delay a frame got so far; may be read from another thread than the
+    // transport's (the session's tick thread, decision E-560).
+    qint64 largestDelayMs() const { return m_largestDelayMs.load(std::memory_order_relaxed); }
 
 private:
     struct Pending
@@ -56,16 +62,24 @@ private:
         queue.push_back({due, now, frame});
     }
 
+    void noteDelay(qint64 delayMs)
+    {
+        // Written in the transport's thread only.
+        if (delayMs > m_largestDelayMs.load(std::memory_order_relaxed)) {
+            m_largestDelayMs.store(delayMs, std::memory_order_relaxed);
+        }
+    }
+
     void deliverDue()
     {
         const qint64 now = m_clock.elapsed();
         while (!m_outgoing.empty() && m_outgoing.front().dueMs <= now) {
-            m_largestDelayMs = std::max(m_largestDelayMs, now - m_outgoing.front().sentMs);
+            noteDelay(now - m_outgoing.front().sentMs);
             m_inner->sendFrame(m_outgoing.front().frame);
             m_outgoing.pop_front();
         }
         while (!m_incoming.empty() && m_incoming.front().dueMs <= now) {
-            m_largestDelayMs = std::max(m_largestDelayMs, now - m_incoming.front().sentMs);
+            noteDelay(now - m_incoming.front().sentMs);
             const QByteArray frame = m_incoming.front().frame;
             m_incoming.pop_front();
             emit frameReceived(frame);
@@ -84,7 +98,7 @@ private:
     QTimer m_timer;
     std::deque<Pending> m_outgoing;
     std::deque<Pending> m_incoming;
-    qint64 m_largestDelayMs = 0;
+    std::atomic<qint64> m_largestDelayMs = 0;
     bool m_innerClosed = false;
     bool m_closedEmitted = false;
 };

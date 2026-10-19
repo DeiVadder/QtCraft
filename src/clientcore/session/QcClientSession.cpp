@@ -1,13 +1,12 @@
 #include "clientcore/session/QcClientSession.h"
 
+#include "clientcore/tick/QcSessionLink.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
-#include "common/protocol/QcConnection.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
 
 #include <QLoggingCategory>
-#include <QTimer>
 
 #include <cmath>
 
@@ -17,52 +16,50 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
 
-bool chunkUsesKnownBlocks(const QcChunk &chunk, const QcContentRegistry &content)
-{
-    for (int i = 0; i < QcWorld::sectionCount; ++i) {
-        for (const QcBlockId id : chunk.section(i).palette()) {
-            if (!content.isValidBlock(id)) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 } // namespace
 
 QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent)
     : QObject(parent)
     , m_playerName(std::move(playerName))
-    , m_tickTimer(new QTimer(this))
+    , m_link(std::make_unique<QcSessionLink>(std::move(transport), [this](QcSessionEvent &&event) { onEvent(std::move(event)); }))
 {
-    m_connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Server,
-                                                  [this](QcMessage &&message) { handleMessage(std::move(message)); });
-    connect(m_connection.get(), &QcConnection::closed, this, &QcClientSession::onClosed);
-    m_gameMode.setSender([this](const QcMessage &message) { m_connection->send(message); });
-    m_debug.setSender([this](const QcMessage &message) { m_connection->send(message); });
-    m_trading.setSender([this](const QcMessage &message) { m_connection->send(message); });
-
-    m_tickTimer->setTimerType(Qt::PreciseTimer);
-    m_tickTimer->setInterval(int(QcPhysics::tickDuration * 1000.0));
-    connect(m_tickTimer, &QTimer::timeout, this, &QcClientSession::tick);
+    const auto send = [this](const QcMessage &message) { sendToServer(message); };
+    m_gameMode.setSender(send);
+    m_gameMode.setWishListener([this](bool wanted) { m_link->command({QcSessionCommand::SetFlight{wanted}}); });
+    m_debug.setSender(send);
+    m_trading.setSender(send);
 }
 
-QcClientSession::~QcClientSession() = default;
+QcClientSession::~QcClientSession()
+{
+    // The core may still call back while it stops; the parts it calls must still be there.
+    m_link.reset();
+}
 
 void QcClientSession::start(TickMode mode)
 {
-    m_connection->send(QcMsg::Hello{QcProtocol::version, m_playerName, m_appearance});
+    const bool timer = mode != TickMode::Manual;
+    const bool threaded = mode == TickMode::Threaded && QcSessionLink::threadWanted();
+    m_link->start({QcMsg::Hello{QcProtocol::version, m_playerName, m_appearance}, timer}, threaded);
     m_helloSent = true;
-    if (mode == TickMode::Timer) {
-        m_tickTimer->start();
-    }
+}
+
+QcTickTiming &QcClientSession::tickTiming() const
+{
+    return m_link->timing();
 }
 
 void QcClientSession::setIntent(const QcPlayerInput &intent)
 {
     m_prediction.setIntent(intent);
+    m_link->command({QcSessionCommand::SetIntent{m_prediction.intent()}});
     refreshTarget();
+}
+
+void QcClientSession::resetCorrections()
+{
+    m_prediction.resetCorrections();
+    m_link->command({QcSessionCommand::ResetCorrections{}});
 }
 
 void QcClientSession::disconnectFromServer()
@@ -71,8 +68,8 @@ void QcClientSession::disconnectFromServer()
         return;
     }
 
-    m_connection->send(QcMsg::Disconnect{u"Client left"_s, {}, {}});
-    m_connection->close();
+    sendToServer(QcMsg::Disconnect{u"Client left"_s, {}, {}});
+    m_link->command({QcSessionCommand::Close{}});
 }
 
 void QcClientSession::setState(State state)
@@ -85,12 +82,24 @@ void QcClientSession::setState(State state)
     emit stateChanged(state);
 }
 
-void QcClientSession::onClosed()
+void QcClientSession::onEvent(QcSessionEvent &&event)
 {
-    m_tickTimer->stop();
+    if (auto *received = std::get_if<QcSessionEvent::Received>(&event.what)) {
+        handleMessage(std::move(received->message));
+    } else if (const auto *ticked = std::get_if<QcSessionEvent::Ticked>(&event.what)) {
+        onTicked(*ticked);
+    } else if (const auto *reconciled = std::get_if<QcSessionEvent::Reconciled>(&event.what)) {
+        onReconciled(*reconciled);
+    } else if (const auto *closed = std::get_if<QcSessionEvent::Closed>(&event.what)) {
+        onClosed(closed->error);
+    }
+}
+
+void QcClientSession::onClosed(const QString &error)
+{
     m_debug.closed();
     if (m_disconnectReason.isEmpty()) {
-        m_disconnectReason = m_connection->lastError().isEmpty() ? u"Connection closed"_s : m_connection->lastError();
+        m_disconnectReason = error.isEmpty() ? u"Connection closed"_s : error;
     }
 
     setState(State::Disconnected);
@@ -112,7 +121,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
 void QcClientSession::closeWithError(const QString &reason)
 {
     m_disconnectReason = reason;
-    m_connection->close();
+    m_link->command({QcSessionCommand::Close{}});
 }
 
 bool QcClientSession::handleConnectionMessage(const QcMessage &message)
@@ -125,7 +134,7 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
         m_disconnectMessage = *disconnect;
         closeWithError(QcChatText::display(*disconnect));
     } else if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
-        m_connection->send(m_login.answer(*challenge));
+        sendToServer(m_login.answer(*challenge));
     } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
         m_players = players->players;
         emit playersChanged();
@@ -179,7 +188,7 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
         if (m_vitals.isDead()) {
             // A player comes back from death on the ground.
             m_hand.setMining(false);
-            m_gameMode.setFlightWanted(false);
+            m_gameMode.mirrorFlight(false);
         }
         emit healthChanged();
         break;
@@ -196,12 +205,7 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
 
 bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 {
-    if (const auto *playerState = std::get_if<QcMsg::PlayerState>(&message)) {
-        reconcile(*playerState);
-        if (m_state == State::Loading && m_world) {
-            setState(State::Playing);
-        }
-    } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
+    if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
         if (!m_inventory.apply(*inventory, m_content.get())) {
             closeWithError(u"Server sent an invalid inventory"_s);
             return true;
@@ -246,7 +250,7 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
         return;
     }
 
-    m_entityId = welcome.playerEntityId;
+    m_welcome = welcome;
     if (welcome.restoredView) {
         QcPlayerInput intent = m_prediction.intent();
         intent.yaw = welcome.yaw;
@@ -254,14 +258,11 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
         setIntent(intent);
     }
 
-    m_worldName = welcome.worldName;
-    m_seed = welcome.seed;
-    m_viewDistance = welcome.viewDistance;
     setState(State::Loading);
 
     if (m_appearancePending) {
         m_appearancePending = false;
-        m_connection->send(QcMsg::SetAppearance{m_appearance});
+        sendToServer(QcMsg::SetAppearance{m_appearance});
     }
     m_debug.welcomed();
 }
@@ -281,7 +282,7 @@ void QcClientSession::onContentSync(const QcMsg::ContentSync &sync)
 
 void QcClientSession::onChunkData(const QcMsg::ChunkData &chunkData)
 {
-    if (!m_world || !chunkUsesKnownBlocks(*chunkData.chunk, *m_content)) {
+    if (!m_world || !QcClientWorld::knowsBlocksOf(*chunkData.chunk, *m_content)) {
         closeWithError(u"Server sent invalid chunk data"_s);
         return;
     }
@@ -291,17 +292,38 @@ void QcClientSession::onChunkData(const QcMsg::ChunkData &chunkData)
     emit chunkLoaded(pos);
 }
 
-void QcClientSession::reconcile(const QcMsg::PlayerState &state)
+void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)
 {
-    // A player saved while flying flies on after joining (decision E-284).
-    if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().mayFly) == QcPrediction::Reconciled::Placed) {
-        m_gameMode.setFlightWanted(state.motion.flying);
+    if (m_state == State::Disconnected) {
+        return;
+    }
+
+    adopt(reconciled.after);
+    if (m_state == State::Loading && m_world) {
+        setState(State::Playing);
+    }
+}
+
+void QcClientSession::adopt(const QcSessionEvent::Prediction &prediction)
+{
+    // Until the core has applied the session's latest wish to fly and reset of the corrections, the
+    // session's own values are newer than the core's (other commands do not hold them back).
+    const bool current = prediction.mirroredApplied >= m_link->mirroredGiven();
+    m_prediction.mirror(prediction.prediction, current);
+    if (current) {
+        m_gameMode.mirrorFlight(prediction.flightWanted);
     }
 }
 
 void QcClientSession::tick()
 {
+    m_link->tick();
+}
+
+void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
+{
     if (m_state != State::Playing || !m_world) {
+        adopt(event.after);
         return;
     }
 
@@ -315,34 +337,27 @@ void QcClientSession::tick()
     m_animation.tick(m_inventory.heldItem(), m_hand.isMining());
     m_hand.tickLauncher(*m_content, m_worldTime.speed);
     updateSounds();
-
-    if (m_vitals.isDead()) {
+    adopt(event.after);
+    if (!event.predicted) {
         // Nothing to simulate until the server respawns the player.
         emit ticked();
         return;
     }
 
-    predict();
-    apply(m_hand.updateMining(*m_world, *m_content));
-    emit ticked();
-}
-
-void QcClientSession::predict()
-{
-    const QcPlayerInput input = m_prediction.predict(*m_world, m_entities, m_gameMode.flightWanted(), m_gameMode.rules().mayFly);
-    if (!m_prediction.riding().isRiding()) {
+    if (m_prediction.riding().isRiding()) {
+        m_prediction.followCart(m_entities);
+    } else {
         const QcEntityMotion &motion = m_prediction.motion();
         const QcEntityMotion &previous = m_prediction.previousMotion();
-        m_gameMode.stepped(motion.flying);
         m_animation.stepped(previous, motion);
-
         const QList<QcSoundCue> steps = m_sounds.local().update(previous, motion, m_prediction.intent().sneak, *m_world);
         for (const QcSoundCue &step : steps) {
             cue(step);
         }
     }
 
-    m_connection->send(QcMsg::PlayerInput{input});
+    apply(m_hand.updateMining(*m_world, *m_content));
+    emit ticked();
 }
 
 void QcClientSession::cue(QcSoundCue cue)
@@ -391,7 +406,7 @@ bool QcClientSession::attack()
 
 void QcClientSession::sendToServer(const QcMessage &message)
 {
-    m_connection->send(message);
+    m_link->command({QcSessionCommand::Send{message}});
 }
 
 bool QcClientSession::apply(QcHandActions::HandEffect effect)
@@ -427,7 +442,7 @@ void QcClientSession::setAppearance(const QcAppearance &appearance)
 {
     m_appearance = appearance;
     if (m_state == State::Playing || m_state == State::Loading) {
-        m_connection->send(QcMsg::SetAppearance{appearance});
+        sendToServer(QcMsg::SetAppearance{appearance});
     } else if (m_state == State::Connecting && m_helloSent) {
         // Hello is on its way with the old look; send the new one once welcomed.
         m_appearancePending = true;
@@ -439,21 +454,21 @@ bool QcClientSession::dropItem(bool wholeStack)
     if (m_state != State::Playing || m_vitals.isDead() || inventory().selectedStack().isEmpty()) {
         return false;
     }
-    m_connection->send(QcMsg::DropItem{wholeStack});
+    sendToServer(QcMsg::DropItem{wholeStack});
     return true;
 }
 
 void QcClientSession::respawn()
 {
     if (m_vitals.isDead()) {
-        m_connection->send(QcMsg::Respawn{});
+        sendToServer(QcMsg::Respawn{});
     }
 }
 
 void QcClientSession::sendChat(const QString &text)
 {
     if (!text.trimmed().isEmpty()) {
-        m_connection->send(QcMsg::ChatInput{text.trimmed()});
+        sendToServer(QcMsg::ChatInput{text.trimmed()});
     }
 }
 
@@ -486,7 +501,7 @@ void QcClientSession::closeMachine()
         return;
     }
 
-    m_connection->send(QcMsg::CloseMachine{});
+    sendToServer(QcMsg::CloseMachine{});
     emit machineClosed();
 }
 

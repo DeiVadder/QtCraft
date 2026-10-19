@@ -2245,3 +2245,11 @@ Release-Builds, `dev` `a512d8d` (46.1) gegen `feature/46-1e-40-controls` nach de
 ## 38.2 (Minenschächte) headless, Release (2026-10-18)
 
 Release-Builds, `dev` `f68af5f` gegen `feature/38-2-mineshafts` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Tick −1 bis +3 % in allen Szenarien, explore +2 % (0,213 → 0,217 ms; die Schächte werden im Generierungs-Thread geplant), p99 −2 bis +5 %, Speicher −1 bis +1 %. Keine Regression. Die Debug-Messung der Generierung (−4 % insgesamt, −13 % in den Chunks eines Schachts) steht in E-570.
+
+## 46.2 (Session-Tick auf eigenem Thread) gerendert (2026-10-18)
+
+Release-Builds, `feature/46-1e-40-controls` gegen `feature/46-2-session-thread` nach der Nachbesserung, verschränkt, Mediane.
+
+**`@core`** (8 Chunks, 6 Runden): Bild Ø 8,38–8,40 ms bei beiden Ständen, GPU 0 bis +4 %, Render-CPU −4 bis +2 %, GUI-CPU −7 bis 0 %, Speicher ±0 %. Neue Spalten: `client_tick_late_p99` 2,1–2,7 ms, Maximum 2,3–7,4 ms, `client_ticks_missed` 0 in allen Läufen.
+
+**p99 nachgemessen** (stand und sprint, 8 Runden, ruhige Maschine am späten Abend): beide Stände zweigipflig (10–11 ms oder 15–17 ms, verpasste VSyncs), Median stand 10,5 → 10,4 ms, sprint 15,9 → 13,4 ms. Der erste Lauf (+8/+12 % in stand/sprint, −25 % in crowd) war Streuung. Keine Regression.

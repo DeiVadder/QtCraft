@@ -104,7 +104,7 @@ private slots:
         // (decision E-249): twice as fast at 40 ticks per second, not at all while frozen.
         auto host = makeHost(m_content, 1);
         QcClientSession session(host->connectClient(), u"Tester"_s);
-        session.start();
+        session.start(QcClientSession::TickMode::Manual);
         QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
 
         session.sendChat(u"/tick rate 40"_s);

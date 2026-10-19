@@ -38,6 +38,7 @@ QcStatus QcHeadlessJoin::start(const Options &options, const QcModLoader::Result
     QcNetworkClient::Request request;
     request.address = *address;
     request.playerName = options.playerName;
+    request.tickMode = QcSessionTickMode::Timer;
     request.credentials = {*key, options.password, QcContentFingerprint::of(*content.content, content.mods), options.viewDistance};
     m_client->join(request);
     return {};

@@ -30,6 +30,8 @@ public:
     // The protocol error that closed the connection, else the transport's reason.
     QString lastError() const;
     qint64 pendingBytes() const;
+    // The link underneath (to move it to another thread together with the connection).
+    QcTransport &transport() const { return *m_transport; }
 
 signals:
     void closed();

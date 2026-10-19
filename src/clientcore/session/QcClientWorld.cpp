@@ -51,3 +51,15 @@ bool QcClientWorld::mayHaveLightSourceNear(QcBlockPos pos, int reach) const
 {
     return QcLightVolume::anySourceNear(*m_content, pos, reach, [this](QcChunkPos chunk) { return m_chunks.value(chunk).get(); });
 }
+
+bool QcClientWorld::knowsBlocksOf(const QcChunk &chunk, const QcContentRegistry &content)
+{
+    for (int i = 0; i < QcWorld::sectionCount; ++i) {
+        for (const QcBlockId id : chunk.section(i).palette()) {
+            if (!content.isValidBlock(id)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

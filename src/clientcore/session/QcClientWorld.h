@@ -15,6 +15,9 @@ class QcClientWorld : public QcBlockAccess
 public:
     explicit QcClientWorld(std::shared_ptr<const QcContentRegistry> content);
 
+    // Whether every block of `chunk` is known to `content` (a chunk of the server must be).
+    static bool knowsBlocksOf(const QcChunk &chunk, const QcContentRegistry &content);
+
     [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;

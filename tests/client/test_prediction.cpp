@@ -61,7 +61,6 @@ private slots:
     {
         QcTestWorld world(m_content);
         layFloor(world);
-        QcClientEntities entities;
         QcPrediction prediction;
         prediction.reconcile(standingState(0), &world, false);
         QcPlayerInput intent;
@@ -69,7 +68,7 @@ private slots:
         prediction.setIntent(intent);
 
         for (int tick = 0; tick < 4; ++tick) {
-            QCOMPARE(prediction.predict(world, entities, false, false).sequence, quint32(tick + 1));
+            QCOMPARE(prediction.predict(world, false, false).sequence, quint32(tick + 1));
         }
         QCOMPARE(prediction.pendingInputCount(), 4);
         const QcVec3 predicted = prediction.motion().position;
@@ -87,12 +86,11 @@ private slots:
     {
         QcTestWorld world(m_content);
         layFloor(world);
-        QcClientEntities entities;
         QcPrediction prediction;
         prediction.reconcile(standingState(0), &world, false);
 
         for (qsizetype tick = 0; tick < QcPrediction::maxPendingInputs + 20; ++tick) {
-            prediction.predict(world, entities, false, false);
+            prediction.predict(world, false, false);
         }
         QCOMPARE(prediction.pendingInputCount(), QcPrediction::maxPendingInputs);
 
@@ -125,7 +123,8 @@ private slots:
         QcPlayerInput intent;
         intent.forward = 1.0f;
         prediction.setIntent(intent);
-        prediction.predict(world, entities, false, false);
+        prediction.predict(world, false, false);
+        prediction.followCart(entities);
         QCOMPARE(prediction.motion().position, (QcVec3{0.5, 1.0, 0.5}));
         QCOMPARE(prediction.pendingInputCount(), 1);
 

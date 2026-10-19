@@ -18,6 +18,8 @@
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientTrading.h"
 #include "clientcore/session/QcClientWorld.h"
+#include "clientcore/tick/QcSessionEvent.h"
+#include "clientcore/tick/QcSessionTickMode.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/physics/QcEntityMotion.h"
@@ -32,14 +34,16 @@
 #include <memory>
 #include <optional>
 
-class QcConnection;
+class QcSessionLink;
+class QcTickTiming;
 class QcTransport;
-class QTimer;
 
 // Client side of one connection: mirrors the world the server sends and distributes its messages,
 // drives the local player's parts (clientcore/player: prediction, hand, animation, inventory) once
 // per tick and sends their requests. GUI-free; the renderer, the UI and the control interface all
 // observe a session. It stays their facade: the getters below forward to the parts (decision E-530).
+// Connection, ticks and prediction run in a tick core (QcSessionLink, E-560), timer-driven on a thread
+// of its own; the session applies the core's ordered events in its own thread, between two frames.
 class QcClientSession : public QObject
 {
     Q_OBJECT
@@ -51,10 +55,10 @@ public:
     QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent = nullptr);
     ~QcClientSession() override;
 
-    enum class TickMode { Timer, Manual };
+    using TickMode = QcSessionTickMode;
 
-    // Sends Hello. TickMode::Timer drives tick() at 20 Hz; Manual leaves it to the caller (tests).
-    void start(TickMode mode = TickMode::Timer);
+    // Sends Hello and starts ticking on the tick thread, by a timer in this thread or by hand.
+    void start(TickMode mode = TickMode::Threaded);
     void disconnectFromServer();
 
     State state() const { return m_state; }
@@ -66,10 +70,10 @@ public:
     const QcClientLogin &login() const { return m_login; }
     // Everyone on the server (QcMsg::PlayerList) and the view distance streamed to us (Welcome).
     const QList<QcMsg::PlayerList::Entry> &players() const { return m_players; }
-    int viewDistance() const { return m_viewDistance; }
-    QString worldName() const { return m_worldName; }
-    qint64 seed() const { return m_seed; }
-    quint32 entityId() const { return m_entityId; }
+    int viewDistance() const { return m_welcome.viewDistance; }
+    QString worldName() const { return m_welcome.worldName; }
+    qint64 seed() const { return m_welcome.seed; }
+    quint32 entityId() const { return m_welcome.playerEntityId; }
     quint64 tickCount() const { return m_tickCount; }
 
     // Null until the content arrived.
@@ -92,13 +96,16 @@ public:
     // Metres the server moved the predicted player: latest reconcile, most since reset (E-257).
     double lastCorrection() const { return m_prediction.lastCorrection(); }
     double largestCorrection() const { return m_prediction.largestCorrection(); }
-    void resetCorrections() { m_prediction.resetCorrections(); }
+    void resetCorrections();
     bool hasServerState() const { return m_prediction.hasServerState(); }
     // The minecart the player rides (decision E-382): no prediction then, the player sits in the cart.
     const QcClientRiding &riding() const { return m_prediction.riding(); }
 
-    // Advances the client by one tick; normally driven by the internal timer.
+    // Advances the client by one tick (TickMode::Manual only; otherwise a timer ticks).
     void tick();
+    // Punctuality of the timer-driven ticks (decision E-560); empty with TickMode::Manual. Safe to
+    // read and reset while the tick thread runs.
+    QcTickTiming &tickTiming() const;
 
     // Block the player looks at (within reach), updated every tick.
     const std::optional<QcRaycastHit> &target() const { return m_hand.target(); }
@@ -231,12 +238,16 @@ private:
     // Closes the connection; `reason` is reported as the disconnect reason.
     void closeWithError(const QString &reason);
     void setState(State state);
-    // The prediction took the server's state of the player.
-    void reconcile(const QcMsg::PlayerState &state);
-    // Predicts the player by one tick (QcPrediction) and sends the input; on foot (or flying) with
-    // the game mode's wish to fly, the stride, landing and step sounds.
-    void predict();
-    void onClosed();
+    // One event of the tick core, in the core's order.
+    void onEvent(QcSessionEvent &&event);
+    // A tick of the core: the parts tick, the player as predicted; on foot (or flying) the stride,
+    // landing and step sounds, riding the seat of the cart.
+    void onTicked(const QcSessionEvent::Ticked &event);
+    // The core took the server's state of the player.
+    void onReconciled(const QcSessionEvent::Reconciled &reconciled);
+    // Takes the core's prediction and wish to fly (QcPrediction::mirror).
+    void adopt(const QcSessionEvent::Prediction &prediction);
+    void onClosed(const QString &error);
     // Aims the hand again (no target before the world arrived).
     void refreshTarget();
     // Applies what a hand action did to the arm and the screens; false when it did nothing.
@@ -246,20 +257,16 @@ private:
     void sendToServer(const QcMessage &message);
     void updateSounds();
 
-    std::unique_ptr<QcConnection> m_connection;
     QString m_playerName;
     State m_state = State::Connecting;
     QString m_disconnectReason;
     QcMsg::Disconnect m_disconnectMessage;
     QcClientLogin m_login;
     QList<QcMsg::PlayerList::Entry> m_players;
-    int m_viewDistance = 0;
-    QString m_worldName;
-    qint64 m_seed = 0;
-    quint32 m_entityId = 0;
+    // The server's Welcome: world, seed, view distance and our entity (all zero before it came).
+    QcMsg::Welcome m_welcome;
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcClientWorld> m_world;
-    QTimer *m_tickTimer = nullptr;
     quint64 m_tickCount = 0;
 
     // Parts in dependency order: the hand reads the parts declared before it; what its actions mean
@@ -287,4 +294,6 @@ private:
     QcClientDebugSubscription m_debug;
     QcClientSounds m_sounds;
     QcClientWeather m_weather;
+    // Calls back into the members above; the destructor stops it first.
+    std::unique_ptr<QcSessionLink> m_link;
 };

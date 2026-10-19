@@ -30,10 +30,14 @@
 #   test_enderman_rules, test_golem_measure, test_taming, test_minecart_momentum, test_signal_showcase
 #                            heavy server simulations that repeatedly failed only on their TIMEOUT
 #                            under parallel load (golem and minecart measurements time ticks too)
+#   test_gamepad_scenarios   the creative double tap is timed on the wall clock (E-541)
+#   test_session_tick, test_session_thread
+#                            the session core ticks on its own thread against real time (E-560)
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
     test_tcp_transport test_network_game test_latency
     test_creative_client test_void_client test_ice_client test_survival_scenario
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
-    test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase)
+    test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
+    test_gamepad_scenarios test_session_tick test_session_thread)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

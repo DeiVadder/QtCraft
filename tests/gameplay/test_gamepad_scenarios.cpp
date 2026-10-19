@@ -235,11 +235,13 @@ private slots:
         QVERIFY(request({{u"cmd"_s, u"select"_s}, {u"slot"_s, 0}}).value(u"ok"_s).toBool());
         QVERIFY(click(u"rightShoulder"_s));
         ticks(2);
-        QCOMPARE(status().value(u"selectedSlot"_s).toInt(), 1);
+        // The server's answer to an earlier choice may still be on its way and set the slot back
+        // for a moment; the last answer names the last choice.
+        QTRY_COMPARE_WITH_TIMEOUT(status().value(u"selectedSlot"_s).toInt(), 1, timeoutMs);
         QVERIFY(click(u"leftShoulder"_s));
         QVERIFY(click(u"leftShoulder"_s));
         ticks(2);
-        QCOMPARE(status().value(u"selectedSlot"_s).toInt(), 8);
+        QTRY_COMPARE_WITH_TIMEOUT(status().value(u"selectedSlot"_s).toInt(), 8, timeoutMs);
     }
 
     // A click of the left stick sprints while walking forward; the right stick toggles sneaking,

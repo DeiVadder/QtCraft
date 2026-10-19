@@ -49,9 +49,18 @@ public:
     const QcClientRiding &riding() const { return m_riding; }
 
     // Predicts one tick from the intent: on foot (or flying, with `flying` as the wish sent and
-    // `mayFly` from the game mode) through the shared physics, riding by following the cart. Returns
-    // the input to send; it carries the next sequence number and is kept until acknowledged.
-    QcPlayerInput predict(const QcBlockAccess &world, const QcClientEntities &entities, bool flying, bool mayFly);
+    // `mayFly` from the game mode) through the shared physics; riding the motion stays (followCart
+    // moves it). Returns the input to send; it carries the next sequence number and is kept until
+    // acknowledged.
+    QcPlayerInput predict(const QcBlockAccess &world, bool flying, bool mayFly);
+    // While riding, after predict(): the player moves onto the seat of the cart as the entity
+    // mirror shows it this tick.
+    void followCart(const QcClientEntities &entities);
+    // Takes over the prediction of the session's tick core (decision E-560), keeping the own intent
+    // (the session writes it) and, while riding, the own motion (the session follows the cart). With
+    // `current` false the core has not seen all of the session's commands yet: the own largest
+    // correction stays (it may just have been reset).
+    void mirror(const QcPrediction &core, bool current);
     // Applies the server's state of the player and replays the pending inputs on top of it (with
     // the world once it exists).
     Reconciled reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, bool mayFly);

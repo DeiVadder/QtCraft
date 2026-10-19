@@ -7,6 +7,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
+#include "clientcore/tick/QcTickTiming.h"
 #include "common/core/QcProcessMemory.h"
 #include "server/core/QcLocalServerHost.h"
 
@@ -140,6 +141,9 @@ void QcBenchmarkRun::resetMeasurement()
     m_frameProfile.clear();
     if (m_parts.server) {
         m_parts.server->resetTickTimes();
+    }
+    if (m_parts.session) {
+        m_parts.session->tickTiming().reset();
     }
     m_parts.meshes->resetStats();
 }
@@ -323,7 +327,19 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(ticks.ticks)
                                     .arg(ticks.skipped)
                                     .arg(m_frameProfile.summary(), tickPhasePairs(ticks))
-                                    + u' ' + entityPairs();
+                                    + u' ' + entityPairs() + u' ' + clientTickPairs();
+}
+
+QString QcBenchmarkRun::clientTickPairs() const
+{
+    // How punctually the client session ticked beside the frames (decision E-560).
+    const QcTickTiming::Summary ticks = m_parts.session ? m_parts.session->tickTiming().summary() : QcTickTiming::Summary();
+    return u"client_tick_late_avg_ms=%1 client_tick_late_p99_ms=%2 client_tick_late_max_ms=%3 client_ticks=%4 client_ticks_missed=%5"_s
+        .arg(ticks.lateAverageMs, 0, 'f', 3)
+        .arg(ticks.lateP99Ms, 0, 'f', 3)
+        .arg(ticks.lateMaxMs, 0, 'f', 3)
+        .arg(ticks.ticks)
+        .arg(ticks.missed);
 }
 
 QString QcBenchmarkRun::entityPairs() const

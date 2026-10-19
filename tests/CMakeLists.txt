@@ -30,7 +30,7 @@ set(qc_concurrency_tests
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
-    test_explore_measure test_scenario_measure test_server_light)
+    test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -72,7 +72,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # with a smaller factor. A new test that mostly waits belongs here.
 set_property(TEST test_interpolation test_latency test_creative_client test_void_client test_ice_client
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
-    test_minecart_bots test_machine_bots APPEND PROPERTY LABELS realtime)
+    test_minecart_bots test_machine_bots test_session_tick test_session_thread APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;

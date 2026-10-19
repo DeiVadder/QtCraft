@@ -18,17 +18,22 @@ public:
     static constexpr int instantBreakTicks = 5;
 
     using Sender = std::function<void(const QcMessage &message)>;
+    // Takes the player's wish to fly to where the inputs are made (the session's tick core).
+    using WishListener = std::function<void(bool wanted)>;
 
     // How requests reach the server (the session's connection).
     void setSender(Sender sender) { m_send = std::move(sender); }
+    void setWishListener(WishListener listener) { m_wishListener = std::move(listener); }
     QcGameMode mode() const { return m_mode; }
     QcGameModes::Rules rules() const { return QcGameModes::rules(m_mode); }
     void setMode(QcGameMode mode);
 
     // Double tap of jump: starts or ends a flight where the mode allows flying.
     void toggleFlight();
-    // Sets the wish directly (control interface).
+    // Sets the wish directly (control interface); tells the wish listener.
     void setFlightWanted(bool wanted);
+    // Takes the wish as the tick core holds it, without telling the listener (decision E-560).
+    void mirrorFlight(bool wanted) { m_flightWanted = wanted; }
     // The wish sent with the next input.
     bool flightWanted() const { return m_flightWanted; }
     // After each predicted step: a landing or a mode without flight ended the flight, so the wish
@@ -48,6 +53,7 @@ public:
 
 private:
     Sender m_send;
+    WishListener m_wishListener;
     QcGameMode m_mode = QcGameMode::Survival;
     bool m_flightWanted = false;
     int m_breakCooldown = 0;

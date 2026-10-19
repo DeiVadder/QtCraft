@@ -16,15 +16,13 @@ void QcPrediction::setIntent(const QcPlayerInput &intent)
     m_intent.yaw = yaw < 0.0f ? yaw + 360.0f : yaw;
 }
 
-QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, const QcClientEntities &entities, bool flying, bool mayFly)
+QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, bool mayFly)
 {
     QcPlayerInput input = m_intent;
     input.sequence = m_nextSequence++;
     input.flying = flying;
     m_previousMotion = m_motion;
-    if (m_riding.isRiding()) {
-        m_riding.follow(m_motion, entities);
-    } else {
+    if (!m_riding.isRiding()) {
         QcPhysics::stepPlayer(m_motion, input, world, QcPhysics::tickDuration, mayFly);
     }
 
@@ -66,4 +64,31 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
     m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
     m_motion = replayed;
     return result;
+}
+
+void QcPrediction::followCart(const QcClientEntities &entities)
+{
+    m_previousMotion = m_motion;
+    m_riding.follow(m_motion, entities);
+}
+
+void QcPrediction::mirror(const QcPrediction &core, bool current)
+{
+    const QcPlayerInput intent = m_intent;
+    const QcEntityMotion motion = m_motion;
+    const QcEntityMotion previous = m_previousMotion;
+    const double largest = m_largestCorrection;
+    const bool wasRiding = m_riding.isRiding();
+    *this = core;
+    m_intent = intent;
+    if (m_riding.isRiding()) {
+        m_motion = motion;
+        m_previousMotion = previous;
+    } else if (wasRiding) {
+        // Got out: the core's motion before is where the player got in, the own one the seat.
+        m_previousMotion = previous;
+    }
+    if (!current) {
+        m_largestCorrection = largest;
+    }
 }
