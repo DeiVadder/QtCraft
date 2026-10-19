@@ -2289,3 +2289,23 @@ Release-Build `feature/51-2-explosives`, Rechner unter Last ~10, ohne Vergleichs
 ## 51.2 nach der Zusammenführung mit 51.1/51.3/51.4, headless, Release (2026-10-19)
 
 Release-Builds, `dev` `f9b1ab1` gegen `feature/51-2-explosives` nach dem Merge, `@server` mit horde, explore und explosive-chain, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Alle bestehenden Szenarien −4 bis +4 % (p99 −2 bis +4 %), keine Regression. explosive-chain (auf `dev` ohne Sprengstoff leer): Tick Ø 0,42 ms, p99 1,9 ms, weit unter dem Budget von 50 ms.
+
+## 56e headless, Release (2026-10-19)
+
+`scripts/bench-headless.sh`, `@server` plus `horde` und `explore`, 3 Runden, 60 s Spielzeit, `dev` (`7eb17c9`-Stand vor 56e) gegen den Kandidaten von 56e. Alle Szenarien innerhalb von ±4 % bei Tick-Mittel, p99 und Spitzenspeicher, bis auf `crowd` p99 +12 % bei 21 % Streuung; mit 6 Runden wiederholt `crowd` Mittel −0,1 %, p99 +2,6 %: Rauschen.
+
+## Fenster: Etappe 51 und 56 nachgemessen, Release (2026-10-20)
+
+`scripts/bench-ab.sh`, `@core`, `@ui` und `explosive-chain`, 10 s je Lauf, adaptiv 6 Runden, rotierte Reihenfolge; Basis `pre51` = `69b32e4` (`dev` vor 51.1, zuletzt im Fenster gemessen mit 40.3 und 46.2), Kandidat `dev56` = `538cd8a` (51.1–51.4, Feuchtgebiete, 56a–56e). Die Maschine war nicht ganz ruhig (clangd-Indizierung paralleler Agenten, Last bis 20 zu Beginn, danach 3–7; das Skript maß nach 180 s Wartezeit trotzdem).
+
+| Szenario | Frame p99 | GPU Ø | Render-CPU Ø | GUI-CPU Ø | Tick Ø | Spitzenspeicher |
+|---|---|---|---|---|---|---|
+| stand | −0,8 % | +3,4 % | +0,8 % | −5,1 % | +10,7 % (Streuung 77 %) | −5,2 % (454 MB) |
+| sprint | +0,4 % | −3,5 % | −3,9 % | −9,4 % | +3,6 % | −15,9 % (500 MB) |
+| showcase | −9,3 % | −1,8 % | −1,3 % | +1,3 % | −4,7 % | −9,2 % (332 MB) |
+| crowd | +0,7 % | +6,6 % | +7,3 % (Streuung 16 %) | +3,1 % | +8,0 % (Streuung 14 %) | −5,2 % (463 MB) |
+| inventory | ±0 % | +3,8 % | +7,0 % (Streuung 22 %) | +0,7 % | −2,0 % | −5,5 % |
+| furnace | −6,0 % | −9,7 % | +2,4 % | −11,9 % | −2,8 % | −6,1 % |
+| handbook | −0,8 % | +2,8 % | +3,3 % | −5,4 % | −1,4 % | −3,5 % |
+
+Bewertung: keine Regression über der 10-%-Schwelle, die nicht in der Streuung liegt (stand Tick +10,7 % bei 77 % Streuung; crowd GPU +6,6 % unter der Schwelle). Der Spitzenspeicher sinkt in allen Szenarien um 3–16 % (56d: Bildschirme erst bei Bedarf geladen, `LazyScreen`). `explosive-chain` ist gegen `pre51` nicht vergleichbar (die Basis hat keinen Sprengstoff, die Szene sprengt dort nichts: Tick +1179 %, GUI-CPU +283 % sind die Explosionen selbst); absolut: Frame p99 10,2 ms, Tick Ø 1,77 ms, Spitzenspeicher 327 MB, innerhalb der Ziele aus `docs/Performance.md`. Damit sind die Fenster-Benchmarks von 51 und 56 nachgeholt.
