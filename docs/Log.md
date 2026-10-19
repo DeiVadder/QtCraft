@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-19 18:10
+
+Wiederaufnahme nach der Pause. 56b Test-Fixtures nach `dev` (`f820181`): der TSan-Lauf scheiterte nur an `test_latency` an der Zeitgrenze (Last durch andere Programme), allein zweimal grün, also Last-Effekt. 56d `LazyScreen`, Enums und Fotomodus nach `dev` (`c69cf76`), TSan-Lauf grün. 56e gestartet als zwei parallele Pakete (`src/common` und der Rest von `src/`).
+
 ## 2026-10-19 16:50 (Pause)
 
 Pause auf Wunsch des Menschen. In `dev` seit 14:20: Feuchtgebiete (`b16000c`, E-660/E-661), 56a Logging zentral (`2062eed`, E-680), 56c Handbuch-Übersichten, Schichtregel, `docs/Log.md`, drei Code-Regeln (`5fd0ed2`, E-685–E-688).

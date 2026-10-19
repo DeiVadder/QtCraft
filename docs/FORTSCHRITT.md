@@ -4,13 +4,12 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-Stand 2026-10-19. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
+Stand 2026-10-19 18:10. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
-- **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40 und 51 erledigt (zuletzt 51.2 `565be0f`, Fortschritt `cc0c4d9`), aus Etappe 56 schon Pre-push-Hook (P3) und Testauswahl nach Inhalt (P9); Fenster-Benchmarks von 51 sind geschuldet.
-- **Läuft:** Etappe 56 (Aufräumen nach der Projektanalyse) in parallelen Paketen, je eigener Branch und Worktree unter `.claude/worktrees/`: zentrale Logging-Kategorien (P7), Umbau der App-Oberfläche (`Main.qml`), 56c Doku und Handbuch-Übersichten (`feature/56c-docs-overviews`, E-685–E-689).
-- **Offen:** Feuchtgebiete (`feature/wetland-blend`, E-660/E-661) warten auf die Freigabe des Aussehens durch den Menschen.
-- **Danach:** Etappe 57 (Architektur entlasten: Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden teilen), dann 47 und 58; Reihenfolge in der Tabelle „Etappen“.
-- **Solange der Mensch am Rechner arbeitet:** keine Fenster-Läufe; zentrale Verifies mit `QC_QUIET_WAIT=120 QC_BUILD_JOBS=8 nice -n 10`.
+- **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40 und 51 erledigt; aus Etappe 56 Pre-push-Hook (P3), Testauswahl nach Inhalt (P9), 56a Logging zentral (`2062eed`), 56c Doku und Handbuch-Übersichten (`5fd0ed2`), 56b Test-Fixtures (`f820181`), 56d `LazyScreen`, Enums und Fotomodus (`c69cf76`), Feuchtgebiete (`b16000c`). Fenster-Benchmarks von 51 und 56d sind geschuldet.
+- **Läuft:** 56e Ausgabeparameter umbauen, zwei Pakete parallel: `feature/56e-common` (nur `src/common`, E-694) und `feature/56e-rest` (übriges `src/`, E-695), Worktrees `qtcraft-56e-common` und `qtcraft-56e-rest`. Danach zentraler TSan-Lauf, Merge, Etappe 56 abschließen.
+- **Danach:** Etappe 57 (Architektur entlasten: Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden teilen, `QcWorldRenderer` DeviceResources und FrameInput), dann 47 und 58; Reihenfolge in der Tabelle „Etappen“.
+- **Keine Fenster-Läufe** (GUI-Benchmarks), bis der Mensch sie wieder freigibt; headless und offscreen sind erlaubt.
 
 ## Arbeitsweise und offene Messungen
 
