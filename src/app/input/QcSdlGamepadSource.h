@@ -29,6 +29,7 @@ public:
     QString backendName() const override;
     bool isAvailable() const override { return m_available; }
     void poll() override;
+    bool rumble(int id, float strength, int durationMs) override;
     // SDL's message when it did not start, else empty.
     QString initError() const { return m_initError; }
     // The current interval of the poll timer (active or idle).

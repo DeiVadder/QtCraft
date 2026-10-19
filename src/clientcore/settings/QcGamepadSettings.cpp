@@ -3,51 +3,88 @@
 #include <QSettings>
 
 #include <algorithm>
-#include <cmath>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-// The stored number of `key`, or `fallback` when it is missing or not a number.
-float storedFloat(const QSettings &file, const QString &key, float fallback)
+// The models' profiles as the INI array "gamepadControllers": <n>/guid, <n>/name, <n>/<key>.
+const QString controllersKey = u"gamepadControllers"_s;
+
+QString controllerPrefix(qsizetype index)
 {
-    bool ok = false;
-    const float value = file.value(key).toFloat(&ok);
-    return ok ? value : fallback;
+    return u"%1/%2"_s.arg(controllersKey).arg(index + 1);
 }
 
 } // namespace
 
-double QcGamepadSettings::clampLookSpeed(double degreesPerSecond)
+const QcGamepadProfile &QcGamepadSettings::profileFor(const QString &guid) const
 {
-    return std::isfinite(degreesPerSecond) ? std::clamp(degreesPerSecond, minLookSpeed, maxLookSpeed) : defaultLookSpeed;
+    const Controller *own = controller(guid);
+    return own ? own->profile : standard;
+}
+
+const QcGamepadSettings::Controller *QcGamepadSettings::controller(const QString &guid) const
+{
+    if (guid.isEmpty()) {
+        return nullptr;
+    }
+    const auto it = std::ranges::find(controllers, guid, &Controller::guid);
+    return it == controllers.end() ? nullptr : &*it;
+}
+
+void QcGamepadSettings::setProfile(const QString &guid, const QString &name, const QcGamepadProfile &profile, const QStringList &keep)
+{
+    if (guid.isEmpty()) {
+        return;
+    }
+
+    Controller entry{guid, name, profile.sanitized()};
+    const qsizetype index = std::ranges::find(std::as_const(controllers), guid, &Controller::guid) - controllers.cbegin();
+    if (index < controllers.size()) {
+        entry.name = controllers.at(index).name;
+        controllers.removeAt(index);
+    } else if (controllers.size() >= maxControllers) {
+        const auto unkept = [&keep](const Controller &old) { return !keep.contains(old.guid); };
+        const qsizetype evicted = std::ranges::find_if(std::as_const(controllers), unkept) - controllers.cbegin();
+        controllers.removeAt(evicted < controllers.size() ? evicted : 0);
+    }
+    controllers.append(entry);
+}
+
+void QcGamepadSettings::removeProfile(const QString &guid)
+{
+    controllers.removeIf([&guid](const Controller &entry) { return entry.guid == guid; });
 }
 
 QcGamepadSettings QcGamepadSettings::load(const QSettings &file)
 {
-    const QcGamepadSettings defaults;
     QcGamepadSettings settings;
-    QcGamepadResponse response;
-    response.deadZone = storedFloat(file, u"gamepad/deadZone"_s, defaults.response.deadZone);
-    response.outerZone = storedFloat(file, u"gamepad/outerZone"_s, defaults.response.outerZone);
-    response.exponent = storedFloat(file, u"gamepad/curve"_s, defaults.response.exponent);
-    response.triggerDeadZone = storedFloat(file, u"gamepad/triggerDeadZone"_s, defaults.response.triggerDeadZone);
-    settings.response = response.sanitized();
+    settings.standard = QcGamepadProfile::load(file, u"gamepad"_s);
+    settings.radialOnly = file.value(u"gamepad/radialOnly"_s, false).toBool();
 
-    bool ok = false;
-    const double speed = file.value(u"gamepad/lookSpeed"_s).toDouble(&ok);
-    settings.lookSpeed = ok ? clampLookSpeed(speed) : defaultLookSpeed;
-    settings.invertLook = file.value(u"gamepad/invertLook"_s, false).toBool();
+    const qsizetype count = std::clamp<qsizetype>(file.value(controllersKey + u"/size"_s).toInt(), 0, maxControllers);
+    for (qsizetype index = 0; index < count; ++index) {
+        const QString prefix = controllerPrefix(index);
+        const QString guid = file.value(prefix + u"/guid"_s).toString();
+        // An entry without a model or for one seen before is dropped.
+        if (!guid.isEmpty() && !settings.controller(guid)) {
+            settings.controllers.append({guid, file.value(prefix + u"/name"_s).toString(), QcGamepadProfile::load(file, prefix)});
+        }
+    }
     return settings;
 }
 
 void QcGamepadSettings::save(QSettings &file) const
 {
-    file.setValue(u"gamepad/deadZone"_s, response.deadZone);
-    file.setValue(u"gamepad/outerZone"_s, response.outerZone);
-    file.setValue(u"gamepad/curve"_s, response.exponent);
-    file.setValue(u"gamepad/triggerDeadZone"_s, response.triggerDeadZone);
-    file.setValue(u"gamepad/lookSpeed"_s, lookSpeed);
-    file.setValue(u"gamepad/invertLook"_s, invertLook);
+    standard.save(file, u"gamepad"_s);
+    file.setValue(u"gamepad/radialOnly"_s, radialOnly);
+    file.remove(controllersKey);
+    file.setValue(controllersKey + u"/size"_s, controllers.size());
+    for (qsizetype index = 0; index < controllers.size(); ++index) {
+        const QString prefix = controllerPrefix(index);
+        file.setValue(prefix + u"/guid"_s, controllers[index].guid);
+        file.setValue(prefix + u"/name"_s, controllers[index].name);
+        controllers[index].profile.save(file, prefix);
+    }
 }

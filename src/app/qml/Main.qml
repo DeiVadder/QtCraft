@@ -40,12 +40,13 @@ ApplicationWindow {
         game: game
     }
 
-    // While its pad button is held in the world (decision E-581). The pad's items exist only while
-    // the pad leads (the keyboard from its first use on), so without a pad they cost nothing.
+    // While its pad button or its key is held in the world (decisions E-581, E-614). The pad's items
+    // exist only while the pad leads (the keyboard from its first use on), so without a pad they
+    // cost nothing.
     Loader {
         anchors.centerIn: parent
-        active: (game.gamepad.active || game.gamepad.radialOpen) && game.phase === GameController.Phase.Playing
-        visible: game.phase === GameController.Phase.Playing && game.gamepad.radialOpen
+        active: (game.gamepad.active || game.gamepad.radialOpen || game.input.radialOpen) && game.phase === GameController.Phase.Playing
+        visible: game.phase === GameController.Phase.Playing && (game.gamepad.radialOpen || game.input.radialOpen)
 
         sourceComponent: HotbarRadial {
             game: root.controller
@@ -85,7 +86,7 @@ ApplicationWindow {
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === GameController.Phase.Playing
-                 && ["pause", "settings", "controls", "debug", "texturepacks", "character", "lan"].includes(game.overlay)
+                 && ["pause", "settings", "controls", "gamepad", "debug", "texturepacks", "character", "lan"].includes(game.overlay)
         game: game
     }
 
@@ -153,6 +154,28 @@ ApplicationWindow {
         }
     }
 
+    // A pad connected, disconnected or took over (decision E-613); made for each notice.
+    Loader {
+        id: padNotice
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 48
+        active: false
+
+        sourceComponent: PadNotice {
+            game: root.controller
+        }
+    }
+
+    Connections {
+        target: game.gamepad.pads
+
+        function onNoticeChanged() {
+            padNotice.active = true;
+        }
+    }
+
     // The ring's place over the screens (offscreen runs move the screens with it).
     Item {
         id: ringHome
@@ -184,6 +207,7 @@ ApplicationWindow {
             sourceComponent: OnScreenKeyboard {
                 areaWidth: root.width
                 areaHeight: root.height
+                buttonTexts: root.controller.gamepad.pads.texts
             }
         }
     }

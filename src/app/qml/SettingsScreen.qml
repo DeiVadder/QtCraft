@@ -5,19 +5,24 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Game settings on three pages, general, controls (the key table) and debug (the debug display and
-// its visualisations); stored when the screen closes, key changes at once.
+// Game settings on five pages: general, controls (the key table), controller (the gamepad, decision
+// E-610), debug (the debug display and its visualisations) and texture packs; stored when the
+// screen closes, key changes at once.
 Popup {
     id: screen
 
     required property GameController game
-    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 debug (overlay "debug"),
-    // 3 texture packs (overlay "texturepacks").
+    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 controller (overlay
+    // "gamepad"), 3 debug (overlay "debug"), 4 texture packs (overlay "texturepacks").
     property int startPage
+    // Room kept free below the screen for the pad's hints (PadHints, about 40 px high) while they
+    // show: the screen moves up by it and gets shorter if it must.
+    readonly property real padHintsRoom: game.gamepad.focusShown ? 48 : 0
 
-    anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - height - padHintsRoom) / 2
     width: Math.min(parent.width - 64, 720)
-    height: Math.min(implicitHeight, parent.height - 32)
+    height: Math.min(implicitHeight, parent.height - 32 - padHintsRoom)
     modal: true
     focus: true
     padding: 20
@@ -59,6 +64,10 @@ Popup {
             }
             TabButton {
                 text: qsTr("Controls")
+            }
+            TabButton {
+                objectName: "gamepadTab"
+                text: qsTr("Controller")
             }
             TabButton {
                 text: qsTr("Debug")
@@ -303,6 +312,10 @@ Popup {
                 id: controlsPage
 
                 keys: screen.game.settings.keys
+            }
+
+            GamepadPage {
+                game: screen.game
             }
 
             DebugOptionsPage {

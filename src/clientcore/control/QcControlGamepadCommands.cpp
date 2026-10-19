@@ -38,6 +38,7 @@ QJsonObject QcControlGamepadCommands::padJson(const QcGamepadInfo &pad) const
     return {{u"pad"_s, pad.id},
             {u"name"_s, pad.name},
             {u"type"_s, QcGamepadNames::type(pad.type)},
+            {u"guid"_s, pad.guid},
             {u"pressed"_s, pressed},
             {u"axes"_s, axes}};
 }
@@ -62,8 +63,8 @@ void QcControlGamepadCommands::gamepadConnect(const QJsonObject &request)
     }
 
     const QString name = request.value(u"name"_s).toString(u"Virtual %1"_s.arg(typeName));
-    const int id = m_source.connectPad(name, *type);
-    m_context.finish(request, padJson({.id = id, .name = name, .type = *type}));
+    const int id = m_source.connectPad(name, *type, request.value(u"guid"_s).toString());
+    m_context.finish(request, padJson(m_source.info(id).value_or(QcGamepadInfo{.id = id, .name = name, .type = *type, .guid = {}, .rumble = true})));
 }
 
 void QcControlGamepadCommands::gamepadDisconnect(const QJsonObject &request)

@@ -2,7 +2,9 @@
 
 #include "clientcore/input/QcGamepadState.h"
 
+#include <QList>
 #include <QPointF>
+#include <QString>
 #include <QtGlobal>
 
 #include <array>
@@ -66,7 +68,27 @@ struct Bindings
 
     // The button of `action`; nullopt for the triggers.
     std::optional<QcGamepadButton> button(Action action) const;
+    // The action on `button`, nullopt for a free one (the first in table order for a table in conflict).
+    std::optional<Action> action(QcGamepadButton button) const;
+    // Sets the button of a rebindable action as it is, without resolving conflicts (loading).
+    void setButton(Action action, QcGamepadButton button);
+    // Binds `button` to `action` (decision E-611). An action that had the button already gets the
+    // action's old one (a swap), so every button keeps at most one action; that action is returned.
+    // Refused (nullopt, nothing changes) for the triggers and buttons that cannot be bound.
+    std::optional<Action> bind(Action action, QcGamepadButton button);
+    // The actions sharing a button with an earlier one in table order; empty for a usable table.
+    QList<Action> conflicts() const;
+
+    bool operator==(const Bindings &other) const = default;
 };
+
+// The id of an action in settings files and in QML ("jump", "hotbarRadial", ...).
+QString actionName(Action action);
+std::optional<Action> actionFromName(const QString &name);
+// Whether the player may give `action` another button: all but the triggers' actions.
+bool rebindable(Action action);
+// Whether a button may carry an action: all but Guide, which the system often takes itself.
+bool bindable(QcGamepadButton button);
 
 // Holding the drop button this long throws the rest of the stack.
 inline constexpr qint64 dropStackMs = 500;
@@ -99,14 +121,20 @@ QPointF lookDelta(const QcGamepadState &shaped, double lookSpeed, double seconds
 
 // Whether a stick of the raw state is pushed beyond leadDeflection.
 bool clearlyDeflected(const QcGamepadState &raw);
+// Whether a raw state shows a deliberate use: a button, a trigger beyond pressThreshold or a
+// clearly pushed stick (the pad becomes the input in use, decisions E-583 and E-613).
+bool used(const QcGamepadState &raw);
 // Whether a stick of the shaped state is outside its dead zone (the pad walks or looks).
 bool deflected(const QcGamepadState &shaped);
 
-// Whether the shaped trigger `value` holds the button, given whether it held it before.
-bool triggerHeld(float value, bool wasHeld);
+// Whether the shaped trigger `value` holds the button, given whether it held it before: pressed
+// above `press`, released again below releaseFor(press) (decision E-610).
+bool triggerHeld(float value, bool wasHeld, float press = pressThreshold);
+// The release point of a trigger pressed at `press`: 0.2 lower, at least 0.05.
+float releaseFor(float press);
 
 // Whether `action` is held in `shaped` (triggers with the hysteresis above, from `wasHeld`).
-bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld);
+bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld, float press = pressThreshold);
 
 // The hotbar slot `steps` from `slot`, wrapping around the `size` slots.
 int hotbarStep(int slot, int steps, int size);

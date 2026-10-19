@@ -494,7 +494,7 @@ Rectangle {
             }
 
             Label {
-                text: screen.game.gamepad.active ? qsTr("A on a name or an item opens its page. B closes.")
+                text: screen.game.gamepad.active ? qsTr("%1 on a name or an item opens its page. %2 closes.").arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.east)
                       : qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.settings.keys.labels.handbook)
                 color: Theme.textMuted
             }

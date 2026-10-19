@@ -2259,3 +2259,7 @@ Release-Builds, `feature/46-1e-40-controls` gegen `feature/46-2-session-thread` 
 Release-Builds, `dev` `cc50366` (38.2) gegen `feature/40-2-gamepad-ui` nach der Nachbesserung (`113cfce`: Frame-Hook und Event-Filter nur bei aktivem Pad, Pad-QML per `Loader`), `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −2 bis +3 %, Render-CPU −2 bis +2 %, GPU −3 bis +1 %, Speicher −1 bis 0 %, gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen (10–16 ms). Keine Regression.
 
 Ein erster Lauf zeigte GUI-CPU in sprint +13 % und +8 MB: Der Basis-Build stammte aus `f68af5f` (vor 38.2), der Kandidat enthielt die Minenschächte, also eine andere Welt (mehr Sektionen und Upload, ein Wesen mehr). Vor einem A/B gegen `dev` den Release-Build von `dev` auf den Stand bringen, den der Kandidat eingemergt hat.
+
+## 40.3 (Gamepad-Einstellungen, Profile, Symbole) gerendert (2026-10-19)
+
+Release-Builds, `dev` `28c9cbd` (40.2) gegen `feature/40-3-gamepad-settings` nach der Nachbesserung, `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −4 bis +6 %, Render-CPU −2 bis +4 %, GPU −3 bis −1 %, Speicher +0 bis +1 % (6–7 MB), gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen. Keine Regression.

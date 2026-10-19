@@ -75,6 +75,11 @@ struct QcGamepadInfo
     int id = 0;
     QString name;
     QcGamepadType type = QcGamepadType::Generic;
+    // The pad's model as SDL's GUID (32 hex digits; the same for every pad of one model on one
+    // connection type): the key of its stored profile (decision E-611). Empty when unknown.
+    QString guid;
+    // Whether the pad can vibrate (decision E-615).
+    bool rumble = false;
 
     bool operator==(const QcGamepadInfo &other) const = default;
 };

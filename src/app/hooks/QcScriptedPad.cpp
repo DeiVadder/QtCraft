@@ -33,6 +33,14 @@ bool QcScriptedPad::wanted(const QStringList &overlays)
 
 std::optional<QcScriptedPad::Step> QcScriptedPad::parse(QStringView step)
 {
+    if (step.startsWith(u"connect="_s)) {
+        const std::optional<QcGamepadType> type = QcGamepadNames::typeFromName(step.mid(8).toString());
+        if (!type) {
+            qCWarning(lcPad) << "--overlay pad:" << step << ": unknown pad type";
+            return std::nullopt;
+        }
+        return Step{.kind = Step::Kind::Connect, .type = *type};
+    }
     if (const qsizetype equals = step.indexOf(u'='); equals > 0) {
         bool valid = false;
         const float value = step.mid(equals + 1).toFloat(&valid);
@@ -77,7 +85,7 @@ void QcScriptedPad::runNext()
     apply(m_queue.takeFirst());
 }
 
-void QcScriptedPad::apply(Step step)
+void QcScriptedPad::apply(const Step &step)
 {
     switch (step.kind) {
     case Step::Kind::Axis:
@@ -86,6 +94,9 @@ void QcScriptedPad::apply(Step step)
     case Step::Kind::Hold:
     case Step::Kind::Release:
         m_source.setPressed(m_pad, step.button, step.kind == Step::Kind::Hold);
+        break;
+    case Step::Kind::Connect:
+        connectAnother(step.type);
         break;
     case Step::Kind::Click:
         m_source.setPressed(m_pad, step.button, true);
@@ -96,6 +107,11 @@ void QcScriptedPad::apply(Step step)
         return;
     }
     afterFrames(reportFrames, [this] { report(); });
+}
+
+void QcScriptedPad::connectAnother(QcGamepadType type)
+{
+    m_pad = m_source.connectPad(u"Scripted %1 pad"_s.arg(QcGamepadNames::type(type)), type);
 }
 
 void QcScriptedPad::afterFrames(int frames, std::function<void()> then)
@@ -134,6 +150,7 @@ void QcScriptedPad::onFrameSwapped()
 void QcScriptedPad::report()
 {
     std::println(stderr, "padFocus: {}", m_ui.focusDescription().toStdString());
+    std::println(stderr, "padFamily: {}", m_ui.pads()->family().toStdString());
     if (m_ui.radialOpen()) {
         std::println(stderr, "padRadial: {}", m_ui.radialSlot());
     }

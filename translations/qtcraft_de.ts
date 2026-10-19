@@ -147,9 +147,13 @@
 <context>
     <name>ChatOverlay</name>
     <message>
-        <location filename="../src/app/qml/ChatOverlay.qml" line="28"/>
         <source>Chat or /command (e.g. /help), Start on the keyboard sends, B cancels</source>
-        <translation>Chat oder /Befehl (z. B. /help), Start auf der Tastatur sendet, B bricht ab</translation>
+        <translation type="vanished">Chat oder /Befehl (z. B. /help), Start auf der Tastatur sendet, B bricht ab</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/ChatOverlay.qml" line="28"/>
+        <source>Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels</source>
+        <translation>Chat oder /Befehl (z. B. /help), %1 auf der Tastatur sendet, %2 bricht ab</translation>
     </message>
     <message>
         <location filename="../src/app/qml/ChatOverlay.qml" line="29"/>
@@ -166,11 +170,15 @@
     </message>
     <message>
         <location filename="../src/app/qml/ChestScreen.qml" line="61"/>
-        <source>A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.</source>
-        <translation>A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel zwischen diesem Block und dem Inventar verschieben. B schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
+        <source>%1: pick up and put down. %2: put down one. %3: move the stack between this block and the inventory. %4 closes. Breaking the block drops its contents.</source>
+        <translation>%1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel zwischen diesem Block und dem Inventar verschieben. %4 schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/ChestScreen.qml" line="62"/>
+        <source>A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.</source>
+        <translation type="vanished">A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel zwischen diesem Block und dem Inventar verschieben. B schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/ChestScreen.qml" line="63"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen diesem Block und dem Inventar verschieben. %1 oder Esc schließt. Wer den Block abbaut, verstreut seinen Inhalt.</translation>
     </message>
@@ -245,11 +253,15 @@
     </message>
     <message>
         <location filename="../src/app/qml/CreativeScreen.qml" line="223"/>
-        <source>A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.</source>
-        <translation>A auf einem Item: ein voller Stapel, X: eins, Y: direkt ins Inventar. A auf einem Feld legt es dort ab. LB/RB wechseln die Reiter, B schließt.</translation>
+        <source>%1 on an item: a full stack, %2: one, %3: straight into the inventory. %1 on a slot puts it there. %4/%5 switch the tabs, %6 closes.</source>
+        <translation>%1 auf einem Item: ein voller Stapel, %2: eins, %3: direkt ins Inventar. %1 auf einem Feld legt es dort ab. %4/%5 wechseln die Reiter, %6 schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CreativeScreen.qml" line="224"/>
+        <source>A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.</source>
+        <translation type="vanished">A auf einem Item: ein voller Stapel, X: eins, Y: direkt ins Inventar. A auf einem Feld legt es dort ab. LB/RB wechseln die Reiter, B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CreativeScreen.qml" line="226"/>
         <source>Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).</source>
         <translation>Linksklick auf einen Gegenstand: ein voller Stapel, Rechtsklick: einer, Umschalt-Klick: direkt ins Inventar. Ein Klick auf ein Feld legt ihn dort ab. %1 oder Esc schließt (Esc beim Tippen in der Suche).</translation>
     </message>
@@ -402,17 +414,174 @@
     </message>
     <message>
         <location filename="../src/app/qml/FurnaceScreen.qml" line="145"/>
-        <source>Put something to smelt on top and fuel below. A: pick up and put down. X: put down one. Y: move the stack across. B closes.</source>
-        <translation>Oben etwas zum Schmelzen hineinlegen, unten Brennstoff. A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben. B schließt.</translation>
+        <source>Put something to smelt on top and fuel below. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation>Oben etwas zum Schmelzen, unten Brennstoff. %1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel hinüber verschieben. %4 schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/FurnaceScreen.qml" line="146"/>
+        <source>Put something to smelt on top and fuel below. A: pick up and put down. X: put down one. Y: move the stack across. B closes.</source>
+        <translation type="vanished">Oben etwas zum Schmelzen hineinlegen, unten Brennstoff. A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben. B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/FurnaceScreen.qml" line="147"/>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
         <translation>Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. Umschalt-Klick: den Stapel hinüberlegen. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. %1 or Esc closes.</source>
         <translation type="vanished">Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. %1 oder Esc schließt.</translation>
+    </message>
+</context>
+<context>
+    <name>GamepadPage</name>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="27"/>
+        <source>All controllers</source>
+        <translation>Alle Controller</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="38"/>
+        <source>%1 (not connected)</source>
+        <translation>%1 (nicht angeschlossen)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="97"/>
+        <source>Settings for</source>
+        <translation>Einstellungen für</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="121"/>
+        <source>This controller model has its own settings.</source>
+        <translation>Dieses Controller-Modell hat eigene Einstellungen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="122"/>
+        <source>This controller uses the settings for all controllers.</source>
+        <translation>Dieser Controller nutzt die Einstellungen für alle Controller.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="123"/>
+        <source>Over USB and over Bluetooth a controller counts as two models.</source>
+        <translation>Über USB und über Bluetooth zählt ein Controller als zwei Modelle.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="127"/>
+        <source>Use the shared settings</source>
+        <translation>Gemeinsame Einstellungen nutzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="127"/>
+        <source>Own settings</source>
+        <translation>Eigene Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="144"/>
+        <source>No controller connected. Xbox, PlayStation and Switch Pro controllers and most others work over USB or Bluetooth.</source>
+        <translation>Kein Controller angeschlossen. Xbox-, PlayStation- und Switch-Pro-Controller und die meisten anderen funktionieren über USB oder Bluetooth.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="145"/>
+        <source>Connected: %1. The controller you press a button on is used.</source>
+        <translation>Angeschlossen: %1. Es gilt der Controller, auf dem du eine Taste drückst.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="146"/>
+        <source>%1 (in use)</source>
+        <translation>%1 (in Benutzung)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="156"/>
+        <source>Radial menu only: the hotbar shows just the slot in the hand</source>
+        <translation>Nur Radialmenü: Die Schnellleiste zeigt nur das Feld in der Hand</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="162"/>
+        <source>Buttons</source>
+        <translation>Tasten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="190"/>
+        <source>Press a button …</source>
+        <translation>Taste drücken …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="190"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="208"/>
+        <source>The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).</source>
+        <translation>Die Trigger bauen ab und benutzen; in Menüs behalten die Tasten ihre Plätze (unten bestätigt, rechts geht zurück).</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="215"/>
+        <source>Reset buttons</source>
+        <translation>Tasten zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="220"/>
+        <source>The buttons are back to their defaults.</source>
+        <translation>Die Tasten sind wieder wie zu Beginn belegt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="224"/>
+        <source>Reset everything</source>
+        <translation>Alles zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadPage.qml" line="229"/>
+        <source>All values and buttons are back to their defaults.</source>
+        <translation>Alle Werte und Tasten sind wieder wie zu Beginn.</translation>
+    </message>
+</context>
+<context>
+    <name>GamepadValues</name>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="20"/>
+        <source>Look speed</source>
+        <translation>Umsehgeschwindigkeit</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="35"/>
+        <source>%1°/s</source>
+        <translation>%1°/s</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="40"/>
+        <source>Invert looking up and down</source>
+        <translation>Auf und ab umsehen umkehren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="46"/>
+        <source>Stick dead zone</source>
+        <translation>Totzone der Sticks</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="59"/>
+        <location filename="../src/app/qml/GamepadValues.qml" line="94"/>
+        <location filename="../src/app/qml/GamepadValues.qml" line="112"/>
+        <source>%1 %</source>
+        <translation>%1 %</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="64"/>
+        <source>Response curve</source>
+        <translation>Kennlinie</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="81"/>
+        <source>Trigger dead zone</source>
+        <translation>Totzone der Trigger</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="98"/>
+        <source>Trigger acts at</source>
+        <translation>Trigger wirkt ab</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/GamepadValues.qml" line="117"/>
+        <source>Vibrate when hurt (if the controller can)</source>
+        <translation>Vibrieren bei Schaden (wenn der Controller es kann)</translation>
     </message>
 </context>
 <context>
@@ -444,8 +613,12 @@
     </message>
     <message>
         <location filename="../src/app/qml/HandbookScreen.qml" line="497"/>
+        <source>%1 on a name or an item opens its page. %2 closes.</source>
+        <translation>%1 auf einem Namen oder Item öffnet seine Seite. %2 schließt.</translation>
+    </message>
+    <message>
         <source>A on a name or an item opens its page. B closes.</source>
-        <translation>A auf einem Namen oder Item öffnet seine Seite. B schließt.</translation>
+        <translation type="vanished">A auf einem Namen oder Item öffnet seine Seite. B schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/HandbookScreen.qml" line="498"/>
@@ -456,7 +629,7 @@
 <context>
     <name>HotbarRadial</name>
     <message>
-        <location filename="../src/app/qml/HotbarRadial.qml" line="69"/>
+        <location filename="../src/app/qml/HotbarRadial.qml" line="71"/>
         <source>Empty hand</source>
         <translation>Leere Hand</translation>
     </message>
@@ -464,19 +637,63 @@
 <context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="457"/>
         <source>RT: mine/attack  LT: use/place  B: drop  X: pick block  LB/RB or hold ◀: select  Y: inventory  ▼: chat  Start: menu</source>
-        <translation>RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
+        <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="459"/>
+        <location filename="../src/app/qml/Hud.qml" line="461"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="461"/>
+        <location filename="../src/app/qml/Hud.qml" line="463"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="483"/>
+        <source>mine/attack</source>
+        <translation>abbauen/angreifen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="484"/>
+        <source>use/place</source>
+        <translation>benutzen/setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="485"/>
+        <source>drop</source>
+        <translation>fallen lassen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="486"/>
+        <source>pick block</source>
+        <translation>Block wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="488"/>
+        <source>select</source>
+        <translation>auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="489"/>
+        <source>hold: all slots</source>
+        <translation>halten: alle Felder</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="490"/>
+        <source>inventory</source>
+        <translation>Inventar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="491"/>
+        <source>chat</source>
+        <translation>Chat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/Hud.qml" line="492"/>
+        <source>menu</source>
+        <translation>Menü</translation>
     </message>
 </context>
 <context>
@@ -506,27 +723,31 @@
         <translation>Kreativ-Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="151"/>
         <source>A: pick up and put down. X: put down one. Y: move the stack across (on the result: craft as many as possible). B closes.</source>
-        <translation>A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben (auf dem Ergebnis: so viele wie möglich herstellen). B schließt.</translation>
+        <translation type="vanished">A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel hinüber verschieben (auf dem Ergebnis: so viele wie möglich herstellen). B schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="152"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="151"/>
+        <source>%1: pick up and put down. %2: put down one. %3: move the stack across (on the result: craft as many as possible). %4 closes.</source>
+        <translation>%1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel hinüber verschieben (auf dem Ergebnis: so viele wie möglich herstellen). %4 schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="153"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across (on the result: craft as many as possible). %1 or Esc closes.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberlegen (auf dem Ergebnis: so oft wie möglich herstellen). %1 oder Esc schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="163"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="164"/>
         <source>Can craft now</source>
         <translation>Jetzt herstellbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="181"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="182"/>
         <source>Collect materials to see recipes here.</source>
         <translation>Sammle Material, um hier Rezepte zu sehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="193"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="194"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
@@ -607,17 +828,17 @@
 <context>
     <name>Main</name>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="15"/>
+        <location filename="../src/app/qml/Main.qml" line="17"/>
         <source>QtCraft</source>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="117"/>
+        <location filename="../src/app/qml/Main.qml" line="127"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="117"/>
+        <location filename="../src/app/qml/Main.qml" line="127"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -973,42 +1194,85 @@
 <context>
     <name>OnScreenKeyboard</name>
     <message>
-        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="181"/>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="183"/>
         <source>Shift</source>
         <translation>Umschalt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="190"/>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="192"/>
         <source>Space</source>
         <translation>Leertaste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="196"/>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="198"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="202"/>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="204"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="210"/>
+        <location filename="../src/app/qml/OnScreenKeyboard.qml" line="212"/>
+        <source>%1: delete  %2: space  %3/%4: cursor  %5: done  %6: close</source>
+        <translation>%1: löschen  %2: Leerzeichen  %3/%4: Cursor  %5: fertig  %6: schließen</translation>
+    </message>
+    <message>
         <source>X: delete  Y: space  LB/RB: cursor  Start: done  B: close</source>
-        <translation>X: löschen  Y: Leerzeichen  LB/RB: Cursor  Start: fertig  B: schließen</translation>
+        <translation type="vanished">X: löschen  Y: Leerzeichen  LB/RB: Cursor  Start: fertig  B: schließen</translation>
     </message>
 </context>
 <context>
     <name>PadHints</name>
     <message>
-        <location filename="../src/app/qml/PadHints.qml" line="29"/>
         <source>A: take/put down  X: one item  Y: quick move  B: close  Right stick: scroll</source>
-        <translation>A: nehmen/ablegen  X: ein Item  Y: schnell verschieben  B: schließen  Rechter Stick: scrollen</translation>
+        <translation type="vanished">A: nehmen/ablegen  X: ein Item  Y: schnell verschieben  B: schließen  Rechter Stick: scrollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PadHints.qml" line="30"/>
         <source>A: select  B: back  LB/RB: tabs  Right stick: scroll</source>
-        <translation>A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen</translation>
+        <translation type="vanished">A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="32"/>
+        <source>take/put down</source>
+        <translation>nehmen/ablegen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="33"/>
+        <source>one item</source>
+        <translation>ein Item</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="34"/>
+        <source>quick move</source>
+        <translation>schnell verschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="35"/>
+        <source>close</source>
+        <translation>schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="36"/>
+        <location filename="../src/app/qml/PadHints.qml" line="42"/>
+        <source>scroll</source>
+        <translation>scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="38"/>
+        <source>select</source>
+        <translation>auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="39"/>
+        <source>back</source>
+        <translation>zurück</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PadHints.qml" line="41"/>
+        <source>tabs</source>
+        <translation>Reiter</translation>
     </message>
 </context>
 <context>
@@ -1492,14 +1756,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="216"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="241"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="219"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="244"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="236"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="245"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="239"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="248"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -1508,22 +1772,22 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="290"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="293"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="315"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="318"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -1568,14 +1832,140 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="300"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="410"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QcGamepadOptions</name>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="153"/>
+        <source>Jump (twice: fly)</source>
+        <translation>Springen (zweimal: fliegen)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="154"/>
+        <source>Sprint</source>
+        <translation>Rennen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="155"/>
+        <source>Sneak</source>
+        <translation>Schleichen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="156"/>
+        <source>Previous hotbar slot</source>
+        <translation>Voriges Feld der Schnellleiste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="157"/>
+        <source>Next hotbar slot</source>
+        <translation>Nächstes Feld der Schnellleiste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="158"/>
+        <source>Pause menu</source>
+        <translation>Pausenmenü</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="159"/>
+        <source>Inventory</source>
+        <translation>Inventar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="160"/>
+        <source>Chat</source>
+        <translation>Chat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="161"/>
+        <source>Handbook</source>
+        <translation>Handbuch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="162"/>
+        <source>Camera view</source>
+        <translation>Kameraansicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="163"/>
+        <source>Player list (hold)</source>
+        <translation>Spielerliste (halten)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="164"/>
+        <source>Drop (hold: stack)</source>
+        <translation>Fallen lassen (halten: Stapel)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="165"/>
+        <source>Pick block</source>
+        <translation>Block wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="166"/>
+        <source>Radial menu (hold)</source>
+        <translation>Radialmenü (halten)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="185"/>
+        <source>“%1” now has the button of “%2”.</source>
+        <translation>„%1“ hat jetzt die Taste von „%2“.</translation>
+    </message>
+</context>
+<context>
+    <name>QcGamepadRoster</name>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="112"/>
+        <source>Left stick</source>
+        <translation>Linker Stick</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="115"/>
+        <source>Right stick</source>
+        <translation>Rechter Stick</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="124"/>
+        <source>Bottom button</source>
+        <translation>Untere Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="127"/>
+        <source>Right button</source>
+        <translation>Rechte Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="130"/>
+        <source>Left button</source>
+        <translation>Linke Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="132"/>
+        <source>Top button</source>
+        <translation>Obere Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="139"/>
+        <source>Controller connected: %1</source>
+        <translation>Controller angeschlossen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="148"/>
+        <source>Controller disconnected: %1</source>
+        <translation>Controller getrennt: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/input/QcGamepadRoster.cpp" line="169"/>
+        <source>Controller in use: %1</source>
+        <translation>Controller in Benutzung: %1</translation>
     </message>
 </context>
 <context>
@@ -1825,11 +2215,16 @@
     </message>
     <message>
         <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="119"/>
+        <source>Radial menu of the hotbar (hold, choose with the mouse)</source>
+        <translation>Radialmenü der Schnellleiste (halten, mit der Maus wählen)</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="121"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="129"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="131"/>
         <source>Hotbar slot %1</source>
         <translation>Schnellleiste, Feld %1</translation>
     </message>
@@ -3794,32 +4189,32 @@
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="45"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="49"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="58"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="62"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="61"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="65"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="64"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="72"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="100"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="108"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/SettingsScreen.qml" line="115"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="123"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -3827,22 +4222,22 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="119"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="127"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="132"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="140"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="155"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="163"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="172"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="180"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
@@ -3851,91 +4246,96 @@
         <translation type="vanished">Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="179"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="187"/>
         <source>Show labels in the world (%1)</source>
         <translation>Beschriftungen in der Welt anzeigen (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="185"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="193"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="151"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="197"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="213"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="229"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="245"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="159"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="205"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="221"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="237"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="253"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="68"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="69"/>
+        <source>Controller</source>
+        <translation>Controller</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="76"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="137"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="145"/>
         <source>FOV effects</source>
         <translation>Sichtfeld-Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="201"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="209"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="217"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="225"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="233"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="241"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="250"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="258"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="256"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="264"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="266"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="274"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="267"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="275"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="268"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="276"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="274"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="282"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="285"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="293"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="295"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="303"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="319"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="331"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
@@ -4039,11 +4439,15 @@
     </message>
     <message>
         <location filename="../src/app/qml/TradeScreen.qml" line="221"/>
-        <source>Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.</source>
-        <translation>Links ein Angebot wählen. A auf dem Ergebnis handelt einmal, Y so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz nach. B schließt.</translation>
+        <source>Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.</source>
+        <translation>Wähle links ein Angebot. %1 auf dem Ergebnis handelt einmal, %2 so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz auf. %3 schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/TradeScreen.qml" line="222"/>
+        <source>Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.</source>
+        <translation type="vanished">Links ein Angebot wählen. A auf dem Ergebnis handelt einmal, Y so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz nach. B schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="223"/>
         <source>Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.</source>
         <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
     </message>

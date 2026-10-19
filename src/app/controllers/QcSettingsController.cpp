@@ -25,7 +25,10 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     , m_character(new QcCharacterSettings(parts, library, *this, this))
     , m_debug(new QcDebugSettings(this))
     , m_texturePacks(new QcTexturePackController([&library] { return library.modsDirectory(); }, this))
+    , m_gamepad(new QcGamepadOptions(this))
 {
+    // The game controller follows settingsChanged (the pad's profiles apply at once).
+    connect(m_gamepad, &QcGamepadOptions::changed, this, &QcSettingsController::settingsChanged);
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
     connect(m_texturePacks, &QcTexturePackController::selectionChanged, this, &QcSettingsController::saveSettings);
 }
@@ -50,7 +53,7 @@ void QcSettingsController::loadSettings()
     setFovEffects(m_storedSettings.fovEffects);
     setMouseSensitivity(m_storedSettings.mouseSensitivity);
     setInvertMouse(m_storedSettings.invertMouse);
-    m_gamepad = m_storedSettings.gamepad;
+    m_gamepad->load(m_storedSettings.gamepad);
     m_debug->load(m_storedSettings.debug);
     setShowLabels(m_storedSettings.showLabels);
     m_languageSetting = m_storedSettings.language;
@@ -77,7 +80,7 @@ void QcSettingsController::saveSettings()
     settings.fovEffects = m_fovEffects;
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
-    settings.gamepad = m_gamepad;
+    settings.gamepad = m_gamepad->settings();
     settings.debug = m_debug->options();
     settings.showLabels = m_showLabels;
     settings.language = m_languageSetting;

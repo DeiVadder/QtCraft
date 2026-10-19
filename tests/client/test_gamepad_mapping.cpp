@@ -144,12 +144,12 @@ private slots:
 
         QcGameSettings settings;
         QCOMPARE(QcGameSettings::load(path).gamepad, QcGamepadSettings());
-        settings.gamepad.response.deadZone = 0.25f;
-        settings.gamepad.response.outerZone = 0.1f;
-        settings.gamepad.response.exponent = 2.0f;
-        settings.gamepad.response.triggerDeadZone = 0.2f;
-        settings.gamepad.lookSpeed = 240.0;
-        settings.gamepad.invertLook = true;
+        settings.gamepad.standard.response.deadZone = 0.25f;
+        settings.gamepad.standard.response.outerZone = 0.1f;
+        settings.gamepad.standard.response.exponent = 2.0f;
+        settings.gamepad.standard.response.triggerDeadZone = 0.2f;
+        settings.gamepad.standard.lookSpeed = 240.0;
+        settings.gamepad.standard.invertLook = true;
         QVERIFY(settings.save(path).has_value());
         QCOMPARE(QcGameSettings::load(path).gamepad, settings.gamepad);
     }
@@ -167,14 +167,14 @@ private slots:
             file.setValue(u"gamepad/invertLook"_s, true);
         }
 
-        const QcGamepadSettings loaded = QcGameSettings::load(path).gamepad;
+        const QcGamepadProfile loaded = QcGameSettings::load(path).gamepad.standard;
         QCOMPARE(loaded.response, (QcGamepadResponse{5.0f, QcGamepadResponse().outerZone, QcGamepadResponse().exponent}.sanitized()));
         QCOMPARE(loaded.response.exponent, QcGamepadResponse().exponent);
-        QCOMPARE(loaded.lookSpeed, QcGamepadSettings::maxLookSpeed);
+        QCOMPARE(loaded.lookSpeed, QcGamepadProfile::maxLookSpeed);
         QVERIFY(loaded.invertLook);
 
-        QCOMPARE(QcGamepadSettings::clampLookSpeed(std::numeric_limits<double>::quiet_NaN()), QcGamepadSettings::defaultLookSpeed);
-        QCOMPARE(QcGamepadSettings::clampLookSpeed(1.0), QcGamepadSettings::minLookSpeed);
+        QCOMPARE(QcGamepadProfile::clampLookSpeed(std::numeric_limits<double>::quiet_NaN()), QcGamepadProfile::defaultLookSpeed);
+        QCOMPARE(QcGamepadProfile::clampLookSpeed(1.0), QcGamepadProfile::minLookSpeed);
     }
 };
 

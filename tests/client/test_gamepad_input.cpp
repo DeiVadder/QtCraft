@@ -242,7 +242,7 @@ private slots:
         QCOMPARE(connected.at(0).at(0).toInt(), first);
         QVERIFY(first > 0 && second != first);
         QCOMPARE(source.pads().size(), 2);
-        QCOMPARE(source.pads().at(0), (QcGamepadInfo{.id = first, .name = u"Pad A"_s, .type = QcGamepadType::PlayStation}));
+        QCOMPARE(source.pads().at(0), (QcGamepadInfo{.id = first, .name = u"Pad A"_s, .type = QcGamepadType::PlayStation, .guid = {}, .rumble = true}));
 
         QVERIFY(source.setPressed(first, QcGamepadButton::South, true));
         QVERIFY(source.setAxis(first, QcGamepadAxis::LeftX, 0.5f));

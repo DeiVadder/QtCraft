@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcAudioSettings.h"
 #include "app/controllers/QcCharacterSettings.h"
+#include "app/controllers/QcGamepadOptions.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcDebugSettings.h"
 #include "app/input/QcKeyControlsForeign.h"
@@ -42,6 +43,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QcDebugSettings *debug READ debug CONSTANT FINAL)
     // Texture packs and their order (decision E-297).
     Q_PROPERTY(QcTexturePackController *texturePacks READ texturePacks CONSTANT FINAL)
+    // The gamepad page: profiles, buttons, the radial menu alone (decisions E-610, E-611, E-614).
+    Q_PROPERTY(QcGamepadOptions *gamepad READ gamepadOptions CONSTANT FINAL)
 
 public:
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
@@ -66,8 +69,9 @@ public:
     void setMouseSensitivity(double sensitivity);
     bool invertMouse() const { return m_invertMouse; }
     void setInvertMouse(bool invert);
-    // Dead zones, curve and look speed of the gamepad (decision E-541; no screen yet).
-    const QcGamepadSettings &gamepad() const { return m_gamepad; }
+    // Profiles, buttons and the radial menu alone of the gamepads (decisions E-541, E-610, E-611).
+    const QcGamepadSettings &gamepad() const { return m_gamepad->settings(); }
+    QcGamepadOptions *gamepadOptions() const { return m_gamepad; }
     // Labels floating in the world (decision E-222); the label key switches them.
     bool showLabels() const { return m_showLabels; }
     void setShowLabels(bool show);
@@ -101,12 +105,12 @@ private:
     QcCharacterSettings *m_character = nullptr;
     QcDebugSettings *m_debug = nullptr;
     QcTexturePackController *m_texturePacks = nullptr;
+    QcGamepadOptions *m_gamepad = nullptr;
     int m_viewDistance = QcGameSettings::defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
     double m_fovEffects = QcGameSettings::defaultFovEffects;
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
-    QcGamepadSettings m_gamepad;
     bool m_showLabels = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;

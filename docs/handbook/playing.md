@@ -38,7 +38,7 @@ Press H / F1 at any time. Every block, item, creature and biome has a page with 
 - **Right mouse** or **R**: place, use, eat
 - **Middle mouse** or **B**: pick the block you look at
 - **Q**: throw one item, **Ctrl+Q**: the whole stack
-- **1–9**, mouse wheel: choose the hotbar slot
+- **1–9**, mouse wheel: choose the hotbar slot; hold **G** for the hotbar wheel and choose a slot by moving the mouse
 - **E**: inventory, **T / Enter**: chat, **/**: command, **V / F5**: camera view, **H / F1**: handbook, **I / F3**: debug display (off, compact, full), **O / F4**: debug options, **Esc**: menu
 - Every key except Esc can be changed under Settings → Controls.
 
@@ -62,6 +62,10 @@ A gamepad (Xbox, PlayStation, Switch Pro and most others) steers the player whil
 - **D-pad**: up switches the camera view, down opens the chat, right the handbook; hold left for the hotbar wheel: point at a slot with the right stick and let go to take it
 
 In the menus, the inventory and every other screen the d-pad or the left stick moves a golden ring from button to button and slot to slot; the lower face button presses or picks up and puts down, the right one goes back, the left one puts down a single item, the upper one moves a stack across, the shoulder buttons switch tabs and the right stick scrolls. On a slider or a number field, left and right change the value. A text field opens a keyboard on the screen (Shift gives each key its second character, for example ! and ? or capitals): the left face button deletes, the upper one types a space, Start finishes. As soon as you use the mouse or the keyboard again, the ring goes away.
+
+The hints at the bottom show the buttons as your controller labels them: letters for Xbox and Switch pads, cross, circle, square and triangle for PlayStation pads, and for other pads a small diamond with the place of the button lit. When a controller connects or disconnects, a short notice says so; if the controller you play with disconnects in the world, the pause menu opens (not for a controller that only lies connected while you play with keyboard and mouse). With several controllers, the one you last pressed a button on is used.
+
+**Settings → Controller** sets look speed, inverted looking, the dead zone and response curve of the sticks, the dead zone of the triggers and how far you pull them before they act, and vibration (the controller you play with rumbles when you are hurt, if it can). Each controller model can have its own settings (*Own settings*); otherwise it uses the settings for all controllers. The same controller over USB and over Bluetooth counts as two models. On Switch pads, too, the lower button (B) confirms and the right one (A) goes back, as the buttons sit on every other pad. Under *Buttons*, choose *Change* and press the new button on the controller; a button another action had is swapped. A key or a click cancels. In menus the buttons keep their places. *Radial menu only* hides the hotbar but for the slot in your hand: the hotbar wheel shows all slots.
 
 **Moving**
 

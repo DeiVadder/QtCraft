@@ -5,6 +5,8 @@
 #include "clientcore/session/QcClientSession.h"
 #include "common/gameplay/QcInventory.h"
 
+#include <algorithm>
+
 namespace {
 
 // Sets `field` while the pad wants it and gives it back (false) once when it stops; `mine` says
@@ -43,34 +45,73 @@ void QcGamepadControls::setSource(QcGamepadSource *source)
     m_source = source;
     m_held.clear();
     m_presses.clear();
-    m_pad = 0;
+    refreshProfiles();
     if (!m_source) {
+        setLead(0);
         return;
     }
 
     connect(m_source, &QcGamepadSource::stateChanged, this, &QcGamepadControls::onStateChanged);
     connect(m_source, &QcGamepadSource::padConnected, this, &QcGamepadControls::onPadConnected);
     connect(m_source, &QcGamepadSource::padDisconnected, this, &QcGamepadControls::onPadDisconnected);
+    refreshProfiles();
     const QList<QcGamepadInfo> pads = m_source->pads();
-    m_pad = pads.isEmpty() ? 0 : pads.first().id;
+    setLead(pads.isEmpty() ? 0 : pads.first().id);
+}
+
+void QcGamepadControls::refreshProfiles()
+{
+    m_profiles.clear();
+    if (!m_source) {
+        return;
+    }
+
+    const QList<QcGamepadInfo> pads = m_source->pads();
+    for (const QcGamepadInfo &pad : pads) {
+        m_profiles.insert(pad.id, &m_settings.profileFor(pad.guid));
+    }
 }
 
 void QcGamepadControls::setSettings(const QcGamepadSettings &settings)
 {
     m_settings = settings;
-    m_settings.response = settings.response.sanitized();
-    m_settings.lookSpeed = QcGamepadSettings::clampLookSpeed(settings.lookSpeed);
+    m_settings.standard = settings.standard.sanitized();
+    refreshProfiles();
+    m_profile = profileOf(m_pad);
+    emit profileChanged();
+}
+
+const QcGamepadProfile &QcGamepadControls::profileOf(int id) const
+{
+    const QcGamepadProfile *profile = m_profiles.value(id);
+    return profile ? *profile : m_settings.standard;
+}
+
+void QcGamepadControls::setLead(int id)
+{
+    const bool changed = id != m_pad;
+    m_pad = id;
+    m_profile = profileOf(id);
+    if (changed) {
+        // The new pad is in use once it is used (a takeover is a use: onStateChanged marks it).
+        m_inUse = false;
+        m_lastHealth = -1.0;
+        emit profileChanged();
+    }
 }
 
 QcGamepadState QcGamepadControls::shapedState(int id) const
 {
-    return m_source ? QcGamepadCurve::apply(m_source->state(id), m_settings.response) : QcGamepadState();
+    return m_source ? QcGamepadCurve::apply(m_source->state(id), profileOf(id).response) : QcGamepadState();
 }
 
 void QcGamepadControls::onPadConnected(int id)
 {
+    if (const std::optional<QcGamepadInfo> info = m_source ? m_source->info(id) : std::nullopt) {
+        m_profiles.insert(id, &m_settings.profileFor(info->guid));
+    }
     if (m_pad == 0) {
-        m_pad = id;
+        setLead(id);
     }
 }
 
@@ -78,10 +119,16 @@ void QcGamepadControls::onPadDisconnected(int id)
 {
     if (id == m_pad) {
         releaseHeld(id);
-        m_pad = 0;
         m_sneakToggled = false;
+        // Without the pad he plays with the player cannot go on: the pause menu opens, as on a
+        // console. A pad that only lies connected beside the keyboard and mouse pauses nothing.
+        if (m_active && m_inUse) {
+            emit worldAction(QcKeyBindings::Action::Pause, true);
+        }
+        setLead(0);
     }
     m_held.remove(id);
+    m_profiles.remove(id);
 }
 
 void QcGamepadControls::releaseHeld(int id)
@@ -125,20 +172,22 @@ bool QcGamepadControls::takesLead(int id, Held before, Held now) const
 void QcGamepadControls::onStateChanged(int id)
 {
     const QcGamepadState shaped = shapedState(id);
+    const QcGamepadProfile &profile = profileOf(id);
     const Held before = m_held.value(id);
     Held now{};
     for (std::size_t index = 0; index < now.size(); ++index) {
-        now[index] = QcGamepadMapping::held(Action(index), shaped, m_bindings, before[index]);
+        now[index] = QcGamepadMapping::held(Action(index), shaped, profile.bindings, before[index], profile.triggerThreshold);
     }
 
     if (id != m_pad && takesLead(id, before, now)) {
         if (m_pad != 0) {
             releaseHeld(m_pad);
         }
-        m_pad = id;
+        setLead(id);
     }
 
     if (id == m_pad) {
+        m_inUse = m_inUse || (m_source && QcGamepadMapping::used(m_source->state(id)));
         const qint64 timeMs = m_clock.elapsed();
         for (std::size_t index = 0; index < now.size(); ++index) {
             if (now[index] != before[index]) {
@@ -154,6 +203,7 @@ void QcGamepadControls::applyFrame(QcClientSession &session, float seconds, bool
     if (session.isDead()) {
         m_sneakToggled = false;
     }
+    rumbleWhenHurt(session);
 
     if (!active) {
         if (m_active) {
@@ -177,17 +227,38 @@ void QcGamepadControls::applyFrame(QcClientSession &session, float seconds, bool
             emit radialChanged();
         }
     }
-    QPointF look = m_radial.isOpen() ? QPointF() : QcGamepadMapping::lookDelta(shaped, m_settings.lookSpeed, double(seconds));
+    QPointF look = m_radial.isOpen() ? QPointF() : QcGamepadMapping::lookDelta(shaped, m_profile.lookSpeed, double(seconds));
     m_lookWaitsForNeutral = (m_lookWaitsForNeutral || (m_radialWasOpen && !m_radial.isOpen())) && !look.isNull();
     m_radialWasOpen = m_radial.isOpen();
     if (m_lookWaitsForNeutral) {
         look = QPointF();
     }
     if (!look.isNull()) {
-        intent = QcMouseLook::apply(intent, look, 1.0, m_settings.invertLook);
+        intent = QcMouseLook::apply(intent, look, 1.0, m_profile.invertLook);
     }
     if (intent != session.intent()) {
         session.setIntent(intent);
+    }
+}
+
+void QcGamepadControls::rumbleWhenHurt(const QcClientSession &session)
+{
+    // Only with a pad: without one this is a comparison per frame.
+    if (m_pad == 0) {
+        return;
+    }
+
+    if (!session.vitals().healthKnown()) {
+        m_lastHealth = -1.0;
+        return;
+    }
+
+    const double health = session.vitals().health();
+    const double damage = m_lastHealth - health;
+    m_lastHealth = health;
+    if (damage > 0.0 && m_inUse && m_windowActive && m_profile.vibration && m_source) {
+        const double strength = std::clamp(0.35 + 0.65 * damage / fullRumbleDamage, 0.0, 1.0);
+        m_source->rumble(m_pad, float(strength), rumbleMs);
     }
 }
 
@@ -339,7 +410,8 @@ void QcGamepadControls::closeRadial(QcClientSession *session, bool select)
 
 void QcGamepadControls::applyWalk(QcPlayerInput &intent, const QcGamepadState &shaped, bool sprintPressed, bool flying)
 {
-    using QcGamepadMapping::held;
+    const QcGamepadMapping::Bindings &bindings = m_profile.bindings;
+    const auto held = [&shaped, &bindings](Action action) { return QcGamepadMapping::held(action, shaped, bindings, false); };
     const QcGamepadMapping::Walk walk = QcGamepadMapping::walk(shaped);
     if (walk.moving()) {
         intent.forward = walk.forward;
@@ -355,10 +427,10 @@ void QcGamepadControls::applyWalk(QcPlayerInput &intent, const QcGamepadState &s
     if (sprintPressed && !flying) {
         m_sneakToggled = false;
     }
-    const bool sneak = flying ? held(Action::Sneak, shaped, m_bindings, false) : m_sneakToggled;
-    const bool sprintHeld = sprintPressed || held(Action::Sprint, shaped, m_bindings, false);
+    const bool sneak = flying ? held(Action::Sneak) : m_sneakToggled;
+    const bool sprintHeld = sprintPressed || held(Action::Sprint);
     const bool sprint = m_sprint.update(walk.forward >= QcGamepadMapping::sprintForward, sprintHeld, sneak);
-    contribute(intent.jump, held(Action::Jump, shaped, m_bindings, false), m_jumping);
+    contribute(intent.jump, held(Action::Jump), m_jumping);
     contribute(intent.sneak, sneak, m_sneaking);
     contribute(intent.sprint, sprint, m_sprinting);
 }
@@ -399,6 +471,7 @@ void QcGamepadControls::reset()
 {
     stop();
     m_sneakToggled = false;
+    m_lastHealth = -1.0;
 }
 
 void QcGamepadControls::stop()

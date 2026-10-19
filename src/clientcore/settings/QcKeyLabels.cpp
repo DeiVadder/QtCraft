@@ -115,6 +115,8 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Labels in the world");
     case A::PlayerList:
         return tr("Player list (hold)");
+    case A::HotbarRadial:
+        return tr("Radial menu of the hotbar (hold, choose with the mouse)");
     case A::Pause:
         return tr("Menu");
     case A::Hotbar1:

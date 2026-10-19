@@ -49,6 +49,14 @@ enum class Role {
     Selection,
     // The ring around the item the pad's focus is on (decision E-583).
     FocusRing,
+    // Pad button symbols (decision E-612): the disc behind a symbol and the colours of the face
+    // buttons' letters and shapes (plain colours, no logos).
+    PadGlyph,
+    PadGreen,
+    PadRed,
+    PadBlue,
+    PadYellow,
+    PadPink,
     Crosshair,
     Progress,
     Health,

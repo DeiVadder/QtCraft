@@ -56,6 +56,8 @@ public:
         Hotbar7,
         Hotbar8,
         Hotbar9,
+        // Held down: the hotbar's radial menu, a slot chosen by moving the mouse (decision E-614).
+        HotbarRadial,
         // Esc: fixed, because Esc also cancels every screen and the key capture.
         Pause,
     };

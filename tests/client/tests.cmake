@@ -52,6 +52,9 @@ qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_
 qc_add_test(test_gamepad_input SOURCES client/test_gamepad_input.cpp LIBRARIES qc_clientcore)
 # The gamepad controls: walking, looking, triggers, hotbar steps and their settings (decision E-541).
 qc_add_test(test_gamepad_mapping SOURCES client/test_gamepad_mapping.cpp LIBRARIES qc_clientcore)
+# Profiles per pad model, rebinding, trigger point, button symbols and the mouse's radial menu
+# (decisions E-610 to E-614).
+qc_add_test(test_gamepad_profiles SOURCES client/test_gamepad_profiles.cpp LIBRARIES qc_clientcore)
 # The pad on the screens without a window: spatial focus moves, radial menu, menu commands with
 # repeats, and the hotbar selection against older server states (decisions E-581 to E-583).
 qc_add_test(test_gamepad_navigation SOURCES client/test_gamepad_navigation.cpp LIBRARIES qc_clientcore)

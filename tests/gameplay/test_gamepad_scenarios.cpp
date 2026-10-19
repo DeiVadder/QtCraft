@@ -1,18 +1,23 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/input/QcGamepadResponse.h"
+#include "clientcore/input/QcVirtualGamepadSource.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcInventory.h"
 #include "server/core/QcLocalServerHost.h"
+#include "server/storage/QcPlayerStorage.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QBuffer>
 #include <QSignalSpy>
 #include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <cmath>
@@ -39,6 +44,8 @@ class TestGamepadScenarios : public QObject
     Q_OBJECT
 
 private:
+    // The world on disk, so a player who leaves comes back as he left (joiningHurtDoesNotVibrate).
+    QTemporaryDir m_worldDirectory;
     std::unique_ptr<QcLocalServerHost> m_host;
     std::unique_ptr<QcClientSession> m_session;
     std::unique_ptr<QBuffer> m_output;
@@ -108,6 +115,31 @@ private:
 
     void settle() { ticksInRealTime(10); }
 
+    // A fall of ten blocks; whether it hurt.
+    bool fall()
+    {
+        const double before = m_session->vitals().health();
+        const QcVec3 feet = position();
+        chat(u"/tp %1 %2 %3"_s.arg(feet.x).arg(feet.y + 10.0).arg(feet.z));
+        return ticksInRealTimeUntil([&] { return m_session->vitals().health() < before; }, 120);
+    }
+
+    // The pad is used (the device in use): a step to the left on the hotbar and back.
+    void usePad()
+    {
+        QVERIFY(click(u"leftShoulder"_s));
+        QVERIFY(click(u"rightShoulder"_s));
+        ticks(1);
+        QVERIFY(m_control->gamepadControls().padInUse());
+    }
+
+    // Before the session plays: a press and release, so the pad is the device in use.
+    void usePadBeforeJoin()
+    {
+        QVERIFY(setPad({{u"leftShoulder"_s, true}}));
+        QVERIFY(setPad({{u"leftShoulder"_s, false}}));
+    }
+
     bool flying() const { return m_session->playerMotion().flying; }
     void chat(const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}, true); }
 
@@ -149,6 +181,9 @@ private slots:
         QcServerConfig config;
         config.viewDistance = 2;
         config.worldName = u"Gamepad"_s;
+        QVERIFY(m_worldDirectory.isValid());
+        config.worldDirectory = m_worldDirectory.path();
+        config.autosaveSeconds = 0;
         m_host = std::make_unique<QcLocalServerHost>(config, content, std::make_unique<QcTestTerrainGenerator>(content));
         m_session = std::make_unique<QcClientSession>(m_host->connectClient(), u"Bot"_s);
         m_output = std::make_unique<QBuffer>();
@@ -516,6 +551,90 @@ private slots:
         // cleanup() disconnects the pad of the next case; this one is gone already.
         const QJsonObject connected = request({{u"cmd"_s, u"gamepadConnect"_s}, {u"type"_s, u"xbox"_s}});
         m_pad = connected.value(u"pad"_s).toInt();
+    }
+
+    // A fall that hurts vibrates the leading pad (decision E-615); with vibration off in its
+    // profile, while the keyboard or mouse were used last, or while the window lacks the focus, it
+    // does not.
+    void hurtVibratesThePad()
+    {
+        QcGamepadControls &controls = m_control->gamepadControls();
+        const QcVirtualGamepadSource &pads = m_control->virtualGamepads();
+        QCOMPARE(controls.activePad(), m_pad);
+        usePad();
+
+        QVERIFY(fall());
+        ticks(1);
+        const QList<QcVirtualGamepadSource::Rumble> rumbles = pads.rumbles(m_pad);
+        QCOMPARE(rumbles.size(), 1);
+        QVERIFY(rumbles.first().strength > 0.35f && rumbles.first().strength <= 1.0f);
+        QCOMPARE(rumbles.first().durationMs, QcGamepadControls::rumbleMs);
+        chat(u"/heal"_s);
+
+        QcGamepadSettings quiet;
+        quiet.standard.vibration = false;
+        controls.setSettings(quiet);
+        QVERIFY(fall());
+        ticks(1);
+        QCOMPARE(pads.rumbles(m_pad).size(), 1);
+        controls.setSettings({});
+        chat(u"/heal"_s);
+
+        controls.keyboardOrMouseUsed();
+        QVERIFY(fall());
+        ticks(1);
+        QCOMPARE(pads.rumbles(m_pad).size(), 1);
+        chat(u"/heal"_s);
+
+        usePad();
+        controls.setWindowActive(false);
+        QVERIFY(fall());
+        ticks(1);
+        QCOMPARE(pads.rumbles(m_pad).size(), 1);
+        controls.setWindowActive(true);
+        chat(u"/heal"_s);
+    }
+
+    // A player who left hurt joins again with the pad in use: the vitals start full until the
+    // server tells the health, and that first health is no damage (decision E-615). The frames
+    // run from the start, as in the game once the world exists.
+    void joiningHurtDoesNotVibrate()
+    {
+        QcGamepadControls &controls = m_control->gamepadControls();
+        const QcVirtualGamepadSource &pads = m_control->virtualGamepads();
+        usePad();
+        QVERIFY(fall());
+        ticks(1);
+        const double hurt = m_session->vitals().health();
+        QVERIFY(hurt < 18.0);
+        const qsizetype rumbled = pads.rumbles(m_pad).size();
+
+        m_control->setSession(nullptr);
+        m_session.reset();
+        // The server saves a player who leaves in the background: he comes back from that file.
+        const QString saved = QDir(m_worldDirectory.path()).filePath(u"players/"_s + QcPlayerStorage::fileName(u"Bot"_s));
+        QVERIFY(QTest::qWaitFor([&] { return QFileInfo::exists(saved); }, timeoutMs));
+        m_session = std::make_unique<QcClientSession>(m_host->connectClient(), u"Bot"_s);
+        m_control->setSession(m_session.get());
+        usePadBeforeJoin();
+        QVERIFY(controls.padInUse());
+        QCOMPARE(m_session->vitals().health(), 20.0);
+
+        m_session->start(QcClientSession::TickMode::Manual);
+        QVERIFY(QTest::qWaitFor(
+            [&] {
+                controls.applyFrame(*m_session, 0.016f, false);
+                m_session->tick();
+                return m_session->state() == QcClientSession::State::Playing && m_session->vitals().healthKnown();
+            },
+            timeoutMs));
+        ticks(2);
+        QCOMPARE(m_session->vitals().health(), hurt);
+        QCOMPARE(pads.rumbles(m_pad).size(), rumbled);
+
+        QVERIFY(request({{u"cmd"_s, u"waitUntilReady"_s}}).value(u"ok"_s).toBool());
+        settle();
+        chat(u"/heal"_s);
     }
 };
 

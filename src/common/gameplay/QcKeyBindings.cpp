@@ -56,6 +56,7 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::Hotbar7, u"hotbar7", Qt::Key_7, 0},
     {A::Hotbar8, u"hotbar8", Qt::Key_8, 0},
     {A::Hotbar9, u"hotbar9", Qt::Key_9, 0},
+    {A::HotbarRadial, u"hotbarRadial", Qt::Key_G, 0},
     {A::Pause, u"pause", Qt::Key_Escape, 0},
 }};
 

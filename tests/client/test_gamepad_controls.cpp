@@ -1,8 +1,11 @@
+#include "app/controllers/QcGamepadOptions.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/input/QcGameInput.h"
+#include "app/input/QcGamepadRoster.h"
+#include "app/input/QcGamepadUi.h"
 #include "app/models/QcItemIcons.h"
 #include "app/session/QcSessionParts.h"
 #include "audio/QcAudioEngine.h"
@@ -15,6 +18,7 @@
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QQuickWindow>
+#include <QSignalSpy>
 #include <QTest>
 
 using namespace Qt::StringLiterals;
@@ -23,6 +27,7 @@ namespace {
 
 constexpr int timeoutMs = 30000;
 constexpr float frameSeconds = 0.016f;
+const QString ownGuid = u"03000000de2800000112000000000000"_s;
 
 } // namespace
 
@@ -274,6 +279,291 @@ private slots:
         axis(m_first, QcGamepadAxis::LeftY, -0.9f);
         QCOMPARE(m_pad.activePad(), m_first);
         QVERIFY(m_source.disconnectPad(second));
+    }
+
+    // A pad model with a profile of its own acts on its rebound buttons (decision E-611); other
+    // pads keep the standard profile.
+    void ownProfileRebindsTheModelsButtons()
+    {
+        QcGamepadSettings settings;
+        QcGamepadProfile own;
+        own.bindings.bind(QcGamepadMapping::Action::Jump, QcGamepadButton::East);
+        settings.setProfile(ownGuid, u"Own"_s, own);
+        m_pad.setSettings(settings);
+        const int pad = m_source.connectPad(u"Own"_s, QcGamepadType::Xbox, ownGuid);
+
+        press(pad, QcGamepadButton::East, true);
+        QCOMPARE(m_pad.activePad(), pad);
+        QCOMPARE(m_pad.profile().bindings.jump, QcGamepadButton::East);
+        frame();
+        QVERIFY(session().intent().jump);
+        press(pad, QcGamepadButton::East, false);
+        frame();
+        QVERIFY(!session().intent().jump);
+
+        // The first pad has no own profile: south jumps there.
+        press(m_first, QcGamepadButton::South, true);
+        QCOMPARE(m_pad.profile().bindings.jump, QcGamepadButton::South);
+        frame();
+        QVERIFY(session().intent().jump);
+        press(m_first, QcGamepadButton::South, false);
+        frame();
+        QVERIFY(m_source.disconnectPad(pad));
+        m_pad.setSettings({});
+    }
+
+    // The leading pad disconnecting in the world while it is in use asks for the pause menu
+    // (decision E-613); on a screen it does not.
+    void leadingPadDisconnectPauses()
+    {
+        QSignalSpy actions(&m_pad, &QcGamepadControls::worldAction);
+        const int pad = m_source.connectPad(u"Leaving"_s, QcGamepadType::Xbox);
+        press(pad, QcGamepadButton::West, true);
+        press(pad, QcGamepadButton::West, false);
+        frame();
+        actions.clear();
+        QVERIFY(m_source.disconnectPad(pad));
+        QCOMPARE(actions.size(), 1);
+        QCOMPARE(actions.first().at(0).value<QcKeyBindings::Action>(), QcKeyBindings::Action::Pause);
+        QCOMPARE(m_pad.activePad(), 0);
+
+        const int other = m_source.connectPad(u"Other"_s, QcGamepadType::Xbox);
+        QCOMPARE(m_pad.activePad(), other);
+        press(other, QcGamepadButton::West, true);
+        press(other, QcGamepadButton::West, false);
+        frame();
+        QVERIFY(m_pad.padInUse());
+        m_screens->setOverlay(u"inventory"_s);
+        frame();
+        actions.clear();
+        QVERIFY(m_source.disconnectPad(other));
+        QVERIFY(actions.isEmpty());
+        m_screens->setOverlay({});
+
+        // Back to the first pad for the cases after this one.
+        press(m_first, QcGamepadButton::West, true);
+        press(m_first, QcGamepadButton::West, false);
+        QCOMPARE(m_pad.activePad(), m_first);
+    }
+
+    // A leading pad that is not the device in use pauses nothing when it disconnects: one the
+    // keyboard took over from, and one that connected and was never pressed (decision E-613).
+    void idleLeadingPadDisconnectDoesNotPause()
+    {
+        QSignalSpy actions(&m_pad, &QcGamepadControls::worldAction);
+        QcGamepadUi ui(m_pad, [] { return false; });
+        ui.setSource(&m_source);
+        press(m_first, QcGamepadButton::West, true);
+        press(m_first, QcGamepadButton::West, false);
+        frame();
+        QCOMPARE(m_pad.activePad(), m_first);
+        QVERIFY(m_pad.padInUse());
+        QVERIFY(ui.active());
+
+        QTest::keyClick(m_window.get(), Qt::Key_F20);
+        QVERIFY(!ui.active());
+        QVERIFY(!m_pad.padInUse());
+        frame();
+        actions.clear();
+        QVERIFY(m_source.disconnectPad(m_first));
+        QVERIFY(actions.isEmpty());
+        QCOMPARE(m_pad.activePad(), 0);
+
+        m_first = m_source.connectPad(u"First"_s, QcGamepadType::Xbox);
+        QCOMPARE(m_pad.activePad(), m_first);
+        QVERIFY(!m_pad.padInUse());
+        frame();
+        QVERIFY(m_source.disconnectPad(m_first));
+        QVERIFY(actions.isEmpty());
+        m_first = m_source.connectPad(u"First"_s, QcGamepadType::Xbox);
+    }
+
+    // The radial key opens the hotbar's radial menu on the slot in hand; letting go without moving
+    // the mouse keeps it, a screen opening closes it (decision E-614).
+    void radialKeyOpensTheMenu()
+    {
+        const int slot = session().inventory().selectedHotbarSlot();
+        QSignalSpy changed(m_input.get(), &QcGameInput::radialChanged);
+        QTest::keyPress(m_window.get(), Qt::Key_G);
+        QVERIFY(m_input->radialOpen());
+        QCOMPARE(m_input->radialSlot(), slot);
+        QTest::keyRelease(m_window.get(), Qt::Key_G);
+        QVERIFY(!m_input->radialOpen());
+        QCOMPARE(session().inventory().selectedHotbarSlot(), slot);
+        QCOMPARE(changed.size(), 2);
+
+        QTest::keyPress(m_window.get(), Qt::Key_G);
+        QVERIFY(m_input->radialOpen());
+        m_screens->setOverlay(u"pause"_s);
+        QVERIFY(!m_input->radialOpen());
+        m_screens->setOverlay({});
+        QTest::keyRelease(m_window.get(), Qt::Key_G);
+    }
+
+    // The roster follows the pad in use: its family names and draws the buttons (a virtual
+    // PlayStation pad gets the shapes), and connecting, disconnecting and taking over give notices
+    // (decisions E-612, E-613).
+    void rosterFollowsThePadInUse()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadRoster roster;
+        roster.setSource(&source);
+        QCOMPARE(roster.family(), u"xbox"_s);
+        QSignalSpy notices(&roster, &QcGamepadRoster::noticeChanged);
+
+        const int xbox = source.connectPad(u"Xbox pad"_s, QcGamepadType::Xbox);
+        const int playStation = source.connectPad(u"DualSense"_s, QcGamepadType::PlayStation, ownGuid);
+        QCOMPARE(roster.inUse(), xbox);
+        QCOMPARE(notices.size(), 2);
+        QVERIFY(roster.notice().contains(u"DualSense"_s));
+
+        QVERIFY(source.setPressed(playStation, QcGamepadButton::South, true));
+        QCOMPARE(roster.inUse(), playStation);
+        QCOMPARE(roster.family(), u"playstation"_s);
+        QCOMPARE(roster.guid(), ownGuid);
+        QCOMPARE(notices.size(), 3);
+        QCOMPARE(roster.texts().value(u"south"_s).toString(), u"✕"_s);
+        QCOMPARE(roster.text(u"rightStickMove"_s), QcGamepadRoster::tr("Right stick"));
+        QCOMPARE(roster.glyph(roster.family(), u"north"_s).value(u"shape"_s).toString(), u"triangle"_s);
+        QCOMPARE(roster.glyph(u"xbox"_s, u"north"_s).value(u"label"_s).toString(), u"Y"_s);
+        QVERIFY(roster.glyph(roster.family(), u"turbo"_s).isEmpty());
+        QCOMPARE(roster.list().size(), 2);
+        QVERIFY(roster.list().at(1).toMap().value(u"inUse"_s).toBool());
+
+        QVERIFY(source.disconnectPad(playStation));
+        QCOMPARE(roster.inUse(), xbox);
+        QCOMPARE(roster.family(), u"xbox"_s);
+        QCOMPARE(notices.size(), 4);
+
+        const int generic = source.connectPad(u"Unknown"_s, QcGamepadType::Generic);
+        QVERIFY(source.setAxis(generic, QcGamepadAxis::RightTrigger, 1.0f));
+        QCOMPARE(roster.family(), u"generic"_s);
+        QCOMPARE(roster.texts().value(u"south"_s).toString(), QcGamepadRoster::tr("Bottom button"));
+    }
+
+    // While a button is captured for the settings the screens ignore the pad; the next press of a
+    // bindable button ends it (Guide does not), and the world actions follow the profile.
+    void captureTakesTheNextButton()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadControls controls;
+        QcGamepadUi ui(controls, [] { return true; });
+        controls.setSource(&source);
+        // The order of the source's handlers matters: ui.setSource() connects the screens' menu
+        // input (QcGamepadMenuInput) before the capture (QcGamepadUi::onPadStateChanged), so the
+        // press that ends a capture reaches the menu input while the capture still gates it, and
+        // it never also acts on the screen (`commands` stays empty below).
+        ui.setSource(&source);
+        const int pad = source.connectPad(u"Pad"_s, QcGamepadType::Xbox);
+        QSignalSpy captured(&ui, &QcGamepadUi::buttonCaptured);
+        QSignalSpy commands(&ui.menuInput(), &QcGamepadMenuInput::command);
+
+        // A button held when the capture starts is not taken.
+        QVERIFY(source.setPressed(pad, QcGamepadButton::South, true));
+        ui.captureButton();
+        QVERIFY(ui.capturing());
+        QVERIFY(source.setPressed(pad, QcGamepadButton::South, false));
+        QVERIFY(source.setPressed(pad, QcGamepadButton::Guide, true));
+        QVERIFY(captured.isEmpty());
+        commands.clear();
+        QVERIFY(source.setPressed(pad, QcGamepadButton::DpadUp, true));
+        QCOMPARE(captured.size(), 1);
+        QCOMPARE(captured.first().at(0).toString(), u"dpadUp"_s);
+        QVERIFY(!ui.capturing());
+        QVERIFY(commands.isEmpty());
+
+        ui.captureButton();
+        ui.cancelCapture();
+        QVERIFY(!ui.capturing());
+
+        // A pad that connects with a button held does not end the capture with it; the last pad
+        // disconnecting ends it without a button.
+        QVERIFY(source.setPressed(pad, QcGamepadButton::DpadUp, false));
+        ui.captureButton();
+        QcGamepadState held;
+        held.setPressed(QcGamepadButton::North, true);
+        const int late = source.connectPad(u"Late"_s, QcGamepadType::Xbox);
+        QVERIFY(source.setState(late, held));
+        QVERIFY(captured.size() == 1 && ui.capturing());
+        QVERIFY(source.setPressed(late, QcGamepadButton::West, true));
+        QCOMPARE(captured.size(), 2);
+        QCOMPARE(captured.last().at(0).toString(), u"west"_s);
+        ui.captureButton();
+        QVERIFY(source.disconnectPad(late));
+        QVERIFY(ui.capturing());
+        QVERIFY(source.disconnectPad(pad));
+        QVERIFY(!ui.capturing());
+        QCOMPARE(captured.size(), 2);
+
+        QCOMPARE(ui.actions().value(u"inventory"_s).toString(), u"north"_s);
+        QCOMPARE(ui.actions().value(u"mine"_s).toString(), u"rightTrigger"_s);
+        QcGamepadSettings settings;
+        settings.standard.bindings.bind(QcGamepadMapping::Action::Inventory, QcGamepadButton::DpadUp);
+        QSignalSpy actionsChanged(&ui, &QcGamepadUi::actionsChanged);
+        controls.setSettings(settings);
+        QCOMPARE(actionsChanged.size(), 1);
+        QCOMPARE(ui.actions().value(u"inventory"_s).toString(), u"dpadUp"_s);
+    }
+
+    // The settings page opens on the profile of the pad in use when its model has one of its own;
+    // removing the profile of a model that is not connected goes back to the standard one, and a
+    // connected model stays edited (decision E-611).
+    void optionsFollowThePadInUse()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadOptions options;
+        options.setSource(&source);
+        const int pad = source.connectPad(u"Own"_s, QcGamepadType::Xbox, ownGuid);
+        options.editProfileOf(ownGuid);
+        QCOMPARE(options.profileKey(), QString());
+
+        options.makeOwnProfile(ownGuid, u"Own"_s);
+        options.makeOwnProfile(u"gone"_s, u"Gone"_s);
+        options.setProfileKey({});
+        options.editProfileOf(ownGuid);
+        QCOMPARE(options.profileKey(), ownGuid);
+        QVERIFY(options.ownProfile());
+
+        options.removeOwnProfile();
+        QCOMPARE(options.profileKey(), ownGuid);
+        QVERIFY(!options.ownProfile());
+
+        options.setProfileKey(u"gone"_s);
+        QVERIFY(options.ownProfile());
+        options.removeOwnProfile();
+        QCOMPARE(options.profileKey(), QString());
+        QVERIFY(options.editable());
+        QVERIFY(options.settings().controllers.isEmpty());
+        QVERIFY(source.disconnectPad(pad));
+    }
+
+    // A key or a click anywhere in the game cancels a capture, whatever has the focus, and does
+    // nothing else (decision E-611).
+    void keyOrClickCancelsCapture()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadControls controls;
+        QcGamepadUi ui(controls, [] { return true; });
+        controls.setSource(&source);
+        ui.setSource(&source);
+        source.connectPad(u"Pad"_s, QcGamepadType::Xbox);
+        QSignalSpy captured(&ui, &QcGamepadUi::buttonCaptured);
+
+        ui.captureButton();
+        QVERIFY(ui.capturing());
+        QTest::keyClick(m_window.get(), Qt::Key_Escape);
+        QVERIFY(!ui.capturing());
+
+        ui.captureButton();
+        QTest::mouseClick(m_window.get(), Qt::LeftButton, {}, QPoint(10, 10));
+        QVERIFY(!ui.capturing());
+        QVERIFY(captured.isEmpty());
+
+        // Without a capture (and the pad not in use) the filter is gone again.
+        const quint64 calls = ui.hookCalls();
+        QVERIFY(calls > 0);
+        QTest::keyClick(m_window.get(), Qt::Key_F20);
+        QCOMPARE(ui.hookCalls(), calls);
     }
 };
 

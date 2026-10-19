@@ -38,7 +38,7 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 - **Rechte Maustaste** oder **R**: setzen, benutzen, essen
 - **Mittlere Maustaste** oder **B**: den anvisierten Block wählen
 - **Q**: ein Item werfen, **Strg+Q**: den ganzen Stapel
-- **1–9**, Mausrad: Feld der Schnellleiste wählen
+- **1–9**, Mausrad: Feld der Schnellleiste wählen; **G** gehalten öffnet das Rad der Schnellleiste, ein Feld wählst du mit der Maus
 - **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Debug-Anzeige (aus, kompakt, voll), **O / F4**: Debug-Optionen, **Esc**: Menü
 - Alle Tasten außer Esc lassen sich unter Einstellungen → Steuerung ändern.
 
@@ -62,6 +62,10 @@ Ein Gamepad (Xbox, PlayStation, Switch Pro und die meisten anderen) steuert die 
 - **Steuerkreuz**: oben Kameraansicht, unten Chat, rechts Handbuch; links gehalten das Rad der Schnellleiste: mit dem rechten Stick auf ein Feld zeigen und loslassen
 
 In den Menüs, im Inventar und in allen anderen Bildschirmen bewegt das Steuerkreuz oder der linke Stick einen goldenen Rahmen von Knopf zu Knopf und von Feld zu Feld; die untere Aktionstaste drückt oder nimmt auf und legt ab, die rechte geht zurück, die linke legt ein einzelnes Item ab, die obere verschiebt einen Stapel hinüber, die Schultertasten wechseln Reiter und der rechte Stick scrollt. Auf einem Schieberegler oder Zahlenfeld ändern links und rechts den Wert. Ein Textfeld öffnet eine Tastatur auf dem Bildschirm (Umschalten gibt jeder Taste ihr zweites Zeichen, etwa ! und ? oder Großbuchstaben): die linke Aktionstaste löscht, die obere tippt ein Leerzeichen, Start beendet. Sobald du wieder Maus oder Tastatur benutzt, verschwindet der Rahmen.
+
+Die Hinweise am unteren Rand zeigen die Tasten so, wie dein Controller sie beschriftet: Buchstaben bei Xbox- und Switch-Controllern, Kreuz, Kreis, Quadrat und Dreieck bei PlayStation-Controllern und bei anderen eine kleine Raute, in der die Lage der Taste leuchtet. Wird ein Controller angeschlossen oder getrennt, sagt das eine kurze Meldung; trennt sich in der Welt der Controller, mit dem du spielst, öffnet sich das Pausenmenü (nicht bei einem Controller, der nur angeschlossen ist, während du mit Tastatur und Maus spielst). Bei mehreren Controllern gilt der, auf dem du zuletzt eine Taste gedrückt hast.
+
+**Einstellungen → Controller** stellt Umsehgeschwindigkeit, umgekehrtes Umsehen, Totzone und Kennlinie der Sticks, die Totzone der Trigger und wie weit du sie ziehst, bis sie wirken, sowie die Vibration ein (der Controller, mit dem du spielst, rüttelt, wenn du Schaden nimmst, sofern er das kann). Jedes Controller-Modell kann eigene Einstellungen haben (*Eigene Einstellungen*); sonst gelten die für alle Controller. Derselbe Controller zählt über USB und über Bluetooth als zwei Modelle. Auch an Switch-Controllern bestätigt die untere Taste (B) und die rechte (A) geht zurück, so wie die Tasten an allen anderen Controllern liegen. Unter *Tasten* wählst du *Ändern* und drückst die neue Taste am Controller; hatte eine andere Aktion diese Taste, werden die beiden getauscht. Eine Taste der Tastatur oder ein Klick bricht ab. In Menüs behalten die Tasten ihre Plätze. *Nur Radialmenü* blendet die Schnellleiste bis auf das Feld in der Hand aus: Das Rad der Schnellleiste zeigt alle Felder.
 
 **Bewegen**
 

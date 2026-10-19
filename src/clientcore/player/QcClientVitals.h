@@ -14,6 +14,8 @@ public:
     // Takes over PlayerHealth, PlayerFood and PlayerExperience; Change::None for other messages.
     Change apply(const QcMessage &message);
 
+    // The server told the health at least once (before, the vitals are the full defaults).
+    bool healthKnown() const { return m_healthKnown; }
     double health() const { return m_health.health; }
     double maxHealth() const { return m_health.maxHealth; }
     // The player is on fire (decision E-393): the HUD shows flames at the edge of the view.
@@ -31,6 +33,7 @@ public:
 
 private:
     QcMsg::PlayerHealth m_health{20.0, 20.0, false};
+    bool m_healthKnown = false;
     QcMsg::PlayerFood m_food{QcItemDefinition::maxFood, QcItemDefinition::maxFood};
     QcMsg::PlayerExperience m_experience;
 };

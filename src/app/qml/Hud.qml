@@ -438,6 +438,8 @@ Item {
                 slotDurability: durability
                 slotEmpty: empty
                 selected: slot === hud.game.player.inventory.selectedSlot
+                // "Radial menu only" (decision E-614): only the slot in the hand stays, in its place.
+                opacity: hud.game.settings.gamepad.radialOnly && !selected ? 0 : 1
             }
         }
     }
@@ -450,15 +452,45 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
-        // The pad's hints of a screen take this place (PadHints).
+        // The pad's hints of a screen take this place (PadHints); the pad's world hints lie over it
+        // (padHint), so the rows above keep their place.
         visible: !hud.game.gamepad.focusShown
+        opacity: hud.game.gamepad.active ? 0 : 1
         font.pixelSize: 13
-        text: hud.game.gamepad.active
-              ? qsTr("RT: mine/attack  LT: use/place  B: drop  X: pick block  LB/RB or hold ◀: select  Y: inventory  ▼: chat  Start: menu")
-              : hud.game.input.mouseCaptured
+        text: hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
                     .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
               : qsTr("Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.")
                     .arg(hint.keys.forward).arg(hint.keys.left).arg(hint.keys.back).arg(hint.keys.right).arg(hint.keys.jump).arg(hint.keys.sneak)
+    }
+
+    // The pad's buttons in the world (decision E-612), as the pad in use labels them and as its
+    // profile binds them; made only while the pad leads.
+    Loader {
+        id: padHint
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: hint.verticalCenter
+        active: hud.game.gamepad.active && !hud.game.gamepad.focusShown
+
+        sourceComponent: PadHintRow {
+            readonly property var actions: hud.game.gamepad.actions
+
+            game: hud.game
+            fontSize: 12
+            spacing: 11
+            entries: [
+                { input: actions.mine, text: qsTr("mine/attack") },
+                { input: actions.use, text: qsTr("use/place") },
+                { input: actions.drop, text: qsTr("drop") },
+                { input: actions.pickBlock, text: qsTr("pick block") },
+                { input: actions.hotbarPrevious, text: "" },
+                { input: actions.hotbarNext, text: qsTr("select") },
+                { input: actions.hotbarRadial, text: qsTr("hold: all slots") },
+                { input: actions.inventory, text: qsTr("inventory") },
+                { input: actions.chat, text: qsTr("chat") },
+                { input: actions.pause, text: qsTr("menu") }
+            ]
+        }
     }
 }

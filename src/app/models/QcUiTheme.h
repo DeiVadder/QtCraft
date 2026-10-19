@@ -39,6 +39,12 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor iconBackdrop MEMBER m_iconBackdrop CONSTANT FINAL)
     Q_PROPERTY(QColor selection MEMBER m_selection CONSTANT FINAL)
     Q_PROPERTY(QColor focusRing MEMBER m_focusRing CONSTANT FINAL)
+    Q_PROPERTY(QColor padGlyph MEMBER m_padGlyph CONSTANT FINAL)
+    Q_PROPERTY(QColor padGreen MEMBER m_padGreen CONSTANT FINAL)
+    Q_PROPERTY(QColor padRed MEMBER m_padRed CONSTANT FINAL)
+    Q_PROPERTY(QColor padBlue MEMBER m_padBlue CONSTANT FINAL)
+    Q_PROPERTY(QColor padYellow MEMBER m_padYellow CONSTANT FINAL)
+    Q_PROPERTY(QColor padPink MEMBER m_padPink CONSTANT FINAL)
     Q_PROPERTY(QColor crosshair MEMBER m_crosshair CONSTANT FINAL)
     Q_PROPERTY(QColor progress MEMBER m_progress CONSTANT FINAL)
     Q_PROPERTY(QColor health MEMBER m_health CONSTANT FINAL)
@@ -93,6 +99,12 @@ private:
     QColor m_iconBackdrop = QcUiPalette::color(QcUiPalette::Role::IconBackdrop);
     QColor m_selection = QcUiPalette::color(QcUiPalette::Role::Selection);
     QColor m_focusRing = QcUiPalette::color(QcUiPalette::Role::FocusRing);
+    QColor m_padGlyph = QcUiPalette::color(QcUiPalette::Role::PadGlyph);
+    QColor m_padGreen = QcUiPalette::color(QcUiPalette::Role::PadGreen);
+    QColor m_padRed = QcUiPalette::color(QcUiPalette::Role::PadRed);
+    QColor m_padBlue = QcUiPalette::color(QcUiPalette::Role::PadBlue);
+    QColor m_padYellow = QcUiPalette::color(QcUiPalette::Role::PadYellow);
+    QColor m_padPink = QcUiPalette::color(QcUiPalette::Role::PadPink);
     QColor m_crosshair = QcUiPalette::color(QcUiPalette::Role::Crosshair);
     QColor m_progress = QcUiPalette::color(QcUiPalette::Role::Progress);
     QColor m_health = QcUiPalette::color(QcUiPalette::Role::Health);

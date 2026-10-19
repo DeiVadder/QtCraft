@@ -220,7 +220,9 @@ SlotScreen {
             Label {
                 Layout.maximumWidth: 9 * 54
                 wrapMode: Text.Wrap
-                text: screen.game.gamepad.active ? qsTr("A on an item: a full stack, X: one, Y: straight into the inventory. A on a slot puts it there. LB/RB switch the tabs, B closes.")
+                text: screen.game.gamepad.active ? qsTr("%1 on an item: a full stack, %2: one, %3: straight into the inventory. %1 on a slot puts it there. %4/%5 switch the tabs, %6 closes.")
+                        .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north)
+                        .arg(screen.game.gamepad.pads.texts.leftShoulder).arg(screen.game.gamepad.pads.texts.rightShoulder).arg(screen.game.gamepad.pads.texts.east)
                       : qsTr("Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).").arg(screen.game.settings.keys.labels.inventory)
                 color: Theme.textSecondary
             }

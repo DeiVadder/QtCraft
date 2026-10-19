@@ -16,18 +16,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Whether a pad's raw state shows a deliberate use: a button, a trigger or a clearly pushed stick.
-bool used(const QcGamepadState &state)
-{
-    for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
-        if (state.pressed(QcGamepadButton(button))) {
-            return true;
-        }
-    }
-    return state.axis(QcGamepadAxis::LeftTrigger) > QcGamepadMapping::pressThreshold
-           || state.axis(QcGamepadAxis::RightTrigger) > QcGamepadMapping::pressThreshold || QcGamepadMapping::clearlyDeflected(state);
-}
-
 // A moved mouse counts from this far (pixels, Manhattan) from where it was last seen.
 constexpr double minimumMouseTravel = 8.0;
 // The look of the world refreshes the scope this often (frames) besides focus changes.
@@ -53,7 +41,9 @@ QcGamepadUi::QcGamepadUi(QcGamepadControls &world, Gate gate, QObject *parent)
     , m_world(world)
     , m_screensTakeInput(std::move(gate))
 {
-    m_menu.setGate([this] { return screensTakeInput(); });
+    // While a button is captured the screens ignore the pad, and afterwards they wait until every
+    // pad is neutral again (the captured button is still held).
+    m_menu.setGate([this] { return !m_capturing && screensTakeInput(); });
     connect(&m_menu, &QcGamepadMenuInput::command, this, &QcGamepadUi::onCommand);
     connect(&m_menu, &QcGamepadMenuInput::scrolled, this, [this](float pixels) {
         if (screensTakeInput()) {
@@ -62,12 +52,14 @@ QcGamepadUi::QcGamepadUi(QcGamepadControls &world, Gate gate, QObject *parent)
         }
     });
     connect(&m_world, &QcGamepadControls::radialChanged, this, &QcGamepadUi::radialChanged);
+    connect(&m_world, &QcGamepadControls::profileChanged, this, &QcGamepadUi::actionsChanged);
     connect(&m_navigator, &QcMenuNavigator::keyboardRequested, this, &QcGamepadUi::keyboardRequested);
     connect(&m_navigator, &QcMenuNavigator::acted, this, &QcGamepadUi::updateFocus);
 }
 
 QcGamepadUi::~QcGamepadUi()
 {
+    m_capturing = false;
     watch(false);
 }
 
@@ -78,8 +70,11 @@ void QcGamepadUi::setSource(QcGamepadSource *source)
     }
     m_source = source;
     m_menu.setSource(source);
+    m_roster.setSource(source);
     if (m_source) {
         connect(m_source, &QcGamepadSource::stateChanged, this, &QcGamepadUi::onPadStateChanged);
+        connect(m_source, &QcGamepadSource::padConnected, this, &QcGamepadUi::onPadConnected);
+        connect(m_source, &QcGamepadSource::padDisconnected, this, &QcGamepadUi::onPadDisconnected);
     }
 }
 
@@ -111,16 +106,18 @@ void QcGamepadUi::watch(bool watching)
         m_frameConnection = connect(m_window, &QQuickWindow::afterAnimating, this, &QcGamepadUi::onFrame);
     }
 
-    // Keys, clicks and moves of the mouse hand the input back: only looked at while the pad leads,
-    // so the game's other events never pass this filter.
+    // Keys, clicks and moves of the mouse hand the input back: only looked at while the pad leads
+    // (or a button is captured, which a key or a click cancels), so the game's other events never
+    // pass this filter.
     QCoreApplication *application = QCoreApplication::instance();
-    if (application && watching != m_filtering) {
-        if (watching) {
+    const bool filtering = watching || m_capturing;
+    if (application && filtering != m_filtering) {
+        if (filtering) {
             application->installEventFilter(this);
         } else {
             application->removeEventFilter(this);
         }
-        m_filtering = watching;
+        m_filtering = filtering;
     }
 }
 
@@ -151,6 +148,9 @@ void QcGamepadUi::setActive(bool active)
     }
 
     m_active = active;
+    if (!active) {
+        m_world.keyboardOrMouseUsed();
+    }
     // A move of the mouse counts from where Qt last saw it when the pad takes over (infinite before
     // the first mouse event).
     const QPointF lastMouse = QGuiApplicationPrivate::lastCursorPosition;
@@ -167,7 +167,7 @@ bool QcGamepadUi::screensTakeInput() const
 
 void QcGamepadUi::onCommand(QcGamepadMenuInput::Command command)
 {
-    if (!screensTakeInput()) {
+    if (m_capturing || !screensTakeInput()) {
         return;
     }
 
@@ -177,8 +177,89 @@ void QcGamepadUi::onCommand(QcGamepadMenuInput::Command command)
 
 void QcGamepadUi::onPadStateChanged(int id)
 {
-    if (m_source && used(m_source->state(id))) {
+    if (m_capturing) {
+        captureFrom(id);
+    }
+    if (m_source && QcGamepadMapping::used(m_source->state(id))) {
         setActive(true);
+    }
+}
+
+QVariantMap QcGamepadUi::actions() const
+{
+    using QcGamepadMapping::Action;
+    QVariantMap result;
+    for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
+        const auto action = Action(index);
+        const std::optional<QcGamepadButton> button = m_world.profile().bindings.button(action);
+        const QString trigger = action == Action::Mine ? u"rightTrigger"_s : u"leftTrigger"_s;
+        result.insert(QcGamepadMapping::actionName(action), button ? QcGamepadNames::button(*button) : trigger);
+    }
+    return result;
+}
+
+void QcGamepadUi::captureButton()
+{
+    m_captureStates.clear();
+    m_captureJoined.clear();
+    if (m_source) {
+        const QList<QcGamepadInfo> pads = m_source->pads();
+        for (const QcGamepadInfo &pad : pads) {
+            m_captureStates.insert(pad.id, m_source->state(pad.id));
+        }
+    }
+    if (!m_capturing) {
+        m_capturing = true;
+        watch(m_active);
+        emit capturingChanged();
+    }
+}
+
+void QcGamepadUi::cancelCapture()
+{
+    if (m_capturing) {
+        m_capturing = false;
+        m_captureStates.clear();
+        m_captureJoined.clear();
+        watch(m_active);
+        emit capturingChanged();
+    }
+}
+
+void QcGamepadUi::onPadConnected(int id)
+{
+    // A pad that connects during the capture reports the buttons held on it with its first state:
+    // that state is where it starts, not a press.
+    if (m_capturing) {
+        m_captureJoined.insert(id);
+    }
+}
+
+void QcGamepadUi::onPadDisconnected(int id)
+{
+    m_captureStates.remove(id);
+    m_captureJoined.remove(id);
+    // Without a pad no button can come: the capture ends.
+    if (m_capturing && (!m_source || m_source->pads().isEmpty())) {
+        cancelCapture();
+    }
+}
+
+void QcGamepadUi::captureFrom(int id)
+{
+    const QcGamepadState before = m_captureStates.value(id);
+    const QcGamepadState now = m_source ? m_source->state(id) : QcGamepadState();
+    m_captureStates.insert(id, now);
+    if (m_captureJoined.remove(id)) {
+        return;
+    }
+    for (std::size_t index = 0; index < qcGamepadButtonCount; ++index) {
+        const auto button = QcGamepadButton(index);
+        if (now.pressed(button) && !before.pressed(button) && QcGamepadMapping::bindable(button)) {
+            cancelCapture();
+            emit buttonCaptured(QcGamepadNames::button(button));
+            return;
+        }
     }
 }
 
@@ -245,6 +326,11 @@ void QcGamepadUi::requestKeyboard(QQuickItem *field)
 bool QcGamepadUi::eventFilter(QObject *watched, QEvent *event)
 {
     ++m_hookCalls;
+    // A key or a click cancels a capture wherever the focus is, and does nothing else.
+    if (m_capturing && keyOrClick(watched, event)) {
+        cancelCapture();
+        return true;
+    }
     if (!m_active || m_navigator.sending()) {
         return QObject::eventFilter(watched, event);
     }

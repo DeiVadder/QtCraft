@@ -193,7 +193,26 @@ add_test(NAME app_offscreen_pad_menu
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-foreach(pad inventory radial keyboard menu)
+# The pad's button symbols follow the pad in use (decision E-612): a PlayStation pad connects
+# and takes over with a press, the HUD's hints draw its shapes; the gamepad page of the settings
+# (decision E-610) lists it with its symbols.
+add_test(NAME app_offscreen_pad_playstation
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--no-audio;--chat;@200 /give stone 5;--overlay;@1000 pad:connect=playstation;--overlay;@1500 pad:rightShoulder"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFamily: playstation"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-playstation.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_offscreen_pad_settings
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--no-audio;--overlay;@800 pad:connect=playstation;--overlay;@1200 gamepad;--overlay;@1700 pad:dpadDown;--overlay;@2200 pad:dpadDown"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFamily: playstation.*padFocus: "
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-settings.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+foreach(pad inventory radial keyboard menu playstation settings)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
     set(frames 90)

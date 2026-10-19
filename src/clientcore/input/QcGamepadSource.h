@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QString>
 
+#include <optional>
+
 // The gamepads the client sees, behind one interface (decision E-540): the SDL3 backend of the
 // game (QcSdlGamepadSource in src/app/input, polled on a Qt timer) and the virtual pads of tests
 // and the control interface (QcVirtualGamepadSource) look the same to the input mapping. The base
@@ -32,6 +34,11 @@ public:
     bool contains(int id) const { return m_pads.contains(id); }
     // The pad's last state; all released and centred for an unknown id.
     QcGamepadState state(int id) const;
+    // The connected pad `id`; nullopt for an unknown id.
+    std::optional<QcGamepadInfo> info(int id) const;
+    // Lets pad `id` vibrate with `strength` (0..1) for `durationMs` (decision E-615); false when it
+    // cannot or the id is unknown. A new call replaces a running one.
+    virtual bool rumble(int id, float strength, int durationMs);
 
 signals:
     void padConnected(int id);
@@ -40,8 +47,8 @@ signals:
     void stateChanged(int id);
 
 protected:
-    // Adds a pad with a released state and returns its new id.
-    int addPad(const QString &name, QcGamepadType type);
+    // Adds a pad with a released state and returns its new id (the id of `info` is ignored).
+    int addPad(QcGamepadInfo info);
     void removePad(int id);
     // Stores the state and emits stateChanged when it differs from the last one.
     void updateState(int id, const QcGamepadState &state);

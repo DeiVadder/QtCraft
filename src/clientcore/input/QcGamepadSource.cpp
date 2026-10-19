@@ -23,10 +23,25 @@ QcGamepadState QcGamepadSource::state(int id) const
     return it == m_pads.constEnd() ? QcGamepadState{} : it->state;
 }
 
-int QcGamepadSource::addPad(const QString &name, QcGamepadType type)
+std::optional<QcGamepadInfo> QcGamepadSource::info(int id) const
+{
+    const auto it = m_pads.constFind(id);
+    return it == m_pads.constEnd() ? std::nullopt : std::optional(it->info);
+}
+
+bool QcGamepadSource::rumble(int id, float strength, int durationMs)
+{
+    Q_UNUSED(id);
+    Q_UNUSED(strength);
+    Q_UNUSED(durationMs);
+    return false;
+}
+
+int QcGamepadSource::addPad(QcGamepadInfo info)
 {
     const int id = m_nextId++;
-    m_pads.insert(id, Pad{.info = {.id = id, .name = name, .type = type}, .state = {}});
+    info.id = id;
+    m_pads.insert(id, Pad{.info = std::move(info), .state = {}});
     emit padConnected(id);
     return id;
 }

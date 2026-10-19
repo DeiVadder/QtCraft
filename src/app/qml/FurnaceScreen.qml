@@ -142,7 +142,8 @@ SlotScreen {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: screen.game.gamepad.active ? qsTr("Put something to smelt on top and fuel below. A: pick up and put down. X: put down one. Y: move the stack across. B closes.")
+            text: screen.game.gamepad.active ? qsTr("Put something to smelt on top and fuel below. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.")
+                    .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
                   : qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
             color: Theme.textSecondary
         }

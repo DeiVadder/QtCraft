@@ -2,6 +2,7 @@
 
 #include "app/input/QcRelativeMouse.h"
 #include "clientcore/camera/QcMouseCapture.h"
+#include "clientcore/input/QcPointerRadial.h"
 #include "clientcore/player/QcFlightLatch.h"
 #include "clientcore/player/QcSprintLatch.h"
 #include "common/gameplay/QcKeyBindings.h"
@@ -31,6 +32,9 @@ class QcGameInput : public QObject
     Q_PROPERTY(bool mouseCaptured READ mouseCaptured NOTIFY mouseCapturedChanged FINAL)
     // The player list key is held down (decision E-259); --overlay players holds it for screenshots.
     Q_PROPERTY(bool playerListHeld READ playerListHeld NOTIFY playerListHeldChanged FINAL)
+    // The hotbar's radial menu held open by its key, chosen with the mouse (decision E-614).
+    Q_PROPERTY(bool radialOpen READ radialOpen NOTIFY radialChanged FINAL)
+    Q_PROPERTY(int radialSlot READ radialSlot NOTIFY radialChanged FINAL)
 
 public:
     static constexpr float keyboardLookSpeed = 120.0f;
@@ -62,6 +66,8 @@ public:
     void clearKeys();
     bool playerListHeld() const { return m_playerListHeld; }
     void setPlayerListHeld(bool held);
+    bool radialOpen() const { return m_radial.isOpen(); }
+    int radialSlot() const { return m_radial.highlighted(); }
     // Keys held as if pressed (benchmark walk).
     void holdKeys(QSet<int> keys) { m_keysDown = std::move(keys); }
     // Mouse motion since the last frame; taken every frame, so motion from a frame without a world
@@ -84,6 +90,7 @@ public:
 signals:
     void mouseCapturedChanged();
     void playerListHeldChanged();
+    void radialChanged();
     // The handbook key was pressed in the world: the handbook opens at what the crosshair points
     // at, else at the page shown last (the game knows the target from the HUD).
     void handbookRequested();
@@ -104,7 +111,11 @@ private:
     // Hides the cursor and starts relative motion, or the opposite.
     void applyCapture(QcMouseCapture::Change change);
     bool handleWheel(const QWheelEvent &wheel) const;
-    bool handleMouseMove(const QMouseEvent &mouse) const;
+    bool handleMouseMove(const QMouseEvent &mouse);
+    // Mouse motion of the world: turns the view, or points into the open radial menu.
+    void turn(QPointF delta);
+    // Closes the radial menu, selecting its slot when `select`.
+    void closeRadial(bool select);
     bool keyDown(QcKeyBindings::Action action) const;
     void updateIntentFromKeys(float frameSeconds);
     // Plays the click sound when the mouse is released over a button or an inventory slot.
@@ -124,4 +135,5 @@ private:
     bool m_backgroundRun = false;
     bool m_scriptedPad = false;
     bool m_playerListHeld = false;
+    QcPointerRadial m_radial;
 };

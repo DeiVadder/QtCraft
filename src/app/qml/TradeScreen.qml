@@ -218,7 +218,8 @@ SlotScreen {
             Label {
                 Layout.maximumWidth: 9 * 54
                 wrapMode: Text.Wrap
-                text: screen.game.gamepad.active ? qsTr("Choose an offer on the left. A on the result trades once, Y trades as often as you can pay. The villager restocks at its workstation. B closes.")
+                text: screen.game.gamepad.active ? qsTr("Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.")
+                      .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
                       : qsTr("Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
                 color: Theme.textSecondary
             }

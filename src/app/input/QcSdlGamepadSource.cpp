@@ -7,6 +7,7 @@
 #include <QLoggingCategory>
 #include <QThread>
 
+#include <algorithm>
 #include <array>
 #include <utility>
 
@@ -49,6 +50,14 @@ QcGamepadType typeOf(SDL_Gamepad *gamepad, const QString &name)
     default:
         return QcGamepadTypeDetection::detect(SDL_GetGamepadVendor(gamepad), SDL_GetGamepadProduct(gamepad), name);
     }
+}
+
+// SDL's GUID of the pad's model as 32 hex digits (the key of its profile, decision E-611).
+QString guidOf(SDL_JoystickID id)
+{
+    std::array<char, 33> text{};
+    SDL_GUIDToString(SDL_GetGamepadGUIDForID(id), text.data(), int(text.size()));
+    return QString::fromLatin1(text.data());
 }
 
 } // namespace
@@ -118,6 +127,21 @@ void QcSdlGamepadSource::poll()
     }
 }
 
+bool QcSdlGamepadSource::rumble(int id, float strength, int durationMs)
+{
+    // SDL's pads are driven from the main thread only (the frames call this there).
+    Q_ASSERT(QThread::isMainThread());
+    const auto it = std::ranges::find_if(m_open, [id](OpenPad pad) { return pad.id == id; });
+    const std::optional<QcGamepadInfo> pad = info(id);
+    if (it == m_open.end() || !pad || !pad->rumble) {
+        return false;
+    }
+
+    // Both motors alike: the strong (low frequency) and the weak one.
+    const auto motor = Uint16(std::clamp(strength, 0.0f, 1.0f) * 65535.0f);
+    return SDL_RumbleGamepad(it->gamepad, motor, motor, Uint32(std::max(durationMs, 0)));
+}
+
 void QcSdlGamepadSource::openNewPads()
 {
     int count = 0;
@@ -136,10 +160,13 @@ void QcSdlGamepadSource::openNewPads()
             continue;
         }
 
-        const QString name = QString::fromUtf8(SDL_GetGamepadName(gamepad));
-        const QcGamepadType type = typeOf(gamepad, name);
-        qCInfo(lcGamepad) << "Gamepad connected:" << name << QcGamepadNames::type(type);
-        m_open.insert(ids[i], OpenPad{.id = addPad(name, type), .gamepad = gamepad});
+        QcGamepadInfo info;
+        info.name = QString::fromUtf8(SDL_GetGamepadName(gamepad));
+        info.type = typeOf(gamepad, info.name);
+        info.guid = guidOf(ids[i]);
+        info.rumble = SDL_GetBooleanProperty(SDL_GetGamepadProperties(gamepad), SDL_PROP_GAMEPAD_CAP_RUMBLE_BOOLEAN, false);
+        qCInfo(lcGamepad) << "Gamepad connected:" << info.name << QcGamepadNames::type(info.type) << info.guid;
+        m_open.insert(ids[i], OpenPad{.id = addPad(info), .gamepad = gamepad});
     }
     SDL_free(ids);
     m_failed.intersect(present);

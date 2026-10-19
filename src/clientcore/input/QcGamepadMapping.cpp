@@ -1,5 +1,7 @@
 #include "clientcore/input/QcGamepadMapping.h"
 
+#include <algorithm>
+#include <array>
 #include <cmath>
 
 namespace QcGamepadMapping {
@@ -22,62 +24,171 @@ bool clearlyDeflected(const QcGamepadState &raw)
     return beyond(QcGamepadAxis::LeftX, QcGamepadAxis::LeftY) || beyond(QcGamepadAxis::RightX, QcGamepadAxis::RightY);
 }
 
+bool used(const QcGamepadState &raw)
+{
+    for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
+        if (raw.pressed(QcGamepadButton(button))) {
+            return true;
+        }
+    }
+    return raw.axis(QcGamepadAxis::LeftTrigger) > pressThreshold || raw.axis(QcGamepadAxis::RightTrigger) > pressThreshold
+           || clearlyDeflected(raw);
+}
+
 bool deflected(const QcGamepadState &shaped)
 {
     return walk(shaped).moving() || shaped.axis(QcGamepadAxis::RightX) != 0.0f || shaped.axis(QcGamepadAxis::RightY) != 0.0f;
 }
 
-bool triggerHeld(float value, bool wasHeld)
+float releaseFor(float press)
 {
-    return wasHeld ? value >= releaseThreshold : value > pressThreshold;
+    return std::max(press - (pressThreshold - releaseThreshold), 0.05f);
 }
+
+bool triggerHeld(float value, bool wasHeld, float press)
+{
+    return wasHeld ? value >= releaseFor(press) : value > press;
+}
+
+namespace {
+
+using ButtonField = QcGamepadButton Bindings::*;
+
+// An action of the table with its id and its field; the triggers' actions have none.
+struct ActionEntry
+{
+    Action action = Action::Jump;
+    QStringView name;
+    ButtonField field = nullptr;
+};
+
+constexpr std::array<ActionEntry, actionCount> actionTable{{
+    {Action::Jump, u"jump", &Bindings::jump},
+    {Action::Sprint, u"sprint", &Bindings::sprint},
+    {Action::Sneak, u"sneak", &Bindings::sneak},
+    {Action::Mine, u"mine", nullptr},
+    {Action::Use, u"use", nullptr},
+    {Action::HotbarPrevious, u"hotbarPrevious", &Bindings::hotbarPrevious},
+    {Action::HotbarNext, u"hotbarNext", &Bindings::hotbarNext},
+    {Action::Pause, u"pause", &Bindings::pause},
+    {Action::Inventory, u"inventory", &Bindings::inventory},
+    {Action::Chat, u"chat", &Bindings::chat},
+    {Action::Handbook, u"handbook", &Bindings::handbook},
+    {Action::CameraView, u"cameraView", &Bindings::cameraView},
+    {Action::PlayerList, u"playerList", &Bindings::playerList},
+    {Action::Drop, u"drop", &Bindings::drop},
+    {Action::PickBlock, u"pickBlock", &Bindings::pickBlock},
+    {Action::HotbarRadial, u"hotbarRadial", &Bindings::hotbarRadial},
+}};
+static_assert(
+    [] {
+        for (std::size_t index = 0; index < actionTable.size(); ++index) {
+            if (actionTable[index].action != Action(index)) {
+                return false;
+            }
+        }
+        return true;
+    }(),
+    "actionTable follows the order of Action");
+
+ButtonField fieldOf(Action action)
+{
+    return action < Action::Count ? actionTable[std::size_t(action)].field : nullptr;
+}
+
+} // namespace
 
 std::optional<QcGamepadButton> Bindings::button(Action action) const
 {
-    switch (action) {
-    case Action::Jump:
-        return jump;
-    case Action::Sprint:
-        return sprint;
-    case Action::Sneak:
-        return sneak;
-    case Action::HotbarPrevious:
-        return hotbarPrevious;
-    case Action::HotbarNext:
-        return hotbarNext;
-    case Action::Pause:
-        return pause;
-    case Action::Inventory:
-        return inventory;
-    case Action::Chat:
-        return chat;
-    case Action::Handbook:
-        return handbook;
-    case Action::CameraView:
-        return cameraView;
-    case Action::PlayerList:
-        return playerList;
-    case Action::Drop:
-        return drop;
-    case Action::PickBlock:
-        return pickBlock;
-    case Action::HotbarRadial:
-        return hotbarRadial;
-    case Action::Mine:
-    case Action::Use:
-    case Action::Count:
-        break;
+    const ButtonField field = fieldOf(action);
+    return field ? std::optional(this->*field) : std::nullopt;
+}
+
+std::optional<Action> Bindings::action(QcGamepadButton button) const
+{
+    for (const ActionEntry &entry : actionTable) {
+        if (entry.field && this->*entry.field == button) {
+            return entry.action;
+        }
     }
     return std::nullopt;
 }
 
-bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld)
+void Bindings::setButton(Action action, QcGamepadButton button)
+{
+    if (const ButtonField field = fieldOf(action); field && bindable(button)) {
+        this->*field = button;
+    }
+}
+
+std::optional<Action> Bindings::bind(Action action, QcGamepadButton button)
+{
+    const ButtonField field = fieldOf(action);
+    if (!field || !bindable(button)) {
+        return std::nullopt;
+    }
+
+    const QcGamepadButton old = this->*field;
+    std::optional<Action> displaced;
+    for (const ActionEntry &entry : actionTable) {
+        if (entry.field && entry.action != action && this->*entry.field == button) {
+            this->*entry.field = old;
+            displaced = entry.action;
+        }
+    }
+    this->*field = button;
+    return displaced;
+}
+
+QList<Action> Bindings::conflicts() const
+{
+    QList<Action> result;
+    std::array<bool, qcGamepadButtonCount> used{};
+    for (const ActionEntry &entry : actionTable) {
+        if (!entry.field) {
+            continue;
+        }
+        bool &seen = used[std::size_t(this->*entry.field)];
+        if (seen) {
+            result.append(entry.action);
+        }
+        seen = true;
+    }
+    return result;
+}
+
+QString actionName(Action action)
+{
+    return action < Action::Count ? actionTable[std::size_t(action)].name.toString() : QString();
+}
+
+std::optional<Action> actionFromName(const QString &name)
+{
+    for (const ActionEntry &entry : actionTable) {
+        if (entry.name == name) {
+            return entry.action;
+        }
+    }
+    return std::nullopt;
+}
+
+bool rebindable(Action action)
+{
+    return fieldOf(action) != nullptr;
+}
+
+bool bindable(QcGamepadButton button)
+{
+    return button != QcGamepadButton::Guide && button < QcGamepadButton::Count;
+}
+
+bool held(Action action, const QcGamepadState &shaped, const Bindings &bindings, bool wasHeld, float press)
 {
     if (action == Action::Mine) {
-        return triggerHeld(shaped.axis(QcGamepadAxis::RightTrigger), wasHeld);
+        return triggerHeld(shaped.axis(QcGamepadAxis::RightTrigger), wasHeld, press);
     }
     if (action == Action::Use) {
-        return triggerHeld(shaped.axis(QcGamepadAxis::LeftTrigger), wasHeld);
+        return triggerHeld(shaped.axis(QcGamepadAxis::LeftTrigger), wasHeld, press);
     }
 
     const std::optional<QcGamepadButton> button = bindings.button(action);

@@ -8,6 +8,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
@@ -40,6 +41,7 @@ target_sources(qc_app_core PRIVATE
     input/QcFocusCandidates.h input/QcFocusCandidates.cpp
     input/QcGameInput.h input/QcGameInput.cpp
     input/QcGamepadBackend.h input/QcGamepadBackend.cpp
+    input/QcGamepadRoster.h input/QcGamepadRoster.cpp
     input/QcGamepadUi.h input/QcGamepadUi.cpp
     input/QcKeyControlsForeign.h
     input/QcMenuNavigator.h input/QcMenuNavigator.cpp
@@ -133,6 +135,8 @@ qt_add_qml_module(qc_app_core
         qml/DisconnectScreen.qml
         qml/FocusRing.qml
         qml/FurnaceScreen.qml
+        qml/GamepadPage.qml
+        qml/GamepadValues.qml
         qml/HandbookLink.qml
         qml/HandbookRecipe.qml
         qml/HandbookScreen.qml
@@ -149,7 +153,10 @@ qt_add_qml_module(qc_app_core
         qml/ModsScreen.qml
         qml/MultiplayerScreen.qml
         qml/OnScreenKeyboard.qml
+        qml/PadGlyph.qml
+        qml/PadHintRow.qml
         qml/PadHints.qml
+        qml/PadNotice.qml
         qml/PauseMenu.qml
         qml/PlayerListOverlay.qml
         qml/PlayerSlots.qml

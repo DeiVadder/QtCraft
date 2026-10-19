@@ -1,11 +1,15 @@
 #pragma once
 
+#include "app/input/QcGamepadRoster.h"
 #include "app/input/QcMenuNavigator.h"
 #include "clientcore/input/QcGamepadMenuInput.h"
 
 #include <QObject>
 #include <QPointer>
+#include <QHash>
 #include <QRectF>
+#include <QSet>
+#include <QVariantMap>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 #include <functional>
@@ -34,6 +38,13 @@ class QcGamepadUi : public QObject
     Q_PROPERTY(QQuickItem *focusLayer READ focusLayer NOTIFY focusChanged FINAL)
     Q_PROPERTY(bool radialOpen READ radialOpen NOTIFY radialChanged FINAL)
     Q_PROPERTY(int radialSlot READ radialSlot NOTIFY radialChanged FINAL)
+    // The connected pads, the one in use and its button labels (decisions E-612, E-613).
+    Q_PROPERTY(QcGamepadRoster *pads READ pads CONSTANT FINAL)
+    // The input of each world action for the leading pad's profile (decision E-611): actions.inventory
+    // is "north" unless rebound; mine and use are "rightTrigger" and "leftTrigger".
+    Q_PROPERTY(QVariantMap actions READ actions NOTIFY actionsChanged FINAL)
+    // The next button pressed on any pad is captured for the settings (captureButton()).
+    Q_PROPERTY(bool capturing READ capturing NOTIFY capturingChanged FINAL)
 
 public:
     // Whether the screens may take the pad's commands now (the world does not take the input).
@@ -54,6 +65,16 @@ public:
     QQuickItem *focusLayer() const { return m_focusLayer; }
     bool radialOpen() const;
     int radialSlot() const;
+    QcGamepadRoster *pads() { return &m_roster; }
+    QVariantMap actions() const;
+    bool capturing() const { return m_capturing; }
+
+    // Waits for a button of any pad (decision E-611): the screens ignore the pad meanwhile, and the
+    // next press of a button that can carry an action ends it with buttonCaptured(). Ends without
+    // one with cancelCapture() (the settings closing), a key or a click anywhere in the game
+    // (taken by the capture alone) or the last pad disconnecting.
+    Q_INVOKABLE void captureButton();
+    Q_INVOKABLE void cancelCapture();
 
     QcMenuNavigator &navigator() { return m_navigator; }
     QcGamepadMenuInput &menuInput() { return m_menu; }
@@ -74,10 +95,15 @@ signals:
     void radialChanged();
     // The on-screen keyboard should open for `field` (Main.qml).
     void keyboardRequested(QQuickItem *field);
+    void actionsChanged();
+    void capturingChanged();
+    // A button was pressed while capturing (its name: "south", "dpadLeft", ...).
+    void buttonCaptured(const QString &button);
 
 private:
     bool screensTakeInput() const;
-    // Attaches the per-frame hook and the application's event filter (`watching`) or detaches them.
+    // Attaches the per-frame hook (`watching`) and the application's event filter (`watching` or
+    // capturing) or detaches them.
     void watch(bool watching);
     void onFrame();
     void onCommand(QcGamepadMenuInput::Command command);
@@ -88,9 +114,14 @@ private:
     // Whether a mouse move hands the input back (asked while the pad leads): not the game's own return
     // to the window's centre, and at least minimumMouseTravel from where the mouse was last seen.
     bool mouseMoved(const QWindow &window, const QMouseEvent &move);
+    // While capturing: the first button pressed since the capture began ends it.
+    void captureFrom(int id);
+    void onPadConnected(int id);
+    void onPadDisconnected(int id);
 
     QcGamepadControls &m_world;
     Gate m_screensTakeInput;
+    QcGamepadRoster m_roster;
     QcGamepadMenuInput m_menu;
     QcMenuNavigator m_navigator;
     QPointer<QcGamepadSource> m_source;
@@ -106,4 +137,9 @@ private:
     quint64 m_hookCalls = 0;
     // Where the mouse was last seen (global), to tell a moved mouse from a still one.
     std::optional<QPointF> m_lastMouse;
+    bool m_capturing = false;
+    // The pads' states when the capture began or at their last change since.
+    QHash<int, QcGamepadState> m_captureStates;
+    // Pads connected during the capture whose first state is still to come.
+    QSet<int> m_captureJoined;
 };

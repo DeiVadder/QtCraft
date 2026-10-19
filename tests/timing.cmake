@@ -30,7 +30,8 @@
 #   test_enderman_rules, test_golem_measure, test_taming, test_minecart_momentum, test_signal_showcase
 #                            heavy server simulations that repeatedly failed only on their TIMEOUT
 #                            under parallel load (golem and minecart measurements time ticks too)
-#   app_offscreen_pad_inventory, app_offscreen_pad_radial, app_offscreen_pad_keyboard, app_offscreen_pad_menu
+#   app_offscreen_pad_inventory, app_offscreen_pad_radial, app_offscreen_pad_keyboard, app_offscreen_pad_menu,
+#   app_offscreen_pad_playstation, app_offscreen_pad_settings
 #                            the game with a scripted pad: its steps start at wall-clock times of the
 #                            startup script (after the world loaded); each waits for rendered frames
 #   test_gamepad_scenarios   the creative double tap is timed on the wall clock (E-541)
@@ -43,5 +44,5 @@ set(qc_timing_tests
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
     test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
-    test_gamepad_scenarios test_session_tick test_session_thread)
+    app_offscreen_pad_playstation app_offscreen_pad_settings test_gamepad_scenarios test_session_tick test_session_thread)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

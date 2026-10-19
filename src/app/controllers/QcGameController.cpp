@@ -164,6 +164,7 @@ void QcGameController::attachWindow(QQuickWindow *window)
                 // background are not queued for the window's return.
                 m_gamepad.suspend(m_parts.session.get());
             }
+            m_gamepad.setWindowActive(m_parts.window->isActive());
         });
     }
 }
@@ -185,6 +186,7 @@ void QcGameController::startGamepads(bool enabled)
         m_gamepadSource = QcGamepadBackend::create();
         m_gamepad.setSource(m_gamepadSource.get());
         m_gamepadUi.setSource(m_gamepadSource.get());
+        m_settings->gamepadOptions()->setSource(m_gamepadSource.get());
     }
 }
 
@@ -192,6 +194,7 @@ void QcGameController::useScriptedGamepad(QcGamepadSource *source)
 {
     m_gamepad.setSource(source);
     m_gamepadUi.setSource(source);
+    m_settings->gamepadOptions()->setSource(source);
     m_gamepadUi.setIgnoreWindowFocus(true);
     m_input->setScriptedPad(true);
 }

@@ -7,9 +7,9 @@ QString QcVirtualGamepadSource::backendName() const
     return u"virtual"_s;
 }
 
-int QcVirtualGamepadSource::connectPad(const QString &name, QcGamepadType type)
+int QcVirtualGamepadSource::connectPad(const QString &name, QcGamepadType type, const QString &guid)
 {
-    return addPad(name, type);
+    return addPad({.name = name, .type = type, .guid = guid, .rumble = true});
 }
 
 bool QcVirtualGamepadSource::disconnectPad(int id)
@@ -18,7 +18,18 @@ bool QcVirtualGamepadSource::disconnectPad(int id)
         return false;
     }
 
+    m_rumbles.remove(id);
     removePad(id);
+    return true;
+}
+
+bool QcVirtualGamepadSource::rumble(int id, float strength, int durationMs)
+{
+    if (!contains(id)) {
+        return false;
+    }
+
+    m_rumbles[id].append({strength, durationMs});
     return true;
 }
 

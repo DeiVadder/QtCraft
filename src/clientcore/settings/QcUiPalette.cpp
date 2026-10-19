@@ -38,6 +38,12 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::IconBackdrop, "iconBackdrop", 0x30ffffff},
     {R::Selection, "selection", 0xffffffff},
     {R::FocusRing, "focusRing", 0xffffd27a},
+    {R::PadGlyph, "padGlyph", 0xf0202020},
+    {R::PadGreen, "padGreen", 0xff6fdc6f},
+    {R::PadRed, "padRed", 0xffff7a6e},
+    {R::PadBlue, "padBlue", 0xff7ab4ff},
+    {R::PadYellow, "padYellow", 0xffffd75a},
+    {R::PadPink, "padPink", 0xffff9ad6},
     {R::Crosshair, "crosshair", 0xe0ffffff},
     {R::Progress, "progress", 0xffffffff},
     {R::Health, "health", 0xffe02828},
@@ -118,6 +124,13 @@ QList<TextPair> textPairs()
         {"Debug frame graph", R::GraphFrame, {R::HudBackdrop}, true},
         {"Debug tick graph", R::GraphTick, {R::HudBackdrop}, true},
         {"Debug graph budget line", R::GraphLimit, {R::HudBackdrop}, true},
+        // Pad button symbols are small shapes and letters on their own disc (decision E-612).
+        {"Pad button symbols", R::Text, {R::PadGlyph}, true},
+        {"Pad button, green", R::PadGreen, {R::PadGlyph}, true},
+        {"Pad button, red", R::PadRed, {R::PadGlyph}, true},
+        {"Pad button, blue", R::PadBlue, {R::PadGlyph}, true},
+        {"Pad button, yellow", R::PadYellow, {R::PadGlyph}, true},
+        {"Pad button, pink", R::PadPink, {R::PadGlyph}, true},
     };
 }
 

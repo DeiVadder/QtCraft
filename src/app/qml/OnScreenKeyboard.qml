@@ -23,6 +23,8 @@ Popup {
     // The window's size, where the keyboard sits at the bottom.
     required property real areaWidth
     required property real areaHeight
+    // The pad's buttons in running text (GameController.gamepad.pads.texts, decision E-612).
+    property var buttonTexts: ({ west: "X", north: "Y", leftShoulder: "LB", rightShoulder: "RB", start: "Menu", east: "B" })
 
     // Each key: its character and the one under shift.
     readonly property var rows: [
@@ -207,7 +209,8 @@ Popup {
 
         Label {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("X: delete  Y: space  LB/RB: cursor  Start: done  B: close")
+            text: qsTr("%1: delete  %2: space  %3/%4: cursor  %5: done  %6: close").arg(keyboard.buttonTexts.west).arg(keyboard.buttonTexts.north)
+                      .arg(keyboard.buttonTexts.leftShoulder).arg(keyboard.buttonTexts.rightShoulder).arg(keyboard.buttonTexts.start).arg(keyboard.buttonTexts.east)
             color: Theme.textMuted
             font.pixelSize: 12
         }

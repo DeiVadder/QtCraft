@@ -26,6 +26,12 @@
     --qc-iconBackdrop: rgba(255, 255, 255, 0.188);
     --qc-selection: rgba(255, 255, 255, 1.000);
     --qc-focusRing: rgba(255, 210, 122, 1.000);
+    --qc-padGlyph: rgba(32, 32, 32, 0.941);
+    --qc-padGreen: rgba(111, 220, 111, 1.000);
+    --qc-padRed: rgba(255, 122, 110, 1.000);
+    --qc-padBlue: rgba(122, 180, 255, 1.000);
+    --qc-padYellow: rgba(255, 215, 90, 1.000);
+    --qc-padPink: rgba(255, 154, 214, 1.000);
     --qc-crosshair: rgba(255, 255, 255, 0.878);
     --qc-progress: rgba(255, 255, 255, 1.000);
     --qc-health: rgba(224, 40, 40, 1.000);

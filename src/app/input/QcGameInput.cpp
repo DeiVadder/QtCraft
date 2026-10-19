@@ -52,6 +52,7 @@ QcGameInput::QcGameInput(Screens screens, const QcSessionParts &parts, QcSetting
     , m_parts(parts)
     , m_settings(settings)
     , m_audio(audio)
+    , m_radial(QcInventory::hotbarSize)
 {
     // On the application: shortcut overrides go to the focused item, not to the window.
     if (QCoreApplication *application = QCoreApplication::instance()) {
@@ -122,7 +123,7 @@ QPointF QcGameInput::takeMouseDelta()
 void QcGameInput::applyFrame(QPointF mouseDelta, float frameSeconds)
 {
     if (m_capture.captured() && !mouseDelta.isNull()) {
-        m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), mouseDelta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
+        turn(mouseDelta);
     }
     if (m_screens.state.inputEnabled() && m_screens.state.playing()) {
         updateIntentFromKeys(frameSeconds);
@@ -210,6 +211,9 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
     if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::PlayerList, key.key())) {
         setPlayerListHeld(false);
     }
+    if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::HotbarRadial, key.key())) {
+        closeRadial(true);
+    }
     m_keysDown.remove(key.key());
 }
 
@@ -219,6 +223,7 @@ void QcGameInput::clearKeys()
     m_sprint.reset();
     m_flight.reset();
     setPlayerListHeld(false);
+    closeRadial(false);
 }
 
 void QcGameInput::setPlayerListHeld(bool held)
@@ -270,7 +275,29 @@ bool QcGameInput::handleWheel(const QWheelEvent &wheel) const
     return true;
 }
 
-bool QcGameInput::handleMouseMove(const QMouseEvent &mouse) const
+void QcGameInput::turn(QPointF delta)
+{
+    if (!m_radial.isOpen()) {
+        m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), delta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
+    } else if (m_radial.move(delta)) {
+        emit radialChanged();
+    }
+}
+
+void QcGameInput::closeRadial(bool select)
+{
+    if (!m_radial.isOpen()) {
+        return;
+    }
+
+    const std::optional<int> slot = m_radial.close();
+    if (select && slot && m_parts.session && *slot != m_parts.session->inventory().selectedHotbarSlot()) {
+        m_parts.session->selectHotbarSlot(*slot);
+    }
+    emit radialChanged();
+}
+
+bool QcGameInput::handleMouseMove(const QMouseEvent &mouse)
 {
     if (!m_capture.captured()) {
         return false;
@@ -283,7 +310,7 @@ bool QcGameInput::handleMouseMove(const QMouseEvent &mouse) const
     const QPointF centre(m_parts.window->width() / 2.0, m_parts.window->height() / 2.0);
     const QPointF delta = mouse.position() - centre;
     if (delta.manhattanLength() > 0.0) {
-        m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), delta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
+        turn(delta);
         QCursor::setPos(m_parts.window->mapToGlobal(centre.toPoint()));
     }
     return true;
@@ -320,6 +347,11 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
 
     if (*action >= A::Hotbar1 && *action <= A::Hotbar9) {
         m_parts.session->selectHotbarSlot(int(*action) - int(A::Hotbar1));
+        return;
+    }
+    if (*action == A::HotbarRadial) {
+        m_radial.open(m_parts.session->inventory().selectedHotbarSlot());
+        emit radialChanged();
         return;
     }
     if (handlePlayerAction(*action, key)) {

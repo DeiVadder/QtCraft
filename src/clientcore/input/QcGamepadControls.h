@@ -48,12 +48,28 @@ public:
     explicit QcGamepadControls(QObject *parent = nullptr);
     ~QcGamepadControls() override;
 
+    // Damage of this many health points or more vibrates at full strength (decision E-615).
+    static constexpr double fullRumbleDamage = 8.0;
+    static constexpr int rumbleMs = 220;
+
     // The pads to follow (nullptr: none); the source must outlive this object or be set to another.
     void setSource(QcGamepadSource *source);
+    // The settings of all pads; each pad uses the profile of its model (decision E-611).
     void setSettings(const QcGamepadSettings &settings);
     const QcGamepadSettings &settings() const { return m_settings; }
+    // The profile of the leading pad (the standard one without a pad).
+    const QcGamepadProfile &profile() const { return m_profile; }
     // The pad that leads (0: none).
     int activePad() const { return m_pad; }
+    // The leading pad is the device in use: it pressed a button, a trigger or clearly pushed a stick
+    // since it leads and since keyboardOrMouseUsed(). Only then does it vibrate, and only then does
+    // its disconnecting open the pause menu (decisions E-613, E-615).
+    bool padInUse() const { return m_inUse; }
+    // A key, a click or a moved mouse (QcGamepadUi hands the input back): the pad is no longer in use.
+    void keyboardOrMouseUsed() { m_inUse = false; }
+    // Whether the game's window has the focus (true without a window): the pad does not vibrate in
+    // the background.
+    void setWindowActive(bool active) { m_windowActive = active; }
 
     // Presses waiting for the next frame.
     qsizetype pendingPresses() const { return m_presses.size(); }
@@ -77,7 +93,10 @@ public:
 signals:
     // A key action of the world was pressed (or, for the held player list, released): Pause,
     // Inventory, Chat, Handbook, CameraView or PlayerList. The game opens the screen as with the key.
+    // The leading pad disconnecting in the world asks for Pause too (decision E-613).
     void worldAction(QcKeyBindings::Action action, bool pressed);
+    // Another pad leads (or none), or the settings changed: profile() may differ.
+    void profileChanged();
     // The radial menu opened, closed or highlights another slot.
     void radialChanged();
 
@@ -96,6 +115,16 @@ private:
     void onStateChanged(int id);
     void onPadConnected(int id);
     void onPadDisconnected(int id);
+    // Pad `id` leads (0: none), with the profile of its model.
+    void setLead(int id);
+    const QcGamepadProfile &profileOf(int id) const;
+    // Looks up the profile of every connected pad once (on connecting and with new settings), so
+    // a state change finds it without asking the source for the pad's model.
+    void refreshProfiles();
+    // Vibrates the leading pad when the player lost health since the last frame (decision E-615):
+    // only once the server told the health (the vitals start full before that), while the pad is
+    // in use and the window has the focus.
+    void rumbleWhenHurt(const QcClientSession &session);
     // Whether pad `id`, which does not lead, takes the lead with this state change: a press of a
     // button or trigger does, a clearly pushed stick only while the leading pad's sticks rest.
     bool takesLead(int id, Held before, Held now) const;
@@ -124,7 +153,9 @@ private:
 
     QPointer<QcGamepadSource> m_source;
     QcGamepadSettings m_settings;
-    QcGamepadMapping::Bindings m_bindings;
+    QcGamepadProfile m_profile;
+    // The profile of each connected pad (into m_settings, refreshed with it).
+    QHash<int, const QcGamepadProfile *> m_profiles;
     QElapsedTimer m_clock;
     int m_pad = 0;
     // What each pad held at its last state change (triggers with their hysteresis); follows the
@@ -135,6 +166,8 @@ private:
     QcFlightLatch m_flight;
     // The last frame was active: presses are queued.
     bool m_active = false;
+    bool m_inUse = false;
+    bool m_windowActive = true;
     bool m_sneakToggled = false;
     // What the pad set in the intent and on the session, to give it back once.
     bool m_walking = false;
@@ -151,4 +184,6 @@ private:
     bool m_lookWaitsForNeutral = false;
     // When the drop button went down (-1: not held) and whether its hold threw the stack.
     qint64 m_dropPressedMs = -1;
+    // The player's health in the last frame (negative: none seen yet).
+    double m_lastHealth = -1.0;
 };

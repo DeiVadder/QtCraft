@@ -4,14 +4,15 @@ import QtQuick
 import QtQuick.Controls
 import QtCraft
 
-// The hotbar's radial menu (decision E-581): while its pad button is held, the nine hotbar slots sit
-// on a circle around the crosshair, the right stick highlights one and letting go of the button
-// selects it. The highlighted slot is drawn larger with its name in the middle.
+// The hotbar's radial menu (decisions E-581, E-614): while its pad button (or its key) is held, the
+// nine hotbar slots sit on a circle around the crosshair, the right stick (or the mouse) highlights
+// one and letting go selects it. The highlighted slot is drawn larger with its name in the middle.
 Item {
     id: radial
 
     required property GameController game
-    readonly property int highlighted: game.gamepad.radialSlot
+    // The pad's menu or the one of the key with the mouse (decision E-614).
+    readonly property int highlighted: game.gamepad.radialOpen ? game.gamepad.radialSlot : game.input.radialSlot
     readonly property real radius: 130
 
     width: 2 * radius + 80
