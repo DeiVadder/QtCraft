@@ -52,8 +52,8 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
     const QcVec3 aimPoint = target->position + QcVec3{0.0, aimHeight, 0.0};
     const bool sees = QcLineOfSight::seesPoint(context.world, eyeOf(mob, definition), aimPoint);
     const double distance = horizontal(target->position - mob.motion.position).length();
-    // Cornered: a blow at a target in melee, besides backing off.
-    if (QcMobSteering::inMelee(mob, definition, *target, context.world)) {
+    // Cornered: a blow at a target in melee, besides backing off (not without blows, the witch).
+    if (definition.attackDamage > 0.0 && QcMobSteering::inMelee(mob, definition, *target, context.world)) {
         QcMobSteering::strike(mob, definition, *target, *context.hits);
     }
     drawAndShoot(mob, definition, *target, sees && distance <= definition.archer.range, context);
@@ -94,7 +94,8 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
     QcArcherState &state = *mob.archer;
     const QcArcherDefinition &archer = definition.archer;
     // A blow of its own (attackCooldown runs) breaks the draw; it begins anew when the blow is over.
-    if (!canShoot || mob.attackedThisTick || (state.drawing() && mob.attackCooldown > 0.0)) {
+    // A drink (decision E-623) holds the hand.
+    if (!canShoot || mob.attackedThisTick || state.drinking() || (state.drawing() && mob.attackCooldown > 0.0)) {
         state.drawStart = -1;
         return;
     }
@@ -105,7 +106,8 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
         return;
     }
     const qint64 drawTicks = std::max<qint64>(1, std::llround(archer.drawSeconds / QcPhysics::tickDuration));
-    const QcProjectileDefinition *projectile = m_content.projectile(archer.projectile);
+    const QString &type = projectileFor(archer, target);
+    const QcProjectileDefinition *projectile = m_content.projectile(type);
     if (qint64(context.tick) - state.drawStart < drawTicks || !projectile || !context.launches) {
         return;
     }
@@ -117,9 +119,19 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
     const double launchSpeed = aimed.length();
     const double damageFactor = launchSpeed > 0.0 ? archer.speed / launchSpeed : 1.0;
     context.launches->append(
-        {mob.id, archer.projectile, from, spread(aimed, archer.spreadDegrees, random()), QcProjectilePickup::Never, damageFactor});
+        {mob.id, type, from, spread(aimed, archer.spreadDegrees, random()), QcProjectilePickup::Never, damageFactor});
     state.drawStart = -1;
     mob.attackCooldown = archer.cooldownSeconds;
+}
+
+const QString &QcArcherBrain::projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target)
+{
+    for (const QcArcherDefinition::Choice &choice : archer.choices) {
+        if (!target.effects || !target.effects->find(choice.unlessTargetHas)) {
+            return choice.projectile;
+        }
+    }
+    return archer.projectile;
 }
 
 QcPhysics::Steering QcArcherBrain::keepDistance(QcCreature &mob, const QcMobManager::PlayerView &target, bool sees, const Context &context,

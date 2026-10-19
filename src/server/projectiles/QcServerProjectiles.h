@@ -19,7 +19,8 @@ struct QcServerClient;
 // projectiles go to the players that touch them. Players shoot through QcPlayerLaunchers and
 // throw through QcPlayerThrows; what a hit does comes from the kind's onHit (QcHitEffects, E-427).
 // Creatures that dodge projectiles teleport away unhurt, and a projectile that teleports its thrower
-// (an ender pearl) brings them where it breaks (decision E-460). Fishing rods cast and reel in
+// (an ender pearl) brings them where it breaks (decision E-460); a splash (a splash potion, decision
+// E-624) reaches every living body around the place it breaks. Fishing rods cast and reel in
 // their bobbers through QcPlayerFishing (decision E-503); a projectile without hit effects (a
 // bobber) bounces off bodies unhurt.
 class QcServerProjectiles
@@ -54,6 +55,10 @@ private:
     void teleportThrower(const QcProjectile &projectile, const QcHitEffect &effect);
     // The creatures of the projectile's spawn effects where it broke (decision E-450).
     void spawnWhereBroken(const QcProjectile &projectile, const QcProjectileDefinition &definition);
+    // A splash where it broke (decision E-624): every awake creature and every player in the game
+    // within `radius` but its thrower takes the splash's share (QcHitEffects::splashImpact).
+    void splashCreatures(const QcProjectile &projectile, const QcProjectileDefinition &definition, double radius);
+    void splashPlayers(const QcProjectile &projectile, const QcProjectileDefinition &definition, double radius);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

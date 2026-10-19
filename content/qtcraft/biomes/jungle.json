@@ -1,0 +1,41 @@
+{
+    "name": "jungle",
+    "temperature": 0.95,
+    "humidity": 0.62,
+    "baseHeight": 70,
+    "heightVariation": 14,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "dirt",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "jungle_tree",
+            "density": 0.06
+        },
+        {
+            "feature": "oak_tree",
+            "density": 0.02
+        },
+        {
+            "feature": "fern",
+            "density": 0.12
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.2
+        },
+        {
+            "feature": "melon_patch",
+            "density": 0.004
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.2
+        },
+        {
+            "feature": "poppy",
+            "density": 0.004
+        }
+    ]
+}

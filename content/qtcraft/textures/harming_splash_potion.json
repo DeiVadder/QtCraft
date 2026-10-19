@@ -1,0 +1,8 @@
+{
+    "name": "harming_splash_potion",
+    "pattern": "bottle",
+    "primary": "#c8dce6",
+    "secondary": "#5a1a3a",
+    "variation": 0.06,
+    "seed": 6232
+}

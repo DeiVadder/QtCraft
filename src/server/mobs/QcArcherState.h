@@ -5,7 +5,7 @@
 #include <QtGlobal>
 
 // What an archer (QcMobDefinition::Ai::Archer, decision E-426) does between ticks: its draw, the
-// side it circles to and where it last saw its target (for the lead of its shots). A component of
+// side it circles to, where it last saw its target (for the lead of its shots) and its drink. A component of
 // the creature (QcCreature::archer); not saved, like all hostile creatures.
 struct QcArcherState
 {
@@ -20,5 +20,11 @@ struct QcArcherState
     QcVec3 targetPosition;
     QcVec3 targetVelocity;
 
+    // A drink to heal (QcMobDefinition::drinks, decision E-623; QcMobDrinking): the game tick it
+    // began at (-1 while it does not drink) and the first tick it may drink again.
+    qint64 drinkStart = -1;
+    quint64 drinkReady = 0;
+
     bool drawing() const { return drawStart >= 0; }
+    bool drinking() const { return drinkStart >= 0; }
 };

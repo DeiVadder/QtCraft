@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -288,7 +288,7 @@ A shy spotted cat of the jungle (until there is one, of swamps). It runs away fr
 
 **Appears in biomes**
 
-[Swamp](biomes.md#biome-qtcraft-swamp)
+[Jungle](biomes.md#biome-qtcraft-jungle), [Swamp](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-pig"></a>Pig
 
@@ -519,6 +519,21 @@ Lives in a village with a bed of its own and, with luck, a workstation that give
 | Speed | 1.4 m/s walking, 3 m/s fleeing |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | nothing |
+
+### <a id="mob-qtcraft-witch"></a>Witch
+
+Lives in a hut on stilts in the swamp and comes back there while no player is near. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
+
+| | |
+|---|---|
+| ID | `qtcraft:witch` |
+| Behaviour | hostile: keeps its distance, circles and shoots at players |
+| Health | 26 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.2 m/s walking, 2.4 m/s chasing |
+| Sees players within | 16 m |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | [Glass bottle](items.md#item-qtcraft-glass_bottle) (50 %), [Sugar](items.md#item-qtcraft-sugar) (40 %), [Stick](items.md#item-qtcraft-stick) (40 %), [Spider eye](items.md#item-qtcraft-spider_eye) (30 %), [Signal Dust](blocks.md#block-qtcraft-signal_dust) (30 %) |
 
 ### <a id="mob-qtcraft-wolf"></a>Wolf
 

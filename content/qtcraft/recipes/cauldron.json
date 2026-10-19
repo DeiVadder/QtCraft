@@ -1,0 +1,15 @@
+{
+    "name": "cauldron",
+    "type": "shaped",
+    "pattern": [
+        "I I",
+        "I I",
+        "III"
+    ],
+    "key": {
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "cauldron"
+    }
+}

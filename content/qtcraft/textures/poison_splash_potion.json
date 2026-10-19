@@ -1,0 +1,8 @@
+{
+    "name": "poison_splash_potion",
+    "pattern": "bottle",
+    "primary": "#c8dce6",
+    "secondary": "#4e9331",
+    "variation": 0.06,
+    "seed": 6231
+}

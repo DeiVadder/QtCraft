@@ -1,0 +1,25 @@
+{
+    "name": "flower_pot",
+    "sound": "stone",
+    "shape": "flower_pot",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "states": {
+        "plant": [
+            "none",
+            "red_mushroom",
+            "fern"
+        ]
+    },
+    "textures": {
+        "all": "flower_pot",
+        "slots": {
+            "pot": "flower_pot",
+            "plant": "red_mushroom",
+            "fern": "fern"
+        }
+    }
+}

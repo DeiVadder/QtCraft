@@ -1,0 +1,27 @@
+{
+    "name": "mob.witch.death",
+    "volume": 0.8,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.8,
+            "frequency": 620,
+            "endFrequency": 160,
+            "attack": 0.01,
+            "curve": 1.3,
+            "lowpass": 2000,
+            "tremoloRate": 10,
+            "tremoloDepth": 0.4,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "duration": 0.3,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 2500,
+            "highpass": 400,
+            "gain": 0.2
+        }
+    ]
+}

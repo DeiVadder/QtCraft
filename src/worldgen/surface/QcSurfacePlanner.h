@@ -19,8 +19,10 @@ class QcTerrainGenerator;
 // places (a centre and a turn per attempt) whose footprint lies wholly inside the region, on land
 // above the sea in one of the rule's biomes at its middle and along its edges, with its ground
 // varying by at most `maxSlope` and its floor on the lowest ground, and clear of what `occupied`
-// reports (villages, other kinds). A kind whose structure has `choices` or `parts` builds each copy
-// from a selection drawn from the region's own positions (decision E-630). Thread-safe.
+// reports (villages, other kinds). With `waterDepth` the samples may lie under that much water;
+// with `preferWater` the first place whose middle lies under water wins over the first that fits
+// (a witch hut on stilts, decision E-622). A kind whose structure has `choices` or `parts` builds
+// each copy from a selection drawn from the region's own positions (decision E-630). Thread-safe.
 class QcSurfacePlanner
 {
 public:

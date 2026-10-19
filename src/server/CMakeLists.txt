@@ -160,6 +160,7 @@ target_sources(qc_server PRIVATE
     mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
+    mobs/QcMobDrinking.h mobs/QcMobDrinking.cpp
     mobs/QcMobExchange.h
     mobs/QcMobFear.h mobs/QcMobFear.cpp
     mobs/QcMobLaying.h mobs/QcMobLaying.cpp

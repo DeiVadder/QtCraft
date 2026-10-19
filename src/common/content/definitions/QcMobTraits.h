@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -164,4 +165,57 @@ struct QcAquaticDefinition
     int neighbours = 8;
 
     bool operator==(const QcAquaticDefinition &) const = default;
+};
+
+// How a creature with the archer AI shoots (decision E-426), from its data (`archer`). Server side
+// only.
+struct QcArcherDefinition
+{
+    // Name of the QcProjectileDefinition it shoots.
+    QString projectile;
+    // Another projectile it shoots instead while its target lacks a status effect (the witch's
+    // poison before its harming, decision E-623).
+    struct Choice
+    {
+        QString projectile;
+        QString unlessTargetHas;
+
+        bool operator==(const Choice &) const = default;
+    };
+    // The first choice whose effect the target lacks is shot, else `projectile`.
+    QList<Choice> choices;
+    static constexpr int maxChoices = 8;
+    // Seconds it draws before a shot, and waits after one before it draws again.
+    double drawSeconds = 1.0;
+    double cooldownSeconds = 1.0;
+    // Launch speed in m/s (the projectile's damage grows with it).
+    double speed = 25.0;
+    // Random deviation of a shot from its aim, in degrees (the spread of the reference's archers on
+    // normal difficulty; this game has no difficulty).
+    double spreadDegrees = 1.5;
+    // It shoots at targets up to `range` metres away; it backs off from one closer than
+    // `minDistance` and walks towards one farther than `keepDistance` (or one it does not see),
+    // circling sideways in between. All three are horizontal distances.
+    double range = 15.0;
+    double minDistance = 5.0;
+    double keepDistance = 12.0;
+
+    bool operator==(const QcArcherDefinition &) const = default;
+};
+
+// A creature that drinks to heal (the witch, decision E-623), from its data (`drinks`): once its
+// health lies `heal` or more below its most and `cooldownSeconds` have passed since its last drink,
+// it holds `item` for `seconds` without shooting, then heals by `heal` with `sound`. Server side
+// only.
+struct QcDrinkHealDefinition
+{
+    QString item;
+    // The id of `item`, resolved when the content is finished (QcMobTraitsContent::resolve).
+    QcItemId itemId = qcNoItem;
+    double heal = 4.0;
+    double seconds = 1.6;
+    double cooldownSeconds = 3.0;
+    QString sound;
+
+    bool operator==(const QcDrinkHealDefinition &) const = default;
 };

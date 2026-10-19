@@ -50,7 +50,7 @@ class TestVillageSwamp : public QObject
     Q_OBJECT
 
 private:
-    static constexpr qint64 seed = 42;
+    static constexpr qint64 seed = 7;
     // Regions around the origin searched for swamp villages.
     static constexpr int rings = 14;
 

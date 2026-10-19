@@ -161,6 +161,21 @@ void parseGuardian(QcMobDefinition &mob, QcJsonFieldReader &reader, const QStrin
     }
 }
 
+// Drinking to heal (the witch, decision E-623): the object "drinks".
+QcDrinkHealDefinition parseDrinks(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QcDrinkHealDefinition drinks;
+    drinks.item = reader.name(u"item"_s, packNamespace);
+    drinks.heal = reader.number(u"heal"_s, drinks.heal, 0.5, 1000.0);
+    drinks.seconds = reader.number(u"seconds"_s, drinks.seconds, 0.05, 30.0);
+    drinks.cooldownSeconds = reader.number(u"cooldownSeconds"_s, drinks.cooldownSeconds, 0.0, 3600.0);
+    drinks.sound = reader.name(u"sound"_s, packNamespace);
+    if (reader.ok() && drinks.item.isEmpty()) {
+        reader.fail(u"needs the 'item' it drinks"_s);
+    }
+    return drinks;
+}
+
 } // namespace
 
 namespace QcMobTraitsParser {
@@ -177,10 +192,16 @@ void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReade
     parseCompanions(mob, reader, packNamespace);
     parseWaterAndMilk(mob, reader, packNamespace);
     parseGuardian(mob, reader, packNamespace);
+    reader.nestedObject(u"drinks"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        mob.drinks = parseDrinks(nested, packNamespace);
+    });
 
     // Being provoked by a look and carrying blocks are what the neutral AI does.
     if (reader.ok() && (json.contains(u"gaze"_s) || json.contains(u"carries"_s)) && mob.ai != QcMobDefinition::Ai::Neutral) {
         reader.fail(u"'gaze' and 'carries' go with the neutral AI"_s);
+    }
+    if (reader.ok() && mob.drinks && mob.ai != QcMobDefinition::Ai::Archer) {
+        reader.fail(u"'drinks' goes with the archer AI"_s);
     }
     if (reader.ok() && mob.flying && (mob.teleport || mob.carries)) {
         reader.fail(u"flying creatures neither teleport nor carry blocks"_s);

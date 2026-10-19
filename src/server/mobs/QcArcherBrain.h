@@ -13,7 +13,8 @@ class QcContentRegistry;
 // drag and the lead of a moving target and spread by `spreadDegrees`, then wait `cooldownSeconds`
 // before they draw again. Whatever launch speed the aim needs, an arrow does the damage of one at
 // `speed` (Launch::damageFactor). A target in melee gets a blow besides (the archer is cornered);
-// the blow breaks the draw. Without a
+// the blow breaks the draw. It shoots the first of its choices whose effect the target lacks and
+// neither draws nor shoots while it drinks (decision E-623). Without a
 // target they wander like passive ones.
 class QcArcherBrain : public QcPassiveBrain
 {
@@ -45,6 +46,9 @@ public:
                       const QcProjectileDefinition &definition);
     // `velocity` turned by up to `degrees` in a random direction.
     static QcVec3 spread(const QcVec3 &velocity, double degrees, QRandomGenerator &random);
+    // What it shoots at `target`: the first of its choices whose effect the target lacks (the
+    // witch's poison, decision E-623), else its projectile.
+    static const QString &projectileFor(const QcArcherDefinition &archer, const QcMobManager::PlayerView &target);
 
 protected:
     bool chases() const override { return true; }

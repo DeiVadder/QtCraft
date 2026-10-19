@@ -13,7 +13,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// "dispense": throw (default), place_liquid, scoop, equip or ignite, checked against what the item is.
+// "dispense": throw (default), place_liquid, scoop, equip, ignite or shoot, checked against what the item is.
 // What it does used on a block besides placing one: hoe, shovel, flint and steel, bone meal.
 void parseBlockUses(QcItemDefinition &item, QcJsonFieldReader &reader)
 {
@@ -103,8 +103,13 @@ void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
         if (!item.ignites) {
             reader.fail(u"'dispense': ignite needs 'ignites'"_s);
         }
+    } else if (action == u"shoot"_s) {
+        item.dispense = QcDispenseAction::Shoot;
+        if (item.projectile.isEmpty()) {
+            reader.fail(u"'dispense': shoot needs 'projectile'"_s);
+        }
     } else if (action != u"throw"_s) {
-        reader.fail(u"'dispense' must be throw, place_liquid, scoop, equip or ignite"_s);
+        reader.fail(u"'dispense' must be throw, place_liquid, scoop, equip, ignite or shoot"_s);
     }
 }
 
@@ -222,8 +227,8 @@ namespace QcItemParser {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
     });
 
-    parseDispense(item, reader);
     parseProjectileUses(item, packNamespace, reader);
+    parseDispense(item, reader);
     parseContainerUses(item, packNamespace, reader);
     parseFishing(item, packNamespace, reader);
 

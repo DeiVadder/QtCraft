@@ -1,0 +1,158 @@
+{
+    "name": "jungle_temple_station",
+    "showcase": {
+        "order": 99
+    },
+    "palette": {
+        ".": "air",
+        "A": "cobblestone",
+        "B": "stone_bricks",
+        "C": "mossy_cobblestone",
+        "D": "chest[facing=east]",
+        "E": "sticky_signal_piston[facing=south,extended=true]",
+        "F": "signal_torch[attach=east]",
+        "G": "signal_dispenser[facing=south]",
+        "H": "signal_piston_head[facing=south,sticky=true]",
+        "I": "lever[attach=north]",
+        "J": "stone_pressure_plate",
+        "K": "signal_dispenser[facing=west]"
+    },
+    "layers": [
+        [
+            "ABAACCBBABBAA",
+            "CACACABCAABBB",
+            "CBABBABAAAAAB",
+            "ACBAACCCAAAAB",
+            "BBAACCCAAAACC",
+            "ACABBCCBBCCAA",
+            "ACAACCBAAACCB",
+            "CACCCCCBBABAC",
+            "ACCACBCBACCAC",
+            "AAAAACAACAACA",
+            "ABCACCAAACAAA",
+            "AAAAAAAACBCBA",
+            "BACCACCCAACAC",
+            "ACCCCAAACCCAA",
+            "CCCCBBCCAACBA"
+        ],
+        [
+            "AAACBCCCAAAAC",
+            "A...AACAABACA",
+            "BD..EFBAGAGCB",
+            "A...HBI.I.I.A",
+            "CD..C.......C",
+            "C...AB......C",
+            "AAAACC......C",
+            "ABBABC......C",
+            "ACCAAC......A",
+            "BCACAAAABA.CB",
+            "ACCCCCACAAJKC",
+            "CCCCCCAAAA.CA",
+            "AAAACCAAAA.CB",
+            "CAACACACAA.CA",
+            "CAACCCACAA.AA"
+        ],
+        [
+            "AAAAAAAAACACA",
+            "A...ACACAACAA",
+            "C...EBCAAAACC",
+            "A...HB......C",
+            "A...C.......A",
+            "C...CB......B",
+            "ACAACA......A",
+            "CAAAAB......A",
+            "CAACAC......A",
+            "ACCBACAABA.BA",
+            "CCCCBAAAAC.AC",
+            "ACACCAAACA.AA",
+            "BABCACCCBC.CC",
+            "BBCAAACACA.AC",
+            "ACCBCCAAAC.AA"
+        ],
+        [
+            "AAAAAAAAACACA",
+            "ACCCCCACAACAA",
+            "CCCCCCCAAAACC",
+            "ACCCCC......C",
+            "ACCCCC......A",
+            "CCCCCC......B",
+            "ACAACA......A",
+            "CAAAAB......A",
+            "CAACAC......A",
+            "ACCBACAABA.BA",
+            "CCCCBAAAAC.AC",
+            "ACACCAAACA.AA",
+            "BABCACCCBC.CC",
+            "BBCAAACACA.AC",
+            "ACCBCCAAAC.AA"
+        ]
+    ],
+    "loot": [
+        {
+            "at": [
+                1,
+                1,
+                2
+            ],
+            "table": "jungle_temple_chest"
+        },
+        {
+            "at": [
+                1,
+                1,
+                4
+            ],
+            "table": "jungle_temple_chest"
+        },
+        {
+            "at": [
+                8,
+                1,
+                2
+            ],
+            "table": "jungle_temple_dispenser"
+        },
+        {
+            "at": [
+                10,
+                1,
+                2
+            ],
+            "table": "jungle_temple_dispenser"
+        },
+        {
+            "at": [
+                11,
+                1,
+                10
+            ],
+            "table": "jungle_temple_dispenser"
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                8.5,
+                5.0,
+                5.5
+            ],
+            "text": "structure.qtcraft.jungle_temple_station.levers"
+        },
+        {
+            "at": [
+                10.5,
+                5.0,
+                10.5
+            ],
+            "text": "structure.qtcraft.jungle_temple_station.trap"
+        },
+        {
+            "at": [
+                3.0,
+                5.5,
+                3.5
+            ],
+            "text": "structure.qtcraft.jungle_temple_station.chamber"
+        }
+    ]
+}

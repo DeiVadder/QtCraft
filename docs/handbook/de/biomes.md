@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Wald](#biome-qtcraft-forest) · [Wüste](#biome-qtcraft-desert)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Dschungel](#biome-qtcraft-jungle) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Wald](#biome-qtcraft-forest) · [Wüste](#biome-qtcraft-desert)
 
 ## QtCraft
 
@@ -27,6 +27,28 @@ Heller Wald aus Birken.
 **Wesen**
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-jungle"></a>Dschungel
+
+Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Darin verstecken sich Dschungeltempel.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle` |
+| Klima | Temperatur 0,95, Feuchte 0,62, Zerklüftung 0,2 |
+| Geländehöhe | um y 70, ± 14 |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
+| Unter Wasser | [Erde](blocks.md#block-qtcraft-dirt) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (2 % der Säulen), [Farne](worldgen.md#feature-qtcraft-fern) (12 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (20 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,4 % der Säulen), [Mohn](worldgen.md#feature-qtcraft-poppy) (0,4 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-plains"></a>Ebene
 

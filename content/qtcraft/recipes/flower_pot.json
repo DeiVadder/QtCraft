@@ -1,0 +1,14 @@
+{
+    "name": "flower_pot",
+    "type": "shaped",
+    "pattern": [
+        "B B",
+        " B "
+    ],
+    "key": {
+        "B": "brick"
+    },
+    "result": {
+        "item": "flower_pot"
+    }
+}

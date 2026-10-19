@@ -1,0 +1,13 @@
+{
+    "name": "cauldron",
+    "sound": "stone",
+    "shape": "cauldron",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 2.0,
+    "tool": "pickaxe",
+    "textures": {
+        "all": "cauldron_side",
+        "top": "cauldron_top"
+    }
+}

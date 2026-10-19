@@ -4,6 +4,7 @@
 #include "server/guardians/QcGuardians.h"
 #include "server/mobs/QcCreatureTraits.h"
 #include "server/mobs/QcInfestation.h"
+#include "server/mobs/QcMobDrinking.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "server/villages/QcServerVillagers.h"
@@ -19,8 +20,8 @@ class QcServerState;
 // the world (QcServerVillagers, decision E-411), what creatures with traits do (QcCreatureTraits,
 // decision E-460: blocks taken and placed, teleports), creatures hiding in blocks (QcInfestation,
 // decision E-453), monster spawners (QcSpawnerRules, decision E-520), the guardians of structure
-// zones (QcGuardians, decision E-591) and creatures that crumble at water (QcCrumbling, decision
-// E-593).
+// zones (QcGuardians, decision E-591), creatures that crumble at water (QcCrumbling, decision
+// E-593) and creatures that drink to heal (QcMobDrinking, decision E-623).
 class QcServerCreatures
 {
 public:
@@ -40,6 +41,7 @@ public:
     // Guardians of structure zones and creatures that crumble at water (decisions E-591, E-593).
     const QcGuardians &guardians() const { return m_guardians; }
     const QcCrumbling &crumbling() const { return m_crumbling; }
+    const QcMobDrinking &drinking() const { return m_drinking; }
 
 private:
     // What the creatures know about the players this tick.
@@ -67,4 +69,5 @@ private:
     // After m_spawners: it asks them whether a cell fits a body.
     QcGuardians m_guardians;
     QcCrumbling m_crumbling;
+    QcMobDrinking m_drinking;
 };

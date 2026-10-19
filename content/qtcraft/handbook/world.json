@@ -8,6 +8,8 @@
         "ice",
         "mineshafts",
         "temples",
+        "jungle",
+        "witches",
         "ruins"
     ],
     "related": [
@@ -23,6 +25,10 @@
         "rail",
         "sand",
         "carved_sandstone",
+        "vines",
+        "cauldron",
+        "flower_pot",
+        "signal_dispenser",
         "crying_obsidian"
     ]
 }

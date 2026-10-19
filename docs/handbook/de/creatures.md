@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -119,6 +119,21 @@ Jeder feste Block oder eine Flüssigkeitsoberfläche.
 **Erscheint in Biomen**
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-witch"></a>Hexe
+
+Lebt in einer Hütte auf Stelzen im Sumpf und kommt dorthin zurück, solange kein Spieler nahe ist. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Gegen Gift ist sie immun.
+
+| | |
+|---|---|
+| ID | `qtcraft:witch` |
+| Verhalten | feindlich: hält Abstand, umkreist Spieler und schießt auf sie |
+| Gesundheit | 26 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 2,4 m/s beim Verfolgen |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Glasflasche](items.md#item-qtcraft-glass_bottle) (50 %), [Zucker](items.md#item-qtcraft-sugar) (40 %), [Stock](items.md#item-qtcraft-stick) (40 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (30 %), [Signalstaub](blocks.md#block-qtcraft-signal_dust) (30 %) |
 
 ### <a id="mob-qtcraft-cave_spider"></a>Höhlenspinne
 
@@ -329,7 +344,7 @@ Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe)
 
 **Erscheint in Biomen**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp)
+[Dschungel](biomes.md#biome-qtcraft-jungle), [Sumpf](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sandgolem
 

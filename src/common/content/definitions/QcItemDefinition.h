@@ -25,6 +25,9 @@ enum class QcDispenseAction : quint8 {
     Equip,
     // Flint and steel (`ignites`) lights fire in the cell in front and wears by one (decision E-393).
     Ignite,
+    // Ammunition (`projectile`) flies out of the front as that projectile (an arrow trap, decision
+    // E-621).
+    Shoot,
 };
 
 // Drunk with the use button like food is eaten (milk, decision E-500); it becomes `emptiesTo`.

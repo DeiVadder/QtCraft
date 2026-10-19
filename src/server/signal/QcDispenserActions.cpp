@@ -139,8 +139,10 @@ QList<QcDispenserActions::Shot> QcDispenserActions::use(const QList<Shot> &shots
     QHash<QcBlockPos, int> actionsOn;
     for (const Shot &shot : shots) {
         const bool uses = content.block(m_state.world().blockAt(shot.dispenser).value_or(qcAirBlockId)).signal.usesItems;
-        acts.append(uses && content.item(shot.unit.item).dispense != QcDispenseAction::Throw);
-        if (acts.constLast()) {
+        const QcDispenseAction action = content.item(shot.unit.item).dispense;
+        acts.append(uses && action != QcDispenseAction::Throw);
+        // A shot needs no cell of its own: arrows of two dispensers may fly through the same one.
+        if (acts.constLast() && action != QcDispenseAction::Shoot) {
             ++actionsOn[qcNeighbour(shot.dispenser, shot.facing)];
         }
     }
@@ -149,7 +151,8 @@ QList<QcDispenserActions::Shot> QcDispenserActions::use(const QList<Shot> &shots
     for (qsizetype i = 0; i < shots.size(); ++i) {
         const Shot &shot = shots[i];
         // Two actions on the same cell in one step: neither happens (no order decides).
-        if (acts[i] && actionsOn.value(qcNeighbour(shot.dispenser, shot.facing)) > 1) {
+        if (acts[i] && content.item(shot.unit.item).dispense != QcDispenseAction::Shoot
+            && actionsOn.value(qcNeighbour(shot.dispenser, shot.facing)) > 1) {
             m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(shot.dispenser));
             continue;
         }
@@ -178,6 +181,8 @@ bool QcDispenserActions::useOne(const Shot &shot, QcInventoryAccess &access)
         return equip(shot, access);
     case QcDispenseAction::Ignite:
         return ignite(shot, access);
+    case QcDispenseAction::Shoot:
+        return shoot(shot, access);
     case QcDispenseAction::Throw:
         break;
     }
@@ -314,6 +319,25 @@ bool QcDispenserActions::ignite(const Shot &shot, QcInventoryAccess &access)
         rest.slot = -1;
         throwItem(rest, access);
     }
+    return true;
+}
+
+bool QcDispenserActions::shoot(const Shot &shot, QcInventoryAccess &access)
+{
+    // Straight out of the front, just outside it, without spread: a trap hits where it points.
+    const QcFaceOffset offset = qcFaceOffset(shot.facing);
+    const QcVec3 along{double(offset.dx), double(offset.dy), double(offset.dz)};
+    QcProjectileManager::Launch launch;
+    launch.type = m_state.content().item(shot.unit.item).projectile;
+    launch.position = centreOf(shot.dispenser) + along * shotOffset;
+    launch.velocity = along * shotSpeed;
+    if (!m_state.entities().projectiles().launch(launch, m_state.entities().newId())) {
+        return false;
+    }
+
+    // The shot's slot is the one aim() found filled, so taking from it cannot fail.
+    [[maybe_unused]] const bool taken = access.take(shot.dispenser, shot.slot, 1);
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserDispense), centreOf(shot.dispenser));
     return true;
 }
 

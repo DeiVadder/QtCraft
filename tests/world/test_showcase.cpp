@@ -318,7 +318,8 @@ private slots:
         const QcWorldSetup setup = generator.setup();
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
             const QcMobDefinition &mob = content->mobs().at(*content->mobIndex(placed.mob));
-            if (!mob.hostile) {
+            // Only creatures with blows reach through glass (the witch only throws).
+            if (!mob.hostile || mob.attackDamage <= 0.0) {
                 continue;
             }
             const QcBlockPos start{int(std::floor(placed.at.x)), int(std::floor(placed.at.y)), int(std::floor(placed.at.z))};

@@ -1,0 +1,8 @@
+{
+    "name": "vines",
+    "pattern": "leaves",
+    "primary": "#3a7a2a",
+    "secondary": "#285e1e",
+    "variation": 0.18,
+    "seed": 6201
+}

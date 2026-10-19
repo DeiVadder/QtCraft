@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -214,7 +214,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Kessel](blocks.md#block-qtcraft-cauldron), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
 
 **Droppt aus**
 
@@ -390,6 +390,10 @@ Nachts im Sumpf auf ein Glühwürmchen angewandt fängt sie es.
 | [Glas](blocks.md#block-qtcraft-glass) | · | [Glas](blocks.md#block-qtcraft-glass) | 3 × [Glasflasche](#item-qtcraft-glass_bottle) |
 | · | [Glas](blocks.md#block-qtcraft-glass) | · |  |
 
+**Droppt aus**
+
+[Hexe](creatures.md#mob-qtcraft-witch) (50 %)
+
 **Fängt**
 
 [Glühwürmchen](creatures.md#mob-qtcraft-firefly) (Glühwürmchen in der Flasche)
@@ -524,6 +528,15 @@ Aus Kaktus im Ofen.
 **Wird verwendet für**
 
 [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Grünes Betonpulver](blocks.md#block-qtcraft-green_concrete_powder), [Grünes Glas](blocks.md#block-qtcraft-green_stained_glass), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Türkiser Farbstoff](#item-qtcraft-cyan_dye)
+
+### <a id="item-qtcraft-healing_potion"></a>Heiltrank
+
+Was eine Hexe trinkt, wenn sie verletzt ist: es heilt sie um 4. Brauen gibt es noch nicht, Spieler können ihn also weder herstellen noch trinken.
+
+| | |
+|---|---|
+| ID | `qtcraft:healing_potion` |
+| Stapelgröße | 1 |
 
 ### <a id="item-qtcraft-light_blue_dye"></a>Hellblauer Farbstoff
 
@@ -1228,7 +1241,7 @@ Spinnen lassen manchmal eines fallen. Sein Bild steht für Vergiftung neben den 
 
 **Droppt aus**
 
-[Höhlenspinne](creatures.md#mob-qtcraft-cave_spider) (33 %), [Spinne](creatures.md#mob-qtcraft-spider) (33 %)
+[Hexe](creatures.md#mob-qtcraft-witch) (30 %), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider) (33 %), [Spinne](creatures.md#mob-qtcraft-spider) (33 %)
 
 ### <a id="item-qtcraft-stick"></a>Stock
 
@@ -1255,7 +1268,7 @@ Griff für Werkzeuge und Fackeln.
 
 **Droppt aus**
 
-[Toter Busch](blocks.md#block-qtcraft-dead_bush) (50 %)
+[Hexe](creatures.md#mob-qtcraft-witch) (40 %), [Toter Busch](blocks.md#block-qtcraft-dead_bush) (50 %)
 
 ### <a id="item-qtcraft-clay_ball"></a>Tonklumpen
 
@@ -1484,6 +1497,24 @@ Färbt Wolle, Glas, Terrakotta und Beton weiß.
 
 [Grauer Farbstoff](#item-qtcraft-gray_dye), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta), [Weißes Betonpulver](blocks.md#block-qtcraft-white_concrete_powder), [Weißes Glas](blocks.md#block-qtcraft-white_stained_glass)
 
+### <a id="item-qtcraft-poison_splash_potion"></a>Wurftrank der Vergiftung
+
+Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und vergiftet alles Lebendige im Umkreis von 4 m, je näher, desto länger, bis zu 20 s; wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.
+
+| | |
+|---|---|
+| ID | `qtcraft:poison_splash_potion` |
+| Stapelgröße | 1 |
+
+### <a id="item-qtcraft-harming_splash_potion"></a>Wurftrank des Schadens
+
+Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und verletzt alles Lebendige im Umkreis von 4 m, in der Mitte bis zu 6, weiter weg weniger; Rüstung hilft nicht, und wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.
+
+| | |
+|---|---|
+| ID | `qtcraft:harming_splash_potion` |
+| Stapelgröße | 1 |
+
 ### <a id="item-qtcraft-brick"></a>Ziegelstein
 
 Ein gebrannter Tonklumpen; vier ergeben einen Ziegelblock.
@@ -1507,7 +1538,7 @@ Ein gebrannter Tonklumpen; vier ergeben einen Ziegelblock.
 
 **Wird verwendet für**
 
-[Ziegel](blocks.md#block-qtcraft-bricks)
+[Blumentopf](blocks.md#block-qtcraft-flower_pot), [Ziegel](blocks.md#block-qtcraft-bricks)
 
 ### <a id="item-qtcraft-sugar"></a>Zucker
 
@@ -1529,3 +1560,7 @@ Aus Zuckerrohr gemacht; süßt einen Kürbiskuchen.
 **Wird verwendet für**
 
 [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
+
+**Droppt aus**
+
+[Hexe](creatures.md#mob-qtcraft-witch) (40 %)

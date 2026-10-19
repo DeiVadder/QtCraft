@@ -22,9 +22,10 @@ Pen penFor(const QcMobDefinition &mob)
     Pen pen;
     pen.inner = std::max(3, int(std::ceil(mob.width)) + 2);
     // A hostile creature hits a player within attackRange of its centre and gets as close to the
-    // glass as half its width: the wall is thicker than the rest of its reach.
+    // glass as half its width: the wall is thicker than the rest of its reach (one without blows,
+    // the witch, reaches nobody).
     const double reachBeyondGlass = std::max(0.0, mob.attackRange - mob.width / 2.0);
-    pen.wall = mob.hostile ? int(std::floor(reachBeyondGlass)) + 1 : 1;
+    pen.wall = mob.hostile && mob.attackDamage > 0.0 ? int(std::floor(reachBeyondGlass)) + 1 : 1;
     pen.height = mob.flying ? 5 : std::max(3, int(std::ceil(mob.height)) + 1);
     return pen;
 }

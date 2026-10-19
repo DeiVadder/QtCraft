@@ -22,7 +22,7 @@ class QcServerState;
 // facing a container puts the item into it like a hopper (all droppers of a step together,
 // QcInventoryAccess::resolve), otherwise it throws it. A dispenser uses the item by its `dispense`
 // action from the data (pour or take a liquid, put armour on a player or armour stand in front, light
-// fire in front with flint and steel) and
+// fire in front with flint and steel, shoot ammunition as its projectile, decision E-621) and
 // throws it out when the action fails (flint and steel stays) or the item has none, also in front of a container. Seeds are thrown, never planted: they plant themselves
 // on farmland (decision E-294). Actions of one step that need the same cell all fail (no order
 // decides).
@@ -32,6 +32,10 @@ public:
     // Speed of a thrown item along the facing and, sideways, upwards (m/s).
     static constexpr double throwSpeed = 4.0;
     static constexpr double throwLift = 2.0;
+    // Speed (m/s) of a shot projectile (the reference's 1.1 blocks a tick) and how far in front of
+    // the dispenser's middle it starts (just outside the front face).
+    static constexpr double shotSpeed = 22.0;
+    static constexpr double shotOffset = 0.7;
 
     using EquipPlayer = std::function<void(QcServerClient &, const QcEquipment &)>;
     // Lights fire at a position like flint and steel (QcFireIgnition::strike); false when nothing caught.
@@ -68,6 +72,8 @@ private:
     bool equip(const Shot &shot, QcInventoryAccess &access);
     // Flint and steel lights the cell in front and wears by one (it breaks when used up).
     bool ignite(const Shot &shot, QcInventoryAccess &access);
+    // Ammunition flies out as its projectile (decision E-621); false at the projectile limit.
+    bool shoot(const Shot &shot, QcInventoryAccess &access);
     void throwItem(const Shot &shot, QcInventoryAccess &access);
     // The empty or filled item `name` takes the place of one unit in the dispenser's slot; what does
     // not fit is thrown out.

@@ -152,6 +152,7 @@ void QcSurfaceStructures::build(QcChunk &chunk) const
 void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const
 {
     const QcBlockId foundation = kind.foundation;
+    const int clearFrom = kind.rule.clearFrom;
     const int chunkX = chunk.pos().x * QcWorld::chunkSize;
     const int chunkZ = chunk.pos().z * QcWorld::chunkSize;
     const QcBlockPos origin = placement.origin();
@@ -164,7 +165,7 @@ void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &plac
         for (int z = z0; z < z1; ++z) {
             const int lx = x - chunkX;
             const int lz = z - chunkZ;
-            for (int y = origin.y + 1; kind.rule.clearTerrain && y <= top; ++y) {
+            for (int y = origin.y + clearFrom; kind.rule.clearTerrain && y <= top; ++y) {
                 chunk.setBlock(lx, y, lz, qcAirBlockId);
             }
             for (int y = origin.y - 1; foundation != qcAirBlockId && y > 0 && y >= origin.y - maxFoundation && !m_ground[chunk.block(lx, y, lz)]; --y) {

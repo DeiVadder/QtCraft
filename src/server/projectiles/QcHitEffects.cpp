@@ -24,6 +24,8 @@ QcHitEffects::QcHitEffects()
     });
     // Spawning happens where the projectile breaks (QcServerProjectiles), at a body or a block.
     add(QString::fromLatin1(QcHitEffect::spawn), [](const QcHitEffect &, double, Impact &) {});
+    // A splash reaches the bodies around the place it breaks (QcServerProjectiles, decision E-624).
+    add(QString::fromLatin1(QcHitEffect::splash), [](const QcHitEffect &, double, Impact &) {});
 }
 
 QcHitEffects::Impact QcHitEffects::impactOf(const QcProjectileDefinition &definition, double damage) const
@@ -44,4 +46,20 @@ int QcHitEffects::spawnCount(const QcHitEffect &effect, QRandomGenerator &random
     }
     // The reference's egg: one chick in eight throws, four in a 32nd of those.
     return random.generateDouble() < effect.groupChance ? effect.groupCount : effect.count;
+}
+
+QcHitEffects::Impact QcHitEffects::splashImpact(const QcProjectileDefinition &definition, double share)
+{
+    Impact impact;
+    for (const QcHitEffect &effect : definition.onHit) {
+        if (effect.is(QcHitEffect::damage)) {
+            impact.damage += effect.number * share;
+        } else if (effect.is(QcHitEffect::effect)) {
+            const int ticks = int(std::lround(effect.number * share / QcPhysics::tickDuration));
+            if (ticks > 0) {
+                impact.effects.append({effect.subject, effect.level, ticks});
+            }
+        }
+    }
+    return impact;
 }

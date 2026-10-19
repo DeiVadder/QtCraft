@@ -1,0 +1,43 @@
+{
+    "name": "witch",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "witch_skin",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "witch_face",
+            "tint": "none"
+        },
+        "nose": {
+            "texture": "witch_skin",
+            "tint": "none"
+        },
+        "hat": {
+            "texture": "witch_hat",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "witch_robe",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "witch_robe",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "witch_skin",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "witch_robe",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "witch_shoes",
+            "tint": "none"
+        }
+    }
+}

@@ -77,6 +77,8 @@ struct PlayerView
     quint32 struck = 0;
     // The item in the player's hand and the player's horizontal speed in m/s (shy creatures).
     QcItemId held = qcNoItem;
+    // Its status effects (an archer's choice of projectile, decision E-623); null for none known.
+    const QcStatusEffects *effects = nullptr;
     double speed = 0.0;
     // Server ticks at which hurtBy and struck happened: a pet keeps its target unless its owner
     // fights a foe anew (decision E-480).

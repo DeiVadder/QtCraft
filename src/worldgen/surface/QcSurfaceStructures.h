@@ -16,10 +16,12 @@ class QcVillageGenerator;
 // The structures the terrain generator places by itself on the surface (decision E-590, the desert
 // temple): each kind plans its regions once (QcSurfacePlanner, plans cached), a copy lies wholly in
 // its region, so a chunk asks only the one region of each kind it lies in. Writing a copy into a
-// chunk clears the terrain above its footprint (`clearance` blocks over its top; not for kinds
-// without `clearTerrain`, decision E-630), fills the ground below it with the kind's foundation down
-// to solid ground and writes its cells; the same in any order of the chunks. No trees, plants or
-// surface pools grow near a copy (footprintsNear()), so none is cut or left floating. Its loot comes with furnishingIn(), its guardian zones with sitesNear().
+// chunk clears the terrain above its footprint (from its layer `clearFrom` to `clearance` blocks over
+// its top; over water never at or below the sea, decision E-622; not for kinds without
+// `clearTerrain`, decision E-630), fills the ground below it with the kind's foundation down to
+// solid ground and writes its cells; the same in any order of the chunks. No trees, plants or
+// surface pools grow near a copy (footprintsNear()), so none is cut or left floating. Its loot
+// comes with furnishingIn(), its guardian zones with sitesNear().
 // Thread-safe.
 class QcSurfaceStructures
 {

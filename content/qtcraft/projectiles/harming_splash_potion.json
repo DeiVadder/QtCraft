@@ -1,0 +1,24 @@
+{
+    "name": "harming_splash_potion",
+    "item": "harming_splash_potion",
+    "gravity": 20.0,
+    "drag": 0.2,
+    "waterDrag": 10.0,
+    "onHit": [
+        {
+            "type": "splash",
+            "radius": 4.0
+        },
+        {
+            "type": "damage",
+            "amount": 6
+        },
+        {
+            "type": "break",
+            "sound": "block.glass.break"
+        }
+    ],
+    "size": 0.25,
+    "flightSeconds": 60.0,
+    "sticks": false
+}

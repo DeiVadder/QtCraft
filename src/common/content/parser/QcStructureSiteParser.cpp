@@ -45,6 +45,12 @@ void parseSurface(const QJsonObject &json, Structure &structure, QcJsonFieldRead
     surface.maxSlope = reader.integer(u"maxSlope"_s, surface.maxSlope, 0, 16);
     surface.villageMargin = reader.integer(u"villageMargin"_s, surface.villageMargin, 0, 128);
     surface.foundation = reader.name(u"foundation"_s, packNamespace);
+    surface.waterDepth = reader.integer(u"waterDepth"_s, surface.waterDepth, 0, 16);
+    surface.preferWater = reader.boolean(u"preferWater"_s, surface.preferWater);
+    if (surface.preferWater && surface.waterDepth == 0) {
+        reader.fail(u"'preferWater' needs a 'waterDepth'"_s);
+    }
+    surface.clearFrom = reader.integer(u"clearFrom"_s, surface.clearFrom, 0, std::max(0, structure.sizeY - 1));
     surface.clearTerrain = reader.boolean(u"clearTerrain"_s, surface.clearTerrain);
     if (surface.spacing % 16 != 0) {
         reader.fail(u"'spacing' must be whole chunks (a multiple of 16)"_s);

@@ -1,0 +1,43 @@
+{
+    "name": "mob.witch.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.18,
+            "frequency": 520,
+            "endFrequency": 640,
+            "attack": 0.01,
+            "curve": 1.4,
+            "lowpass": 2200,
+            "tremoloRate": 14,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.18,
+            "frequency": 600,
+            "endFrequency": 480,
+            "start": 0.2,
+            "attack": 0.01,
+            "curve": 1.4,
+            "lowpass": 2200,
+            "tremoloRate": 14,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.22,
+            "frequency": 560,
+            "endFrequency": 420,
+            "start": 0.4,
+            "attack": 0.01,
+            "curve": 1.6,
+            "lowpass": 2000,
+            "tremoloRate": 12,
+            "tremoloDepth": 0.5
+        }
+    ]
+}

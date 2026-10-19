@@ -22,6 +22,7 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
     , m_spawners(state)
     , m_guardians(state, m_spawners)
     , m_crumbling(state, sounds, blocks)
+    , m_drinking(state, sounds)
 {
 }
 
@@ -45,6 +46,7 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .hurtBy = fresh(client->foes.hurtBy, client->foes.hurtTick),
                             .struck = fresh(client->foes.struck, client->foes.struckTick),
                             .held = held.isEmpty() ? qcNoItem : held.item,
+                            .effects = &client->effects,
                             .speed = std::hypot(velocity.x, velocity.z),
                             .hurtTick = client->foes.hurtTick,
                             .struckTick = client->foes.struckTick});
@@ -72,6 +74,7 @@ void QcServerCreatures::tick()
     m_spawners.announceChanges();
     m_guardians.tick();
     m_crumbling.tick();
+    m_drinking.tick();
 }
 
 void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits)

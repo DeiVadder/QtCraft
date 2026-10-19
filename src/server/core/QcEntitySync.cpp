@@ -16,6 +16,16 @@ quint16 flagsOf(const QcEntity &entity, bool swung, bool sneaking, bool sprintin
                    | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0) | (entity.burnTicks > 0 ? QcMsg::Burning : 0));
 }
 
+// What a creature holds: a drink to heal while it drinks (decision E-623), else the block an
+// enderman carries (decision E-460), else its kind's item (an archer's bow, decision E-426).
+QcItemId heldBy(const QcCreature &creature, const QcMobDefinition &kind)
+{
+    if (kind.drinks && creature.archer.has() && creature.archer->drinking()) {
+        return kind.drinks->itemId;
+    }
+    return creature.carriedItem != qcNoItem ? creature.carriedItem : kind.heldItemId;
+}
+
 } // namespace
 
 QcEntitySync::QcEntitySync(QcServerState &state)
@@ -47,14 +57,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.health = creature.health;
         now.hurt = creature.hurtThisTick;
         now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
-        // An archer's bow in its hand, drawn while it aims (decision E-426).
-        if (const QcItemId held = m_state.content().mobs()[creature.type].heldItemId; held != qcNoItem) {
-            now.held = held;
-        }
-        // The block an enderman carries, in its hand (decision E-460).
-        if (creature.carriedItem != qcNoItem) {
-            now.held = creature.carriedItem;
-        }
+        now.held = heldBy(creature, m_state.content().mobs()[creature.type]);
         if (creature.archer.has() && creature.archer->drawing()) {
             now.flags = quint16(now.flags | QcMsg::Drawing);
         }

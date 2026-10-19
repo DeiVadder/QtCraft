@@ -70,6 +70,16 @@ QStringList resolve(const QcContentRegistry &content, QcMobDefinition &mob)
             mob.crumbles.reset();
         }
     }
+    // A creature that drinks an unknown item does not drink (decision E-623).
+    if (mob.drinks) {
+        const std::optional<QcItemId> item = content.itemId(mob.drinks->item);
+        if (!item) {
+            warnings.append(u"mob '%1': no item '%2' to drink; it does not drink"_s.arg(mob.name, mob.drinks->item));
+            mob.drinks.reset();
+        } else {
+            mob.drinks->itemId = *item;
+        }
+    }
     if (!mob.carries) {
         return warnings;
     }

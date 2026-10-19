@@ -1,5 +1,8 @@
 {
     "name": "arrow",
     "projectile": "arrow",
-    "tags": ["arrows"]
+    "tags": [
+        "arrows"
+    ],
+    "dispense": "shoot"
 }

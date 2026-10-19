@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Ranken](#block-qtcraft-vines) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -631,6 +631,31 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane)
 
+### <a id="block-qtcraft-flower_pot"></a>Blumentopf
+
+Ein kleiner Topf aus gebranntem Ton. Die Töpfe der Hexenhütten tragen einen Pilz oder einen Farn; Pflanzen von Hand einsetzen geht noch nicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:flower_pot` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Blumentopf](#block-qtcraft-flower_pot) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | einen festen Block darunter |
+| Klang | Stein |
+| Zustände | plant (none, red_mushroom, fern) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Ziegelstein](items.md#item-qtcraft-brick) | · | [Ziegelstein](items.md#item-qtcraft-brick) | [Blumentopf](#block-qtcraft-flower_pot) |
+| · | [Ziegelstein](items.md#item-qtcraft-brick) | · |  |
+
 ### <a id="block-qtcraft-brown_stained_glass_pane"></a>Braune Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -1150,7 +1175,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 
 **Kommt vor in**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Dschungelbaum, Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
 
 ### <a id="block-qtcraft-oak_sapling"></a>Eichensetzling
 
@@ -1214,7 +1239,7 @@ Holz der Eiche: das Erste, was man sammelt. Ergibt je vier Bretter.
 
 **Kommt vor in**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Dschungelbaum, Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
 
 ### <a id="block-qtcraft-oak_door"></a>Eichentür
 
@@ -1468,7 +1493,7 @@ Einfache Erde unter dem Gras.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Unter der Oberfläche, Unter Wasser), [Ebene](biomes.md#biome-qtcraft-plains) (Unter der Oberfläche), [Erde-Vorkommen](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter der Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Unter der Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter der Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter der Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Unter der Oberfläche, Unter Wasser)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Unter der Oberfläche, Unter Wasser), [Dschungel](biomes.md#biome-qtcraft-jungle) (Unter der Oberfläche, Unter Wasser), [Ebene](biomes.md#biome-qtcraft-plains) (Unter der Oberfläche), [Erde-Vorkommen](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter der Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Unter der Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter der Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter der Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Unter der Oberfläche, Unter Wasser)
 
 **Wesen, die darauf erscheinen**
 
@@ -1525,7 +1550,7 @@ Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöck
 
 **Kommt vor in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Farne)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Farne), [Taiga](biomes.md#biome-qtcraft-taiga) (Farne)
 
 ### <a id="block-qtcraft-barrel"></a>Fass
 
@@ -2326,7 +2351,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche)
 
 **Wesen, die darauf erscheinen**
 
@@ -3193,7 +3218,7 @@ Bedeckt Wiesen; man kann direkt hineinbauen.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Hohes Gras), [Ebene](biomes.md#biome-qtcraft-plains) (Hohes Gras), [Gebirge](biomes.md#biome-qtcraft-mountains) (Hohes Gras), [Sumpf](biomes.md#biome-qtcraft-swamp) (Hohes Gras), [Taiga](biomes.md#biome-qtcraft-taiga) (Hohes Gras), [Wald](biomes.md#biome-qtcraft-forest) (Hohes Gras)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Hohes Gras), [Dschungel](biomes.md#biome-qtcraft-jungle) (Hohes Gras), [Ebene](biomes.md#biome-qtcraft-plains) (Hohes Gras), [Gebirge](biomes.md#biome-qtcraft-mountains) (Hohes Gras), [Sumpf](biomes.md#biome-qtcraft-swamp) (Hohes Gras), [Taiga](biomes.md#biome-qtcraft-taiga) (Hohes Gras), [Wald](biomes.md#biome-qtcraft-forest) (Hohes Gras)
 
 ### <a id="block-qtcraft-cactus"></a>Kaktus
 
@@ -3263,6 +3288,35 @@ Wächst aus einer Kartoffel auf Ackerboden in vier Stufen. Reife Pflanzen geben 
 | Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
 | Klang | Gras und Pflanzen |
 | Zustände | age (0, 1, 2, 3) |
+
+### <a id="block-qtcraft-cauldron"></a>Kessel
+
+Ein eiserner Topf auf kurzen Beinen, wie Hexen ihn in ihren Hütten haben. Vorerst steht er nur da.
+
+| | |
+|---|---|
+| ID | `qtcraft:cauldron` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Spitzhacke (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Kessel](#block-qtcraft-cauldron) |
+| Lichtdämpfung | 0 von 15 |
+| Klang | Stein |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Kessel](#block-qtcraft-cauldron) |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+
+**Schneller mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-gravel"></a>Kies
 
@@ -3939,7 +3993,7 @@ Wächst neben einem Melonenstängel und wild in Wäldern und Sümpfen. Zerfällt
 
 **Kommt vor in**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp) (Melonen), [Wald](biomes.md#biome-qtcraft-forest) (Melonen)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Melonen), [Sumpf](biomes.md#biome-qtcraft-swamp) (Melonen), [Wald](biomes.md#biome-qtcraft-forest) (Melonen)
 
 ### <a id="block-qtcraft-melon_stem"></a>Melonenstängel
 
@@ -4015,7 +4069,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 
 **Kommt vor in**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (Mohn), [Wald](biomes.md#biome-qtcraft-forest) (Mohn)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Mohn), [Ebene](biomes.md#biome-qtcraft-plains) (Mohn), [Wald](biomes.md#biome-qtcraft-forest) (Mohn)
 
 ### <a id="block-qtcraft-spawner"></a>Monster-Spawner
 
@@ -4462,6 +4516,24 @@ So fest gepresstes Eis, dass es weder Licht durchlässt noch schmilzt. Rutschig 
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-vines"></a>Ranken
+
+Hängt an Wänden, der Bewuchs der Dschungeltempel. Du kletterst daran wie an einer Leiter; sie hat keinen Körper, gegen den du stößt.
+
+| | |
+|---|---|
+| ID | `qtcraft:vines` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Beute | [Ranken](#block-qtcraft-vines) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | eine feste Fläche, an der es hängt |
+| Brennbar | fängt Feuer 15, brennt ab 100 (0 bis 100) |
+| Kletterbar | ja |
+| Klang | Gras und Pflanzen |
+| Zustände | attach (north, east, south, west) |
+
 ### <a id="block-qtcraft-pink_stained_glass_pane"></a>Rosafarbene Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -4849,7 +4921,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
 **Wesen, die darauf erscheinen**
 
@@ -5562,7 +5634,7 @@ Die Leitung jeder Schaltung. Sie trägt ein Signal der Stärke 15 von einer Quel
 
 **Droppt aus**
 
-[Signalerz](#block-qtcraft-signal_ore) (4×, 50 %)
+[Hexe](creatures.md#mob-qtcraft-witch) (30 %), [Signalerz](#block-qtcraft-signal_ore) (4×, 50 %)
 
 ### <a id="block-qtcraft-signal_hopper"></a>Signaltrichter
 
@@ -6754,4 +6826,4 @@ Wächst auf Sand oder Erde direkt neben Wasser.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Zuckerrohr), [Ebene](biomes.md#biome-qtcraft-plains) (Zuckerrohr), [Sumpf](biomes.md#biome-qtcraft-swamp) (Zuckerrohr), [Wald](biomes.md#biome-qtcraft-forest) (Zuckerrohr), [Wüste](biomes.md#biome-qtcraft-desert) (Zuckerrohr)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Zuckerrohr), [Dschungel](biomes.md#biome-qtcraft-jungle) (Zuckerrohr), [Ebene](biomes.md#biome-qtcraft-plains) (Zuckerrohr), [Sumpf](biomes.md#biome-qtcraft-swamp) (Zuckerrohr), [Wald](biomes.md#biome-qtcraft-forest) (Zuckerrohr), [Wüste](biomes.md#biome-qtcraft-desert) (Zuckerrohr)

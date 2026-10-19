@@ -43,8 +43,12 @@ struct QcHitEffect
     // Teleports the player who threw it to where it lands, on a body or a block (an ender pearl,
     // decision E-460), with `damage` as fall damage; the projectile breaks there.
     static constexpr const char *teleport = "teleport";
+    // Where the projectile breaks, its damage (the `amount` of its damage effects, not per speed)
+    // and status effects reach every living body within `radius` metres but its thrower, less with
+    // the distance (a splash potion, decision E-624); the body hit takes nothing else.
+    static constexpr const char *splash = "splash";
 
-    static constexpr std::array<Type, 7> types{{
+    static constexpr std::array<Type, 8> types{{
         {damage, "amount", 0.0, 1000.0, 2.0},
         {knockback, "strength", 0.0, 10.0, 1.0},
         {ignite, "seconds", 0.0, 3600.0, 5.0},
@@ -52,6 +56,7 @@ struct QcHitEffect
         {effect, "seconds", 0.05, 3600.0, 5.0},
         {spawn, "chance", 0.0, 1.0, 1.0},
         {teleport, "damage", 0.0, 1000.0, 5.0},
+        {splash, "radius", 0.5, 8.0, 4.0},
     }};
 
     static std::optional<Type> typeNamed(const QString &name)

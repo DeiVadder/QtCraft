@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Forest](#biome-qtcraft-forest) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Forest](#biome-qtcraft-forest) · [Jungle](#biome-qtcraft-jungle) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
 
 ## QtCraft
 
@@ -72,6 +72,28 @@ Dense oaks and birches with mushrooms in the shade.
 **Creatures**
 
 [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-jungle"></a>Jungle
+
+Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temples hide in it.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle` |
+| Climate | temperature 0.95, humidity 0.62, ruggedness 0.2 |
+| Terrain height | around y 70, ± 14 |
+| Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
+| Under water | [Dirt](blocks.md#block-qtcraft-dirt) |
+| Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Plants and trees**
+
+[Ferns](worldgen.md#feature-qtcraft-fern) (12 % of columns), [Jungle tree](worldgen.md#feature-qtcraft-jungle_tree) (6 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.4 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (0.4 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (20 % of columns)
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-mountains"></a>Mountains
 

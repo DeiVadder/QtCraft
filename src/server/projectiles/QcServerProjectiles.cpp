@@ -12,11 +12,21 @@
 #include "server/mobs/QcPetOwners.h"
 #include "server/mobs/QcServerAnimals.h"
 
+#include <algorithm>
+
 namespace {
 
 bool isPresent(const QcServerClient &client)
 {
     return client.state == QcServerClient::State::Playing && !client.dead;
+}
+
+// The share of a splash at `at` with `radius` that reaches a body (decision E-624): 1 at the body,
+// falling with the distance to its nearest point, 0 at the radius and beyond.
+double splashShare(const QcVec3 &at, double radius, const QcAabb &box)
+{
+    const QcVec3 nearest{std::clamp(at.x, box.min.x, box.max.x), std::clamp(at.y, box.min.y, box.max.y), std::clamp(at.z, box.min.z, box.max.z)};
+    return 1.0 - (nearest - at).length() / radius;
 }
 
 } // namespace
@@ -62,7 +72,8 @@ void QcServerProjectiles::tick()
     }
 
     const QcProjectileManager::Handlers handlers{
-        [this](const QcProjectileManager::Hit &one) { return hit(one); },
+        // A splash reaches the body hit with the others where the projectile breaks (decision E-624).
+        [this](const QcProjectileManager::Hit &one) { return !one.definition.effect(QcHitEffect::splash) && hit(one); },
         [this](quint32 player, const QcProjectile &projectile) { return pickUp(player, projectile); },
         [this](const QcProjectile &projectile, const QcProjectileDefinition &definition) {
             if (!definition.stickSound.isEmpty()) {
@@ -75,6 +86,10 @@ void QcServerProjectiles::tick()
                 m_sounds.play(effect->sound, projectile.motion.position);
             }
             spawnWhereBroken(projectile, definition);
+            if (const QcHitEffect *splash = definition.effect(QcHitEffect::splash)) {
+                splashCreatures(projectile, definition, splash->number);
+                splashPlayers(projectile, definition, splash->number);
+            }
             if (const QcHitEffect *teleport = definition.effect(QcHitEffect::teleport)) {
                 teleportThrower(projectile, *teleport);
             }
@@ -226,6 +241,54 @@ void QcServerProjectiles::spawnWhereBroken(const QcProjectile &projectile, const
         const int count = QcHitEffects::spawnCount(effect, random);
         for (int i = 0; i < count; ++i) {
             QcServerAnimals::spawnYoung(m_state, *type, projectile.motion.position);
+        }
+    }
+}
+
+void QcServerProjectiles::splashCreatures(const QcProjectile &projectile, const QcProjectileDefinition &definition, double radius)
+{
+    QcEntities &entities = m_state.entities();
+    const QcVec3 at = projectile.motion.position;
+    QList<std::pair<quint32, double>> creatures;
+    for (const QcCreature &mob : entities.creatures().mobs()) {
+        const std::optional<QcAabb> box = mob.dormant || mob.id == projectile.shooter ? std::nullopt : entities.boxOf(mob);
+        if (const double share = box ? splashShare(at, radius, *box) : 0.0; share > 0.0) {
+            creatures.append({mob.id, share});
+        }
+    }
+
+    // Hurting may remove a creature from the list it was found in: deal after the search.
+    for (const auto &[id, share] : std::as_const(creatures)) {
+        const QcHitEffects::Impact impact = QcHitEffects::splashImpact(definition, share);
+        const bool took = impact.damage <= 0.0
+                          || QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = id, .damage = impact.damage, .from = at, .knockback = 0.0});
+        if (took && entities.creatures().find(id)) {
+            for (const QcStatusEffect &effect : impact.effects) {
+                QcServerEffects::giveCreature(m_state.content(), entities.creatures(), id, effect);
+            }
+        }
+    }
+}
+
+void QcServerProjectiles::splashPlayers(const QcProjectile &projectile, const QcProjectileDefinition &definition, double radius)
+{
+    for (const auto &client : m_state.clients()) {
+        const bool exposed = isPresent(*client) && client->id != projectile.shooter && !client->rules().invulnerable;
+        const std::optional<QcAabb> box = exposed ? m_state.entities().boxOf(*client) : std::nullopt;
+        const double share = box ? splashShare(projectile.motion.position, radius, *box) : 0.0;
+        if (share <= 0.0) {
+            continue;
+        }
+
+        // Like a status effect's damage: armour does not help (decision E-624).
+        const QcHitEffects::Impact impact = QcHitEffects::splashImpact(definition, share);
+        const QcHurtWindow::Take dealt = impact.damage > 0.0 ? m_health.damage(*client, impact.damage, {}, QcPlayerHealth::DamageKind::Effect)
+                                                             : QcHurtWindow::Take::Fresh;
+        if (client->dead || dealt == QcHurtWindow::Take::Ignored) {
+            continue;
+        }
+        for (const QcStatusEffect &effect : impact.effects) {
+            QcServerEffects::givePlayer(m_state.content(), *client, effect);
         }
     }
 }

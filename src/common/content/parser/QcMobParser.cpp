@@ -142,12 +142,43 @@ void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
     }
 }
 
+// The projectiles an archer shoots instead while its target lacks an effect (decision E-623):
+// "choices": [{"projectile", "unlessTargetHas"}].
+[[nodiscard]] QList<QcArcherDefinition::Choice> parseArcherChoices(QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    const QJsonValue value = reader.json.value(u"choices"_s);
+    if (value.isUndefined()) {
+        return {};
+    }
+    if (!value.isArray() || value.toArray().size() > QcArcherDefinition::maxChoices) {
+        reader.fail(u"'choices' must be an array of at most %1 entries"_s.arg(QcArcherDefinition::maxChoices));
+        return {};
+    }
+
+    QList<QcArcherDefinition::Choice> choices;
+    const QJsonArray list = value.toArray();
+    for (const auto &entry : list) {
+        QcJsonFieldReader nested{entry.toObject(), reader.context + u" choices"_s, {}};
+        const QcArcherDefinition::Choice choice{nested.name(u"projectile"_s, packNamespace), nested.name(u"unlessTargetHas"_s, packNamespace)};
+        if (!entry.isObject() || choice.projectile.isEmpty() || choice.unlessTargetHas.isEmpty()) {
+            nested.fail(u"entries need a 'projectile' and 'unlessTargetHas'"_s);
+        }
+        reader.adopt(nested);
+        if (!reader.ok()) {
+            return {};
+        }
+        choices.append(choice);
+    }
+    return choices;
+}
+
 // How an archer shoots (decision E-426): "archer" with the projectile and the times, speed, spread
 // and distances; it goes with the archer AI.
 void parseArcher(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     QcArcherDefinition &archer = mob.archer;
     archer.projectile = reader.name(u"projectile"_s, packNamespace);
+    archer.choices = parseArcherChoices(reader, packNamespace);
     archer.drawSeconds = reader.number(u"drawSeconds"_s, archer.drawSeconds, 0.1, 10.0);
     archer.cooldownSeconds = reader.number(u"cooldownSeconds"_s, archer.cooldownSeconds, 0.0, 60.0);
     archer.speed = reader.number(u"speed"_s, archer.speed, 1.0, 100.0);

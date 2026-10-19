@@ -2277,3 +2277,7 @@ Release-Builds, `dev` `28c9cbd` gegen `feature/51-1-desert-temple` nach der Nach
 ## 51.4 (Portal-Ruinen, Brunnen, Oasen) headless, Release (2026-10-19)
 
 Release-Builds, `dev` `15e0f22` gegen `feature/51-4-ruins-oases` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, unter Last paralleler Agenten. Tick −5 bis +6 % (explore −5 %, signal_farm +6 % bei 19 % Streuung), Speicher 0 bis +2 %. Keine Regression. Fenster-Benchmark geschuldet (vom Menschen ausgesetzt).
+
+## 51.3 (Dschungel, Dschungeltempel, Hexenhütte, Hexe) headless, Release (2026-10-19)
+
+Release-Builds, `dev` `68781e0` gegen `feature/51-3-jungle-witch` nach Nachbesserung und Merge von 51.4, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. explore +13 % (0,210 → 0,238 ms, Streuung 3 %): Phase `streaming` +24 % (0,083 → 0,103 ms) und `chunkLoading` +15 %, bei gleicher Zahl geladener Chunks; das neue Dschungel-Biom ist dichter bewachsen (hohe Bäume, Blätter, Ranken), seine Chunks sind teurer zu senden und zu laden. Das ist Inhalt, kein Code-Rückschritt, und bleibt weit unter dem Tick-Budget. crowd und horde +6 % (Phase `mobs` +6 %, rund 0,008 ms): der Trink-Durchgang `QcMobDrinking` läuft über alle Wesen; Kandidat für einen Durchgang nur über Wesen mit `drinks`. Übrige Szenarien +1 bis +4 %, Speicher +1 bis +2 %. Fenster-Benchmark geschuldet.

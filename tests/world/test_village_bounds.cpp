@@ -181,7 +181,7 @@ private slots:
         QTest::addColumn<int>("radius");
         QTest::addColumn<int>("rings");
         // Radii that leave the smallest margin to the region's edge, in the default regions and in small ones.
-        QTest::newRow("radius 96") << 384 << 96 << 8;
+        QTest::newRow("radius 96") << 384 << 96 << 12;
         QTest::newRow("small regions") << 128 << 48 << 14;
     }
 

@@ -1,0 +1,149 @@
+{
+    "name": "witch_hut",
+    "surface": {
+        "biomes": [
+            "swamp"
+        ],
+        "spacing": 256,
+        "chance": 0.6,
+        "attempts": 8,
+        "maxSlope": 3,
+        "villageMargin": 24,
+        "waterDepth": 3,
+        "preferWater": true,
+        "clearFrom": 4
+    },
+    "guardians": [
+        {
+            "mob": "witch",
+            "from": [
+                2,
+                5,
+                3
+            ],
+            "to": [
+                4,
+                5,
+                5
+            ],
+            "max": 1,
+            "cooldownSeconds": 120,
+            "minPlayerDistance": 10,
+            "maxPlayerDistance": 48,
+            "maxLight": 7
+        }
+    ],
+    "palette": {
+        ".": "air",
+        "L": "oak_log",
+        "P": "spruce_planks",
+        "l": "spruce_fence",
+        "f": "flower_pot[plant=fern]",
+        "c": "spruce_log",
+        "C": "flower_pot[plant=red_mushroom]",
+        "t": "crafting_table",
+        "m": "cauldron",
+        "n": "spruce_slab"
+    },
+    "layers": [
+        [
+            " L   L ",
+            "       ",
+            " L   L ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            " L   L ",
+            "       "
+        ],
+        [
+            " L   L ",
+            "       ",
+            " L   L ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            " L   L ",
+            "       "
+        ],
+        [
+            " L   L ",
+            "       ",
+            " L   L ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            " L   L ",
+            "       "
+        ],
+        [
+            " L   L ",
+            "       ",
+            " L   L ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            " L   L ",
+            "       "
+        ],
+        [
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            " PPPPP ",
+            "       "
+        ],
+        [
+            ".l...l.",
+            ".f.....",
+            ".cP.Pc.",
+            ".PC..P.",
+            ".P...P.",
+            ".P...P.",
+            ".Pt.mP.",
+            ".cPPPc.",
+            "......."
+        ],
+        [
+            ".l...l.",
+            ".......",
+            ".cP.Pc.",
+            ".P...P.",
+            ".l...l.",
+            ".l...l.",
+            ".P...P.",
+            ".cPlPc.",
+            "......."
+        ],
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            ".......",
+            ".nnnnn.",
+            ".nnnnn.",
+            ".nnnnn.",
+            ".nnnnn.",
+            ".nnnnn.",
+            ".nnnnn.",
+            ".nnnnn.",
+            "......."
+        ]
+    ]
+}

@@ -117,9 +117,11 @@ struct QcStructureDefinition
     // of `attempts` places that lies wholly inside the region on land above the sea in one of
     // `biomes` (all five samples of its footprint) whose ground varies by at most `maxSlope`;
     // never within `villageMargin` blocks of a village. Its layer `groundLayer` replaces the
-    // ground's top block; with `clearTerrain` the terrain above the footprint is cleared (else its
-    // keep cells keep the terrain: ruins half in the ground), and `foundation` fills the ground below
-    // it down to solid ground. Its `choices` and `parts` vary each copy (decision E-630).
+    // ground's top block; with `clearTerrain` the terrain above the footprint is cleared from its
+    // layer `clearFrom` up (else its keep cells keep the terrain: ruins half in the ground), and
+    // `foundation` fills the ground below it down to solid ground. With `waterDepth` its samples may
+    // also lie under the sea, at most that deep (a hut on stilts, decision E-622). Its `choices` and
+    // `parts` vary each copy (decision E-630).
     struct Surface
     {
         QStringList biomes;
@@ -129,7 +131,12 @@ struct QcStructureDefinition
         int maxSlope = 3;
         int villageMargin = 16;
         QString foundation;
+        int waterDepth = 0;
+        // Of the places that fit, the first whose middle lies under water rather than the first.
+        bool preferWater = false;
         bool clearTerrain = true;
+        // The first layer cleared with `clearTerrain`; below it ground and water stay.
+        int clearFrom = 1;
 
         bool operator==(const Surface &) const = default;
     };

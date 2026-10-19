@@ -1,0 +1,81 @@
+{
+    "name": "jungle_temple_chest",
+    "pools": [
+        {
+            "rolls": [
+                2,
+                6
+            ],
+            "entries": [
+                {
+                    "item": "diamond",
+                    "weight": 3,
+                    "count": [
+                        1,
+                        3
+                    ]
+                },
+                {
+                    "item": "iron_ingot",
+                    "weight": 10,
+                    "count": [
+                        1,
+                        5
+                    ]
+                },
+                {
+                    "item": "gold_ingot",
+                    "weight": 15,
+                    "count": [
+                        2,
+                        7
+                    ]
+                },
+                {
+                    "item": "emerald",
+                    "weight": 2,
+                    "count": [
+                        1,
+                        3
+                    ]
+                },
+                {
+                    "item": "bone",
+                    "weight": 20,
+                    "count": [
+                        4,
+                        6
+                    ]
+                },
+                {
+                    "item": "rotten_flesh",
+                    "weight": 16,
+                    "count": [
+                        3,
+                        7
+                    ]
+                },
+                {
+                    "item": "melon_seeds",
+                    "weight": 8,
+                    "count": [
+                        2,
+                        6
+                    ]
+                },
+                {
+                    "item": "iron_helmet",
+                    "weight": 1
+                },
+                {
+                    "item": "golden_chestplate",
+                    "weight": 1
+                },
+                {
+                    "item": "book",
+                    "weight": 3
+                }
+            ]
+        }
+    ]
+}

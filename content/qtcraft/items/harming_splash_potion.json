@@ -1,0 +1,12 @@
+{
+    "name": "harming_splash_potion",
+    "texture": "harming_splash_potion",
+    "maxStack": 1,
+    "projectile": "harming_splash_potion",
+    "dispense": "shoot",
+    "throwable": {
+        "speed": 15.0,
+        "cooldownSeconds": 0.5,
+        "inaccuracyDegrees": 1.0
+    }
+}

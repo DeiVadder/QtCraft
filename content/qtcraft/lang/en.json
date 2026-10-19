@@ -607,5 +607,22 @@
     "item.qtcraft.cod_bucket": "Bucket of cod",
     "item.qtcraft.salmon_bucket": "Bucket of salmon",
     "item.qtcraft.raw_salmon": "Raw salmon",
-    "item.qtcraft.cooked_salmon": "Cooked salmon"
+    "item.qtcraft.cooked_salmon": "Cooked salmon",
+    "biome.qtcraft.jungle": "Jungle",
+    "block.qtcraft.vines": "Vines",
+    "block.qtcraft.cauldron": "Cauldron",
+    "block.qtcraft.flower_pot": "Flower pot",
+    "item.qtcraft.poison_splash_potion": "Splash potion of poison",
+    "item.qtcraft.harming_splash_potion": "Splash potion of harming",
+    "item.qtcraft.healing_potion": "Potion of healing",
+    "mob.qtcraft.witch": "Witch",
+    "appearance.qtcraft.witch": "Witch",
+    "structure.qtcraft.jungle_temple": "Jungle temple",
+    "structure.qtcraft.witch_hut": "Witch hut",
+    "structure.qtcraft.jungle_temple_station": "Jungle temple",
+    "structure.qtcraft.jungle_temple_station.levers": "Three levers: one opens the hidden chamber",
+    "structure.qtcraft.jungle_temple_station.trap": "Arrow trap: mind the pressure plate",
+    "structure.qtcraft.jungle_temple_station.chamber": "Hidden chamber",
+    "structure.qtcraft.witch_hut_station": "Witch hut",
+    "structure.qtcraft.witch_hut_station.witch": "The witch throws potions and drinks to heal"
 }

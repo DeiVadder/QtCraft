@@ -115,9 +115,9 @@ private slots:
 
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
         // Zombie, skeleton, spider, cave spider, silverfish, enderman, pig, chicken, slime, firefly,
-        // sheep, villager, iron golem, sand golem, wolf, dog, cat, ocelot, cow, cod, salmon and the two
-        // mannequins of the showcase (one with a cape).
-        QCOMPARE(creatures.size(), 23);
+        // sheep, villager, iron golem, sand golem, witch, wolf, dog, cat, ocelot, cow, cod, salmon and
+        // the two mannequins of the showcase (one with a cape).
+        QCOMPARE(creatures.size(), 24);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);

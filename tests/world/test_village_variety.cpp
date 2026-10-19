@@ -21,7 +21,7 @@ class TestVillageVariety : public QObject
 private:
     static constexpr qint64 seed = 42;
     // Regions around the origin the statistics run over (25 x 25).
-    static constexpr int rings = 12;
+    static constexpr int rings = 13;
 
     static std::shared_ptr<const QcContentRegistry> loadContent()
     {

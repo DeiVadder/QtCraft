@@ -1,0 +1,21 @@
+{
+    "name": "vines",
+    "sound": "grass",
+    "shape": "ladder",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.2,
+    "climbable": true,
+    "replaceable": false,
+    "support": "attached",
+    "states": { "attach": ["north", "east", "south", "west"] },
+    "itemTexture": "vines",
+    "textures": {
+        "all": "vines"
+    },
+    "flammable": {
+        "ignite": 15,
+        "burn": 100
+    }
+}

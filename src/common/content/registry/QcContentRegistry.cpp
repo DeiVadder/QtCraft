@@ -409,6 +409,14 @@ QStringList QcContentRegistry::resolveArcher(QcMobDefinition &mob) const
         warnings.append(u"mob '%1': no projectile '%2'; it fights in melee"_s.arg(mob.name, mob.archer.projectile));
         mob.ai = QcMobDefinition::Ai::Hostile;
     }
+    // A choice with a projectile or effect no pack has is left out (decision E-623).
+    const auto unknown = [this](const QcArcherDefinition::Choice &choice) { return !projectile(choice.projectile) || !effect(choice.unlessTargetHas); };
+    for (const QcArcherDefinition::Choice &choice : std::as_const(mob.archer.choices)) {
+        if (unknown(choice)) {
+            warnings.append(u"mob '%1': no projectile '%2' or effect '%3'; the choice is left out"_s.arg(mob.name, choice.projectile, choice.unlessTargetHas));
+        }
+    }
+    mob.archer.choices.removeIf(unknown);
     const std::optional<QcItemId> held = mob.heldItem.isEmpty() ? std::nullopt : itemId(mob.heldItem);
     if (!mob.heldItem.isEmpty() && !held) {
         warnings.append(u"mob '%1': no item '%2' to hold"_s.arg(mob.name, mob.heldItem));

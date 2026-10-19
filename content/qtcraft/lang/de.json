@@ -607,5 +607,22 @@
     "item.qtcraft.cod_bucket": "Kabeljaueimer",
     "item.qtcraft.salmon_bucket": "Lachseimer",
     "item.qtcraft.raw_salmon": "Roher Lachs",
-    "item.qtcraft.cooked_salmon": "Gebratener Lachs"
+    "item.qtcraft.cooked_salmon": "Gebratener Lachs",
+    "biome.qtcraft.jungle": "Dschungel",
+    "block.qtcraft.vines": "Ranken",
+    "block.qtcraft.cauldron": "Kessel",
+    "block.qtcraft.flower_pot": "Blumentopf",
+    "item.qtcraft.poison_splash_potion": "Wurftrank der Vergiftung",
+    "item.qtcraft.harming_splash_potion": "Wurftrank des Schadens",
+    "item.qtcraft.healing_potion": "Heiltrank",
+    "mob.qtcraft.witch": "Hexe",
+    "appearance.qtcraft.witch": "Hexe",
+    "structure.qtcraft.jungle_temple": "Dschungeltempel",
+    "structure.qtcraft.witch_hut": "Hexenhütte",
+    "structure.qtcraft.jungle_temple_station": "Dschungeltempel",
+    "structure.qtcraft.jungle_temple_station.levers": "Drei Hebel: einer öffnet die geheime Kammer",
+    "structure.qtcraft.jungle_temple_station.trap": "Pfeilfalle: Vorsicht, Druckplatte",
+    "structure.qtcraft.jungle_temple_station.chamber": "Geheime Kammer",
+    "structure.qtcraft.witch_hut_station": "Hexenhütte",
+    "structure.qtcraft.witch_hut_station.witch": "Die Hexe wirft Tränke und trinkt, um sich zu heilen"
 }

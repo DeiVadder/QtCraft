@@ -58,6 +58,7 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
     // Every attempt draws its centre and turn from its own positions, so one attempt never shifts another.
     const int width = std::max(type.structure()->sizeX(), type.structure()->sizeZ());
     const int room = rule.spacing - width;
+    std::optional<QcStructurePlacement> first;
     for (int attempt = 0; attempt < rule.attempts; ++attempt) {
         const int turns = int(qcPositionRandom(type.seed, regionX, 3 * attempt + 1, regionZ) * 4.0) % 4;
         const int sizeX = turns % 2 == 0 ? type.structure()->sizeX() : type.structure()->sizeZ();
@@ -69,9 +70,16 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
         if (!floor || occupied(kind, rect, rule.villageMargin)) {
             continue;
         }
-        return QcStructurePlacement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);
+        QcStructurePlacement placement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);
+        const QcTerrainColumn middle = m_terrain.column((rect.x0 + rect.x1) / 2, (rect.z0 + rect.z1) / 2);
+        if (!rule.preferWater || middle.height < m_terrain.seaLevel()) {
+            return placement;
+        }
+        if (!first) {
+            first = std::move(placement);
+        }
     }
-    return std::nullopt;
+    return first;
 }
 
 std::shared_ptr<const QcStructure> QcSurfacePlanner::structureOf(const Kind &kind, int regionX, int regionZ)
@@ -100,7 +108,11 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
     int high = 0;
     for (const auto &[x, z] : std::as_const(samples)) {
         const QcTerrainColumn column = m_terrain.column(x, z);
-        if (column.height - 1 < m_terrain.seaLevel() || column.overhang >= 1.0 || !kind.rule.biomes.contains(m_terrain.biomeName(column.biome))) {
+        // Land above the sea, or with `waterDepth` ground under at most that much water (the
+        // terrain fills water from a column's height up to the sea level, exclusive).
+        const bool ground = kind.rule.waterDepth > 0 ? m_terrain.seaLevel() - column.height <= kind.rule.waterDepth
+                                                     : column.height - 1 >= m_terrain.seaLevel();
+        if (!ground || column.overhang >= 1.0 || !kind.rule.biomes.contains(m_terrain.biomeName(column.biome))) {
             return std::nullopt;
         }
         low = std::min(low, column.height);
@@ -115,6 +127,10 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
     const int floor = low - 1;
     const int top = floor - kind.structure()->groundLayer + kind.structure()->sizeY();
     if (floor - kind.structure()->groundLayer < 1 || top >= QcWorld::worldHeight) {
+        return std::nullopt;
+    }
+    // Over water, nothing at or below the sea is cleared: the water around the stilts stays whole.
+    if (kind.rule.clearTerrain && kind.rule.waterDepth > 0 && floor - kind.structure()->groundLayer + kind.rule.clearFrom < m_terrain.seaLevel()) {
         return std::nullopt;
     }
     return floor;

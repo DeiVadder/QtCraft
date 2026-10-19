@@ -1,0 +1,11 @@
+{
+    "name": "jungle_temple_dispenser",
+    "pools": [
+        {
+            "rolls": [2, 3],
+            "entries": [
+                { "item": "arrow", "weight": 1, "count": [2, 5] }
+            ]
+        }
+    ]
+}

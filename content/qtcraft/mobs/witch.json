@@ -1,0 +1,73 @@
+{
+    "name": "witch",
+    "ai": "archer",
+    "sounds": {
+        "ambient": "mob.witch.ambient",
+        "hurt": "mob.witch.hurt",
+        "death": "mob.witch.death"
+    },
+    "health": 26,
+    "width": 0.6,
+    "height": 1.95,
+    "walkSpeed": 1.2,
+    "chaseSpeed": 2.4,
+    "hostile": true,
+    "immuneTo": [
+        "poison"
+    ],
+    "archer": {
+        "projectile": "harming_splash_potion",
+        "choices": [
+            {
+                "projectile": "poison_splash_potion",
+                "unlessTargetHas": "poison"
+            }
+        ],
+        "drawSeconds": 1.0,
+        "cooldownSeconds": 2.0,
+        "speed": 15,
+        "spreadDegrees": 3.0,
+        "range": 10,
+        "minDistance": 3,
+        "keepDistance": 8
+    },
+    "drinks": {
+        "item": "healing_potion",
+        "heal": 4,
+        "seconds": 1.6,
+        "cooldownSeconds": 3.0,
+        "sound": "player.drink"
+    },
+    "attackDamage": 0,
+    "attackRange": 1.4,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "spawn": {
+        "weight": 0
+    },
+    "skeleton": "witch",
+    "outfit": "witch",
+    "drops": [
+        {
+            "item": "glass_bottle",
+            "chance": 0.5
+        },
+        {
+            "item": "sugar",
+            "chance": 0.4
+        },
+        {
+            "item": "stick",
+            "chance": 0.4
+        },
+        {
+            "item": "spider_eye",
+            "chance": 0.3
+        },
+        {
+            "item": "signal_dust",
+            "chance": 0.3
+        }
+    ],
+    "experience": 5
+}

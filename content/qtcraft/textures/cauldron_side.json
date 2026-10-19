@@ -1,0 +1,8 @@
+{
+    "name": "cauldron_side",
+    "pattern": "metal_block",
+    "primary": "#3c3c42",
+    "secondary": "#55555c",
+    "variation": 0.08,
+    "seed": 6221
+}

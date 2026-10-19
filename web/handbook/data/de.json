@@ -57,6 +57,7 @@
                 "block:qtcraft:blue_concrete_powder",
                 "block:qtcraft:blue_ice",
                 "block:qtcraft:blue_stained_glass",
+                "block:qtcraft:flower_pot",
                 "block:qtcraft:brown_stained_glass_pane",
                 "block:qtcraft:brown_terracotta",
                 "block:qtcraft:brown_wool",
@@ -151,6 +152,7 @@
                 "block:qtcraft:cactus",
                 "block:qtcraft:carrot_crop",
                 "block:qtcraft:potato_crop",
+                "block:qtcraft:cauldron",
                 "block:qtcraft:gravel",
                 "block:qtcraft:sticky_signal_piston",
                 "block:qtcraft:small_torch",
@@ -188,6 +190,7 @@
                 "block:qtcraft:orange_concrete_powder",
                 "block:qtcraft:orange_stained_glass",
                 "block:qtcraft:packed_ice",
+                "block:qtcraft:vines",
                 "block:qtcraft:pink_stained_glass_pane",
                 "block:qtcraft:pink_terracotta",
                 "block:qtcraft:pink_wool",
@@ -361,6 +364,7 @@
                 "item:qtcraft:gold_nugget",
                 "item:qtcraft:gray_dye",
                 "item:qtcraft:green_dye",
+                "item:qtcraft:healing_potion",
                 "item:qtcraft:light_blue_dye",
                 "item:qtcraft:light_gray_dye",
                 "item:qtcraft:lime_dye",
@@ -406,6 +410,8 @@
                 "item:qtcraft:wheat",
                 "item:qtcraft:wheat_seeds",
                 "item:qtcraft:white_dye",
+                "item:qtcraft:poison_splash_potion",
+                "item:qtcraft:harming_splash_potion",
                 "item:qtcraft:brick",
                 "item:qtcraft:sugar"
             ],
@@ -494,6 +500,7 @@
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
                 "mob:qtcraft:firefly",
+                "mob:qtcraft:witch",
                 "mob:qtcraft:cave_spider",
                 "mob:qtcraft:chicken",
                 "mob:qtcraft:dog",
@@ -518,6 +525,7 @@
         {
             "entries": [
                 "biome:qtcraft:birch_forest",
+                "biome:qtcraft:jungle",
                 "biome:qtcraft:plains",
                 "biome:qtcraft:mountains",
                 "biome:qtcraft:swamp",
@@ -536,6 +544,7 @@
                 "feature:qtcraft:blue_orchid",
                 "feature:qtcraft:brown_mushroom",
                 "ore:qtcraft:diamond",
+                "feature:qtcraft:jungle_tree",
                 "feature:qtcraft:oak_tree",
                 "ore:qtcraft:iron",
                 "ore:qtcraft:dirt_pocket",
@@ -1226,6 +1235,218 @@
             ],
             "text": "Dichte Eichen und Birken mit Pilzen im Schatten.",
             "title": "Wald"
+        },
+        "biome:qtcraft:jungle": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Jungle",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:jungle"
+                },
+                {
+                    "label": "Klima",
+                    "links": [
+                    ],
+                    "value": "Temperatur 0,95, Feuchte 0,62, Zerklüftung 0,2"
+                },
+                {
+                    "label": "Geländehöhe",
+                    "links": [
+                    ],
+                    "value": "um y 70, ± 14"
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:jungle",
+            "name": "qtcraft:jungle",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "6 % der Säulen",
+                            "target": "feature:qtcraft:jungle_tree",
+                            "text": "Dschungelbaum"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "2 % der Säulen",
+                            "target": "feature:qtcraft:oak_tree",
+                            "text": "Eiche"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "12 % der Säulen",
+                            "target": "feature:qtcraft:fern",
+                            "text": "Farne"
+                        },
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "20 % der Säulen",
+                            "target": "feature:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        },
+                        {
+                            "icon": "qtcraft:melon",
+                            "note": "0,4 % der Säulen",
+                            "target": "feature:qtcraft:melon_patch",
+                            "text": "Melonen"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "0,4 % der Säulen",
+                            "target": "feature:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "20 % der Säulen",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Zuckerrohr"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ozelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Darin verstecken sich Dschungeltempel.",
+            "title": "Dschungel"
         },
         "biome:qtcraft:mountains": {
             "category": "biomes",
@@ -11097,6 +11318,193 @@
             "text": "Sandstein mit Gesicht: der Kopf, den ein Sandgolem zurücklässt, wenn er im Wasser zerfällt.",
             "title": "Gemeißelter Sandstein"
         },
+        "block:qtcraft:cauldron": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Cauldron",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:cauldron"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "3 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,25 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:cauldron",
+                            "note": "",
+                            "target": "block:qtcraft:cauldron",
+                            "text": "Kessel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:cauldron",
+            "id": "block:qtcraft:cauldron",
+            "name": "qtcraft:cauldron",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:cauldron",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:cauldron",
+                                "note": "",
+                                "target": "block:qtcraft:cauldron",
+                                "text": "Kessel"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein eiserner Topf auf kurzen Beinen, wie Hexen ihn in ihren Hütten haben. Vorerst steht er nur da.",
+            "title": "Kessel"
+        },
         "block:qtcraft:chest": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -16058,6 +16466,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Unter der Oberfläche, Unter Wasser",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Unter der Oberfläche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -16826,6 +17240,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Farne",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Farne",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
                         }
@@ -17053,6 +17473,132 @@
             ],
             "text": "Glas mit einem Glühwürmchen darin. Es schimmert schwach: genug zur Orientierung, zu wenig gegen Monster.",
             "title": "Glühwürmchenglas"
+        },
+        "block:qtcraft:flower_pot": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Flower pot",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:flower_pot"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:flower_pot",
+                            "note": "",
+                            "target": "block:qtcraft:flower_pot",
+                            "text": "Blumentopf"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "plant (none, red_mushroom, fern)"
+                }
+            ],
+            "icon": "qtcraft:flower_pot",
+            "id": "block:qtcraft:flower_pot",
+            "name": "qtcraft:flower_pot",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:brick",
+                                    "note": "",
+                                    "target": "item:qtcraft:brick",
+                                    "text": "Ziegelstein"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:brick",
+                                    "note": "",
+                                    "target": "item:qtcraft:brick",
+                                    "text": "Ziegelstein"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:brick",
+                                    "note": "",
+                                    "target": "item:qtcraft:brick",
+                                    "text": "Ziegelstein"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:flower_pot",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:flower_pot",
+                                "note": "",
+                                "target": "block:qtcraft:flower_pot",
+                                "text": "Blumentopf"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Ein kleiner Topf aus gebranntem Ton. Die Töpfe der Hexenhütten tragen einen Pilz oder einen Farn; Pflanzen von Hand einsetzen geht noch nicht.",
+            "title": "Blumentopf"
         },
         "block:qtcraft:furnace": {
             "category": "blocks",
@@ -18833,6 +19379,12 @@
                             "note": "Oberfläche",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oberfläche",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -29580,6 +30132,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Melonen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Melonen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         },
@@ -31949,6 +32507,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Dschungelbaum, Eiche",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Eiche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -32166,6 +32730,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Dschungelbaum, Eiche",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Eiche",
@@ -37286,6 +37856,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Mohn",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Mohn",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -40955,6 +41531,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Strände",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Unter Wasser, Strände",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -42609,6 +43191,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "30 %",
+                            "target": "mob:qtcraft:witch",
+                            "text": "Hexe"
+                        },
                         {
                             "icon": "qtcraft:signal_ore",
                             "note": "4×, 50 %",
@@ -50243,6 +50831,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Zuckerrohr",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Zuckerrohr",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -50383,6 +50977,12 @@
                             "note": "Hohes Gras",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Hohes Gras",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -50843,6 +51443,94 @@
             ],
             "text": "Das einfachste Licht. Steht auf Böden oder hängt an Wänden; Wasser spült sie weg.",
             "title": "Fackel"
+        },
+        "block:qtcraft:vines": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Vines",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:vines"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,2"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,3 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:vines",
+                            "note": "",
+                            "target": "block:qtcraft:vines",
+                            "text": "Ranken"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "eine feste Fläche, an der es hängt"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 15, brennt ab 100 (0 bis 100)"
+                },
+                {
+                    "label": "Kletterbar",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "attach (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:vines",
+            "id": "block:qtcraft:vines",
+            "name": "qtcraft:vines",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Hängt an Wänden, der Bewuchs der Dschungeltempel. Du kletterst daran wie an einer Leiter; sie hat keinen Körper, gegen den du stößt.",
+            "title": "Ranken"
         },
         "block:qtcraft:water": {
             "category": "liquids",
@@ -55303,7 +55991,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Kommt ihre Versorgung, werfen ein Signalspender und ein Signalwerfer vier Ticks später ein Item aus einem zufälligen Feld aus (versorgt wie ein Kolben, auch über den Block darüber). Ein Werfer vor einem Behälter legt das Item hinein, sonst wirft er es aus. Ein Spender gießt Wasser- und Lavaeimer aus, schöpft mit einem leeren Eimer eine Flüssigkeit, legt Rüstung einem Spieler oder Rüstungsständer davor an und wirft alles andere aus, auch vor einem Behälter. Saat, Karotten und Kartoffeln werden ausgeworfen, nie gepflanzt: Sie pflanzen sich selbst, wenn sie auf freiem Ackerboden landen.",
+                    "text": "Kommt ihre Versorgung, werfen ein Signalspender und ein Signalwerfer vier Ticks später ein Item aus einem zufälligen Feld aus (versorgt wie ein Kolben, auch über den Block darüber). Ein Werfer vor einem Behälter legt das Item hinein, sonst wirft er es aus. Ein Spender gießt Wasser- und Lavaeimer aus, schöpft mit einem leeren Eimer eine Flüssigkeit, legt Rüstung einem Spieler oder Rüstungsständer davor an, schießt Pfeile und Wurftränke geradeaus und wirft alles andere aus, auch vor einem Behälter. Saat, Karotten und Kartoffeln werden ausgeworfen, nie gepflanzt: Sie pflanzen sich selbst, wenn sie auf freiem Ackerboden landen.",
                     "title": "Spender und Werfer"
                 },
                 {
@@ -56125,6 +56813,22 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Dschungeltempel stehen einzeln im Dschungel, bewachsen mit Moos und Ranken. Steig hinten in der Halle die Leiter hinab: Ein Gang mit einer Steindruckplatte führt in einen Raum mit drei Hebeln an der Wand. Wer auf die Platte tritt, bekommt aus dem Spender daneben einen Pfeil ab. Zwei der Hebel sitzen auf Spendern, die Pfeile in den Raum schießen; der linke öffnet die geheime Kammer mit zwei Truhen neben dem Raum (eine Signalfackel hinter der Wand hält zwei klebrige Kolben ausgefahren, und der Hebel löscht sie). Spender schießen Pfeile und andere Munition als Geschosse, die du wieder aufheben kannst.",
+                    "title": "Dschungeltempel"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und Topfpflanzen. Dort lebt eine Hexe: Solange weniger Hexen bei der Hütte sind, als sie fasst (eine), erscheint nach 120 s eine neue drinnen, sofern die Hütte dunkel ist (Blocklicht höchstens 7), kein Spieler näher als 10 Blöcke ist und einer höchstens 48 Blöcke entfernt. Eine Hexe wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Ein Wurftrank trifft alles Lebendige rund um die Stelle, an der er zerplatzt, je weiter weg, desto schwächer. Verletzt trinkt sie kurz einen Heiltrank und wirft solange nichts; Milch nimmt das Gift wieder weg.",
+                    "title": "Hexenhütten und Hexen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Hier und da stehen die Reste eines alten Portals im Freien: ein zerbrochener Rahmen aus Obsidian und Weinendem Obsidian zwischen rotem Schutt und Magma, mit herabgefallenen Blöcken ringsum und einer Truhe mit goldenen Werkzeugen, goldener Rüstung, Feuerstein und Obsidian daneben. Kleine Ruinen stehen in vielen Biomen, versunkene stecken halb im Boden, große stehen in Gebirgen, Wäldern, Taiga und Tundra; keine gleicht ganz der anderen. Das Portal führt nirgendwohin. Weinender Obsidian leuchtet schwach (Licht 10) und braucht wie Obsidian eine Diamantspitzhacke. In Ebenen und Birkenwäldern, und aus Sandstein in der Wüste, stehen einzelne Brunnen: ein Schacht aus Wasser-Quellblöcken, vier Blöcke tief, unter einem kleinen Dach, eine Wasserquelle fern von jedem See. In der Wüste liegen seltene Oasen: ein Teich mit Sandboden, Gras, Zuckerrohr und zwei palmenartigen Bäumen.",
                     "title": "Portal-Ruinen, Brunnen und Oasen"
                 },
@@ -56201,6 +56905,30 @@
                             "note": "",
                             "target": "block:qtcraft:carved_sandstone",
                             "text": "Gemeißelter Sandstein"
+                        },
+                        {
+                            "icon": "qtcraft:vines",
+                            "note": "",
+                            "target": "block:qtcraft:vines",
+                            "text": "Ranken"
+                        },
+                        {
+                            "icon": "qtcraft:cauldron",
+                            "note": "",
+                            "target": "block:qtcraft:cauldron",
+                            "text": "Kessel"
+                        },
+                        {
+                            "icon": "qtcraft:flower_pot",
+                            "note": "",
+                            "target": "block:qtcraft:flower_pot",
+                            "text": "Blumentopf"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dispenser",
+                            "text": "Signalspender"
                         },
                         {
                             "icon": "qtcraft:crying_obsidian",
@@ -56966,6 +57694,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "12 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "10 % der Säulen",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
@@ -56979,6 +57713,90 @@
             ],
             "text": "",
             "title": "Farne"
+        },
+        "feature:qtcraft:jungle_tree": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Jungle tree",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:jungle_tree"
+                },
+                {
+                    "label": "Art",
+                    "links": [
+                    ],
+                    "value": "Baum"
+                },
+                {
+                    "label": "Blöcke",
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "",
+                            "target": "block:qtcraft:oak_log",
+                            "text": "Eichenstamm"
+                        },
+                        {
+                            "icon": "qtcraft:oak_leaves",
+                            "note": "",
+                            "target": "block:qtcraft:oak_leaves",
+                            "text": "Eichenlaub"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "8–12 Blöcke"
+                },
+                {
+                    "label": "Wächst auf",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:oak_log",
+            "id": "feature:qtcraft:jungle_tree",
+            "name": "qtcraft:jungle_tree",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "6 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "In Biomen"
+                }
+            ],
+            "text": "",
+            "title": "Dschungelbaum"
         },
         "feature:qtcraft:lava_lake": {
             "category": "worldgen",
@@ -57272,6 +58090,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "0,4 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "0,15 % der Säulen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
@@ -57374,6 +58198,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "2 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "0,2 % der Säulen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -57462,6 +58292,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,4 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "2,2 % der Säulen",
@@ -57926,6 +58762,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "20 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "15 % der Säulen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -58031,6 +58873,12 @@
                             "note": "16 % der Säulen",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "20 % der Säulen",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -59386,6 +60234,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:flower_pot",
+                            "note": "",
+                            "target": "block:qtcraft:flower_pot",
+                            "text": "Blumentopf"
+                        },
                         {
                             "icon": "qtcraft:bricks",
                             "note": "",
@@ -63531,6 +64385,20 @@
                     "links": [
                         {
                             "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:witch",
+                            "text": "Hexe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
                             "note": "Glühwürmchen in der Flasche",
                             "target": "mob:qtcraft:firefly",
                             "text": "Glühwürmchen"
@@ -65713,6 +66581,62 @@
             "text": "Aus Kaktus im Ofen.",
             "title": "Grüner Farbstoff"
         },
+        "item:qtcraft:harming_splash_potion": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Splash potion of harming",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:harming_splash_potion"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:harming_splash_potion",
+            "id": "item:qtcraft:harming_splash_potion",
+            "name": "qtcraft:harming_splash_potion",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und verletzt alles Lebendige im Umkreis von 4 m, in der Mitte bis zu 6, weiter weg weniger; Rüstung hilft nicht, und wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.",
+            "title": "Wurftrank des Schadens"
+        },
+        "item:qtcraft:healing_potion": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Potion of healing",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:healing_potion"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:healing_potion",
+            "id": "item:qtcraft:healing_potion",
+            "name": "qtcraft:healing_potion",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Was eine Hexe trinkt, wenn sie verletzt ist: es heilt sie um 4. Brauen gibt es noch nicht, Spieler können ihn also weder herstellen noch trinken.",
+            "title": "Heiltrank"
+        },
         "item:qtcraft:hopper_minecart": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -66688,6 +67612,12 @@
                             "note": "",
                             "target": "item:qtcraft:flint_and_steel",
                             "text": "Feuerzeug"
+                        },
+                        {
+                            "icon": "qtcraft:cauldron",
+                            "note": "",
+                            "target": "block:qtcraft:cauldron",
+                            "text": "Kessel"
                         },
                         {
                             "icon": "qtcraft:minecart",
@@ -69927,6 +70857,34 @@
             "text": "Färbt Wolle, Glas, Terrakotta und Beton rosafarben.",
             "title": "Rosafarbener Farbstoff"
         },
+        "item:qtcraft:poison_splash_potion": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Splash potion of poison",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:poison_splash_potion"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:poison_splash_potion",
+            "id": "item:qtcraft:poison_splash_potion",
+            "name": "qtcraft:poison_splash_potion",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Eine Flasche der Hexe. Sie zerplatzt, wo sie landet, und vergiftet alles Lebendige im Umkreis von 4 m, je näher, desto länger, bis zu 20 s; wer sie wirft, bleibt verschont. Wird mit der Benutzen-Taste geworfen.",
+            "title": "Wurftrank der Vergiftung"
+        },
         "item:qtcraft:potato": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -71462,6 +72420,12 @@
                     "links": [
                         {
                             "icon": "",
+                            "note": "30 %",
+                            "target": "mob:qtcraft:witch",
+                            "text": "Hexe"
+                        },
+                        {
+                            "icon": "",
                             "note": "33 %",
                             "target": "mob:qtcraft:cave_spider",
                             "text": "Höhlenspinne"
@@ -71833,6 +72797,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "40 %",
+                            "target": "mob:qtcraft:witch",
+                            "text": "Hexe"
+                        },
                         {
                             "icon": "qtcraft:dead_bush",
                             "note": "50 %",
@@ -73107,6 +74077,20 @@
                     ],
                     "text": "",
                     "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "40 %",
+                            "target": "mob:qtcraft:witch",
+                            "text": "Hexe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Aus Zuckerrohr gemacht; süßt einen Kürbiskuchen.",
@@ -76347,6 +77331,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         }
@@ -77551,6 +78541,100 @@
             ],
             "text": "Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm seinen Beruf gibt. Tagsüber arbeitet er, trifft die anderen an der Glocke, geht abends nach Hause und schläft nachts in seinem Bett. Er öffnet Holztüren und schließt sie hinter sich, flieht vor Monstern nach Hause und kämpft nie.",
             "title": "Dorfbewohner"
+        },
+        "mob:qtcraft:witch": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Witch",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:witch"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: hält Abstand, umkreist Spieler und schießt auf sie"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "26 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 1,95 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,2 m/s beim Gehen, 2,4 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:glass_bottle",
+                            "note": "50 %",
+                            "target": "item:qtcraft:glass_bottle",
+                            "text": "Glasflasche"
+                        },
+                        {
+                            "icon": "qtcraft:sugar",
+                            "note": "40 %",
+                            "target": "item:qtcraft:sugar",
+                            "text": "Zucker"
+                        },
+                        {
+                            "icon": "qtcraft:stick",
+                            "note": "40 %",
+                            "target": "item:qtcraft:stick",
+                            "text": "Stock"
+                        },
+                        {
+                            "icon": "qtcraft:spider_eye",
+                            "note": "30 %",
+                            "target": "item:qtcraft:spider_eye",
+                            "text": "Spinnenauge"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "30 %",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signalstaub"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:glass_bottle",
+            "id": "mob:qtcraft:witch",
+            "name": "qtcraft:witch",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Lebt in einer Hütte auf Stelzen im Sumpf und kommt dorthin zurück, solange kein Spieler nahe ist. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Gegen Gift ist sie immun.",
+            "title": "Hexe"
         },
         "mob:qtcraft:wolf": {
             "category": "creatures",
@@ -81153,6 +82237,12 @@
                             "note": "",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",

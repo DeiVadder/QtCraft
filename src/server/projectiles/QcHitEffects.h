@@ -46,6 +46,10 @@ public:
     // effect's chance its count, of those with groupChance its groupCount, else none. Two draws of
     // `random` when the first succeeds, one otherwise.
     static int spawnCount(const QcHitEffect &effect, QRandomGenerator &random);
+    // What a splash of `definition` (decision E-624) does to a body `share` of the full strength
+    // (1 at the place it broke, 0 at the splash's radius): the amounts of its damage effects and
+    // its status effects for that share of their ticks, scaled alike.
+    static Impact splashImpact(const QcProjectileDefinition &definition, double share);
 
 private:
     QHash<QString, Handler> m_handlers;

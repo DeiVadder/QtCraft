@@ -51,10 +51,13 @@ void addBodyFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<
                                      .arg(text.number(mob.walkSpeed), text.number(mob.chaseSpeed));
     facts.append({text.label(u"fact.speed"_s), speeds, {}});
     if (mob.hostile || mob.ai == QcMobDefinition::Ai::Golem) {
-        facts.append({text.label(u"fact.attack"_s),
-                      text.label(u"value.attack"_s)
-                          .arg(text.number(mob.attackDamage), text.number(mob.attackRange), text.number(mob.attackCooldown)),
-                      {}});
+        // A creature without blows (the witch only throws, decision E-623) has no attack row.
+        if (mob.attackDamage > 0.0) {
+            facts.append({text.label(u"fact.attack"_s),
+                          text.label(u"value.attack"_s)
+                              .arg(text.number(mob.attackDamage), text.number(mob.attackRange), text.number(mob.attackCooldown)),
+                          {}});
+        }
         facts.append({text.label(u"fact.sight"_s), text.label(u"unit.metres"_s).arg(text.number(mob.sightRange)), {}});
     }
 }

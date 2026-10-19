@@ -1,0 +1,155 @@
+{
+    "name": "witch_hut_station",
+    "showcase": {
+        "order": 100
+    },
+    "palette": {
+        ".": "air",
+        "A": "mud",
+        "B": "water",
+        "C": "oak_log",
+        "D": "spruce_planks",
+        "E": "spruce_fence",
+        "F": "flower_pot[plant=fern]",
+        "G": "spruce_log",
+        "H": "glass",
+        "I": "flower_pot[plant=red_mushroom]",
+        "J": "crafting_table",
+        "K": "cauldron"
+    },
+    "layers": [
+        [
+            "AAAAAAAAA",
+            "ABCBBBCBA",
+            "ABBBBBBBA",
+            "ABCBBBCBA",
+            "ABBBBBBBA",
+            "ABBBBBBBA",
+            "ABBBBBBBA",
+            "ABBBBBBBA",
+            "ABCBBBCBA",
+            "ABBBBBBBA",
+            "AAAAAAAAA"
+        ],
+        [
+            ".........",
+            "..C...C..",
+            ".........",
+            "..C...C..",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            "..C...C..",
+            ".........",
+            "........."
+        ],
+        [
+            ".........",
+            "..C...C..",
+            ".........",
+            "..C...C..",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            "..C...C..",
+            ".........",
+            "........."
+        ],
+        [
+            ".........",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            "..DDDDD..",
+            ".........",
+            "........."
+        ],
+        [
+            ".........",
+            "..E...E..",
+            "..F......",
+            "..GDHDG..",
+            "..DI..D..",
+            "..D...D..",
+            "..D...D..",
+            "..DJ.KD..",
+            "..GDDDG..",
+            ".........",
+            "........."
+        ],
+        [
+            ".........",
+            ".........",
+            ".........",
+            "..GDHDG..",
+            "..D...D..",
+            "..H...H..",
+            "..H...H..",
+            "..D...D..",
+            "..GDDDG..",
+            ".........",
+            "........."
+        ],
+        [
+            ".........",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            ".DDDDDDD.",
+            "........."
+        ],
+        [
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            ".........",
+            "........."
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "witch",
+            "at": [
+                4.5,
+                4,
+                5.5
+            ],
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                8.5,
+                0.0
+            ],
+            "text": "structure.qtcraft.witch_hut_station"
+        },
+        {
+            "at": [
+                4.5,
+                7.6,
+                0.0
+            ],
+            "text": "structure.qtcraft.witch_hut_station.witch"
+        }
+    ]
+}
