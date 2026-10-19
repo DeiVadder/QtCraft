@@ -27,6 +27,8 @@
 # warnings are repeated at the end and do not fail the run.
 # On macOS the script runs under `caffeinate -i` (it starts itself once more), so the machine does
 # not sleep during a run; arguments and exit code pass through.
+# Build steps use QC_BUILD_JOBS parallel jobs (default: the build tool's own choice, all cores);
+# agents working in parallel set QC_BUILD_JOBS=4 so several runs do not saturate the machine.
 # Every test step runs ctest in parallel (decision E-380): QC_TEST_JOBS jobs, by default the number
 # of cores minus two. It runs in two phases (decision E-550, scripts/verify-phases.sh): first every
 # test except those labelled `timing` (tests/timing.cmake), then the timing tests with
@@ -73,6 +75,13 @@ case "$TEST_JOBS" in
 '' | *[!0-9]*) echo "QC_TEST_JOBS must be a positive number, not '$TEST_JOBS'" >&2 && exit 2 ;;
 esac
 [ "$TEST_JOBS" -ge 1 ] || TEST_JOBS=1
+BUILD_JOBS_ARGS=""
+if [ -n "${QC_BUILD_JOBS:-}" ]; then
+    case "$QC_BUILD_JOBS" in
+    *[!0-9]* | 0) echo "QC_BUILD_JOBS must be a positive number, not '$QC_BUILD_JOBS'" >&2 && exit 2 ;;
+    esac
+    BUILD_JOBS_ARGS="--parallel $QC_BUILD_JOBS"
+fi
 . "$PROJECT_DIR/scripts/verify-phases.sh"
 
 usage() {
@@ -247,7 +256,7 @@ build_and_test() {
     quiet_pause "configure-$preset"
     step "configure-$preset" limited 300 cmake --preset "$preset"
     quiet_pause "build-$preset"
-    step "build-$preset" limited 1200 cmake --build --preset "$preset"
+    step "build-$preset" limited 1200 cmake --build --preset "$preset" $BUILD_JOBS_ARGS
     step "test-$preset" run_tests "$preset"
 }
 
@@ -290,7 +299,7 @@ else
     quiet_pause "configure-release"
     step "configure-release" limited 300 cmake --preset release
     quiet_pause "build-release"
-    step "build-release" limited 1200 cmake --build --preset release
+    step "build-release" limited 1200 cmake --build --preset release $BUILD_JOBS_ARGS
 
     quiet_pause "static-analysis"
     step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
