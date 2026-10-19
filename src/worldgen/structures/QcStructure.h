@@ -51,6 +51,10 @@ public:
     QList<QcStructureDefinition::Cart> minecarts;
     QList<QcStructureDefinition::Spawner> spawners;
     QList<QcStructureDefinition::Loot> loot;
+    // Zones whose guardians come back (decision E-591) and the layer at the ground's top block
+    // (decision E-590).
+    QList<QcStructureDefinition::Guardian> guardians;
+    int groundLayer = 0;
 
 private:
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(m_sizeX) * (z + qsizetype(m_sizeZ) * y); }

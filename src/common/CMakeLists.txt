@@ -74,6 +74,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcSignalParser.h content/parser/QcSignalParser.cpp
     content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
     content/parser/QcStructureParser.h content/parser/QcStructureParser.cpp
+    content/parser/QcStructureSiteParser.h content/parser/QcStructureSiteParser.cpp
     content/parser/QcStructureVariationParser.h content/parser/QcStructureVariationParser.cpp
     content/parser/QcTradeParser.h content/parser/QcTradeParser.cpp
     content/parser/QcVillageLayoutParser.h content/parser/QcVillageLayoutParser.cpp

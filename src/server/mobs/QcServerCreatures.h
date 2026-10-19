@@ -1,5 +1,7 @@
 #pragma once
 
+#include "server/guardians/QcCrumbling.h"
+#include "server/guardians/QcGuardians.h"
 #include "server/mobs/QcCreatureTraits.h"
 #include "server/mobs/QcInfestation.h"
 #include "server/mobs/QcMobManager.h"
@@ -16,7 +18,9 @@ class QcServerState;
 // the damage of crammed cells (game rule maxEntityCramming, decision E-401), what villagers do to
 // the world (QcServerVillagers, decision E-411), what creatures with traits do (QcCreatureTraits,
 // decision E-460: blocks taken and placed, teleports), creatures hiding in blocks (QcInfestation,
-// decision E-453) and monster spawners (QcSpawnerRules, decision E-520).
+// decision E-453), monster spawners (QcSpawnerRules, decision E-520), the guardians of structure
+// zones (QcGuardians, decision E-591) and creatures that crumble at water (QcCrumbling, decision
+// E-593).
 class QcServerCreatures
 {
 public:
@@ -33,6 +37,9 @@ public:
     // Shows the clients the creatures that teleported since the creatures' tick (projectiles and
     // burning make them teleport too) at their new place in this tick (QcCreatureTraits).
     void announceTeleports();
+    // Guardians of structure zones and creatures that crumble at water (decisions E-591, E-593).
+    const QcGuardians &guardians() const { return m_guardians; }
+    const QcCrumbling &crumbling() const { return m_crumbling; }
 
 private:
     // What the creatures know about the players this tick.
@@ -57,4 +64,7 @@ private:
     QcCreatureTraits m_traits;
     QcInfestation m_infestation;
     QcSpawnerRules m_spawners;
+    // After m_spawners: it asks them whether a cell fits a body.
+    QcGuardians m_guardians;
+    QcCrumbling m_crumbling;
 };

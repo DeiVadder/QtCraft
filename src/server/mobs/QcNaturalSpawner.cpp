@@ -160,8 +160,9 @@ QcNaturalSpawner::NearbyCounts QcNaturalSpawner::countNear(const QcVec3 &centre)
         const QcMobDefinition &kind = m_content->mobs()[mob.type];
         // Villagers and golems live in their villages and take no room from the creatures around
         // players.
-        // Creatures of monster spawners count against their spawners (decision E-520).
-        if (mob.dormant || kind.villager || kind.ai == QcMobDefinition::Ai::Golem || mob.spawner) {
+        // Creatures of monster spawners count against their spawners (decision E-520), guardians
+        // against their zones (decision E-591).
+        if (mob.dormant || kind.villager || kind.ai == QcMobDefinition::Ai::Golem || mob.spawner || mob.guards) {
             continue;
         }
         counts.animalsNear = counts.animalsNear || (isAnimal(kind) && (mob.motion.position - centre).length() < animalSearchDistance);

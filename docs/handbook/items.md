@@ -734,6 +734,10 @@ A ninth of a gold ingot.
 
 [Gold ingot](#item-qtcraft-gold_ingot)
 
+**Dropped by**
+
+[Sand golem](creatures.md#mob-qtcraft-sand_golem) (30 %)
+
 ### <a id="item-qtcraft-gray_dye"></a>Gray dye
 
 Colours wool, glass, terracotta and concrete gray.

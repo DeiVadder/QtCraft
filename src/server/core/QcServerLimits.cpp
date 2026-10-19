@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 65> table{{
+constexpr std::array<QcServerLimits::Field, 66> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -22,6 +22,7 @@ constexpr std::array<QcServerLimits::Field, 65> table{{
     {"hopperCooldownTicks", "ticks a hopper rests after moving an item", 1, 1200, &QcServerLimits::hopperCooldownTicks},
     {"summonLimit", "awake creatures summoned by /summon (0: none)", 0, 4096, &QcServerLimits::summonLimit},
     {"spawnerCreatures", "awake creatures from monster spawners (0: spawners spawn nothing)", 0, 4096, &QcServerLimits::spawnerCreatures},
+    {"guardians", "awake guardians of structure zones such as sand golems (0: none come back)", 0, 4096, &QcServerLimits::guardians},
     {"maxContainers", "containers (chests, barrels, hoppers, dispensers) in the world", 16, 1 << 20, &QcServerLimits::maxContainers},
     {"maxMachines", "machines (furnaces) in the world", 16, 1 << 18, &QcServerLimits::maxMachines},
     {"maxSaplings", "growing saplings in the world", 16, 1 << 18, &QcServerLimits::maxSaplings},

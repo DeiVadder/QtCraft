@@ -3,6 +3,7 @@
     "name": "desert",
     "biomes": ["desert"],
     "centre": "village_desert_well",
+    "rareCentre": { "structure": "desert_temple", "chance": 0.3 },
     "lamp": "village_desert_lamp",
     "path": [
         { "block": "terracotta", "step": "sandstone_slab" },

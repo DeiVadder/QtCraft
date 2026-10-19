@@ -3,9 +3,12 @@
 #include "common/world/QcChunk.h"
 #include "common/world/QcWorldLabel.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
+#include "worldgen/generators/QcGuardSite.h"
 #include "worldgen/generators/QcWorldSetup.h"
+#include "worldgen/structures/QcStructurePlacement.h"
 
 #include <memory>
+#include <optional>
 
 struct QcVillagePlan;
 
@@ -67,6 +70,31 @@ public:
     {
         Q_UNUSED(pos);
         return {};
+    }
+    // The guardian zones (decision E-591) of the structures within about `reach` blocks of `from`
+    // (whole regions); empty for generators without any.
+    virtual QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const
+    {
+        Q_UNUSED(from);
+        Q_UNUSED(reach);
+        return {};
+    }
+    // The same from the plans made so far, never planning (the server's tick thread asks this);
+    // std::nullopt when a region within `reach` is not planned yet (guardSitesNear plans it, on a
+    // generation thread). Generators whose plans are all made up front answer guardSitesNear.
+    [[nodiscard]] virtual std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const
+    {
+        return guardSitesNear(from, reach);
+    }
+    // The placed copy of the structure `name` that the generator places by itself (decision E-590),
+    // alone or as a village piece (the temple at a desert village's centre, E-592), nearest to `from`
+    // within about `reach` blocks (whole regions), if any.
+    [[nodiscard]] virtual std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const
+    {
+        Q_UNUSED(name);
+        Q_UNUSED(from);
+        Q_UNUSED(reach);
+        return std::nullopt;
     }
     // Labels floating in a chunk (decision E-222); the server sends them with the chunk.
     virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const

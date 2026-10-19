@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/golems/QcGolemBrain.h"
+#include "server/guardians/QcGuardianBrain.h"
 #include "server/mobs/QcArcherBrain.h"
 #include "server/mobs/QcCreatureBrains.h"
 #include "server/mobs/QcFishSwimming.h"
@@ -19,7 +20,7 @@
 
 // What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
 // of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the villagers'
-// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain); flyers drift above the ground.
+// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain, QcGuardianBrain); flyers drift above the ground.
 // Walkers follow their paths (QcMobNavigator) with the shared physics and are pushed apart by their
 // crowd (QcMobCrowd), whose density also decides how much they think (QcMobCrowd::Tier); the path
 // searches of all of them share a budget per tick (QcPathPlanner).
@@ -100,6 +101,7 @@ private:
     QcArcherBrain m_archers;
     QcGolemBrain m_golems;
     QcNeutralBrain m_neutral;
+    QcGuardianBrain m_guardians;
     // Tameable kinds think with these (decision E-480); wild ones through the brain of their AI.
     QcTameBrain m_tamePassive;
     QcTameBrain m_tameNeutral;

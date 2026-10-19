@@ -21,7 +21,8 @@ QString kindOf(const QcMobDefinition &mob)
 
 // The behaviour label: the category, "archer" for hostile creatures that shoot (decision E-426) or
 // "neutral" for those a player has to provoke (decision E-460; "neutralGaze" for those a look at
-// their head provokes too) or "golem" for guardians (decision E-471).
+// their head provokes too), "golem" for the protectors of villages (decision E-471) or "guardian"
+// for creatures that keep to a zone they guard (decision E-594).
 QString behaviourOf(const QcMobDefinition &mob)
 {
     if (mob.ai == QcMobDefinition::Ai::Neutral) {
@@ -29,6 +30,9 @@ QString behaviourOf(const QcMobDefinition &mob)
     }
     if (mob.ai == QcMobDefinition::Ai::Golem) {
         return u"golem"_s;
+    }
+    if (mob.ai == QcMobDefinition::Ai::Guardian) {
+        return u"guardian"_s;
     }
     return mob.ai == QcMobDefinition::Ai::Archer ? u"archer"_s : kindOf(mob);
 }

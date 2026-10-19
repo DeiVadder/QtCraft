@@ -473,6 +473,10 @@ Ein Neuntel eines Goldbarrens.
 
 [Goldbarren](#item-qtcraft-gold_ingot)
 
+**Droppt aus**
+
+[Sandgolem](creatures.md#mob-qtcraft-sand_golem) (30 %)
+
 ### <a id="item-qtcraft-gray_dye"></a>Grauer Farbstoff
 
 Färbt Wolle, Glas, Terrakotta und Beton grau.

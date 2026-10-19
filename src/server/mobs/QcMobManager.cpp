@@ -337,6 +337,11 @@ bool QcMobManager::teleport(quint32 mobId, const QcBlockAccess &world)
 
 void QcMobManager::keep(QcCreature &mob, bool kept)
 {
+    // A guardian belongs to its zone, not to the world: its post is not saved, and a kept one would
+    // come back without it beside the one the zone brings (decision E-591).
+    if (kept && mob.guards) {
+        return;
+    }
     if (kept && !mob.persistent) {
         mob.persistent = true;
         mob.uid = m_nextUid++;

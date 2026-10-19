@@ -175,6 +175,12 @@ std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefin
     }
     style.foundation = *foundation;
     style.centre = std::move(*centre);
+    if (!definition.rareCentre.isEmpty()) {
+        if (std::optional<QcVillageStyle::Piece> rare = piece(single(definition.rareCentre), definition, content, warnings)) {
+            style.rareCentre = std::move(*rare);
+            style.rareCentre.chance = definition.rareCentreChance;
+        }
+    }
     style.layouts = definition.layouts.isEmpty() ? QcVillageLayoutParser::defaultLayouts() : definition.layouts;
     if (definition.ground == QcVillageStyleDefinition::Ground::Water) {
         std::optional<QcVillageStyle::Stilts> stilts = resolveStilts(definition, content, warnings);
@@ -260,11 +266,12 @@ std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QStrin
         return std::nullopt;
     }
 
-    // A village writes the blocks of its pieces and spawns their creatures; the other extras of a
-    // structure need the server when the chunk is first seen, which villages do not have.
+    // A village writes the blocks of its pieces, spawns their creatures, fills their loot chests
+    // and names their guardian zones (decision E-590); the other extras of a structure need the
+    // server when the chunk is first seen, which villages do not have.
     const bool extras = !definition->stands.isEmpty() || !definition->contents.isEmpty() || !definition->labels.isEmpty()
                         || !definition->updates.isEmpty() || !definition->growing.isEmpty() || !definition->minecarts.isEmpty()
-                        || !definition->spawners.isEmpty() || !definition->loot.isEmpty();
+                        || !definition->spawners.isEmpty();
     if (extras && warnings) {
         warnings->append(u"village style '%1': structure '%2' has contents, armour stands, labels, minecarts, updates or growing "
                          u"saplings, which villages leave out"_s.arg(style.name, name));

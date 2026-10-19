@@ -48,6 +48,12 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanCache::plan(int regionX, int r
     return plan;
 }
 
+std::optional<std::shared_ptr<const QcVillagePlan>> QcVillagePlanCache::planned(int regionX, int regionZ) const
+{
+    const QMutexLocker locker(&m_mutex);
+    return findLocked(regionKey(regionX, regionZ));
+}
+
 std::optional<std::shared_ptr<const QcVillagePlan>> QcVillagePlanCache::findLocked(qint64 key) const
 {
     if (const auto it = m_entries.find(key); it != m_entries.end()) {

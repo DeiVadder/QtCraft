@@ -23,6 +23,23 @@ struct QcGazeDefinition
     bool operator==(const QcGazeDefinition &) const = default;
 };
 
+// A creature that crumbles into blocks where it touches a source block of a liquid (the sand golem,
+// decision E-593), from its data (`crumbles`): it is gone without loot or experience, and its build
+// stands in its place, an iron golem's T in reverse: `body` at its feet, in the middle above them and
+// on both sides of the middle across its facing, `head` on the middle. Each block goes into an open
+// cell (air, a plant, flowing liquid; never a source); where none is open the block drops as an item.
+// Server side only.
+struct QcCrumbleDefinition
+{
+    QString liquid;
+    QString body;
+    QString head;
+    // Played where it crumbles; empty for none.
+    QString sound;
+
+    bool operator==(const QcCrumbleDefinition &) const = default;
+};
+
 // A creature that teleports (the enderman, decision E-460), from its data (`teleport`): to a random
 // safe place within `range` metres (a solid floor, room for its body, no liquid, only in loaded
 // chunks; QcSafeSpot), at most once per `cooldownSeconds`. Server side only.

@@ -26,7 +26,8 @@ public:
 
     QcPiecePlacer(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcVillageStyles &styles);
 
-    // The centre piece, its door towards the main road; none where the ground does not fit.
+    // The centre piece (the style's rare centre with its chance, decision E-592), its door towards
+    // the main road; none where the ground does not fit.
     void placeCentre(QcVillageDraft &draft) const;
     // The kinds with rules (decision E-404, E-408) whose rules hold, each up to its maximum (at least one).
     void placeRulePieces(QcVillageDraft &draft, const QList<Road> &roads) const;
@@ -45,6 +46,9 @@ private:
     // ground is too steep or wet; over water the floor height of the stilts (decision E-407), or
     // std::nullopt where the ground cannot carry them.
     [[nodiscard]] std::optional<int> floorFor(const QcVillageDraft &draft, Rect rect, int maxSlope) const;
+    // The centre piece of the blueprint, its door towards the main road; false where the ground does
+    // not fit.
+    bool placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const;
     // A kind without a water rule on a random free spot along a road; false when none fits.
     bool placeAnywhere(QcVillageDraft &draft, const QList<Road> &roads, int index) const;
     // A kind with a water rule beside the end of a road with water ahead, and its jetty from the

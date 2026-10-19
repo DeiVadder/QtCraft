@@ -1,0 +1,48 @@
+{
+    "name": "sand_golem",
+    "ai": "guardian",
+    "sounds": {
+        "ambient": "mob.sand_golem.ambient",
+        "hurt": "mob.sand_golem.hurt",
+        "death": "mob.sand_golem.death"
+    },
+    "health": 60,
+    "width": 1.4,
+    "height": 2.7,
+    "walkSpeed": 0.8,
+    "chaseSpeed": 2.2,
+    "hostile": true,
+    "attackDamage": 9,
+    "attackRange": 2.3,
+    "attackCooldown": 1.5,
+    "sightRange": 14,
+    "spawn": {
+        "weight": 0
+    },
+    "skeleton": "iron_golem",
+    "outfit": "sand_golem",
+    "guardian": {
+        "leash": 6
+    },
+    "crumbles": {
+        "liquid": "water",
+        "body": "sand",
+        "head": "carved_sandstone",
+        "sound": "mob.sand_golem.crumble"
+    },
+    "drops": [
+        {
+            "item": "sand",
+            "count": 2
+        },
+        {
+            "item": "sand",
+            "chance": 0.5
+        },
+        {
+            "item": "gold_nugget",
+            "chance": 0.3
+        }
+    ],
+    "experience": 10
+}

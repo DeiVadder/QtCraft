@@ -106,6 +106,8 @@ struct QcVillageStyle
     Stilts stilts;
     Wetland wetland;
     Piece centre;
+    // Taken instead of the centre with its `chance` (decision E-592); no blueprints: none.
+    Piece rareCentre;
     // No blueprints: no lamps.
     Piece lamp;
     QList<Piece> pieces;

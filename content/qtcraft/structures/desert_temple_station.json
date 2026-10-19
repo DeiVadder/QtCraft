@@ -1,0 +1,74 @@
+{
+    "name": "desert_temple_station",
+    "showcase": {
+        "order": 98
+    },
+    "palette": {
+        ".": "air",
+        "S": "sandstone",
+        "C": "cut_sandstone",
+        "O": "orange_terracotta",
+        "B": "blue_terracotta",
+        "G": "glass",
+        "W": "water",
+        "s": "sand",
+        "h": "carved_sandstone[facing=south]",
+        "k": "chest[facing=south]",
+        "u": "torch[attach=west]"
+    },
+    "layers": [
+        ["SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS CCCCC SSSSSSSSS", "SSSOOOOOSSS CCCCC SSSWWWSSS", "SSSOOBOOSSS CCCCC SSSWSWSSS", "SSSOOOOOSSS CCCCC SSSWWWSSS", "SSSSSSSSSSS CCCCC SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS"],
+        ["SSSSSSSSSSS       GGGGGGGGG", "SCk.....kCS       G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S   s   G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S       G.......G", "SGGGGGGGGGS       GGGGGGGGG"],
+        ["SSSSSSSSSSS       GGGGGGGGG", "SC.......CS       G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S  sss  G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S       G.......G", "SGGGGGGGGGS       GGGGGGGGG"],
+        ["SSSSSSSSSSS       GGGGGGGGG", "SC.......CS       G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S   h   G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S       G.......G", "SGGGGGGGGGS       GGGGGGGGG"],
+        ["SSSSSSSSSSS       GGGGGGGGG", "SC.......CS       G.......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S       Gu......G", "S.........S       G.......G", "S.........S       G.......G", "S.........S       G.......G", "SGGGGGGGGGS       GGGGGGGGG"],
+        ["SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS", "SSSSSSSSSSS       SSSSSSSSS"],
+        ["                           ", "                           ", "                           ", "                           ", "                           ", "                           ", "                           ", "                           ", "                           "]
+    ],
+    "loot": [
+        {
+            "at": [2, 1, 1],
+            "table": "desert_temple_chest"
+        },
+        {
+            "at": [8, 1, 1],
+            "table": "desert_temple_chest"
+        }
+    ],
+    "guardians": [
+        {
+            "mob": "sand_golem",
+            "from": [3, 1, 2],
+            "to": [7, 1, 6],
+            "max": 1,
+            "cooldownSeconds": 30,
+            "minPlayerDistance": 4,
+            "maxPlayerDistance": 64,
+            "maxLight": 7
+        },
+        {
+            "mob": "sand_golem",
+            "from": [22, 1, 4],
+            "to": [22, 1, 4],
+            "max": 1,
+            "cooldownSeconds": 30,
+            "minPlayerDistance": 4,
+            "maxPlayerDistance": 64,
+            "maxLight": 15
+        }
+    ],
+    "labels": [
+        {
+            "at": [5.5, 6.5, 9.5],
+            "text": "structure.qtcraft.desert_temple_station.cellar"
+        },
+        {
+            "at": [14.5, 5.0, 9.5],
+            "text": "structure.qtcraft.desert_temple_station.crumbled"
+        },
+        {
+            "at": [22.5, 6.5, 9.5],
+            "text": "structure.qtcraft.desert_temple_station.farm"
+        }
+    ]
+}

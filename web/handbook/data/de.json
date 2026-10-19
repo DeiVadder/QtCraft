@@ -102,6 +102,7 @@
                 "block:qtcraft:yellow_concrete",
                 "block:qtcraft:yellow_concrete_powder",
                 "block:qtcraft:yellow_stained_glass",
+                "block:qtcraft:carved_sandstone",
                 "block:qtcraft:cut_sandstone",
                 "block:qtcraft:carved_pumpkin",
                 "block:qtcraft:packed_mud",
@@ -500,6 +501,7 @@
                 "mob:qtcraft:cow",
                 "mob:qtcraft:salmon",
                 "mob:qtcraft:ocelot",
+                "mob:qtcraft:sand_golem",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:pig",
@@ -10973,6 +10975,126 @@
             ],
             "text": "Ein Kürbis mit Gesicht, mit einer Schere geschnitzt. Auf vier Eisenblöcke in T-Form gesetzt, entsteht ein Eisengolem.",
             "title": "Geschnitzter Kürbis"
+        },
+        "block:qtcraft:carved_sandstone": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Carved sandstone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:carved_sandstone"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,8"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "4 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,1 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:carved_sandstone",
+            "id": "block:qtcraft:carved_sandstone",
+            "name": "qtcraft:carved_sandstone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Sandstein mit Gesicht: der Kopf, den ein Sandgolem zurücklässt, wenn er im Wasser zerfällt.",
+            "title": "Gemeißelter Sandstein"
         },
         "block:qtcraft:chest": {
             "category": "blocks",
@@ -40671,6 +40793,20 @@
                 {
                     "links": [
                         {
+                            "icon": "",
+                            "note": "2×, 50 %",
+                            "target": "mob:qtcraft:sand_golem",
+                            "text": "Sandgolem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:golden_shovel",
                             "note": "Stufe 1",
                             "target": "item:qtcraft:golden_shovel",
@@ -55875,6 +56011,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Wüstentempel stehen allein in der Wüste, und manche Wüstendörfer sind um einen herum gebaut. Über die Leiter hinten in der Halle geht es in den dunklen Keller: In vier Truhen liegen Gold, Smaragde und hin und wieder Diamanten, bewacht von einem Sandgolem. Er greift jeden an, der seinem Keller auf wenige Blöcke nahe kommt, und kehrt dorthin zurück. Berührt ein Sandgolem einen Wasser-Quellblock, zerfällt er in vier Sandblöcke und einen Kopf aus gemeißeltem Sandstein; ein Block ohne Platz fällt als Gegenstand (mit der Spielregel mobGriefing aus fällt der ganze Bau als Gegenstände). Seine Arme fallen als Sand herab und können das Wasser füllen, in dem sie landen. Solange weniger Golems den Keller bewachen, als er fasst (einen), erscheint nach 120 s ein neuer im Keller (in einem seit dem Laden der Welt erstmals gesehenen Keller nach 60 s), sofern der Keller dunkel ist (Blocklicht höchstens 7), kein Spieler näher als 12 Blöcke ist und einer höchstens 48 Blöcke entfernt. Eine Sandfarm: Löcher einen Block tief in den Kellerboden graben, Wasser hineingießen, den Keller dunkel lassen und etwas abseits warten; ein neuer Golem erscheint auf dem trockenen Boden neben dem Wasser und zerfällt sofort (ein Keller voller Wasser bleibt leer). Seine Arme stehen neben seiner Mitte, links und rechts seiner Blickrichtung, und fallen auf den Boden: ein Loch direkt neben seinen Füßen füllt sich mit Sand. Die Löcher schräg neben den Platz des Golems legen (er berührt sie, seine Arme verfehlen sie) oder den fallenden Sand mit einem Block abhalten. Das gibt je Tempel und Stunde höchstens 120 Sandblöcke und 30 Köpfe. Der Sand füllt den Keller, bis man ihn ausgräbt.",
+                    "title": "Wüstentempel und Sandgolems"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -55934,6 +56078,18 @@
                             "note": "",
                             "target": "block:qtcraft:rail",
                             "text": "Schiene"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
                         }
                     ],
                     "recipes": [
@@ -61873,6 +62029,12 @@
                             "text": "Gelber Beton"
                         },
                         {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
+                        },
+                        {
                             "icon": "qtcraft:cut_sandstone",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:cut_sandstone",
@@ -63603,6 +63765,20 @@
                     ],
                     "text": "",
                     "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "30 %",
+                            "target": "mob:qtcraft:sand_golem",
+                            "text": "Sandgolem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
                 }
             ],
             "text": "Ein Neuntel eines Goldbarrens.",
@@ -64563,6 +64739,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:yellow_concrete",
                             "text": "Gelber Beton"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -66902,6 +67084,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:yellow_concrete",
                             "text": "Gelber Beton"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -72009,6 +72197,12 @@
                             "text": "Gelber Beton"
                         },
                         {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
+                        },
+                        {
                             "icon": "qtcraft:cut_sandstone",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:cut_sandstone",
@@ -73817,6 +74011,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:yellow_concrete",
                             "text": "Gelber Beton"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Gemeißelter Sandstein"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -76348,6 +76548,94 @@
             ],
             "text": "Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwarm, zappelt an Land und erstickt dort nach einer Weile. Mit einem Wassereimer fängt man ihn lebend.",
             "title": "Lachs"
+        },
+        "mob:qtcraft:sand_golem": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Sand golem",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:sand_golem"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "Wächter: bleibt an dem Ort, den er bewacht, und greift Spieler an, die ihm nahe kommen"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "60 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "1,4 m breit, 2,7 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "0,8 m/s beim Gehen, 2,2 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "9 Schaden bis 2,3 m, alle 1,5 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "14 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "2×",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "50 %",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:gold_nugget",
+                            "note": "30 %",
+                            "target": "item:qtcraft:gold_nugget",
+                            "text": "Goldnugget"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:sand",
+            "id": "mob:qtcraft:sand_golem",
+            "name": "qtcraft:sand_golem",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Ein Golem aus Sand, der den Keller eines Wüstentempels bewacht und jeden angreift, der zu seinen Truhen hinabsteigt; weit folgt er nicht. Es gibt ihn nur dort, bauen kann man ihn nicht. Berührt er einen Wasser-Quellblock, zerfällt er in vier Sandblöcke in der Form seines Bauplans, mit gemeißeltem Sandstein als Kopf; seine Arme fallen als Sand herab und können ein Wasserloch füllen. In einem dunklen Keller ohne Spieler in der Nähe kommt nach einer Weile ein neuer: eine Quelle für erneuerbaren Sand.",
+            "title": "Sandgolem"
         },
         "mob:qtcraft:sheep": {
             "category": "creatures",
@@ -79776,7 +80064,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
+                    "text": "- Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
                     "title": "Spitzhacke"
                 },
                 {

@@ -1,5 +1,6 @@
 #include "server/commands/QcVillageCommands.h"
 
+#include "common/content/registry/QcContentNames.h"
 #include "server/commands/QcCommandArguments.h"
 #include "server/core/QcServerState.h"
 #include "server/villages/QcVillagerBehaviour.h"
@@ -20,8 +21,8 @@ QcVillageCommands::QcVillageCommands(QcServerState &state)
 void QcVillageCommands::addTo(QcCommandRegistry &registry)
 {
     registry.addBuiltIn({.name = u"locate"_s, .needsPlayer = true, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Finds the nearest village."),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village|<structure>"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Finds the nearest village or surface structure."),
                          .run = [this](const QcCommandContext &context) { locate(context); }});
     registry.addBuiltIn({.name = u"village"_s,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /village [<x> <z>]"),
@@ -88,8 +89,12 @@ std::optional<QcVillageCommands::Found> QcVillageCommands::nearest(QcBlockPos fr
 void QcVillageCommands::locate(const QcCommandContext &context)
 {
     const std::optional<QcBlockPos> origin = context.source.origin();
-    if (context.args.size() != 1 || context.args[0] != u"village"_s || !origin) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village"));
+    if (context.args.size() != 1 || !origin) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village|<structure>"));
+        return;
+    }
+    if (context.args[0] != u"village"_s) {
+        locateStructure(context, *origin);
         return;
     }
 
@@ -103,6 +108,21 @@ void QcVillageCommands::locate(const QcCommandContext &context)
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Village (%1, %2) at %3 %4 %5, %6 blocks away"),
                   {found->village.style, found->plan->layout, QString::number(centre.x), QString::number(centre.y), QString::number(centre.z),
                    QString::number(distance)});
+}
+
+void QcVillageCommands::locateStructure(const QcCommandContext &context, QcBlockPos origin)
+{
+    // A structure the generator places by itself (decision E-590): its floor's middle.
+    const QString name = QcContentNames::qualify(context.args[0], u"qtcraft"_s);
+    const std::optional<QcStructurePlacement> found = m_state.world().generator().nearestStructure(name, origin, searchRadius);
+    if (!found) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No structure %1 within %2 blocks"), {name, QString::number(searchRadius)});
+        return;
+    }
+    const QcBlockPos middle = found->toWorld(QcBlockPos{found->structure().sizeX() / 2, found->structure().groundLayer + 1, found->structure().sizeZ() / 2});
+    const int distance = int(std::lround(std::hypot(double(middle.x - origin.x), double(middle.z - origin.z))));
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3 %4, %5 blocks away"),
+                  {name, QString::number(middle.x), QString::number(middle.y), QString::number(middle.z), QString::number(distance)});
 }
 
 void QcVillageCommands::village(const QcCommandContext &context)

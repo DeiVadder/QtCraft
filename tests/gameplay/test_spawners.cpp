@@ -7,14 +7,59 @@
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "worldgen/dungeons/QcDungeonGenerator.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
 
+#include <atomic>
+
 #include <cmath>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The test terrain with a chest (storage, no loot) deep in every chunk; it counts how often the
+// server asks it for the furnishing of the chunk `watched`.
+class ChestTerrain : public QcTestTerrainGenerator
+{
+public:
+    struct Asked
+    {
+        QcChunkPos watched;
+        std::atomic<int> count{0};
+    };
+
+    ChestTerrain(const std::shared_ptr<const QcContentRegistry> &content, std::shared_ptr<Asked> asked)
+        : QcTestTerrainGenerator(content)
+        , m_chest(*content->blockId(u"qtcraft:chest"_s))
+        , m_asked(std::move(asked))
+    {
+    }
+
+    std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override
+    {
+        std::shared_ptr<QcChunk> chunk = QcTestTerrainGenerator::generate(pos);
+        chunk->setBlock(8, 2, 8, m_chest);
+        return chunk;
+    }
+
+    QcChunkFurnishing furnishingIn(QcChunkPos pos) const override
+    {
+        if (pos == m_asked->watched) {
+            ++m_asked->count;
+        }
+        return {};
+    }
+
+private:
+    QcBlockId m_chest;
+    std::shared_ptr<Asked> m_asked;
+};
+
+} // namespace
 
 // Monster spawners (decision E-520): a spawner works only while a player is near, waits its delay,
 // spawns up to `count` creatures of its kind on dark cells with ground in its area, stops at
@@ -512,6 +557,36 @@ private slots:
         QVERIFY(container);
         QVERIFY(std::ranges::all_of(container->stacks, [](QcItemStack stack) { return stack.isEmpty(); }));
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);
+    }
+
+    // The generator is asked for a chunk's furnishing once (it may plan regions, on the tick thread):
+    // a chunk it has nothing for is marked furnished, and blocks read back from the store are not
+    // furnished again.
+    void chunksWithoutLootAreAskedOnce()
+    {
+        m_unloadChunks = true;
+        auto asked = std::make_shared<ChestTerrain::Asked>();
+        join({}, std::make_unique<ChestTerrain>(m_content, asked));
+        const QcChunkPos far{m_feet.chunk().x + 20, m_feet.chunk().z};
+        asked->watched = far;
+        asked->count = 0;
+        m_server->world().loadChunk(far);
+        QCOMPARE(asked->count.load(), 1);
+        QVERIFY(m_server->world().isFurnished(far));
+
+        // Unchanged it leaves and is generated again with its kept mark.
+        ticks(200);
+        QVERIFY(!m_server->world().chunk(far));
+        m_server->world().loadChunk(far);
+        QCOMPARE(asked->count.load(), 1);
+
+        // Changed it leaves and its blocks are read back.
+        m_server->world().setBlock(QcBlockPos{far.x * QcWorld::chunkSize + 3, 2, far.z * QcWorld::chunkSize + 3}, id("qtcraft:chest"));
+        ticks(200);
+        QVERIFY(!m_server->world().chunk(far));
+        m_server->world().loadChunk(far);
+        QCOMPARE(asked->count.load(), 1);
+        QVERIFY(m_server->world().isFurnished(far));
     }
 
     // A mine shaft's chest minecart is put on its rail with loot once (decision E-570): it is saved

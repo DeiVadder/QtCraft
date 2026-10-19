@@ -32,8 +32,8 @@ public:
 
 private:
     // Turns a village golem's stroll back towards the centre of its village when it would leave the
-    // village's area or stands outside it.
-    static void keepToVillage(QcCreature &mob, const Context &context);
+    // village's area or stands outside it, with time to walk there at `walkSpeed`.
+    static void keepToVillage(QcCreature &mob, const Context &context, double walkSpeed);
     // Walks along a path towards `target`, facing it.
     QcPhysics::Steering pursue(QcCreature &mob, const QcMobDefinition &definition, const QcVec3 &target, const Context &context,
                                bool mayPlan);

@@ -1,0 +1,25 @@
+{
+    "name": "mob.sand_golem.death",
+    "volume": 0.9,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 1.0,
+            "attack": 0.01,
+            "curve": 1.2,
+            "lowpass": 2500,
+            "highpass": 300,
+            "gain": 0.6
+        },
+        {
+            "wave": "square",
+            "duration": 0.9,
+            "frequency": 120,
+            "endFrequency": 45,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 700,
+            "gain": 0.4
+        }
+    ]
+}

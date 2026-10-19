@@ -86,6 +86,9 @@ void furnish(QcServerState &state, QcChunkPos pos)
     }
     const QcChunkFurnishing furnishing = world.generator().furnishingIn(pos);
     if (furnishing.isEmpty()) {
+        // Furnished with nothing: a chunk whose blocks come back unchanged (generated again) does not
+        // ask again.
+        world.noteFurnished(pos);
         return;
     }
 

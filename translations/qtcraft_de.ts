@@ -3781,58 +3781,76 @@
         <translation>%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="23"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="92"/>
         <source>Usage: /locate village</source>
-        <translation>Verwendung: /locate village</translation>
+        <translation type="vanished">Verwendung: /locate village</translation>
+    </message>
+    <message>
+        <source>Finds the nearest village.</source>
+        <translation type="vanished">Findet das nächste Dorf.</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcVillageCommands.cpp" line="24"/>
-        <source>Finds the nearest village.</source>
-        <translation>Findet das nächste Dorf.</translation>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="93"/>
+        <source>Usage: /locate village|&lt;structure&gt;</source>
+        <translation>Verwendung: /locate village|&lt;Struktur&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="27"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="119"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="25"/>
+        <source>Finds the nearest village or surface structure.</source>
+        <translation>Findet das nächste Dorf oder die nächste Oberflächen-Struktur.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="28"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="139"/>
         <source>Usage: /village [&lt;x&gt; &lt;z&gt;]</source>
         <translation>Verwendung: /village [&lt;x&gt; &lt;z&gt;]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="28"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="29"/>
         <source>Shows the state of the nearest village as JSON.</source>
         <translation>Zeigt den Zustand des nächsten Dorfs als JSON.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="31"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="42"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="32"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="43"/>
         <source>Usage: /profession &lt;profession&gt; [level]</source>
         <translation>Verwendung: /profession &lt;Beruf&gt; [Stufe]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="32"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="33"/>
         <source>Gives the nearest villager a profession and trading level.</source>
         <translation>Gibt dem nächsten Dorfbewohner einen Beruf und eine Handelsstufe.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="56"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="57"/>
         <source>No villager within %1 blocks</source>
         <translation>Kein Dorfbewohner im Umkreis von %1 Blöcken</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="70"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="71"/>
         <source>Villager %1 is now %2 of level %3</source>
         <translation>Dorfbewohner %1 ist jetzt %2 der Stufe %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="98"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="125"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="103"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="145"/>
         <source>No village within %1 blocks</source>
         <translation>Kein Dorf im Umkreis von %1 Blöcken</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="103"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="108"/>
         <source>Village (%1, %2) at %3 %4 %5, %6 blocks away</source>
         <translation>Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="119"/>
+        <source>No structure %1 within %2 blocks</source>
+        <translation>Keine Struktur %1 im Umkreis von %2 Blöcken</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="124"/>
+        <source>%1 at %2 %3 %4, %5 blocks away</source>
+        <translation>%1 bei %2 %3 %4, %5 Blöcke entfernt</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcEffectCommands.cpp" line="14"/>
@@ -4189,32 +4207,32 @@
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="49"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="50"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="62"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="63"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="65"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="66"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="72"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="73"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="108"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="109"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/SettingsScreen.qml" line="123"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="124"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -4222,22 +4240,22 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="127"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="128"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="140"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="141"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="163"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="164"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="180"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="181"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
@@ -4246,96 +4264,96 @@
         <translation type="vanished">Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="187"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="188"/>
         <source>Show labels in the world (%1)</source>
         <translation>Beschriftungen in der Welt anzeigen (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="193"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="194"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="159"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="205"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="221"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="237"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="253"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="160"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="206"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="222"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="238"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="254"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="69"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="70"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="76"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="77"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="145"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="146"/>
         <source>FOV effects</source>
         <translation>Sichtfeld-Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="209"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="210"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="225"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="226"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="241"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="242"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="258"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="259"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="264"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="265"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="274"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="275"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="275"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="276"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="276"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="277"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="282"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="283"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="293"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="294"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="303"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="304"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="331"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="332"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>

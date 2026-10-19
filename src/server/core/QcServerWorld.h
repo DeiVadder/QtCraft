@@ -21,6 +21,7 @@
 #include <QHash>
 #include <QSet>
 
+#include <atomic>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -129,6 +130,10 @@ public:
     // Moves every finished background chunk into the world at once (worlds without groups: tests).
     QList<QcChunkPos> collectGeneratedChunks();
     qsizetype pendingGenerationCount() const { return m_pending.size(); }
+    // Plans the generator's guardian zones within `reach` of `from` on a generation thread, so the
+    // tick thread finds them planned (QcWorldGenerator::plannedGuardSitesNear, QcGuardians); one such
+    // job at a time, a call while one runs is dropped.
+    void planGuardSitesInBackground(QcBlockPos from, int reach);
     // Chunks whose stored data is damaged (decision E-373): they play as generated and are never
     // saved, until /regenerate replaces their stored data (regenerateChunk).
     bool isQuarantined(QcChunkPos pos) const { return m_quarantined.contains(pos); }
@@ -220,6 +225,7 @@ private:
     ArrivalHandler m_onArrival;
     GroupLoader m_loadGroup;
     QcMailbox<Arrival> m_generated;
+    std::shared_ptr<std::atomic<bool>> m_planningSites = std::make_shared<std::atomic<bool>>(false);
     // Last member: destroyed first, so no job outlives the generator it uses.
     QcWorkerPool m_generationPool;
 };

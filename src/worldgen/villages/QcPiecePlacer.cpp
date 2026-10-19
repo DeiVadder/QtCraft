@@ -1,5 +1,6 @@
 #include "worldgen/villages/QcPiecePlacer.h"
 
+#include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcBoardwalkPlanner.h"
 #include "worldgen/villages/QcJettyPlanner.h"
@@ -22,6 +23,8 @@ constexpr int ruleAttempts = 16;
 constexpr int waterSlots = 8;
 // A piece beside a diagonal road stands at most this far from its middle line.
 constexpr int maxSetback = 12;
+// Salt of the draw of a style's rare centre (decision E-592).
+constexpr quint64 rareCentreSalt = 0x592;
 
 } // namespace
 
@@ -61,8 +64,19 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
 
 void QcPiecePlacer::placeCentre(QcVillageDraft &draft) const
 {
+    // The rare centre (decision E-592) is drawn from its own position, so the other draws of the
+    // village stay as they are; where it does not fit the ground the usual centre stands.
+    const QcVillageStyle::Piece &rare = draft.style->rareCentre;
+    const bool lucky = !rare.blueprints.isEmpty()
+                       && qcPositionRandom(qcMixSeed(draft.seeds.layout, rareCentreSalt), draft.region.x, 0, draft.region.z) < rare.chance;
+    if (!lucky || !placeCentre(draft, rare.first())) {
+        placeCentre(draft, draft.style->centre.first());
+    }
+}
+
+bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const
+{
     // The door faces the main road (the axis next to it when that is diagonal).
-    const QcVillageStyle::Blueprint &centre = draft.style->centre.first();
     const auto [fx, fz] = directions[std::size_t(draft.mainDirection / 2) * 2];
     const int turns = QcVillageDraft::turnsFacing(fx, fz);
     const int sizeX = turns % 2 == 0 ? centre.structure()->sizeX() : centre.structure()->sizeZ();
@@ -71,12 +85,14 @@ void QcPiecePlacer::placeCentre(QcVillageDraft &draft) const
                     draft.centreZ - sizeZ / 2 + sizeZ - 1};
     const std::optional<int> floor = floorFor(draft, rect, m_settings.maxHeightSpread);
     if (!floor) {
-        return;
+        return false;
     }
 
-    addPiece(draft, centre, rect, {rect.x0, *floor, rect.z0}, turns);
+    // A centre with a cellar (decision E-590) has its ground layer at the floor.
+    addPiece(draft, centre, rect, {rect.x0, *floor - centre.structure()->groundLayer, rect.z0}, turns);
     const QcStructurePlacement &placed = draft.plan.pieces.back();
     draft.plan.centre = centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, *floor + 1, draft.centreZ};
+    return true;
 }
 
 void QcPiecePlacer::placeRulePieces(QcVillageDraft &draft, const QList<Road> &roads) const

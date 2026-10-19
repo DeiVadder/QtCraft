@@ -20,6 +20,8 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
     , m_traits(state, sounds, blocks)
     , m_infestation(state, blocks)
     , m_spawners(state)
+    , m_guardians(state, m_spawners)
+    , m_crumbling(state, sounds, blocks)
 {
 }
 
@@ -68,6 +70,8 @@ void QcServerCreatures::tick()
     applyPlayerHits(hits);
     m_spawners.tick();
     m_spawners.announceChanges();
+    m_guardians.tick();
+    m_crumbling.tick();
 }
 
 void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hits)

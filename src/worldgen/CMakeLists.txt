@@ -12,6 +12,7 @@ target_sources(qc_worldgen PRIVATE
 target_sources(qc_worldgen PRIVATE
     generators/QcChunkFurnishing.h
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
+    generators/QcGuardSite.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
     generators/QcWorldGenerator.h
@@ -48,6 +49,10 @@ target_sources(qc_worldgen PRIVATE
     structures/QcStateRotation.h structures/QcStateRotation.cpp
     structures/QcStructure.h structures/QcStructure.cpp
     structures/QcStructurePlacement.h structures/QcStructurePlacement.cpp
+)
+target_sources(qc_worldgen PRIVATE
+    surface/QcSurfacePlanner.h surface/QcSurfacePlanner.cpp
+    surface/QcSurfaceStructures.h surface/QcSurfaceStructures.cpp
 )
 target_sources(qc_worldgen PRIVATE
     terrain/QcCaveCarver.h terrain/QcCaveCarver.cpp

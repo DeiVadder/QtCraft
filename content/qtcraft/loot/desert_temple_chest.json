@@ -1,0 +1,29 @@
+{
+    "name": "desert_temple_chest",
+    "pools": [
+        {
+            "rolls": [2, 4],
+            "entries": [
+                { "item": "gold_ingot", "weight": 15, "count": [2, 7] },
+                { "item": "iron_ingot", "weight": 15, "count": [1, 5] },
+                { "item": "emerald", "weight": 15, "count": [1, 3] },
+                { "item": "diamond", "weight": 5, "count": [1, 3] },
+                { "item": "bone", "weight": 25, "count": [4, 6] },
+                { "item": "rotten_flesh", "weight": 25, "count": [3, 7] },
+                { "item": "gold_nugget", "weight": 15, "count": [3, 9] },
+                { "item": "book", "weight": 10 },
+                { "item": "ender_pearl", "weight": 2 },
+                { "weight": 15 }
+            ]
+        },
+        {
+            "rolls": 4,
+            "entries": [
+                { "item": "bone", "weight": 10, "count": [1, 8] },
+                { "item": "rotten_flesh", "weight": 10, "count": [1, 8] },
+                { "item": "string", "weight": 10, "count": [1, 8] },
+                { "item": "sand", "weight": 10, "count": [1, 8] }
+            ]
+        }
+    ]
+}

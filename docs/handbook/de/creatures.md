@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -330,6 +330,22 @@ Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe)
 **Erscheint in Biomen**
 
 [Sumpf](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-sand_golem"></a>Sandgolem
+
+Ein Golem aus Sand, der den Keller eines Wüstentempels bewacht und jeden angreift, der zu seinen Truhen hinabsteigt; weit folgt er nicht. Es gibt ihn nur dort, bauen kann man ihn nicht. Berührt er einen Wasser-Quellblock, zerfällt er in vier Sandblöcke in der Form seines Bauplans, mit gemeißeltem Sandstein als Kopf; seine Arme fallen als Sand herab und können ein Wasserloch füllen. In einem dunklen Keller ohne Spieler in der Nähe kommt nach einer Weile ein neuer: eine Quelle für erneuerbaren Sand.
+
+| | |
+|---|---|
+| ID | `qtcraft:sand_golem` |
+| Verhalten | Wächter: bleibt an dem Ort, den er bewacht, und greift Spieler an, die ihm nahe kommen |
+| Gesundheit | 60 Lebenspunkte |
+| Größe | 1,4 m breit, 2,7 m hoch |
+| Geschwindigkeit | 0,8 m/s beim Gehen, 2,2 m/s beim Verfolgen |
+| Angriff | 9 Schaden bis 2,3 m, alle 1,5 s |
+| Sieht Spieler bis | 14 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | [Sand](blocks.md#block-qtcraft-sand) (2×), [Sand](blocks.md#block-qtcraft-sand) (50 %), [Goldnugget](items.md#item-qtcraft-gold_nugget) (30 %) |
 
 ### <a id="mob-qtcraft-sheep"></a>Schaf
 

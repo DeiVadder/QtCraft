@@ -2263,3 +2263,13 @@ Ein erster Lauf zeigte GUI-CPU in sprint +13 % und +8 MB: Der Basis-Build stammt
 ## 40.3 (Gamepad-Einstellungen, Profile, Symbole) gerendert (2026-10-19)
 
 Release-Builds, `dev` `28c9cbd` (40.2) gegen `feature/40-3-gamepad-settings` nach der Nachbesserung, `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −4 bis +6 %, Render-CPU −2 bis +4 %, GPU −3 bis −1 %, Speicher +0 bis +1 % (6–7 MB), gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen. Keine Regression.
+
+## 51.1 (Wüstentempel, Sandgolem) Debug, Thread-Zeit (2026-10-19)
+
+- **Generierung** (`test_desert_temples::measureGenerationCost`, frische Generatoren verschränkt, Seed 51): die 12 Chunks dreier Tempel 30,0 → 29,8 Chunks/s, 144 Chunks um einen Tempel 57,6 → 57,9 (im Rauschen; die Planung je Bereich ist eine Handvoll Spalten-Abfragen, die Dorf-Pläne kommen aus dem Zwischenspeicher).
+- **Tick** (`test_sand_golems::farmYieldIsBoundedPerHour`, kleine Testwelt, ein Spieler, eine Zone): Farm-Stunde (72 000 Ticks, 30 Zerfälle) 0,052 ms je Tick, dieselbe Welt ohne Zone 0,034 ms; die Differenz enthält auch fallenden Sand, Flüssigkeiten und das Abräumen durch den Test. Offen für die zentrale Messung: headless `@server` (Tick-Mittel) auf einer Wüstenwelt mit Tempel in Reichweite, Release.
+- **Review 51.1, Planung aus dem Tick-Thread** (`test_scenario_measure` Debug, Seed 51, Sichtweite 8, 31 s Spielzeit, eigene Chat-Zeilen: „Sprünge“ = alle 3 s ein Teleport 3400 Blöcke weiter, „Flug“ = alle 250 ms 40 m nach Osten; je ein Lauf, Rechner mit parallelen Paketen): Mobs-Phase max 12,8 → 1,3 ms (Sprünge), 9,5 → 1,7 ms (Flug), Mittel 0,15 → 0,09 bzw. 0,30 → 0,23 ms; Chunk-Laden max 23,3 → 9,7 ms (Sprünge), 10,2 → 11,4 ms (Flug, Rauschen); Tick max 26,1 → 14,1 bzw. 22,3 → 24,5 ms, Mittel 1,53 → 1,08 bzw. 3,60 → 3,32 ms. Ursache vorher: die Wächter-Prüfung plante nach einem Teleport kalte Dorf- und Tempel-Bereiche im Tick (E-591).
+
+## 51.1 (Wüstentempel, Sandgolem, Wächter-Zonen) headless, Release (2026-10-19)
+
+Release-Builds, `dev` `28c9cbd` gegen `feature/51-1-desert-temple` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, parallel bauende Agenten. Tick −8 bis +3 % in allen Szenarien, explore +3 % (0,218 ms), horde +5 % bei 17 % Streuung (p99 +13 % bei 28 % Streuung, Wächter-Prüfung nur über bereits geplante Regionen), Speicher −1 bis +2 %. Keine Regression. Fenster-Benchmark auf Wunsch des Menschen vorerst ausgesetzt (geschuldet: `@core`).

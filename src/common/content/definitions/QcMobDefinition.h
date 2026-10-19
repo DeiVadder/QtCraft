@@ -121,8 +121,9 @@ struct QcMobDefinition
     // (only with `hostile` and `archer`, decision E-426), neutral ones wander like passive ones until a
     // player provokes them (hurts them, or looks at their head with `gaze`) and then chase that player
     // (decision E-460), golems guard villagers against hostile creatures (only without `hostile`, with
-    // `golem`, decision E-471). Server side only.
-    enum class Ai : quint8 { Passive, Hostile, Villager, Archer, Neutral, Golem };
+    // `golem`, decision E-471), guardians keep to the zone they guard and chase only players who
+    // come within `guardLeash` of it (only with `hostile`, decision E-594). Server side only.
+    enum class Ai : quint8 { Passive, Hostile, Villager, Archer, Neutral, Golem, Guardian };
     Ai ai = Ai::Passive;
     QcMobAbilities abilities;
     // How an archer shoots (Ai::Archer).
@@ -135,6 +136,11 @@ struct QcMobDefinition
     std::optional<QcTeleportDefinition> teleport;
     // Takes and places single blocks (decision E-460).
     std::optional<QcCarryDefinition> carries;
+    // Crumbles into blocks at a liquid's source (decision E-593).
+    std::optional<QcCrumbleDefinition> crumbles;
+    // A guardian (Ai::Guardian) chases players up to this many blocks outside the zone it guards
+    // (`"guardian": {"leash": 6}`, decision E-594). Server side only.
+    double guardLeash = 6.0;
     // Damage it takes every QcBodyBurning::wetIntervalTicks in water or rain (decision E-460); 0 for
     // none. Server side only.
     double waterDamage = 0.0;

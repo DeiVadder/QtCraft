@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -350,6 +350,22 @@ A fish of the cold waters of taiga, tundra and mountains. It swims in schools, f
 **Appears in biomes**
 
 [Mountains](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+
+### <a id="mob-qtcraft-sand_golem"></a>Sand golem
+
+A golem of sand that guards the cellar of a desert temple and attacks whoever climbs down to its chests; it does not follow far. It is found nowhere else and cannot be built. Where it touches a water source block it crumbles into four blocks of sand in the shape of its build, with carved sandstone as its head; its arms fall as sand and can fill a water hole. In a dark cellar with no player close by, a new one comes back after a while: a renewable source of sand.
+
+| | |
+|---|---|
+| ID | `qtcraft:sand_golem` |
+| Behaviour | guardian: keeps to the place it guards and attacks players who come close |
+| Health | 60 health points |
+| Size | 1.4 m wide, 2.7 m tall |
+| Speed | 0.8 m/s walking, 2.2 m/s chasing |
+| Attack | 9 damage within 2.3 m, every 1.5 s |
+| Sees players within | 14 m |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | [Sand](blocks.md#block-qtcraft-sand) (2×), [Sand](blocks.md#block-qtcraft-sand) (50 %), [Gold nugget](items.md#item-qtcraft-gold_nugget) (30 %) |
 
 ### <a id="mob-qtcraft-sheep"></a>Sheep
 

@@ -1,0 +1,22 @@
+{
+    "name": "mob.sand_golem.crumble",
+    "volume": 1.0,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 1.2,
+            "density": 3000,
+            "lowpass": 5000,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 1.4,
+            "attack": 0.05,
+            "curve": 1.0,
+            "lowpass": 1800,
+            "highpass": 150,
+            "gain": 0.6
+        }
+    ]
+}

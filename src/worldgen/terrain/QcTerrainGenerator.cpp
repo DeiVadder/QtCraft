@@ -2,6 +2,7 @@
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
+#include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainMath.h"
 #include "worldgen/terrain/QcTreeShape.h"
@@ -78,13 +79,47 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed, warnings);
     m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed, warnings);
     m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed, warnings);
+    m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed, warnings);
 }
 
 QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing = m_dungeons->furnishingIn(pos);
     m_mineshafts->addFurnishing(pos, furnishing);
+    m_surface->addFurnishing(pos, furnishing);
+    if (const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos)) {
+        m_villages->addFurnishing(pos, *village, furnishing);
+    }
     return furnishing;
+}
+
+QList<QcGuardSite> QcTerrainGenerator::guardSitesNear(QcBlockPos from, int reach) const
+{
+    return m_surface->sitesNear(from, reach) + m_villages->sitesNear(from, reach);
+}
+
+std::optional<QList<QcGuardSite>> QcTerrainGenerator::plannedGuardSitesNear(QcBlockPos from, int reach) const
+{
+    const std::optional<QList<QcGuardSite>> surface = m_surface->plannedSitesNear(from, reach);
+    const std::optional<QList<QcGuardSite>> villages = m_villages->plannedSitesNear(from, reach);
+    if (!surface || !villages) {
+        return std::nullopt;
+    }
+    return *surface + *villages;
+}
+
+std::optional<QcStructurePlacement> QcTerrainGenerator::nearestStructure(const QString &name, QcBlockPos from, int reach) const
+{
+    // Alone or at the centre of a village (decision E-592).
+    std::optional<QcStructurePlacement> alone = m_surface->nearest(name, from, reach);
+    std::optional<QcStructurePlacement> inVillage = m_villages->nearestPiece(name, from, reach);
+    const auto distance = [from](const QcStructurePlacement &found) {
+        return std::hypot(found.origin().x + found.sizeX() / 2.0 - from.x, found.origin().z + found.sizeZ() / 2.0 - from.z);
+    };
+    if (!alone || (inVillage && distance(*inVillage) < distance(*alone))) {
+        return inVillage;
+    }
+    return alone;
 }
 
 QcTerrainGenerator::~QcTerrainGenerator() = default;
@@ -516,6 +551,8 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     }
     // Mine shaft entrances over the trees, cacti and pools (none lies near a village).
     m_mineshafts->buildEntrances(*chunk);
+    // Surface structures over the features (they clear their footprint), never near a village.
+    m_surface->build(*chunk);
     if (village) {
         m_villages->build(*chunk, *village);
     }

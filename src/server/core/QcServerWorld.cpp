@@ -78,8 +78,21 @@ void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
     m_generationPool.submit([this, pos, kept = std::move(kept)]() mutable {
         kept.pos = pos;
         kept.blocks = m_generator->generate(pos);
+        kept.generated = true;
         kept.light = m_light.prepare(*kept.blocks);
         m_generated.push(std::move(kept));
+    });
+}
+
+void QcServerWorld::planGuardSitesInBackground(QcBlockPos from, int reach)
+{
+    if (m_planningSites->exchange(true)) {
+        return;
+    }
+    m_generationPool.submit([this, from, reach, planning = m_planningSites]() {
+        // Only for its plans, which the generator keeps.
+        m_generator->guardSitesNear(from, reach);
+        planning->store(false);
     });
 }
 
@@ -230,6 +243,7 @@ QcServerWorld::Arrival QcServerWorld::produceNow(QcChunkPos pos)
     arrival.pos = pos;
     if (!arrival.blocks) {
         arrival.blocks = m_generator->generate(pos);
+        arrival.generated = true;
     }
     // A background request of the same chunk is superseded; its result is dropped when it comes.
     arrival.request = m_nextRequest++;

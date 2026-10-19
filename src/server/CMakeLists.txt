@@ -119,6 +119,12 @@ target_sources(qc_server PRIVATE
     golems/QcServerGolems.h golems/QcServerGolems.cpp
 )
 target_sources(qc_server PRIVATE
+    guardians/QcCrumbling.h guardians/QcCrumbling.cpp
+    guardians/QcGuardianBrain.h guardians/QcGuardianBrain.cpp
+    guardians/QcGuardians.h guardians/QcGuardians.cpp
+    guardians/QcGuardPost.h
+)
+target_sources(qc_server PRIVATE
     items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
     items/QcItemEntityManager.h items/QcItemEntityManager.cpp
     items/QcServerExperience.h items/QcServerExperience.cpp

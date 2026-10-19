@@ -2,6 +2,7 @@
 
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcStructureSiteParser.h"
 #include "common/content/parser/QcStructureVariationParser.h"
 #include "common/content/registry/QcContentNames.h"
 
@@ -348,6 +349,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
         parseCarts(json, structure, reader, packNamespace);
         parseSpawnersAndLoot(json, structure, reader, packNamespace);
         QcStructureVariationParser::parseVariation(json, keys, structure, reader, packNamespace);
+        QcStructureSiteParser::parseSite(json, structure, reader, packNamespace);
     }
 
     if (!reader.ok()) {

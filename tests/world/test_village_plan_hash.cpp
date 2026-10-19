@@ -163,9 +163,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64(42) << QByteArray("991dfd341af186c56b806cb3c9b77f9eace26c5739d65fd2c6706717815847b3") << 176;
-        QTest::newRow("seed 7") << qint64(7) << QByteArray("9a73ca2f9dd7f971e40b2d55f371cbf17453055f1801e07000b6c4162eb296b0") << 171;
-        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("d5d044404c7bd49abc1aa62841b43015620db5a92106207409763e2967d484b3") << 169;
+        QTest::newRow("seed 42") << qint64(42) << QByteArray("b98ba46307912328c9943137a09eec30de7824d06597b6791dda4a98934437d7") << 176;
+        QTest::newRow("seed 7") << qint64(7) << QByteArray("ff264776053e75ef8de86ff13fbd4faff1560edde46f33b254c5af99eb32028a") << 171;
+        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("b0df7ee174e3ff83023704e58852e6b9128e51f59d782f51aa8f29af55dc5a49") << 169;
     }
 
     void plansStayTheSame()
@@ -177,6 +177,41 @@ private slots:
         qInfo().noquote() << u"seed %1: %2 villages, plans %3"_s.arg(seed).arg(villages).arg(QString::fromLatin1(hash));
         QCOMPARE(villages, expectedVillages);
         QCOMPARE(hash, expected);
+    }
+
+    // The rare centre (decision E-592) is drawn from the region's own position: every village
+    // without it is planned exactly as with the chance at 0, field by field (the same content, so the
+    // same state ids), and some desert villages have it.
+    void theRareCentreLeavesOtherVillagesAlone()
+    {
+        auto plain = std::make_shared<QcContentRegistry>(*m_content);
+        QcVillageStyleDefinition desert = *std::ranges::find(plain->villageStyles(), u"qtcraft:desert"_s, &QcVillageStyleDefinition::name);
+        QVERIFY(desert.rareCentreChance > 0.0);
+        desert.rareCentreChance = 0.0;
+        plain->registerVillageStyle(desert);
+        const QcTerrainGenerator withCentre(m_content, 42);
+        const QcTerrainGenerator without(plain, 42);
+        QCryptographicHash withHash(QCryptographicHash::Sha256);
+        QCryptographicHash withoutHash(QCryptographicHash::Sha256);
+        int rare = 0;
+        for (int rz = -rings; rz <= rings; ++rz) {
+            for (int rx = -rings; rx <= rings; ++rx) {
+                const std::shared_ptr<const QcVillagePlan> plan = withCentre.villages().regionPlan(rx, rz);
+                const std::shared_ptr<const QcVillagePlan> other = without.villages().regionPlan(rx, rz);
+                QCOMPARE(bool(plan), bool(other));
+                if (plan && plan->pieces.front().structure().name() == desert.rareCentre) {
+                    ++rare;
+                    continue;
+                }
+                if (plan) {
+                    addPlan(withHash, *plan);
+                    addPlan(withoutHash, *other);
+                }
+            }
+        }
+        qInfo().noquote() << u"%1 villages around the rare centre"_s.arg(rare);
+        QVERIFY(rare > 0);
+        QCOMPARE(withHash.result().toHex(), withoutHash.result().toHex());
     }
 };
 

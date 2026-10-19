@@ -121,19 +121,19 @@ void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
     using Ai = QcMobDefinition::Ai;
     static const QHash<QString, Ai> names = {
         {u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}, {u"archer"_s, Ai::Archer},
-        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}};
+        {u"neutral"_s, Ai::Neutral}, {u"golem"_s, Ai::Golem}, {u"guardian"_s, Ai::Guardian}};
     const Ai fallback = mob.villager ? Ai::Villager : mob.hostile ? Ai::Hostile : Ai::Passive;
     const QString name = reader.string(u"ai"_s, names.key(fallback));
     if (!names.contains(name)) {
-        reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral or golem"_s);
+        reader.fail(u"'ai' must be passive, hostile, villager, archer, neutral, golem or guardian"_s);
         return;
     }
 
     mob.ai = names.value(name);
     if ((mob.ai == Ai::Villager) != mob.villager) {
         reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
-    } else if ((mob.ai == Ai::Hostile || mob.ai == Ai::Archer) && !mob.hostile) {
-        reader.fail(u"the hostile and archer AIs need 'hostile': true"_s);
+    } else if ((mob.ai == Ai::Hostile || mob.ai == Ai::Archer || mob.ai == Ai::Guardian) && !mob.hostile) {
+        reader.fail(u"the hostile, archer and guardian AIs need 'hostile': true"_s);
     } else if (mob.ai == Ai::Golem && (mob.hostile || mob.flying)) {
         reader.fail(u"the golem AI is for peaceful walkers"_s);
     }

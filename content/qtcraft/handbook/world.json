@@ -6,7 +6,8 @@
         "time",
         "liquids",
         "ice",
-        "mineshafts"
+        "mineshafts",
+        "temples"
     ],
     "related": [
         "water",
@@ -18,6 +19,8 @@
         "spawner",
         "cobweb",
         "chest_minecart",
-        "rail"
+        "rail",
+        "sand",
+        "carved_sandstone"
     ]
 }

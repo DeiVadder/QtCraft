@@ -102,7 +102,8 @@ private slots:
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
         QCOMPARE(limits.spawnerCreatures, 256);
-        QCOMPARE(keys.size(), qsizetype(65));
+        QCOMPARE(limits.guardians, 64);
+        QCOMPARE(keys.size(), qsizetype(66));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

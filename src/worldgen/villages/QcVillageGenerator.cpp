@@ -40,6 +40,60 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::planFor(QcChunkPos chun
     return regionPlan(regionOf(chunk.x * QcWorld::chunkSize, spacing), regionOf(chunk.z * QcWorld::chunkSize, spacing));
 }
 
+void QcVillageGenerator::addFurnishing(QcChunkPos pos, const QcVillagePlan &plan, QcChunkFurnishing &furnishing) const
+{
+    for (const QcStructurePlacement &piece : plan.pieces) {
+        if (piece.structure().loot.isEmpty() || !piece.overlaps(pos)) {
+            continue;
+        }
+        for (const QcStructureDefinition::Loot &loot : piece.structure().loot) {
+            const QcBlockPos at = piece.toWorld(loot.at);
+            if (at.chunk() == pos) {
+                furnishing.chests.append({at, loot.table, quint64(qHashMulti(0x403u, at.x, at.y, at.z))});
+            }
+        }
+    }
+}
+
+QList<QcGuardSite> QcVillageGenerator::sitesNear(QcBlockPos from, int reach) const
+{
+    return collectSites(from, reach, true).value_or(QList<QcGuardSite>{});
+}
+
+std::optional<QList<QcGuardSite>> QcVillageGenerator::plannedSitesNear(QcBlockPos from, int reach) const
+{
+    return collectSites(from, reach, false);
+}
+
+std::optional<QList<QcGuardSite>> QcVillageGenerator::collectSites(QcBlockPos from, int reach, bool mayPlan) const
+{
+    const int spacing = m_planner.spacing();
+    QList<QcGuardSite> sites;
+    for (int rz = regionOf(from.z - reach, spacing); rz <= regionOf(from.z + reach, spacing); ++rz) {
+        for (int rx = regionOf(from.x - reach, spacing); rx <= regionOf(from.x + reach, spacing); ++rx) {
+            const std::optional<std::shared_ptr<const QcVillagePlan>> plan = mayPlan ? regionPlan(rx, rz) : m_cache.planned(rx, rz);
+            if (!plan) {
+                return std::nullopt;
+            }
+            if (*plan) {
+                sites.append(sitesOf(**plan));
+            }
+        }
+    }
+    return sites;
+}
+
+QList<QcGuardSite> QcVillageGenerator::sitesOf(const QcVillagePlan &plan)
+{
+    QList<QcGuardSite> sites;
+    for (const QcStructurePlacement &piece : plan.pieces) {
+        if (!piece.structure().guardians.isEmpty()) {
+            sites.append(QcGuardSite::of(piece));
+        }
+    }
+    return sites;
+}
+
 std::shared_ptr<const QcVillagePlan> QcVillageGenerator::nearest(QcBlockPos from, int reach) const
 {
     const int spacing = m_planner.spacing();
@@ -59,6 +113,30 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::nearest(QcBlockPos from
                 bestDistance = distance;
                 best = std::move(plan);
             }
+        }
+    }
+    return best;
+}
+
+std::optional<QcStructurePlacement> QcVillageGenerator::nearestPiece(const QString &name, QcBlockPos from, int reach) const
+{
+    const int spacing = m_planner.spacing();
+    QList<QcStructurePlacement> pieces;
+    for (int rz = regionOf(from.z - reach, spacing); rz <= regionOf(from.z + reach, spacing); ++rz) {
+        for (int rx = regionOf(from.x - reach, spacing); rx <= regionOf(from.x + reach, spacing); ++rx) {
+            if (const std::shared_ptr<const QcVillagePlan> plan = regionPlan(rx, rz)) {
+                pieces.append(plan->pieces);
+            }
+        }
+    }
+
+    std::optional<QcStructurePlacement> best;
+    double bestDistance = double(reach);
+    for (const QcStructurePlacement &piece : std::as_const(pieces)) {
+        const double distance = std::hypot(piece.origin().x + piece.sizeX() / 2.0 - from.x, piece.origin().z + piece.sizeZ() / 2.0 - from.z);
+        if (piece.structure().name() == name && distance <= bestDistance) {
+            bestDistance = distance;
+            best = piece;
         }
     }
     return best;

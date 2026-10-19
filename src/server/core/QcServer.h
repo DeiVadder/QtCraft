@@ -92,6 +92,8 @@ public:
     QcEntities &entities() { return m_state.entities(); }
     const QcEntities &entities() const { return m_state.entities(); }
     QcMobManager &mobs() { return m_state.entities().creatures(); }
+    // The creatures in the tick: guardians and crumbling (decisions E-591, E-593) for tests.
+    const QcServerCreatures &creatures() const { return m_creatures; }
     QcItemEntityManager &items() { return m_state.entities().items(); }
     QcPlantManager &plants() { return m_state.plants(); }
     // State that belongs to single blocks (decision E-357) and the rules of machines.

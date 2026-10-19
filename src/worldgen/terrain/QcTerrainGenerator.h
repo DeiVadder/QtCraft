@@ -16,6 +16,7 @@
 
 class QcDungeonGenerator;
 class QcMineshaftGenerator;
+class QcSurfaceStructures;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
 
@@ -47,6 +48,11 @@ public:
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
     const QcDungeonGenerator &dungeons() const { return *m_dungeons; }
     const QcMineshaftGenerator &mineshafts() const { return *m_mineshafts; }
+    // Structures it places by itself (decision E-590): the desert temple.
+    const QcSurfaceStructures &surfaceStructures() const { return *m_surface; }
+    QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
+    [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
+    [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -106,6 +112,8 @@ private:
     std::unique_ptr<QcDungeonGenerator> m_dungeons;
     // Created after the dungeons: its plans keep clear of them.
     std::unique_ptr<QcMineshaftGenerator> m_mineshafts;
+    // Created after the villages: its plans keep clear of them.
+    std::unique_ptr<QcSurfaceStructures> m_surface;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

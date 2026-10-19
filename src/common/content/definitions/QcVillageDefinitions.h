@@ -191,6 +191,11 @@ struct QcVillageStyleDefinition
     bool fallback = false;
     // The meeting point in the middle (a well with the bell); its centre lies on the village centre.
     QString centre;
+    // Taken instead of `centre` with `rareCentreChance` per village (decision E-592; the desert
+    // temple in the middle of a desert village; `"rareCentre": {"structure", "chance"}`), where its
+    // larger footprint fits the ground; empty: always `centre`.
+    QString rareCentre;
+    double rareCentreChance = 0.0;
     // Stands at the road sides every lampSpacing blocks (a lamp post); empty: no lamps.
     QString lamp;
     QList<QcVillagePiece> pieces;

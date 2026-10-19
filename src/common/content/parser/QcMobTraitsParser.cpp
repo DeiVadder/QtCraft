@@ -139,6 +139,28 @@ void parseWaterAndMilk(QcMobDefinition &mob, QcJsonFieldReader &reader, const QS
     });
 }
 
+// Crumbling at a liquid's source and guarding a zone (decisions E-593, E-594): "crumbles" and
+// "guardian".
+void parseGuardian(QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"crumbles"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcCrumbleDefinition &crumbles = mob.crumbles.emplace();
+        crumbles.liquid = nested.name(u"liquid"_s, packNamespace);
+        crumbles.body = nested.name(u"body"_s, packNamespace);
+        crumbles.head = nested.name(u"head"_s, packNamespace);
+        crumbles.sound = nested.name(u"sound"_s, packNamespace);
+        if (nested.ok() && (crumbles.liquid.isEmpty() || crumbles.body.isEmpty() || crumbles.head.isEmpty())) {
+            nested.fail(u"needs a 'liquid', a 'body' and a 'head' block"_s);
+        }
+    });
+    reader.nestedObject(u"guardian"_s, [&mob](const QJsonObject &, QcJsonFieldReader &nested) {
+        mob.guardLeash = nested.number(u"leash"_s, mob.guardLeash, 0.0, 32.0);
+    });
+    if (reader.ok() && mob.crumbles && (mob.flying || mob.aquatic)) {
+        reader.fail(u"'crumbles' goes with creatures that walk on land"_s);
+    }
+}
+
 } // namespace
 
 namespace QcMobTraitsParser {
@@ -154,6 +176,7 @@ void parseTraits(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReade
     mob.waterDamage = reader.number(u"waterDamage"_s, 0.0, 0.0, 100.0);
     parseCompanions(mob, reader, packNamespace);
     parseWaterAndMilk(mob, reader, packNamespace);
+    parseGuardian(mob, reader, packNamespace);
 
     // Being provoked by a look and carrying blocks are what the neutral AI does.
     if (reader.ok() && (json.contains(u"gaze"_s) || json.contains(u"carries"_s)) && mob.ai != QcMobDefinition::Ai::Neutral) {

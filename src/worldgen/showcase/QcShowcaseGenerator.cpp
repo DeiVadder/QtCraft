@@ -3,6 +3,8 @@
 #include "worldgen/showcase/QcShowcasePlanner.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
+#include <algorithm>
+
 QcShowcaseGenerator::QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content, QStringList *warnings)
     : m_content(std::move(content))
     , m_plan(QcShowcasePlanner(*m_content, warnings).build())
@@ -36,4 +38,17 @@ std::shared_ptr<const QcVillagePlan> QcShowcaseGenerator::villageFor(QcChunkPos 
         }
     }
     return nullptr;
+}
+
+QList<QcGuardSite> QcShowcaseGenerator::guardSitesNear(QcBlockPos from, int reach) const
+{
+    QList<QcGuardSite> sites;
+    for (const QcGuardSite &site : m_plan.guardSites) {
+        const int dx = std::max({site.min.x - from.x, 0, from.x - site.max.x});
+        const int dz = std::max({site.min.z - from.z, 0, from.z - site.max.z});
+        if (dx <= reach && dz <= reach) {
+            sites.append(site);
+        }
+    }
+    return sites;
 }

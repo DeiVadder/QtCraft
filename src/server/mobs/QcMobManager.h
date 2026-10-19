@@ -116,7 +116,8 @@ public:
     // Teleports the creature to a safe place near it (QcMobTeleport) when its kind teleports and it
     // may now; true when it did.
     bool teleport(quint32 mobId, const QcBlockAccess &world);
-    // Keeps a creature with the world (persistent, with a persistent id) from now on, or no longer.
+    // Keeps a creature with the world (persistent, with a persistent id) from now on, or no longer;
+    // never a guardian (QcCreature::guards, decision E-591).
     void keep(QcCreature &mob, bool kept);
     // Lets the creature carry the block state (qcAirBlockId: none) with its item in the hand.
     void carryBlock(QcCreature &mob, QcBlockId block) const;

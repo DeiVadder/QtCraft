@@ -62,13 +62,13 @@ QcPhysics::Steering QcGolemBrain::think(QcCreature &mob, const QcMobDefinition &
         return pursue(mob, definition, hunted->motion.position, context, mayPlan);
     }
 
-    keepToVillage(mob, context);
+    keepToVillage(mob, context, definition.walkSpeed);
     const QcPhysics::Steering steering = wander(mob, definition, context, mayPlan);
     mob.lastSpeed = steering.speed;
     return steering;
 }
 
-void QcGolemBrain::keepToVillage(QcCreature &mob, const Context &context)
+void QcGolemBrain::keepToVillage(QcCreature &mob, const Context &context, double walkSpeed)
 {
     // Golems a player built go where they like; so do golems far from every village.
     if (!mob.golem || mob.golem->playerBuilt || mob.fleeTimer > 0.0) {
@@ -93,7 +93,8 @@ void QcGolemBrain::keepToVillage(QcCreature &mob, const Context &context)
         const QcVec3 centre{home->centre.x + 0.5, double(home->centre.y), home->centre.z + 0.5};
         mob.path.clear();
         QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Wander, centre, 0);
-        mob.wanderTimer = std::max(mob.wanderTimer, 2.0);
+        // Long enough to walk there: the next stroll does not cut the way back short.
+        mob.wanderTimer = std::max(mob.wanderTimer, 2.0 + (centre - mob.motion.position).length() / std::max(0.1, walkSpeed));
     }
 }
 

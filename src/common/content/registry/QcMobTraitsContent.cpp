@@ -62,6 +62,14 @@ QStringList checkStructurePets(const QcContentRegistry &content)
 QStringList resolve(const QcContentRegistry &content, QcMobDefinition &mob)
 {
     QStringList warnings = resolveTame(content, mob);
+    // A creature whose crumbling names an unknown liquid or block does not crumble (decision E-593).
+    if (mob.crumbles) {
+        const std::optional<QcBlockId> liquid = content.blockId(mob.crumbles->liquid);
+        if (!liquid || !content.block(*liquid).liquid || !content.blockId(mob.crumbles->body) || !content.blockId(mob.crumbles->head)) {
+            warnings.append(u"mob '%1': crumbles at an unknown liquid or into an unknown block; it does not crumble"_s.arg(mob.name));
+            mob.crumbles.reset();
+        }
+    }
     if (!mob.carries) {
         return warnings;
     }

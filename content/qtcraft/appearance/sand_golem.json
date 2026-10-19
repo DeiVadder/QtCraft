@@ -1,0 +1,13 @@
+{
+    "name": "sand_golem",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {"texture": "sandstone", "tint": "none"},
+        "face": {"texture": "sand_golem_face", "tint": "none"},
+        "torso": {"texture": "sand_golem_skin", "tint": "none"},
+        "waist": {"texture": "sand_golem_skin", "tint": "none"},
+        "arm": {"texture": "sand_golem_skin", "tint": "none"},
+        "legs": {"texture": "sand_golem_skin", "tint": "none"}
+    }
+}

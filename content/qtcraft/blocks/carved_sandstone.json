@@ -1,0 +1,23 @@
+{
+    "name": "carved_sandstone",
+    "sound": "stone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "top": "sandstone_top",
+        "bottom": "sandstone_top",
+        "side": "sandstone",
+        "north": "carved_sandstone_face"
+    }
+}

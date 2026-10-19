@@ -10,8 +10,9 @@ class QcServerState;
 // empty and a cart taken away does not come back.
 namespace QcFurnishing {
 
-// Furnishes the loaded chunk at `pos` unless it is furnished already, has no spawner, no block with
-// storage and no rail, or the generator has nothing for it.
+// Furnishes the loaded chunk at `pos` unless it is furnished already or has no spawner, no block with
+// storage and no rail; a chunk the generator has nothing for is marked furnished too. Called for
+// chunks whose blocks were just generated (the generator's plans for them are made; tick thread).
 void furnish(QcServerState &state, QcChunkPos pos);
 
 } // namespace QcFurnishing

@@ -347,6 +347,13 @@ void readPlacement(QcVillageStyleDefinition &style, const QJsonObject &json, con
     style.fallback = reader.boolean(u"fallback"_s, extending && style.fallback);
     style.centre = reader.name(u"centre"_s, packNamespace, extending ? style.centre : QString());
     style.lamp = reader.name(u"lamp"_s, packNamespace, extending ? style.lamp : QString());
+    reader.nestedObject(u"rareCentre"_s, [&style, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        style.rareCentre = nested.name(u"structure"_s, packNamespace);
+        style.rareCentreChance = nested.number(u"chance"_s, 0.25, 0.0, 1.0);
+        if (style.rareCentre.isEmpty()) {
+            nested.fail(u"needs a 'structure'"_s);
+        }
+    });
     if (reads(json, u"path"_s, extending)) {
         style.roads = readWeightedList<QcVillageRoad>(json, u"path"_s, packNamespace, QcVillageStyleDefinition::maxRoads, reader);
         if (style.roads.isEmpty()) {

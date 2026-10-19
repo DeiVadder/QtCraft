@@ -156,5 +156,7 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
     structure->minecarts = base.minecarts;
     structure->spawners = base.spawners;
     structure->loot = base.loot;
+    structure->guardians = base.guardians;
+    structure->groundLayer = base.groundLayer;
     return structure;
 }

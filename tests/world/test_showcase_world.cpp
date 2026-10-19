@@ -748,6 +748,49 @@ private slots:
         QCOMPARE(torches, 1);
     }
 
+    // The desert temple station (decisions E-591, E-593): its cellar gets a sand golem that keeps to
+    // it, and the golem of its farm appears on the pillar in the pool and crumbles into sand and its
+    // head, with a viewer in reach but not too close.
+    void theDesertTempleStationGuardsAndCrumbles()
+    {
+        QcServerConfig config;
+        config.generator = u"showcase"_s;
+        config.viewDistance = 4;
+        const auto generator = std::make_shared<QcShowcaseGenerator>(m_content);
+        const auto station = std::ranges::find_if(generator->plan().placements, [](const QcStructurePlacement &placement) {
+            return placement.structure().name() == u"qtcraft:desert_temple_station"_s;
+        });
+        QVERIFY(station != generator->plan().placements.end());
+        const QList<QcGuardSite> sites = QcGuardSite::of(*station);
+        QCOMPARE(sites.size(), 2);
+        const QcBlockPos middle = station->toWorld(QcBlockPos{13, 0, 4});
+        config.spawnColumn = std::array<int, 2>{middle.x, middle.z + 20};
+        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        QVERIFY(server.openWorld());
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
+        QcRawClient client(std::move(clientEnd));
+        client.hello(u"Viewer"_s);
+        pump();
+
+        const int golem = *m_content->mobIndex(u"qtcraft:sand_golem"_s);
+        const auto guarding = [&](const QcGuardSite &site) {
+            return std::ranges::count_if(server.mobs().mobs(), [&](const QcCreature &mob) { return mob.type == golem && mob.guards && mob.guards->site == site.id; });
+        };
+        int ticks = 0;
+        for (; ticks < 800 && (guarding(sites[0]) == 0 || server.creatures().crumbling().crumbled() == 0); ++ticks) {
+            server.tick();
+            pump();
+        }
+        QVERIFY2(guarding(sites[0]) == 1, qPrintable(QString::number(ticks)));
+        QVERIFY2(server.creatures().crumbling().crumbled() >= 1, qPrintable(QString::number(ticks)));
+        // The pillar carries the crumbled golem's feet, the cellar's golem stands in the cellar.
+        const QcBlockPos pad = station->toWorld(QcBlockPos{22, 1, 4});
+        QCOMPARE(m_content->block(*server.world().blockAt(pad)).name, u"qtcraft:sand"_s);
+        const auto cellarGolem = std::ranges::find_if(server.mobs().mobs(), [&](const QcCreature &mob) { return mob.guards && mob.guards->site == sites[0].id; });
+        QVERIFY(sites[0].contains(QcPhysics::blockContaining(cellarGolem->motion.position)));
+    }
+
     void noCreatureSpawnsByItselfWithoutTheRule()
     {
         // The test terrain is grass: with spawning on, animals come with new chunks and around players.

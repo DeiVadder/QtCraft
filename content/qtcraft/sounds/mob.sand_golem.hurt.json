@@ -1,0 +1,25 @@
+{
+    "name": "mob.sand_golem.hurt",
+    "volume": 0.9,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.25,
+            "density": 1500,
+            "lowpass": 4000,
+            "gain": 0.5
+        },
+        {
+            "wave": "square",
+            "duration": 0.2,
+            "frequency": 150,
+            "endFrequency": 110,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 900,
+            "gain": 0.4
+        }
+    ]
+}

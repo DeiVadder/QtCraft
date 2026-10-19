@@ -205,13 +205,17 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         // Burning fires go on with their steps (decision E-392); fire blocks left without one are
         // adopted as new sparks in the next fire step.
         m_state.world().fires().restore(arrival.blockEntities.fires, upcomingTick(), *chunk);
-        // Spawners go on with their kinds and delays; a chunk not furnished yet gets the generator's
-        // chest loot and spawner kinds (decision E-520).
+        // Spawners go on with their kinds and delays; a chunk not furnished yet whose blocks were just
+        // generated gets the generator's chest loot and spawner kinds (decision E-520). Blocks read
+        // from disk were generated and furnished when they first came; asking again would plan
+        // regions on the tick thread for nothing.
         m_state.world().spawners().restore(arrival.blockEntities.spawners, *chunk);
         if (arrival.blockEntities.furnished) {
             m_state.world().noteFurnished(pos);
         }
-        QcFurnishing::furnish(m_state, pos);
+        if (arrival.generated) {
+            QcFurnishing::furnish(m_state, pos);
+        }
     }
 
     const bool commandMode = m_updates.commandMode();

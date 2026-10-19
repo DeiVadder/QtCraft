@@ -42,6 +42,10 @@ struct QcServerLimits
     // Awake creatures from monster spawners in the world at most (decision E-520); spawners wait
     // while there are as many. They do not count against the natural caps per player.
     qint64 spawnerCreatures = 256;
+    // Awake guardians of structure zones in the world at most (decision E-591; sand golems in
+    // desert temples); zones bring forth none while there are as many (0: none at all). Each zone
+    // also keeps to its own `max`.
+    qint64 guardians = 64;
     // Block entities in the world at most (decision E-357): containers (chests, barrels, hoppers,
     // dispensers), machines (furnaces) and growing saplings. Placing a chest or machine beyond is
     // refused, a sapling beyond does not grow.

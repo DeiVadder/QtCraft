@@ -79,6 +79,7 @@
                 "block:qtcraft:cactus",
                 "block:qtcraft:carrot_crop",
                 "block:qtcraft:carved_pumpkin",
+                "block:qtcraft:carved_sandstone",
                 "block:qtcraft:chest",
                 "block:qtcraft:chunk_loader",
                 "block:qtcraft:clay",
@@ -500,6 +501,7 @@
                 "mob:qtcraft:ocelot",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:salmon",
+                "mob:qtcraft:sand_golem",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:silverfish",
                 "mob:qtcraft:skeleton",
@@ -10973,6 +10975,126 @@
             ],
             "text": "A pumpkin with a face, carved with shears. Put it on four iron blocks in a T to build an iron golem.",
             "title": "Carved pumpkin"
+        },
+        "block:qtcraft:carved_sandstone": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Carved sandstone",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:carved_sandstone"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.8"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "4 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.1 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:carved_sandstone",
+            "id": "block:qtcraft:carved_sandstone",
+            "name": "qtcraft:carved_sandstone",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Sandstone with a face: the head that a sand golem leaves behind when it crumbles in water.",
+            "title": "Carved sandstone"
         },
         "block:qtcraft:chest": {
             "category": "blocks",
@@ -40671,6 +40793,20 @@
                 {
                     "links": [
                         {
+                            "icon": "",
+                            "note": "2×, 50 %",
+                            "target": "mob:qtcraft:sand_golem",
+                            "text": "Sand golem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:golden_shovel",
                             "note": "level 1",
                             "target": "item:qtcraft:golden_shovel",
@@ -55875,6 +56011,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Desert temples stand alone in the desert, and some desert villages are built around one. Climb down the ladder at the back of the hall into the dark cellar: four chests hold gold, emeralds and now and then diamonds, guarded by a sand golem. It attacks whoever comes within a few blocks of its cellar and returns there. A sand golem that touches a water source block crumbles into four blocks of sand and a carved sandstone head; a block without room drops as an item (with the game rule mobGriefing off the whole build drops as items). Its arms fall as sand and can fill the water they land in. While fewer golems guard the cellar than it holds (one), a new one appears in the cellar after 120 s (in a cellar seen for the first time since the world was loaded, after 60 s), as long as the cellar is dark (block light at most 7), no player is closer than 12 blocks and one is within 48 blocks. A sand farm: dig holes one block deep into the cellar floor, pour water into them, keep the cellar dark and wait a little away from it; a new golem appears on the dry floor beside the water and crumbles at once (a cellar full of water stays empty). Its arms stand beside its middle, left and right of where it looks, and fall to the floor: a hole right beside its feet fills with sand. Place the holes diagonally next to the golem's spot (it touches them, its arms miss them) or keep the falling sand off them with a block. That gives at most 120 blocks of sand and 30 heads per hour and temple. The sand fills the cellar until you dig it out.",
+                    "title": "Desert temples and sand golems"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -55934,6 +56078,18 @@
                             "note": "",
                             "target": "block:qtcraft:rail",
                             "text": "Rail"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
                         }
                     ],
                     "recipes": [
@@ -61855,6 +62011,12 @@
                             "text": "Brown terracotta"
                         },
                         {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "level 2",
                             "target": "block:qtcraft:chunk_loader",
@@ -63603,6 +63765,20 @@
                     ],
                     "text": "",
                     "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "30 %",
+                            "target": "mob:qtcraft:sand_golem",
+                            "text": "Sand golem"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
                 }
             ],
             "text": "A ninth of a gold ingot.",
@@ -64545,6 +64721,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:brown_terracotta",
                             "text": "Brown terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
                         },
                         {
                             "icon": "qtcraft:coal_ore",
@@ -66884,6 +67066,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:brown_terracotta",
                             "text": "Brown terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
                         },
                         {
                             "icon": "qtcraft:chunk_loader",
@@ -71985,6 +72173,12 @@
                             "text": "Brown terracotta"
                         },
                         {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "level 2",
                             "target": "block:qtcraft:chunk_loader",
@@ -73799,6 +73993,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:brown_terracotta",
                             "text": "Brown terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:carved_sandstone",
+                            "note": "level 1",
+                            "target": "block:qtcraft:carved_sandstone",
+                            "text": "Carved sandstone"
                         },
                         {
                             "icon": "qtcraft:coal_ore",
@@ -76348,6 +76548,94 @@
             ],
             "text": "A fish of the cold waters of taiga, tundra and mountains. It swims in schools, flops about on land and suffocates there after a while. Catch it alive with a water bucket.",
             "title": "Salmon"
+        },
+        "mob:qtcraft:sand_golem": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Sand golem",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:sand_golem"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "guardian: keeps to the place it guards and attacks players who come close"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "60 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "1.4 m wide, 2.7 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "0.8 m/s walking, 2.2 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "9 damage within 2.3 m, every 1.5 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "14 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself (/summon, showcase world)"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "2×",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "50 %",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:gold_nugget",
+                            "note": "30 %",
+                            "target": "item:qtcraft:gold_nugget",
+                            "text": "Gold nugget"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:sand",
+            "id": "mob:qtcraft:sand_golem",
+            "name": "qtcraft:sand_golem",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A golem of sand that guards the cellar of a desert temple and attacks whoever climbs down to its chests; it does not follow far. It is found nowhere else and cannot be built. Where it touches a water source block it crumbles into four blocks of sand in the shape of its build, with carved sandstone as its head; its arms fall as sand and can fill a water hole. In a dark cellar with no player close by, a new one comes back after a while: a renewable source of sand.",
+            "title": "Sand golem"
         },
         "mob:qtcraft:sheep": {
             "category": "creatures",
@@ -79776,7 +80064,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Carved sandstone, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {

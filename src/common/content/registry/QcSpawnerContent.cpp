@@ -89,6 +89,12 @@ QStringList checkStructures(const QcContentRegistry &content)
                 warnings.append(u"structure '%1': spawner with %2, it spawns nothing"_s.arg(structure.name, problem));
             }
         }
+        // Guardian zones (decision E-591) bring forth the same kinds a spawner may.
+        for (const QcStructureDefinition::Guardian &guardian : structure.guardians) {
+            if (const QString problem = problemWith(content, guardian.mob); !problem.isEmpty()) {
+                warnings.append(u"structure '%1': guardians with %2, none come"_s.arg(structure.name, problem));
+            }
+        }
         for (const QcStructureDefinition::Loot &loot : structure.loot) {
             if (!content.lootTables().find(loot.table)) {
                 warnings.append(u"structure '%1': unknown loot table '%2', the chest stays empty"_s.arg(structure.name, loot.table));

@@ -9,6 +9,7 @@
 #include "server/entities/QcEntity.h"
 #include "server/entities/QcHurtWindow.h"
 #include "server/golems/QcGolemState.h"
+#include "server/guardians/QcGuardPost.h"
 #include "server/mobs/QcArcherState.h"
 #include "server/mobs/QcTameState.h"
 #include "server/pathing/QcMobPath.h"
@@ -84,6 +85,11 @@ struct QcCreature : QcEntity
     // `maxNearby` and QcServerLimits::spawnerCreatures, not against the natural caps. Not saved
     // (spawned creatures are not persistent).
     std::optional<QcBlockPos> spawner;
+    // The zone it guards (decision E-594; a sand golem in its temple's cellar): it came there by the
+    // zone's rule (QcGuardians, decision E-591), counts against the zone's `max` and
+    // QcServerLimits::guardians, not against the natural caps. Not saved (guardians are not
+    // persistent).
+    std::optional<QcGuardPost> guards;
     // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411): a component
     // only creatures of a villager kind have (decision E-423).
     QcComponent<QcVillager> villager;

@@ -25,6 +25,9 @@ public:
     // The region's plan: cached, held elsewhere, or planned with `planner` outside the lock (two
     // threads planning the same region at once both plan it; the first one stored is kept).
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> plan(int regionX, int regionZ, const Planner &planner) const;
+    // The region's plan when it is cached or held elsewhere (a null plan: no village); std::nullopt
+    // when it is not planned yet. Never plans.
+    [[nodiscard]] std::optional<std::shared_ptr<const QcVillagePlan>> planned(int regionX, int regionZ) const;
 
     qsizetype capacity() const { return m_capacity; }
     qsizetype size() const;

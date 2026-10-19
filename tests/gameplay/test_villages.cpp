@@ -416,6 +416,16 @@ private slots:
         QVERIFY(lines.front().contains(u"\"id\":\"77\""_s));
     }
 
+    // /locate also finds the structures the generator places by itself (decision E-590).
+    void locateFindsSurfaceStructures()
+    {
+        join({}, std::make_unique<QcTerrainGenerator>(m_content, 51));
+        const QString temple = answer(u"/locate desert_temple"_s);
+        QVERIFY2(temple.startsWith(u"qtcraft:desert_temple at "_s) && temple.endsWith(u" blocks away"_s), qPrintable(temple));
+        const QString nothing = answer(u"/locate no_such_structure"_s);
+        QVERIFY2(nothing.startsWith(u"No structure qtcraft:no_such_structure within"_s), qPrintable(nothing));
+    }
+
     void plannedVillagesAreFoundBeforeTheyAreBuilt()
     {
         join({}, std::make_unique<QcTerrainGenerator>(m_content, 42));

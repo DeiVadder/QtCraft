@@ -52,6 +52,8 @@ QcResult<QcStructure> QcStructure::fromDefinition(const QcStructureDefinition &d
     structure.minecarts = definition.minecarts;
     structure.spawners = definition.spawners;
     structure.loot = definition.loot;
+    structure.guardians = definition.guardians;
+    structure.groundLayer = definition.groundLayer;
     return structure;
 }
 

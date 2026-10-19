@@ -8,6 +8,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <optional>
+
 // A building made of blocks, defined in data (structures/*.json, decision E-219): a palette of block
 // states and the palette key of every cell, plus what a placed copy brings along: creatures,
 // contents of chests and machines, armour stands, labels, block updates to run (liquids start to flow, sand
@@ -91,6 +93,45 @@ struct QcStructureDefinition
         QString table;
     };
 
+    // A zone of the structure whose guardians come back by themselves (decision E-591; `"guardians"`):
+    // while fewer than `max` creatures of `mob` that belong to the zone are awake, at most one comes
+    // every `cooldownSeconds` into a cell of the box `from`..`to` (local, both corners inside) with
+    // block light at most `maxLight`, when no living player is within `minPlayerDistance` of the box
+    // and one is within `maxPlayerDistance` (QcGuardians). The desert temple's sand golem.
+    struct Guardian
+    {
+        QString mob;
+        QcBlockPos from;
+        QcBlockPos to;
+        int max = 1;
+        double cooldownSeconds = 120.0;
+        double minPlayerDistance = 12.0;
+        double maxPlayerDistance = 48.0;
+        int maxLight = 7;
+
+        bool operator==(const Guardian &) const = default;
+    };
+
+    // Where the terrain generator places the structure by itself (decision E-590; `"surface"`): at
+    // most one copy per square region of `spacing` blocks (whole chunks), with `chance`, at the first
+    // of `attempts` places that lies wholly inside the region on land above the sea in one of
+    // `biomes` (all five samples of its footprint) whose ground varies by at most `maxSlope`;
+    // never within `villageMargin` blocks of a village. Its layer `groundLayer` replaces the
+    // ground's top block; the terrain above the footprint is cleared and `foundation` fills the
+    // ground below it down to solid ground.
+    struct Surface
+    {
+        QStringList biomes;
+        int spacing = 320;
+        double chance = 0.5;
+        int attempts = 4;
+        int maxSlope = 3;
+        int villageMargin = 16;
+        QString foundation;
+
+        bool operator==(const Surface &) const = default;
+    };
+
     struct Label
     {
         QcVec3 at;
@@ -150,6 +191,14 @@ struct QcStructureDefinition
     // for none: placed at dead ends, its door (the middle of its north side, one block above its
     // bottom layer) towards the corridor.
     int mineshaftWeight = 0;
+    // The layer that lies at the ground's top block where the world generator places the structure
+    // by itself or in a village (decision E-590): the layers below it are buried (the desert
+    // temple's cellar). 0 for structures that stand on the ground.
+    int groundLayer = 0;
+    // Placed by the terrain generator by itself (decision E-590); std::nullopt: only where data
+    // places it (villages, mine shafts, the showcase).
+    std::optional<Surface> surface;
+    QList<Guardian> guardians;
 
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(sizeX) * (z + qsizetype(sizeZ) * y); }
 };

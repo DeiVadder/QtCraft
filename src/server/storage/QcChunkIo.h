@@ -37,6 +37,9 @@ public:
         // Which request of the chunk this answers (QcServerWorld drops answers to older ones).
         quint64 request = 0;
         std::shared_ptr<QcChunk> blocks;
+        // The blocks were generated for this arrival, not read (the generator's plans for the chunk
+        // are made, QcFurnishing asks only then).
+        bool generated = false;
         QcBlockEntityRecord blockEntities;
         QcEntityRecord entities;
         quint16 marks = 0;
