@@ -2,6 +2,7 @@
 #include "clientcore/settings/QcUiPalette.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QMetaEnum>
 #include <QRegularExpression>
@@ -21,15 +22,28 @@ QSet<QString> paletteNames()
     return names;
 }
 
+// Every QML file of the module, in the topic folders below QTCRAFT_QML_DIR as well (decision E-670).
 QStringList qmlFiles()
 {
-    const QDir directory(QStringLiteral(QTCRAFT_QML_DIR));
     QStringList files;
-    const QStringList names = directory.entryList({u"*.qml"_s}, QDir::Files);
-    for (const QString &name : names) {
-        files.append(directory.filePath(name));
+    QDirIterator it(QStringLiteral(QTCRAFT_QML_DIR), {u"*.qml"_s}, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        files.append(it.next());
     }
+    files.sort();
     return files;
+}
+
+// The path of the QML file of a type, in whichever folder of the module it lies; empty if none.
+QString qmlFileOf(const QString &type)
+{
+    const QStringList files = qmlFiles();
+    for (const QString &path : files) {
+        if (QFileInfo(path).fileName() == type + u".qml"_s) {
+            return path;
+        }
+    }
+    return {};
 }
 
 // Lines of a QML file with a colour of their own; a line may opt out with the marker comment
@@ -172,9 +186,8 @@ private slots:
     {
         static const QRegularExpression networkText(
             uR"(^\s*text:.*\b(statusText|serverName|motd|machineLabel|targetLabel|lastAddress|screen\.failure|worldLabel\.(title|detail)|modelData\.(name|description|license|credits|error|problems)|packs\.(notices|userDirectory)|playerName)\b)"_s);
-        const QDir directory(QStringLiteral(QTCRAFT_QML_DIR));
-        const auto plainFile = [&directory](const QString &type) {
-            QFile file(directory.filePath(type + u".qml"_s));
+        const auto plainFile = [](const QString &type) {
+            QFile file(qmlFileOf(type));
             return file.open(QIODevice::ReadOnly | QIODevice::Text) && QString::fromUtf8(file.readAll()).contains(u"textFormat: Text.PlainText"_s);
         };
         // HudLabel carries the chat lines.
