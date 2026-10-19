@@ -1,0 +1,26 @@
+{
+    "name": "ruined_portal_chest",
+    "pools": [
+        {
+            "rolls": [4, 8],
+            "entries": [
+                { "item": "obsidian", "weight": 40, "count": [1, 2] },
+                { "item": "flint", "weight": 40, "count": [1, 4] },
+                { "item": "iron_nugget", "weight": 40, "count": [9, 18] },
+                { "item": "flint_and_steel", "weight": 40 },
+                { "item": "gold_nugget", "weight": 15, "count": [4, 24] },
+                { "item": "golden_sword", "weight": 15 },
+                { "item": "golden_axe", "weight": 15 },
+                { "item": "golden_hoe", "weight": 15 },
+                { "item": "golden_shovel", "weight": 15 },
+                { "item": "golden_pickaxe", "weight": 15 },
+                { "item": "golden_boots", "weight": 15 },
+                { "item": "golden_chestplate", "weight": 15 },
+                { "item": "golden_helmet", "weight": 15 },
+                { "item": "golden_leggings", "weight": 15 },
+                { "item": "gold_ingot", "weight": 5, "count": [2, 8] },
+                { "item": "gold_block", "weight": 1 }
+            ]
+        }
+    ]
+}

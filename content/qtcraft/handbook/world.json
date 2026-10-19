@@ -7,7 +7,8 @@
         "liquids",
         "ice",
         "mineshafts",
-        "temples"
+        "temples",
+        "ruins"
     ],
     "related": [
         "water",
@@ -21,6 +22,7 @@
         "chest_minecart",
         "rail",
         "sand",
-        "carved_sandstone"
+        "carved_sandstone",
+        "crying_obsidian"
     ]
 }

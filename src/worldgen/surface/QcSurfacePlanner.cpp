@@ -16,7 +16,7 @@ QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcCo
         if (!definition.surface) {
             continue;
         }
-        QcResult<QcStructure> structure = QcStructure::fromDefinition(definition, content, warnings);
+        QcResult<QcPieceVariation> structure = QcPieceVariation::resolve(definition, content, warnings);
         const std::optional<QcBlockId> foundation =
             definition.surface->foundation.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.blockId(definition.surface->foundation);
         if (!structure || !foundation) {
@@ -26,8 +26,7 @@ QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcCo
             }
             continue;
         }
-        m_kinds.append({definition.name, std::make_shared<const QcStructure>(std::move(*structure)), *definition.surface, *foundation,
-                        qcMixSeed(seed, qcNameSalt(definition.name))});
+        m_kinds.append({definition.name, *structure, *definition.surface, *foundation, qcMixSeed(seed, qcNameSalt(definition.name))});
     }
     std::ranges::sort(m_kinds, {}, &Kind::name);
 }
@@ -57,12 +56,12 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
     }
 
     // Every attempt draws its centre and turn from its own positions, so one attempt never shifts another.
-    const int width = std::max(type.structure->sizeX(), type.structure->sizeZ());
+    const int width = std::max(type.structure()->sizeX(), type.structure()->sizeZ());
     const int room = rule.spacing - width;
     for (int attempt = 0; attempt < rule.attempts; ++attempt) {
         const int turns = int(qcPositionRandom(type.seed, regionX, 3 * attempt + 1, regionZ) * 4.0) % 4;
-        const int sizeX = turns % 2 == 0 ? type.structure->sizeX() : type.structure->sizeZ();
-        const int sizeZ = turns % 2 == 0 ? type.structure->sizeZ() : type.structure->sizeX();
+        const int sizeX = turns % 2 == 0 ? type.structure()->sizeX() : type.structure()->sizeZ();
+        const int sizeZ = turns % 2 == 0 ? type.structure()->sizeZ() : type.structure()->sizeX();
         const int x0 = regionX * rule.spacing + int(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
         const int z0 = regionZ * rule.spacing + int(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
         const Rect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
@@ -70,9 +69,19 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
         if (!floor || occupied(kind, rect, rule.villageMargin)) {
             continue;
         }
-        return QcStructurePlacement(type.structure, {x0, *floor - type.structure->groundLayer, z0}, turns, m_content);
+        return QcStructurePlacement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);
     }
     return std::nullopt;
+}
+
+std::shared_ptr<const QcStructure> QcSurfacePlanner::structureOf(const Kind &kind, int regionX, int regionZ)
+{
+    if (!kind.variation.varies()) {
+        return kind.structure();
+    }
+    // Drawn below the positions of the attempts (0 and up), so the place stays where it was.
+    int draw = 0;
+    return kind.variation.build(kind.variation.choose([&] { return qcPositionRandom(kind.seed, regionX, -1 - draw++, regionZ); }));
 }
 
 std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
@@ -104,8 +113,8 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
     // On the lowest ground: no edge, the entrance included, hangs above the ground; higher ground
     // over the footprint is cleared.
     const int floor = low - 1;
-    const int top = floor - kind.structure->groundLayer + kind.structure->sizeY();
-    if (floor - kind.structure->groundLayer < 1 || top >= QcWorld::worldHeight) {
+    const int top = floor - kind.structure()->groundLayer + kind.structure()->sizeY();
+    if (floor - kind.structure()->groundLayer < 1 || top >= QcWorld::worldHeight) {
         return std::nullopt;
     }
     return floor;

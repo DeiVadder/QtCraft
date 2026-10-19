@@ -1,0 +1,97 @@
+{
+    "name": "ruined_portal_sunken",
+    "groundLayer": 3,
+    "surface": {
+        "biomes": [
+            "birch_forest",
+            "desert",
+            "plains",
+            "swamp",
+            "taiga"
+        ],
+        "spacing": 448,
+        "chance": 0.4,
+        "attempts": 4,
+        "maxSlope": 3,
+        "villageMargin": 24,
+        "clearTerrain": false
+    },
+    "palette": {
+        ".": "air",
+        "O": "obsidian",
+        "Y": "crying_obsidian",
+        "n": "red_terracotta",
+        "m": "magma_block",
+        "c": "cobblestone",
+        "M": "mossy_cobblestone",
+        "g": "gravel",
+        "k": "chest[facing=south]"
+    },
+    "layers": [
+        ["         ", "         ", "         ", "         ", "  OOOO   ", "         ", "         ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "  Y  O   ", "         ", "         ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "  O  Y   ", "         ", "         ", "         ", "         "],
+        ["    n    ", "  cM mn  ", " nnncM   ", "  nnnncM ", " gO..On  ", " cMgmnnnn", "  ncMkmn ", "  n nc   ", "    n    "],
+        ["         ", "         ", "         ", "      O  ", "  ..OO   ", "         ", "  Y  .   ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "         ", "         ", "         ", "         ", "         "]
+    ],
+    "choices": {
+        "rubble": [
+            {},
+            {
+                "red_terracotta": "mossy_cobblestone",
+                "magma_block": "cobblestone"
+            }
+        ]
+    },
+    "parts": [
+        {
+            "name": "lintel",
+            "chance": 0.35,
+            "at": [
+                2,
+                4,
+                4
+            ],
+            "layers": [
+                ["OY"]
+            ]
+        },
+        {
+            "name": "crying",
+            "chance": 0.5,
+            "at": [
+                4,
+                3,
+                4
+            ],
+            "layers": [
+                [" Y"],
+                ["Y "]
+            ]
+        },
+        {
+            "name": "scatter",
+            "chance": 0.6,
+            "at": [
+                1,
+                3,
+                2
+            ],
+            "layers": [
+                ["     m ", "       ", "       ", "       ", "       "],
+                ["O      ", "       ", "       ", "       ", "      Y"]
+            ]
+        }
+    ],
+    "loot": [
+        {
+            "at": [
+                5,
+                3,
+                6
+            ],
+            "table": "ruined_portal_chest"
+        }
+    ]
+}

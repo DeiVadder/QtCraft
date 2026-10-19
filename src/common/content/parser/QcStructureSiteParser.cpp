@@ -45,6 +45,7 @@ void parseSurface(const QJsonObject &json, Structure &structure, QcJsonFieldRead
     surface.maxSlope = reader.integer(u"maxSlope"_s, surface.maxSlope, 0, 16);
     surface.villageMargin = reader.integer(u"villageMargin"_s, surface.villageMargin, 0, 128);
     surface.foundation = reader.name(u"foundation"_s, packNamespace);
+    surface.clearTerrain = reader.boolean(u"clearTerrain"_s, surface.clearTerrain);
     if (surface.spacing % 16 != 0) {
         reader.fail(u"'spacing' must be whole chunks (a multiple of 16)"_s);
     } else if (std::max(structure.sizeX, structure.sizeZ) * 2 > surface.spacing) {

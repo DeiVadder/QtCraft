@@ -1,0 +1,117 @@
+{
+    "name": "ruined_portal",
+    "groundLayer": 1,
+    "surface": {
+        "biomes": [
+            "birch_forest",
+            "desert",
+            "forest",
+            "plains",
+            "swamp",
+            "taiga",
+            "tundra"
+        ],
+        "spacing": 384,
+        "chance": 0.45,
+        "attempts": 4,
+        "maxSlope": 3,
+        "villageMargin": 24,
+        "clearTerrain": false
+    },
+    "palette": {
+        ".": "air",
+        "O": "obsidian",
+        "Y": "crying_obsidian",
+        "n": "red_terracotta",
+        "m": "magma_block",
+        "c": "cobblestone",
+        "M": "mossy_cobblestone",
+        "g": "gravel",
+        "k": "chest[facing=south]"
+    },
+    "layers": [
+        ["         ", "         ", "         ", "         ", "         ", "         ", "         ", "         ", "         "],
+        ["      g  ", " n  nn   ", "  mnnnnn ", " cMgmnn  ", "nnOYOOmnn", "  nnncMg ", " mnnnnn  ", "   mnn   ", "   M  n  "],
+        ["         ", "         ", " O   O   ", "         ", "  O..O Y ", "         ", "   k  O  ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "  Y..O   ", "         ", "   .     ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "  O...   ", "         ", "         ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "  OO..   ", "         ", "         ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "         ", "         ", "         ", "         ", "         "]
+    ],
+    "choices": {
+        "rubble": [
+            {},
+            {
+                "red_terracotta": "mossy_cobblestone",
+                "magma_block": "cobblestone"
+            }
+        ]
+    },
+    "parts": [
+        {
+            "name": "lintel",
+            "chance": 0.4,
+            "at": [
+                4,
+                4,
+                4
+            ],
+            "layers": [
+                [" O"],
+                ["OY"]
+            ]
+        },
+        {
+            "name": "crying",
+            "chance": 0.5,
+            "at": [
+                2,
+                2,
+                4
+            ],
+            "layers": [
+                ["   Y ", "     ", "    Y"],
+                ["     ", "     ", "     "],
+                ["Y    ", "     ", "     "]
+            ]
+        },
+        {
+            "name": "broken",
+            "chance": 0.4,
+            "at": [
+                1,
+                2,
+                3
+            ],
+            "layers": [
+                [" O", "  ", "O "],
+                ["  ", "  ", "  "],
+                ["  ", " .", "  "],
+                ["  ", " .", "  "]
+            ]
+        },
+        {
+            "name": "scatter",
+            "chance": 0.6,
+            "at": [
+                1,
+                1,
+                1
+            ],
+            "layers": [
+                ["     m ", "       ", "       ", "       ", "       ", "       ", " m     "],
+                ["Y      ", "       ", "       ", "       ", "       ", "       ", "      O"]
+            ]
+        }
+    ],
+    "loot": [
+        {
+            "at": [
+                3,
+                2,
+                6
+            ],
+            "table": "ruined_portal_chest"
+        }
+    ]
+}

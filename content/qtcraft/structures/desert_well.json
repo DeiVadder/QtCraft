@@ -1,0 +1,35 @@
+{
+    "name": "desert_well",
+    "groundLayer": 4,
+    "surface": {
+        "biomes": [
+            "desert"
+        ],
+        "spacing": 320,
+        "chance": 0.25,
+        "attempts": 4,
+        "maxSlope": 2,
+        "villageMargin": 32,
+        "clearTerrain": false
+    },
+    "palette": {
+        ".": "air",
+        "C": "sandstone",
+        "P": "cut_sandstone",
+        "~": "water",
+        "x": "sandstone_wall",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]"
+    },
+    "layers": [
+        ["     ", " CCC ", " CCC ", " CCC ", "     "],
+        ["     ", " CCC ", " C~C ", " CCC ", "     "],
+        ["     ", " CCC ", " C~C ", " CCC ", "     "],
+        ["     ", " CCC ", " C~C ", " CCC ", "     "],
+        ["PPPPP", "PPPPP", "PP~PP", "PPPPP", "PPPPP"],
+        [".....", ".CCC.", ".C~C.", ".CCC.", "....."],
+        [".....", ".x.x.", ".....", ".x.x.", "....."],
+        [".....", ".x.x.", "..l..", ".x.x.", "....."],
+        [".....", ".kkk.", ".kCk.", ".kkk.", "....."]
+    ]
+}

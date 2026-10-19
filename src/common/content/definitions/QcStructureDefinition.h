@@ -117,8 +117,9 @@ struct QcStructureDefinition
     // of `attempts` places that lies wholly inside the region on land above the sea in one of
     // `biomes` (all five samples of its footprint) whose ground varies by at most `maxSlope`;
     // never within `villageMargin` blocks of a village. Its layer `groundLayer` replaces the
-    // ground's top block; the terrain above the footprint is cleared and `foundation` fills the
-    // ground below it down to solid ground.
+    // ground's top block; with `clearTerrain` the terrain above the footprint is cleared (else its
+    // keep cells keep the terrain: ruins half in the ground), and `foundation` fills the ground below
+    // it down to solid ground. Its `choices` and `parts` vary each copy (decision E-630).
     struct Surface
     {
         QStringList biomes;
@@ -128,6 +129,7 @@ struct QcStructureDefinition
         int maxSlope = 3;
         int villageMargin = 16;
         QString foundation;
+        bool clearTerrain = true;
 
         bool operator==(const Surface &) const = default;
     };
@@ -181,7 +183,8 @@ struct QcStructureDefinition
     QList<Cart> minecarts;
     QList<Spawner> spawners;
     QList<Loot> loot;
-    // Variation where villages place the structure; elsewhere it is placed as it is.
+    // Variation where villages and the terrain generator (surface) place the structure; elsewhere it
+    // is placed as it is.
     QList<Choice> choices;
     QList<Part> parts;
     // Shown as a demo in the showcase world, in the order of `showcaseOrder` (then name).

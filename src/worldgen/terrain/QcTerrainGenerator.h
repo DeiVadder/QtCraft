@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "worldgen/generators/QcWorldGenerator.h"
+#include "worldgen/surface/QcSurfacePlanner.h"
 #include "worldgen/terrain/QcCaveCarver.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
@@ -91,8 +92,10 @@ private:
     void growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const;
     void placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
-    // Columns under and around `village` (may be null) get none.
-    void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, const QcVillagePlan *village) const;
+    // Columns under and around `village` (may be null) and the footprints of surface structures
+    // (`structures`) get none.
+    void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, const QcVillagePlan *village,
+                       const QList<QcSurfacePlanner::Rect> &structures) const;
     void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
     // The first feature of the column's biome that grows there by density, patches and shore.
     [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;

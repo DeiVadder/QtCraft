@@ -2273,3 +2273,7 @@ Release-Builds, `dev` `28c9cbd` (40.2) gegen `feature/40-3-gamepad-settings` nac
 ## 51.1 (Wüstentempel, Sandgolem, Wächter-Zonen) headless, Release (2026-10-19)
 
 Release-Builds, `dev` `28c9cbd` gegen `feature/51-1-desert-temple` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, parallel bauende Agenten. Tick −8 bis +3 % in allen Szenarien, explore +3 % (0,218 ms), horde +5 % bei 17 % Streuung (p99 +13 % bei 28 % Streuung, Wächter-Prüfung nur über bereits geplante Regionen), Speicher −1 bis +2 %. Keine Regression. Fenster-Benchmark auf Wunsch des Menschen vorerst ausgesetzt (geschuldet: `@core`).
+
+## 51.4 (Portal-Ruinen, Brunnen, Oasen) headless, Release (2026-10-19)
+
+Release-Builds, `dev` `15e0f22` gegen `feature/51-4-ruins-oases` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, unter Last paralleler Agenten. Tick −5 bis +6 % (explore −5 %, signal_farm +6 % bei 19 % Streuung), Speicher 0 bis +2 %. Keine Regression. Fenster-Benchmark geschuldet (vom Menschen ausgesetzt).

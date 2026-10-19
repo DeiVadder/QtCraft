@@ -16,9 +16,10 @@ class QcVillageGenerator;
 // The structures the terrain generator places by itself on the surface (decision E-590, the desert
 // temple): each kind plans its regions once (QcSurfacePlanner, plans cached), a copy lies wholly in
 // its region, so a chunk asks only the one region of each kind it lies in. Writing a copy into a
-// chunk clears the terrain above its footprint (`clearance` blocks over its top), fills the ground
-// below it with the kind's foundation down to solid ground and writes its cells; the same in any
-// order of the chunks. Its loot comes with furnishingIn(), its guardian zones with sitesNear().
+// chunk clears the terrain above its footprint (`clearance` blocks over its top; not for kinds
+// without `clearTerrain`, decision E-630), fills the ground below it with the kind's foundation down
+// to solid ground and writes its cells; the same in any order of the chunks. No trees, plants or
+// surface pools grow near a copy (footprintsNear()), so none is cut or left floating. Its loot comes with furnishingIn(), its guardian zones with sitesNear().
 // Thread-safe.
 class QcSurfaceStructures
 {
@@ -37,6 +38,9 @@ public:
     [[nodiscard]] std::shared_ptr<const QcStructurePlacement> planOf(int kind, int regionX, int regionZ) const;
     // The copies of every kind whose footprint overlaps the chunk.
     QList<std::shared_ptr<const QcStructurePlacement>> plansTouching(QcChunkPos pos) const;
+    // The footprints of the copies of every kind within `margin` columns of the chunk: the terrain
+    // generator places no features and no surface pools there (decision E-630).
+    QList<QcSurfacePlanner::Rect> footprintsNear(QcChunkPos pos, int margin) const;
     void build(QcChunk &chunk) const;
     // Adds the loot of the copies' chests in the chunk.
     void addFurnishing(QcChunkPos pos, QcChunkFurnishing &furnishing) const;
@@ -56,7 +60,7 @@ private:
     [[nodiscard]] std::optional<QList<QcGuardSite>> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
     // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint.
     bool occupied(int kind, QcSurfacePlanner::Rect footprint, int margin) const;
-    void build(QcChunk &chunk, const QcStructurePlacement &placement, QcBlockId foundation) const;
+    void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;
 
     const QcVillageGenerator &m_villages;
     QcSurfacePlanner m_planner;

@@ -254,6 +254,7 @@
                 "block:qtcraft:purple_concrete",
                 "block:qtcraft:purple_concrete_powder",
                 "block:qtcraft:purple_stained_glass",
+                "block:qtcraft:crying_obsidian",
                 "block:qtcraft:wheat_crop",
                 "block:qtcraft:white_stained_glass_pane",
                 "block:qtcraft:white_terracotta",
@@ -13632,6 +13633,108 @@
             ],
             "text": "Öffnet das 3 × 3 Handwerksraster, das größere Rezepte brauchen.",
             "title": "Werkbank"
+        },
+        "block:qtcraft:crying_obsidian": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Crying obsidian",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:crying_obsidian"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "25"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "125 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 3 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "4,69 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Weinender Obsidian"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Licht",
+                    "links": [
+                    ],
+                    "value": "10 von 15"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:crying_obsidian",
+            "id": "block:qtcraft:crying_obsidian",
+            "name": "qtcraft:crying_obsidian",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Obsidian mit leuchtenden violetten Tränen. Es gibt ihn nur in den Rahmen von Portal-Ruinen; er gibt Licht, braucht wie Obsidian eine Diamantspitzhacke und lässt sich selbst fallen.",
+            "title": "Weinender Obsidian"
         },
         "block:qtcraft:cut_sandstone": {
             "category": "blocks",
@@ -56019,6 +56122,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Hier und da stehen die Reste eines alten Portals im Freien: ein zerbrochener Rahmen aus Obsidian und Weinendem Obsidian zwischen rotem Schutt und Magma, mit herabgefallenen Blöcken ringsum und einer Truhe mit goldenen Werkzeugen, goldener Rüstung, Feuerstein und Obsidian daneben. Kleine Ruinen stehen in vielen Biomen, versunkene stecken halb im Boden, große stehen in Gebirgen, Wäldern, Taiga und Tundra; keine gleicht ganz der anderen. Das Portal führt nirgendwohin. Weinender Obsidian leuchtet schwach (Licht 10) und braucht wie Obsidian eine Diamantspitzhacke. In Ebenen und Birkenwäldern, und aus Sandstein in der Wüste, stehen einzelne Brunnen: ein Schacht aus Wasser-Quellblöcken, vier Blöcke tief, unter einem kleinen Dach, eine Wasserquelle fern von jedem See. In der Wüste liegen seltene Oasen: ein Teich mit Sandboden, Gras, Zuckerrohr und zwei palmenartigen Bäumen.",
+                    "title": "Portal-Ruinen, Brunnen und Oasen"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -56090,6 +56201,12 @@
                             "note": "",
                             "target": "block:qtcraft:carved_sandstone",
                             "text": "Gemeißelter Sandstein"
+                        },
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Weinender Obsidian"
                         }
                     ],
                     "recipes": [
@@ -62401,6 +62518,12 @@
                             "text": "Violetter Beton"
                         },
                         {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Weinender Obsidian"
+                        },
+                        {
                             "icon": "qtcraft:white_terracotta",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:white_terracotta",
@@ -67456,6 +67579,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:purple_concrete",
                             "text": "Violetter Beton"
+                        },
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Weinender Obsidian"
                         },
                         {
                             "icon": "qtcraft:white_terracotta",
@@ -80064,7 +80193,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
+                    "text": "- Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz, Weinender Obsidian",
                     "title": "Spitzhacke"
                 },
                 {

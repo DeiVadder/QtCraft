@@ -1,0 +1,79 @@
+{
+    "name": "ruins_station",
+    "showcase": {
+        "order": 104
+    },
+    "palette": {
+        ".": "air",
+        "O": "obsidian",
+        "Y": "crying_obsidian",
+        "n": "red_terracotta",
+        "m": "magma_block",
+        "c": "cobblestone",
+        "M": "mossy_cobblestone",
+        "g": "gravel",
+        "k": "chest[facing=south]",
+        "~": "water",
+        "s": "sand",
+        "d": "dirt",
+        "G": "grass_block",
+        "u": "sugar_cane",
+        "t": "tall_grass",
+        "L": "oak_log",
+        "e": "oak_leaves",
+        "C": "cobblestone",
+        "P": "mossy_cobblestone",
+        "x": "oak_fence",
+        "q": "cobblestone_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]"
+    },
+    "layers": [
+        ["                   ssssssssGssssss  ", "                   sssssssGGssssss  ", "                   ssGGGGGGGssssss  ", "      g            ssGGGG~~~GGGGss  ", " n  nn             ssGGG~~~~~~~Gss  ", "  mnnnnn   PPPPP   sGGG~~~~~~~~Gss  ", " cMgmnn    PPPPP   sGGG~~~~~~~Gsss  ", "nnOYOOmnn  PP~PP   sssG~~~~~~~~GGs  ", "  nnncMg   PPPPP   ssG~~~~~~~~GGGG  ", " mnnnnn    PPPPP   ssG~~~~~~~GGGGs  ", "   mnn             ssGG~~~~~~GGGss  ", "   M  n            ssGGGGG~~GGGGss  ", "                   ssGGsGGGGssssss  ", "                   sssssGGGsssssss  ", "                   sssssssssssssss  "],
+        ["                           .        ", "                          ..        ", "                     t......        ", "                     .......u.u.    ", "                     .L.........    ", " O   O     .....    ............    ", "           .CCC.    ...........     ", "  O..Y Y   .C~C.      .........u.   ", "           .CCC.     .........u...  ", "   k  Y    .....     ........u...   ", "                     ...........    ", "                     .........L.    ", "                     .. ttu.        ", "                        t..         ", "                                    "],
+        ["                           .        ", "                          ..        ", "                     .......        ", "                     .......u.u.    ", "                     .L.........    ", "           .....    ............    ", "           .x.x.    ...........     ", "  Y..O     .....      .........u.   ", "           .x.x.     .........u...  ", "   .       .....     ........u...   ", "                     ...........    ", "                     .........L.    ", "                     .. ..u.        ", "                        ...         ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                      L             ", "           .....                    ", "           .x.x.                    ", "  Y...     ..l..                    ", "           .x.x.                    ", "           .....                    ", "                                    ", "                              L     ", "                                    ", "                                    ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                      L             ", "           .....                    ", "           .qqq.                    ", "  OO..     .qCq.                    ", "           .qqq.                    ", "           .....                    ", "                                    ", "                              L     ", "                                    ", "                                    ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                      L             ", "                                    ", "                                    ", "                                    ", "                              e     ", "                            e   e   ", "                                    ", "                           e  L  e  ", "                                    ", "                            e   e   ", "                              e     "],
+        ["                                    ", "                      e             ", "                    e   e           ", "                                    ", "                   e  L  e          ", "                                    ", "                    e   e           ", "                      e             ", "                                    ", "                              e     ", "                             eee    ", "                            eeeee   ", "                             eee    ", "                              e     ", "                                    "],
+        ["                                    ", "                                    ", "                      e             ", "                     eee            ", "                    eeeee           ", "                     eee            ", "                      e             ", "                                    ", "                                    ", "                                    ", "                                    ", "                              e     ", "                                    ", "                                    ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                      e             ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    "],
+        ["                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    ", "                                    "]
+    ],
+    "loot": [
+        {
+            "at": [
+                3,
+                1,
+                9
+            ],
+            "table": "ruined_portal_chest"
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                7.0,
+                7.5
+            ],
+            "text": "structure.qtcraft.ruins_station.portal"
+        },
+        {
+            "at": [
+                13.5,
+                6.5,
+                7.5
+            ],
+            "text": "structure.qtcraft.ruins_station.well"
+        },
+        {
+            "at": [
+                26.5,
+                10.0,
+                7.5
+            ],
+            "text": "structure.qtcraft.ruins_station.oasis"
+        }
+    ]
+}

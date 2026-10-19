@@ -89,6 +89,7 @@
                 "block:qtcraft:composter",
                 "block:qtcraft:cornflower",
                 "block:qtcraft:crafting_table",
+                "block:qtcraft:crying_obsidian",
                 "block:qtcraft:cut_sandstone",
                 "block:qtcraft:cyan_concrete",
                 "block:qtcraft:cyan_concrete_powder",
@@ -13632,6 +13633,108 @@
             ],
             "text": "Opens the 3 × 3 crafting grid that bigger recipes need.",
             "title": "Crafting table"
+        },
+        "block:qtcraft:crying_obsidian": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Crying obsidian",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:crying_obsidian"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "25"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "125 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 3 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "4.69 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light",
+                    "links": [
+                    ],
+                    "value": "10 of 15"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:crying_obsidian",
+            "id": "block:qtcraft:crying_obsidian",
+            "name": "qtcraft:crying_obsidian",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Obsidian with glowing violet tears. Found only in the frames of ruined portals; it gives light and, like obsidian, needs a diamond pickaxe and drops itself.",
+            "title": "Crying obsidian"
         },
         "block:qtcraft:cut_sandstone": {
             "category": "blocks",
@@ -56019,6 +56122,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Here and there the remains of an old portal stand in the open: a broken frame of obsidian and crying obsidian amid red rubble and magma, with fallen blocks around it and a chest of gold tools, gold armour, flint and obsidian beside it. Small ruins stand in many biomes, sunken ones are half buried in the ground, large ones stand in mountains, forests, taiga and tundra; no two are quite alike. The portal leads nowhere. Crying obsidian glows faintly (light 10) and, like obsidian, needs a diamond pickaxe. In plains and birch forests, and in sandstone in the desert, wells stand alone: a shaft of water sources four blocks deep under a little roof, a source of water far from any lake. Rare oases lie in the desert: a pool with sand at its bottom, grass, sugar cane and two palm-like trees.",
+                    "title": "Ruined portals, wells and oases"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -56090,6 +56201,12 @@
                             "note": "",
                             "target": "block:qtcraft:carved_sandstone",
                             "text": "Carved sandstone"
+                        },
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
                         }
                     ],
                     "recipes": [
@@ -62053,6 +62170,12 @@
                             "text": "Cobblestone wall"
                         },
                         {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "level 3",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
+                        },
+                        {
                             "icon": "qtcraft:cut_sandstone",
                             "note": "level 1",
                             "target": "block:qtcraft:cut_sandstone",
@@ -67108,6 +67231,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:crying_obsidian",
+                            "note": "level 3",
+                            "target": "block:qtcraft:crying_obsidian",
+                            "text": "Crying obsidian"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -80064,7 +80193,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Carved sandstone, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Carved sandstone, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {

@@ -117,6 +117,24 @@ QList<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::plansTou
     return plans;
 }
 
+QList<QcSurfacePlanner::Rect> QcSurfaceStructures::footprintsNear(QcChunkPos pos, int margin) const
+{
+    QList<QcSurfacePlanner::Rect> footprints;
+    const int x = pos.x * QcWorld::chunkSize;
+    const int z = pos.z * QcWorld::chunkSize;
+    const QcSurfacePlanner::Rect chunk{x, z, x + QcWorld::chunkSize - 1, z + QcWorld::chunkSize - 1};
+    for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
+        const QList<std::pair<int, int>> regions = regionsOver(grown(chunk, margin), m_planner.kinds()[kind].rule.spacing);
+        for (const auto &[rx, rz] : regions) {
+            const std::shared_ptr<const QcStructurePlacement> plan = planOf(int(kind), rx, rz);
+            if (plan && chunk.intersects(QcSurfacePlanner::footprintOf(*plan), margin)) {
+                footprints.append(QcSurfacePlanner::footprintOf(*plan));
+            }
+        }
+    }
+    return footprints;
+}
+
 void QcSurfaceStructures::build(QcChunk &chunk) const
 {
     if (m_planner.kinds().isEmpty()) {
@@ -125,12 +143,15 @@ void QcSurfaceStructures::build(QcChunk &chunk) const
     const QList<std::shared_ptr<const QcStructurePlacement>> plans = plansTouching(chunk.pos());
     for (const std::shared_ptr<const QcStructurePlacement> &plan : plans) {
         const std::optional<int> kind = m_planner.kindIndex(plan->structure().name());
-        build(chunk, *plan, kind ? m_planner.kinds()[*kind].foundation : qcAirBlockId);
+        if (kind) {
+            build(chunk, *plan, m_planner.kinds()[*kind]);
+        }
     }
 }
 
-void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &placement, QcBlockId foundation) const
+void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const
 {
+    const QcBlockId foundation = kind.foundation;
     const int chunkX = chunk.pos().x * QcWorld::chunkSize;
     const int chunkZ = chunk.pos().z * QcWorld::chunkSize;
     const QcBlockPos origin = placement.origin();
@@ -143,7 +164,7 @@ void QcSurfaceStructures::build(QcChunk &chunk, const QcStructurePlacement &plac
         for (int z = z0; z < z1; ++z) {
             const int lx = x - chunkX;
             const int lz = z - chunkZ;
-            for (int y = origin.y + 1; y <= top; ++y) {
+            for (int y = origin.y + 1; kind.rule.clearTerrain && y <= top; ++y) {
                 chunk.setBlock(lx, y, lz, qcAirBlockId);
             }
             for (int y = origin.y - 1; foundation != qcAirBlockId && y > 0 && y >= origin.y - maxFoundation && !m_ground[chunk.block(lx, y, lz)]; --y) {
@@ -185,7 +206,7 @@ std::optional<QList<QcGuardSite>> QcSurfaceStructures::collectSites(QcBlockPos f
     QList<QcGuardSite> sites;
     const QcSurfacePlanner::Rect area{from.x - reach, from.z - reach, from.x + reach, from.z + reach};
     for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
-        if (m_planner.kinds()[kind].structure->guardians.isEmpty()) {
+        if (m_planner.kinds()[kind].structure()->guardians.isEmpty()) {
             continue;
         }
         const QList<std::pair<int, int>> regions = regionsOver(area, m_planner.kinds()[kind].rule.spacing);

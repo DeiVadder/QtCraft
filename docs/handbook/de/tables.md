@@ -34,7 +34,7 @@ Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit 
 
 - Stufe 1 nötig für: Bemooster Bruchstein, Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel
 - Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz
-- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz
+- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz, Weinender Obsidian
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1, × 12, 32 Benutzungen), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1, × 2, 59 Benutzungen), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2, × 4, 131 Benutzungen), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3, × 6, 250 Benutzungen), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4, × 8, 1561 Benutzungen)
 

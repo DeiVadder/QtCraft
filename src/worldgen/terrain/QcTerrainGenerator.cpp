@@ -511,7 +511,7 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
 }
 
 void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved,
-                                       const QcVillagePlan *village) const
+                                       const QcVillagePlan *village, const QList<QcSurfacePlanner::Rect> &structures) const
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
@@ -519,6 +519,11 @@ void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid
         for (int x = baseX - featureMargin; x < baseX + QcWorld::chunkSize + featureMargin; ++x) {
             // Trees reach featureMargin blocks from their trunk: none grows into a village.
             if (village && village->covers(x, z, featureMargin)) {
+                continue;
+            }
+            // Nor into a surface structure, where it would be cut or left floating.
+            const QcSurfacePlanner::Rect trunk{x, z, x, z};
+            if (std::ranges::any_of(structures, [&](QcSurfacePlanner::Rect footprint) { return footprint.intersects(trunk, featureMargin); })) {
                 continue;
             }
             placeFeatureInColumn(chunk, columns, carved, x, z);
@@ -543,15 +548,17 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     // Dungeons and mine shafts after the cave pools, so their corridors open into finished caves.
     m_dungeons->build(*chunk);
     m_mineshafts->build(*chunk);
-    // The village of the chunk's region: no features or surface pools there, its pieces last.
+    // The village of the chunk's region: no features or surface pools there, its pieces last. None
+    // near a surface structure either (decision E-630).
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
-    placeFeatures(*chunk, columns, carved, village.get());
-    if (!village || !village->overlaps(pos, featureMargin)) {
+    const QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, featureMargin);
+    placeFeatures(*chunk, columns, carved, village.get(), structures);
+    if ((!village || !village->overlaps(pos, featureMargin)) && structures.isEmpty()) {
         m_pools.placeOnSurface(*chunk, columns, *this);
     }
     // Mine shaft entrances over the trees, cacti and pools (none lies near a village).
     m_mineshafts->buildEntrances(*chunk);
-    // Surface structures over the features (they clear their footprint), never near a village.
+    // Surface structures over the terrain (no features or pools near them), never near a village.
     m_surface->build(*chunk);
     if (village) {
         m_villages->build(*chunk, *village);

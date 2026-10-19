@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "worldgen/structures/QcStructurePlacement.h"
+#include "worldgen/villages/QcPieceVariation.h"
 
 #include <QList>
 #include <QStringList>
@@ -18,7 +19,8 @@ class QcTerrainGenerator;
 // places (a centre and a turn per attempt) whose footprint lies wholly inside the region, on land
 // above the sea in one of the rule's biomes at its middle and along its edges, with its ground
 // varying by at most `maxSlope` and its floor on the lowest ground, and clear of what `occupied`
-// reports (villages, other kinds). Thread-safe.
+// reports (villages, other kinds). A kind whose structure has `choices` or `parts` builds each copy
+// from a selection drawn from the region's own positions (decision E-630). Thread-safe.
 class QcSurfacePlanner
 {
 public:
@@ -29,10 +31,13 @@ public:
     struct Kind
     {
         QString name;
-        std::shared_ptr<const QcStructure> structure;
+        QcPieceVariation variation;
         QcStructureDefinition::Surface rule;
         QcBlockId foundation = qcAirBlockId;
         quint64 seed = 0;
+
+        // The structure as written; every copy has its size and extras.
+        const std::shared_ptr<const QcStructure> &structure() const { return variation.base(); }
     };
 
     // A footprint in world columns, both corners inside.
@@ -69,6 +74,8 @@ private:
     // the edges every edgeStep blocks) is land of the rule's biomes above the sea and the ground
     // varies by at most `maxSlope`.
     [[nodiscard]] std::optional<int> floorFor(const Kind &kind, Rect rect) const;
+    // The structure of the copy in the region: the kind's own, or its variation drawn from the region.
+    static std::shared_ptr<const QcStructure> structureOf(const Kind &kind, int regionX, int regionZ);
 
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;

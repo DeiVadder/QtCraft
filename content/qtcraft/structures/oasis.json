@@ -1,0 +1,40 @@
+{
+    "name": "oasis",
+    "groundLayer": 2,
+    "surface": {
+        "biomes": [
+            "desert"
+        ],
+        "spacing": 384,
+        "chance": 0.3,
+        "attempts": 6,
+        "maxSlope": 2,
+        "villageMargin": 24,
+        "clearTerrain": false
+    },
+    "palette": {
+        ".": "air",
+        "~": "water",
+        "s": "sand",
+        "S": "sandstone",
+        "d": "dirt",
+        "G": "grass_block",
+        "u": "sugar_cane",
+        "t": "tall_grass",
+        "L": "oak_log",
+        "e": "oak_leaves"
+    },
+    "layers": [
+        ["               ", "               ", "               ", "               ", "               ", "      S        ", "     SSSSS     ", "     SSSSSS    ", "     S SSS     ", "       SS      ", "       SS      ", "               ", "               ", "               ", "               "],
+        ["        d      ", "       dd      ", "  ddddddd      ", "  ddddSSSdddd  ", "  dddSSSSSSSd  ", " dddSS~SSSSSd  ", " dddS~~~~~Sd   ", "   dS~~~~~~Sdd ", "  dSS~S~~~Sdddd", "  dSSSS~~Sdddd ", "  ddSSS~~Sddd  ", "  dddddSSdddd  ", "  dd dddd      ", "     ddd       ", "               "],
+        ["        G      ", "       GG      ", "  GGGGGGG      ", "  GGGG~~~GGGG  ", "  GGG~~~~~~~G  ", " GGG~~~~~~~~G  ", " GGG~~~~~~~G   ", "   G~~~~~~~~GG ", "  G~~~~~~~~GGGG", "  G~~~~~~~GGGG ", "  GG~~~~~~GGG  ", "  GGGGG~~GGGG  ", "  GG GGGG      ", "     GGG       ", "               "],
+        ["        .      ", "       ..      ", "  t......      ", "  .......u.u.  ", "  .L.........  ", " ............  ", " ...........   ", "   .........u. ", "  .........u...", "  ........u... ", "  ...........  ", "  .........L.  ", "  .. ttu.      ", "     t..       ", "               "],
+        ["        .      ", "       ..      ", "  .......      ", "  .......u.u.  ", "  .L.........  ", " ............  ", " ...........   ", "   .........u. ", "  .........u...", "  ........u... ", "  ...........  ", "  .........L.  ", "  .. ..u.      ", "     ...       ", "               "],
+        ["               ", "               ", "               ", "               ", "   L           ", "               ", "               ", "               ", "               ", "               ", "               ", "           L   ", "               ", "               ", "               "],
+        ["               ", "               ", "               ", "               ", "   L           ", "               ", "               ", "               ", "               ", "               ", "               ", "           L   ", "               ", "               ", "               "],
+        ["               ", "               ", "               ", "               ", "   L           ", "               ", "               ", "               ", "           e   ", "         e   e ", "               ", "        e  L  e", "               ", "         e   e ", "           e   "],
+        ["               ", "   e           ", " e   e         ", "               ", "e  L  e        ", "               ", " e   e         ", "   e           ", "               ", "           e   ", "          eee  ", "         eeeee ", "          eee  ", "           e   ", "               "],
+        ["               ", "               ", "   e           ", "  eee          ", " eeeee         ", "  eee          ", "   e           ", "               ", "               ", "               ", "               ", "           e   ", "               ", "               ", "               "],
+        ["               ", "               ", "               ", "               ", "   e           ", "               ", "               ", "               ", "               ", "               ", "               ", "               ", "               ", "               ", "               "]
+    ]
+}
