@@ -110,7 +110,7 @@ private slots:
     {
         QVERIFY(activate(*m_window));
         m_screens->setPhase(QcScreenState::Phase::Playing);
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
         // Looking straight up, so the trigger never hits a creature.
         QcPlayerInput intent = session().intent();
         intent.pitch = -89.0f;
@@ -148,9 +148,9 @@ private slots:
     void worldFocusedFollowsScreensPhaseAndWindow()
     {
         QVERIFY(m_input->worldFocused());
-        m_screens->setOverlay(u"pause"_s);
+        m_screens->setOverlay(QcScreenState::Overlay::Pause);
         QVERIFY(!m_input->worldFocused());
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
         QVERIFY(m_input->worldFocused());
         m_screens->setPhase(QcScreenState::Phase::Loading);
         QVERIFY(!m_input->worldFocused());
@@ -195,14 +195,14 @@ private slots:
         QVERIFY(session().intent().sneak);
         QVERIFY(session().miningRequested());
 
-        m_screens->setOverlay(u"inventory"_s);
+        m_screens->setOverlay(QcScreenState::Overlay::Inventory);
         frame();
         QCOMPARE(session().intent().forward, 0.0f);
         QVERIFY(!session().intent().sneak);
         QVERIFY(!session().miningRequested());
         QVERIFY(m_pad.sneakToggled());
 
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
         frame();
         QVERIFY(session().intent().sneak);
         // The trigger still held from before the screen does not mine again without a new press.
@@ -239,9 +239,9 @@ private slots:
     void triggerReleaseLeavesMouseMining()
     {
         axis(m_first, QcGamepadAxis::RightTrigger, 1.0f);
-        m_screens->setOverlay(u"pause"_s);
+        m_screens->setOverlay(QcScreenState::Overlay::Pause);
         frame();
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
         frame();
         session().setMining(true);
         axis(m_first, QcGamepadAxis::RightTrigger, 0.0f);
@@ -332,12 +332,12 @@ private slots:
         press(other, QcGamepadButton::West, false);
         frame();
         QVERIFY(m_pad.padInUse());
-        m_screens->setOverlay(u"inventory"_s);
+        m_screens->setOverlay(QcScreenState::Overlay::Inventory);
         frame();
         actions.clear();
         QVERIFY(m_source.disconnectPad(other));
         QVERIFY(actions.isEmpty());
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
 
         // Back to the first pad for the cases after this one.
         press(m_first, QcGamepadButton::West, true);
@@ -393,9 +393,9 @@ private slots:
 
         QTest::keyPress(m_window.get(), Qt::Key_G);
         QVERIFY(m_input->radialOpen());
-        m_screens->setOverlay(u"pause"_s);
+        m_screens->setOverlay(QcScreenState::Overlay::Pause);
         QVERIFY(!m_input->radialOpen());
-        m_screens->setOverlay({});
+        m_screens->setOverlay(QcScreenState::Overlay::None);
         QTest::keyRelease(m_window.get(), Qt::Key_G);
     }
 
@@ -534,6 +534,35 @@ private slots:
         QVERIFY(options.editable());
         QVERIFY(options.settings().controllers.isEmpty());
         QVERIFY(source.disconnectPad(pad));
+    }
+
+    // Giving a photo action the start button is refused with a message naming the pause menu, so a
+    // pad-only player can always pause (decision E-692); the profile stays as it was, and the row
+    // shows the action's combination.
+    void bindRefusesToStrandPause()
+    {
+        QcGamepadOptions options;
+        QVERIFY(options.editable());
+        const QcGamepadSettings before = options.settings();
+
+        const QString message = options.bind(u"screenshot"_s, u"start"_s);
+        QVERIFY2(message.contains(u"Pause menu"_s), qPrintable(message));
+        QVERIFY2(message.startsWith(u"Not bound"_s), qPrintable(message));
+        QCOMPARE(options.settings().standard.bindings, before.standard.bindings);
+        QCOMPARE(options.settings().standard.bindings.button(QcGamepadMapping::Action::Pause),
+                 std::optional(QcGamepadButton::Start));
+
+        // The page shows the fixed combination instead: back + Y.
+        const QVariantList rows = options.rows();
+        for (const QVariant &value : rows) {
+            const QVariantMap row = value.toMap();
+            if (row.value(u"action"_s) == u"screenshot"_s) {
+                QCOMPARE(row.value(u"comboModifier"_s).toString(), u"back"_s);
+                QCOMPARE(row.value(u"comboButton"_s).toString(), u"north"_s);
+                return;
+            }
+        }
+        QFAIL("no row for the screenshot");
     }
 
     // A key or a click anywhere in the game cancels a capture, whatever has the focus, and does

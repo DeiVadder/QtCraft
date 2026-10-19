@@ -7,6 +7,7 @@
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/hooks/QcScriptedPad.h"
 #include "app/startup/QcAppOptions.h"
+#include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "server/content/QcBundledMods.h"
 #include "server/content/QcModLoader.h"
@@ -77,7 +78,11 @@ void applySceneOptions(QcGameController &game, const QcAppOptions &options)
         }
     }
     if (options.camera) {
-        game.settings()->setCameraMode(*options.camera);
+        if (const std::optional<QcCameraMode> mode = QcViewCamera::fromName(*options.camera)) {
+            game.settings()->setCameraModeValue(*mode);
+        } else {
+            qCWarning(lcStartup).noquote() << u"Ignoring --camera %1: expected first, behind, front or side"_s.arg(*options.camera);
+        }
     }
     game.startup()->setForcedPose(options.pose);
     game.preview()->setHook(options.preview);
@@ -206,8 +211,9 @@ void QcAppStartup::startGame(QcGameController &game, const QcAppOptions &options
 
     QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(offscreenRender ? offscreenRender->window() : &window, qApp);
     if (screenshot && offscreenRender) {
-        screenshot->setGrabber([offscreenRender] { return offscreenRender->grab(); });
+        screenshot->setGrabber(QcScreenshotHook::grabberFor(window, offscreenRender));
     }
+    game.photo()->setGrabber(QcScreenshotHook::grabberFor(window, offscreenRender));
     startScriptedRun(game, options, screenshot);
     openMenuScreen(offscreenRender ? *offscreenRender->window() : window, game, options);
 }

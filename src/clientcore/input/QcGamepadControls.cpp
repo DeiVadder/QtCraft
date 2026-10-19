@@ -178,6 +178,7 @@ void QcGamepadControls::onStateChanged(int id)
     for (std::size_t index = 0; index < now.size(); ++index) {
         now[index] = QcGamepadMapping::held(Action(index), shaped, profile.bindings, before[index], profile.triggerThreshold);
     }
+    QcGamepadMapping::applyCombos(now, before, shaped, profile.bindings);
 
     if (id != m_pad && takesLead(id, before, now)) {
         if (m_pad != 0) {
@@ -342,6 +343,12 @@ bool QcGamepadControls::runWorldPress(Press press)
         break;
     case Action::CameraView:
         key = Key::CameraView;
+        break;
+    case Action::HideHud:
+        key = Key::HideHud;
+        break;
+    case Action::Screenshot:
+        key = Key::Screenshot;
         break;
     case Action::PlayerList:
         // Held like its key: shown while the button is down.

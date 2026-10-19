@@ -181,7 +181,26 @@ Flickable {
                     elide: Text.ElideRight
                 }
                 PadGlyph {
+                    visible: bindingRow.modelData.button.length > 0
                     symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.button)
+                }
+                // The fixed combination (modifier held plus a button), read-only (decision E-692).
+                PadGlyph {
+                    visible: bindingRow.modelData.comboModifier !== undefined
+                    symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.comboModifier ?? "")
+                }
+                Label {
+                    visible: bindingRow.modelData.comboModifier !== undefined
+                    text: "+"
+                }
+                PadGlyph {
+                    visible: bindingRow.modelData.comboButton !== undefined
+                    symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.comboButton ?? "")
+                }
+                Label {
+                    visible: bindingRow.modelData.button.length === 0 && bindingRow.modelData.comboModifier === undefined
+                    text: qsTr("none")
+                    opacity: 0.7
                 }
                 Button {
                     Layout.preferredWidth: 170

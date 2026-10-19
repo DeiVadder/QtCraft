@@ -79,6 +79,8 @@ constexpr std::array<ActionEntry, actionCount> actionTable{{
     {Action::Drop, u"drop", &Bindings::drop},
     {Action::PickBlock, u"pickBlock", &Bindings::pickBlock},
     {Action::HotbarRadial, u"hotbarRadial", &Bindings::hotbarRadial},
+    {Action::HideHud, u"hideHud", &Bindings::hideHud},
+    {Action::Screenshot, u"screenshot", &Bindings::screenshot},
 }};
 static_assert(
     [] {
@@ -101,7 +103,7 @@ ButtonField fieldOf(Action action)
 std::optional<QcGamepadButton> Bindings::button(Action action) const
 {
     const ButtonField field = fieldOf(action);
-    return field ? std::optional(this->*field) : std::nullopt;
+    return field && this->*field != unbound ? std::optional(this->*field) : std::nullopt;
 }
 
 std::optional<Action> Bindings::action(QcGamepadButton button) const
@@ -116,7 +118,7 @@ std::optional<Action> Bindings::action(QcGamepadButton button) const
 
 void Bindings::setButton(Action action, QcGamepadButton button)
 {
-    if (const ButtonField field = fieldOf(action); field && bindable(button)) {
+    if (const ButtonField field = fieldOf(action); field && (bindable(button) || button == unbound)) {
         this->*field = button;
     }
 }
@@ -124,7 +126,7 @@ void Bindings::setButton(Action action, QcGamepadButton button)
 std::optional<Action> Bindings::bind(Action action, QcGamepadButton button)
 {
     const ButtonField field = fieldOf(action);
-    if (!field || !bindable(button)) {
+    if (!field || !bindable(button) || stranded(action, button)) {
         return std::nullopt;
     }
 
@@ -140,12 +142,63 @@ std::optional<Action> Bindings::bind(Action action, QcGamepadButton button)
     return displaced;
 }
 
+std::optional<Combo> comboOf(Action action)
+{
+    for (const Combo &combo : combos) {
+        if (combo.action == action) {
+            return combo;
+        }
+    }
+    return std::nullopt;
+}
+
+void applyCombos(std::array<bool, actionCount> &now, const std::array<bool, actionCount> &before, const QcGamepadState &shaped,
+                 const Bindings &bindings)
+{
+    for (const Combo &combo : combos) {
+        const std::optional<QcGamepadButton> modifier = bindings.button(combo.modifier);
+        if (!modifier || *modifier == combo.button || !shaped.pressed(combo.button)) {
+            continue;
+        }
+
+        // A press keeps what it began as: the combo once it started with the modifier held, the
+        // button's own action when that was held before the modifier came.
+        const std::optional<Action> own = bindings.action(combo.button);
+        const bool ownBefore = own && *own != combo.action && before[std::size_t(*own)];
+        const bool comboBefore = before[std::size_t(combo.action)];
+        if (!comboBefore && (ownBefore || !now[std::size_t(combo.modifier)])) {
+            continue;
+        }
+
+        now[std::size_t(combo.action)] = true;
+        if (own && *own != combo.action && *own != combo.modifier) {
+            now[std::size_t(*own)] = false;
+        }
+    }
+}
+
+std::optional<Action> Bindings::stranded(Action action, QcGamepadButton button) const
+{
+    const ButtonField field = fieldOf(action);
+    if (!field || this->*field != unbound) {
+        return std::nullopt;
+    }
+
+    static const Bindings defaults;
+    for (const ActionEntry &entry : actionTable) {
+        if (entry.field && entry.action != action && this->*entry.field == button && defaults.*entry.field != unbound) {
+            return entry.action;
+        }
+    }
+    return std::nullopt;
+}
+
 QList<Action> Bindings::conflicts() const
 {
     QList<Action> result;
     std::array<bool, qcGamepadButtonCount> used{};
     for (const ActionEntry &entry : actionTable) {
-        if (!entry.field) {
+        if (!entry.field || this->*entry.field == unbound) {
             continue;
         }
         bool &seen = used[std::size_t(this->*entry.field)];

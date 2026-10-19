@@ -12,6 +12,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
+    controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
@@ -129,6 +130,7 @@ qt_add_qml_module(qc_app_core
         qml/character/CharacterPreviewPanel.qml
         qml/character/CharacterScreen.qml
         qml/controls/ItemSlot.qml
+        qml/controls/LazyScreen.qml
         qml/controls/ThemedScrollBar.qml
         qml/controls/ThemedToolTip.qml
         qml/gamepad/FocusRing.qml
@@ -145,6 +147,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/DebugOverlay.qml
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
+        qml/hud/PhotoNotice.qml
         qml/hud/PlayerListOverlay.qml
         qml/hud/WorldLabels.qml
         qml/inventory/ChestScreen.qml

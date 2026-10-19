@@ -39,9 +39,15 @@ enum class Action {
     PickBlock,
     // Held: the radial menu of the hotbar, chosen with the right stick (QcHotbarRadial).
     HotbarRadial,
+    // Photo mode (decision E-692), as with their keys; without a button by default.
+    HideHud,
+    Screenshot,
     Count
 };
 inline constexpr std::size_t actionCount = std::size_t(Action::Count);
+// The "button" of an action that has none (decision E-692): every button of a pad carries an
+// action already, so the photo mode's actions start without one until the player gives them one.
+inline constexpr QcGamepadButton unbound = QcGamepadButton::Count;
 
 // Default bindings (Auftrag point 40, decisions E-541 and E-580, after the console layout of the
 // model): south jumps (double tap: creative flight), the left stick click sprints, the right stick
@@ -65,22 +71,54 @@ struct Bindings
     QcGamepadButton drop = QcGamepadButton::East;
     QcGamepadButton pickBlock = QcGamepadButton::West;
     QcGamepadButton hotbarRadial = QcGamepadButton::DpadLeft;
+    QcGamepadButton hideHud = unbound;
+    QcGamepadButton screenshot = unbound;
 
-    // The button of `action`; nullopt for the triggers.
+    // The button of `action`; nullopt for the triggers and actions without a button.
     std::optional<QcGamepadButton> button(Action action) const;
     // The action on `button`, nullopt for a free one (the first in table order for a table in conflict).
     std::optional<Action> action(QcGamepadButton button) const;
-    // Sets the button of a rebindable action as it is, without resolving conflicts (loading).
+    // Sets the button of a rebindable action as it is (`unbound` too), without resolving conflicts
+    // (loading).
     void setButton(Action action, QcGamepadButton button);
     // Binds `button` to `action` (decision E-611). An action that had the button already gets the
-    // action's old one (a swap), so every button keeps at most one action; that action is returned.
-    // Refused (nullopt, nothing changes) for the triggers and buttons that cannot be bound.
+    // action's old one (a swap, which leaves it without a button when the action had none), so
+    // every button keeps at most one action; that action is returned.
+    // Refused (nullopt, nothing changes) for the triggers, buttons that cannot be bound and a swap
+    // that would leave an action bound by default without a button (`stranded`).
     std::optional<Action> bind(Action action, QcGamepadButton button);
+    // The action bound by default (pause, jump, ...) that binding `button` to `action` would leave
+    // without a button, because `action` has none to give in the swap; nullopt when the bind is fine.
+    std::optional<Action> stranded(Action action, QcGamepadButton button) const;
     // The actions sharing a button with an earlier one in table order; empty for a usable table.
     QList<Action> conflicts() const;
 
     bool operator==(const Bindings &other) const = default;
 };
+
+// A button combination (decision E-692): `button` pressed while the button of `modifier` is held
+// runs `action` instead of the button's own action, for that whole press. The table is fixed (the
+// controller page shows it read-only); the modifier follows the binding of its action.
+struct Combo
+{
+    Action action;
+    Action modifier;
+    QcGamepadButton button;
+};
+// The player list's button (Back) plus Y saves a screenshot, plus X hides the HUD; the player list
+// shows while Back is held, as without the combination.
+inline constexpr std::array<Combo, 2> combos{{
+    {Action::Screenshot, Action::PlayerList, QcGamepadButton::North},
+    {Action::HideHud, Action::PlayerList, QcGamepadButton::West},
+}};
+// The combination of `action`; nullopt for an action without one.
+std::optional<Combo> comboOf(Action action);
+// Applies the combos to the held actions `now` (from held(), `before` the previous state): a
+// combo's button pressed while its modifier is held holds the combo's action and not the button's
+// own; a press that began before the modifier stays the button's own. A combo whose modifier has no
+// button or the combo's button itself does nothing.
+void applyCombos(std::array<bool, actionCount> &now, const std::array<bool, actionCount> &before, const QcGamepadState &shaped,
+                 const Bindings &bindings);
 
 // The id of an action in settings files and in QML ("jump", "hotbarRadial", ...).
 QString actionName(Action action);

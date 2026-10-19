@@ -190,6 +190,13 @@ Popup {
                         onToggled: screen.game.settings.showLabels = checked
                     }
 
+                    CheckBox {
+                        Layout.columnSpan: 3
+                        text: qsTr("Hiding the HUD (%1) hides the hand too").arg(screen.game.settings.keys.labels.hideHud)
+                        checked: screen.game.settings.photoHidesHand
+                        onToggled: screen.game.settings.photoHidesHand = checked
+                    }
+
                     Label {
                         text: qsTr("Master volume")
                     }
@@ -272,9 +279,9 @@ Popup {
                         textRole: "text"
                         valueRole: "value"
                         model: [
-                            { text: qsTr("First person"), value: "first" },
-                            { text: qsTr("Third person, behind"), value: "behind" },
-                            { text: qsTr("Third person, front"), value: "front" }
+                            { text: qsTr("First person"), value: GameSettings.CameraMode.FirstPerson },
+                            { text: qsTr("Third person, behind"), value: GameSettings.CameraMode.Behind },
+                            { text: qsTr("Third person, front"), value: GameSettings.CameraMode.Front }
                         ]
                         onActivated: screen.game.settings.cameraMode = currentValue
                     }

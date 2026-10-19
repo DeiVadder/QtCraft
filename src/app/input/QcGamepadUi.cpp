@@ -192,7 +192,8 @@ QVariantMap QcGamepadUi::actions() const
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
         const auto action = Action(index);
         const std::optional<QcGamepadButton> button = m_world.profile().bindings.button(action);
-        const QString trigger = action == Action::Mine ? u"rightTrigger"_s : u"leftTrigger"_s;
+        // The triggers' actions are axes; the others without a button are "".
+        const QString trigger = action == Action::Mine ? u"rightTrigger"_s : action == Action::Use ? u"leftTrigger"_s : QString();
         result.insert(QcGamepadMapping::actionName(action), button ? QcGamepadNames::button(*button) : trigger);
     }
     return result;

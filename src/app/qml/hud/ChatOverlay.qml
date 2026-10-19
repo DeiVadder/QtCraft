@@ -27,10 +27,10 @@ Item {
         anchors.margins: 12
         placeholderText: overlay.game.gamepad.active ? qsTr("Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels").arg(overlay.game.gamepad.pads.texts.start).arg(overlay.game.gamepad.pads.texts.east)
                                                    : qsTr("Chat or /command (e.g. /help), Enter to send, Esc to cancel")
-        Keys.onEscapePressed: overlay.game.overlay = ""
+        Keys.onEscapePressed: overlay.game.overlay = GameController.Overlay.None
         onAccepted: {
             overlay.game.sendChat(text);
-            overlay.game.overlay = "";
+            overlay.game.overlay = GameController.Overlay.None;
         }
     }
 }

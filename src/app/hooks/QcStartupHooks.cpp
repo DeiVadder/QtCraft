@@ -141,7 +141,7 @@ void QcStartupHooks::openStartupOverlay()
         // As if the player list key were held.
         m_screens.input.setPlayerListHeld(true);
     } else if (!m_startupOverlay.isEmpty()) {
-        m_screens.state.setOverlay(m_startupOverlay);
+        openOverlay(m_startupOverlay);
     }
 }
 
@@ -192,43 +192,92 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         if (m_scriptedPad) {
             m_scriptedPad->run(QStringView(step).mid(4));
         }
-    } else if (step.startsWith(u"pick:"_s)) {
-        pickInOpenScreen(QStringView(step).mid(5).toInt());
-    } else if (step.startsWith(u"open:"_s)) {
-        openPopup(step.mid(5));
+    } else if (step.startsWith(u"pick:"_s) || step.startsWith(u"open:"_s) || step.startsWith(u"text:"_s)) {
+        runOnLoadedScreen(step, 0);
     } else if (step.startsWith(u"hover:"_s)) {
         hoverAt(QStringView(step).mid(6));
     } else if (step == u"handbook"_s) {
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {
         m_screens.input.setPlayerListHeld(true);
+    } else if (step.startsWith(u"key:"_s)) {
+        pressKey(step.mid(4));
     } else if (step == u"fly"_s) {
         // Creative flight as after a double tap of jump (decision E-284).
         m_parts.session->gameMode().setFlightWanted(true);
-    } else if (step.startsWith(u"text:"_s)) {
-        setText(step.mid(5));
     } else {
         // "@<ms> " closes the screen and the handbook.
-        m_screens.state.setOverlay(step);
+        openOverlay(step);
         if (step.isEmpty()) {
             m_screens.handbook.close();
         }
     }
 }
 
-void QcStartupHooks::pickInOpenScreen(int row) const
+void QcStartupHooks::pressKey(const QString &actionId) const
+{
+    const std::optional<QcKeyBindings::Action> action = QcKeyBindings::actionFromId(actionId);
+    if (!action) {
+        qCWarning(lcGame) << "--overlay key:" << actionId << ": no such key action";
+        return;
+    }
+    // As if its key were pressed in the world.
+    m_screens.input.worldAction(*action, true);
+}
+
+void QcStartupHooks::openOverlay(const QString &name) const
+{
+    const std::optional<QcScreenState::Overlay> overlay = QcScreenState::overlayFromName(name);
+    if (!overlay) {
+        qCWarning(lcGame) << "--overlay" << name << ": no such screen";
+        return;
+    }
+    m_screens.state.setOverlay(*overlay);
+}
+
+void QcStartupHooks::runOnLoadedScreen(const QString &step, int attempt)
+{
+    bool done = false;
+    if (step.startsWith(u"pick:"_s)) {
+        done = pickInOpenScreen(QStringView(step).mid(5).toInt());
+    } else if (step.startsWith(u"open:"_s)) {
+        done = openPopup(step.mid(5));
+    } else {
+        done = setText(step.mid(5));
+    }
+    if (done) {
+        if (attempt > 0) {
+            qCInfo(lcGame) << "--overlay" << step << ": waited" << attempt * loadedScreenRetryMs << "ms for its screen";
+        }
+        return;
+    }
+
+    // Screens are made when they open (LazyScreen, decision E-691): until the one the step needs
+    // is there, the step and the screenshot wait for it.
+    if (attempt + 1 >= loadedScreenAttempts) {
+        qCWarning(lcGame) << "--overlay" << step << ": no such control on a shown screen";
+        return;
+    }
+    holdScreenshot();
+    QTimer::singleShot(loadedScreenRetryMs, this, [this, step, attempt] {
+        runOnLoadedScreen(step, attempt + 1);
+        releaseScreenshot();
+    });
+}
+
+bool QcStartupHooks::pickInOpenScreen(int row) const
 {
     if (!m_parts.window) {
-        return;
+        return false;
     }
     const QList<QQuickItem *> screens = m_parts.window->findChildren<QQuickItem *>(u"slotScreen"_s);
     for (QQuickItem *screen : screens) {
         if (screen->isVisible()) {
             screen->setProperty("pickedSlot", row);
-            return;
+            return true;
         }
     }
-    qCWarning(lcGame) << "--overlay pick:" << row << ": no slot screen is open";
+    return false;
 }
 
 void QcStartupHooks::hoverAt(QStringView position) const
@@ -249,30 +298,54 @@ void QcStartupHooks::hoverAt(QStringView position) const
     QCoreApplication::sendEvent(window, &move);
 }
 
-void QcStartupHooks::setText(const QString &assignment) const
+bool QcStartupHooks::setText(const QString &assignment) const
 {
     const qsizetype equals = assignment.indexOf(u'=');
-    const QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
-    QObject *control = window && equals > 0 ? window->contentItem()->findChild<QObject *>(assignment.left(equals)) : nullptr;
+    QObject *control = equals > 0 ? shownControl(assignment.left(equals), false) : nullptr;
     if (!control) {
-        qCWarning(lcGame) << "--overlay text:" << assignment << ": expected 'text:<objectName>=<text>' of a shown field";
-        return;
+        return false;
     }
     control->setProperty("text", assignment.mid(equals + 1));
+    return true;
 }
 
-void QcStartupHooks::openPopup(const QString &objectName) const
+bool QcStartupHooks::openPopup(const QString &objectName) const
 {
-    const QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
-    // An empty name would find the first unnamed object.
-    QObject *control = window && !objectName.isEmpty() ? window->contentItem()->findChild<QObject *>(objectName) : nullptr;
+    QObject *control = shownControl(objectName, true);
     if (!control) {
-        qCWarning(lcGame) << "--overlay open:" << objectName << ": no such control";
-        return;
+        return false;
     }
     // A combo box opens its list; a popup or dialog opens itself.
     QObject *popup = control->property("popup").value<QObject *>();
     QMetaObject::invokeMethod(popup ? popup : control, "open");
+    return true;
+}
+
+QObject *QcStartupHooks::shownControl(const QString &objectName, bool parentShown) const
+{
+    const QQuickWindow *window = m_parts.view ? m_parts.view->window() : nullptr;
+    // An empty name would find the first unnamed object.
+    if (!window || objectName.isEmpty()) {
+        return nullptr;
+    }
+
+    const QList<QObject *> controls = window->contentItem()->findChildren<QObject *>(objectName);
+    for (QObject *control : controls) {
+        auto *item = qobject_cast<QQuickItem *>(control);
+        if (!parentShown) {
+            if (item && item->isVisible()) {
+                return control;
+            }
+            continue;
+        }
+
+        // A popup is no item; its "parent" property is the item it opens over.
+        const QQuickItem *parent = item ? item->parentItem() : control->property("parent").value<QQuickItem *>();
+        if (parent && parent->isVisible()) {
+            return control;
+        }
+    }
+    return nullptr;
 }
 
 void QcStartupHooks::tradeOpened()

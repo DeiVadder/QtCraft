@@ -117,6 +117,10 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Player list (hold)");
     case A::HotbarRadial:
         return tr("Radial menu of the hotbar (hold, choose with the mouse)");
+    case A::HideHud:
+        return tr("Hide HUD (photo mode)");
+    case A::Screenshot:
+        return tr("Screenshot");
     case A::Pause:
         return tr("Menu");
     case A::Hotbar1:

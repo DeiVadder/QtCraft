@@ -41,6 +41,8 @@ struct QcGameSettings
     QcDebugOptions debug;
     // Labels floating in the world (showcase names, decision E-222).
     bool showLabels = true;
+    // Photo mode (decision E-692): hiding the HUD hides the hand as well.
+    bool photoHidesHand = true;
     // "" follows the system language, otherwise a two-letter language code such as "de".
     QString language;
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;

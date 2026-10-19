@@ -63,7 +63,7 @@ private:
 
     void openFor(const QString &field)
     {
-        QVERIFY(QMetaObject::invokeMethod(keyboard(), "openFor", Q_ARG(QVariant, QVariant::fromValue(item(field)))));
+        QVERIFY(QMetaObject::invokeMethod(keyboard(), "openFor", Q_ARG(QQuickItem*, item(field))));
         QTRY_VERIFY(keyboard()->property("opened").toBool());
     }
 

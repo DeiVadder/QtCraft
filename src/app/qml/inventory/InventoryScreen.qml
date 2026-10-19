@@ -89,7 +89,7 @@ SlotScreen {
                     objectName: "creativeItemsTab"
                     visible: screen.game.player.creative
                     text: qsTr("Creative items")
-                    onClicked: screen.game.overlay = "creative"
+                    onClicked: screen.game.overlay = GameController.Overlay.Creative
                 }
 
                 Label {

@@ -15,8 +15,10 @@ import QtCraft
 Popup {
     id: keyboard
 
-    // The text field typed into (a TextField, TextInput or TextEdit).
-    property var target
+    // The text field typed into (a TextField, TextInput or TextEdit); null once it is destroyed.
+    property Item target
+    // The same field untyped for its text methods, which TextInput and TextEdit share without a type.
+    readonly property var editor: target
     property bool shifted
     // The key the focus starts on.
     property Item firstKey
@@ -35,7 +37,7 @@ Popup {
         ["ßẞ", "#~", "\\|", "\"`", "<>", "!?"],
     ]
 
-    function openFor(field) {
+    function openFor(field: Item) {
         target = field;
         shifted = false;
         open();
@@ -44,28 +46,28 @@ Popup {
     function type(text) {
         if (!target)
             return;
-        if (target.selectedText.length > 0)
-            target.remove(target.selectionStart, target.selectionEnd);
-        target.insert(target.cursorPosition, text);
+        if (editor.selectedText.length > 0)
+            editor.remove(editor.selectionStart, editor.selectionEnd);
+        editor.insert(editor.cursorPosition, text);
         shifted = false;
     }
 
     function deleteBack() {
         if (!target)
             return;
-        if (target.selectedText.length > 0)
-            target.remove(target.selectionStart, target.selectionEnd);
-        else if (target.cursorPosition > 0)
-            target.remove(target.cursorPosition - 1, target.cursorPosition);
+        if (editor.selectedText.length > 0)
+            editor.remove(editor.selectionStart, editor.selectionEnd);
+        else if (editor.cursorPosition > 0)
+            editor.remove(editor.cursorPosition - 1, editor.cursorPosition);
     }
 
     function moveCursor(step) {
         if (target)
-            target.cursorPosition = Math.max(0, Math.min(target.length, target.cursorPosition + step));
+            editor.cursorPosition = Math.max(0, Math.min(editor.length, editor.cursorPosition + step));
     }
 
     function finish() {
-        const field = target;
+        const field = editor;
         close();
         if (field && field.accepted)
             field.accepted();
@@ -127,7 +129,7 @@ Popup {
             Layout.fillWidth: true
             Layout.preferredWidth: 560
             // displayText: what the field shows (a password's dots); a TextEdit has only its text.
-            text: keyboard.target ? (keyboard.target.displayText ?? keyboard.target.text) : ""
+            text: keyboard.target ? (keyboard.editor.displayText ?? keyboard.editor.text) : ""
             color: Theme.text
             elide: Text.ElideLeft
             font.pixelSize: 18

@@ -177,7 +177,7 @@ SlotScreen {
                 Button {
                     objectName: "creativeCrafting"
                     text: qsTr("Crafting and armour")
-                    onClicked: screen.game.overlay = "inventory"
+                    onClicked: screen.game.overlay = GameController.Overlay.Inventory
                 }
 
                 Item {

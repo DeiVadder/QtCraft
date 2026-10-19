@@ -4,6 +4,8 @@
 #include <QString>
 #include <QtQmlIntegration/qqmlintegration.h>
 
+#include <optional>
+
 struct QcSessionParts;
 
 // What the window shows (decision E-530): the phase (menu, loading, world, error, disconnect),
@@ -25,8 +27,37 @@ public:
     // session ended, statusText says why). QML compares against GameController.Phase.Playing etc.
     enum class Phase { Menu, Loading, Playing, Error, Disconnected };
     Q_ENUM(Phase)
+    // In-game screen on top of the world (GameController.Overlay in QML): none, the inventory, the
+    // creative inventory, an open machine (furnace) or container (chest), a villager's trading
+    // screen, the pause menu, the settings (at the general page, the key table, the controller
+    // page, the debug options or the texture packs), the character screen, open to LAN or the chat
+    // line.
+    enum class Overlay {
+        None,
+        Inventory,
+        Creative,
+        Furnace,
+        Chest,
+        Trade,
+        Pause,
+        Settings,
+        Controls,
+        Gamepad,
+        Debug,
+        TexturePacks,
+        Character,
+        Lan,
+        Chat,
+    };
+    Q_ENUM(Overlay)
 
     explicit QcScreenState(const QcSessionParts &parts, QObject *parent = nullptr);
+
+    // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
+    // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
+    // "texturepacks", "character", "lan" or "chat".
+    static QString overlayName(Overlay overlay);
+    [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
     Phase phase() const { return m_phase; }
     bool playing() const { return m_phase == Phase::Playing; }
@@ -34,12 +65,14 @@ public:
     void setPhase(Phase phase, const QString &status = {});
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
-    // In-game screen on top of the world: "" (none), "inventory", "creative", "furnace" (an open
-    // machine), "chest", "trade" (a villager's trading screen), "pause", "settings", "controls"
-    // (settings at the key table), "debug" (settings at the debug options), "texturepacks"
-    // (settings at the texture packs), "character" or "chat".
-    QString overlay() const { return m_overlay; }
-    void setOverlay(const QString &overlay);
+    // In-game screen on top of the world.
+    Overlay overlay() const { return m_overlay; }
+    void setOverlay(Overlay overlay);
+    // How long a closed screen stays loaded (LazyScreen in QML, decision E-691): 60 s, or
+    // QTCRAFT_SCREEN_KEEP_ALIVE_MS (tests and measurements unload at once with 0).
+    int screenKeepAliveMs() const { return m_screenKeepAliveMs; }
+    // QTCRAFT_UI_STATS=1: LazyScreen logs how long each screen took to make (decision E-690).
+    bool logScreenCreation() const { return m_logScreenCreation; }
     // Text the chat line starts with when it opens ("/" for the command key).
     QString chatStart() const { return m_chatStart; }
     // Opens the chat line with `start` already typed.
@@ -84,6 +117,8 @@ private:
     Phase m_phase = Phase::Menu;
     QString m_statusText;
     bool m_inputEnabled = true;
-    QString m_overlay;
+    Overlay m_overlay = Overlay::None;
+    int m_screenKeepAliveMs = 60000;
+    bool m_logScreenCreation = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
     QString m_chatStart;
 };

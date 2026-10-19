@@ -7,12 +7,16 @@
 
 #include <functional>
 
+class QcOffscreenRender;
 class QQuickWindow;
 
 // Test hook: grabs the window after a number of rendered frames, saves it and quits the application.
 // Enabled through QTCRAFT_SCREENSHOT=<file.png> (and optionally QTCRAFT_SCREENSHOT_FRAMES=<n>).
 // With QTCRAFT_LAYOUT_CHECK=1 it logs, just before the picture, every shown item that reaches
 // outside the window (QcLayoutCheck) and a summary line "Layout check: <n> items outside the window".
+// With QTCRAFT_UI_STATS=1 it logs, also just before the picture, the line "UI stats: objects <n>
+// items <n> memory <MB> MB": the QML objects below the window, its Qt Quick items and the
+// resident memory of the process (decision E-690).
 class QcScreenshotHook : public QObject
 {
     Q_OBJECT
@@ -30,10 +34,14 @@ public:
     void release();
     // Takes the picture some other way than QQuickWindow::grabWindow() (offscreen rendering).
     void setGrabber(std::function<QImage()> grabber);
+    // How a picture of the game is taken: from the offscreen rendering when there is one, else
+    // QQuickWindow::grabWindow() of `window`. Also the photo mode's screenshots (QcPhotoMode).
+    static std::function<QImage()> grabberFor(QQuickWindow &window, QcOffscreenRender *offscreen);
 
 private:
     void onFrameSwapped();
     void logLayoutCheck() const;
+    void logUiStats() const;
 
     QPointer<QQuickWindow> m_window;
     std::function<QImage()> m_grabber;
@@ -42,4 +50,5 @@ private:
     int m_holdCount = 0;
     bool m_done = false;
     bool m_checkLayout = false;
+    bool m_logUiStats = false;
 };

@@ -84,6 +84,12 @@ endif()
 qc_add_test(test_sprint_feel SOURCES client/test_sprint_feel.cpp LIBRARIES qc_clientcore)
 # The control palette of the windows (decision E-279).
 qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARIES qc_app_core)
+# The screens that exist only while shown and a while after (LazyScreen.qml, decision E-691),
+# loaded from the source tree.
+# Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
+qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_server)
+qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
+target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp LIBRARIES qc_app_core)
 # The baked shader variants of the game (decision E-332): read from the game's build tree.

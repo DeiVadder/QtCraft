@@ -13,6 +13,8 @@ Rectangle {
     onVisibleChanged: {
         if (visible) {
             forceActiveFocus();
+            // Made by its LazyScreen when the overlay changed to one of its sub-screens: opens it.
+            followOverlay();
         } else {
             // Its sub-screens belong to the menu: they close (and store the settings) with it.
             settingsScreen.close();
@@ -22,7 +24,7 @@ Rectangle {
     }
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
-            menu.game.overlay = "";
+            menu.game.overlay = GameController.Overlay.None;
         } else if (menu.game.settings.keys.matches("handbook", event.key)) {
             menu.game.handbook.open("");
         }
@@ -47,7 +49,7 @@ Rectangle {
             Layout.fillWidth: true
             text: qsTr("Back to game")
             highlighted: true
-            onClicked: menu.game.overlay = ""
+            onClicked: menu.game.overlay = GameController.Overlay.None
         }
 
         Button {
@@ -56,27 +58,27 @@ Rectangle {
             text: qsTr("Save world")
             onClicked: {
                 menu.game.saveWorld();
-                menu.game.overlay = "";
+                menu.game.overlay = GameController.Overlay.None;
             }
         }
 
         Button {
             Layout.fillWidth: true
             text: qsTr("Settings")
-            onClicked: menu.game.overlay = "settings"
+            onClicked: menu.game.overlay = GameController.Overlay.Settings
         }
 
         Button {
             Layout.fillWidth: true
             text: qsTr("Character")
-            onClicked: menu.game.overlay = "character"
+            onClicked: menu.game.overlay = GameController.Overlay.Character
         }
 
         Button {
             Layout.fillWidth: true
             visible: !menu.game.multiplayer.networkGame
             text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
-            onClicked: menu.game.overlay = "lan"
+            onClicked: menu.game.overlay = GameController.Overlay.Lan
         }
 
         Button {
@@ -93,14 +95,18 @@ Rectangle {
         }
     }
 
-    // The settings are an overlay of their own ("settings") so the --overlay test hook can open them.
-    // Closing a sub-screen returns to the menu and its keys.
-    function subScreenClosed(overlays) {
+    // The settings pages in the order of SettingsScreen.startPage.
+    readonly property list<int> settingsPages: [GameController.Overlay.Settings, GameController.Overlay.Controls,
+        GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks]
+
+    // The settings are an overlay of their own (Overlay.Settings) so the --overlay test hook can
+    // open them. Closing a sub-screen returns to the menu and its keys.
+    function subScreenClosed(overlays: list<int>) {
         // The debug options open from the world (debug options key) and return there.
-        if (menu.game.overlay === "debug")
-            menu.game.overlay = "";
+        if (menu.game.overlay === GameController.Overlay.Debug)
+            menu.game.overlay = GameController.Overlay.None;
         else if (overlays.includes(menu.game.overlay))
-            menu.game.overlay = "pause";
+            menu.game.overlay = GameController.Overlay.Pause;
         if (visible)
             forceActiveFocus();
     }
@@ -109,44 +115,47 @@ Rectangle {
         id: settingsScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed(["settings", "controls", "gamepad", "debug", "texturepacks"])
+        onClosed: menu.subScreenClosed(menu.settingsPages)
     }
 
     CharacterScreen {
         id: characterScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed(["character"])
+        onClosed: menu.subScreenClosed([GameController.Overlay.Character])
     }
 
     LanScreen {
         id: lanScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed(["lan"])
+        onClosed: menu.subScreenClosed([GameController.Overlay.Lan])
     }
 
     // One sub-screen at a time, the one the overlay names; any other overlay closes them.
+    function followOverlay() {
+        const overlay = menu.game.overlay;
+        if (!menu.settingsPages.includes(overlay))
+            settingsScreen.close();
+        if (overlay !== GameController.Overlay.Character)
+            characterScreen.close();
+        if (overlay !== GameController.Overlay.Lan)
+            lanScreen.close();
+        if (menu.settingsPages.includes(overlay)) {
+            settingsScreen.startPage = menu.settingsPages.indexOf(overlay);
+            settingsScreen.open();
+        } else if (overlay === GameController.Overlay.Character) {
+            characterScreen.open();
+        } else if (overlay === GameController.Overlay.Lan) {
+            lanScreen.open();
+        }
+    }
+
     Connections {
         target: menu.game
 
         function onOverlayChanged() {
-            const overlay = menu.game.overlay;
-            const settingsPages = ["settings", "controls", "gamepad", "debug", "texturepacks"];
-            if (!settingsPages.includes(overlay))
-                settingsScreen.close();
-            if (overlay !== "character")
-                characterScreen.close();
-            if (overlay !== "lan")
-                lanScreen.close();
-            if (settingsPages.includes(overlay)) {
-                settingsScreen.startPage = settingsPages.indexOf(overlay);
-                settingsScreen.open();
-            } else if (overlay === "character") {
-                characterScreen.open();
-            } else if (overlay === "lan") {
-                lanScreen.open();
-            }
+            menu.followOverlay();
         }
     }
 }

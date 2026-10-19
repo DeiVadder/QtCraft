@@ -1,9 +1,14 @@
 # Runs COMMAND (a ;-list) and fails unless it exits with EXPECTED_EXIT_CODE and, if given, prints
 # EXPECTED_OUTPUT (standard output) and EXPECTED_ERROR (standard error), prints nothing matching
 # FORBIDDEN_ERROR (standard error) and writes EXPECTED_FILE (removed first) of at least
-# EXPECTED_MIN_SIZE bytes. Unlike WILL_FAIL this does not accept crashes or timeouts as success.
+# EXPECTED_MIN_SIZE bytes. With EXPECTED_GLOB and EXPECTED_GLOB_COUNT, CLEAN_DIR is removed first
+# and exactly that many files must match the glob afterwards. Unlike WILL_FAIL this does not accept
+# crashes or timeouts as success.
 if(DEFINED EXPECTED_FILE)
     file(REMOVE "${EXPECTED_FILE}")
+endif()
+if(DEFINED CLEAN_DIR)
+    file(REMOVE_RECURSE "${CLEAN_DIR}")
 endif()
 execute_process(COMMAND ${COMMAND} RESULT_VARIABLE exit_code OUTPUT_VARIABLE output ERROR_VARIABLE errors)
 if(NOT exit_code STREQUAL EXPECTED_EXIT_CODE)
@@ -25,5 +30,12 @@ if(DEFINED EXPECTED_FILE)
     file(SIZE "${EXPECTED_FILE}" size)
     if(DEFINED EXPECTED_MIN_SIZE AND size LESS EXPECTED_MIN_SIZE)
         message(FATAL_ERROR "${EXPECTED_FILE} has ${size} bytes, expected at least ${EXPECTED_MIN_SIZE}")
+    endif()
+endif()
+if(DEFINED EXPECTED_GLOB)
+    file(GLOB matches "${EXPECTED_GLOB}")
+    list(LENGTH matches count)
+    if(NOT count EQUAL EXPECTED_GLOB_COUNT)
+        message(FATAL_ERROR "${count} files match ${EXPECTED_GLOB}, expected ${EXPECTED_GLOB_COUNT}: ${matches}")
     endif()
 endif()

@@ -70,6 +70,9 @@ public:
     void releaseScreenshotWhenLoaded(int viewDistance, bool playing);
 
 private:
+    static constexpr int loadedScreenAttempts = 40;
+    static constexpr int loadedScreenRetryMs = 50;
+
     void sendStartupChat();
     void openStartupOverlay();
     // Uses the block in view once the startup commands have placed it.
@@ -77,11 +80,23 @@ private:
     void scheduleOverlaySteps();
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
     void runOverlayStep(const QString &step);
-    void pickInOpenScreen(int row) const;
+    // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
+    void pressKey(const QString &actionId) const;
+    // Opens the screen of an --overlay name (QcScreenState::overlayFromName).
+    void openOverlay(const QString &name) const;
+    // "pick:", "open:" and "text:" steps: they act on a control of a shown screen and wait up to
+    // loadedScreenAttempts * loadedScreenRetryMs for its screen to be loaded.
+    void runOnLoadedScreen(const QString &step, int attempt);
+    // Each returns whether it found what it acts on.
+    [[nodiscard]] bool pickInOpenScreen(int row) const;
     void hoverAt(QStringView position) const;
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
-    void setText(const QString &assignment) const;
-    void openPopup(const QString &objectName) const;
+    [[nodiscard]] bool setText(const QString &assignment) const;
+    [[nodiscard]] bool openPopup(const QString &objectName) const;
+    // The control named `objectName` on a shown screen, as pick: wants it: an item that is visible,
+    // or with `parentShown` one whose visual parent is (a closed popup or sub-screen); a screen
+    // kept loaded but hidden (LazyScreen) does not count.
+    QObject *shownControl(const QString &objectName, bool parentShown) const;
     // Holds the screenshot until the matching releaseScreenshot().
     void holdScreenshot() const;
     void releaseScreenshot() const;

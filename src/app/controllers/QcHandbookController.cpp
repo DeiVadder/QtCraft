@@ -95,6 +95,16 @@ void QcHandbookController::logFirstFrame()
     });
 }
 
+void QcHandbookController::setPage(const QString &page)
+{
+    // Any entry id the screen showed; the screen sets it again for every page it opens.
+    if (m_page == page) {
+        return;
+    }
+    m_page = page;
+    emit pageChanged();
+}
+
 void QcHandbookController::close()
 {
     if (!m_open) {

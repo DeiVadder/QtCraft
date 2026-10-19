@@ -35,6 +35,7 @@ Rectangle {
         if (remember && current.length > 0)
             history = history.concat([current]);
         current = id;
+        game.handbook.page = id;
         page = game.handbook.model.page(id);
         if (!searching)
             category = page.category;
@@ -65,13 +66,14 @@ Rectangle {
                 navigate(game.handbook.target, false);
             } else if (found) {
                 navigate(found.id, false);
-            } else if (current.length === 0) {
+            } else if (current.length === 0 && game.handbook.page.length === 0) {
                 const first = game.handbook.model.entries("playing").find(row => row.id !== undefined);
                 if (first)
                     navigate(first.id, false);
             } else {
-                // The handbook was rebuilt (language, mods): show the same page again.
-                const shown = current;
+                // The page where it was left, also after the screen was unloaded (the controller
+                // keeps it) or the handbook was rebuilt (language, mods).
+                const shown = current.length > 0 ? current : game.handbook.page;
                 current = "";
                 navigate(shown, false);
             }

@@ -63,9 +63,9 @@ ColumnLayout {
 
         Repeater {
             model: [
-                { value: "stand", text: qsTr("Stand") },
-                { value: "walk", text: qsTr("Walk") },
-                { value: "mine", text: qsTr("Mine") }
+                { value: CharacterPreview.Animation.Stand, text: qsTr("Stand") },
+                { value: CharacterPreview.Animation.Walk, text: qsTr("Walk") },
+                { value: CharacterPreview.Animation.Mine, text: qsTr("Mine") }
             ]
 
             delegate: Button {

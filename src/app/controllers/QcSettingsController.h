@@ -24,7 +24,9 @@ struct QcSessionParts;
 class QcSettingsController : public QObject
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    // GameSettings in QML, for its enumerations (GameSettings.CameraMode.Behind).
+    QML_NAMED_ELEMENT(GameSettings)
+    QML_UNCREATABLE("Provided by GameController.settings")
     Q_PROPERTY(int viewDistance READ viewDistance WRITE setViewDistance NOTIFY viewDistanceChanged FINAL)
     Q_PROPERTY(double fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY settingsChanged FINAL)
     // Share (0..1) of the field-of-view widening while sprinting (decision E-280).
@@ -32,9 +34,12 @@ class QcSettingsController : public QObject
     Q_PROPERTY(double mouseSensitivity READ mouseSensitivity WRITE setMouseSensitivity NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool invertMouse READ invertMouse WRITE setInvertMouse NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool showLabels READ showLabels WRITE setShowLabels NOTIFY settingsChanged FINAL)
+    // Photo mode: hiding the HUD hides the hand as well (decision E-692).
+    Q_PROPERTY(bool photoHidesHand READ photoHidesHand WRITE setPhotoHidesHand NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
-    Q_PROPERTY(QString cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
+    // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
+    Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
     // The player's keys.
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
@@ -47,6 +52,10 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QcGamepadOptions *gamepad READ gamepadOptions CONSTANT FINAL)
 
 public:
+    // QcCameraMode for QML, in its order.
+    enum class CameraMode { FirstPerson, Behind, Front, Side };
+    Q_ENUM(CameraMode)
+
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
                          QObject *parent = nullptr);
     ~QcSettingsController() override;
@@ -75,13 +84,16 @@ public:
     // Labels floating in the world (decision E-222); the label key switches them.
     bool showLabels() const { return m_showLabels; }
     void setShowLabels(bool show);
+    bool photoHidesHand() const { return m_photoHidesHand; }
+    void setPhotoHidesHand(bool hides);
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
-    // "first", "behind" or "front"; the camera view key cycles through them.
-    QString cameraMode() const;
-    void setCameraMode(const QString &mode);
+    // First person, behind, front or side; the camera view key cycles through them.
+    CameraMode cameraMode() const { return CameraMode(m_cameraMode); }
+    void setCameraMode(CameraMode mode);
     QcCameraMode cameraModeValue() const { return m_cameraMode; }
+    void setCameraModeValue(QcCameraMode mode);
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcCharacterSettings *character() const { return m_character; }
@@ -112,6 +124,7 @@ private:
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
     bool m_showLabels = true;
+    bool m_photoHidesHand = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QString m_contentLanguage = QStringLiteral("en");

@@ -51,7 +51,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
 
 void QcRenderBridge::updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode)
 {
-    m_parts.view->setHandMesh(mode == QcCameraMode::FirstPerson ? m_entities.buildHand(alpha, eye) : nullptr);
+    m_parts.view->setHandMesh(mode == QcCameraMode::FirstPerson && !m_handHidden ? m_entities.buildHand(alpha, eye) : nullptr);
 }
 
 void QcRenderBridge::updateSky(double alpha)
@@ -95,7 +95,7 @@ void QcRenderBridge::updateSelection()
     const QcClientSession &session = *m_parts.session;
     const std::optional<QcRaycastHit> &target = session.target();
     QList<QcAabb> selection;
-    if (target && !session.targetEntity()) {
+    if (target && !session.targetEntity() && !m_outlineHidden) {
         const std::optional<QcBlockId> block = session.world()->blockAt(target->block);
         const QcVec3 corner{double(target->block.x), double(target->block.y), double(target->block.z)};
         if (block && session.content()->isValidBlock(*block)) {

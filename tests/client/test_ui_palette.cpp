@@ -72,7 +72,8 @@ QStringList ownColours(const QString &path)
 // The element a line belongs to: the nearest line above it that opens a block and is indented less.
 std::pair<QString, qsizetype> enclosingElement(const QStringList &lines, qsizetype line)
 {
-    static const QRegularExpression opening(uR"(^(\s*)([A-Z]\w*)\s*\{\s*$)"_s);
+    // "Type {" or an element given to a property ("screen: MessageScreen {", LazyScreen).
+    static const QRegularExpression opening(uR"(^(\s*)(?:[a-z]\w*:\s*)?([A-Z]\w*)\s*\{\s*$)"_s);
     const qsizetype indent = lines[line].size() - lines[line].trimmed().size();
     for (qsizetype i = line - 1; i >= 0; --i) {
         const QRegularExpressionMatch match = opening.match(lines[i]);

@@ -13,6 +13,15 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+static_assert(int(QcCharacterPreview::Animation::Stand) == int(QcPreviewPose::Animation::Stand)
+              && int(QcCharacterPreview::Animation::Walk) == int(QcPreviewPose::Animation::Walk)
+              && int(QcCharacterPreview::Animation::Mine) == int(QcPreviewPose::Animation::Mine),
+              "QcCharacterPreview::Animation follows QcPreviewPose::Animation");
+
+} // namespace
+
 QcCharacterPreview::QcCharacterPreview(QQuickItem *parent)
     : QQuickRhiItem(parent)
 {
@@ -84,14 +93,20 @@ void QcCharacterPreview::applyHook()
     emit viewChanged();
 }
 
-void QcCharacterPreview::setAnimation(const QString &animation)
+void QcCharacterPreview::setAnimation(Animation animation)
 {
-    const std::optional<QcPreviewPose::Animation> parsed = QcPreviewPose::fromName(animation);
-    if (!parsed || *parsed == m_animation || (m_source && m_source->hook().animation)) {
+    if (animation < Animation::Stand || animation > Animation::Mine) {
+        qCWarning(lcPreview) << "Character preview" << objectName() << ": ignoring unknown animation" << int(animation);
+        return;
+    }
+    // Equal values and the --preview hook's fixed animation (it wins over the screen's buttons on
+    // purpose) leave it as it is without a message.
+    const auto pose = QcPreviewPose::Animation(animation);
+    if (pose == m_animation || (m_source && m_source->hook().animation)) {
         return;
     }
 
-    m_animation = *parsed;
+    m_animation = pose;
     m_seconds = 0.0;
     emit animationChanged();
     redraw();

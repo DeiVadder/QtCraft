@@ -94,6 +94,9 @@ signals:
     // The handbook key was pressed in the world: the handbook opens at what the crosshair points
     // at, else at the page shown last (the game knows the target from the HUD).
     void handbookRequested();
+    // The photo mode's keys were pressed in the world (decision E-692).
+    void hudToggleRequested();
+    void screenshotRequested();
 
 private:
     bool filterWorldEvent(QEvent *event);

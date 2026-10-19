@@ -17,7 +17,10 @@ float storedFloat(const QSettings &file, const QString &key, float fallback)
     return ok ? value : fallback;
 }
 
-// The buttons stored as "<prefix>/bind/<action>" = button name; unknown names keep the default.
+// The buttons stored as "<prefix>/bind/<action>" = button name, "none" for an action without one;
+// unknown names keep the default.
+constexpr QStringView noButton = u"none";
+
 QcGamepadMapping::Bindings loadBindings(const QSettings &file, const QString &prefix)
 {
     using QcGamepadMapping::Action;
@@ -30,6 +33,8 @@ QcGamepadMapping::Bindings loadBindings(const QSettings &file, const QString &pr
         const QString name = file.value(u"%1/bind/%2"_s.arg(prefix, QcGamepadMapping::actionName(action))).toString();
         if (const std::optional<QcGamepadButton> button = QcGamepadNames::buttonFromName(name)) {
             bindings.setButton(action, *button);
+        } else if (name == noButton) {
+            bindings.setButton(action, QcGamepadMapping::unbound);
         }
     }
     return bindings;
@@ -90,8 +95,11 @@ void QcGamepadProfile::save(QSettings &file, const QString &prefix) const
     file.setValue(prefix + u"/vibration"_s, vibration);
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
         const auto action = QcGamepadMapping::Action(index);
-        if (const std::optional<QcGamepadButton> button = bindings.button(action)) {
-            file.setValue(u"%1/bind/%2"_s.arg(prefix, QcGamepadMapping::actionName(action)), QcGamepadNames::button(*button));
+        if (!QcGamepadMapping::rebindable(action)) {
+            continue;
         }
+        const std::optional<QcGamepadButton> button = bindings.button(action);
+        file.setValue(u"%1/bind/%2"_s.arg(prefix, QcGamepadMapping::actionName(action)),
+                      button ? QcGamepadNames::button(*button) : noButton.toString());
     }
 }

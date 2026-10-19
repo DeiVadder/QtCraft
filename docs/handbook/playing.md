@@ -58,7 +58,7 @@ A gamepad (Xbox, PlayStation, Switch Pro and most others) steers the player whil
 - **Left and right shoulder buttons**: previous and next hotbar slot
 - **Right face button**: drop one item; hold it to drop the stack
 - **Left face button**: take the block you look at into your hand: from your inventory, in creative mode from the catalogue as well
-- **Upper face button**: inventory; **Start**: pause menu; **Back**: hold to see the players
+- **Upper face button**: inventory; **Start**: pause menu; **Back**: hold to see the players; while holding it, the upper face button takes a screenshot and the left one hides the HUD
 - **D-pad**: up switches the camera view, down opens the chat, right the handbook; hold left for the hotbar wheel: point at a slot with the right stick and let go to take it
 
 In the menus, the inventory and every other screen the d-pad or the left stick moves a golden ring from button to button and slot to slot; the lower face button presses or picks up and puts down, the right one goes back, the left one puts down a single item, the upper one moves a stack across, the shoulder buttons switch tabs and the right stick scrolls. On a slider or a number field, left and right change the value. A text field opens a keyboard on the screen (Shift gives each key its second character, for example ! and ? or capitals): the left face button deletes, the upper one types a space, Start finishes. As soon as you use the mouse or the keyboard again, the ring goes away.
@@ -74,6 +74,10 @@ You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you 
 **Screens**
 
 In the inventory, furnace and chest screens a left click picks a stack up and puts it down (merging or swapping), a right click puts down a single item. The list on the right of the inventory crafts recipes directly.
+
+**Photo mode**
+
+**P / F6** hides the HUD: the crosshair, the hotbar, the hearts, the chat lines, the labels and the outline of the block you look at, and the hand as well unless you switch that off under Settings → General. Press it again to show everything. **K / F2** saves a picture of the window as a PNG file in the folder *screenshots* next to your worlds, named after the date and time; a short notice tells you its name. On a gamepad hold **Back** and press the upper face button for a screenshot or the left face button to hide the HUD; the player list shows meanwhile, and the two buttons do nothing else.
 
 ### <a id="chapter-qtcraft-mining"></a>Mining
 

@@ -69,10 +69,10 @@ public:
     void setCollectRenderSamples(bool collect) { m_collectRenderSamples = collect; }
     QList<QcRenderSample> takeRenderSamples() { return std::exchange(m_renderSamples, {}); }
 
-protected:
-    QQuickRhiItemRenderer *createRenderer() override;
-
 private:
+    // Called by Qt Quick on the render thread; Qt Quick owns the returned renderer and deletes it
+    // there when the item or its scene graph goes away. Private on purpose: only Qt calls it.
+    [[nodiscard]] QQuickRhiItemRenderer *createRenderer() final; // NOLINT(misc-override-with-different-visibility)
     friend class QcWorldRenderer;
 
     QcCamera m_camera;

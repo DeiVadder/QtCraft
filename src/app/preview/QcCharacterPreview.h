@@ -29,8 +29,8 @@ class QcCharacterPreview : public QQuickRhiItem
     Q_OBJECT
     QML_NAMED_ELEMENT(CharacterPreview)
     Q_PROPERTY(QcPreviewSource *source READ source WRITE setSource NOTIFY sourceChanged FINAL)
-    // "stand", "walk" or "mine".
-    Q_PROPERTY(QString animation READ animation WRITE setAnimation NOTIFY animationChanged FINAL)
+    // CharacterPreview.Animation.Stand, Walk or Mine.
+    Q_PROPERTY(QcCharacterPreview::Animation animation READ animation WRITE setAnimation NOTIFY animationChanged FINAL)
     // The side of the figure that faces the viewer (CharacterPreview.Side.Front or Back).
     Q_PROPERTY(QcCharacterPreview::Side side READ side NOTIFY viewChanged FINAL)
     // 0 shows the whole body, 1 the head.
@@ -47,13 +47,16 @@ public:
     // QcPreviewCamera::Side for QML.
     enum class Side { Front, Back };
     Q_ENUM(Side)
+    // QcPreviewPose::Animation for QML, in its order.
+    enum class Animation { Stand, Walk, Mine };
+    Q_ENUM(Animation)
 
     explicit QcCharacterPreview(QQuickItem *parent = nullptr);
 
     QcPreviewSource *source() const { return m_source; }
     void setSource(QcPreviewSource *source);
-    QString animation() const { return QcPreviewPose::name(m_animation); }
-    void setAnimation(const QString &animation);
+    Animation animation() const { return Animation(m_animation); }
+    void setAnimation(Animation animation);
     Side side() const;
     double zoom() const { return m_camera.zoom(); }
     void setZoom(double zoom);
@@ -80,7 +83,6 @@ signals:
     void hasFigureChanged();
 
 protected:
-    QQuickRhiItemRenderer *createRenderer() override;
     void itemChange(ItemChange change, const ItemChangeData &value) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -89,6 +91,10 @@ protected:
 
 private:
     friend class QcCharacterPreviewRenderer;
+
+    // Called by Qt Quick on the render thread; Qt Quick owns the returned renderer and deletes it
+    // there when the item or its scene graph goes away. Private on purpose: only Qt calls it.
+    [[nodiscard]] QQuickRhiItemRenderer *createRenderer() final; // NOLINT(misc-override-with-different-visibility)
 
     QcPreviewActivity::State activityState() const;
     QcPreviewActivity::Mode mode() const { return QcPreviewActivity::mode(activityState()); }

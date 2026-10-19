@@ -58,7 +58,7 @@ Ein Gamepad (Xbox, PlayStation, Switch Pro und die meisten anderen) steuert die 
 - **Linke und rechte Schultertaste**: vorheriges und nächstes Feld der Schnellleiste
 - **Rechte Aktionstaste**: ein Item fallen lassen; gehalten den ganzen Stapel
 - **Linke Aktionstaste**: den Block im Blick in die Hand nehmen: aus dem Inventar, im Kreativmodus auch aus dem Katalog
-- **Obere Aktionstaste**: Inventar; **Start**: Pause-Menü; **Back**: gehalten die Spielerliste
+- **Obere Aktionstaste**: Inventar; **Start**: Pause-Menü; **Back**: gehalten die Spielerliste; dabei macht die obere Aktionstaste ein Bildschirmfoto und die linke blendet die Anzeige aus
 - **Steuerkreuz**: oben Kameraansicht, unten Chat, rechts Handbuch; links gehalten das Rad der Schnellleiste: mit dem rechten Stick auf ein Feld zeigen und loslassen
 
 In den Menüs, im Inventar und in allen anderen Bildschirmen bewegt das Steuerkreuz oder der linke Stick einen goldenen Rahmen von Knopf zu Knopf und von Feld zu Feld; die untere Aktionstaste drückt oder nimmt auf und legt ab, die rechte geht zurück, die linke legt ein einzelnes Item ab, die obere verschiebt einen Stapel hinüber, die Schultertasten wechseln Reiter und der rechte Stick scrollt. Auf einem Schieberegler oder Zahlenfeld ändern links und rechts den Wert. Ein Textfeld öffnet eine Tastatur auf dem Bildschirm (Umschalten gibt jeder Taste ihr zweites Zeichen, etwa ! und ? oder Großbuchstaben): die linke Aktionstaste löscht, die obere tippt ein Leerzeichen, Start beendet. Sobald du wieder Maus oder Tastatur benutzt, verschwindet der Rahmen.
@@ -74,6 +74,10 @@ Du gehst mit 4,3 m/s, rennst mit 5,6 m/s und schleichst mit 1,3 m/s; beim Schlei
 **Bildschirme**
 
 Im Inventar, im Ofen und in Truhen nimmt ein Linksklick einen Stapel auf und legt ihn wieder ab (zusammenlegen oder tauschen), ein Rechtsklick legt ein einzelnes Item ab. Die Liste rechts im Inventar stellt Rezepte direkt her.
+
+**Fotomodus**
+
+**P / F6** blendet die Anzeige aus: Fadenkreuz, Schnellleiste, Herzen, Chatzeilen, Beschriftungen und den Rahmen um den anvisierten Block, dazu die Hand, sofern du das unter Einstellungen → Allgemein nicht abschaltest. Ein zweiter Druck zeigt alles wieder. **K / F2** speichert ein Bild des Fensters als PNG-Datei im Ordner *screenshots* neben deinen Welten, benannt nach Datum und Uhrzeit; ein kurzer Hinweis nennt den Namen. Auf dem Gamepad hältst du **Back** und drückst die obere Aktionstaste für ein Bildschirmfoto oder die linke, um die Anzeige auszublenden; die Spielerliste erscheint dabei, und die beiden Tasten tun sonst nichts.
 
 ### <a id="chapter-qtcraft-mining"></a>Abbauen
 

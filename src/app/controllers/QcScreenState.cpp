@@ -1,14 +1,65 @@
 #include "app/controllers/QcScreenState.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 
+#include <array>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The command-line names in the order of QcScreenState::Overlay.
+constexpr std::array<QStringView, 15> overlayNames{
+    u"",
+    u"inventory",
+    u"creative",
+    u"furnace",
+    u"chest",
+    u"trade",
+    u"pause",
+    u"settings",
+    u"controls",
+    u"gamepad",
+    u"debug",
+    u"texturepacks",
+    u"character",
+    u"lan",
+    u"chat",
+};
+static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Chat) + 1, "a name for every overlay");
+
+} // namespace
 
 QcScreenState::QcScreenState(const QcSessionParts &parts, QObject *parent)
     : QObject(parent)
     , m_parts(parts)
 {
+    bool valid = false;
+    const int keepAliveMs = qEnvironmentVariableIntValue("QTCRAFT_SCREEN_KEEP_ALIVE_MS", &valid);
+    if (valid && keepAliveMs >= 0) {
+        m_screenKeepAliveMs = keepAliveMs;
+    } else if (qEnvironmentVariableIsSet("QTCRAFT_SCREEN_KEEP_ALIVE_MS")) {
+        qCWarning(lcGame) << "Ignoring QTCRAFT_SCREEN_KEEP_ALIVE_MS" << qEnvironmentVariable("QTCRAFT_SCREEN_KEEP_ALIVE_MS")
+                             << ": expected milliseconds >= 0";
+    }
+}
+
+QString QcScreenState::overlayName(Overlay overlay)
+{
+    const auto index = std::size_t(overlay);
+    return index < overlayNames.size() ? overlayNames[index].toString() : QString();
+}
+
+std::optional<QcScreenState::Overlay> QcScreenState::overlayFromName(QStringView name)
+{
+    for (std::size_t index = 0; index < overlayNames.size(); ++index) {
+        if (overlayNames[index] == name) {
+            return Overlay(index);
+        }
+    }
+    return std::nullopt;
 }
 
 void QcScreenState::setPhase(Phase phase, const QString &status)
@@ -39,15 +90,20 @@ void QcScreenState::setInputEnabled(bool enabled)
     emit worldInputChanged();
 }
 
-void QcScreenState::setOverlay(const QString &overlay)
+void QcScreenState::setOverlay(Overlay overlay)
 {
+    if (overlayNames.size() <= std::size_t(overlay)) {
+        qCWarning(lcGame) << "Ignoring unknown overlay" << int(overlay);
+        return;
+    }
+    // The same screen again changes nothing (screens set it on every click of their buttons).
     if (m_overlay == overlay) {
         return;
     }
 
     m_overlay = overlay;
     emit interrupted();
-    if (m_overlay != u"chat"_s) {
+    if (m_overlay != Overlay::Chat) {
         m_chatStart.clear();
     }
     closeSessionScreens();
@@ -67,13 +123,13 @@ void QcScreenState::closeSessionScreens() const
     m_parts.session->cancelUse();
     // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
     // the furnace or chest screen closes the block.
-    if (m_overlay != u"inventory"_s) {
+    if (m_overlay != Overlay::Inventory) {
         m_parts.session->closeCrafting();
     }
-    if (m_overlay != u"furnace"_s && m_overlay != u"chest"_s) {
+    if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Chest) {
         m_parts.session->closeMachine();
     }
-    if (m_overlay != u"trade"_s) {
+    if (m_overlay != Overlay::Trade) {
         m_parts.session->trading().close();
     }
 }
@@ -81,43 +137,43 @@ void QcScreenState::closeSessionScreens() const
 void QcScreenState::openChat(const QString &start)
 {
     m_chatStart = start;
-    setOverlay(u"chat"_s);
+    setOverlay(Overlay::Chat);
 }
 
 void QcScreenState::craftingOpened()
 {
-    setOverlay(u"inventory"_s);
+    setOverlay(Overlay::Inventory);
 }
 
 void QcScreenState::gameModeChanged(bool creative)
 {
     // An operator changed the mode while the creative inventory was open: the usual one instead.
-    if (m_overlay == u"creative"_s && !creative) {
-        setOverlay(u"inventory"_s);
+    if (m_overlay == Overlay::Creative && !creative) {
+        setOverlay(Overlay::Inventory);
     }
 }
 
 void QcScreenState::machineOpened(bool container)
 {
-    setOverlay(container ? u"chest"_s : u"furnace"_s);
+    setOverlay(container ? Overlay::Chest : Overlay::Furnace);
 }
 
 void QcScreenState::machineClosed()
 {
-    if (m_overlay == u"furnace"_s || m_overlay == u"chest"_s) {
-        setOverlay({});
+    if (m_overlay == Overlay::Furnace || m_overlay == Overlay::Chest) {
+        setOverlay(Overlay::None);
     }
 }
 
 void QcScreenState::tradeOpened()
 {
-    setOverlay(u"trade"_s);
+    setOverlay(Overlay::Trade);
 }
 
 void QcScreenState::tradeClosed()
 {
-    if (m_overlay == u"trade"_s) {
-        setOverlay({});
+    if (m_overlay == Overlay::Trade) {
+        setOverlay(Overlay::None);
     }
 }
 
@@ -129,7 +185,7 @@ void QcScreenState::healthChanged(bool dead)
         return;
     }
 
-    setOverlay({});
+    setOverlay(Overlay::None);
     emit mouseFreed();
     // Releases on the death screen go to QML; forget held keys so nothing sticks after respawn.
     emit interrupted();

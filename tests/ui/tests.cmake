@@ -212,13 +212,54 @@ add_test(NAME app_offscreen_pad_settings
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-settings.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-foreach(pad inventory radial keyboard menu playstation settings)
+# Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691): the pause
+# menu made again on its second opening takes the pad's focus like the first time.
+add_test(NAME app_offscreen_pad_lazy_menu
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 pad:start;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:start;--overlay;@2500 pad:start;--overlay;@3000 pad:dpadDown"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFocus: Button:[^\n]*\n.*padFocus: Button:[^\n]*\n.*padFocus: \n.*padFocus: Button:[^\n]*\n.*padFocus: Button:"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+foreach(pad inventory radial keyboard menu playstation settings lazy_menu)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
     set(frames 90)
+    set(keep_alive 60000)
+    if(pad STREQUAL lazy_menu)
+        set(keep_alive 0)
+    endif()
     if(pad STREQUAL menu)
         set(frames 300)
     endif()
     set_tests_properties(app_offscreen_pad_${pad} PROPERTIES TIMEOUT 180
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
 endforeach()
+# The startup script's steps on a control wait for its screen to be made (decision E-691): the
+# search text is set before the creative inventory opens and is typed once it is there.
+add_test(NAME app_offscreen_lazy_screen_hooks
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--chat;/gamemode creative;--overlay;@800 text:creativeSearch=stone;--overlay;@900 creative"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=text:creativeSearch=stone\" : waited [0-9]+ ms for its screen"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lazy-hooks.png
+        "-DFORBIDDEN_ERROR=no such control|${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_lazy_screen_hooks PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_SCREEN_KEEP_ALIVE_MS=0;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_lazy_screen_hooks;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lazy-hooks.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Photo mode (decision E-692): its keys hide the HUD and save exactly one screenshot below the data
+# directory (emptied first), offscreen through the grab of the screenshot hook.
+add_test(NAME app_offscreen_photo_mode
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@500 key:hideHud;--overlay;@900 key:screenshot"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=Photo mode: HUD hidden.*Screenshot saved to [^\n]*/app_offscreen_photo_mode/screenshots/[0-9_.-]+\\.png"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-photo.png
+        -DCLEAN_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_photo_mode/screenshots
+        -DEXPECTED_GLOB=${CMAKE_BINARY_DIR}/test-data/app_offscreen_photo_mode/screenshots/*.png
+        -DEXPECTED_GLOB_COUNT=1
+        "-DFORBIDDEN_ERROR=Cannot save|${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_photo_mode PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_photo_mode;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-photo.png;QTCRAFT_SCREENSHOT_FRAMES=30")

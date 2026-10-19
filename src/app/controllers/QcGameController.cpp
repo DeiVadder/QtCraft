@@ -50,6 +50,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_player(std::make_unique<QcPlayerController>(m_parts, *m_settings))
     , m_trade(std::make_unique<QcTradeController>(m_parts, *m_settings))
     , m_hud(std::make_unique<QcHudState>(m_parts, *m_settings))
+    , m_photo(std::make_unique<QcPhotoMode>(*m_settings))
     , m_handbook(std::make_unique<QcHandbookController>(m_parts, *m_settings, *m_library, m_icons))
     , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
@@ -72,6 +73,7 @@ QcGameController::QcGameController(QObject *parent)
     });
     // The page of what the crosshair points at, else the page shown last.
     connect(m_input.get(), &QcGameInput::handbookRequested, this, [this] { m_handbook->open(m_hud->targetName()); });
+    connectPhotoMode();
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
     m_gamepad.setSettings(m_settings->gamepad());
@@ -287,7 +289,7 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
         qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
     }
     m_worldDirectory = directory;
-    setOverlay({});
+    setOverlay(Overlay::None);
     setPhase(Phase::Loading, tr("Loading content..."));
 
     if (!startServer(world)) {
@@ -309,7 +311,7 @@ void QcGameController::startRemoteSession(std::unique_ptr<QcClientSession> sessi
     }
     // A network game: the server keeps the world, nothing is saved here.
     m_worldDirectory.clear();
-    setOverlay({});
+    setOverlay(Overlay::None);
 
     m_parts.session = std::move(session);
     beginSession();
@@ -356,6 +358,19 @@ bool QcGameController::startServer(const QcWorldInfo &world)
 
     m_parts.server = std::move(*server);
     return true;
+}
+
+void QcGameController::connectPhotoMode()
+{
+    connect(m_input.get(), &QcGameInput::hudToggleRequested, m_photo.get(), &QcPhotoMode::toggleHud);
+    // The notice and the log say where it went or why it failed.
+    connect(m_input.get(), &QcGameInput::screenshotRequested, this, [this] { std::ignore = m_photo->takeScreenshot(); });
+    connect(m_photo.get(), &QcPhotoMode::handHiddenChanged, this, [this] { m_render.setPhotoMode(m_photo->hudHidden(), m_photo->handHidden()); });
+    connect(&m_screens, &QcScreenState::phaseChanged, m_photo.get(), [this] {
+        if (!m_screens.playing()) {
+            m_photo->showHud();
+        }
+    });
 }
 
 void QcGameController::onContentReset()

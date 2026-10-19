@@ -34,19 +34,21 @@ ApplicationWindow {
         visible: game.phase === GameController.Phase.Playing || game.phase === GameController.Phase.Loading
     }
 
+    // The photo mode's key hides it with the crosshair and every overlay (decision E-692).
     Hud {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && !game.player.dead
+        visible: game.phase === GameController.Phase.Playing && !game.player.dead && !game.photo.hudHidden
         game: game
     }
 
-    // While its pad button or its key is held in the world (decisions E-581, E-614). The pad's items
-    // exist only while the pad leads (the keyboard from its first use on), so without a pad they
-    // cost nothing.
+    // While its pad button or its key is held in the world, not with the HUD hidden (decisions E-581,
+    // E-614, E-692). The pad's items exist only while the pad leads (the keyboard from its first use
+    // on), so without a pad they cost nothing.
     Loader {
         anchors.centerIn: parent
         active: (game.gamepad.active || game.gamepad.radialOpen || game.input.radialOpen) && game.phase === GameController.Phase.Playing
         visible: game.phase === GameController.Phase.Playing && (game.gamepad.radialOpen || game.input.radialOpen)
+                 && !game.photo.hudHidden
 
         sourceComponent: HotbarRadial {
             game: root.controller
@@ -55,89 +57,153 @@ ApplicationWindow {
 
     InventoryScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "inventory"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Inventory
         game: game
     }
 
-    CreativeScreen {
+    // The other screens exist only while shown and for a while after (LazyScreen, decision E-691).
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "creative"
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Creative
+        // About 30 ms to make in Release (E-690): made with the creative world, not on the first E.
+        preload: game.phase === GameController.Phase.Playing && game.player.creative
+
+        screen: CreativeScreen {
+            game: root.controller
+        }
     }
 
-    FurnaceScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "furnace"
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Furnace
+
+        screen: FurnaceScreen {
+            game: root.controller
+        }
     }
 
-    ChestScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "chest"
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Chest
+
+        screen: ChestScreen {
+            game: root.controller
+        }
     }
 
-    TradeScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "trade"
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Trade
+
+        screen: TradeScreen {
+            game: root.controller
+        }
     }
 
-    PauseMenu {
+    // With its sub-screens: settings, character and open to LAN.
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing
-                 && ["pause", "settings", "controls", "gamepad", "debug", "texturepacks", "character", "lan"].includes(game.overlay)
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing
+               && [GameController.Overlay.Pause, GameController.Overlay.Settings, GameController.Overlay.Controls,
+                   GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks,
+                   GameController.Overlay.Character, GameController.Overlay.Lan].includes(game.overlay)
+
+        screen: PauseMenu {
+            game: root.controller
+        }
     }
 
     // While the player list key is held; over the world and the HUD, under the screens.
-    PlayerListOverlay {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "" && game.input.playerListHeld
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.None && game.input.playerListHeld
+               && !game.photo.hudHidden
+
+        screen: PlayerListOverlay {
+            game: root.controller
+        }
     }
 
     ChatOverlay {
         id: chat
 
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === "chat"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Chat
         game: game
     }
 
-    DeathScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.player.dead
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.player.dead
+
+        screen: DeathScreen {
+            game: root.controller
+        }
     }
 
-    MainMenu {
+    // Only in the menu phase: in the world its objects are given back once the keep-alive time ran out.
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Menu
-        game: game
-        onQuitRequested: Qt.quit()
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Menu
+
+        screen: MainMenu {
+            game: root.controller
+            onQuitRequested: Qt.quit()
+        }
     }
 
-    MessageScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Loading || game.phase === GameController.Phase.Error
-        text: game.statusText
-        // Loading a network server's world can be cancelled.
-        showBackButton: game.phase === GameController.Phase.Error || game.multiplayer.networkGame
-        backText: game.phase === GameController.Phase.Error ? qsTr("Back to menu") : qsTr("Cancel")
-        onBackRequested: game.leaveGame()
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Loading || game.phase === GameController.Phase.Error
+
+        screen: MessageScreen {
+            text: root.controller.statusText
+            // Loading a network server's world can be cancelled.
+            showBackButton: root.controller.phase === GameController.Phase.Error || root.controller.multiplayer.networkGame
+            backText: root.controller.phase === GameController.Phase.Error ? qsTr("Back to menu") : qsTr("Cancel")
+            onBackRequested: root.controller.leaveGame()
+        }
     }
 
-    DisconnectScreen {
+    LazyScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Disconnected
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Disconnected
+
+        screen: DisconnectScreen {
+            game: root.controller
+        }
     }
 
     // Over everything else, so it opens from the menu, the world and every in-game screen.
-    HandbookScreen {
+    LazyScreen {
         anchors.fill: parent
-        game: game
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.handbook.isOpen
+
+        screen: HandbookScreen {
+            game: root.controller
+        }
     }
 
     // The pad on the screens (decisions E-583, E-584): its buttons, the ring around its focus and the
@@ -146,6 +212,10 @@ ApplicationWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         active: game.gamepad.active
+        // In the world with the HUD hidden it hides with it; screens and the death screen keep their
+        // hints.
+        visible: !game.photo.hudHidden || game.overlay !== GameController.Overlay.None || game.handbook.isOpen
+                 || game.player.dead
 
         sourceComponent: PadHints {
             game: root.controller
@@ -154,17 +224,65 @@ ApplicationWindow {
         }
     }
 
-    // A pad connected, disconnected or took over (decision E-613); made for each notice.
-    Loader {
-        id: padNotice
-
+    // The notices at the top, one under the other; both hide while a screenshot is taken, the pad's
+    // with the HUD (decisions E-613, E-692).
+    Column {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 48
-        active: false
+        spacing: 8
+        visible: !game.photo.capturing
 
-        sourceComponent: PadNotice {
-            game: root.controller
+        // A pad connected, disconnected or took over; made for the first notice.
+        Loader {
+            id: padNotice
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            active: false
+            visible: ((item as PadNotice)?.showing ?? false) && !game.photo.hudHidden
+
+            sourceComponent: PadNotice {
+                game: root.controller
+            }
+        }
+
+        // The screenshot key saved a picture or failed to; made for the first one.
+        Loader {
+            id: photoNotice
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            active: false
+            visible: (item as PhotoNotice)?.showing ?? false
+
+            sourceComponent: PhotoNotice {}
+        }
+    }
+
+    Connections {
+        id: photoEvents
+
+        // The first hiding in a run says how to get the HUD back.
+        property bool hudHintShown: false
+
+        target: game.photo
+
+        function onHudHiddenChanged() {
+            if (!game.photo.hudHidden || photoEvents.hudHintShown) {
+                return;
+            }
+            photoEvents.hudHintShown = true;
+            photoNotice.active = true;
+            (photoNotice.item as PhotoNotice).show(qsTr("HUD hidden – %1 to show").arg(game.settings.keys.labels.hideHud));
+        }
+
+        function onScreenshotSaved() {
+            photoNotice.active = true;
+            (photoNotice.item as PhotoNotice).show(qsTr("Screenshot saved: %1").arg(game.photo.lastScreenshot));
+        }
+
+        function onScreenshotFailed(reason: string) {
+            photoNotice.active = true;
+            (photoNotice.item as PhotoNotice).show(reason);
         }
     }
 

@@ -1,5 +1,6 @@
 #include "app/controllers/QcAudioSettings.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "audio/QcAudioEngine.h"
 
 QcAudioSettings::QcAudioSettings(QcAudioEngine *audio, QObject *parent)
@@ -10,7 +11,12 @@ QcAudioSettings::QcAudioSettings(QcAudioEngine *audio, QObject *parent)
 
 void QcAudioSettings::changeVolume(double &volume, double requested)
 {
+    const double asked = requested;
     requested = QcGameSettings::clampVolume(requested, volume);
+    // The sliders stay inside 0..1; anything else came from outside and is corrected.
+    if (asked != requested) {
+        qCWarning(lcGame) << "Volume" << asked << "is not in 0..1: using" << requested;
+    }
     if (volume != requested) {
         volume = requested;
         apply();

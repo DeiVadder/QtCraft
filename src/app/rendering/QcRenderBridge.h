@@ -42,6 +42,13 @@ public:
     // Rain and snow around the eye, advanced by `frameSeconds` (decision E-395).
     void updateWeather(const QcVec3 &eye, double frameSeconds);
     void updateSelection();
+    // Photo mode (decision E-692): the outline of the targeted block hides with the HUD, the hand
+    // as the settings say.
+    void setPhotoMode(bool hideOutline, bool hideHand)
+    {
+        m_outlineHidden = hideOutline;
+        m_handHidden = hideHand;
+    }
 
 private:
     const QcSessionParts &m_parts;
@@ -53,4 +60,6 @@ private:
     // Lists of drops handed to the view: the view keeps the latest, the renderer the one it last
     // copied, so a third is always free to be filled again and a frame allocates nothing (E-397).
     std::array<std::shared_ptr<QList<QcPrecipitationDrop>>, 3> m_dropLists;
+    bool m_outlineHidden = false;
+    bool m_handHidden = false;
 };

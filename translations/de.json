@@ -725,5 +725,15 @@
     "Controller in use: %1": "Controller in Benutzung: %1",
     "Radial menu of the hotbar (hold, choose with the mouse)": "Radialmenü der Schnellleiste (halten, mit der Maus wählen)",
     "Controller": "Controller",
-    "Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.": "Wähle links ein Angebot. %1 auf dem Ergebnis handelt einmal, %2 so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz auf. %3 schließt."
+    "Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.": "Wähle links ein Angebot. %1 auf dem Ergebnis handelt einmal, %2 so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz auf. %3 schließt.",
+    "none": "keine",
+    "Screenshot saved: %1": "Bildschirmfoto gespeichert: %1",
+    "Screenshot not saved: cannot write to %1": "Bildschirmfoto nicht gespeichert: %1 ist nicht beschreibbar",
+    "Screenshot not saved: cannot write %1": "Bildschirmfoto nicht gespeichert: %1 lässt sich nicht schreiben",
+    "HUD hidden – %1 to show": "Anzeige ausgeblendet – %1 zeigt sie wieder",
+    "Not bound: “%1” would be left without a button.": "Nicht belegt: „%1“ hätte sonst keine Taste mehr.",
+    "Hide HUD (photo mode)": "Anzeige ausblenden (Fotomodus)",
+    "Screenshot": "Bildschirmfoto",
+    "“%1” has no button now.": "„%1“ hat jetzt keine Taste.",
+    "Hiding the HUD (%1) hides the hand too": "Anzeige ausblenden (%1) blendet auch die Hand aus"
 }

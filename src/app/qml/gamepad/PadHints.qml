@@ -11,7 +11,8 @@ Rectangle {
     required property GameController game
     // Something covers the bottom edge (the on-screen keyboard has hints of its own).
     property bool covered
-    readonly property bool slotScreen: ["inventory", "creative", "furnace", "chest", "trade"].includes(game.overlay)
+    readonly property bool slotScreen: [GameController.Overlay.Inventory, GameController.Overlay.Creative, GameController.Overlay.Furnace,
+                                        GameController.Overlay.Chest, GameController.Overlay.Trade].includes(game.overlay)
                                        && game.phase === GameController.Phase.Playing && !game.handbook.isOpen
 
     anchors.horizontalCenter: parent.horizontalCenter

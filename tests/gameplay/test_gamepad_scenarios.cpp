@@ -325,6 +325,35 @@ private slots:
         QCOMPARE(actions.at(1).at(1).toBool(), false);
     }
 
+    // Back + Y saves a screenshot and back + X hides the HUD (decision E-692): the player list shows
+    // while back is held, and Y and X do not also ask for their own actions; alone Y still opens the
+    // inventory (above).
+    void backCombosRunThePhotoActions()
+    {
+        using Key = QcKeyBindings::Action;
+        QSignalSpy actions(&m_control->gamepadControls(), &QcGamepadControls::worldAction);
+        const QList<QJsonObject> steps{
+            {{u"back"_s, true}},
+            {{u"back"_s, true}, {u"north"_s, true}},
+            {{u"back"_s, true}, {u"north"_s, false}},
+            {{u"back"_s, true}, {u"west"_s, true}},
+            {{u"back"_s, true}, {u"west"_s, false}},
+            {{u"back"_s, false}},
+        };
+        for (const QJsonObject &step : steps) {
+            QVERIFY(setPad(step));
+            ticks(1);
+        }
+
+        QList<std::pair<Key, bool>> seen;
+        for (const QList<QVariant> &action : std::as_const(actions)) {
+            seen.append({action.at(0).value<Key>(), action.at(1).toBool()});
+        }
+        const QList<std::pair<Key, bool>> expected{
+            {Key::PlayerList, true}, {Key::Screenshot, true}, {Key::HideHud, true}, {Key::PlayerList, false}};
+        QCOMPARE(seen, expected);
+    }
+
     // Holding the radial button opens the menu on the slot in hand; the right stick points at a
     // slot instead of looking, and letting go selects it (decision E-581).
     void radialMenuSelectsWithTheRightStick()

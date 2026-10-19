@@ -42,6 +42,10 @@ signals:
     void changed();
 
 protected:
+    // Called on the render thread while the GUI thread is blocked. Qt Quick owns the returned node
+    // tree: `old` is the tree returned last time (nullptr at first or after the scene graph was
+    // lost), and Qt deletes the tree when the item goes away. The two line nodes keep the default
+    // flag OwnedByParent (they go with the root) and own their geometry and material.
     QSGNode *updatePaintNode(QSGNode *old, UpdatePaintNodeData *data) override;
 
 private:

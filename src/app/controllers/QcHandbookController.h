@@ -24,6 +24,9 @@ class QcHandbookController : public QObject
     // The entry to show when it opens (empty: where it was left) and a search to start with.
     Q_PROPERTY(QString target READ target NOTIFY openChanged FINAL)
     Q_PROPERTY(QString query READ query NOTIFY openChanged FINAL)
+    // The entry the screen showed last: kept here, so the screen shows it again after it was
+    // unloaded (LazyScreen, decision E-691).
+    Q_PROPERTY(QString page READ page WRITE setPage NOTIFY pageChanged FINAL)
 
 public:
     QcHandbookController(const QcSessionParts &parts, const QcSettingsController &settings, const QcWorldLibraryController &library,
@@ -33,6 +36,8 @@ public:
     bool isOpen() const { return m_open; }
     QString target() const { return m_target; }
     QString query() const { return m_query; }
+    QString page() const { return m_page; }
+    void setPage(const QString &page);
 
     // Opens the handbook at an entry id or content name ("qtcraft:stone"); anything else becomes a
     // search.
@@ -43,6 +48,7 @@ public:
 
 signals:
     void openChanged();
+    void pageChanged();
     // The handbook is about to open and takes keyboard and mouse from the world.
     void opening();
 
@@ -59,6 +65,7 @@ private:
     bool m_open = false;
     QString m_target;
     QString m_query;
+    QString m_page;
     // What the current handbook was built from: content generation, language and keys.
     int m_generation = -1;
     QString m_language;

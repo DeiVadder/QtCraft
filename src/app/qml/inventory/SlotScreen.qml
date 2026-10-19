@@ -43,7 +43,7 @@ Rectangle {
     }
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("inventory", event.key)) {
-            screen.game.overlay = "";
+            screen.game.overlay = GameController.Overlay.None;
         } else if (screen.game.settings.keys.matches("handbook", event.key)) {
             screen.game.handbook.open(screen.hoveredItem);
         }

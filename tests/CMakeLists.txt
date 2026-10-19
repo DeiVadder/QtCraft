@@ -75,7 +75,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_void
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
-    app_offscreen_pad_settings APPEND PROPERTY LABELS realtime)
+    app_offscreen_pad_settings app_offscreen_pad_lazy_menu APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
@@ -85,6 +85,7 @@ set_tests_properties(test_headless_cli test_dedicated_server test_multiplayer_bo
     test_signal_bots test_minecart_bots test_machine_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
+set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
 set_tests_properties(test_gamepad_sdl PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/build-sdl.sh;${PROJECT_SOURCE_DIR}/3rdparty/sdl3-tag.txt;${PROJECT_SOURCE_DIR}/cmake/QcGamepad.cmake")

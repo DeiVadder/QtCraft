@@ -138,11 +138,22 @@ QVariantList QcGamepadOptions::rows() const
     QVariantList result;
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
         const auto action = QcGamepadMapping::Action(index);
-        const std::optional<QcGamepadButton> button = edited().bindings.button(action);
-        if (button) {
-            const QString name = QcGamepadMapping::actionName(action);
-            result.append(QVariantMap{{u"action"_s, name}, {u"label"_s, actionLabel(name)}, {u"button"_s, QcGamepadNames::button(*button)}});
+        if (!QcGamepadMapping::rebindable(action)) {
+            continue;
         }
+        // "" for an action without a button (the photo mode's by default).
+        const std::optional<QcGamepadButton> button = edited().bindings.button(action);
+        const QString name = QcGamepadMapping::actionName(action);
+        QVariantMap row{{u"action"_s, name}, {u"label"_s, actionLabel(name)}, {u"button"_s, button ? QcGamepadNames::button(*button) : QString()}};
+
+        // The fixed combination, shown read-only: the modifier's current button and the second one.
+        const std::optional<QcGamepadMapping::Combo> combo = QcGamepadMapping::comboOf(action);
+        const std::optional<QcGamepadButton> modifier = combo ? edited().bindings.button(combo->modifier) : std::nullopt;
+        if (modifier && *modifier != combo->button) {
+            row.insert(u"comboModifier"_s, QcGamepadNames::button(*modifier));
+            row.insert(u"comboButton"_s, QcGamepadNames::button(combo->button));
+        }
+        result.append(row);
     }
     return result;
 }
@@ -164,6 +175,8 @@ QString QcGamepadOptions::actionLabel(const QString &action)
         {u"drop"_s, QT_TR_NOOP("Drop (hold: stack)")},
         {u"pickBlock"_s, QT_TR_NOOP("Pick block")},
         {u"hotbarRadial"_s, QT_TR_NOOP("Radial menu (hold)")},
+        {u"hideHud"_s, QT_TR_NOOP("Hide HUD (photo mode)")},
+        {u"screenshot"_s, QT_TR_NOOP("Screenshot")},
     };
     const char *label = labels.value(action);
     return label ? tr(label) : QString();
@@ -177,12 +190,22 @@ QString QcGamepadOptions::bind(const QString &action, const QString &button)
         return {};
     }
 
+    // A swap must not take the last button of an action that has one by default (pause above all).
+    if (const std::optional<QcGamepadMapping::Action> kept = edited().bindings.stranded(*parsedAction, *parsedButton)) {
+        return tr("Not bound: “%1” would be left without a button.")
+            .arg(actionLabel(QcGamepadMapping::actionName(*kept)));
+    }
+
     std::optional<QcGamepadMapping::Action> displaced;
     edit([&](QcGamepadProfile &profile) { displaced = profile.bindings.bind(*parsedAction, *parsedButton); });
     if (!displaced) {
         return {};
     }
-    return tr("“%1” now has the button of “%2”.").arg(actionLabel(QcGamepadMapping::actionName(*displaced)), actionLabel(action));
+    const QString displacedLabel = actionLabel(QcGamepadMapping::actionName(*displaced));
+    if (!edited().bindings.button(*displaced)) {
+        return tr("“%1” has no button now.").arg(displacedLabel);
+    }
+    return tr("“%1” now has the button of “%2”.").arg(displacedLabel, actionLabel(action));
 }
 
 void QcGamepadOptions::resetBindings()

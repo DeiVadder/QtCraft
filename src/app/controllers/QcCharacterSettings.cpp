@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -46,6 +47,10 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
         const QString text = look.value(key).toString();
         bool ok = false;
         const quint32 rgb = text.startsWith(u'#') && text.size() == 7 ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
+        // A missing key keeps the colour on purpose (the screen sends only what changed).
+        if (!ok && look.contains(key)) {
+            qCWarning(lcGame) << "Character look" << key << ": ignoring" << text << "(expected #rrggbb)";
+        }
         return ok ? rgb : fallback;
     };
     appearance.outfit = look.value(u"outfit"_s, appearance.outfit).toString().left(QcAppearance::maxNameLength);

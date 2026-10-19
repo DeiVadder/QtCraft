@@ -224,6 +224,95 @@ private slots:
         QCOMPARE(QcGamepadMapping::actionFromName(u"fly"_s), std::nullopt);
     }
 
+    // The photo mode's actions start without a button (decision E-692): no conflict, nothing held;
+    // they cannot take the button of an action bound by default (pause on start), only a button no
+    // such action needs; a profile keeps an action without a button.
+    void photoActionsStartUnbound()
+    {
+        QcGamepadMapping::Bindings bindings;
+        QCOMPARE(bindings.button(Action::HideHud), std::nullopt);
+        QCOMPARE(bindings.button(Action::Screenshot), std::nullopt);
+        QVERIFY(bindings.conflicts().isEmpty());
+        QVERIFY(QcGamepadMapping::rebindable(Action::Screenshot));
+        QVERIFY(!QcGamepadMapping::held(Action::HideHud, QcGamepadState(), bindings, false, 0.5f));
+
+        const QcGamepadMapping::Bindings defaults = bindings;
+        QCOMPARE(bindings.stranded(Action::Screenshot, QcGamepadButton::Start), std::optional(Action::Pause));
+        QCOMPARE(bindings.bind(Action::Screenshot, QcGamepadButton::Start), std::nullopt);
+        QCOMPARE(bindings.bind(Action::HideHud, QcGamepadButton::Back), std::nullopt);
+        QCOMPARE(bindings, defaults);
+        QCOMPARE(bindings.button(Action::Pause), std::optional(QcGamepadButton::Start));
+
+        // An action bound by default may still swap with another one that has a button.
+        QCOMPARE(bindings.stranded(Action::Chat, QcGamepadButton::Start), std::nullopt);
+
+        // A button no default action needs any more (a profile file left it free) can be taken.
+        bindings.setButton(Action::PlayerList, QcGamepadMapping::unbound);
+        bindings.setButton(Action::Handbook, QcGamepadButton::Back);
+        QCOMPARE(bindings.stranded(Action::Screenshot, QcGamepadButton::DpadRight), std::nullopt);
+        QCOMPARE(bindings.bind(Action::Screenshot, QcGamepadButton::DpadRight), std::nullopt);
+        QCOMPARE(bindings.button(Action::Screenshot), std::optional(QcGamepadButton::DpadRight));
+        QCOMPARE(bindings.button(Action::PlayerList), std::nullopt);
+        QVERIFY(bindings.conflicts().isEmpty());
+
+        QTemporaryDir directory;
+        const QString path = directory.filePath(u"pad.ini"_s);
+        QcGamepadProfile profile;
+        profile.bindings = bindings;
+        {
+            QSettings file(path, QSettings::IniFormat);
+            profile.save(file, u"pad"_s);
+        }
+        const QSettings file(path, QSettings::IniFormat);
+        QCOMPARE(file.value(u"pad/bind/playerList"_s).toString(), u"none"_s);
+        QCOMPARE(QcGamepadProfile::load(file, u"pad"_s).bindings, bindings);
+    }
+
+    // Back held turns Y into the screenshot and X into hiding the HUD for the whole press (decision
+    // E-692); Y pressed before Back stays the inventory; without Back, Y and X are their own.
+    void backCombosReplaceTheButtonsOwnAction()
+    {
+        using Held = std::array<bool, QcGamepadMapping::actionCount>;
+        const QcGamepadMapping::Bindings bindings;
+        const auto step = [&bindings](const Held &before, std::initializer_list<QcGamepadButton> down) {
+            QcGamepadState state;
+            for (const QcGamepadButton button : down) {
+                state.setPressed(button, true);
+            }
+            Held now{};
+            for (std::size_t index = 0; index < now.size(); ++index) {
+                now[index] = QcGamepadMapping::held(Action(index), state, bindings, before[index]);
+            }
+            QcGamepadMapping::applyCombos(now, before, state, bindings);
+            return now;
+        };
+        const auto on = [](const Held &held, Action action) { return held[std::size_t(action)]; };
+
+        const Held back = step({}, {QcGamepadButton::Back});
+        QVERIFY(on(back, Action::PlayerList));
+        const Held backY = step(back, {QcGamepadButton::Back, QcGamepadButton::North});
+        QVERIFY(on(backY, Action::Screenshot));
+        QVERIFY(!on(backY, Action::Inventory));
+        QVERIFY(on(backY, Action::PlayerList));
+        const Held yAfterBack = step(backY, {QcGamepadButton::North});
+        QVERIFY(on(yAfterBack, Action::Screenshot));
+        QVERIFY(!on(yAfterBack, Action::Inventory));
+
+        const Held backX = step(back, {QcGamepadButton::Back, QcGamepadButton::West});
+        QVERIFY(on(backX, Action::HideHud));
+        QVERIFY(!on(backX, Action::PickBlock));
+
+        const Held y = step({}, {QcGamepadButton::North});
+        QVERIFY(on(y, Action::Inventory));
+        const Held yThenBack = step(y, {QcGamepadButton::North, QcGamepadButton::Back});
+        QVERIFY(on(yThenBack, Action::Inventory));
+        QVERIFY(!on(yThenBack, Action::Screenshot));
+        QVERIFY(on(step({}, {QcGamepadButton::West}), Action::PickBlock));
+
+        QCOMPARE(QcGamepadMapping::comboOf(Action::Screenshot)->button, QcGamepadButton::North);
+        QVERIFY(!QcGamepadMapping::comboOf(Action::Jump));
+    }
+
     // A higher trigger point needs more pull and lets go 0.2 below it.
     void triggerThresholdMovesThePoint()
     {

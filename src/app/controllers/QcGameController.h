@@ -3,6 +3,7 @@
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
+#include "app/controllers/QcPhotoMode.h"
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
@@ -54,7 +55,12 @@ class QcGameController : public QObject
     Q_PROPERTY(QcScreenState::Phase phase READ phase NOTIFY phaseChanged FINAL)
     Q_PROPERTY(QString statusText READ statusText NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
-    Q_PROPERTY(QString overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
+    Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // How long a closed screen stays loaded (LazyScreen.keepAliveMs, decision E-691).
+    Q_PROPERTY(int screenKeepAliveMs READ screenKeepAliveMs CONSTANT FINAL)
+    // LazyScreen logs the time each screen takes to make (QTCRAFT_UI_STATS=1, decision E-690).
+    Q_PROPERTY(bool logScreenCreation READ logScreenCreation CONSTANT FINAL)
     // Text the chat line starts with when it opens ("/" for the command key).
     Q_PROPERTY(QString chatStart READ chatStart NOTIFY overlayChanged FINAL)
     Q_PROPERTY(bool persistent READ persistent NOTIFY phaseChanged FINAL)
@@ -70,6 +76,8 @@ class QcGameController : public QObject
     // What the character previews draw (decision E-231).
     Q_PROPERTY(QcPreviewSource *preview READ preview CONSTANT FINAL)
     Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
+    // Photo mode: hidden HUD and screenshots (decision E-692).
+    Q_PROPERTY(QcPhotoMode *photo READ photo CONSTANT FINAL)
 
 public:
     // What the window shows (QcScreenState::Phase); QML compares against GameController.Phase.Playing etc.
@@ -85,8 +93,11 @@ public:
     bool inputEnabled() const { return m_screens.inputEnabled(); }
     void setInputEnabled(bool enabled) { m_screens.setInputEnabled(enabled); }
     // In-game screen on top of the world (QcScreenState::overlay).
-    QString overlay() const { return m_screens.overlay(); }
-    void setOverlay(const QString &overlay) { m_screens.setOverlay(overlay); }
+    using Overlay = QcScreenState::Overlay;
+    Overlay overlay() const { return m_screens.overlay(); }
+    void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
+    int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
+    bool logScreenCreation() const { return m_screens.logScreenCreation(); }
     QString chatStart() const { return m_screens.chatStart(); }
     // Opens the chat line with `start` already typed.
     void openChat(const QString &start) { m_screens.openChat(start); }
@@ -106,6 +117,7 @@ public:
     QcStartupHooks *startup() const { return m_startup.get(); }
     // Joining and hosting network games (decision E-251).
     QcMultiplayerController *multiplayer() const { return m_multiplayer.get(); }
+    QcPhotoMode *photo() const { return m_photo.get(); }
     // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
     void startRemoteSession(std::unique_ptr<QcClientSession> session);
     // The mods that went into the content of the running world.
@@ -167,6 +179,8 @@ private:
     void beginSession();
     // Enabling or disabling a mod changes the outfits on offer and the icons.
     void onContentReset();
+    // The photo mode's keys, the hidden hand and the HUD shown again when a world ends.
+    void connectPhotoMode();
 
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.
@@ -180,6 +194,7 @@ private:
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcHudState> m_hud;
+    std::unique_ptr<QcPhotoMode> m_photo;
     std::unique_ptr<QcHandbookController> m_handbook;
     std::unique_ptr<QcGameInput> m_input;
     std::unique_ptr<QcPreviewSource> m_preview;

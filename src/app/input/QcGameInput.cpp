@@ -318,7 +318,7 @@ bool QcGameInput::worldInput() const
 {
     // Overlays (inventory, pause menu, chat), the handbook and the death screen are QML items that
     // take keyboard and mouse themselves.
-    return m_parts.session && m_screens.state.playing() && m_screens.state.inputEnabled() && m_screens.state.overlay().isEmpty()
+    return m_parts.session && m_screens.state.playing() && m_screens.state.inputEnabled() && m_screens.state.overlay() == QcScreenState::Overlay::None
            && !m_screens.handbook.isOpen() && !m_parts.session->isDead();
 }
 
@@ -374,14 +374,14 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
 
     switch (action) {
     case A::Pause:
-        m_screens.state.setOverlay(u"pause"_s);
+        m_screens.state.setOverlay(QcScreenState::Overlay::Pause);
         return true;
     case A::Inventory:
         // Creative mode opens the item catalogue; its tab leads on to crafting and armour.
-        m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? u"creative"_s : u"inventory"_s);
+        m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? QcScreenState::Overlay::Creative : QcScreenState::Overlay::Inventory);
         return true;
     case A::Chat:
-        m_screens.state.setOverlay(u"chat"_s);
+        m_screens.state.setOverlay(QcScreenState::Overlay::Chat);
         return true;
     case A::Command:
         m_screens.state.openChat(u"/"_s);
@@ -392,7 +392,7 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
     case A::CameraView: {
         // Cycles first person, behind, front; the choice is kept in the settings.
         const QcCameraMode next = QcViewCamera::next(m_parts.session->cameraMode());
-        m_settings.setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
+        m_settings.setCameraModeValue(next);
         m_parts.session->setCameraMode(next);
         m_settings.saveSettings();
         return true;
@@ -403,11 +403,17 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
         m_settings.saveSettings();
         return true;
     case A::DebugOptions:
-        m_screens.state.setOverlay(u"debug"_s);
+        m_screens.state.setOverlay(QcScreenState::Overlay::Debug);
         return true;
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());
         m_settings.saveSettings();
+        return true;
+    case A::HideHud:
+        emit hudToggleRequested();
+        return true;
+    case A::Screenshot:
+        emit screenshotRequested();
         return true;
     default:
         return false;

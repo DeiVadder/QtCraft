@@ -2,6 +2,8 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcLayoutCheck.h"
+#include "app/hooks/QcOffscreenRender.h"
+#include "common/core/QcProcessMemory.h"
 
 #include <QCoreApplication>
 #include <QImage>
@@ -36,6 +38,7 @@ QcScreenshotHook *QcScreenshotHook::createFromEnvironment(QQuickWindow *window, 
     }
     auto *hook = new QcScreenshotHook(window, filePath, frames, parent);
     hook->m_checkLayout = qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1;
+    hook->m_logUiStats = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
     return hook;
 }
 
@@ -59,6 +62,14 @@ void QcScreenshotHook::setGrabber(std::function<QImage()> grabber)
     m_grabber = std::move(grabber);
 }
 
+std::function<QImage()> QcScreenshotHook::grabberFor(QQuickWindow &window, QcOffscreenRender *offscreen)
+{
+    if (offscreen) {
+        return [offscreen] { return offscreen->grab(); };
+    }
+    return [window = QPointer<QQuickWindow>(&window)] { return window ? window->grabWindow() : QImage(); };
+}
+
 void QcScreenshotHook::onFrameSwapped()
 {
     if (m_done || !m_window) {
@@ -74,6 +85,9 @@ void QcScreenshotHook::onFrameSwapped()
     m_done = true;
     if (m_checkLayout) {
         logLayoutCheck();
+    }
+    if (m_logUiStats) {
+        logUiStats();
     }
     const QImage image = m_grabber ? m_grabber() : m_window->grabWindow();
     if (image.isNull() || !image.save(m_filePath)) {
@@ -100,4 +114,13 @@ void QcScreenshotHook::logLayoutCheck() const
         qCWarning(lcScreenshot).noquote() << "Chat lines overlap:" << row;
     }
     qCInfo(lcScreenshot).noquote() << u"HUD check: chat lines overlap %1 status rows"_s.arg(overlaps.size());
+}
+
+void QcScreenshotHook::logUiStats() const
+{
+    // The window's QML objects keep their QObject parents when offscreen runs move the items into
+    // another window, so the count is the same in both.
+    const qsizetype objects = m_window->findChildren<QObject *>().size();
+    const qsizetype items = m_window->findChildren<QQuickItem *>().size();
+    qCInfo(lcScreenshot).noquote() << u"UI stats: objects %1 items %2 memory %3 MB"_s.arg(objects).arg(items).arg(QcProcessMemory::currentMb(), 0, 'f', 1);
 }

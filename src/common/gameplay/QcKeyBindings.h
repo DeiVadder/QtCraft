@@ -58,6 +58,10 @@ public:
         Hotbar9,
         // Held down: the hotbar's radial menu, a slot chosen by moving the mouse (decision E-614).
         HotbarRadial,
+        // Photo mode (decision E-692): hides the HUD with every overlay and the crosshair (the
+        // hand too, as the settings say), and saves a screenshot of the window.
+        HideHud,
+        Screenshot,
         // Esc: fixed, because Esc also cancels every screen and the key capture.
         Pause,
     };
