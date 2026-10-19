@@ -4,6 +4,7 @@
 #include "server/guardians/QcGuardians.h"
 
 #include <QDeadlineTimer>
+#include <QMutex>
 #include <QThread>
 
 #include <atomic>
@@ -13,11 +14,51 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// The guardian zones of the test terrain. Generators are called from generation threads while the
+// test changes the zones on the main thread, so the list itself is never changed: every change swaps
+// in a new immutable list under the mutex, and readers keep the snapshot they took.
+class GuardSiteList
+{
+public:
+    std::shared_ptr<const QList<QcGuardSite>> snapshot() const
+    {
+        const QMutexLocker lock(&m_mutex);
+        return m_sites;
+    }
+
+    QcGuardSite front() const { return snapshot()->front(); }
+
+    // Applies `change` to a copy of the zones and publishes the copy.
+    template<typename Change>
+    void edit(Change change)
+    {
+        const QMutexLocker lock(&m_mutex);
+        auto changed = std::make_shared<QList<QcGuardSite>>(*m_sites);
+        change(*changed);
+        m_sites = std::move(changed);
+    }
+
+    void append(const QcGuardSite &site)
+    {
+        edit([&site](QList<QcGuardSite> &sites) { sites.append(site); });
+    }
+
+    void clear()
+    {
+        const QMutexLocker lock(&m_mutex);
+        m_sites = std::make_shared<const QList<QcGuardSite>>();
+    }
+
+private:
+    mutable QMutex m_mutex;
+    std::shared_ptr<const QList<QcGuardSite>> m_sites = std::make_shared<const QList<QcGuardSite>>();
+};
+
 // The test terrain with guardian zones the test sets after joining (QcWorldGenerator::guardSitesNear).
 class GuardedTerrain : public QcTestTerrainGenerator
 {
 public:
-    GuardedTerrain(std::shared_ptr<const QcContentRegistry> content, std::shared_ptr<QList<QcGuardSite>> sites)
+    GuardedTerrain(std::shared_ptr<const QcContentRegistry> content, std::shared_ptr<const GuardSiteList> sites)
         : QcTestTerrainGenerator(std::move(content))
         , m_sites(std::move(sites))
     {
@@ -26,9 +67,9 @@ public:
     // Cold: the zones count as planned only once guardSitesNear ran (QcWorldGenerator::plannedGuardSitesNear).
     void makeCold()
     {
-        m_cold = true;
         m_planned = false;
         m_plannedOnMainThread = false;
+        m_cold = true;
     }
     bool plannedOnMainThread() const { return m_plannedOnMainThread; }
     bool planned() const { return m_planned; }
@@ -51,8 +92,9 @@ public:
 private:
     QList<QcGuardSite> sitesNear(QcBlockPos from, int reach) const
     {
+        const std::shared_ptr<const QList<QcGuardSite>> sites = m_sites->snapshot();
         QList<QcGuardSite> near;
-        for (const QcGuardSite &site : std::as_const(*m_sites)) {
+        for (const QcGuardSite &site : *sites) {
             if (std::abs(site.min.x - from.x) <= reach + 16 && std::abs(site.min.z - from.z) <= reach + 16) {
                 near.append(site);
             }
@@ -60,8 +102,8 @@ private:
         return near;
     }
 
-    std::shared_ptr<QList<QcGuardSite>> m_sites;
-    bool m_cold = false;
+    std::shared_ptr<const GuardSiteList> m_sites;
+    std::atomic<bool> m_cold{false};
     mutable std::atomic<bool> m_planned{false};
     mutable std::atomic<bool> m_plannedOnMainThread{false};
 };
@@ -86,7 +128,7 @@ class TestSandGolems : public QcServerTestFixture
 
 private:
     static constexpr double defaultCooldown = 6.0;
-    std::shared_ptr<QList<QcGuardSite>> m_sites = std::make_shared<QList<QcGuardSite>>();
+    std::shared_ptr<GuardSiteList> m_sites = std::make_shared<GuardSiteList>();
     // The terrain of the joined world (owned by the server).
     GuardedTerrain *m_terrain = nullptr;
     // The cellar: a closed stone room east of the player, its floor zone 5 x 5.
@@ -334,7 +376,7 @@ private slots:
     {
         joinWorld();
         buildCellar();
-        m_sites->front().rule.cooldownSeconds = 30.0;
+        m_sites->edit([](QList<QcGuardSite> &sites) { sites.front().rule.cooldownSeconds = 30.0; });
         QVERIFY(ticksUntilGolem(firstWait(30.0)) > 0);
         ticks(QcGuardians::checkTicks * 3);
 
