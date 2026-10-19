@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 02:05
+
+Fenster-Benchmark der Etappen 51 und 56 nachgeholt (`69b32e4` gegen `538cd8a`, `@core`, `@ui`, `explosive-chain`): keine Regression, Spitzenspeicher 3–16 % niedriger. Etappe 57: 57a Tick-Systeme als Liste (`0393ef5`), 57d Renderer-Ressourcen nach Lebensdauer und `FrameInput` (`1a034be`; dabei gefunden: nach einem QRhi-Wechsel wurden die Chunk-Meshes nie neu geschickt, jetzt `meshesLost`/`remeshAll`), 57b Schicht `qc_worlds` (`8bad1f3`; `src/app` ohne Server-Header und Server-Typen, gemeinsame Datentypen nach `common`/`network`) nach Review, Nachbesserung und zentralem TSan-Lauf in `dev`. 57c (Fassaden teilen) läuft.
+
 ## 2026-10-19 23:50
 
 Etappe 56 erledigt: 56e keine Ausgabeparameter nach `dev` (`538cd8a`, E-694) nach drei Review-Runden mit je zwei Prüfern; Headless-Benchmark gegen `dev` ohne Unterschied über dem Rauschen (crowd mit 6 Runden −0,1 % Mittel, +2,6 % p99), voller Verify grün (3337 s). Entscheidungen des Menschen: Ausnahme „Subjekte“ (Objekte mit Identität, auf denen ein System arbeitet) bleibt; Rucksack als Etappe 68 nach 62 (eine Reihe, platziert mit ganzem Inventar, aus der Hand nur Rucksack-Reihe und Hotbar); ein bis zwei geschuldete Fenster-Benchmarks dürfen laufen, ohne die übrige Arbeit zu blockieren.

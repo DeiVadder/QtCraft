@@ -4,10 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-Stand 2026-10-19 23:50. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
+Stand 2026-10-20 02:05. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
 - **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 51 und 56 erledigt (zuletzt 56e keine Ausgabeparameter `538cd8a`, E-694).
-- **Läuft:** Etappe 57 in drei parallelen Paketen (57a Tick-Systeme als Liste, 57b Schicht `qc_worlds`, 57d Renderer-Ressourcen und `FrameInput`); 57c Fassaden teilen nach 57a. Fenster-Benchmarks von 51 und 56 nachgeholt (2026-10-20, ohne Regression, `docs/Performance-Verlauf.md`).
+- **Läuft:** Etappe 57: 57a Tick-Systeme als Liste (`0393ef5`, E-700), 57d Renderer-Ressourcen und `FrameInput` (`1a034be`, E-710) und 57b Schicht `qc_worlds` (`8bad1f3`, E-705) sind in `dev`; offen 57c Fassaden teilen (`feature/57c-facades`, E-715–E-719), danach voller Verify und Etappe 57 abschließen. Fenster-Benchmarks von 51 und 56 nachgeholt (2026-10-20, ohne Regression, `docs/Performance-Verlauf.md`).
 - **Danach:** Etappe 57 (Architektur entlasten: Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden teilen, `QcWorldRenderer` DeviceResources und FrameInput), dann 47 und 58; Reihenfolge in der Tabelle „Etappen“ (neu: 68 Rucksack nach 62).
 - **Fenster-Läufe** nur nach Freigabe des Menschen; headless und offscreen sind erlaubt.
 
