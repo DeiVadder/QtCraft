@@ -9,6 +9,7 @@ qc_add_test(test_flight SOURCES world/test_flight.cpp QcTestWorld.h LIBRARIES qc
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_worldgen)
 qc_add_test(test_dungeons SOURCES world/test_dungeons.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 480)
 qc_add_test(test_mineshafts SOURCES world/test_mineshafts.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 510)
+qc_add_test(test_coastal_towers SOURCES world/test_coastal_towers.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 300)
 qc_add_test(test_desert_temples SOURCES world/test_desert_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_jungle_temples SOURCES world/test_jungle_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_surface_ruins SOURCES world/test_surface_ruins.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)

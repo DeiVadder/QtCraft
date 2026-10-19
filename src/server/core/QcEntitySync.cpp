@@ -104,6 +104,10 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.flags = projectile.stuck ? quint16(QcMsg::Stuck) : quint16(0);
         break;
     }
+    case QcEntityKind::PrimedExplosive:
+        // The client flashes it by the ticks left (decision E-604).
+        now.health = entity.as<QcPrimedExplosive>().fuse;
+        break;
     case QcEntityKind::Item:
     case QcEntityKind::FallingBlock:
         break;
@@ -130,6 +134,9 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         break;
     case QcEntityKind::MovingBlock:
         spawn.block = entity.as<QcMovingBlock>().block;
+        break;
+    case QcEntityKind::PrimedExplosive:
+        spawn.block = entity.as<QcPrimedExplosive>().block;
         break;
     case QcEntityKind::ArmourStand: {
         const auto &stand = entity.as<QcArmourStand>();

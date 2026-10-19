@@ -345,8 +345,15 @@ private:
             in >> block.age;
             return true;
         };
+        std::optional<qint32> fuse;
+        const auto fuseField = [&fuse](QDataStream &in, quint16) {
+            fuse = 0;
+            in >> *fuse;
+            return true;
+        };
         keepHeader(header, block.kept, false);
-        if (!readComponents(block.kept.components, {known(Component::FallingBlock, kindVersion, fields)}) || !std::isfinite(block.age)) {
+        if (!readComponents(block.kept.components, {known(Component::FallingBlock, kindVersion, fields), known(Component::Fuse, kindVersion, fuseField)})
+            || !std::isfinite(block.age)) {
             return false;
         }
 
@@ -360,8 +367,23 @@ private:
         block.motion.velocity = clampedVelocity(block.motion.velocity);
         block.age = std::clamp(block.age, 0.0, QcFallingBlockManager::maxSeconds);
         block.block = *state;
+        if (fuse) {
+            primed(entry, *fuse);
+            return true;
+        }
         m_record.fallingBlocks.append(entry);
         return true;
+    }
+
+    // A falling block entry with a fuse: a lit explosive (decision E-601).
+    void primed(const QcEntityRecord::Ordered<QcFallingBlock> &entry, int fuse)
+    {
+        QcEntityRecord::Ordered<QcPrimedExplosive> primed{{}, entry.order};
+        primed.entry.motion = entry.entry.motion;
+        primed.entry.block = entry.entry.block;
+        primed.entry.fuse = std::clamp(fuse, 0, QcBlastDefinition::maxFuseTicks);
+        primed.entry.kept = entry.entry.kept;
+        m_record.primedExplosives.append(primed);
     }
 
     bool stand(const Header &header)
@@ -627,12 +649,21 @@ void writeItemsAndBlocks(QDataStream &stream, const QcEntityRecord &record, cons
         writeEntry(stream, {name, drop.position, drop.velocity, 0.0f, order, drop.kept.uid}, drop.kept.components,
                    [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::Item), kindVersion, fields); });
     });
-    writeEntries(stream, record.fallingBlocks, [&](const QcFallingBlock &falling, quint64 order) {
+    // Lit explosives are falling block entries with a fuse (decision E-601), in the same list.
+    stream << quint32(record.fallingBlocks.size() + record.primedExplosives.size());
+    for (const auto &[falling, order] : record.fallingBlocks) {
         const Header header{content.stateName(falling.block), falling.motion.position, falling.motion.velocity, 0.0f, order, falling.kept.uid};
         const auto fields = [&falling](QDataStream &out) { out << falling.age; };
         writeEntry(stream, header, falling.kept.components,
                    [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::FallingBlock), kindVersion, fields); });
-    });
+    }
+    for (const auto &[primed, order] : record.primedExplosives) {
+        const Header header{content.stateName(primed.block), primed.motion.position, primed.motion.velocity, 0.0f, order, primed.kept.uid};
+        writeEntry(stream, header, primed.kept.components, [&primed](QcComponentFrames::Writer &components) {
+            components.add(quint16(Component::FallingBlock), kindVersion, [](QDataStream &out) { out << 0.0; });
+            components.add(quint16(Component::Fuse), kindVersion, [&primed](QDataStream &out) { out << qint32(primed.fuse); });
+        });
+    }
 }
 
 void writeStands(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)

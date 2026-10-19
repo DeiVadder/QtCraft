@@ -75,6 +75,10 @@ QJsonObject partBlockJson(const PartSource &source, const QString &name, const Q
     if (base.fire.isFlammable()) {
         json.insert(u"flammable"_s, QJsonObject{{u"ignite"_s, base.fire.ignite}, {u"burn"_s, base.fire.burn}});
     }
+    // Parts resist explosions like their material (decision E-600).
+    if (base.blast.resistance >= 0.0) {
+        json.insert(u"blastResistance"_s, base.blast.resistance);
+    }
     json.insert(u"drops"_s, QJsonArray{QJsonObject{{u"item"_s, name}}});
     return json;
 }

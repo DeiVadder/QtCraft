@@ -40,7 +40,7 @@ std::shared_ptr<const QcContentRegistry> documented(const QCommandLineParser &pa
 
 QcHandbook build(const QcContentRegistry &content, const QString &language)
 {
-    QcHandbook book = QcHandbookBuilder::build(content, language, QcHandbookRules::values(),
+    QcHandbook book = QcHandbookBuilder::build(content, language, QcHandbookRules::values(content),
                                                QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
     for (const QString &problem : book.problems()) {
         printError(u"handbook problem (%1): %2"_s.arg(language, problem));

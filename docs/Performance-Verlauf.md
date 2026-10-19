@@ -2281,3 +2281,11 @@ Release-Builds, `dev` `15e0f22` gegen `feature/51-4-ruins-oases` nach der Nachbe
 ## 51.3 (Dschungel, Dschungeltempel, Hexenhütte, Hexe) headless, Release (2026-10-19)
 
 Release-Builds, `dev` `68781e0` gegen `feature/51-3-jungle-witch` nach Nachbesserung und Merge von 51.4, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. explore +13 % (0,210 → 0,238 ms, Streuung 3 %): Phase `streaming` +24 % (0,083 → 0,103 ms) und `chunkLoading` +15 %, bei gleicher Zahl geladener Chunks; das neue Dschungel-Biom ist dichter bewachsen (hohe Bäume, Blätter, Ranken), seine Chunks sind teurer zu senden und zu laden. Das ist Inhalt, kein Code-Rückschritt, und bleibt weit unter dem Tick-Budget. crowd und horde +6 % (Phase `mobs` +6 %, rund 0,008 ms): der Trink-Durchgang `QcMobDrinking` läuft über alle Wesen; Kandidat für einen Durchgang nur über Wesen mit `drinks`. Übrige Szenarien +1 bis +4 %, Speicher +1 bis +2 %. Fenster-Benchmark geschuldet.
+
+## 51.2 (Sprengstoff, Explosionen) headless, Release (2026-10-19)
+
+Release-Build `feature/51-2-explosives`, Rechner unter Last ~10, ohne Vergleichsstand (neues Szenario). `test_explosions measureChain` mit `QTCRAFT_EXPLOSION_MEASURE=32` (Feld 32 × 32 × 2 in der Luft, Standardgrenzen, von Hand getickt): 2048 Explosionen in 287 Ticks, Tick Ø 2,07 ms, höchstens 4,94 ms. `scripts/bench-headless.sh` Szenario `explosive-chain` (Gruppe `@explosions`): Tick Ø 0,79 ms, p99 2,1 ms, höchstens 2,38 ms; Phase `explosions` Ø 0,63 ms, höchstens 1,85 ms. Die Grenzen je Tick (E-602) halten den schlimmsten Tick einer Kette von 2048 Sprengstoffen unter 5 ms.
+
+## 51.2 nach der Zusammenführung mit 51.1/51.3/51.4, headless, Release (2026-10-19)
+
+Release-Builds, `dev` `f9b1ab1` gegen `feature/51-2-explosives` nach dem Merge, `@server` mit horde, explore und explosive-chain, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Alle bestehenden Szenarien −4 bis +4 % (p99 −2 bis +4 %), keine Regression. explosive-chain (auf `dev` ohne Sprengstoff leer): Tick Ø 0,42 ms, p99 1,9 ms, weit unter dem Budget von 50 ms.

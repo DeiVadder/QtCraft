@@ -103,7 +103,7 @@ private slots:
         }
         QCOMPARE(limits.spawnerCreatures, 256);
         QCOMPARE(limits.guardians, 64);
-        QCOMPARE(keys.size(), qsizetype(66));
+        QCOMPARE(keys.size(), qsizetype(70));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

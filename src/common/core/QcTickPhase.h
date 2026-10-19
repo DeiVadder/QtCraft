@@ -28,6 +28,8 @@ enum class QcTickPhase : quint8 {
     Items,
     Plants,
     FallingBlocks,
+    // Lit explosives counting down, explosions and the blocks they break (decision E-602).
+    Explosions,
     // Minecarts rolling along rails and their riders (decision E-382).
     Minecarts,
     Machines,
@@ -47,7 +49,7 @@ inline constexpr int inTick = count - 1;
 
 inline constexpr std::array<const char *, count> ids{"players", "saving",   "chunkLoading",  "blockUpdates", "signal",
                                                      "liquids", "fire", "weather", "mobs", "projectiles", "items",         "plants",       "fallingBlocks",
-                                                     "minecarts", "machines", "streaming", "clientSync",  "messages"};
+                                                     "explosions", "minecarts", "machines", "streaming", "clientSync",  "messages"};
 
 constexpr const char *id(QcTickPhase phase)
 {

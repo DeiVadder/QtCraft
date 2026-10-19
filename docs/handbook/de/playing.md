@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -461,6 +461,32 @@ Wirf eine Angel mit der Benutzen-Taste aus, und ihr Schwimmer fliegt los und tre
 
 [Bogen](items.md#item-qtcraft-bow), [Pfeil](items.md#item-qtcraft-arrow), [Feder](items.md#item-qtcraft-feather), [Schneeball](items.md#item-qtcraft-snowball), [Enderperle](items.md#item-qtcraft-ender_pearl), [Angel](items.md#item-qtcraft-fishing_rod)
 
+### <a id="chapter-qtcraft-explosives"></a>Sprengstoff
+
+**Sprengstoff und Schwarzpulver**
+
+Schwarzpulver entsteht aus Kohle und Feuerstein (zwei je Rezept); fünf Schwarzpulver und vier Sand ergeben einen Sprengstoff-Block. Küstentürme bewahren etwas davon in ihren Truhen auf. Sprengstoff bricht sofort und lässt sich selbst fallen, man kann ihn also gefahrlos mitnehmen.
+
+**Zünden**
+
+Feuerzeug auf Sprengstoff angewandt zündet ihn, ebenso ein Spender mit Feuerzeug, der auf ihn zeigt, jedes Signal (ein Hebel, ein Knopf, eine Fackel, eine Druckplatte auf ihm, ein angetriebener Block daneben), Feuer, das ihn erreicht, und die Wucht einer anderen Explosion. Gezündeter Sprengstoff hüpft ein wenig hoch, fällt wie Sand, zischt und blinkt und explodiert nach 4 Sekunden; von einer anderen Explosion gezündeter geht früher los, nach einer halben bis anderthalb Sekunden.
+
+**Die Explosion**
+
+Die Wucht breitet sich in alle Richtungen aus, und jeder Block, auf den sie trifft, schluckt nach seiner Explosionsfestigkeit einen Teil davon (siehe die Blockseiten): Erde, Sand, Glas und Holz brechen leicht, Stein und Ziegel halten mehr aus, Obsidian bricht nie. Flüssigkeiten schlucken die ganze Wucht: Sprengstoff unter Wasser bricht keinen Block. Ein zerstörter Block lässt sein Item nur ab und zu fallen (einer von vier bei Sprengstoff); Truhen verlieren ihren Inhalt. Dieselbe Explosion an derselben Stelle einer Welt hinterlässt immer denselben Krater.
+
+**Spieler und Wesen**
+
+Spieler und Wesen bis 8 Blöcke entfernt nehmen Schaden und werden weggeschleudert, umso mehr, je näher sie sind und je mehr von ihnen die Explosion sieht: direkt daneben bis zu 57 Schaden (Rüstung hilft), hinter einer festen Wand gar keinen. Im Kreativmodus schadet nichts.
+
+**Grenzen und Spielregel**
+
+Wie groß ein Feld aus Sprengstoff auch ist, die Welt bleibt spielbar: Höchstens 512 Sprengstoffe brennen zugleich (darüber hinaus bleibt ein gezündeter ein Block, bis wieder Platz ist), höchstens 8 explodieren je Tick (die anderen warten einen Tick), eine Explosion zerstört höchstens 1024 Blöcke, die nächsten zuerst, und alle Explosionen zusammen ändern höchstens 2048 Blöcke je Tick, den Rest in den nächsten Ticks. Die Spielregel `explosionBlockDamage` (standardmäßig an; `/gamerule explosionBlockDamage false`) bewahrt jeden Block: Explosionen verletzen und schleudern weiter, zerstören und zünden aber nichts. Server-Betreiber stellen die Grenzen im Abschnitt limits von server.json ein (`primedExplosives`, `explosionsPerTick`, `explosionBlocks`, `explosionBlocksPerTick`).
+
+**Siehe auch**
+
+[Sprengstoff](blocks.md#block-qtcraft-explosive), [Schwarzpulver](items.md#item-qtcraft-gunpowder), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate), [Hebel](blocks.md#block-qtcraft-lever)
+
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
 **Wenn du stirbst**
@@ -573,9 +599,13 @@ Hexenhütten stehen auf Stelzen im Sumpf, oft über Wasser, innen ein Kessel und
 
 Hier und da stehen die Reste eines alten Portals im Freien: ein zerbrochener Rahmen aus Obsidian und Weinendem Obsidian zwischen rotem Schutt und Magma, mit herabgefallenen Blöcken ringsum und einer Truhe mit goldenen Werkzeugen, goldener Rüstung, Feuerstein und Obsidian daneben. Kleine Ruinen stehen in vielen Biomen, versunkene stecken halb im Boden, große stehen in Gebirgen, Wäldern, Taiga und Tundra; keine gleicht ganz der anderen. Das Portal führt nirgendwohin. Weinender Obsidian leuchtet schwach (Licht 10) und braucht wie Obsidian eine Diamantspitzhacke. In Ebenen und Birkenwäldern, und aus Sandstein in der Wüste, stehen einzelne Brunnen: ein Schacht aus Wasser-Quellblöcken, vier Blöcke tief, unter einem kleinen Dach, eine Wasserquelle fern von jedem See. In der Wüste liegen seltene Oasen: ein Teich mit Sandboden, Gras, Zuckerrohr und zwei palmenartigen Bäumen.
 
+**Küstentürme**
+
+Alte Steintürme stehen an den Küsten, auf niedrigem Land nahe am offenen Meer. Eine Leiter in einer Ecke führt durch alle Stockwerke hinauf ins Turmzimmer; dort liegen in einer Truhe Schwarzpulver, Sprengstoff, Eisen, Gold, Essen und hin und wieder ein Smaragd oder ein Diamant. Vorsicht: Die Steindruckplatte vor der Truhe liegt auf Sprengstoff, der im Boden versteckt ist, und wer auf sie tritt, zündet ihn. Öffne die Truhe von der Seite aus oder baue die Platte vorher ab.
+
 **Siehe auch**
 
-[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Gemeißelter Sandstein](blocks.md#block-qtcraft-carved_sandstone), [Ranken](blocks.md#block-qtcraft-vines), [Kessel](blocks.md#block-qtcraft-cauldron), [Blumentopf](blocks.md#block-qtcraft-flower_pot), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian)
+[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Gemeißelter Sandstein](blocks.md#block-qtcraft-carved_sandstone), [Ranken](blocks.md#block-qtcraft-vines), [Kessel](blocks.md#block-qtcraft-cauldron), [Blumentopf](blocks.md#block-qtcraft-flower_pot), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Sprengstoff](blocks.md#block-qtcraft-explosive), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate)
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 
@@ -610,7 +640,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **explosionBlockDamage**: Explosionen zerstören Blöcke und zünden anderen Sprengstoff; aus, verletzen und schleudern sie weiter, lassen aber jeden Block, wie er ist (siehe Sprengstoff). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -646,7 +676,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
 - `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen

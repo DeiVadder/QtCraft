@@ -1,0 +1,8 @@
+{
+    "name": "gunpowder",
+    "pattern": "dust",
+    "primary": "#58585e",
+    "secondary": "#36363a",
+    "variation": 0.15,
+    "seed": 5124
+}

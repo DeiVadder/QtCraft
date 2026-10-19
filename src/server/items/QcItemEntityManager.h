@@ -95,6 +95,9 @@ public:
     // For moving items from outside their physics (pistons push them, decision E-337).
     QList<QcItemEntity> &editableItems() { return m_items; }
     const QList<Drop> &queued() const { return m_queue; }
+    // Whether the queue is at least half full. Drops that matter little (blocks broken by an
+    // explosion) stay away then, so the queue keeps room for what must not get lost (chest contents).
+    bool crowded() const { return m_queue.size() * 2 >= m_queueLimit; }
     // Awake items in loaded chunks after the last tick (plus drops spawned since).
     int activeCount() const { return m_activeCount; }
     void setLimits(qsizetype active, qsizetype queued, qsizetype total);
@@ -140,4 +143,6 @@ private:
     qsizetype m_totalLimit = totalLimit;
     quint64 m_ticks = 0;
     qint64 m_discarded = 0;
+    // Waiting drops discarded since the last warning; one warning per tick says how many.
+    qint64 m_discardedUnreported = 0;
 };

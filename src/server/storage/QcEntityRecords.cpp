@@ -86,6 +86,11 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
             recordOf(records, chunk).fallingBlocks.append({falling, falling.id});
         }
     }
+    for (const QcPrimedExplosive &primed : entities.explosives().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(primed); wanted(chunk)) {
+            recordOf(records, chunk).primedExplosives.append({primed, primed.id});
+        }
+    }
     for (const QcCreature &creature : entities.creatures().mobs()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(creature); creature.persistent && wanted(chunk)) {
             recordOf(records, chunk).creatures.append({QcMobManager::storedOf(creature), creature.id});
@@ -113,6 +118,7 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.items().editableItems().removeIf(gone);
     entities.items().takeQueued([&in](const QcItemEntityManager::Drop &drop) { return in(chunkAt(drop.position)); });
     entities.fallingBlocks().editableAll().removeIf(gone);
+    entities.explosives().editableAll().removeIf(gone);
     entities.creatures().unload(gone);
     entities.stands().editableStands().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
@@ -127,7 +133,15 @@ QStringList apply(const QcEntityRecord &record, QcEntities &entities)
     const auto newId = [&entities] { return entities.newId(); };
     entities.items().adopt(inOrder(record.items), newId);
     QStringList warnings;
-    if (const qsizetype left = entities.fallingBlocks().adopt(inOrder(record.fallingBlocks), newId); left > 0) {
+    // Lit explosives beyond their limit fall on as unlit blocks and land as explosives.
+    QList<QcFallingBlock> falling = inOrder(record.fallingBlocks);
+    if (const QList<QcPrimedExplosive> left = entities.explosives().adopt(inOrder(record.primedExplosives), newId); !left.isEmpty()) {
+        warnings.append(u"%1 lit explosives beyond the limit fall as unlit blocks"_s.arg(left.size()));
+        for (const QcPrimedExplosive &primed : left) {
+            falling.append(QcPrimedExplosives::unlit(primed));
+        }
+    }
+    if (const qsizetype left = entities.fallingBlocks().adopt(falling, newId); left > 0) {
         warnings.append(u"%1 falling blocks beyond the limit were left out"_s.arg(left));
     }
     entities.creatures().restore(inOrder(record.creatures), {}, newId);

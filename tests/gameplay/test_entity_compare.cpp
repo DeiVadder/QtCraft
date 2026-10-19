@@ -85,6 +85,8 @@ private:
             return u"orb"_s;
         case QcEntityKind::Projectile:
             return u"projectile"_s;
+        case QcEntityKind::PrimedExplosive:
+            return u"primed"_s;
         case QcEntityKind::Creature:
             break;
         }

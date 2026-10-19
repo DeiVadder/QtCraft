@@ -19,6 +19,7 @@
                 "chapter:qtcraft:villagers",
                 "chapter:qtcraft:trading",
                 "chapter:qtcraft:archery",
+                "chapter:qtcraft:explosives",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -105,6 +106,7 @@
                 "block:qtcraft:dirt",
                 "block:qtcraft:dirt_path",
                 "block:qtcraft:emerald_ore",
+                "block:qtcraft:explosive",
                 "block:qtcraft:farmland",
                 "block:qtcraft:fern",
                 "block:qtcraft:fire",
@@ -376,6 +378,7 @@
                 "item:qtcraft:gold_nugget",
                 "item:qtcraft:gray_dye",
                 "item:qtcraft:green_dye",
+                "item:qtcraft:gunpowder",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
                 "item:qtcraft:lapis_lazuli",
@@ -17000,6 +17003,147 @@
             ],
             "text": "Green specks in deep stone, rare and in veins of one or two. Needs a pickaxe of level 3 or better and gives an emerald and some experience.",
             "title": "Emerald ore"
+        },
+        "block:qtcraft:explosive": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Explosive",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:explosive"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.05 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 15, burns away 100 (0 to 100)"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "grass and plants"
+                }
+            ],
+            "icon": "qtcraft:explosive",
+            "id": "block:qtcraft:explosive",
+            "name": "qtcraft:explosive",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Gunpowder"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Gunpowder"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Gunpowder"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Gunpowder"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Gunpowder"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:explosive",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:explosive",
+                                "note": "",
+                                "target": "block:qtcraft:explosive",
+                                "text": "Explosive"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Gunpowder packed in sand. Lit by flint and steel, fire, signal power or another explosion, it explodes after a few seconds.",
+            "title": "Explosive"
         },
         "block:qtcraft:farmland": {
             "category": "blocks",
@@ -41386,6 +41530,12 @@
                             "text": "Cyan concrete powder"
                         },
                         {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        },
+                        {
                             "icon": "qtcraft:gray_concrete_powder",
                             "note": "",
                             "target": "block:qtcraft:gray_concrete_powder",
@@ -54665,7 +54815,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<seconds>]`, `/time add <seconds>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)\n- `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last\n- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players\n- `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on\n- `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs\n- `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)\n- `/tick query`: rate, measured rate, freezing and the time per tick phase\nRate and freezing are not saved; a world always opens normally.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: keeps chunks loaded although no player is near them (block coordinates of a chunk or of the corners of an area, at most 256 chunks at once and `forcedChunks` in the world), lets them go or lists them; circuits connected to a forced chunk stay loaded with it",
+                    "text": "- `/time [set day|night|<seconds>]`, `/time add <seconds>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)\n- `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last\n- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players\n- `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on\n- `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs\n- `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)\n- `/tick query`: rate, measured rate, freezing and the time per tick phase\nRate and freezing are not saved; a world always opens normally.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: keeps chunks loaded although no player is near them (block coordinates of a chunk or of the corners of an area, at most 256 chunks at once and `forcedChunks` in the world), lets them go or lists them; circuits connected to a forced chunk stay loaded with it",
                     "title": "Time and ticks"
                 },
                 {
@@ -55207,6 +55357,106 @@
             ],
             "text": "",
             "title": "Experience"
+        },
+        "chapter:qtcraft:explosives": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Explosives",
+            "facts": [
+            ],
+            "icon": "qtcraft:explosive",
+            "id": "chapter:qtcraft:explosives",
+            "name": "qtcraft:explosives",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Gunpowder comes from coal and flint (two per craft); five gunpowder and four sand make an explosive block. Coastal towers keep some in their chests. An explosive breaks at once and drops itself, so it can be carried away safely.",
+                    "title": "Explosives and gunpowder"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Flint and steel used on an explosive lights it, so does a dispenser with flint and steel facing it, any signal power (a lever, a button, a torch, a pressure plate on top of it, a powered block next to it), fire that reaches it and the blast of another explosion. A lit explosive hops up a little, falls like sand, hisses and flashes, and explodes after 4 seconds; one lit by another explosion goes off sooner, after half a second to a second and a half.",
+                    "title": "Lighting"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "The blast reaches out in every direction and each block it meets soaks up some of its force by its blast resistance (see the block pages): dirt, sand, glass and wood break easily, stone and bricks hold more, and obsidian never breaks. Liquids soak up the whole blast: an explosive under water breaks no block. A block that breaks drops its item only now and then (one in four for an explosive); chests drop what they hold. The same explosion in the same place of a world always leaves the same crater.",
+                    "title": "The blast"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Players and creatures up to 8 blocks away are hurt and thrown back, the more the closer they are and the more of them the blast can see: right next to it up to 57 damage (armour helps), behind a solid wall nothing at all. In creative mode nothing hurts.",
+                    "title": "Players and creatures"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "However big a field of explosives, the world stays playable: at most 512 explosives burn at once (beyond, a lit one stays a block until there is room), at most 8 explode per tick (the others wait a tick), one explosion breaks at most 1024 blocks, the nearest first, and all explosions together change at most 2048 blocks per tick, the rest in the next ticks. The game rule `explosionBlockDamage` (on by default; `/gamerule explosionBlockDamage false`) keeps every block: explosions still hurt and push, but break and light nothing. Server operators tune the limits in the limits of server.json (`primedExplosives`, `explosionsPerTick`, `explosionBlocks`, `explosionBlocksPerTick`).",
+                    "title": "Limits and the game rule"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
+                        },
+                        {
+                            "icon": "qtcraft:flint_and_steel",
+                            "note": "",
+                            "target": "item:qtcraft:flint_and_steel",
+                            "text": "Flint and steel"
+                        },
+                        {
+                            "icon": "qtcraft:obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:obsidian",
+                            "text": "Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Stone pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:lever",
+                            "note": "",
+                            "target": "block:qtcraft:lever",
+                            "text": "Lever"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Explosives"
         },
         "chapter:qtcraft:farming": {
             "category": "playing",
@@ -55903,7 +56153,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **mobGriefing**: creatures change blocks (endermen take and place blocks, silverfish hide in stone, farmers harvest, villagers pick up food). Creatures a structure confines (the showcase world's pens and village rows) and creatures without a mind (`/mob … noai`) never do, whatever the rule says. **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.",
+                    "text": "**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **mobGriefing**: creatures change blocks (endermen take and place blocks, silverfish hide in stone, farmers harvest, villagers pick up food). Creatures a structure confines (the showcase world's pens and village rows) and creatures without a mind (`/mob … noai`) never do, whatever the rule says. **explosionBlockDamage**: explosions break blocks and light other explosives; off, they still hurt and push but leave every block as it is (see Explosives). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.",
                     "title": "Game rules"
                 }
             ],
@@ -56834,6 +57084,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Old stone towers stand on the coasts, on low land with the open sea close by. A ladder in one corner leads up through every floor to the top room, where a chest holds gunpowder, explosives, iron, gold, food and now and then an emerald or a diamond. Beware: the stone pressure plate in front of the chest sits on explosives hidden in the floor, and stepping on it sets them off. Open the chest from the side, or break the plate first.",
+                    "title": "Coastal towers"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -56935,6 +57193,18 @@
                             "note": "",
                             "target": "block:qtcraft:crying_obsidian",
                             "text": "Crying obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Stone pressure plate"
                         }
                     ],
                     "recipes": [
@@ -61067,6 +61337,12 @@
                             "text": "Coal chunk"
                         },
                         {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
+                        },
+                        {
                             "icon": "qtcraft:torch",
                             "note": "Coal or charcoal",
                             "target": "block:qtcraft:torch",
@@ -64183,6 +64459,12 @@
                             "note": "",
                             "target": "item:qtcraft:flint_and_steel",
                             "text": "Flint and steel"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
                         }
                     ],
                     "recipes": [
@@ -66580,6 +66862,89 @@
             ],
             "text": "Made from cactus in the furnace.",
             "title": "Green dye"
+        },
+        "item:qtcraft:gunpowder": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Gunpowder",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:gunpowder"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:gunpowder",
+            "id": "item:qtcraft:gunpowder",
+            "name": "qtcraft:gunpowder",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:coal",
+                                    "note": "",
+                                    "target": "item:qtcraft:coal",
+                                    "text": "Coal"
+                                },
+                                {
+                                    "icon": "qtcraft:flint",
+                                    "note": "",
+                                    "target": "item:qtcraft:flint",
+                                    "text": "Flint"
+                                }
+                            ],
+                            "count": 2,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:gunpowder",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:gunpowder",
+                                "note": "",
+                                "target": "item:qtcraft:gunpowder",
+                                "text": "Gunpowder"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Explosive"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                }
+            ],
+            "text": "Made from coal and flint. Five of it and four sand make an explosive.",
+            "title": "Gunpowder"
         },
         "item:qtcraft:harming_splash_potion": {
             "category": "items",

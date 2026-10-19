@@ -15,7 +15,7 @@ int creatureTypeOf(const QcMsg::EntitySpawn &spawn)
 
 bool isBlockKind(QcEntityKind kind)
 {
-    return kind == QcEntityKind::FallingBlock || kind == QcEntityKind::MovingBlock;
+    return kind == QcEntityKind::FallingBlock || kind == QcEntityKind::MovingBlock || kind == QcEntityKind::PrimedExplosive;
 }
 
 // Whether the server sent a player, a stand, a minecart, a known creature, a valid item or a valid falling or
@@ -29,6 +29,7 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
         return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
     case QcEntityKind::FallingBlock:
     case QcEntityKind::MovingBlock:
+    case QcEntityKind::PrimedExplosive:
         return content && content->isValidBlock(spawn.block) && spawn.block != qcAirBlockId;
     case QcEntityKind::Player:
     case QcEntityKind::ArmourStand:

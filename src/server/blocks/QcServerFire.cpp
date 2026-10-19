@@ -214,6 +214,16 @@ void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block
             continue;
         }
 
+        // An explosive the fire reaches is lit instead of burning away (decision E-601); while it
+        // cannot be lit (too many lit explosives) it stays as it is.
+        if (m_light && m_light(pos)) {
+            ++m_numbers.burnt;
+            continue;
+        }
+        if (m_state.content().block(*neighbour).blast.isExplosive()) {
+            continue;
+        }
+
         const quint32 odds = quint32(QcFireRules::chanceAge(fire.age)) + 10;
         const QcBlockId burnt = *neighbour;
         if (step.roll(pos, BecomesFireSalt, odds) < becomesFire && light(pos, fire, block, now)) {

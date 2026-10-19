@@ -44,6 +44,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_crafting(m_state, m_inventory)
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
+    , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
     , m_gameModes(m_state, m_inventory, m_crafting)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
@@ -79,7 +80,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_login(m_state, [this](Client &client) { m_join.join(client); })
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
-    , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits}
+    , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits,
+                m_explosions}
 {
     static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -87,6 +89,11 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
     m_circuits.setIgnite([this](QcBlockPos pos) { return m_ignition.strike(pos); });
     m_blockSimulation.setIgnition(&m_ignition);
+    // Explosives catch from flint and steel, fire and power (decision E-601).
+    const auto light = [this](QcBlockPos pos) { return m_explosions.light(pos); };
+    m_ignition.setLight(light);
+    m_fire.setLight(light);
+    m_circuits.setLight(light);
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 
     // What the weather does (decision E-396): rain puts out fires and burning bodies and wets soil,
@@ -603,6 +610,8 @@ void QcServer::simulate()
     m_phases.lap(Phase::Plants);
     m_fallingBlocks.tick();
     m_phases.lap(Phase::FallingBlocks);
+    m_explosions.tick();
+    m_phases.lap(Phase::Explosions);
     m_minecarts.tick();
     m_phases.lap(Phase::Minecarts);
     m_machines.tick();

@@ -5,6 +5,7 @@
 #include "server/entities/QcExperienceOrb.h"
 #include "server/entities/QcFallingBlock.h"
 #include "server/entities/QcMinecart.h"
+#include "server/entities/QcPrimedExplosive.h"
 #include "server/entities/QcProjectile.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobManager.h"
@@ -37,6 +38,9 @@ struct QcEntityRecord
     QList<Ordered<QcItemEntityManager::Drop>> items;
     // Falling blocks with their motion; the id is not saved.
     QList<Ordered<QcFallingBlock>> fallingBlocks;
+    // Lit explosives with their motion and fuse, saved as falling blocks with a fuse (decision
+    // E-601); the id is not saved.
+    QList<Ordered<QcPrimedExplosive>> primedExplosives;
     // Armour stands; the id is not saved.
     QList<Ordered<QcArmourStand>> stands;
     // Minecarts with their motion; the id and the rider are not saved.

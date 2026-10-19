@@ -1,0 +1,24 @@
+{
+    "name": "explosive",
+    "sound": "grass",
+    "hardness": 0.0,
+    "blastResistance": 0.0,
+    "flammable": {
+        "ignite": 15,
+        "burn": 100
+    },
+    "explosive": {
+        "power": 4.0,
+        "fuse": 80,
+        "chainFuseMin": 10,
+        "chainFuseMax": 30
+    },
+    "signal": {
+        "type": "igniter"
+    },
+    "textures": {
+        "top": "explosive_top",
+        "bottom": "explosive_bottom",
+        "side": "explosive_side"
+    }
+}

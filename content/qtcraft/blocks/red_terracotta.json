@@ -2,6 +2,7 @@
     "name": "red_terracotta",
     "sound": "stone",
     "hardness": 1.25,
+    "blastResistance": 4.2,
     "tool": "pickaxe",
     "toolLevel": 1,
     "tags": [

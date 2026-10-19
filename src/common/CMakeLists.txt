@@ -9,8 +9,10 @@ target_sources(qc_common PRIVATE
     content/definitions/QcAppearance.h
     content/definitions/QcAppearanceDefinition.h
     content/definitions/QcArmourDefinition.h
+    content/definitions/QcBlastDefinition.h
     content/definitions/QcBlockDefinition.h
     content/definitions/QcBlockProperty.h
+    content/definitions/QcCoastalTowerDefinition.h
     content/definitions/QcCommandMacroDefinition.h
     content/definitions/QcDungeonDefinition.h
     content/definitions/QcEffectDefinition.h
@@ -55,7 +57,9 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
+    content/parser/QcBlastParser.h content/parser/QcBlastParser.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
+    content/parser/QcCoastalTowerParser.h content/parser/QcCoastalTowerParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp

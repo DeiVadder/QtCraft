@@ -1,0 +1,24 @@
+{
+    "name": "explosives_station",
+    "showcase": { "order": 36 },
+    "palette": {
+        "O": "obsidian",
+        "E": "explosive",
+        "L": "lever[attach=north,powered=false]",
+        "D": "dirt",
+        "S": "sand",
+        "G": "gravel"
+    },
+    "layers": [
+        ["     ", " OOO ", " OOO ", " OOO ", "     "],
+        ["     ", " OOO ", " OEO ", " OOO ", "  L  "],
+        ["     ", " OOO ", " ODO ", " OOO ", "     "],
+        ["     ", " OOO ", " OSO ", " OOO ", "     "],
+        ["     ", " OOO ", " OGO ", " OOO ", "     "],
+        ["     ", " OOO ", " O O ", " OOO ", "     "]
+    ],
+    "labels": [
+        { "at": [2.5, 7.4, 2.5], "text": "structure.qtcraft.explosives_station" },
+        { "at": [2.5, 2.6, 5.0], "text": "block.qtcraft.explosive" }
+    ]
+}

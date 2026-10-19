@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <utility>
 
 namespace {
 
@@ -106,7 +107,7 @@ void QcItemEntityManager::enqueue(const Drop &drop)
 
     if (m_queue.size() >= m_queueLimit) {
         m_discarded += m_queue.first().stack.count;
-        qCWarning(lcItems) << "Too many dropped items; discarding the oldest waiting drop";
+        ++m_discardedUnreported;
         m_queue.removeFirst();
     }
 
@@ -247,6 +248,9 @@ QList<QcItemEntity> QcItemEntityManager::tick(const QcBlockAccess &world, const 
                                                            const TickCallbacks &callbacks)
 {
     ++m_ticks;
+    if (m_discardedUnreported > 0) {
+        qCWarning(lcItems) << "Too many dropped items; discarded" << std::exchange(m_discardedUnreported, 0) << "waiting drops";
+    }
 
     // Items in chunks that are not loaded rest (QcEntities::settle).
     QList<bool> loaded(m_items.size());

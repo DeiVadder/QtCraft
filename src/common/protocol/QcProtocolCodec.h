@@ -66,6 +66,8 @@ void encode(QDataStream &stream, const QcMsg::ChunkLabels &m);
 void encode(QDataStream &stream, QcMsg::Weather m);
 void encode(QDataStream &stream, const QcMsg::Lightning &m);
 void encode(QDataStream &stream, QcMsg::SpawnerDisplay m);
+void encode(QDataStream &stream, const QcMsg::BlockBatch &m);
+void encode(QDataStream &stream, const QcMsg::Explosion &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream);
@@ -78,6 +80,8 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Weather>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Lightning>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SpawnerDisplay>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockBatch>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Explosion>, QDataStream &stream);
 
 // Player, inventory and crafting (QcPlayerCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m);

@@ -63,7 +63,9 @@ public:
 
     void chunkLoaded(const QcClientWorld &world, QcChunkPos pos);
     void chunkUnloaded(QcChunkPos pos);
-    // The block at `pos` changed from `previous` to what the world holds now.
+    // The block at `pos` changed from `previous` to what the world holds now. Light changes of the
+    // block changes of one pass of the event loop go to the light engine together, as one job
+    // (an explosion's hundreds of blocks, decision E-604).
     void blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous);
     void clear();
 
@@ -72,10 +74,12 @@ public:
 
     qsizetype dirtyCount() const { return m_dirty.size(); }
     qsizetype jobsInFlight() const { return m_inFlight.size(); }
-    int lightJobsPending() const { return m_lightJobsPending; }
+    // Light jobs submitted or gathered and not yet back.
+    int lightJobsPending() const { return m_lightJobsPending + (m_gathered.isEmpty() ? 0 : 1); }
     // Block light (0..15) as the meshes show it; 0 where it is not known yet.
     int blockLight(QcBlockPos pos) const;
-    // Blocks until all queued jobs finished; their results are delivered through the event loop.
+    // Submits the gathered light changes and blocks until all queued jobs finished; their results are
+    // delivered through the event loop.
     void waitForJobs();
 
     Stats stats() const { return m_stats; }
@@ -139,6 +143,8 @@ private:
                      qint64 changedAtNs);
     void deliverResults();
     void deliverLight();
+    // Submits the gathered light changes of block changes as one job.
+    void submitGathered();
     void setLight(QcChunkPos chunk, int section, std::shared_ptr<const QcChunkLight::Section> light);
     void noteBacklog();
 
@@ -159,6 +165,11 @@ private:
     // Results of an engine replaced by setRenderTable() or clear() are dropped.
     quint64 m_lightGeneration = 0;
     int m_lightJobsPending = 0;
+    // Light changes of block changes not yet submitted (submitGathered), with the dirty sections they
+    // bring and the time of the first.
+    QList<std::pair<QcBlockPos, std::shared_ptr<const QcChunk>>> m_gathered;
+    QList<SectionAddress> m_gatheredDirty;
+    qint64 m_gatheredSinceNs = -1;
     QcMailbox<LightResult> m_lightResults;
     // Earliest unshown block change per dirty section (latency statistics).
     QHash<quint64, qint64> m_changedAt;

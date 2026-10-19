@@ -9,7 +9,7 @@
 #include <QStringList>
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
-// E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks, armour stands,
+// E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks and lit explosives, armour stands,
 // minecarts (E-382), experience orbs (E-398), projectiles (E-425), and whether the chunk already got its animals. Items,
 // blocks, creatures, armour and capes are stored by name.
 //
@@ -57,6 +57,9 @@ enum class Component : quint16 {
     Tame = 14,
     // A creature without a mind (version 1, no fields; decision E-510).
     NoAi = 16,
+    // The ticks left of a lit explosive, on a falling block entry (version 1, decision E-601): the
+    // entry is a lit explosive, which a version without it reads as a falling block.
+    Fuse = 17,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

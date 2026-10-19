@@ -42,7 +42,7 @@ QByteArray readData(const QString &name)
 
 QcHandbook build(const QcContentRegistry &content, const QString &language)
 {
-    return QcHandbookBuilder::build(content, language, QcHandbookRules::values(),
+    return QcHandbookBuilder::build(content, language, QcHandbookRules::values(content),
                                     QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
 }
 

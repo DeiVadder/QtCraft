@@ -31,8 +31,10 @@ public:
     // Drops the contents that block entities spilled (QcBlockEntities::takeSpills) as items.
     void dropSpills();
     // Drops the items of block state `block` as if it broke at `pos` (each drop by its chance, only
-    // from the states its `when` allows).
+    // from the states its `when` allows); ores add their experience (decision E-398).
     void dropBlockItems(QcBlockId block, QcBlockPos pos);
+    // The same without experience: blocks an explosion breaks give none (decision E-602).
+    void dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos);
     void dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos);
 
 private:

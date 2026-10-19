@@ -134,6 +134,8 @@ private:
             return -7;
         case QcEntityKind::Projectile:
             return -8;
+        case QcEntityKind::PrimedExplosive:
+            return -9;
         }
         return 0;
     }

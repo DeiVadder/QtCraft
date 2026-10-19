@@ -52,6 +52,7 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     m_state.circuits().forgetChunk(chunk);
     m_state.hoppers().forgetChunk(chunk);
     m_state.entities().fallingBlocks().removeInChunk(chunk);
+    m_state.entities().explosives().removeInChunk(chunk);
 }
 
 void QcChunkRegeneration::removeMinecarts(QcChunkPos chunk)

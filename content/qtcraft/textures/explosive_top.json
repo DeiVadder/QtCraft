@@ -1,0 +1,31 @@
+{
+    "name": "explosive_top",
+    "pattern": "emblem",
+    "primary": "#b8321e",
+    "variation": 0.05,
+    "seed": 5122,
+    "palette": {
+        "s": "#8a2414",
+        "r": "#e6dcc4",
+        "k": "#2a2420",
+        "f": "#6b5a40"
+    },
+    "bitmap": [
+        "................",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s..rrrr...s..",
+        "...s.rkkkkr..s..",
+        "...srkkffkkr.s..",
+        "...srkffffkr.s..",
+        "...srkffffkr.s..",
+        "...srkkffkkr.s..",
+        "...s.rkkkkr..s..",
+        "...s..rrrr...s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "................"
+    ]
+}

@@ -36,6 +36,13 @@ bool QcFireIgnition::use(QcServerClient &client, const QcMsg::UseItem &message)
         return false;
     }
 
+    // An explosive clicked on is lit itself (decision E-601); anything else lights the cell in front.
+    const bool explosive = !client.dead && QcLineOfSight::isWithinReach(client, message.target) && m_light && m_light(message.target);
+    if (explosive) {
+        m_sounds.play(QString::fromLatin1(QcSoundKeys::flintAndSteel), {message.target.x + 0.5, message.target.y + 0.5, message.target.z + 0.5});
+        m_inventory.wearHeld(client);
+        return true;
+    }
     const QcBlockPos front = qcNeighbour(message.target, message.face);
     if (client.dead || !QcLineOfSight::isWithinReach(client, front) || !strike(front)) {
         return true;
@@ -46,7 +53,8 @@ bool QcFireIgnition::use(QcServerClient &client, const QcMsg::UseItem &message)
 
 bool QcFireIgnition::strike(QcBlockPos pos)
 {
-    if (!m_fire.ignite(pos)) {
+    const bool lit = (m_light && m_light(pos)) || m_fire.ignite(pos);
+    if (!lit) {
         return false;
     }
     m_sounds.play(QString::fromLatin1(QcSoundKeys::flintAndSteel), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});

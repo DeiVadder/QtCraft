@@ -19,6 +19,7 @@
                 "chapter:qtcraft:villagers",
                 "chapter:qtcraft:trading",
                 "chapter:qtcraft:archery",
+                "chapter:qtcraft:explosives",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -234,6 +235,7 @@
                 "block:qtcraft:emerald_block",
                 "block:qtcraft:emerald_ore",
                 "block:qtcraft:cobweb",
+                "block:qtcraft:explosive",
                 "block:qtcraft:stone",
                 "block:qtcraft:stone_pressure_plate",
                 "block:qtcraft:stone_button",
@@ -395,6 +397,7 @@
                 "item:qtcraft:snowball",
                 "item:qtcraft:bowl",
                 "item:qtcraft:black_dye",
+                "item:qtcraft:gunpowder",
                 "item:qtcraft:fishing_bobber",
                 "item:qtcraft:emerald",
                 "item:qtcraft:spider_eye",
@@ -17000,6 +17003,147 @@
             ],
             "text": "Grüne Sprenkel in tiefem Stein, selten und in Adern zu ein oder zwei. Braucht eine Spitzhacke der Stufe 3 oder besser und gibt einen Smaragd und etwas Erfahrung.",
             "title": "Smaragderz"
+        },
+        "block:qtcraft:explosive": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Explosive",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:explosive"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Sprengstoff"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 15, brennt ab 100 (0 bis 100)"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "qtcraft:explosive",
+            "id": "block:qtcraft:explosive",
+            "name": "qtcraft:explosive",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Schwarzpulver"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Schwarzpulver"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Schwarzpulver"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Schwarzpulver"
+                                },
+                                {
+                                    "icon": "qtcraft:sand",
+                                    "note": "",
+                                    "target": "block:qtcraft:sand",
+                                    "text": "Sand"
+                                },
+                                {
+                                    "icon": "qtcraft:gunpowder",
+                                    "note": "",
+                                    "target": "item:qtcraft:gunpowder",
+                                    "text": "Schwarzpulver"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:explosive",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:explosive",
+                                "note": "",
+                                "target": "block:qtcraft:explosive",
+                                "text": "Sprengstoff"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "In Sand gepacktes Schwarzpulver. Von Feuerzeug, Feuer, Signal oder einer anderen Explosion gezündet, explodiert es nach ein paar Sekunden.",
+            "title": "Sprengstoff"
         },
         "block:qtcraft:farmland": {
             "category": "blocks",
@@ -41446,6 +41590,12 @@
                             "text": "Schwarzes Betonpulver"
                         },
                         {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Sprengstoff"
+                        },
+                        {
                             "icon": "qtcraft:cyan_concrete_powder",
                             "note": "",
                             "target": "block:qtcraft:cyan_concrete_powder",
@@ -54665,7 +54815,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -55207,6 +55357,106 @@
             ],
             "text": "",
             "title": "Erfahrung"
+        },
+        "chapter:qtcraft:explosives": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Explosives",
+            "facts": [
+            ],
+            "icon": "qtcraft:explosive",
+            "id": "chapter:qtcraft:explosives",
+            "name": "qtcraft:explosives",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Schwarzpulver entsteht aus Kohle und Feuerstein (zwei je Rezept); fünf Schwarzpulver und vier Sand ergeben einen Sprengstoff-Block. Küstentürme bewahren etwas davon in ihren Truhen auf. Sprengstoff bricht sofort und lässt sich selbst fallen, man kann ihn also gefahrlos mitnehmen.",
+                    "title": "Sprengstoff und Schwarzpulver"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Feuerzeug auf Sprengstoff angewandt zündet ihn, ebenso ein Spender mit Feuerzeug, der auf ihn zeigt, jedes Signal (ein Hebel, ein Knopf, eine Fackel, eine Druckplatte auf ihm, ein angetriebener Block daneben), Feuer, das ihn erreicht, und die Wucht einer anderen Explosion. Gezündeter Sprengstoff hüpft ein wenig hoch, fällt wie Sand, zischt und blinkt und explodiert nach 4 Sekunden; von einer anderen Explosion gezündeter geht früher los, nach einer halben bis anderthalb Sekunden.",
+                    "title": "Zünden"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Die Wucht breitet sich in alle Richtungen aus, und jeder Block, auf den sie trifft, schluckt nach seiner Explosionsfestigkeit einen Teil davon (siehe die Blockseiten): Erde, Sand, Glas und Holz brechen leicht, Stein und Ziegel halten mehr aus, Obsidian bricht nie. Flüssigkeiten schlucken die ganze Wucht: Sprengstoff unter Wasser bricht keinen Block. Ein zerstörter Block lässt sein Item nur ab und zu fallen (einer von vier bei Sprengstoff); Truhen verlieren ihren Inhalt. Dieselbe Explosion an derselben Stelle einer Welt hinterlässt immer denselben Krater.",
+                    "title": "Die Explosion"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Spieler und Wesen bis 8 Blöcke entfernt nehmen Schaden und werden weggeschleudert, umso mehr, je näher sie sind und je mehr von ihnen die Explosion sieht: direkt daneben bis zu 57 Schaden (Rüstung hilft), hinter einer festen Wand gar keinen. Im Kreativmodus schadet nichts.",
+                    "title": "Spieler und Wesen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Wie groß ein Feld aus Sprengstoff auch ist, die Welt bleibt spielbar: Höchstens 512 Sprengstoffe brennen zugleich (darüber hinaus bleibt ein gezündeter ein Block, bis wieder Platz ist), höchstens 8 explodieren je Tick (die anderen warten einen Tick), eine Explosion zerstört höchstens 1024 Blöcke, die nächsten zuerst, und alle Explosionen zusammen ändern höchstens 2048 Blöcke je Tick, den Rest in den nächsten Ticks. Die Spielregel `explosionBlockDamage` (standardmäßig an; `/gamerule explosionBlockDamage false`) bewahrt jeden Block: Explosionen verletzen und schleudern weiter, zerstören und zünden aber nichts. Server-Betreiber stellen die Grenzen im Abschnitt limits von server.json ein (`primedExplosives`, `explosionsPerTick`, `explosionBlocks`, `explosionBlocksPerTick`).",
+                    "title": "Grenzen und Spielregel"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Sprengstoff"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
+                        },
+                        {
+                            "icon": "qtcraft:flint_and_steel",
+                            "note": "",
+                            "target": "item:qtcraft:flint_and_steel",
+                            "text": "Feuerzeug"
+                        },
+                        {
+                            "icon": "qtcraft:obsidian",
+                            "note": "",
+                            "target": "block:qtcraft:obsidian",
+                            "text": "Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Steindruckplatte"
+                        },
+                        {
+                            "icon": "qtcraft:lever",
+                            "note": "",
+                            "target": "block:qtcraft:lever",
+                            "text": "Hebel"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Sprengstoff"
         },
         "chapter:qtcraft:farming": {
             "category": "playing",
@@ -55903,7 +56153,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
+                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **explosionBlockDamage**: Explosionen zerstören Blöcke und zünden anderen Sprengstoff; aus, verletzen und schleudern sie weiter, lassen aber jeden Block, wie er ist (siehe Sprengstoff). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
                     "title": "Spielregeln"
                 }
             ],
@@ -56834,6 +57084,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alte Steintürme stehen an den Küsten, auf niedrigem Land nahe am offenen Meer. Eine Leiter in einer Ecke führt durch alle Stockwerke hinauf ins Turmzimmer; dort liegen in einer Truhe Schwarzpulver, Sprengstoff, Eisen, Gold, Essen und hin und wieder ein Smaragd oder ein Diamant. Vorsicht: Die Steindruckplatte vor der Truhe liegt auf Sprengstoff, der im Boden versteckt ist, und wer auf sie tritt, zündet ihn. Öffne die Truhe von der Seite aus oder baue die Platte vorher ab.",
+                    "title": "Küstentürme"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:water_bucket",
                             "note": "",
@@ -56935,6 +57193,18 @@
                             "note": "",
                             "target": "block:qtcraft:crying_obsidian",
                             "text": "Weinender Obsidian"
+                        },
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Sprengstoff"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pressure_plate",
+                            "note": "",
+                            "target": "block:qtcraft:stone_pressure_plate",
+                            "text": "Steindruckplatte"
                         }
                     ],
                     "recipes": [
@@ -61071,6 +61341,12 @@
                             "note": "Kohle oder Holzkohle",
                             "target": "item:qtcraft:coal_chunk",
                             "text": "Kohlestück"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
                         }
                     ],
                     "recipes": [
@@ -64183,6 +64459,12 @@
                             "note": "",
                             "target": "item:qtcraft:arrow",
                             "text": "Pfeil"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
                         }
                     ],
                     "recipes": [
@@ -66580,6 +66862,89 @@
             ],
             "text": "Aus Kaktus im Ofen.",
             "title": "Grüner Farbstoff"
+        },
+        "item:qtcraft:gunpowder": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Gunpowder",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:gunpowder"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:gunpowder",
+            "id": "item:qtcraft:gunpowder",
+            "name": "qtcraft:gunpowder",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:coal",
+                                    "note": "",
+                                    "target": "item:qtcraft:coal",
+                                    "text": "Kohle"
+                                },
+                                {
+                                    "icon": "qtcraft:flint",
+                                    "note": "",
+                                    "target": "item:qtcraft:flint",
+                                    "text": "Feuerstein"
+                                }
+                            ],
+                            "count": 2,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:gunpowder",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:gunpowder",
+                                "note": "",
+                                "target": "item:qtcraft:gunpowder",
+                                "text": "Schwarzpulver"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:explosive",
+                            "note": "",
+                            "target": "block:qtcraft:explosive",
+                            "text": "Sprengstoff"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                }
+            ],
+            "text": "Aus Kohle und Feuerstein. Fünf davon und vier Sand ergeben Sprengstoff.",
+            "title": "Schwarzpulver"
         },
         "item:qtcraft:harming_splash_potion": {
             "category": "items",

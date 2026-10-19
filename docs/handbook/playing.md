@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -461,6 +461,32 @@ Cast a fishing rod with the use button and its bobber flies off and floats on th
 
 [Bow](items.md#item-qtcraft-bow), [Arrow](items.md#item-qtcraft-arrow), [Feather](items.md#item-qtcraft-feather), [Snowball](items.md#item-qtcraft-snowball), [Ender Pearl](items.md#item-qtcraft-ender_pearl), [Fishing rod](items.md#item-qtcraft-fishing_rod)
 
+### <a id="chapter-qtcraft-explosives"></a>Explosives
+
+**Explosives and gunpowder**
+
+Gunpowder comes from coal and flint (two per craft); five gunpowder and four sand make an explosive block. Coastal towers keep some in their chests. An explosive breaks at once and drops itself, so it can be carried away safely.
+
+**Lighting**
+
+Flint and steel used on an explosive lights it, so does a dispenser with flint and steel facing it, any signal power (a lever, a button, a torch, a pressure plate on top of it, a powered block next to it), fire that reaches it and the blast of another explosion. A lit explosive hops up a little, falls like sand, hisses and flashes, and explodes after 4 seconds; one lit by another explosion goes off sooner, after half a second to a second and a half.
+
+**The blast**
+
+The blast reaches out in every direction and each block it meets soaks up some of its force by its blast resistance (see the block pages): dirt, sand, glass and wood break easily, stone and bricks hold more, and obsidian never breaks. Liquids soak up the whole blast: an explosive under water breaks no block. A block that breaks drops its item only now and then (one in four for an explosive); chests drop what they hold. The same explosion in the same place of a world always leaves the same crater.
+
+**Players and creatures**
+
+Players and creatures up to 8 blocks away are hurt and thrown back, the more the closer they are and the more of them the blast can see: right next to it up to 57 damage (armour helps), behind a solid wall nothing at all. In creative mode nothing hurts.
+
+**Limits and the game rule**
+
+However big a field of explosives, the world stays playable: at most 512 explosives burn at once (beyond, a lit one stays a block until there is room), at most 8 explode per tick (the others wait a tick), one explosion breaks at most 1024 blocks, the nearest first, and all explosions together change at most 2048 blocks per tick, the rest in the next ticks. The game rule `explosionBlockDamage` (on by default; `/gamerule explosionBlockDamage false`) keeps every block: explosions still hurt and push, but break and light nothing. Server operators tune the limits in the limits of server.json (`primedExplosives`, `explosionsPerTick`, `explosionBlocks`, `explosionBlocksPerTick`).
+
+**See also**
+
+[Explosive](blocks.md#block-qtcraft-explosive), [Gunpowder](items.md#item-qtcraft-gunpowder), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Obsidian](blocks.md#block-qtcraft-obsidian), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate), [Lever](blocks.md#block-qtcraft-lever)
+
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
 **When you die**
@@ -573,9 +599,13 @@ Witch huts stand on stilts in the swamp, often over water, with a cauldron and p
 
 Here and there the remains of an old portal stand in the open: a broken frame of obsidian and crying obsidian amid red rubble and magma, with fallen blocks around it and a chest of gold tools, gold armour, flint and obsidian beside it. Small ruins stand in many biomes, sunken ones are half buried in the ground, large ones stand in mountains, forests, taiga and tundra; no two are quite alike. The portal leads nowhere. Crying obsidian glows faintly (light 10) and, like obsidian, needs a diamond pickaxe. In plains and birch forests, and in sandstone in the desert, wells stand alone: a shaft of water sources four blocks deep under a little roof, a source of water far from any lake. Rare oases lie in the desert: a pool with sand at its bottom, grass, sugar cane and two palm-like trees.
 
+**Coastal towers**
+
+Old stone towers stand on the coasts, on low land with the open sea close by. A ladder in one corner leads up through every floor to the top room, where a chest holds gunpowder, explosives, iron, gold, food and now and then an emerald or a diamond. Beware: the stone pressure plate in front of the chest sits on explosives hidden in the floor, and stepping on it sets them off. Open the chest from the side, or break the plate first.
+
 **See also**
 
-[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Carved sandstone](blocks.md#block-qtcraft-carved_sandstone), [Vines](blocks.md#block-qtcraft-vines), [Cauldron](blocks.md#block-qtcraft-cauldron), [Flower pot](blocks.md#block-qtcraft-flower_pot), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian)
+[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Carved sandstone](blocks.md#block-qtcraft-carved_sandstone), [Vines](blocks.md#block-qtcraft-vines), [Cauldron](blocks.md#block-qtcraft-cauldron), [Flower pot](blocks.md#block-qtcraft-flower_pot), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Explosive](blocks.md#block-qtcraft-explosive), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate)
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 
@@ -610,7 +640,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **mobGriefing**: creatures change blocks (endermen take and place blocks, silverfish hide in stone, farmers harvest, villagers pick up food). Creatures a structure confines (the showcase world's pens and village rows) and creatures without a mind (`/mob … noai`) never do, whatever the rule says. **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **mobGriefing**: creatures change blocks (endermen take and place blocks, silverfish hide in stone, farmers harvest, villagers pick up food). Creatures a structure confines (the showcase world's pens and village rows) and creatures without a mind (`/mob … noai`) never do, whatever the rule says. **explosionBlockDamage**: explosions break blocks and light other explosives; off, they still hurt and push but leave every block as it is (see Explosives). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. **playerInvulnerabilityTicks** and **mobInvulnerabilityTicks** (numbers, 10 ticks by default, at most 200): how many game ticks a player or a creature cannot be hurt after a hit; a later hit in that time that is stronger than the strongest so far deals only the difference; 0 makes every hit count. Starving is a hit like any other; lava, fire and magma keep their own rhythm whatever the rules, one hit every 0.5 s. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -646,7 +676,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
 - `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on

@@ -92,6 +92,12 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Rail:
         reactRail(pos, *block, plan);
         break;
+    case QcSignalKind::Igniter:
+        // An explosive lights as soon as it gets power (decision E-601).
+        if (m_context.power.input(pos) > 0) {
+            plan.ignitions.append(pos);
+        }
+        break;
     default:
         break;
     }

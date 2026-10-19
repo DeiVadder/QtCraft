@@ -15,6 +15,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/core/QcServerSystems.h"
+#include "server/explosions/QcServerExplosions.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -256,6 +257,7 @@ private:
     QcServerCrafting m_crafting;
     QcFireIgnition m_ignition;
     QcPlayerHealth m_health;
+    QcServerExplosions m_explosions;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
     QcServerMinecarts m_minecarts;

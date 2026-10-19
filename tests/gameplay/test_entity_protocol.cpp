@@ -55,7 +55,7 @@ private slots:
         QcMsg::EntitySpawn creature;
         creature.kind = QcEntityKind::Creature;
         creature.creatureType = 2;
-        for (const quint8 bad : {quint8(QcEntityKinds::count), quint8(9), quint8(255)}) {
+        for (const quint8 bad : {quint8(QcEntityKinds::count), quint8(10), quint8(255)}) {
             QByteArray frame = valid;
             frame[kindOffset] = char(bad);
             const bool decoded = QcProtocol::decode(frame, QcProtocol::Peer::Server).has_value();
@@ -117,7 +117,7 @@ private slots:
         orb.health = 37.0;
         QCOMPARE(roundTrip(orb).kind, QcEntityKind::ExperienceOrb);
         QCOMPARE(roundTrip(orb).health, 37.0);
-        QCOMPARE(QcProtocol::version, 49u);
+        QCOMPARE(QcProtocol::version, 50u);
     }
 
     void blockEntitiesCarryTheirBlock()

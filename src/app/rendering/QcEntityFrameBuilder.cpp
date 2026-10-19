@@ -213,6 +213,44 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body, placement, frame.uv);
 }
 
+void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
+{
+    QcEntityMesher::ItemLook look;
+    look.cube = true;
+    look.faces = frame.content.block(entity.block).faceTextures;
+    const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
+    QcEntityMesher::BlockPlacement placement{position};
+    QcEntityLight light = entityLight(frame.world, position);
+    // A lit explosive flashes white every few ticks and swells in its last ticks (decision E-604).
+    if (entity.isPrimedExplosive()) {
+        const int fuse = int(entity.health);
+        if ((fuse / primedFlashTicks) % 2 == 0) {
+            light = QcEntityLight(1.0f, 1.0f);
+        }
+        if (fuse < primedSwellTicks) {
+            placement.size *= 1.0 + 0.2 * (1.0 - double(fuse) / primedSwellTicks);
+        }
+    }
+    QcEntityMesher::appendBlock(mesh, look, placement, light, frame.uv);
+}
+
+void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks)
+{
+    QcEntityMesher::ItemLook flash;
+    flash.cube = true;
+    flash.faces.fill(QString::fromLatin1(explosionFlashTexture));
+    QcEntityMesher::ItemLook smoke;
+    smoke.cube = true;
+    smoke.faces.fill(QString::fromLatin1(explosionSmokeTexture));
+
+    for (const QcExplosionEffects::Puff &puff : m_parts.session->explosions().puffs()) {
+        if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
+            const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->position);
+            QcEntityMesher::appendBlock(mesh, look->flash ? flash : smoke, {look->position, look->size}, light, frame.uv);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     // Only spawners this near are drawn: the creature is small, and a world may hold many.
@@ -340,11 +378,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
                                         {position, lerpYaw(entity.previousYaw, entity.yaw, alpha), entityLight(frame.world, position), false}, uv);
             appendCartLoad(*mesh, entity, frame, position);
         } else if (entity.isBlockEntity()) {
-            QcEntityMesher::ItemLook look;
-            look.cube = true;
-            look.faces = frame.content.block(entity.block).faceTextures;
-            const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-            QcEntityMesher::appendBlock(*mesh, look, {position}, entityLight(frame.world, position), uv);
+            appendBlockEntity(*mesh, entity, frame);
         } else {
             appendCreature(*mesh, entity, frame);
         }
@@ -353,6 +387,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
         appendCreature(*mesh, entity, frame);
     }
     appendSpawners(*mesh, frame);
+    appendExplosions(*mesh, frame, double(session.tickCount()) + alpha);
     // In third person the player sees their own character.
     if (mode != QcCameraMode::FirstPerson && !session.isDead()) {
         appendLocalPlayer(*mesh, frame);

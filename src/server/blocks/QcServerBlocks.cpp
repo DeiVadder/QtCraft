@@ -114,6 +114,15 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
 
 void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos)
 {
+    dropItemsWithoutExperience(block, pos);
+
+    // Ores give experience with their drops (decision E-398).
+    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+    QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, m_state.content().block(block).experience), centre);
+}
+
+void QcServerBlocks::dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos)
+{
     const QcContentRegistry &content = m_state.content();
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
     for (const QcItemDrop &drop : content.block(block).drops) {
@@ -129,9 +138,6 @@ void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos)
             m_state.entities().items().spawnScattered({*item, drop.count + extra, 0}, centre, m_state.entities().newId());
         }
     }
-
-    // Ores give experience with their drops (decision E-398).
-    QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, content.block(block).experience), centre);
 }
 
 void QcServerBlocks::dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos)

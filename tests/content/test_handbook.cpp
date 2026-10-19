@@ -123,10 +123,10 @@ private slots:
 
         QElapsedTimer timer;
         timer.start();
-        m_english = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        m_english = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(*m_base), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         qInfo("building the English handbook of the base game took %lld ms", timer.elapsed());
-        m_german = QcHandbookBuilder::build(*m_base, u"de"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
-        m_moddedEnglish = QcHandbookBuilder::build(*m_modded, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        m_german = QcHandbookBuilder::build(*m_base, u"de"_s, QcHandbookRules::values(*m_base), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        m_moddedEnglish = QcHandbookBuilder::build(*m_modded, u"en"_s, QcHandbookRules::values(*m_modded), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
     }
 
     void reportsNoProblems()
@@ -178,7 +178,7 @@ private slots:
             QVERIFY2(entry && entry->sections.size() >= chapter.sections.size(), qPrintable(chapter.name));
         }
 
-        QCOMPARE(content.handbookChapters().size(), 26);
+        QCOMPARE(content.handbookChapters().size(), 27);
         QVERIFY(book.entry(u"tag:qtcraft:planks"_s));
         QVERIFY(book.entry(u"world:terrain"_s));
 
@@ -307,12 +307,12 @@ private slots:
         plain.drops = {{plain.name, 1, 1.0}};
         QVERIFY(content.registerBlock(plain).has_value());
 
-        const QcHandbook bare = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        const QcHandbook bare = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         QVERIFY(bare.entry(u"block:test:plain"_s)->text.isEmpty());
 
         // A mod's description may quote values; unknown names stay and are reported.
         content.addTranslations(u"en"_s, {{u"block.test.plain.description"_s, u"Hardness {test:plain.hardness}, {test:nothing.value}."_s}});
-        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         const QcHandbookEntry *entry = book.entry(u"block:test:plain"_s);
         QVERIFY(entry);
         QCOMPARE(entry->text, u"Hardness 2, {test:nothing.value}."_s);
@@ -529,7 +529,7 @@ private slots:
         QVERIFY(content.registerBlock(grinder).has_value());
 
         for (const QString &language : {u"en"_s, u"de"_s}) {
-            const QcHandbook book = QcHandbookBuilder::build(content, language, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+            const QcHandbook book = QcHandbookBuilder::build(content, language, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
             const QcHandbookEntry *entry = book.entry(u"block:test:grinder"_s);
             QVERIFY(entry);
             const QcHandbookEntry::Fact *machine = fact(*entry, language == u"en"_s ? u"Machine"_s : u"Maschine"_s);
@@ -558,7 +558,7 @@ private slots:
         }
 
         content.addTranslations(u"en"_s, {{u"block.test.noisy.description"_s, text}});
-        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         const QcHandbookEntry *entry = book.entry(u"block:test:noisy"_s);
         QVERIFY(entry);
         QVERIFY(entry->text.startsWith(u"Hardness 1. {test:missing} {test:missing}"_s));
@@ -675,7 +675,7 @@ private slots:
         QVERIFY2(keys.contains(u"**Ctrl**: sprint"_s) && keys.contains(u"**Ctrl+Q**: the whole stack"_s), qPrintable(keys));
 
         // In the game on a Mac the keys are named like the Mac keyboard and the controls page.
-        const QcHandbook mac = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(),
+        const QcHandbook mac = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(*m_base),
                                                         QcKeyBindings::defaults(QcKeyBindings::Platform::Mac).placeholderKeys());
         const QString macKeys = mac.entry(u"chapter:qtcraft:controls"_s)->sections.first().text;
         QVERIFY2(macKeys.contains(u"**Option**: sprint"_s) && macKeys.contains(u"**Control+Q**: the whole stack"_s), qPrintable(macKeys));
@@ -683,7 +683,7 @@ private slots:
         // The player's keys replace the defaults.
         QcKeyBindings rebound = QcKeyBindings::defaults(QcKeyBindings::Platform::Other);
         rebound.bind(QcKeyBindings::Action::CameraView, 0, Qt::Key_C);
-        const QcHandbook book = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(), rebound.placeholderKeys());
+        const QcHandbook book = QcHandbookBuilder::build(*m_base, u"en"_s, QcHandbookRules::values(*m_base), rebound.placeholderKeys());
         QVERIFY(book.entry(u"chapter:qtcraft:controls"_s)->sections.first().text.contains(u"**C / F5**: camera view"_s));
     }
 
@@ -759,7 +759,7 @@ private slots:
         const std::shared_ptr<const QcContentRegistry> again = loadWithMods();
         const QList<QcHandbookMarkdown::File> first = QcHandbookMarkdown::files(m_moddedEnglish);
         const QList<QcHandbookMarkdown::File> second =
-            QcHandbookMarkdown::files(QcHandbookBuilder::build(*again, u"en"_s, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys()));
+            QcHandbookMarkdown::files(QcHandbookBuilder::build(*again, u"en"_s, QcHandbookRules::values(*again), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys()));
         QCOMPARE(first.size(), second.size());
         for (qsizetype i = 0; i < first.size(); ++i) {
             QCOMPARE(first[i].name, second[i].name);

@@ -45,7 +45,7 @@ constexpr ModeKeys newPlayersStart{QT_TRANSLATE_NOOP("QcServerMessages", "New pl
 // The usage of /gamerule, also the reply to an unknown rule or a wrong value.
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
     "QcServerMessages",
-    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
+    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
 
 // A game rule that is a number from 0 to `highest`.
 struct NumberRule
@@ -369,16 +369,18 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
 {
     // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221;
     // randomTicks, decision E-295; quasiConnectivity, decision E-338; fireSpread, decision E-392;
-    // weatherCycle, decision E-395; mobGriefing, decision E-460; the numbers in numberRules).
+    // weatherCycle, decision E-395; mobGriefing, decision E-460; explosionBlockDamage, decision E-603;
+    // the numbers in numberRules).
     using Rule = std::pair<QStringView, bool QcWorldInfo::*>;
-    const std::array<Rule, 8> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
+    const std::array<Rule, 9> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
                                      {u"daylightCycle", &QcWorldInfo::daylightCycle},
                                      {u"mobSpawning", &QcWorldInfo::mobSpawning},
                                      {u"randomTicks", &QcWorldInfo::randomTicks},
                                      {u"fireSpread", &QcWorldInfo::fireSpread},
                                      {u"quasiConnectivity", &QcWorldInfo::quasiConnectivity},
                                      {u"weatherCycle", &QcWorldInfo::weatherCycle},
-                                     {u"mobGriefing", &QcWorldInfo::mobGriefing}}};
+                                     {u"mobGriefing", &QcWorldInfo::mobGriefing},
+                                     {u"explosionBlockDamage", &QcWorldInfo::explosionBlockDamage}}};
     const QStringList &args = context.args;
     const auto number = std::ranges::find(numberRules, QStringView(args[0]), &NumberRule::name);
     if (number != numberRules.end()) {

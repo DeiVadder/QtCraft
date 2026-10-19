@@ -39,9 +39,12 @@ enum class QcSignalKind : quint8 {
     // Stage 32.2 (decision E-384). A rail slot (powered and activator rails): powered while it gets
     // power or while a rail of the same block at most `railReach` rails along its line gets power.
     Rail,
+    // Stage 51.2 (decision E-601). A slot that primes the explosive it is (QcBlastDefinition) as soon
+    // as it gets power.
+    Igniter,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Rail) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Igniter) + 1;
 
 // What a Signal Comparator reads from a block behind it (decision E-343).
 enum class QcComparatorReading : quint8 {

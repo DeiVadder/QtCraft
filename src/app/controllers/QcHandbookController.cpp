@@ -45,7 +45,7 @@ void QcHandbookController::ensureHandbook()
     const QcContentRegistry &content = m_library.content();
     const qint64 loadedMs = timer.elapsed();
     auto book = std::make_shared<const QcHandbook>(
-        QcHandbookBuilder::build(content, m_settings.contentLanguage(), QcHandbookRules::values(), keys.placeholderKeys()));
+        QcHandbookBuilder::build(content, m_settings.contentLanguage(), QcHandbookRules::values(content), keys.placeholderKeys()));
     const qint64 builtMs = timer.elapsed() - loadedMs;
     for (const QString &problem : book->problems()) {
         qCWarning(lcGame) << "Handbook:" << problem;

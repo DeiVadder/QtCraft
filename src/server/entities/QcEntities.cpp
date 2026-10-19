@@ -36,6 +36,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_orbs.setLimit(qsizetype(limits.experienceOrbs));
     m_projectiles.setLimit(qsizetype(limits.projectiles));
     m_projectiles.setPerChunk(qsizetype(limits.projectilesPerChunk));
+    m_explosives.setLimit(qsizetype(limits.primedExplosives));
 }
 
 namespace {
@@ -98,6 +99,8 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcPhysics::boxAt(feet, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize);
     case QcEntityKind::FallingBlock:
         return QcPhysics::boxAt(feet, QcFallingBlockManager::size, QcFallingBlockManager::size);
+    case QcEntityKind::PrimedExplosive:
+        return QcPhysics::boxAt(feet, QcPrimedExplosives::size, QcPrimedExplosives::size);
     case QcEntityKind::ArmourStand:
         return QcArmourStandManager::bodyOf(entity.as<QcArmourStand>());
     case QcEntityKind::Minecart:

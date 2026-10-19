@@ -112,4 +112,22 @@ struct Lightning
     QcVec3 position;
 };
 
+// Server -> client: blocks set together in one tick (an explosion's, decision E-604). The client
+// applies them as one change, so each section is relit and meshed once.
+struct BlockBatch
+{
+    // At most maxUpdates.
+    QList<BlockUpdate> updates;
+
+    static constexpr quint32 maxUpdates = 1u << 16;
+};
+
+// Server -> client: an explosion of `power` (QcBlastDefinition) at `centre` (decision E-604); the
+// client shows its flash and smoke, the sound comes as a sound event.
+struct Explosion
+{
+    QcVec3 centre;
+    float power = 0.0f;
+};
+
 } // namespace QcMsg

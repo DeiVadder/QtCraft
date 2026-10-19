@@ -60,6 +60,7 @@ Seit E-388 misst jede Etappe ihre Werte dort, wo sie entstehen:
 | `@server` | crowd gravel-collapse farm farm-seeds explore und die drei Signal-Stationen | Standard von `bench-headless.sh`: Server-Tick jeder Etappe |
 | `@farm` | farm farm-seeds | Pflanzen, Items, Selbstpflanzen |
 | `@fire` | forest-fire | Feuer: Schritte, abbrennende Blöcke, Licht und Neuvernetzung eines Waldbrands (headless und im Fenster, E-393) |
+| `@explosions` | explosive-chain | Sprengstoff: Kettenreaktion von 2048 Sprengstoffen unter den Grenzen, headless die Tick-Phase Explosionen, im Fenster Block-Stapel, Neubeleuchtung und Rauchwolken (E-602, E-604) |
 | `@weather` | rain snow thunderstorm forest-fire-storm | Wetter: Regen- und Schneepartikel, bedeckter Himmel, Nebel, Blitze im Fenster; headless die Tick-Phase Wetter mit Schneefall und Blitzen, Regen über einem Waldbrand (E-395, E-396) |
 
 Typischer Etappen-Plan: headless `@server` plus die Gruppe der Änderung (z. B. `@signal`), im Fenster `@core` plus die Gruppe der Änderung, wenn sie das Bild betrifft; Texturpakete wie bisher über `:TEXTURE_PACKS=` auf `@core`.

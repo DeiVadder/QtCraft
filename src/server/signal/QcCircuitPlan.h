@@ -34,8 +34,10 @@ struct QcCircuitPlan
     QList<QcBlockPos> burntOut;
     // Dispensers and droppers whose delay ended: they eject an item (decision E-345).
     QList<QcBlockPos> fires;
+    // Explosives that got power: they are lit (decision E-601).
+    QList<QcBlockPos> ignitions;
     // Work done for the tick's budget.
     qsizetype work = 0;
 
-    bool isEmpty() const { return writes.isEmpty() && openings.isEmpty() && pistons.isEmpty() && schedules.isEmpty() && fires.isEmpty(); }
+    bool isEmpty() const { return writes.isEmpty() && openings.isEmpty() && pistons.isEmpty() && schedules.isEmpty() && fires.isEmpty() && ignitions.isEmpty(); }
 };

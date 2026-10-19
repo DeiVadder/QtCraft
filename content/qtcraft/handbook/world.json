@@ -10,7 +10,8 @@
         "temples",
         "jungle",
         "witches",
-        "ruins"
+        "ruins",
+        "coastal_towers"
     ],
     "related": [
         "water",
@@ -29,6 +30,8 @@
         "cauldron",
         "flower_pot",
         "signal_dispenser",
-        "crying_obsidian"
+        "crying_obsidian",
+        "explosive",
+        "stone_pressure_plate"
     ]
 }

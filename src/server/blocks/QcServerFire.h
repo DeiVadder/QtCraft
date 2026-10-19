@@ -40,6 +40,8 @@ public:
     // Whether rain falls on a position (weather, decision E-396); in each step of a fire it falls on,
     // rain puts the fire out with a chance that grows with the fire's age (eternal fires excepted).
     using RainCheck = std::function<bool(QcBlockPos pos)>;
+    // Lights the explosive at a position (QcServerExplosions::light); false when there is none.
+    using Light = std::function<bool(QcBlockPos pos)>;
 
     QcServerFire(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds);
 
@@ -49,6 +51,8 @@ public:
     // a loaded chunk where fire may stand and while there is room. For ignition sources.
     bool ignite(QcBlockPos pos, std::optional<QcBlockId> fire = std::nullopt);
     void setRainCheck(RainCheck check) { m_rainsOn = std::move(check); }
+    // A flammable explosive that a fire would burn away is lit instead.
+    void setLight(Light light) { m_light = std::move(light); }
 
     // Whether fire spreads now: the game rule fireSpread and a fireSpreadRadius above 0.
     bool spreads() const;
@@ -82,6 +86,7 @@ private:
     QcServerSounds &m_sounds;
     QcFireRules::Table m_table;
     RainCheck m_rainsOn;
+    Light m_light;
     Numbers m_numbers;
     // Burning blocks make at most one sound per tick.
     bool m_soundPlayed = false;

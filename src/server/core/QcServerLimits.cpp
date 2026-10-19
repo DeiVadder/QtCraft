@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 66> table{{
+constexpr std::array<QcServerLimits::Field, 70> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -43,6 +43,11 @@ constexpr std::array<QcServerLimits::Field, 66> table{{
     {"experienceOrbs", "experience orbs in the world (beyond, experience joins the nearest orb)", 16, 1 << 20, &QcServerLimits::experienceOrbs},
     {"projectiles", "projectiles in the world (beyond, launchers do not shoot)", 16, 1 << 16, &QcServerLimits::projectiles},
     {"projectilesPerChunk", "projectiles stuck in one chunk (beyond, the oldest goes)", 1, 4096, &QcServerLimits::projectilesPerChunk},
+    {"primedExplosives", "lit explosives counting down in the world (beyond, an explosive stays a block)", 0, 65536,
+     &QcServerLimits::primedExplosives},
+    {"explosionsPerTick", "explosions per tick (the rest wait)", 1, 4096, &QcServerLimits::explosionsPerTick},
+    {"explosionBlocks", "blocks one explosion breaks at most", 0, 65536, &QcServerLimits::explosionBlocks},
+    {"explosionBlocksPerTick", "block changes of explosions per tick (the rest wait)", 16, 1 << 20, &QcServerLimits::explosionBlocksPerTick},
     {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
     {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
     {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},

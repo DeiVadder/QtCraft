@@ -1,0 +1,8 @@
+{
+    "name": "explosion_smoke",
+    "pattern": "noise",
+    "primary": "#8a8a8a",
+    "secondary": "#5c5c5c",
+    "variation": 0.15,
+    "seed": 5126
+}

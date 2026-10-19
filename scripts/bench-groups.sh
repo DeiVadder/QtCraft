@@ -17,6 +17,8 @@
 #              showcase-signal_machines showcase-signal_farm: the default
 #   farm       farm farm-seeds
 #   fire       forest-fire: fire steps, burning blocks and light (stage 34.2; both scripts)
+#   explosions explosive-chain: a chain reaction of 2048 explosives under the limits (stage 51.2;
+#              both scripts: the explosions phase headless, block batches and puffs in the window)
 #   weather    rain snow thunderstorm forest-fire-storm: precipitation particles, sky, fog and
 #              lightning in the window; the weather phase, strikes, snow and rain on fires headless
 #              (stage 35)
@@ -37,6 +39,7 @@ scenario_group() {
     server) echo "crowd gravel-collapse farm farm-seeds explore showcase-signal_components showcase-signal_machines showcase-signal_farm" ;;
     farm) echo "farm farm-seeds" ;;
     fire) echo "forest-fire" ;;
+    explosions) echo "explosive-chain" ;;
     weather) echo "rain snow thunderstorm forest-fire-storm" ;;
     *) return 1 ;;
     esac
@@ -50,7 +53,7 @@ expand_scenarios() {
         case "$word" in
         @*)
             members=$(scenario_group "${word#@}") || {
-                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm, fire, weather)" >&2
+                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm, fire, explosions, weather)" >&2
                 return 1
             }
             ;;

@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "server/explosions/QcServerExplosions.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"
 
@@ -430,6 +431,23 @@ private slots:
         QCOMPARE(nameAt(feet.offset(-1, 0, 0)), u"qtcraft:sand"_s);
         QCOMPARE(nameAt(feet.offset(1, 0, 0)), u"qtcraft:sand"_s);
         QCOMPARE(m_server->items().items().size() + m_server->items().queued().size(), qsizetype(0));
+    }
+
+    void aBlastHurtsItWithoutCrumblingIt()
+    {
+        // An explosion (decision E-602) hurts a golem like any creature that sees it; only a water
+        // source crumbles it (decision E-593), so it stays a golem.
+        joinWorld();
+        const QcBlockPos feet = m_feet.offset(6, 0, 0);
+        const quint32 golem = golemAt(feet, 0.0f);
+        const double full = m_server->mobs().find(golem)->health;
+        const int before = m_server->creatures().crumbling().crumbled();
+        const QcBlockPos centre = feet.offset(0, 0, 3);
+        m_server->systems().explosions.explode({QcVec3{centre.x + 0.5, centre.y + 0.5, centre.z + 0.5}, 4.0, true, false});
+        ticks(2);
+        QCOMPARE(m_server->creatures().crumbling().crumbled(), before);
+        QCOMPARE(golems().size(), 1);
+        QVERIFY2(golems().constFirst()->health < full, qPrintable(u"health %1 of %2"_s.arg(golems().constFirst()->health).arg(full)));
     }
 
     void aBuildWithoutRoomDropsItsBlocks()

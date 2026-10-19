@@ -1,6 +1,7 @@
 #include "server/gameplay/QcHandbookRules.h"
 
 #include "common/content/definitions/QcWeatherDefinition.h"
+#include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcInventory.h"
@@ -18,6 +19,8 @@
 #include "server/core/QcServer.h"
 #include "server/core/QcServerLimits.h"
 #include "server/entities/QcHurtWindow.h"
+#include "server/explosions/QcBlastBodies.h"
+#include "server/explosions/QcExplosionRays.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcHunger.h"
@@ -38,12 +41,35 @@
 #include "server/weather/QcWeatherCycle.h"
 
 #include <cmath>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
 namespace QcHandbookRules {
 
 namespace {
+
+// The power of an explosive whose block has none.
+constexpr double defaultPower = 4.0;
+
+// Explosives and explosions (decisions E-600 to E-604): the explosive of the base content (its
+// power and fuse; the block's defaults when the content has none) and the limits.
+QMap<QString, double> explosionValues(const QcContentRegistry &content)
+{
+    const std::optional<QcBlockId> explosive = content.blockId(u"qtcraft:explosive"_s);
+    const QcBlastDefinition blast = explosive ? content.block(*explosive).blast : QcBlastDefinition{};
+    const double power = blast.isExplosive() ? blast.power : defaultPower;
+    const QcServerLimits limits;
+    return {
+        {u"explosions.fuseSeconds"_s, blast.fuseTicks * QcPhysics::tickDuration},
+        {u"explosions.reach"_s, QcExplosionRays::reachFactor * power},
+        {u"explosions.maxDamage"_s, QcBlastBodies::damageOf(1.0, power)},
+        {u"explosions.primed"_s, double(limits.primedExplosives)},
+        {u"explosions.perTick"_s, double(limits.explosionsPerTick)},
+        {u"explosions.blocks"_s, double(limits.explosionBlocks)},
+        {u"explosions.blocksPerTick"_s, double(limits.explosionBlocksPerTick)},
+    };
+}
 
 // The rules of villages, villagers and trading (decisions E-403, E-411, E-414, E-415).
 QMap<QString, double> villageValues()
@@ -153,7 +179,7 @@ QMap<QString, double> weatherValues()
 
 } // namespace
 
-QMap<QString, double> values()
+QMap<QString, double> values(const QcContentRegistry &content)
 {
     QMap<QString, double> rules{
         {u"day.length"_s, QcDayCycle::dayLength},
@@ -219,6 +245,7 @@ QMap<QString, double> values()
     rules.insert(weatherValues());
     rules.insert(archeryValues());
     rules.insert(villageValues());
+    rules.insert(explosionValues(content));
     return rules;
 }
 

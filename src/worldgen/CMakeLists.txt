@@ -66,6 +66,11 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcTreeShape.h terrain/QcTreeShape.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    towers/QcCoastalTowerGenerator.h towers/QcCoastalTowerGenerator.cpp
+    towers/QcCoastalTowerPlan.h
+    towers/QcCoastalTowerPlanner.h towers/QcCoastalTowerPlanner.cpp
+)
+target_sources(qc_worldgen PRIVATE
     villages/QcBoardwalkPlanner.h villages/QcBoardwalkPlanner.cpp
     villages/QcJettyPlanner.h villages/QcJettyPlanner.cpp
     villages/QcPiecePlacer.h villages/QcPiecePlacer.cpp

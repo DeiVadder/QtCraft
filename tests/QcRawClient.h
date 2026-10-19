@@ -65,6 +65,11 @@ public:
             equipment = inventory->equipment;
         } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
             blockUpdates.append(*update);
+        } else if (const auto *batch = std::get_if<QcMsg::BlockBatch>(&message)) {
+            blockUpdates.append(batch->updates);
+            ++blockBatches;
+        } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
+            explosions.append(*explosion);
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
             chatKeys.append(*chat);
@@ -187,7 +192,10 @@ public:
     QcItemStack craftingResult;
     QcEquipment equipment;
     qint32 openedCrafting = 0;
+    // Block updates, single ones and those of batches (decision E-604), and how many batches came.
     QList<QcMsg::BlockUpdate> blockUpdates;
+    int blockBatches = 0;
+    QList<QcMsg::Explosion> explosions;
     // Positions of the chunks received, in order.
     QList<QcChunkPos> chunks;
     QStringList chatLines;

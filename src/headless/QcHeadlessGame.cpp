@@ -710,7 +710,7 @@ const QcHandbook &QcHeadlessGame::handbook(const QString &language)
 {
     std::shared_ptr<const QcHandbook> &book = m_handbooks[language];
     if (!book) {
-        book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(*m_content, language, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys()));
+        book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(*m_content, language, QcHandbookRules::values(*m_content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys()));
     }
     return *book;
 }

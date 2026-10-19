@@ -33,6 +33,7 @@ void readGameRules(const QJsonObject &rules, QcWorldInfo &info)
     info.quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
     info.weatherCycle = rules.value(u"weatherCycle"_s).toBool(true);
     info.mobGriefing = rules.value(u"mobGriefing"_s).toBool(true);
+    info.explosionBlockDamage = rules.value(u"explosionBlockDamage"_s).toBool(true);
     info.spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, QcWorldInfo::maxSpawnChunkRadius);
     info.maxEntityCramming = std::clamp(rules.value(u"maxEntityCramming"_s).toInt(24), 0, QcWorldInfo::maxEntityCrammingLimit);
     info.playerInvulnerabilityTicks = std::clamp(rules.value(u"playerInvulnerabilityTicks"_s).toInt(QcHurtWindow::defaultTicks), 0,
@@ -169,6 +170,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                                                         {u"quasiConnectivity"_s, info.quasiConnectivity},
                                                         {u"weatherCycle"_s, info.weatherCycle},
                                                         {u"mobGriefing"_s, info.mobGriefing},
+                                                        {u"explosionBlockDamage"_s, info.explosionBlockDamage},
                                                         {u"spawnChunkRadius"_s, info.spawnChunkRadius},
                                                         {u"maxEntityCramming"_s, info.maxEntityCramming},
                                                         {u"playerInvulnerabilityTicks"_s, info.playerInvulnerabilityTicks},

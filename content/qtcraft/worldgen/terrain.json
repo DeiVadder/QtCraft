@@ -94,5 +94,24 @@
         },
         "roomChance": 0.3,
         "maxRooms": 2
+    },
+    "coastalTowers": {
+        "regionSize": 160,
+        "chance": 0.6,
+        "attempts": 16,
+        "gridStep": 6,
+        "maxRise": 5,
+        "maxSlope": 3,
+        "coastDistance": 12,
+        "oceanDepth": 3,
+        "clearance": 8,
+        "foundation": "cobblestone",
+        "maxFoundation": 12,
+        "structures": [
+            {
+                "structure": "coastal_tower",
+                "weight": 1
+            }
+        ]
     }
 }

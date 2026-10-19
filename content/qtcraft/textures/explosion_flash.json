@@ -1,0 +1,8 @@
+{
+    "name": "explosion_flash",
+    "pattern": "noise",
+    "primary": "#ffd27a",
+    "secondary": "#ff8a2a",
+    "variation": 0.2,
+    "seed": 5125
+}

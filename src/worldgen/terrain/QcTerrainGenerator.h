@@ -15,6 +15,7 @@
 #include <memory>
 #include <optional>
 
+class QcCoastalTowerGenerator;
 class QcDungeonGenerator;
 class QcMineshaftGenerator;
 class QcSurfaceStructures;
@@ -51,6 +52,8 @@ public:
     const QcMineshaftGenerator &mineshafts() const { return *m_mineshafts; }
     // Structures it places by itself (decision E-590): the desert temple.
     const QcSurfaceStructures &surfaceStructures() const { return *m_surface; }
+    // Coastal towers (decision E-605): their chests' loot, and the plans for tools and tests.
+    const QcCoastalTowerGenerator &coastalTowers() const { return *m_coastalTowers; }
     QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
@@ -117,6 +120,9 @@ private:
     std::unique_ptr<QcMineshaftGenerator> m_mineshafts;
     // Created after the villages: its plans keep clear of them.
     std::unique_ptr<QcSurfaceStructures> m_surface;
+    // Created after the mine shafts and the surface structures: its plans keep clear of their
+    // entrances and footprints and of villages (decision E-605).
+    std::unique_ptr<QcCoastalTowerGenerator> m_coastalTowers;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

@@ -1,0 +1,30 @@
+{
+    "name": "explosive_side",
+    "pattern": "emblem",
+    "primary": "#b8321e",
+    "variation": 0.05,
+    "seed": 5121,
+    "palette": {
+        "s": "#8a2414",
+        "b": "#e6dcc4",
+        "k": "#2a2420"
+    },
+    "bitmap": [
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "bbbbbbbbbbbbbbbb",
+        "bkbbkbkkkbkbbkbb",
+        "bkkbkbbkbbkkbkbb",
+        "bkbkkbbkbbkbkkbb",
+        "bkbbkbbkbbkbbkbb",
+        "bbbbbbbbbbbbbbbb",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s..",
+        "...s....s....s.."
+    ]
+}

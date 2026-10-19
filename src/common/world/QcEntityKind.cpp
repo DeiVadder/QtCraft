@@ -31,6 +31,8 @@ QLatin1StringView name(QcEntityKind kind)
         return QLatin1StringView("experience orb");
     case QcEntityKind::Projectile:
         return QLatin1StringView("projectile");
+    case QcEntityKind::PrimedExplosive:
+        return QLatin1StringView("primed explosive");
     }
     return QLatin1StringView("unknown");
 }

@@ -51,6 +51,8 @@ public:
     // How a dispenser puts armour on a player (the server's inventory part does it).
     void setEquipPlayer(QcDispenserActions::EquipPlayer equip) { m_dispensers.setEquipPlayer(std::move(equip)); }
     void setIgnite(QcDispenserActions::Ignite ignite) { m_dispensers.setIgnite(std::move(ignite)); }
+    // How a powered igniter lights its explosive (QcServerExplosions::light, decision E-601).
+    void setLight(QcDispenserActions::Ignite light) { m_light = std::move(light); }
     // Work done in the latest tick (debug display).
     qsizetype lastTickWork() const { return m_lastWork; }
 
@@ -95,6 +97,7 @@ private:
     QcSignalTable m_table;
     QcPistonMover m_mover;
     QcDispenserActions m_dispensers;
+    QcDispenserActions::Ignite m_light;
     QcServerHoppers m_hoppers;
     qsizetype m_budget = 0;
     qsizetype m_lastWork = 0;

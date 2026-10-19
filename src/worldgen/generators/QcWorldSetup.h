@@ -30,6 +30,8 @@ struct QcWorldSetup
     bool weatherCycle = true;
     // Game rule mobGriefing (decision E-460).
     bool mobGriefing = true;
+    // Game rule explosionBlockDamage (decision E-603).
+    bool explosionBlockDamage = true;
     QList<Mob> mobs;
     QList<Stand> stands;
     QList<Contents> contents;

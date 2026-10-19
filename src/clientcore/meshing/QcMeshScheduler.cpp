@@ -8,6 +8,7 @@
 #include <QThread>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 
@@ -135,6 +136,8 @@ void QcMeshScheduler::chunkLoaded(const QcClientWorld &world, QcChunkPos pos)
 
 void QcMeshScheduler::chunkUnloaded(QcChunkPos pos)
 {
+    // Gathered changes of the chunk go first, so the engine never sees them after the removal.
+    submitGathered();
     m_loadedChunks.remove(pos);
     m_light.remove(pos);
     for (int section = 0; section < QcWorld::sectionCount; ++section) {
@@ -220,10 +223,14 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
     }
 
     if (m_lightEngine && lightChanges) {
-        // Meshed together with the new block light, so the change shows in one step.
-        std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
-        submitLight([pos, chunk = std::move(chunk)](QcBlockLightEngine &engine) { engine.changeBlock(pos, chunk); }, std::nullopt,
-                    std::move(dirty), now);
+        // Meshed together with the new block light, so the change shows in one step; gathered until
+        // the event loop comes back, so the changes of one message (a batch) make one job.
+        if (m_gathered.isEmpty()) {
+            m_gatheredSinceNs = now;
+            QMetaObject::invokeMethod(this, &QcMeshScheduler::submitGathered, Qt::QueuedConnection);
+        }
+        m_gathered.append({pos, world.chunk(pos.chunk())});
+        m_gatheredDirty.append(dirty);
         return;
     }
     for (const SectionAddress &address : std::as_const(dirty)) {
@@ -231,8 +238,27 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
     }
 }
 
+void QcMeshScheduler::submitGathered()
+{
+    if (m_gathered.isEmpty() || !m_lightEngine) {
+        m_gathered.clear();
+        m_gatheredDirty.clear();
+        return;
+    }
+
+    submitLight(
+        [changes = std::exchange(m_gathered, {})](QcBlockLightEngine &engine) {
+            for (const auto &[pos, chunk] : changes) {
+                engine.changeBlock(pos, chunk);
+            }
+        },
+        std::nullopt, std::exchange(m_gatheredDirty, {}), m_gatheredSinceNs);
+}
+
 void QcMeshScheduler::clear()
 {
+    m_gathered.clear();
+    m_gatheredDirty.clear();
     m_versions.clear();
     m_dirty.clear();
     m_loadedChunks.clear();
@@ -439,6 +465,7 @@ void QcMeshScheduler::deliverResults()
 
 void QcMeshScheduler::waitForJobs()
 {
+    submitGathered();
     m_lightPool.waitForIdle();
     m_pool.waitForIdle();
 }

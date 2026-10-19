@@ -1,0 +1,20 @@
+{
+    "name": "explosives",
+    "order": 87,
+    "icon": "explosive",
+    "sections": [
+        "explosives",
+        "lighting",
+        "blast",
+        "bodies",
+        "limits"
+    ],
+    "related": [
+        "explosive",
+        "gunpowder",
+        "flint_and_steel",
+        "obsidian",
+        "stone_pressure_plate",
+        "lever"
+    ]
+}

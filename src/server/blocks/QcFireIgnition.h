@@ -4,6 +4,8 @@
 #include "common/protocol/QcMessages.h"
 #include "server/blocks/QcFireRules.h"
 
+#include <functional>
+
 class QcServerFire;
 class QcServerInventory;
 class QcServerSounds;
@@ -26,14 +28,20 @@ class QcServerState;
 class QcFireIgnition
 {
 public:
+    // Lights the explosive at a position (QcServerExplosions::light); false when there is none.
+    using Light = std::function<bool(QcBlockPos pos)>;
+
     QcFireIgnition(QcServerState &state, QcServerFire &fire, QcServerSounds &sounds, QcServerInventory &inventory);
+    // Flint and steel used on an explosive, or a dispenser striking at one, lights it (decision E-601).
+    void setLight(Light light) { m_light = std::move(light); }
 
     // A use of the held item on `message.target`: false when the held item does not ignite (the use
     // is something else). A use that lights nothing (no room, out of reach) still returns true.
     bool use(QcServerClient &client, const QcMsg::UseItem &message);
     // A block update of `block` at `pos`: a block with `sparks` may light a cell next to it.
     void blockUpdated(QcBlockPos pos, QcBlockId block);
-    // Lights fire at `pos` for an igniting item (player or dispenser); plays the striking sound.
+    // Lights fire at `pos` for an igniting item (player or dispenser), or the explosive standing
+    // there; plays the striking sound.
     bool strike(QcBlockPos pos);
     // Lightning struck the cell `pos`: lights it and up to `sparks` - 1 cells in the 3 × 3 × 3 around
     // it (drawn from the seed, the position and the tick), at most `sparks` fires in all and none
@@ -47,4 +55,5 @@ private:
     QcServerSounds &m_sounds;
     QcServerInventory &m_inventory;
     QcFireRules::Table m_table;
+    Light m_light;
 };

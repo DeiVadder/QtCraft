@@ -418,6 +418,11 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
     applyOpenings(plan);
     m_budget -= applyPistons(plan);
     m_budget -= m_dispensers.fire(plan.fires);
+    for (const QcBlockPos &pos : std::as_const(plan.ignitions)) {
+        if (m_light) {
+            m_light(pos);
+        }
+    }
 
     for (const QcBlockPos &pos : std::as_const(plan.burntOut)) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::torchFizz), centreOf(pos));

@@ -4,6 +4,7 @@
 // Plain data structs grouped in one header because they are only meaningful together; block and
 // feature references are content names resolved by the generator.
 
+#include "common/content/definitions/QcCoastalTowerDefinition.h"
 #include "common/content/definitions/QcDungeonDefinition.h"
 #include "common/content/definitions/QcMineshaftDefinition.h"
 
@@ -138,4 +139,6 @@ struct QcTerrainSettings
     QcDungeonSettings dungeons;
     // Mine shafts with levels, staircases, bridges and surface entrances (decision E-570).
     QcMineshaftSettings mineshafts;
+    // Towers on the coasts with a trapped chest at the top (decision E-605).
+    QcCoastalTowerSettings coastalTowers;
 };

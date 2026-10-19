@@ -2,6 +2,7 @@
     "name": "chunk_loader",
     "sound": "stone",
     "hardness": 5.0,
+    "blastResistance": 6.0,
     "tool": "pickaxe",
     "toolLevel": 2,
     "light": 7,

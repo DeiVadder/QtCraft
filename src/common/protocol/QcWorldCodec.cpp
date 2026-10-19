@@ -208,4 +208,44 @@ void encode(QDataStream &stream, const QcMsg::Lightning &m)
     return m;
 }
 
+void encode(QDataStream &stream, const QcMsg::BlockBatch &m)
+{
+    stream << quint32(m.updates.size());
+    for (const QcMsg::BlockUpdate &update : m.updates) {
+        encode(stream, update);
+    }
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockBatch>, QDataStream &stream)
+{
+    QcMsg::BlockBatch m;
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcMsg::BlockBatch::maxUpdates, count)) {
+        return qcError(u"Invalid block batch"_s);
+    }
+    m.updates.reserve(count);
+    for (quint32 index = 0; index < count && stream.status() == QDataStream::Ok; ++index) {
+        QcMsg::BlockUpdate update;
+        update.pos = readPos(stream);
+        stream >> update.block;
+        m.updates.append(update);
+    }
+    return m;
+}
+
+void encode(QDataStream &stream, const QcMsg::Explosion &m)
+{
+    stream << m.centre << m.power;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Explosion>, QDataStream &stream)
+{
+    QcMsg::Explosion m;
+    stream >> m.centre >> m.power;
+    if (!isFinite(m.centre) || !(m.power > 0.0f && m.power <= 64.0f)) {
+        return qcError(u"Invalid explosion"_s);
+    }
+    return m;
+}
+
 } // namespace QcProtocolCodec

@@ -6,6 +6,7 @@
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainMath.h"
 #include "worldgen/terrain/QcTreeShape.h"
+#include "worldgen/towers/QcCoastalTowerGenerator.h"
 #include "worldgen/villages/QcVillageGenerator.h"
 
 #include <algorithm>
@@ -80,12 +81,14 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed, warnings);
     m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed, warnings);
     m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed, warnings);
+    m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed, warnings);
 }
 
 QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
 {
     QcChunkFurnishing furnishing = m_dungeons->furnishingIn(pos);
     m_mineshafts->addFurnishing(pos, furnishing);
+    m_coastalTowers->addFurnishing(pos, furnishing);
     m_surface->addFurnishing(pos, furnishing);
     if (const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos)) {
         m_villages->addFurnishing(pos, *village, furnishing);
@@ -549,15 +552,22 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     m_dungeons->build(*chunk);
     m_mineshafts->build(*chunk);
     // The village of the chunk's region: no features or surface pools there, its pieces last. None
-    // near a surface structure either (decision E-630).
+    // near a surface structure or a coastal tower either (decisions E-630, E-605).
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
-    const QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, featureMargin);
+    QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, featureMargin);
+    const QList<QcCoastalTowerPlan::Footprint> towers = m_coastalTowers->footprintsNear(pos, featureMargin);
+    for (const QcCoastalTowerPlan::Footprint &tower : towers) {
+        structures.append({tower.minX, tower.minZ, tower.maxX, tower.maxZ});
+    }
     placeFeatures(*chunk, columns, carved, village.get(), structures);
     if ((!village || !village->overlaps(pos, featureMargin)) && structures.isEmpty()) {
         m_pools.placeOnSurface(*chunk, columns, *this);
     }
     // Mine shaft entrances over the trees, cacti and pools (none lies near a village).
     m_mineshafts->buildEntrances(*chunk);
+    // Coastal towers over the trees and pools too (none lies near a village, an entrance or a
+    // surface structure).
+    m_coastalTowers->build(*chunk);
     // Surface structures over the terrain (no features or pools near them), never near a village.
     m_surface->build(*chunk);
     if (village) {

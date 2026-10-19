@@ -1,0 +1,12 @@
+{
+    "name": "gunpowder",
+    "type": "shapeless",
+    "ingredients": [
+        "coal",
+        "flint"
+    ],
+    "result": {
+        "item": "gunpowder",
+        "count": 2
+    }
+}

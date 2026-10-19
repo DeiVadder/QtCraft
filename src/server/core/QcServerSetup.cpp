@@ -133,6 +133,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     state.info().fireSpread = setup.fireSpread;
     state.info().weatherCycle = setup.weatherCycle;
     state.info().mobGriefing = setup.mobGriefing;
+    state.info().explosionBlockDamage = setup.explosionBlockDamage;
 
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {

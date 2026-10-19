@@ -162,6 +162,10 @@ void QcSessionCore::applyWorld(const QcMessage &message)
         if (m_world && m_content->isValidBlock(update->block)) {
             m_world->setBlock(update->pos, update->block);
         }
+    } else if (const auto *batch = std::get_if<QcMsg::BlockBatch>(&message)) {
+        if (m_world) {
+            m_world->setBlocks(batch->updates);
+        }
     }
 }
 

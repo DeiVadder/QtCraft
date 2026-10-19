@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcSmeltingRecipe.h"
 #include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/parser/QcBlastParser.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcFarmingParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
@@ -676,6 +677,7 @@ namespace QcBlockParser {
     parseBehaviourFields(block, reader);
     parseMovementFields(block, reader, packNamespace);
     parseFireFields(block, reader);
+    QcBlastParser::parseBlast(block, reader);
     parseGround(json, block, reader, packNamespace);
     reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
     parseFarming(block, reader, packNamespace);

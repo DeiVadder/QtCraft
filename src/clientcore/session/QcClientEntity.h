@@ -30,7 +30,8 @@ struct QcClientEntity
     QcVec3 previousPosition;
     float yaw = 0.0f;
     float previousYaw = 0.0f;
-    // Players and creatures: their health; experience orbs: their value (decision E-398).
+    // Players and creatures: their health; experience orbs: their value (decision E-398); lit
+    // explosives: the ticks left of their fuse.
     double health = 0.0;
     // Client ticks left for the hurt flash.
     int hurtTicks = 0;
@@ -60,8 +61,10 @@ struct QcClientEntity
     bool isCreature() const { return kind == QcEntityKind::Creature; }
     bool isFallingBlock() const { return kind == QcEntityKind::FallingBlock; }
     bool isMovingBlock() const { return kind == QcEntityKind::MovingBlock; }
-    // Falling and moving blocks: drawn as a block, never targeted, no steps.
-    bool isBlockEntity() const { return isFallingBlock() || isMovingBlock(); }
+    // A lit explosive (decision E-601): `health` holds the ticks left of its fuse.
+    bool isPrimedExplosive() const { return kind == QcEntityKind::PrimedExplosive; }
+    // Falling and moving blocks and lit explosives: drawn as a block, never targeted, no steps.
+    bool isBlockEntity() const { return isFallingBlock() || isMovingBlock() || isPrimedExplosive(); }
     bool isArmourStand() const { return kind == QcEntityKind::ArmourStand; }
     bool isMinecart() const { return kind == QcEntityKind::Minecart; }
     bool isExperienceOrb() const { return kind == QcEntityKind::ExperienceOrb; }

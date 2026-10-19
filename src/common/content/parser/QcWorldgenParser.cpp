@@ -1,5 +1,6 @@
 #include "common/content/parser/QcWorldgenParser.h"
 
+#include "common/content/parser/QcCoastalTowerParser.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/registry/QcContentNames.h"
@@ -345,6 +346,9 @@ void parseMineshafts(const QJsonObject &json, QcMineshaftSettings &shafts, QcJso
     });
     reader.nestedObject(u"mineshafts"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         parseMineshafts(object, settings.mineshafts, nested, packNamespace);
+    });
+    reader.nestedObject(u"coastalTowers"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
+        QcCoastalTowerParser::parseCoastalTowers(object, settings.coastalTowers, nested, packNamespace);
     });
 
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {

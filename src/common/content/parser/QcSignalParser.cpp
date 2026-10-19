@@ -25,6 +25,7 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Hopper, "hopper"},
     {QcSignalKind::Dispenser, "dispenser"},
     {QcSignalKind::Rail, "rail"},
+    {QcSignalKind::Igniter, "igniter"},
 }};
 
 [[nodiscard]] std::optional<QcSignalKind> kindFromName(const QString &name)
@@ -100,6 +101,7 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
     case QcSignalKind::Rail:
         return {{u"powered"_s, booleans}};
     case QcSignalKind::Lamp:
+    case QcSignalKind::Igniter:
     case QcSignalKind::None:
         return {};
     }

@@ -92,7 +92,17 @@ target_sources(qc_server PRIVATE
     entities/QcItemEntity.h
     entities/QcMinecart.h
     entities/QcMovingBlock.h
+    entities/QcPrimedExplosive.h
     entities/QcProjectile.h
+)
+target_sources(qc_server PRIVATE
+    explosions/QcBlastBlocks.h explosions/QcBlastBlocks.cpp
+    explosions/QcBlastBodies.h explosions/QcBlastBodies.cpp
+    explosions/QcBlastField.h explosions/QcBlastField.cpp
+    explosions/QcBlastTable.h explosions/QcBlastTable.cpp
+    explosions/QcExplosionRays.h explosions/QcExplosionRays.cpp
+    explosions/QcPrimedExplosives.h explosions/QcPrimedExplosives.cpp
+    explosions/QcServerExplosions.h explosions/QcServerExplosions.cpp
 )
 target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp

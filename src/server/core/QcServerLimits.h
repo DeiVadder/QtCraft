@@ -81,6 +81,14 @@ struct QcServerLimits
     // (beyond, the oldest stuck there goes).
     qint64 projectiles = 1024;
     qint64 projectilesPerChunk = 64;
+    // Explosions (decision E-602): primed explosives in the world at once (beyond, a lit explosive
+    // stays a block), explosions per tick (the others wait with their fuse run out), blocks one
+    // explosion breaks at most (the nearest first) and block changes of explosions per tick (the
+    // rest waits in order).
+    qint64 primedExplosives = 512;
+    qint64 explosionsPerTick = 8;
+    qint64 explosionBlocks = 1024;
+    qint64 explosionBlocksPerTick = 2048;
     // Creatures that spawn by themselves per player, by kind.
     qint64 hostileCreaturesPerPlayer = 8;
     qint64 passiveCreaturesPerPlayer = 6;

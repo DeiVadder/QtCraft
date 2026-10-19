@@ -2,6 +2,7 @@
     "name": "crying_obsidian",
     "sound": "stone",
     "hardness": 25.0,
+    "blastResistance": 1200.0,
     "tool": "pickaxe",
     "toolLevel": 3,
     "light": 10,

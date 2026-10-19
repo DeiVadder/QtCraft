@@ -37,6 +37,9 @@ void checkIdsAndTables(const QcEntities &entities, QStringList &problems)
     for (const QcFallingBlock &falling : entities.fallingBlocks().all()) {
         note(falling, QcEntityKind::FallingBlock);
     }
+    for (const QcPrimedExplosive &primed : entities.explosives().all()) {
+        note(primed, QcEntityKind::PrimedExplosive);
+    }
     for (const QcArmourStand &stand : entities.stands().stands()) {
         note(stand, QcEntityKind::ArmourStand);
     }
@@ -108,6 +111,8 @@ QStringList problems(const QcEntities &entities)
         checkChunks(record.creatures, record.chunk, "creature", [](const QcMobManager::Stored &stored) { return stored.position; }, problems);
         checkChunks(record.items, record.chunk, "item", [](const QcItemEntityManager::Drop &drop) { return drop.position; }, problems);
         checkChunks(record.fallingBlocks, record.chunk, "falling block", [](const QcFallingBlock &falling) { return falling.motion.position; },
+                    problems);
+        checkChunks(record.primedExplosives, record.chunk, "lit explosive", [](const QcPrimedExplosive &primed) { return primed.motion.position; },
                     problems);
         checkChunks(record.stands, record.chunk, "armour stand", [](const QcArmourStand &stand) { return stand.motion.position; }, problems);
         checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }, problems);

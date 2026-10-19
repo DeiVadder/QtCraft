@@ -1,0 +1,16 @@
+{
+    "name": "explosive",
+    "type": "shaped",
+    "pattern": [
+        "GSG",
+        "SGS",
+        "GSG"
+    ],
+    "key": {
+        "G": "gunpowder",
+        "S": "sand"
+    },
+    "result": {
+        "item": "explosive"
+    }
+}

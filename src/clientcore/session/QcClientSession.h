@@ -177,10 +177,11 @@ public:
     double timeSpeed() const { return m_worldTime.speed; }
     // The weather as shown: strengths, climate, lightning flashes (decision E-395).
     const QcClientWeather &weather() const { return m_weather; }
-    // Labels (E-222), spinning spawner creatures (E-520) and a number that changes with the labels.
+    // Labels (E-222), spinning spawner creatures (E-520), a number that changes with labels, explosions (E-604).
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_extras.labels(); }
     quint64 labelGeneration() const { return m_extras.labelGeneration(); }
     const QHash<QcBlockPos, int> &spawnerDisplays() const { return m_extras.spawners(); }
+    const QcExplosionEffects &explosions() const { return m_extras.explosions(); }
 
     // The server's debug data: what is asked for and what arrived (QcClientDebugSubscription).
     QcClientDebugSubscription &debug() { return m_debug; }

@@ -1,0 +1,195 @@
+{
+    "name": "coastal_tower",
+    "palette": {
+        ".": "air",
+        "I": "stone_bricks",
+        "C": "cobblestone",
+        "M": "mossy_cobblestone",
+        "G": "glass",
+        "P": "oak_planks",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "H": "ladder[attach=north]",
+        "s": "torch[attach=north]",
+        "n": "torch[attach=south]",
+        "K": "chest[facing=south]",
+        "X": "explosive",
+        "T": "stone_pressure_plate",
+        "L": "lantern[attach=ceiling]",
+        "o": "lantern[attach=floor]"
+    },
+    "layers": [
+        [
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII"
+        ],
+        [
+            "CIIIIIC",
+            "IH...sI",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "CIIDIIC"
+        ],
+        [
+            "CIIGIIC",
+            "IH....I",
+            "I.....I",
+            "G.....G",
+            "I.....I",
+            "I.....I",
+            "CIIUIIC"
+        ],
+        [
+            "CIIIIIM",
+            "IH....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "CIIIIIC"
+        ],
+        [
+            "IIIIIII",
+            "IHPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IIIIIII"
+        ],
+        [
+            "CIIIIIC",
+            "IH....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I....nI",
+            "MIIIIIC"
+        ],
+        [
+            "CIIGIIC",
+            "IH....I",
+            "I.....I",
+            "G.....G",
+            "I.....I",
+            "I.....I",
+            "CIIGIIC"
+        ],
+        [
+            "CIIIIIC",
+            "IH....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "CIIIIIC"
+        ],
+        [
+            "IIIIIII",
+            "IHPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IIIIIII"
+        ],
+        [
+            "MIIIIIC",
+            "IH....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I....nI",
+            "CIIIIIM"
+        ],
+        [
+            "CIIGIIC",
+            "IH....I",
+            "I.....I",
+            "G.....G",
+            "I.....I",
+            "I.....I",
+            "MIIGIIC"
+        ],
+        [
+            "CIIIIIC",
+            "IH....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "CIIIIIC"
+        ],
+        [
+            "IIIIIII",
+            "IHPPPPI",
+            "IPXXXPI",
+            "IPPXPPI",
+            "IPPPPPI",
+            "IPPPPPI",
+            "IIIIIII"
+        ],
+        [
+            "CIIIIIM",
+            "IH.K..I",
+            "I..T..I",
+            "I.....I",
+            "I.....I",
+            "I.....I",
+            "CIIIIIC"
+        ],
+        [
+            "MIGGGIC",
+            "IH....I",
+            "G.....G",
+            "G.....G",
+            "G.....G",
+            "I.....I",
+            "CIGGGIM"
+        ],
+        [
+            "CIIIIIC",
+            "IH....I",
+            "I.....I",
+            "I..L..I",
+            "I.....I",
+            "I.....I",
+            "MIIIIIC"
+        ],
+        [
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII",
+            "IIIIIII"
+        ],
+        [
+            "I I I I",
+            "       ",
+            "I     I",
+            "   o   ",
+            "I     I",
+            "       ",
+            "I I I I"
+        ]
+    ],
+    "loot": [
+        {
+            "at": [
+                3,
+                13,
+                1
+            ],
+            "table": "coastal_tower"
+        }
+    ]
+}

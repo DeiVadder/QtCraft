@@ -109,6 +109,12 @@
 #   snow     - the same on the frozen sea of the tundra (the frozen scenario's place): snowflakes
 #   thunderstorm - the rain scenario as a thunderstorm (/weather thunder): darker sky and, on average
 #              every 10 s, lightning near the player (flash, delayed thunder)
+#   explosive-chain - a flat world with a field of 32 x 32 x 2 explosives (2048) on the ground from
+#              10 to 41 m north of the player, who looks down on it from a stone block 16 m up; three
+#              seconds in, a lever set beside the near edge lights it (stage 51.2, decision E-602):
+#              the chain reaction under the limits (explosions per tick, blocks per explosion and per
+#              tick, lit explosives at once) on the server, block batches, relighting and puffs on the
+#              client. Always flat
 #   forest-fire-storm - the forest-fire scenario in a thunderstorm at full strength (stage 35.2,
 #              decision E-396): rain puts out the fires under the open sky and keeps fire from
 #              spreading into it, lightning strikes and lights sparks; fire steps with the rain check,
@@ -582,6 +588,10 @@ scene_chat() {
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
     forest-fire) forest_fire_chat ;;
+    explosive-chain)
+        printf '%s\n' "/time set day" "/fill ~-16 ~ ~-41 ~15 ~1 ~-10 explosive" "/setblock ~ ~15 ~ stone" "/tp ~ ~16 ~" \
+            "@3000 /setblock ~ ~-16 ~-9 lever[attach=floor,powered=true]"
+        ;;
     orbs) orbs_chat "$2" ;;
     forest-fire-storm)
         printf '%s\n' "/gamerule weatherCycle false" "/weather thunder" "/tick sprint 200"
@@ -651,7 +661,7 @@ scene_of() {
         SCENE_ARMOUR=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm | orbs | minecarts)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm | orbs | minecarts | explosive-chain)
         SCENE_WORLD=flat
         ;;
     esac
@@ -704,7 +714,7 @@ scene_of() {
         SCENE_WINDOW="--overlay furnace"
         ;;
     signal-stress) SCENE_LOOK=0,-25 ;;
-    forest-fire | forest-fire-storm) SCENE_LOOK=0,-35 ;;
+    forest-fire | forest-fire-storm | explosive-chain) SCENE_LOOK=0,-35 ;;
     orbs) SCENE_LOOK=0,-40 ;;
     minecarts) SCENE_LOOK=90,-25 ;;
     gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;

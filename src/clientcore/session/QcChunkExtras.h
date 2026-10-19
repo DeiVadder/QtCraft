@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clientcore/session/QcExplosionEffects.h"
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcWorldMessages.h"
 #include "common/world/QcWorldLabel.h"
@@ -11,7 +12,8 @@
 // (decision E-222) and the creature kinds spinning in their monster spawners (decision E-520). Both
 // go with their chunk's ChunkUnload; the spawners also with a new ChunkData of their chunk (the server
 // sends the spawners of a chunk right after its blocks, so a chunk sent again, e.g. after
-// /regenerate, keeps only the spawners it still has).
+// /regenerate, keeps only the spawners it still has). The explosions near the player (decision E-604)
+// stay as puffs of flash and smoke until they are over.
 class QcChunkExtras
 {
 public:
@@ -34,6 +36,9 @@ public:
             m_spawners.insert(display.pos, display.mob);
         }
     }
+    const QcExplosionEffects &explosions() const { return m_explosions; }
+    void addExplosion(const QcMsg::Explosion &explosion, quint64 tick) { m_explosions.add(explosion, tick); }
+    void pruneExplosions(quint64 tick) { m_explosions.prune(tick); }
     void chunkArrived(QcChunkPos pos) { removeSpawners(pos); }
     void removeChunk(QcChunkPos pos)
     {
@@ -50,4 +55,5 @@ private:
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     QHash<QcBlockPos, int> m_spawners;
+    QcExplosionEffects m_explosions;
 };

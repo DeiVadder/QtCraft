@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/content/definitions/QcBlastDefinition.h"
 #include "common/content/definitions/QcBlockProperty.h"
 #include "common/content/definitions/QcFarmingDefinitions.h"
 #include "common/content/definitions/QcFireDefinition.h"
@@ -219,6 +220,8 @@ struct QcBlockDefinition
     bool falls = false;
     // Fire, flammability and eternal fire (decision E-392). Server side only.
     QcFireDefinition fire;
+    // Blast resistance and explosives (decision E-600). Server side only.
+    QcBlastDefinition blast;
     // A rail (decision E-382): minecarts roll along it; its states `facing` and `shape` follow from
     // the rails around it (QcRails). Server side only.
     bool rail = false;

@@ -53,6 +53,9 @@ inline constexpr auto levelUp = "qtcraft:player.levelup";
 // A launcher drawn and shooting (decision E-425); projectiles name their own sounds.
 inline constexpr auto bowDraw = "qtcraft:item.bow.draw";
 inline constexpr auto bowShoot = "qtcraft:item.bow.shoot";
+// An explosive lit (its fuse hisses) and an explosion (decision E-604).
+inline constexpr auto explosivePrimed = "qtcraft:entity.explosive.primed";
+inline constexpr auto explosion = "qtcraft:entity.explosive.explode";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

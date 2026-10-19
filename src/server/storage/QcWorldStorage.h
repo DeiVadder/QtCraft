@@ -69,6 +69,9 @@ struct QcWorldInfo
     // Game rule: creatures change blocks of the world (endermen take and place blocks, decision
     // E-460); off, they leave every block as it is.
     bool mobGriefing = true;
+    // Game rule: explosions break, light and blow away blocks (decision E-603); off, they still hurt
+    // and push bodies but leave every block as it is, lit explosives included.
+    bool explosionBlockDamage = true;
     // The weather and its course (world.json "weather"; a world without it begins with a clear spell).
     QcWeatherState weather;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether

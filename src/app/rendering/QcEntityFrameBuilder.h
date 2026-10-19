@@ -13,6 +13,7 @@
 #include <optional>
 #include <utility>
 
+struct QcClientEntity;
 class QcClientWorld;
 class QcContentRegistry;
 class QcSettingsController;
@@ -20,7 +21,8 @@ class QcTextureAtlas;
 struct QcSessionParts;
 
 // Builds the entity meshes of one frame from the running session: creatures, armour stands, carts
-// with their load, drops, projectiles, flames, the local player seen from outside and the
+// with their load, drops, projectiles, flames, lit explosives and the puffs of explosions, the local
+// player seen from outside and the
 // first-person arm, with their capes and the light they stand in. Hands nothing to the view; that
 // is QcRenderBridge's part. Lives in the GUI thread.
 class QcEntityFrameBuilder
@@ -42,6 +44,13 @@ public:
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildHand(double alpha, const QcVec3 &eye) const;
 
 private:
+    // A lit explosive flashes every this many ticks and swells in its last ticks (decision E-604).
+    static constexpr int primedFlashTicks = 5;
+    static constexpr int primedSwellTicks = 10;
+    // Textures of the puffs of explosions (content textures).
+    static constexpr auto explosionFlashTexture = "explosion_flash";
+    static constexpr auto explosionSmokeTexture = "explosion_smoke";
+
     // What every entity of one frame is drawn with.
     struct EntityFrame
     {
@@ -56,6 +65,10 @@ private:
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
     // The small creature spinning in each monster spawner near the player (decision E-520).
     void appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame);
+    // A falling or moving block or a lit explosive, drawn as its block.
+    void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
+    // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).
+    void appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
     // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
     static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);

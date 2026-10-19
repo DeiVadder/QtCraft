@@ -115,6 +115,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp

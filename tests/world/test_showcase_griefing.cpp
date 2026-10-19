@@ -50,6 +50,29 @@ private:
         }
     }
 
+    // Loads the chunks of the first placement outside `pens` that shows a spawner block.
+    void loadSpawnerOnShow(QcServer &server, const QStringList &pens) const
+    {
+        const QcBlockId spawner = *m_content->blockId(u"qtcraft:spawner"_s);
+        for (const QcStructurePlacement &placement : m_generator.plan().placements) {
+            const QcStructure &structure = placement.structure();
+            if (pens.contains(structure.name())) {
+                continue;
+            }
+            for (int x = 0; x < structure.sizeX(); ++x) {
+                for (int y = 0; y < structure.sizeY(); ++y) {
+                    for (int z = 0; z < structure.sizeZ(); ++z) {
+                        if (structure.block(x, y, z) == spawner) {
+                            const QcBlockPos at = placement.toWorld(QcBlockPos{x, y, z});
+                            loadAround(server, at, at);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // The block kinds (not states: doors open and close) of the box.
     static QList<QString> kindsIn(QcServer &server, const QcContentRegistry &content, QcBlockPos low, QcBlockPos high)
     {
@@ -129,6 +152,9 @@ private slots:
             QVERIFY2(names.contains(QString::fromLatin1(expected)), qPrintable(names.join(u' ')));
         }
 
+        // A spawner block on show outside the pens (the block fields), wherever the layout puts it.
+        loadSpawnerOnShow(*server, names);
+
         for (int tick = 0; tick < 2; ++tick) {
             server->tick();
         }
@@ -142,12 +168,24 @@ private slots:
         for (const Pen &pen : std::as_const(pens)) {
             QVERIFY2(kindsIn(*server, *m_content, pen.low, pen.high) == pen.kinds, qPrintable(pen.name));
         }
-        // The dungeon station's spawner gives its zombies `confined`: they change no block either.
+        // The spawners of the dungeon and mine shaft stations give their creatures `confined`: they
+        // change no block either. Spawner blocks on show elsewhere (the block fields) stay empty.
         const QList<QcBlockPos> spawners = server->world().spawners().positions();
-        QVERIFY(!spawners.isEmpty());
+        qsizetype inPens = 0;
         for (const QcBlockPos &pos : spawners) {
-            QVERIFY(server->world().spawners().at(pos)->confined);
+            const bool inPen = std::ranges::any_of(pens, [pos](const Pen &pen) {
+                return pos.x >= pen.low.x && pos.x <= pen.high.x && pos.y >= pen.low.y && pos.y <= pen.high.y && pos.z >= pen.low.z
+                       && pos.z <= pen.high.z;
+            });
+            if (inPen) {
+                QVERIFY(server->world().spawners().at(pos)->confined);
+                ++inPens;
+            } else {
+                QVERIFY2(server->world().spawners().at(pos)->mob.isEmpty(), qPrintable(server->world().spawners().at(pos)->mob));
+            }
         }
+        QVERIFY(inPens >= 2);
+        QVERIFY(spawners.size() > inPens);
         const int silverfish = *m_content->mobIndex(u"qtcraft:silverfish"_s);
         // The wall's three and the creature row's one are all still out.
         QCOMPARE(std::ranges::count(server->mobs().mobs(), silverfish, &QcCreature::type), 4);

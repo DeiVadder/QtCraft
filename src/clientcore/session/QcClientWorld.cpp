@@ -47,6 +47,29 @@ bool QcClientWorld::setBlock(QcBlockPos pos, QcBlockId block)
     return true;
 }
 
+QList<std::pair<QcBlockPos, QcBlockId>> QcClientWorld::setBlocks(const QList<QcMsg::BlockUpdate> &updates)
+{
+    QList<std::pair<QcBlockPos, QcBlockId>> changed;
+    QHash<QcChunkPos, std::shared_ptr<QcChunk>> copies;
+    for (const QcMsg::BlockUpdate &update : updates) {
+        const auto it = m_chunks.find(update.pos.chunk());
+        if (!update.pos.isInsideWorldHeight() || it == m_chunks.end() || !m_content->isValidBlock(update.block)) {
+            continue;
+        }
+        std::shared_ptr<QcChunk> &copy = copies[update.pos.chunk()];
+        if (!copy) {
+            copy = std::make_shared<QcChunk>(**it);
+        }
+        const QcBlockId previous = copy->block(update.pos.localX(), update.pos.y, update.pos.localZ());
+        copy->setBlock(update.pos.localX(), update.pos.y, update.pos.localZ(), update.block);
+        changed.append({update.pos, previous});
+    }
+    for (auto it = copies.cbegin(); it != copies.cend(); ++it) {
+        m_chunks.insert(it.key(), it.value());
+    }
+    return changed;
+}
+
 bool QcClientWorld::mayHaveLightSourceNear(QcBlockPos pos, int reach) const
 {
     return QcLightVolume::anySourceNear(*m_content, pos, reach, [this](QcChunkPos chunk) { return m_chunks.value(chunk).get(); });

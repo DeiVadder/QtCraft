@@ -6,6 +6,7 @@ class QcLightningStrike;
 class QcPlayerHealth;
 class QcServerCircuits;
 class QcServerExperience;
+class QcServerExplosions;
 class QcServerFire;
 class QcServerMinecarts;
 class QcServerProjectiles;
@@ -36,4 +37,6 @@ struct QcServerSystems
     QcServerProjectiles &projectiles;
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits;
+    // Explosives and explosions (decisions E-600 to E-604).
+    QcServerExplosions &explosions;
 };

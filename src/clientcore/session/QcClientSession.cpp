@@ -166,6 +166,14 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
             emit blockChanged(update->pos, previous);
         }
+    } else if (const auto *batch = std::get_if<QcMsg::BlockBatch>(&message)) {
+        // One copy per chunk; the meshes gather the light changes into one job (decision E-604).
+        const QList<std::pair<QcBlockPos, QcBlockId>> changed = m_world ? m_world->setBlocks(batch->updates) : QList<std::pair<QcBlockPos, QcBlockId>>{};
+        for (const auto &[pos, previous] : changed) {
+            emit blockChanged(pos, previous);
+        }
+    } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
+        m_extras.addExplosion(*explosion, m_tickCount);
     } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
         cue({sound->key, sound->position, sound->volume, sound->pitch, QcSoundCue::Origin::Server, m_tickCount});
     } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
@@ -328,6 +336,7 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     }
 
     ++m_tickCount;
+    m_extras.pruneExplosions(m_tickCount);
     if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
         m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;

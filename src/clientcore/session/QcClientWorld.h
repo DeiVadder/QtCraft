@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/protocol/QcWorldMessages.h"
 #include "common/world/QcBlockAccess.h"
 #include "common/world/QcChunk.h"
 
@@ -27,6 +28,9 @@ public:
     void setChunk(const std::shared_ptr<const QcChunk> &chunk);
     void removeChunk(QcChunkPos pos);
     bool setBlock(QcBlockPos pos, QcBlockId block);
+    // Sets the blocks of a batch with one copy per chunk; returns the cells that changed with the
+    // blocks they held before (cells of chunks not loaded are left out).
+    QList<std::pair<QcBlockPos, QcBlockId>> setBlocks(const QList<QcMsg::BlockUpdate> &updates);
     QList<QcChunkPos> chunkPositions() const { return m_chunks.keys(); }
     qsizetype chunkCount() const { return m_chunks.size(); }
 

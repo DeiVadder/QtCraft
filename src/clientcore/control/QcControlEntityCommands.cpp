@@ -65,6 +65,22 @@ QJsonObject projectileJson(const QcContentRegistry *content, const QcClientEntit
             {u"distance"_s, distance}};
 }
 
+// A falling or moving block or a lit explosive (decision E-604): drawn as its block.
+QJsonObject blockEntityJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
+{
+    QString type = u"fallingBlock"_s;
+    if (entity.isMovingBlock()) {
+        type = u"movingBlock"_s;
+    } else if (entity.isPrimedExplosive()) {
+        type = u"primedExplosive"_s;
+    }
+    return {{u"id"_s, qint64(entity.id)},
+            {u"type"_s, type},
+            {u"block"_s, content ? content->stateName(entity.block) : QString()},
+            {u"position"_s, QcControlReports::vectorJson(entity.position)},
+            {u"distance"_s, distance}};
+}
+
 QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
 {
     if (entity.isItem()) {
@@ -100,11 +116,7 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
     }
 
     if (entity.isBlockEntity()) {
-        return {{u"id"_s, qint64(entity.id)},
-                {u"type"_s, entity.isMovingBlock() ? u"movingBlock"_s : u"fallingBlock"_s},
-                {u"block"_s, content ? content->stateName(entity.block) : QString()},
-                {u"position"_s, QcControlReports::vectorJson(entity.position)},
-                {u"distance"_s, distance}};
+        return blockEntityJson(content, entity, distance);
     }
 
     const QcMobDefinition *creature = content ? entity.creature(*content) : nullptr;
