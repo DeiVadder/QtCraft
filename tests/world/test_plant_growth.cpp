@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
+#include "QcTestUtil.h"
 #include "server/chunks/QcSectionMarks.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerWorld.h"
@@ -12,12 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // Free space high above the test terrain.
 constexpr int groundY = 100;
@@ -67,7 +61,7 @@ class TestPlantGrowth : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcBlockId id(const char *name) const { return *m_content->blockId(u"qtcraft:"_s + QLatin1StringView(name)); }
 
@@ -204,8 +198,7 @@ private slots:
         // in the order of the hash. Two worlds that load the same 6 x 6 chunks in opposite orders
         // (the second also loads and unloads other chunks first, so its hash is built differently)
         // grow the same canes in the same ticks with the same seed.
-        QStringList warnings;
-        const std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcBlockDefinition cane = content->block(id("sugar_cane"));
         cane.growth.averageSeconds = 1.0;
         QVERIFY(content->registerBlock(cane).has_value());
@@ -324,8 +317,7 @@ private slots:
     void theServerGrowsPlantsEveryTick()
     {
         // The base content with a sugar cane that grows at every random tick.
-        QStringList warnings;
-        const std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcBlockDefinition cane = content->block(id("sugar_cane"));
         cane.growth.averageSeconds = 1.0;
         QVERIFY(content->registerBlock(cane).has_value());

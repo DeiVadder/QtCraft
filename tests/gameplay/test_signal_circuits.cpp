@@ -1,5 +1,6 @@
 #include "common/world/QcLightVolume.h"
 #include "QcCircuitFixture.h"
+#include "QcTestUtil.h"
 #include "server/signal/QcCircuitComponents.h"
 
 #include <QTemporaryDir>
@@ -352,7 +353,7 @@ private slots:
         for (int i = 0; i < 15; ++i) {
             m_client->connection.send(QcMsg::UseItem{at(5, 0, 5), QcBlockFace::Up});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         // Ten of the fifteen clicks pass: 1 -> 2 -> 3 -> 4 -> 1 ... ten steps end at 3.
         QCOMPARE(property(5, 0, 5, u"delay"_s), u"3"_s);
@@ -486,7 +487,7 @@ private slots:
         for (int i = 0; i < 15; ++i) {
             m_client->connection.send(QcMsg::UseItem{lever, QcBlockFace::Up});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(updatesAt(lever) - before, int(QcRateLimiter::limit(QcRateLimiter::Kind::Switch).burst));
     }

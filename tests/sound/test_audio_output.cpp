@@ -1,7 +1,7 @@
 #include "audio/QcAudioEngine.h"
 #include "audio/QcAudioOutput.h"
 #include "common/content/definitions/QcSoundKeys.h"
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 
 #include <QSignalSpy>
 #include <QTest>
@@ -60,8 +60,7 @@ private slots:
         QcAudioEngine engine;
         engine.start(false);
         QVERIFY(!engine.isActive());
-        QStringList warnings;
-        engine.setContent(*QcBaseContent::load(warnings));
+        engine.setContent(QcTestUtil::loadContent());
         QVERIFY(!engine.isBankReady());
         engine.play({QString::fromLatin1(QcSoundKeys::playerHurt), {}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {}, 0.0);
         engine.setAmbience({1.0f, 1.0f, 1.0f});
@@ -79,8 +78,7 @@ private slots:
 
         engine.setVolumes(0.0, 0.0, 0.0, 0.0, true);
         QSignalSpy ready(&engine, &QcAudioEngine::bankReady);
-        QStringList warnings;
-        engine.setContent(*QcBaseContent::load(warnings));
+        engine.setContent(QcTestUtil::loadContent());
         // Rendering the bank takes about 4 s under the thread sanitizer with other tests running.
         QVERIFY(ready.wait(30000));
         QVERIFY(engine.isBankReady());

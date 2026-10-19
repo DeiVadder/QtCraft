@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcBodyFit.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/mobs/QcMobBreeding.h"
@@ -58,12 +58,6 @@ private:
             return [this] { return nextId++; };
         }
     };
-
-    static std::shared_ptr<QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
 
     // Loads the chunks of the village's plan and `ring` chunks around them, then populates the plan's
     // chunks (which reconciles the claims once every chunk around the village is there).
@@ -248,7 +242,7 @@ private:
 private slots:
     void twoWillingVillagersGetAChildInAFreeBed()
     {
-        Village built = village(loadContent());
+        Village built = village(QcTestUtil::loadContent());
         QVERIFY(built.plan);
         const QcVec3 spot = freeABed(built);
         const qsizetype before = villagersOf(built).size();
@@ -274,26 +268,26 @@ private slots:
     void noChildWithoutABedFoodDayOrDryWeather()
     {
         // No free bed.
-        Village full = village(loadContent());
+        Village full = village(QcTestUtil::loadContent());
         QVERIFY(full.plan);
         const qsizetype everyone = villagersOf(full).size();
         QCOMPARE(meet(full, villagersOf(full).at(0)->motion.position, workPhase), everyone);
 
         // At night.
-        Village night = village(loadContent());
+        Village night = village(QcTestUtil::loadContent());
         QcVec3 spot = freeABed(night);
         qsizetype before = villagersOf(night).size();
         QCOMPARE(meet(night, spot, nightPhase), before);
 
         // In rain at the meeting point.
-        Village rain = village(loadContent());
+        Village rain = village(QcTestUtil::loadContent());
         rain.mobs->villagers().setRainCheck([](QcBlockPos) { return true; });
         spot = freeABed(rain);
         before = villagersOf(rain).size();
         QCOMPARE(meet(rain, spot, workPhase), before);
 
         // Without food.
-        Village hungry = village(loadContent());
+        Village hungry = village(QcTestUtil::loadContent());
         spot = freeABed(hungry);
         before = villagersOf(hungry).size();
         QCOMPARE(meet(hungry, spot, workPhase, 2), before);
@@ -301,14 +295,14 @@ private slots:
 
     void childrenKeepToTheLimits()
     {
-        Village perVillage = village(loadContent());
+        Village perVillage = village(QcTestUtil::loadContent());
         QVERIFY(perVillage.plan);
         const QcVec3 spot = freeABed(perVillage);
         const qsizetype before = villagersOf(perVillage).size();
         perVillage.mobs->population().setVillagerLimits({before, 1024}, {});
         QCOMPARE(meet(perVillage, spot, workPhase), before);
 
-        Village world = village(loadContent());
+        Village world = village(QcTestUtil::loadContent());
         const QcVec3 there = freeABed(world);
         world.mobs->population().setVillagerLimits({32, villagersOf(world).size()}, {});
         QCOMPARE(meet(world, there, workPhase), villagersOf(world).size());
@@ -316,7 +310,7 @@ private slots:
 
     void farmersShareTheirProduce()
     {
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcVillagerBreeding breeding(content);
         QList<QcCreature> mobs(2);
         for (QcCreature &mob : mobs) {
@@ -344,7 +338,7 @@ private slots:
 
     void aChildPlaysAndTakesAWorkstationOnceGrownUp()
     {
-        Village built = village(loadContent());
+        Village built = village(QcTestUtil::loadContent());
         QVERIFY(built.plan);
         const QcVec3 spot = freeABed(built);
         meet(built, spot, workPhase);
@@ -380,7 +374,7 @@ private slots:
     {
         // An igloo's bed has two blocks of air above it: a villager lying in it has its eyes inside
         // the bed's cells, not a standing height above it in the roof.
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         const QcMobDefinition &definition = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
         QcCreature mob;
         mob.motion.position = {10.5, 65.5625, 20.25};
@@ -411,7 +405,7 @@ private slots:
     {
         // Two beds, one free: with two villagers the free bed belongs to the one whose bed was
         // broken, so no child comes; with one villager it does.
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcVillagerBreeding breeding(content);
         QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
         QcVillage village;
@@ -429,7 +423,7 @@ private slots:
         // villages.json was lost: the village comes back from its plan without claims, and only the
         // chunks of its box are loaded, so villagers beyond them could still hold beds. No child
         // until every chunk around the village is there (decision E-416; golems: test_golem_summons).
-        Village built = village(loadContent());
+        Village built = village(QcTestUtil::loadContent());
         QVERIFY(built.plan);
         const QcVec3 spot = freeABed(built);
         const qsizetype before = villagersOf(built).size();
@@ -448,7 +442,7 @@ private slots:
     {
         // Regions of 128 blocks: the chunks around a village reach into the neighbouring regions.
         // Loading the last of them (one in another region) reconciles the village's claims.
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcVillageSettings settings = content->villageSettings();
         settings.spacing = 128;
         settings.radius = 48;
@@ -491,7 +485,7 @@ private slots:
         // High above the village, two blocks apart: they see each other and get a child; with a
         // wall between them they do not.
         for (const bool wall : {false, true}) {
-            Village built = village(loadContent());
+            Village built = village(QcTestUtil::loadContent());
             QVERIFY(built.plan);
             freeABed(built);
             const qsizetype before = villagersOf(built).size();
@@ -506,7 +500,7 @@ private slots:
 
     void aChildSurvivesSavingAndResting()
     {
-        Village built = village(loadContent());
+        Village built = village(QcTestUtil::loadContent());
         QVERIFY(built.plan);
         meet(built, freeABed(built), workPhase);
         const QcCreature *child = youngest(built);

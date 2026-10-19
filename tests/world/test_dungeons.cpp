@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -24,8 +24,7 @@ private:
 
     // Without mine shafts: they would only make every generated chunk slower (test_mineshafts).
     std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcTerrainSettings settings = content->terrainSettings();
         settings.mineshafts.enabled = false;
         content->setTerrainSettings(settings);

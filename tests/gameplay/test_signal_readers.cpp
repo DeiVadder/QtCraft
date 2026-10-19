@@ -55,10 +55,10 @@ private slots:
         QTest::addColumn<QString>("container");
         QTest::addColumn<QList<QcItemStack>>("stacks");
         QTest::addColumn<int>("strength");
-        const QcItemStack stone{*loadContent()->itemId(u"qtcraft:cobblestone"_s), 64, 0};
+        const QcItemStack stone{*QcTestUtil::loadContent()->itemId(u"qtcraft:cobblestone"_s), 64, 0};
         const QcItemStack one{stone.item, 1, 0};
-        const QcItemStack bucket{*loadContent()->itemId(u"qtcraft:water_bucket"_s), 1, 0};
-        const QcItemStack coal{*loadContent()->itemId(u"qtcraft:coal"_s), 64, 0};
+        const QcItemStack bucket{*QcTestUtil::loadContent()->itemId(u"qtcraft:water_bucket"_s), 1, 0};
+        const QcItemStack coal{*QcTestUtil::loadContent()->itemId(u"qtcraft:coal"_s), 64, 0};
         QTest::newRow("empty chest") << u"chest[facing=south]"_s << QList<QcItemStack>{} << 0;
         QTest::newRow("one item") << u"chest[facing=south]"_s << QList<QcItemStack>{one} << 1;
         QTest::newRow("one stack") << u"chest[facing=south]"_s << QList<QcItemStack>{stone} << 1;

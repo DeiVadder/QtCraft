@@ -2,6 +2,7 @@
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/core/QcProfileValidation.h"
 #include "server/gameplay/QcHunger.h"
 
@@ -31,22 +32,22 @@ private slots:
         // Grass: hardness 0.6 * 1.5 s = 0.9 s = 18 ticks.
         m_client->connection.send(QcMsg::StartMining{below});
         m_client->connection.send(QcMsg::FinishMining{below});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(id("qtcraft:grass_block")));
 
         // 14 ticks are not enough even with the two ticks of slack.
         m_client->connection.send(QcMsg::StartMining{below});
-        pump();
+        QcTestUtil::pump();
         ticks(14);
         m_client->connection.send(QcMsg::FinishMining{below});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(id("qtcraft:grass_block")));
 
         m_client->connection.send(QcMsg::StartMining{below});
-        pump();
+        QcTestUtil::pump();
         ticks(18);
         m_client->connection.send(QcMsg::FinishMining{below});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(qcAirBlockId));
 
         // The drop lies in the world first and reaches the player once the pickup delay is over.
@@ -65,10 +66,10 @@ private slots:
         const QcBlockPos far = m_feet.offset(12, -1, 0);
         const std::optional<QcBlockId> before = m_server->world().blockAt(far);
         m_client->connection.send(QcMsg::StartMining{far});
-        pump();
+        QcTestUtil::pump();
         ticks(40);
         m_client->connection.send(QcMsg::FinishMining{far});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(far), before);
     }
 
@@ -81,17 +82,17 @@ private slots:
         QCOMPARE(seconds, 7.5);
 
         m_client->connection.send(QcMsg::StartMining{target});
-        pump();
+        QcTestUtil::pump();
         ticks(140);
         m_client->connection.send(QcMsg::FinishMining{target});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(target), std::optional<QcBlockId>(id("qtcraft:stone")));
 
         m_client->connection.send(QcMsg::StartMining{target});
-        pump();
+        QcTestUtil::pump();
         ticks(150);
         m_client->connection.send(QcMsg::FinishMining{target});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(target), std::optional<QcBlockId>(qcAirBlockId));
         QCOMPARE(countOf(item("qtcraft:cobblestone")), 0);
     }
@@ -102,22 +103,22 @@ private slots:
         const QcBlockPos ground = m_feet.offset(2, -1, 0);
         // No item in hand: nothing happens.
         m_client->connection.send(QcMsg::UseItem{ground, QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(ground.offset(0, 1, 0)), std::optional<QcBlockId>(qcAirBlockId));
 
         chat(u"/give bricks 2"_s);
         QCOMPARE(countOf(item("qtcraft:bricks")), 2);
         // Into the player's own feet: refused.
         m_client->connection.send(QcMsg::UseItem{m_feet.offset(0, -1, 0), QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(m_feet), std::optional<QcBlockId>(qcAirBlockId));
         // Out of reach: refused.
         m_client->connection.send(QcMsg::UseItem{m_feet.offset(10, -1, 0), QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(countOf(item("qtcraft:bricks")), 2);
         // Next to the player: placed and consumed.
         m_client->connection.send(QcMsg::UseItem{ground, QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(ground.offset(0, 1, 0)), std::optional<QcBlockId>(id("qtcraft:bricks")));
         QCOMPARE(countOf(item("qtcraft:bricks")), 1);
     }
@@ -131,7 +132,7 @@ private slots:
             m_client->connection.send(QcMsg::MoveInventoryItem{from, to});
         }
         m_client->connection.send(QcMsg::SelectHotbarSlot{50});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->stacks, before);
     }
 
@@ -171,7 +172,7 @@ private slots:
         ticks(200);
         m_client->connection.send(QcMsg::FinishMining{below});
         m_client->connection.send(QcMsg::UseItem{below.offset(2, 0, 0), QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         QCOMPARE(*m_server->world().blockAt(below), before);
@@ -210,7 +211,7 @@ private slots:
         // Bare hands deal 1 damage, the pig has 10 health; hits closer than 0.5 s apart do nothing.
         for (int attempt = 0; attempt < 15 && m_server->mobs().find(pig); ++attempt) {
             m_client->connection.send(QcMsg::AttackEntity{pig});
-            pump();
+            QcTestUtil::pump();
             ticks(12);
         }
         QVERIFY(!m_server->mobs().find(pig));
@@ -227,7 +228,7 @@ private slots:
         // A mob far away cannot be hit.
         m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), m_client->motion.position + QcVec3{20.0, 0.0, 0.0}, 999);
         m_client->connection.send(QcMsg::AttackEntity{999});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->mobs().find(999)->health, 10.0);
     }
 
@@ -249,7 +250,7 @@ private slots:
         walk.sequence = 100;
         walk.forward = 1.0f;
         m_client->connection.send(QcMsg::PlayerInput{walk});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(m_client->motion.position, corpse);
 
@@ -258,7 +259,7 @@ private slots:
             m_server->world().setBlock(m_feet.offset(0, dy, 0), id("qtcraft:stone"));
         }
         m_client->connection.send(QcMsg::Respawn{});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(!m_client->dead);
         QCOMPARE(m_client->health, 20.0);
@@ -326,7 +327,7 @@ private slots:
             input.sequence = ++m_sequence;
             input.jump = true;
             m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
         QVERIFY2(m_client->food >= 18 && m_client->food <= 19, qPrintable(QString::number(m_client->food)));
@@ -401,7 +402,7 @@ private slots:
         look.hair = u"qtcraft:explorer"_s; // an outfit, not a hair style
         look.shirtColor = 0x112233;
         bob.hello(u"Bob"_s, look);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
@@ -416,13 +417,13 @@ private slots:
         // Creature outfits are not for players.
         look.outfit = u"qtcraft:zombie"_s;
         bob.connection.send(QcMsg::SetAppearance{look});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, QcAppearance().outfit);
 
         look.outfit = u"qtcraft:miner"_s;
         bob.connection.send(QcMsg::SetAppearance{look});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, u"qtcraft:miner"_s);
 
@@ -430,7 +431,7 @@ private slots:
         look.outfit = u"nomod:robe"_s;
         look.hair = u"qtcraft:long_hair"_s;
         bob.connection.send(QcMsg::SetAppearance{look});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, QcAppearance().outfit);
         QCOMPARE(m_client->spawns.value(bobId).appearance.hair, u"qtcraft:long_hair"_s);
@@ -439,25 +440,25 @@ private slots:
         // of appearance becomes no cape.
         look.cape = u"qtcraft:green_cape"_s;
         bob.connection.send(QcMsg::SetAppearance{look});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_client->spawns.value(bobId).appearance.cape, u"qtcraft:green_cape"_s);
         for (const QString &wrong : {u"nomod:cape"_s, u"qtcraft:long_hair"_s, u"qtcraft:tunic"_s}) {
             look.cape = wrong;
             bob.connection.send(QcMsg::SetAppearance{look});
-            pump();
+            QcTestUtil::pump();
             ticks(2);
             QVERIFY2(m_client->spawns.value(bobId).appearance.cape.isEmpty(), qPrintable(wrong));
         }
 
         // Using an item swings Bob's arm for everyone else.
         bob.connection.send(QcMsg::UseItem{m_feet.offset(1, -1, 0), QcBlockFace::Up});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QVERIFY((m_client->flags.value(bobId) & QcMsg::Swing) != 0);
 
         bob.connection.send(QcMsg::Disconnect{});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -515,14 +516,14 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient bob(std::move(clientEnd));
         bob.hello(u"\x01 Bob\t"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         const auto seen = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) { return spawn.name == u"Bob"_s; });
         QVERIFY(seen != m_client->spawns.end());
         QVERIFY(seen->equipment.isEmpty());
 
         bob.connection.send(QcMsg::Disconnect{});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -534,7 +535,7 @@ private slots:
         RawClient bob(std::move(clientEnd));
 
         bob.hello(u"Bob"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
                                   return spawn.name == u"Bob"_s;
@@ -545,7 +546,7 @@ private slots:
         look.hair = u"qtcraft:long_hair"_s;
         bob.connection.send(QcMsg::SetAppearance{look});
         bob.connection.send(QcMsg::Disconnect{});
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QVERIFY(!m_client->entities.contains(bobId));
     }
@@ -558,7 +559,7 @@ private slots:
         RawClient bob(std::move(clientEnd));
 
         bob.hello(u"Bob"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
                                   return spawn.name == u"Bob"_s;
@@ -575,7 +576,7 @@ private slots:
             QcPlayerInput input;
             input.sequence = sequence;
             bob.connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
 

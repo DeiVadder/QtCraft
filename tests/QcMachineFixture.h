@@ -3,7 +3,7 @@
 #include "QcCircuitFixture.h"
 #include "server/signal/QcServerHoppers.h"
 
-// Signal machines on a running server (stage 29.2): containers filled as a player or the world's
+// Signal machines on a running server: containers filled as a player or the world's
 // setup would (comparators and hoppers around are told), items dropped at local positions and
 // counted wherever they are, so tests can prove that nothing is lost or copied.
 class QcMachineFixture : public QcCircuitFixture

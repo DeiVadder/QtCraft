@@ -2,7 +2,7 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/meshing/QcIndexPacking.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -162,8 +162,7 @@ class TestMeshMeasure : public QObject
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        m_content = *QcBaseContent::load(warnings);
+        m_content = QcTestUtil::loadContent();
         m_table = std::make_shared<const QcBlockRenderTable>(*m_content, QcTextureAtlas::build(*m_content));
     }
 

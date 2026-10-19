@@ -15,8 +15,8 @@ struct QcWorldEntityRecords
     QSet<QcChunkPos> populated;
 };
 
-// A world directory for tests that write and read its chunk data as a whole, the way a whole world
-// was read before stage 31.3: world.json and players through QcWorldStorage, blocks, block entities
+// A world directory for tests that write and read its chunk data as a whole, all chunks at once
+// instead of when needed: world.json and players through QcWorldStorage, blocks, block entities
 // and entities through a QcChunkStore and the codecs (decision E-373). Each write replaces what is
 // stored of that kind and commits it through one store kept for all writes (like a server's, which
 // knows what it wrote); reads open the files afresh.

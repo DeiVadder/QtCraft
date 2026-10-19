@@ -5,6 +5,7 @@
 #include "common/world/QcDayCycle.h"
 #include "QcRawClient.h"
 #include "QcStoredWorld.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldLibrary.h"
 #include "server/villages/QcVillagePopulation.h"
@@ -16,7 +17,6 @@
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
-#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
@@ -75,7 +75,7 @@ class TestShowcaseWorld : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = QcShowcaseTestUtil::loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     std::unique_ptr<QcServer> makeServer(const QString &directory, const QString &generator = u"showcase"_s, qint64 seed = 0)
     {
@@ -321,10 +321,10 @@ private slots:
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Viewer"_s);
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
         for (int i = 0; i < 30; ++i) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
 
         QVERIFY(!client.chunkLabels.isEmpty());
@@ -341,9 +341,9 @@ private slots:
         // The rules can be switched back.
         client.connection.send(QcMsg::ChatInput{u"/gamerule daylightCycle true"_s});
         client.connection.send(QcMsg::ChatInput{u"/gamerule mobSpawning"_s});
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
         server.tick();
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
         QVERIFY(client.timeRunning);
         QVERIFY(server.worldTime() > 150.0);
         QVERIFY(client.chatLines.contains(u"mobSpawning is false"_s));
@@ -383,10 +383,10 @@ private slots:
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Viewer"_s);
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
         for (int i = 0; i < 30; ++i) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
 
         QVERIFY2(client.connection.isOpen(), qPrintable(client.connection.lastError()));

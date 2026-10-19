@@ -22341,7 +22341,7 @@
                     "label": "Tool",
                     "links": [
                     ],
-                    "value": "hoe (faster, not needed)"
+                    "value": "Hoe (faster, not needed)"
                 },
                 {
                     "label": "Breaking with the best tool",
@@ -62805,7 +62805,7 @@
                             "text": "Tool tiers"
                         }
                     ],
-                    "value": "hoe, level 4"
+                    "value": "Hoe, level 4"
                 },
                 {
                     "label": "Mining speed",
@@ -65573,7 +65573,7 @@
                             "text": "Tool tiers"
                         }
                     ],
-                    "value": "hoe, level 1"
+                    "value": "Hoe, level 1"
                 },
                 {
                     "label": "Mining speed",
@@ -67587,7 +67587,7 @@
                             "text": "Tool tiers"
                         }
                     ],
-                    "value": "hoe, level 3"
+                    "value": "Hoe, level 3"
                 },
                 {
                     "label": "Mining speed",
@@ -73333,7 +73333,7 @@
                             "text": "Tool tiers"
                         }
                     ],
-                    "value": "hoe, level 2"
+                    "value": "Hoe, level 2"
                 },
                 {
                     "label": "Mining speed",
@@ -75157,7 +75157,7 @@
                             "text": "Tool tiers"
                         }
                     ],
-                    "value": "hoe, level 1"
+                    "value": "Hoe, level 1"
                 },
                 {
                     "label": "Mining speed",
@@ -83679,7 +83679,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "hoe"
+                    "title": "Hoe"
                 },
                 {
                     "links": [

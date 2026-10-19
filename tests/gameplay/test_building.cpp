@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcPartGenerator.h"
 #include "common/gameplay/QcCrafting.h"
@@ -6,12 +5,12 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcTestLogin.h"
+#include "QcRawClient.h"
+#include "QcTestUtil.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
-#include <QCoreApplication>
 #include <QJsonDocument>
 #include <QTemporaryDir>
 #include <QTest>
@@ -29,18 +28,15 @@ QJsonObject json(const char *text)
 
 // Base content plus a test block that needs a solid block below and is one itself, so that columns
 // of it fall apart one by one.
-std::shared_ptr<const QcContentRegistry> loadContent()
+std::shared_ptr<const QcContentRegistry> buildingContent()
 {
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
-    if (!warnings.isEmpty()) {
-        qFatal("base content warnings: %s", qPrintable(warnings.join(u'\n')));
-    }
+    const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
     QcBlockDefinition stack;
     stack.name = u"test:stack"_s;
     stack.support = QcBlockSupport::Below;
     stack.faceTextures.fill(u"qtcraft:sand"_s);
     if (!content->registerBlock(stack)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test:stack");
     }
 
@@ -50,61 +46,10 @@ std::shared_ptr<const QcContentRegistry> loadContent()
     crate.containerSlots = 9;
     crate.faceTextures.fill(u"qtcraft:oak_planks"_s);
     if (!content->registerBlock(crate)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test:crate");
     }
     return content;
-}
-
-class RawClient
-{
-public:
-    explicit RawClient(std::unique_ptr<QcTransport> transport)
-        : connection(std::move(transport), QcProtocol::Peer::Server, [this](QcMessage &&message) { received(std::move(message)); })
-    {
-    }
-
-    // Hello, and the login answered with a key made from the name (QcTestLogin).
-    void hello(const QString &name)
-    {
-        key = QcTestLogin::keyFor(name);
-        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
-    }
-
-    void received(QcMessage &&message)
-    {
-        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
-            connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));
-        } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
-            motion = state->motion;
-        } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
-            stacks = inventory->stacks;
-        } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
-            chatLines.append(chat->text);
-        } else if (const auto *open = std::get_if<QcMsg::OpenMachine>(&message)) {
-            openBlock = open->pos;
-            category = open->category;
-        } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
-            blockStacks = machine->stacks;
-        } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
-            openBlock.reset();
-        }
-    }
-
-    QcConnection connection;
-    QByteArray key;
-    QcEntityMotion motion;
-    QList<QcItemStack> stacks;
-    QStringList chatLines;
-    std::optional<QcBlockPos> openBlock;
-    QString category;
-    QList<QcItemStack> blockStacks;
-};
-
-void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
 }
 
 } // namespace
@@ -115,9 +60,9 @@ class TestBuilding : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = buildingContent();
     std::unique_ptr<QcServer> m_server;
-    std::unique_ptr<RawClient> m_client;
+    std::unique_ptr<QcRawClient> m_client;
     QcBlockPos m_feet;
     quint32 m_sequence = 1;
 
@@ -125,7 +70,8 @@ private:
     {
         const std::optional<QcBlockId> found = m_content->stateId(state.contains(u':') ? state : u"qtcraft:"_s + state);
         if (!found) {
-            qFatal("unknown block state %s", qPrintable(state));
+            QcTestUtil::failCase(QStringLiteral("unknown block state %1").arg(state));
+            return qcAirBlockId;
         }
         return *found;
     }
@@ -133,13 +79,7 @@ private:
     QcBlockId at(QcBlockPos pos) const { return m_server->world().blockAt(pos).value_or(qcAirBlockId); }
     QString nameAt(QcBlockPos pos) const { return m_content->stateName(at(pos)); }
 
-    void ticks(int count)
-    {
-        for (int i = 0; i < count; ++i) {
-            m_server->tick();
-            pump();
-        }
-    }
+    void ticks(int count) { QcTestUtil::ticks(*m_server, count); }
 
     // Joins a server; `stage` clears a flat stone stage around the player (not for reloaded worlds).
     void join(QcServerConfig config = {}, bool stage = true)
@@ -153,9 +93,9 @@ private:
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
-        m_client = std::make_unique<RawClient>(std::move(clientEnd));
+        m_client = std::make_unique<QcRawClient>(std::move(clientEnd));
         m_client->hello(u"Builder"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
@@ -180,7 +120,7 @@ private:
     void send(const QcMessage &message)
     {
         m_client->connection.send(message);
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -675,7 +615,7 @@ private slots:
         for (const QcBlockPos &base : bases) {
             m_client->connection.send(QcMsg::ChatInput{u"/setblock %1 %2 %3 air"_s.arg(base.x).arg(base.y).arg(base.z)});
         }
-        pump();
+        QcTestUtil::pump();
 
         // The commands ran before the next tick; that tick and the following ones share the work.
         int ticksNeeded = 0;
@@ -762,7 +702,7 @@ private slots:
         chat(u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(x0).arg(m_feet.y + 2).arg(z0).arg(x0 + 47).arg(m_feet.y + 4).arg(z0 + 47));
         // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
-        pump();
+        QcTestUtil::pump();
         QVERIFY2(m_server->pendingCommandBlockUpdates() > qsizetype(10) * QcServer::maxBlockUpdatesPerTick,
                  qPrintable(QString::number(m_server->pendingCommandBlockUpdates())));
 
@@ -791,7 +731,7 @@ private slots:
         chat(u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(high.x).arg(high.y).arg(high.z));
         // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
-        pump();
+        QcTestUtil::pump();
         QVERIFY(m_server->pendingBlockUpdates() > 0);
         QVERIFY(m_server->save().has_value());
         const auto stored = QcWorldStorage(directory.path(), m_content).readBlockUpdates();
@@ -842,7 +782,7 @@ private slots:
         m_client->connection.send(
             QcMsg::ChatInput{u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(low.x + 47).arg(low.y + 2).arg(low.z + 47)});
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1024));
         QVERIFY(m_server->droppedBlockUpdates() > 5000);
 
@@ -929,14 +869,14 @@ private slots:
 
         // Using it opens a screen with its 27 slots.
         use(chest, QcBlockFace::South);
-        QCOMPARE(m_client->openBlock, std::optional<QcBlockPos>(chest));
-        QVERIFY(m_client->category.isEmpty());
-        QCOMPARE(m_client->blockStacks.size(), 27);
+        QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(chest));
+        QVERIFY(m_client->machineCategory.isEmpty());
+        QCOMPARE(m_client->machineStacks.size(), 27);
         chat(u"/give cobblestone 40"_s);
         const int slot = int(m_client->stacks.indexOf(QcItemStack{item("cobblestone"), 40, 0}));
         QVERIFY(slot >= 0);
         send(QcMsg::MoveInventoryItem{slot, QcMsg::MoveInventoryItem::machineInputSlot + 26, 0});
-        QCOMPARE(m_client->blockStacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
+        QCOMPARE(m_client->machineStacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
         QCOMPARE(m_server->blockEntities().container(chest)->stacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
 
         // Slots past the chest's 27 do not exist.

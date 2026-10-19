@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcIntMath.h"
+#include "QcTestUtil.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillageGenerator.h"
@@ -25,10 +25,7 @@ private:
     static constexpr int regions = 6;
     using Chunks = QHash<QcChunkPos, std::shared_ptr<QcChunk>>;
 
-    std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcTerrainGenerator> m_terrain;
     int m_kind = -1;
     QList<std::shared_ptr<const QcStructurePlacement>> m_plans;

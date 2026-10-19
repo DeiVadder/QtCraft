@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/signal/QcServerHoppers.h"
 
 #include <QElapsedTimer>
@@ -68,7 +69,7 @@ private:
             timer.start();
             m_server->tick();
             const double ms = double(timer.nsecsElapsed()) / 1e6;
-            pump();
+            QcTestUtil::pump();
             const qsizetype work = m_server->systems().circuits.lastTickWork();
             sample.meanMs += ms / count;
             sample.maxMs = std::max(sample.maxMs, ms);

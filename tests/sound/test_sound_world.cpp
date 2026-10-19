@@ -23,6 +23,7 @@ QcContentRegistry makeContent()
             block.liquid = true;
         }
         if (!content.registerBlock(block)) {
+            // Builds content for a member initialiser, outside any test case; no case can run without it.
             qFatal("cannot register %s", qPrintable(name));
         }
     };
@@ -39,6 +40,7 @@ QcContentRegistry makeContent()
     lava.liquid = true;
     lava.lightLevel = 15;
     if (!content.registerBlock(lava)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register t:lava");
     }
     return content;

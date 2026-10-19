@@ -26,6 +26,7 @@ std::shared_ptr<QcContentRegistry> makeContent()
     stone.name = u"t:stone"_s;
     stone.faceTextures.fill(stone.name);
     if (!content->registerBlock(stone)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test block");
     }
 
@@ -43,6 +44,7 @@ std::shared_ptr<QcContentRegistry> makeContent()
     torch.lightLevel = 14;
     torch.faceTextures.fill(torch.name);
     if (!content->registerBlock(stone) || !content->registerBlock(torch)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test blocks");
     }
     return content;

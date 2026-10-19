@@ -1,7 +1,7 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -351,8 +351,7 @@ private:
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        m_content = *QcBaseContent::load(warnings);
+        m_content = QcTestUtil::loadContent();
         m_config.viewDistance = 3;
         m_config.seed = forestSeed;
         m_config.worldName = u"Forest"_s;

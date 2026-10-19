@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcVillageLayoutParser.h"
+#include "QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 
 #include <QHash>
@@ -28,12 +28,6 @@ private:
     static constexpr int rings = 16;
 
     using Plans = QList<std::shared_ptr<const QcVillagePlan>>;
-
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
 
     static qint64 key(int x, int z) { return (qint64(x) << 32) | quint32(z); }
 
@@ -78,7 +72,7 @@ private:
 
     static bool isLamp(const QcStructurePlacement &piece) { return shortName(piece).endsWith(u"_lamp"_s); }
 
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
     Plans m_plans = samplePlans(m_generator, sampleSize, rings);
 

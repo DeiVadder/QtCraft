@@ -1,6 +1,5 @@
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -16,12 +15,6 @@ namespace {
 
 constexpr int timeoutMs = 20'000;
 
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 } // namespace
 
 // Joining a network game from the client (decision E-251, the API of the join menu): connect, log
@@ -31,7 +24,7 @@ class TestNetworkClient : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     std::unique_ptr<QcLocalServerHost> host(QcServerConfig config = {})
     {

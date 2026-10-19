@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>
@@ -143,7 +144,7 @@ private slots:
             for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
                 phaseNs[std::size_t(phase)] += m_server->tickPhases().lastTick()[std::size_t(phase)];
             }
-            pump();
+            QcTestUtil::pump();
         }
         report("tick", double(tickNs) / measure.ticks / 1e6);
         for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {

@@ -1,7 +1,7 @@
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "QcLatencyTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
@@ -143,12 +143,6 @@ Motion simulateWalk(bool buffered, int delayMs, int jitterMs, quint32 seed)
         }
     }
     return recorder.result();
-}
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
 }
 
 } // namespace
@@ -368,7 +362,7 @@ private slots:
 #endif
         // A real server and two sessions: the walker in-process, the watcher behind 40-100 ms of
         // one-way delay. The watcher's view of the walker is sampled every 4 ms like frames.
-        const std::shared_ptr<const QcContentRegistry> content = loadContent();
+        const std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
         QcServerConfig config;
         config.viewDistance = 2;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);

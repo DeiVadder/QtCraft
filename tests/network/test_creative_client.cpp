@@ -1,10 +1,10 @@
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcFlightLatch.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -22,12 +22,6 @@ namespace {
 
 constexpr int timeoutMs = 30'000;
 
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 } // namespace
 
 // The client side of the creative mode (decisions E-282 to E-284): the double tap that toggles
@@ -39,7 +33,7 @@ class TestCreativeClient : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcLocalServerHost> m_host;
     std::unique_ptr<QcClientSession> m_session;
     // Outlives the host, which releases the world's lock file on shutdown.

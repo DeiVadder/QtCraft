@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -11,12 +11,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 constexpr double dt = 0.05;
 constexpr double noon = QcDayCycle::dayLength * 0.25;
@@ -30,7 +24,7 @@ class TestMobDepartures : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     quint32 m_nextId = 100;
 
     std::unique_ptr<QcServerWorld> makeWorld(int radius)
@@ -55,7 +49,8 @@ private:
     {
         const std::optional<int> index = m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name));
         if (!index) {
-            qFatal("unknown mob %s", name);
+            QcTestUtil::failCase(QStringLiteral("unknown mob %1").arg(QString::fromLatin1(name)));
+            return 0;
         }
         return *index;
     }

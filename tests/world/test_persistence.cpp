@@ -1,5 +1,4 @@
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcTransport.h"
 #include "QcTestUtil.h"
@@ -21,12 +20,6 @@ namespace {
 constexpr int timeoutMs = 20000;
 constexpr qint64 seed = 99;
 
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 } // namespace
 
 // Saving and loading a world through the real server: blocks, inventory and position survive a restart.
@@ -35,7 +28,7 @@ class TestPersistence : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     std::unique_ptr<QcLocalServerHost> host(const QString &directory)
     {

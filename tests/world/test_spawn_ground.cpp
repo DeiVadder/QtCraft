@@ -1,10 +1,9 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
-#include <QCoreApplication>
 #include <QTest>
 
 #include <cmath>
@@ -12,19 +11,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
-void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
-}
 
 // Blocks the generated terrain is made of at its surface; never a tree, a plant or a liquid.
 const QStringList naturalGround = {u"grass_block"_s, u"dirt"_s,  u"sand"_s,       u"sandstone"_s,
@@ -39,7 +25,7 @@ class TestSpawnGround : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QString nameAt(const QcChunk &chunk, QcBlockPos pos) const
     {
@@ -53,9 +39,9 @@ private:
         server.addClient(std::move(serverEnd));
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
         server.tick();
-        pump();
+        QcTestUtil::pump();
 
         const QcVec3 p = client.motion.position;
         return {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};

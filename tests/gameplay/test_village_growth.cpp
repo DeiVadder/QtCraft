@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
@@ -54,17 +54,11 @@ private:
         int villagerType() const { return *content->mobIndex(u"qtcraft:villager"_s); }
     };
 
-    static std::shared_ptr<QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
     // `count` plains fixture villages side by side (ids `firstId`, `firstId` + 1, …) with their
     // chunks and those around loaded and their villagers moved in.
     static World villages(int count, qint64 firstId = 1)
     {
-        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QStringList styles;
         for (int i = 0; i < count; ++i) {
             styles.append(u"qtcraft:plains"_s);
@@ -463,7 +457,7 @@ private slots:
 
     void twoVillagesGrowingTowardsEachOtherNeverShareASpot()
     {
-        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcVillageFixture::Options west;
         const std::shared_ptr<QcVillagePlan> first = QcVillageFixture::plan(*content, west);
         QcVillageFixture::Options east;
@@ -523,7 +517,7 @@ private slots:
 
     void aSpotWhereGeneratedAreasOverlapBelongsToTheNearerVillage()
     {
-        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcVillageFixture::Options west;
         const std::shared_ptr<QcVillagePlan> first = QcVillageFixture::plan(*content, west);
         QcVillageFixture::Options east;

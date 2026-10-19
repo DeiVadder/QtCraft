@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillageGenerator.h"
 
@@ -7,6 +7,7 @@
 #include <QTest>
 
 #include <algorithm>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
@@ -22,10 +23,7 @@ class TestVillageMeasure : public QObject
 private:
     static constexpr qint64 seed = 42;
 
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     static bool full() { return qEnvironmentVariableIsSet("QTCRAFT_VILLAGE_MEASURE"); }
 
@@ -39,7 +37,8 @@ private:
     }
 
     // Milliseconds per chunk over the square of `edge` chunks around `centre`, the fastest of `runs`.
-    static double perChunk(const std::shared_ptr<const QcContentRegistry> &content, QcChunkPos centre, int edge, int runs)
+    // Empty when the generator gives no chunk.
+    static std::optional<double> perChunk(const std::shared_ptr<const QcContentRegistry> &content, QcChunkPos centre, int edge, int runs)
     {
         double best = 1e9;
         for (int run = 0; run < runs; ++run) {
@@ -49,7 +48,7 @@ private:
             for (int dz = 0; dz < edge; ++dz) {
                 for (int dx = 0; dx < edge; ++dx) {
                     if (!generator.generate({centre.x - edge / 2 + dx, centre.z - edge / 2 + dz})) {
-                        qFatal("no chunk");
+                        return std::nullopt;
                     }
                 }
             }
@@ -82,11 +81,17 @@ private:
         const int edge = full() ? 32 : 6;
         const int runs = full() ? 3 : 1;
         const QcChunkPos centre = plan.centre.chunk();
-        const double with = perChunk(m_content, centre, edge, runs);
-        const double without = perChunk(withoutVillages(), centre, edge, runs);
+        const std::optional<double> around = perChunk(m_content, centre, edge, runs);
+        const std::optional<double> aroundWithout = perChunk(withoutVillages(), centre, edge, runs);
         // Only the 8 x 8 chunks of the village itself.
-        const double villageOnly = perChunk(m_content, centre, 8, runs);
-        const double villageOnlyWithout = perChunk(withoutVillages(), centre, 8, runs);
+        const std::optional<double> village = perChunk(m_content, centre, 8, runs);
+        const std::optional<double> villageWithout = perChunk(withoutVillages(), centre, 8, runs);
+        QVERIFY(around && aroundWithout && village && villageWithout);
+
+        const double with = *around;
+        const double without = *aroundWithout;
+        const double villageOnly = *village;
+        const double villageOnlyWithout = *villageWithout;
         qInfo("%s: %d x %d chunks around the village at %d %d: %.3f ms per chunk with villages, %.3f without (%+.1f %%)",
               qPrintable(plan.style), edge, edge, plan.centre.x, plan.centre.z, with, without, (with / without - 1.0) * 100.0);
         qInfo("%s: 8 x 8 chunks of the village: %.3f ms per chunk with, %.3f without (%+.1f %%)", qPrintable(plan.style), villageOnly,
@@ -217,7 +222,6 @@ private slots:
               double(sum.cells) / villages / 1024.0, double(sum.other) / villages / 1024.0, double(largest) / 1024.0,
               qint64(QcVillageGenerator::cachedPlans), cache / 1024.0 / 1024.0);
     }
-
 
     void generationWithAndWithoutVillages()
     {

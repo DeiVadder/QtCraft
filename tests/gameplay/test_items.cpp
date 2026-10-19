@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/plants/QcPlantManager.h"
@@ -12,12 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 constexpr double dt = QcPhysics::tickDuration;
 
@@ -34,7 +28,7 @@ class TestItems : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
     QcBlockId block(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }

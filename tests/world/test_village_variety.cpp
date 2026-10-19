@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 #include "worldgen/terrain/QcNoise.h"
 
@@ -22,12 +22,6 @@ private:
     static constexpr qint64 seed = 42;
     // Regions around the origin the statistics run over (25 x 25).
     static constexpr int rings = 13;
-
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
 
     static QList<const QcStructurePlacement *> piecesNamed(const QcVillagePlan &plan, const QString &part)
     {
@@ -55,7 +49,7 @@ private:
         return cells;
     }
 
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
     // A fixed sample for the shares (decision E-424): the first 96 villages ring by ring.
     static constexpr qsizetype sampleSize = 96;

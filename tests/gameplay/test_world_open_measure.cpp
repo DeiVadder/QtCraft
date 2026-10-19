@@ -1,6 +1,7 @@
 #include "QcServerTestFixture.h"
 
 #include "common/core/QcProcessMemory.h"
+#include "QcTestUtil.h"
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>
@@ -60,7 +61,7 @@ private:
         RawClient other(std::move(clientEnd));
         other.hello(QStringLiteral("Other"));
         for (int i = 0; i < 200 && other.motion.position == QcVec3{}; ++i) {
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
         QVERIFY(other.motion.position != QcVec3{});
@@ -112,7 +113,7 @@ private slots:
         m_server->addClient(std::move(serverEnd), m_origin);
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(QStringLiteral("Raw"));
-        pump();
+        QcTestUtil::pump();
         int waited = 0;
         const auto standsInLoaded = [this] {
             const QcChunkPos at = QcPhysics::blockContaining(m_client->motion.position).chunk();

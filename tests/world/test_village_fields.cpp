@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 
 #include <QSet>
@@ -18,12 +18,6 @@ class TestVillageFields : public QObject
 private:
     static constexpr qint64 seed = 42;
     static constexpr int rings = 8;
-
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
 
     QString nameOf(QcBlockId block) const { return m_content->block(block).name; }
     bool isCrop(QcBlockId block) const { return m_content->block(block).crop.isCrop(); }
@@ -59,7 +53,7 @@ private:
         return nullptr;
     }
 
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
     QList<std::shared_ptr<const QcVillagePlan>> m_plans = plansAround(m_generator, rings);
 

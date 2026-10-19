@@ -1,6 +1,7 @@
 #include "QcServerTestFixture.h"
 
 #include "common/content/parser/QcContentParser.h"
+#include "QcTestUtil.h"
 #include "server/weather/QcWeatherCycle.h"
 
 #include <QJsonDocument>
@@ -43,7 +44,8 @@ private:
     {
         const std::optional<int> type = m_content->mobIndex(QString::fromLatin1(name));
         if (!type) {
-            qFatal("Test uses the creature %s, which the content does not have", name);
+            QcTestUtil::failCase(QStringLiteral("Test uses the creature %1, which the content does not have").arg(QString::fromLatin1(name)));
+            return 0;
         }
         return m_server->mobs().spawn(*type, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
     }
@@ -302,7 +304,7 @@ private slots:
         const double health = m_client->health;
 
         m_server->systems().weather.strike(m_feet.offset(1, 0, 0));
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->health, health - lightning.damage);
         QVERIFY(m_client->burning);
         QCOMPARE(m_server->mobs().find(near)->health, pigHealth - lightning.damage);
@@ -319,7 +321,7 @@ private slots:
         ticks(QcPhysics::tickRate * 2);
         const double creative = m_client->health;
         m_server->systems().weather.strike(m_feet);
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->health, creative);
         QCOMPARE(m_server->systems().lightning.numbers().playersHit, 1u);
     }
@@ -392,7 +394,7 @@ private slots:
             return strikesIn(2000);
         }();
         QCOMPARE(m_server->systems().weather.meanStrikeTicks(), 20);
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
         const quint64 normal = strikesIn(2000);
         QCOMPARE(m_server->systems().weather.meanStrikeTicks(), 200);
         QVERIFY2(often > 4 * normal && often >= 20, qPrintable(u"%1 %2"_s.arg(often).arg(normal)));

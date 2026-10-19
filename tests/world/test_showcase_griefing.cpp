@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/villages/QcServerVillagers.h"
 #include "server/villages/QcVillagePopulation.h"
@@ -23,10 +23,7 @@ class TestShowcaseGriefing : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     const QcShowcaseGenerator m_generator{m_content};
 
     std::unique_ptr<QcServer> makeServer(const QString &directory) const

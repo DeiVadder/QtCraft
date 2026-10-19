@@ -26,7 +26,7 @@ A block that needs a tool drops its items only when mined with that kind of tool
 
 [Golden axe](tools.md#item-qtcraft-golden_axe) (level 1, × 12, 32 uses), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1, × 2, 59 uses), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2, × 4, 131 uses), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3, × 6, 250 uses), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4, × 8, 1561 uses)
 
-**hoe**
+**Hoe**
 
 [Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1, × 12, 32 uses), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1, × 2, 59 uses), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2, × 4, 131 uses), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3, × 6, 250 uses), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4, × 8, 1561 uses)
 

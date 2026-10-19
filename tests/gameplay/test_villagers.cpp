@@ -1,5 +1,6 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/villages/QcServerVillagers.h"
 #include "server/villages/QcVillagerHomes.h"
@@ -77,7 +78,8 @@ private:
     {
         const std::optional<QcBlockId> found = m_content->stateId(name);
         if (!found) {
-            qFatal("Test uses the state %s, which the content does not have", qPrintable(name));
+            QcTestUtil::failCase(QStringLiteral("Test uses the state %1, which the content does not have").arg(name));
+            return qcAirBlockId;
         }
         return *found;
     }

@@ -8,6 +8,7 @@
 #include "clientcore/session/QcServerDebugMirror.h"
 #include "common/core/QcSectionKey.h"
 #include "common/core/QcWorldConstants.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 
 #include <QJsonArray>
@@ -27,7 +28,7 @@ std::shared_ptr<const QcContentRegistry> lampContent()
     lamp.lightLevel = 12;
     lamp.faceTextures.fill(u"test:stone"_s);
     if (!content->registerBlock(lamp)) {
-        qFatal("cannot register test:lamp");
+        QcTestUtil::failCase(QStringLiteral("cannot register test:lamp"));
     }
     return content;
 }

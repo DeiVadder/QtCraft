@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/commands/QcAccessList.h"
 #include "server/core/QcProfileValidation.h"
 
@@ -27,7 +28,7 @@ private:
         m_server->addClient(std::move(serverEnd), origin);
         auto client = std::make_unique<RawClient>(std::move(clientEnd));
         client->hello(name);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return client;
     }
@@ -155,7 +156,7 @@ private slots:
         join(notOperator(savedWorld(directory)));
         std::unique_ptr<RawClient> helper = connect(u"Helper"_s);
         helper->connection.send(QcMsg::ChatInput{u"/give dirt 2"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(helper->chatLines.constLast(), u"Gave 2 x qtcraft:dirt"_s);
         chat(u"/give dirt"_s);
         QCOMPARE(lastLine(), u"Only operators can use /give"_s);
@@ -187,7 +188,7 @@ private slots:
 
         // The first change writes new lists; the copy keeps the damaged ones.
         host->connection.send(QcMsg::ChatInput{u"/op Helper"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(host->chatLines.constLast(), u"Helper is an operator"_s);
         QCOMPARE(namesIn(accessFile(directory).value(u"operators"_s).toArray()), QStringList{u"Helper"_s});
         QFile kept(copy);

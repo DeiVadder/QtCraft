@@ -18,7 +18,8 @@ QJsonObject json(const char *text)
 {
     const QJsonDocument document = QJsonDocument::fromJson(QByteArray(text));
     if (!document.isObject()) {
-        qFatal("test JSON is not an object: %s", text);
+        QcTestUtil::failCase(QStringLiteral("test JSON is not an object: %1").arg(QString::fromUtf8(text)));
+        return {};
     }
     return document.object();
 }

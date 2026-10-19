@@ -1,32 +1,19 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldLibrary.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
-#include <QCoreApplication>
 #include <QTemporaryDir>
 #include <QTest>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
-void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
-}
 
 int nonAirBlocks(const QcChunk &chunk)
 {
@@ -62,7 +49,7 @@ class TestWorldTypes : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
 
@@ -81,11 +68,11 @@ private:
         server.addClient(std::move(serverEnd));
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Tester"_s);
-        pump();
+        QcTestUtil::pump();
         for (int i = 0; i < 40; ++i) {
             client.connection.send(QcMsg::PlayerInput{QcPlayerInput{.sequence = quint32(i + 1)}});
             server.tick();
-            pump();
+            QcTestUtil::pump();
         }
         const QcVec3 standing = client.motion.position;
         [[maybe_unused]] const QcStatus stopped = server.stop();

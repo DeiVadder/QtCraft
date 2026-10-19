@@ -1,5 +1,6 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/villages/QcVillages.h"
 #include "world/QcVillageFixture.h"
 
@@ -221,7 +222,7 @@ private:
             m_server->tick();
             ++m_ticks;
             if (m_ticks % sampleTicks == 0) {
-                pump();
+                QcTestUtil::pump();
                 sample();
             }
         }

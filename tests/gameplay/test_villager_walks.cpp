@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcVillagerParser.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
@@ -35,12 +35,6 @@ private:
     // The seed of the creatures' random numbers.
     static constexpr qint64 seed = 42;
 
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
     // A world with one fixture village (decision E-424), every chunk of it loaded, and its creatures.
     struct Village
     {
@@ -56,7 +50,7 @@ private:
         }
     };
 
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     // Loads the chunks of a fixture village of `style` (its buildings turned `turns`,
     // QcVillageFixture::Options::turns) and the ring around them; with `populate` its villagers move in.

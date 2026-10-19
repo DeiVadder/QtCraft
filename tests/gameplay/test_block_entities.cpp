@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -34,13 +35,12 @@ private:
 // The base content with a sapling that has two states, as a mod may define one.
 std::shared_ptr<const QcContentRegistry> contentWithStagedSapling()
 {
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+    std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
     QcBlockDefinition staged = content->block(*content->blockId(u"qtcraft:oak_sapling"_s));
     staged.name = u"mod:staged_sapling"_s;
     staged.properties = {{u"stage"_s, {u"0"_s, u"1"_s}}};
     if (!content->registerBlock(staged)) {
-        qFatal("cannot register mod:staged_sapling");
+        QcTestUtil::failCase(QStringLiteral("cannot register mod:staged_sapling"));
     }
     return content;
 }
@@ -313,7 +313,7 @@ private slots:
         chat(u"/setblock %1 %2 %3 stone"_s.arg(pos.x).arg(pos.y).arg(pos.z));
         QVERIFY(!entities().sapling(pos));
         rulesHold("after the stages");
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void checksFindBrokenRules()

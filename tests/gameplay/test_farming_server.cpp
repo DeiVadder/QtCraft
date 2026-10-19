@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/plants/QcServerPlants.h"
 
 #include <cmath>
@@ -59,7 +60,7 @@ private:
 
 private slots:
     // Each test starts from the base content (one test changes a crop).
-    void init() { m_content = loadContent(); }
+    void init() { m_content = QcTestUtil::loadContent(); }
 
     void hoesTillGrassAndDirt()
     {

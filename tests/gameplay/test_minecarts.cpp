@@ -1,5 +1,6 @@
 #include "common/world/QcMinecartBody.h"
 #include "QcRailFixture.h"
+#include "QcTestUtil.h"
 #include "server/minecarts/QcMinecartCollisions.h"
 
 #include <algorithm>
@@ -408,7 +409,7 @@ private slots:
             input.forward = 1.0f;
             input.yaw = 90.0f;
             m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
         QVERIFY(cart(id).motion.position.x > m_feet.x + 2.5);
@@ -419,7 +420,7 @@ private slots:
         sneak.sequence = ++m_sequence;
         sneak.sneak = true;
         m_client->connection.send(QcMsg::PlayerInput{sneak});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         idle(1);
         QCOMPARE(m_client->vehicle, 0u);

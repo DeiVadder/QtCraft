@@ -49,7 +49,7 @@ class TestArmourStands : public QcServerTestFixture
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(3);
         return other;
     }
@@ -74,7 +74,7 @@ class TestArmourStands : public QcServerTestFixture
         input.yaw = yaw;
         input.pitch = pitch;
         m_client->connection.send(QcMsg::PlayerInput{input});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -180,7 +180,7 @@ private slots:
         // Both hits arrive before the server ticks: the second one falls into the cooldown.
         m_client->connection.send(QcMsg::AttackEntity{id});
         m_client->connection.send(QcMsg::AttackEntity{id});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(stand(id));
         QCOMPARE(stand(id)->hitBy, m_client->entityId);
@@ -193,7 +193,7 @@ private slots:
         const std::unique_ptr<RawClient> other = joinOther();
         const auto otherHits = [&] {
             other->connection.send(QcMsg::AttackEntity{id});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         };
 
@@ -540,7 +540,7 @@ private slots:
         // The operators are told, once; /regenerate gives the damaged data up and the chunk is
         // saved again (review of 31.3).
         ticks(1);
-        pump();
+        QcTestUtil::pump();
         const auto told = [this] {
             return std::ranges::count_if(m_client->chatLines, [](const QString &line) { return line.contains(u"is damaged"_s); });
         };
@@ -554,7 +554,7 @@ private slots:
         cleanup();
         join(config);
         ticks(1);
-        pump();
+        QcTestUtil::pump();
         QVERIFY(m_server->world().chunk(m_standChunk));
         QVERIFY(!m_server->world().isQuarantined(m_standChunk));
         QCOMPARE(told(), 0);

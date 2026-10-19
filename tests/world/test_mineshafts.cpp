@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftNetwork.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
@@ -26,10 +26,7 @@ private:
     static constexpr int regions = 4;
     using Chunks = QHash<QcChunkPos, std::shared_ptr<QcChunk>>;
 
-    std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     // Generated once: the plans of the test regions and the chunks of the first few.
     std::unique_ptr<QcTerrainGenerator> m_terrain;
     QList<std::shared_ptr<const QcMineshaftPlan>> m_plans;

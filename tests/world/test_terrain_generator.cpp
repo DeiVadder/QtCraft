@@ -1,7 +1,7 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/core/QcMailbox.h"
 #include "common/core/QcWorkerPool.h"
+#include "QcTestUtil.h"
 #include "server/blocks/QcLiquidFlow.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -15,12 +15,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 QcBlockDefinition simpleBlock(const QString &name)
 {
@@ -36,7 +30,7 @@ std::shared_ptr<QcContentRegistry> flatContent(bool caves)
     auto content = std::make_shared<QcContentRegistry>();
     for (const QString &name : {u"t:stone"_s, u"t:red"_s, u"t:ore"_s, u"t:bedrock"_s}) {
         if (!content->registerBlock(simpleBlock(name))) {
-            qFatal("cannot register block");
+            QcTestUtil::failCase(QStringLiteral("cannot register block"));
         }
     }
 
@@ -44,7 +38,7 @@ std::shared_ptr<QcContentRegistry> flatContent(bool caves)
     water.solid = false;
     water.liquid = true;
     if (!content->registerBlock(water)) {
-        qFatal("cannot register water");
+        QcTestUtil::failCase(QStringLiteral("cannot register water"));
     }
 
     QcTerrainSettings terrain;
@@ -312,7 +306,7 @@ class TestTerrainGenerator : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_base = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_base = QcTestUtil::loadContent();
 
     // Adds the counts of the generated chunk `pos`; returns the first air cell below the cave liquid
     // level.

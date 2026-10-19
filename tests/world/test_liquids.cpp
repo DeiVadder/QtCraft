@@ -40,9 +40,11 @@ std::shared_ptr<QcContentRegistry> makeContent()
     for (const char *text : blocks) {
         const auto block = QcContentParser::parseBlock(json(text), u"t"_s);
         if (!block) {
+            // Builds content for a member initialiser, outside any test case; no case can run without it.
             qFatal("%s", qPrintable(block.error()));
         }
         if (!content->registerBlock(*block)) {
+            // Builds content for a member initialiser, outside any test case; no case can run without it.
             qFatal("cannot register");
         }
     }
@@ -62,7 +64,8 @@ private:
     {
         const std::optional<QcBlockId> found = m_content->stateId(u"t:"_s + state);
         if (!found) {
-            qFatal("unknown state %s", qPrintable(state));
+            QcTestUtil::failCase(QStringLiteral("unknown state %1").arg(state));
+            return qcAirBlockId;
         }
         return *found;
     }

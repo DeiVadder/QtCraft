@@ -1,30 +1,13 @@
 #pragma once
 
-#include "common/content/loader/QcBaseContent.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
-#include <QCoreApplication>
-
 #include <memory>
 
-// Helpers of the showcase world tests: the base content, a showcase server and handing queued
-// messages on.
+// Helpers of the showcase world tests: a server for the showcase world (the content and pump()
+// come from QcTestUtil).
 namespace QcShowcaseTestUtil {
-
-inline std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
-// Delivers the messages queued between a server and an in-process client.
-inline void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
-}
 
 // A server for a world of `generator` in `directory` that keeps every loaded chunk: the setup is
 // looked at as a whole, without a player near it.

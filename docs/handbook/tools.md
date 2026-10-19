@@ -104,7 +104,7 @@ Tills grass and dirt into farmland and lasts very long.
 |---|---|
 | ID | `qtcraft:diamond_hoe` |
 | Stack size | 1 |
-| Tool | hoe, level 4: [Tool tiers](tables.md#table-tools) |
+| Tool | Hoe, level 4: [Tool tiers](tables.md#table-tools) |
 | Mining speed | × 8 |
 | Durability | 1561 uses |
 | Attack damage | 1 health point |
@@ -317,7 +317,7 @@ Tills grass and dirt into farmland, but wears out quickly.
 |---|---|
 | ID | `qtcraft:golden_hoe` |
 | Stack size | 1 |
-| Tool | hoe, level 1: [Tool tiers](tables.md#table-tools) |
+| Tool | Hoe, level 1: [Tool tiers](tables.md#table-tools) |
 | Mining speed | × 12 |
 | Durability | 32 uses |
 | Attack damage | 1 health point |
@@ -530,7 +530,7 @@ Tills grass and dirt into farmland; lasts long.
 |---|---|
 | ID | `qtcraft:iron_hoe` |
 | Stack size | 1 |
-| Tool | hoe, level 3: [Tool tiers](tables.md#table-tools) |
+| Tool | Hoe, level 3: [Tool tiers](tables.md#table-tools) |
 | Mining speed | × 6 |
 | Durability | 250 uses |
 | Attack damage | 1 health point |
@@ -766,7 +766,7 @@ Tills grass and dirt into farmland; lasts longer than wood.
 |---|---|
 | ID | `qtcraft:stone_hoe` |
 | Stack size | 1 |
-| Tool | hoe, level 2: [Tool tiers](tables.md#table-tools) |
+| Tool | Hoe, level 2: [Tool tiers](tables.md#table-tools) |
 | Mining speed | × 4 |
 | Durability | 131 uses |
 | Attack damage | 1 health point |
@@ -890,7 +890,7 @@ Tills grass and dirt into farmland. Each tilled block wears it a little.
 |---|---|
 | ID | `qtcraft:wooden_hoe` |
 | Stack size | 1 |
-| Tool | hoe, level 1: [Tool tiers](tables.md#table-tools) |
+| Tool | Hoe, level 1: [Tool tiers](tables.md#table-tools) |
 | Mining speed | × 2 |
 | Durability | 59 uses |
 | Attack damage | 1 health point |

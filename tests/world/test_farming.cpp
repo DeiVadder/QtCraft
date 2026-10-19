@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBreeding.h"
 #include "server/plants/QcCropGrowth.h"
@@ -12,12 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // Free space high above the test terrain; soil at groundY, plants one above.
 constexpr int groundY = 100;
@@ -36,7 +30,7 @@ class TestFarming : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcBlockId id(const char *name) const { return *m_content->blockId(u"qtcraft:"_s + QLatin1StringView(name)); }
     QcBlockId stage(const char *crop, int age) const { return m_content->withProperty(id(crop), u"age"_s, QString::number(age)); }

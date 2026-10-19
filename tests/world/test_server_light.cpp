@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcLightVolume.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/storage/QcChunkIo.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -87,8 +87,7 @@ class TestServerLight : public QObject
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        m_content = *QcBaseContent::load(warnings);
+        m_content = QcTestUtil::loadContent();
     }
 
     // The values the engine reads come from the content: torches, lanterns, glass, leaves, water.

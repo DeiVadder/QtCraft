@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcEntityMessages.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcDoorPassage.h"
@@ -16,10 +16,7 @@ class TestCreatureParts : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     int type(const QString &name) const { return *m_content->mobIndex(u"qtcraft:"_s + name); }
 

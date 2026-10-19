@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>
@@ -39,7 +40,7 @@ private:
             input.yaw = 90.0f;
             input.forward = 1.0f;
             m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
     }
@@ -122,7 +123,7 @@ private slots:
             input.forward = 1.0f;
             m_client->connection.send(QcMsg::PlayerInput{input});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         const double fourInputs = m_client->motion.position.x - x;
         QVERIFY2(fourInputs > 4 * 0.1, qPrintable(QString::number(fourInputs)));
@@ -165,7 +166,7 @@ private slots:
             for (int i = 0; i < perTick; ++i) {
                 sendWalkEast();
             }
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
 
@@ -196,7 +197,7 @@ private slots:
             for (int i = 0; i < 3; ++i) {
                 m_client->connection.send(QcMsg::ChatInput{u"spam"_s});
             }
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
         // The burst left after the /tick line plus one second of refill.

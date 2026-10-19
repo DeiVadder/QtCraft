@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcLightVolume.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -60,8 +60,7 @@ class TestLightMeasure : public QObject
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        m_content = *QcBaseContent::load(warnings);
+        m_content = QcTestUtil::loadContent();
     }
 
     // Light of arriving and leaving chunks, block light alone (what the client computes) and with sky

@@ -1,6 +1,7 @@
 #include "common/protocol/QcInProcessTransport.h"
 #include "common/world/QcMinecartBody.h"
 #include "QcRailFixture.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerClient.h"
 
 #include <QElapsedTimer>
@@ -110,7 +111,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
     }
 

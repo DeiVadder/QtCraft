@@ -48,6 +48,7 @@ struct Fixture
                  R"({"name":"torch","shape":"torch","solid":false,"render":"cutout","light":14,"lightOpacity":0,"textures":{"all":"stone"}})"}) {
             const auto parsed = QcContentParser::parseBlock(json(block), u"t"_s);
             if (!parsed || !content.registerBlock(*parsed)) {
+                // Builds content for a member initialiser, outside any test case; no case can run without it.
                 qFatal("cannot register %s", block);
             }
         }

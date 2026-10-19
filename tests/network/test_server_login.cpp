@@ -1,5 +1,6 @@
 #include "common/auth/QcLoginCrypto.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/login/QcIdentityStore.h"
 
 #include <QFile>
@@ -41,7 +42,7 @@ private:
         client->viewDistance = login.viewDistance;
         client->answerChallenge = login.answer;
         client->hello(login.name);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return client;
     }
@@ -222,7 +223,7 @@ private slots:
             RawClient client(std::move(clientEnd));
             client.answerChallenge = false;
             client.hello(u"Eve"_s);
-            pump();
+            QcTestUtil::pump();
             QVERIFY(client.challenge.has_value());
             QcMsg::LoginResponse response = client.answer(*client.challenge);
             if (withIdentity) {
@@ -231,7 +232,7 @@ private slots:
                 response.identity.clear();
             }
             client.connection.send(response);
-            pump();
+            QcTestUtil::pump();
             QCOMPARE(client.disconnectKey, u"Invalid player identity"_s);
             QCOMPARE(client.entityId, 0u);
         }
@@ -309,7 +310,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient old(std::move(clientEnd));
         old.hello(u"Old"_s, {}, QcProtocol::version - 1);
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(old.disconnectKey, u"Protocol version mismatch: server %1, client %2"_s);
         QVERIFY(!old.challenge.has_value());
     }
@@ -341,7 +342,7 @@ private slots:
         QCOMPARE(host.disconnectKey, QString());
         QCOMPARE(m_server->clientCount(), 1);
         host.hello(u"Host"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(joined(host));
     }
@@ -351,7 +352,7 @@ private slots:
         startServer({});
         const auto client = connect(Login{u"Eager"_s, key('e'), {}, {}, 0, false});
         client->connection.send(QcMsg::ChatInput{u"/give diamond"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(client->disconnectKey, u"Expected Hello"_s);
         QCOMPARE(client->entityId, 0u);
 
@@ -360,7 +361,7 @@ private slots:
         const auto player = connect(u"Ann"_s);
         QVERIFY(joined(*player));
         player->connection.send(player->answer(*player->challenge));
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(player->disconnectKey, u"Unexpected login message"_s);
         QVERIFY(!player->connection.isOpen());
@@ -368,7 +369,7 @@ private slots:
         const auto again = connect(u"Bea"_s);
         QVERIFY(joined(*again));
         again->hello(u"Bea"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(again->disconnectKey, u"Unexpected login message"_s);
         QCOMPARE(m_server->clientCount(), 0);
@@ -416,7 +417,7 @@ private slots:
             auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
             m_server->addClient(std::move(serverEnd));
             clientEnd->sendFrame(frame);
-            pump();
+            QcTestUtil::pump();
             ticks(1);
             // A flipped byte may leave a valid Hello (another name, appearance): it waits for its
             // login like any client and is then cut off by its Disconnect.
@@ -424,7 +425,7 @@ private slots:
                 // Only a Hello with flipped bytes may still be a valid one.
                 waiting += i % 4 == 2 ? 0 : 1;
                 clientEnd->sendFrame(QcProtocol::encode(QcMsg::Disconnect{}));
-                pump();
+                QcTestUtil::pump();
                 ticks(1);
             }
             closed += clientEnd->isOpen() ? 0 : 1;
@@ -505,7 +506,7 @@ private slots:
         auto ann = connect(Login{u"Ann"_s, key('a'), {}, {}, 0, true});
         rememberSalt(*ann);
         admin->connection.send(QcMsg::ChatInput{u"/op Ann"_s});
-        pump();
+        QcTestUtil::pump();
 
         // Ann's entry carries the fingerprint of her identity.
         const QJsonArray operators = jsonFile(directory.filePath(u"access.json"_s)).value(u"operators"_s).toArray();
@@ -522,7 +523,7 @@ private slots:
         auto impostor = connect(Login{u"Ann"_s, key('x'), {}, {}, 0, true});
         QVERIFY(joined(*impostor));
         impostor->connection.send(QcMsg::ChatInput{u"/time set 0"_s});
-        pump();
+        QcTestUtil::pump();
         QVERIFY(impostor->chatKeys.constLast().key == u"Only operators can use /%1"_s);
         QVERIFY(!std::ranges::find(impostor->playerList, u"Ann"_s, &QcMsg::PlayerList::Entry::name)->operatorRights);
     }
@@ -533,7 +534,7 @@ private slots:
         startServer(savedWorld(directory));
         auto admin = connect(Login{u"Admin"_s, key('o'), {}, {}, 0, true});
         admin->connection.send(QcMsg::ChatInput{u"/op Carol"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(jsonFile(directory.filePath(u"access.json"_s)).value(u"operators"_s).toArray().first().toObject().value(u"fingerprint"_s).toString(),
                  QString());
 
@@ -543,7 +544,7 @@ private slots:
         QCOMPARE(jsonFile(directory.filePath(u"access.json"_s)).value(u"operators"_s).toArray().first().toObject().value(u"fingerprint"_s).toString(),
                  fingerprintOf(key('c')));
         carol->connection.send(QcMsg::ChatInput{u"/time set 0"_s});
-        pump();
+        QcTestUtil::pump();
         QVERIFY(carol->chatKeys.constLast().key != u"Only operators can use /%1"_s);
     }
 
@@ -578,7 +579,7 @@ private slots:
         QVERIFY(joined(*impostor));
         QVERIFY(!std::ranges::find(impostor->playerList, u"Admin"_s, &QcMsg::PlayerList::Entry::name)->operatorRights);
         impostor->connection.send(QcMsg::ChatInput{u"/time set 0"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(impostor->chatKeys.constLast().key, u"Only operators can use /%1"_s);
         // The binding is not taken over by the newcomer.
         const QJsonArray kept = jsonFile(directory.filePath(u"access.json"_s)).value(u"configOperators"_s).toArray();
@@ -591,7 +592,7 @@ private slots:
         auto admin = connect(Login{u"Admin"_s, key('o'), {}, {}, 0, true});
         auto bob = connect(Login{u"Bob"_s, key('b'), {}, {}, 0, true});
         admin->connection.send(QcMsg::ChatInput{u"/ban Bob griefing"_s});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(bob->disconnectKey, u"Banned by %1: %2"_s);
         QCOMPARE(bob->disconnectReason, u"Banned by Admin: griefing"_s);
@@ -601,7 +602,7 @@ private slots:
         QVERIFY(joined(*connect(Login{u"Robert"_s, key('r'), {}, {}, 0, true})));
 
         admin->connection.send(QcMsg::ChatInput{u"/unban Bob"_s});
-        pump();
+        QcTestUtil::pump();
         QVERIFY(joined(*connect(Login{u"Bobby"_s, key('b'), {}, {}, 0, true})));
     }
 
@@ -611,7 +612,7 @@ private slots:
         auto admin = connect(Login{u"Admin"_s, key('o'), {}, {}, 0, true});
         auto ann = connect(Login{u"Ann"_s, key('a'), {}, {}, 0, true});
         admin->connection.send(QcMsg::ChatInput{u"/kick Ann"_s});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(ann->disconnectKey, u"Kicked by %1"_s);
         QCOMPARE(ann->disconnectReason, u"Kicked by Admin"_s);
     }

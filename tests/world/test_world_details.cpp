@@ -1,20 +1,18 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcCrafting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "common/world/QcDayCycle.h"
 #include "common/world/QcLightVolume.h"
+#include "QcRawClient.h"
 #include "QcTestMachines.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/core/QcServer.h"
 #include "server/mobs/QcMobManager.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
-#include "QcTestLogin.h"
-
-#include <QCoreApplication>
 #include <QRandomGenerator>
 #include <QTemporaryDir>
 #include <QTest>
@@ -24,16 +22,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
-    if (!warnings.isEmpty()) {
-        qFatal("base content warnings: %s", qPrintable(warnings.join(u'\n')));
-    }
-    return content;
-}
 
 // The test terrain, but every column reports the swamp biome.
 class SwampGenerator : public QcTestTerrainGenerator
@@ -52,74 +40,21 @@ public:
     QcBlockPos spawn;
 };
 
-class RawClient
-{
-public:
-    explicit RawClient(std::unique_ptr<QcTransport> transport)
-        : connection(std::move(transport), QcProtocol::Peer::Server, [this](QcMessage &&message) { received(std::move(message)); })
-    {
-    }
-
-    // Hello, and the login answered with a key made from the name (QcTestLogin).
-    void hello(const QString &name)
-    {
-        key = QcTestLogin::keyFor(name);
-        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
-    }
-
-    void received(QcMessage &&message)
-    {
-        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
-            connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));
-        } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
-            motion = state->motion;
-        } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
-            stacks = inventory->stacks;
-            selected = inventory->selected;
-        } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
-            chatLines.append(chat->text);
-        } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
-            this->health = health->health;
-        } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
-            spawns.append(*spawn);
-        } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
-            sounds.append(sound->key);
-        }
-    }
-
-    QcConnection connection;
-    QByteArray key;
-    QcEntityMotion motion;
-    QList<QcItemStack> stacks;
-    int selected = 0;
-    QStringList chatLines;
-    double health = 20.0;
-    QList<QcMsg::EntitySpawn> spawns;
-    QStringList sounds;
-};
-
-void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
-}
-
 constexpr double noon = QcDayCycle::dayLength * 0.25;
 constexpr double midnight = QcDayCycle::dayLength * 0.75;
 
 } // namespace
 
-// Stage 14 on the server: liquids with buckets, lava, falling blocks, vegetation rules, fireflies
+// World details on the server: liquids with buckets, lava, falling blocks, vegetation rules, fireflies
 // and the mine lamp, through a raw protocol client.
 class TestWorldDetails : public QObject
 {
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcServer> m_server;
-    std::unique_ptr<RawClient> m_client;
+    std::unique_ptr<QcRawClient> m_client;
     QcBlockPos m_feet;
     quint32 m_sequence = 1;
 
@@ -127,7 +62,8 @@ private:
     {
         const std::optional<QcBlockId> found = m_content->stateId(state.contains(u':') ? state : u"qtcraft:"_s + state);
         if (!found) {
-            qFatal("unknown block state %s", qPrintable(state));
+            QcTestUtil::failCase(QStringLiteral("unknown block state %1").arg(state));
+            return qcAirBlockId;
         }
         return *found;
     }
@@ -153,13 +89,7 @@ private:
         return total;
     }
 
-    void ticks(int count)
-    {
-        for (int i = 0; i < count; ++i) {
-            m_server->tick();
-            pump();
-        }
-    }
+    void ticks(int count) { QcTestUtil::ticks(*m_server, count); }
 
     void join(QcServerConfig config = {}, bool stage = true)
     {
@@ -172,9 +102,9 @@ private:
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
-        m_client = std::make_unique<RawClient>(std::move(clientEnd));
+        m_client = std::make_unique<QcRawClient>(std::move(clientEnd));
         m_client->hello(u"Tester"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
@@ -203,7 +133,7 @@ private:
     void send(const QcMessage &message)
     {
         m_client->connection.send(message);
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
     void chat(const QString &text) { send(QcMsg::ChatInput{text}); }
@@ -426,9 +356,9 @@ private slots:
         QVERIFY(m_server->openWorld().has_value());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
-        m_client = std::make_unique<RawClient>(std::move(clientEnd));
+        m_client = std::make_unique<QcRawClient>(std::move(clientEnd));
         m_client->hello(u"Tester"_s);
-        pump();
+        QcTestUtil::pump();
 
         for (int dx = -1; dx <= 1; ++dx) {
             for (int dz = -1; dz <= 1; ++dz) {

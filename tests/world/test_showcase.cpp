@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
 #include "worldgen/showcase/QcShowcaseCategories.h"
@@ -10,16 +10,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
-    if (!warnings.isEmpty()) {
-        qFatal("base content warnings: %s", qPrintable(warnings.join(u'\n')));
-    }
-    return content;
-}
 
 // Every chunk any placement of the plan touches, generated once.
 QHash<QcChunkPos, std::shared_ptr<QcChunk>> generateAll(const QcShowcaseGenerator &generator)
@@ -67,7 +57,7 @@ private:
 private slots:
     void initTestCase()
     {
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
         QStringList warnings;
         m_generator = std::make_unique<QcShowcaseGenerator>(m_content, &warnings);
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
@@ -302,7 +292,7 @@ private slots:
     void hostilePensAreThickerThanTheReach()
     {
         // A mod creature like the zombie but with a long reach.
-        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcMobDefinition lancer = content->mobs().at(*content->mobIndex(u"qtcraft:zombie"_s));
         lancer.name = u"test:lancer"_s;
         lancer.attackRange = 4.5;
@@ -349,7 +339,7 @@ private slots:
     {
         // The showcase stands at noon: creatures that burn in daylight (decision E-426) stand under
         // an opaque roof, which glass is not.
-        const std::shared_ptr<QcContentRegistry> content = loadContent();
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         const QcShowcaseGenerator generator(content);
         const QHash<QcChunkPos, std::shared_ptr<QcChunk>> chunks = generateAll(generator);
         int checked = 0;

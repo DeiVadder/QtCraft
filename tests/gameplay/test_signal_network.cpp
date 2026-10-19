@@ -1,4 +1,5 @@
 #include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/signal/QcDustNetwork.h"
@@ -13,12 +14,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // The per-block cascade of the reference, as the measure to beat: every dust that changes asks the
 // dust it links to to look again, each recomputing its strength from its neighbours alone. Turning
@@ -68,14 +63,15 @@ class TestSignalNetwork : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcSignalTable m_table{*m_content};
 
     QcBlockId state(const QString &text, int turns = 0) const
     {
         const std::optional<QcBlockId> parsed = m_content->stateId(u"qtcraft:"_s + text);
         if (!parsed) {
-            qFatal("unknown state %s", qPrintable(text));
+            QcTestUtil::failCase(QStringLiteral("unknown state %1").arg(text));
+            return qcAirBlockId;
         }
         return QcStateRotation::turned(*m_content, *parsed, turns);
     }

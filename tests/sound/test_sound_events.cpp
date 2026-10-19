@@ -1,13 +1,12 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include "QcTestLogin.h"
 
-#include <QCoreApplication>
 #include <QTest>
 
 #include <cmath>
@@ -63,13 +62,6 @@ public:
     QList<QcItemStack> stacks;
 };
 
-void pump()
-{
-    for (int i = 0; i < 5; ++i) {
-        QCoreApplication::processEvents();
-    }
-}
-
 QcVec3 centreOf(QcBlockPos pos)
 {
     return {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
@@ -84,10 +76,7 @@ class TestSoundEvents : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return std::shared_ptr<const QcContentRegistry>(*QcBaseContent::load(warnings));
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcServer> m_server;
     std::unique_ptr<SoundClient> m_client;
     QcBlockPos m_feet;
@@ -95,18 +84,12 @@ private:
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
 
-    void ticks(int count)
-    {
-        for (int i = 0; i < count; ++i) {
-            m_server->tick();
-            pump();
-        }
-    }
+    void ticks(int count) { QcTestUtil::ticks(*m_server, count); }
 
     void send(const QcMessage &message)
     {
         m_client->connection.send(message);
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -134,7 +117,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<SoundClient>(std::move(clientEnd));
         m_client->hello(u"Ears"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
@@ -170,7 +153,7 @@ private slots:
         const QcBlockPos target = m_feet.offset(1, 0, 0);
         QVERIFY(m_server->world().setBlock(target, id("qtcraft:dirt")));
         m_client->connection.send(QcMsg::StartMining{target});
-        pump();
+        QcTestUtil::pump();
 
         // Dirt by hand: 0.5 * 1.5 s = 15 ticks.
         ticks(16);
@@ -237,18 +220,18 @@ private slots:
         ticks(1);
         m_client->sounds.clear();
         m_client->connection.send(QcMsg::AttackEntity{pig});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->soundsNamed(u"qtcraft:mob.pig.hurt"_s).size(), 1);
 
         // A second hit within the invulnerability does nothing and is silent.
         ticks(2);
         m_client->connection.send(QcMsg::AttackEntity{pig});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->soundsNamed(u"qtcraft:mob.pig.hurt"_s).size(), 1);
         for (int attempt = 0; attempt < 15 && m_server->mobs().find(pig); ++attempt) {
             ticks(12);
             m_client->connection.send(QcMsg::AttackEntity{pig});
-            pump();
+            QcTestUtil::pump();
         }
         QVERIFY(!m_server->mobs().find(pig));
 

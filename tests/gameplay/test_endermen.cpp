@@ -1,5 +1,6 @@
 #include "common/content/parser/QcContentParser.h"
 #include "gameplay/QcEndermanFixture.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/mobs/QcNeutralBrain.h"
@@ -30,7 +31,7 @@ private slots:
     {
         m_client.reset();
         m_server.reset();
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void endermenComeFromData()
@@ -388,7 +389,7 @@ private slots:
             tickMs += ms / count;
             maxTickMs = std::max(maxTickMs, ms);
             mobsMs += double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Mobs)]) / 1e6 / count;
-            pump();
+            QcTestUtil::pump();
         }
         int carrying = 0;
         int angry = 0;

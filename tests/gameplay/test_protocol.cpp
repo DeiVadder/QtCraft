@@ -1,6 +1,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
+#include "QcTestUtil.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -24,10 +25,12 @@ T roundTrip(const T &message)
         QcProtocol::isSentBy(wrapped.index(), QcProtocol::Peer::Client) ? QcProtocol::Peer::Client : QcProtocol::Peer::Server;
     const QcResult<QcMessage> decoded = QcProtocol::decode(QcProtocol::encode(wrapped), sender);
     if (!decoded) {
-        qFatal("decode failed: %s", qPrintable(decoded.error()));
+        QcTestUtil::failCase(QStringLiteral("decode failed: %1").arg(decoded.error()));
+        return T{};
     }
     if (!std::holds_alternative<T>(*decoded)) {
-        qFatal("decoded wrong alternative");
+        QcTestUtil::failCase(QStringLiteral("decoded wrong alternative"));
+        return T{};
     }
     return std::get<T>(*decoded);
 }

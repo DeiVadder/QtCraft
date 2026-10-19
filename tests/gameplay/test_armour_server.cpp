@@ -252,7 +252,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient other(std::move(clientEnd));
         other.hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(3);
 
         const auto spawnOfRaw = [&other]() -> std::optional<QcMsg::EntitySpawn> {

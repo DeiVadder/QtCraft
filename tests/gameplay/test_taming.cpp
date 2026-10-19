@@ -2,6 +2,7 @@
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/content/registry/QcMobTraitsContent.h"
 #include "gameplay/QcPetFixture.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcTameBrain.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcEntityRecords.h"
@@ -28,7 +29,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return other;
     }
@@ -73,7 +74,7 @@ private slots:
     {
         m_client.reset();
         m_server.reset();
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void wolvesDogsCatsAndOcelotsComeFromData()
@@ -191,7 +192,7 @@ private slots:
         stranger.motion.position = mob(dog)->motion.position + QcVec3{0.0, 0.0, 2.0};
         stranger.pitch = 20.0f;
         other->connection.send(QcMsg::UseEntity{dog});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(mob(dog)->sits());
 
@@ -199,7 +200,7 @@ private slots:
         mob(dog)->health = 5.0;
         stranger.inventory.setSlot(stranger.inventory.selectedHotbarSlot(), QcItemStack{item("qtcraft:raw_porkchop"), 2, 0});
         other->connection.send(QcMsg::UseEntity{dog});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(mob(dog)->health, 9.0);
         QVERIFY(mob(dog)->sits());
@@ -370,7 +371,7 @@ private slots:
 
         // The owner leaves; the other player walks far away: the dog stays.
         other.reset();
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_server->clientCount(), 1);
         const QcVec3 stay = mob(dog)->motion.position;

@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "server/pathing/QcPathFinder.h"
 #include "world/QcVillageTestUtil.h"
 #include "worldgen/villages/QcBoardwalkPlanner.h"
@@ -54,13 +54,7 @@ private:
     // Regions around the origin searched for swamp villages.
     static constexpr int rings = 14;
 
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
     QList<std::shared_ptr<const QcVillagePlan>> m_plans = plansAround(m_generator, rings);
     QcPathCellTable m_cells{*m_content};

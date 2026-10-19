@@ -1,9 +1,9 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcRaycast.h"
 #include "common/protocol/QcTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
@@ -128,8 +128,7 @@ private:
 private slots:
     void init()
     {
-        QStringList warnings;
-        std::shared_ptr<const QcContentRegistry> content = *QcBaseContent::load(warnings);
+        std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
         QcServerConfig config;
         config.viewDistance = 2;
         config.worldName = u"Scenario"_s;

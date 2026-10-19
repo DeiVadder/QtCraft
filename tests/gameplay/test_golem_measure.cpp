@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "world/QcVillageFixture.h"
 
@@ -72,8 +72,7 @@ private slots:
         const bool full = qEnvironmentVariableIsSet("QTCRAFT_GOLEM_MEASURE");
         const double days = full ? std::max(1.0, qEnvironmentVariable("QTCRAFT_GOLEM_MEASURE").toDouble()) : 1.0;
         const int rounds = full ? 3 : 1;
-        QStringList warnings;
-        const std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
 
         QList<double> without;
         QList<double> with;

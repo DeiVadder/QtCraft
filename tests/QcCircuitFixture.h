@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 
 #include <QTest>
@@ -73,7 +74,8 @@ protected:
         QStringList problems;
         const std::optional<QcBlockId> parsed = m_content->stateId(text.contains(u':') ? text : QStringLiteral("qtcraft:") + text, &problems);
         if (!parsed || !problems.isEmpty()) {
-            qFatal("bad state %s: %s", qPrintable(text), qPrintable(problems.join(u", ")));
+            QcTestUtil::failCase(QStringLiteral("bad state %1: %2").arg(text, problems.join(u", ")));
+            return parsed ? *parsed : qcAirBlockId;
         }
         return QcStateRotation::turned(*m_content, *parsed, m_turns);
     }

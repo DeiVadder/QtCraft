@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 
 #include <QTest>
@@ -18,10 +18,7 @@ class TestVillageBounds : public QObject
 private:
     static constexpr qint64 seed = 42;
 
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     struct Box
     {

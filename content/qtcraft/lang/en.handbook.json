@@ -524,6 +524,7 @@
     "handbook.tag.text": "Recipes that ask for this group take any of its items.",
     "handbook.title": "QtCraft handbook",
     "handbook.tool.axe": "Axe",
+    "handbook.tool.hoe": "Hoe",
     "handbook.tool.pickaxe": "Pickaxe",
     "handbook.tool.shovel": "Shovel",
     "handbook.unit.blockRange": "%1–%2 blocks",

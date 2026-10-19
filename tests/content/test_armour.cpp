@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcArmourSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -26,12 +25,6 @@ QJsonObject json(const char *text)
     return QJsonDocument::fromJson(QByteArray(text)).object();
 }
 
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 } // namespace
 
 // Armour as data and its rules without a server (decisions E-234 to E-236, E-238, E-239): the
@@ -41,7 +34,7 @@ class TestArmour : public QObject
 {
     Q_OBJECT
 
-    std::shared_ptr<const QcContentRegistry> m_content = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcItemId item(const char *name) const { return *m_content->itemId(u"qtcraft:"_s + QString::fromLatin1(name)); }
 

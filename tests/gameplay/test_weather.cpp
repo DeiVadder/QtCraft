@@ -1,5 +1,6 @@
 #include "QcServerTestFixture.h"
 
+#include "QcTestUtil.h"
 #include "server/weather/QcWeatherCycle.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -46,7 +47,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         auto client = std::make_unique<RawClient>(std::move(clientEnd));
         client->hello(name);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return client;
     }
@@ -325,7 +326,7 @@ private slots:
 
         // A strike called directly reaches the player within hearing and the hook.
         m_server->systems().weather.strike(m_feet.offset(30, 0, 0));
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(struck.last(), m_feet.offset(30, 0, 0));
         QCOMPARE(m_client->lightning.last().x, m_feet.x + 30.5);
     }
@@ -339,7 +340,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(3);
 
         // The raw player goes far beyond hearing (and stays in the air: the server moves raw players
@@ -354,12 +355,12 @@ private slots:
         // A strike near one player reaches only that one.
         const QcBlockPos nearOther{int(std::floor(there.x)) + 10, int(std::floor(there.y)), int(std::floor(there.z))};
         m_server->systems().weather.strike(nearOther);
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(other->lightning.size(), 1);
         QCOMPARE(m_client->lightning.size(), 0);
         const QcBlockPos nearRaw{int(std::floor(here.x)) - 10, int(std::floor(here.y)), int(std::floor(here.z))};
         m_server->systems().weather.strike(nearRaw);
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(other->lightning.size(), 1);
         QCOMPARE(m_client->lightning.size(), 1);
 

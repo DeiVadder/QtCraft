@@ -1,6 +1,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -41,7 +42,7 @@ private:
         input.sequence = ++m_sequence;
         input.flying = flying;
         m_client->connection.send(QcMsg::PlayerInput{input});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 

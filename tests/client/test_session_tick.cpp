@@ -2,9 +2,9 @@
 #include "clientcore/tick/QcSessionCore.h"
 #include "clientcore/tick/QcTickPacer.h"
 #include "clientcore/tick/QcTickTiming.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "QcRecordingTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
@@ -16,6 +16,7 @@
 #include <QTimer>
 
 #include <algorithm>
+#include <optional>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -31,16 +32,6 @@ namespace {
 
 constexpr int timeoutMs = 20000;
 constexpr qint64 intervalNs = qint64(QcPhysics::tickDuration * 1e9);
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    auto content = QcBaseContent::load(warnings);
-    if (!content) {
-        qFatal("content failed: %s", qPrintable(content.error()));
-    }
-    return std::move(*content);
-}
 
 bool fullMeasurement()
 {
@@ -96,22 +87,23 @@ class TestSessionTick : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
-    static void waitUntilPlaying(const QcClientSession &session)
+    [[nodiscard]] static bool waitUntilPlaying(const QcClientSession &session)
     {
-        if (!QTest::qWaitFor([&] { return session.state() == QcClientSession::State::Playing; }, timeoutMs)) {
-            qFatal("the session did not start playing");
-        }
+        return QTest::qWaitFor([&] { return session.state() == QcClientSession::State::Playing; }, timeoutMs);
     }
 
     // Plays for `measureMs` with a frame every 8 ms that blocks `stallMs` once every 300 ms.
-    Result measure(int stallMs, int measureMs)
+    // Empty when the session does not start playing or the server does not shut down.
+    std::optional<Result> measure(int stallMs, int measureMs)
     {
         auto host = makeHost(m_content);
         QcClientSession session(host->connectClient(), u"Ticker"_s);
         session.start();
-        waitUntilPlaying(session);
+        if (!waitUntilPlaying(session)) {
+            return std::nullopt;
+        }
 
         QElapsedTimer sinceStall;
         sinceStall.start();
@@ -153,7 +145,7 @@ private:
         result.appliedRatio = double(session.tickCount() - ticksBefore) / due;
         session.disconnectFromServer();
         if (!host->shutdown()) {
-            qFatal("the server did not shut down");
+            return std::nullopt;
         }
         return result;
     }
@@ -202,7 +194,9 @@ private slots:
     void ticksAcrossLongFrames()
     {
         QFETCH(int, stallMs);
-        const Result result = measure(stallMs, fullMeasurement() ? 6000 : 1500);
+        const std::optional<Result> measured = measure(stallMs, fullMeasurement() ? 6000 : 1500);
+        QVERIFY(measured);
+        const Result &result = *measured;
         qInfo().noquote() << u"MEASURE stall_ms=%1 every_ms=300 pace=%2 applied=%11 gui_interval_p99_ms=%3 gui_interval_max_ms=%4 gui_gaps=%5 "
                              u"core_ticks=%6 core_missed=%7 core_late_avg_ms=%8 core_late_p99_ms=%9 core_late_max_ms=%10"_s
                                  .arg(stallMs)
@@ -307,7 +301,7 @@ private slots:
         auto host = makeHost(m_content);
         QcClientSession session(host->connectClient(), u"Ticker"_s);
         session.start();
-        waitUntilPlaying(session);
+        QVERIFY(waitUntilPlaying(session));
         QVERIFY(QTest::qWaitFor([&] { return session.playerMotion().onGround; }, timeoutMs));
 
         QcPlayerInput forward = session.intent();
@@ -345,7 +339,7 @@ private slots:
         const QcRecordingTransport *wire = recording.get();
         QcClientSession session(std::move(recording), u"Ticker"_s);
         session.start();
-        waitUntilPlaying(session);
+        QVERIFY(waitUntilPlaying(session));
 
         QList<qint32> chosen;
         for (int round = 0; round < 3; ++round) {
@@ -392,10 +386,10 @@ private slots:
                 session->start();
             }
             if (round % 4 == 0) {
-                waitUntilPlaying(*session);
+                QVERIFY(waitUntilPlaying(*session));
                 session->disconnectFromServer();
             } else if (round % 4 == 1) {
-                waitUntilPlaying(*session);
+                QVERIFY(waitUntilPlaying(*session));
             }
             session.reset();
         }
@@ -411,7 +405,7 @@ private slots:
         QcClientSession session(host->connectClient(), u"Ticker"_s);
         session.start();
         qunsetenv("QTCRAFT_SESSION_THREAD");
-        waitUntilPlaying(session);
+        QVERIFY(waitUntilPlaying(session));
 
         const quint64 before = session.tickCount();
         QThread::msleep(120);

@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
@@ -60,9 +60,8 @@ private:
     // them loaded.
     static Village gnomeVillage()
     {
-        QStringList warnings;
         Village result;
-        result.content = *QcBaseContent::load(warnings);
+        result.content = QcTestUtil::loadContent();
         QcContentRegistry &content = *result.content;
         QcVillagerSettings gnomes = *content.villagerSettings(u"qtcraft:villager"_s);
         gnomes.name = u"test:gnome"_s;

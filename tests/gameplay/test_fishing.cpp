@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerSystems.h"
 #include "server/projectiles/QcPlayerFishing.h"
 #include "server/storage/QcEntityRecords.h"
@@ -392,7 +393,7 @@ private slots:
         joinWithRod();
         castIntoPool();
         m_client.reset();
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QVERIFY(m_server->entities().clients().empty());
         QCOMPARE(projectiles(), 0);
@@ -438,7 +439,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QcServerClient &angler = *m_server->entities().clients().back();
         QVERIFY(&angler != &player());
@@ -448,7 +449,7 @@ private slots:
         angler.yaw = 90.0f;
         angler.pitch = -20.0f;
         other->connection.send(QcMsg::ThrowItem{});
-        pump();
+        QcTestUtil::pump();
         castIntoPool();
         ticks(5);
 

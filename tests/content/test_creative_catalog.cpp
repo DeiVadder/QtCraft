@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcCreativeCatalog.h"
+#include "QcTestUtil.h"
 
 #include <QSet>
 #include <QTest>
@@ -10,12 +10,6 @@ using namespace Qt::StringLiterals;
 // The catalogue of the creative inventory (decision E-286): every item once, mods included, the
 // tabs, and the search by translated name, English name and id.
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 QStringList namesOf(const QcContentRegistry &content, const QList<const QcCreativeCatalog::Entry *> &entries)
 {
@@ -33,7 +27,7 @@ class TestCreativeCatalog : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcCreativeCatalog::Category categoryOf(const char *name) const
     {

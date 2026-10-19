@@ -1,6 +1,7 @@
 #include "QcServerTestFixture.h"
 
 #include "common/gameplay/QcMining.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/core/QcRateLimiter.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -46,10 +47,10 @@ private:
     void mine(QcBlockPos target, int tickCount)
     {
         m_client->connection.send(QcMsg::StartMining{target});
-        pump();
+        QcTestUtil::pump();
         ticks(tickCount);
         m_client->connection.send(QcMsg::FinishMining{target});
-        pump();
+        QcTestUtil::pump();
     }
 
     // Client message types that neither pay into a bucket nor are deliberately unlimited, and other
@@ -184,7 +185,7 @@ private slots:
         for (int i = 0; i < 200; ++i) {
             m_client->connection.send(QcMsg::QuickMoveItem{QcMsg::QuickMoveItem::craftingResultSlot});
         }
-        pump();
+        QcTestUtil::pump();
 
         // A second later 40 tokens are back; the 41st message is dropped and the report counts the
         // 119 drops of the flood not yet reported plus this one.
@@ -193,7 +194,7 @@ private slots:
         for (int i = 0; i < 41; ++i) {
             m_client->connection.send(QcMsg::QuickMoveItem{QcMsg::QuickMoveItem::craftingResultSlot});
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->clientCount(), 1);
     }
 
@@ -215,7 +216,7 @@ private slots:
         for (const QcBlockPos &other : others) {
             m_client->connection.send(QcMsg::FinishMining{other});
         }
-        pump();
+        QcTestUtil::pump();
 
         QCOMPARE(m_client->blockUpdates.size(), 3);
         QCOMPARE(m_client->blockUpdates[0].pos, target);
@@ -230,7 +231,7 @@ private slots:
         for (int i = 0; i < 10; ++i) {
             m_client->connection.send(QcMsg::StartMining{target});
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->blockUpdates.size(), 1);
         QCOMPARE(m_client->blockUpdates[0].pos, target);
     }
@@ -245,7 +246,7 @@ private slots:
         for (int i = 0; i < 30; ++i) {
             m_client->connection.send(QcMsg::ChatInput{u"line %1"_s.arg(i)});
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->chatLines.size(), 20);
         QCOMPARE(m_client->chatLines.constLast(), u"<Raw> line 19"_s);
 
@@ -255,7 +256,7 @@ private slots:
         for (int i = 0; i < 3; ++i) {
             m_client->connection.send(QcMsg::ChatInput{u"later %1"_s.arg(i)});
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->chatLines.size(), 22);
         ticks(1);
         QCOMPARE(m_server->clientCount(), 1);
@@ -269,7 +270,7 @@ private slots:
         m_server->addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         RawClient owner(std::move(clientEnd));
         owner.hello(u"Owner"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(m_server->clientCount(), 2);
         owner.chatKeys.clear();
@@ -279,7 +280,7 @@ private slots:
         for (int i = 0; i < 100; ++i) {
             owner.connection.send(QcMsg::ChatInput{u"/heal"_s});
         }
-        pump();
+        QcTestUtil::pump();
         const auto healed = std::count_if(owner.chatKeys.cbegin(), owner.chatKeys.cend(),
                                           [](const QcMsg::ChatMessage &line) { return line.key == u"Healed"_s; });
         QCOMPARE(healed, 100);
@@ -289,7 +290,7 @@ private slots:
         for (int i = 0; i < 81; ++i) {
             owner.connection.send(QcMsg::QuickMoveItem{QcMsg::QuickMoveItem::craftingResultSlot});
         }
-        pump();
+        QcTestUtil::pump();
 
         // The remote client is cut off as before: 20 of 30 commands go through.
         m_client->chatKeys.clear();
@@ -297,7 +298,7 @@ private slots:
         for (int i = 0; i < 30; ++i) {
             m_client->connection.send(QcMsg::ChatInput{u"/heal"_s});
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_client->chatKeys.size(), 20);
         QCOMPARE(m_server->clientCount(), 2);
     }
@@ -365,12 +366,12 @@ private slots:
         const double health = m_server->mobs().find(pig)->health;
 
         m_client->connection.send(QcMsg::AttackEntity{pig});
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->mobs().find(pig)->health, health);
 
         removeWall();
         m_client->connection.send(QcMsg::AttackEntity{pig});
-        pump();
+        QcTestUtil::pump();
         QVERIFY(m_server->mobs().find(pig)->health < health);
     }
 
@@ -421,13 +422,13 @@ private slots:
 
         // The cane is put in after the ticks of mining, so no plant rule removes it first.
         m_client->connection.send(QcMsg::StartMining{target});
-        pump();
+        QcTestUtil::pump();
         ticks(enough);
         m_server->world().setBlock(m_feet, id("qtcraft:sugar_cane"));
         m_server->world().setBlock(eyeCell, id("qtcraft:sugar_cane"));
         m_client->connection.send(QcMsg::FinishMining{target});
         m_client->connection.send(QcMsg::AttackEntity{pig});
-        pump();
+        QcTestUtil::pump();
 
         QCOMPARE(m_server->world().blockAt(target), std::optional<QcBlockId>(qcAirBlockId));
         QVERIFY(m_server->mobs().find(pig)->health < health);

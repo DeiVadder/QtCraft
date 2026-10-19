@@ -1,8 +1,8 @@
 #include "clientcore/session/QcClientTrading.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcTradeParser.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/storage/QcVillagerCodec.h"
 #include "server/villages/QcVillagerTrades.h"
 
@@ -22,10 +22,7 @@ class TestTradeOffers : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcVillagerTrades m_trades{*m_content, *m_content->villagerSettings(u"qtcraft:villager"_s)};
 
     static QcVillagerRecord villagerOf(const QString &profession, int level, quint32 look = 7)

@@ -1,5 +1,6 @@
 #include "common/content/parser/QcCommandMacroParser.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcPendingCommands.h"
 
@@ -47,7 +48,7 @@ private:
     {
         QStringList lines;
         m_server->runConsoleCommand(line, [&lines](const QcMsg::ChatMessage &reply) { lines.append(reply.text); });
-        pump();
+        QcTestUtil::pump();
         return lines;
     }
 
@@ -68,7 +69,7 @@ private slots:
         m_client.reset();
         m_server.reset();
         m_origin = QcServer::ClientOrigin::Remote;
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void playersMayUseOnlyPlayerCommands()

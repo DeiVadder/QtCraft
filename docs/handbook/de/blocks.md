@@ -5992,7 +5992,7 @@ Neun Weizen zum Ballen gebunden, und wieder zu neun Weizen zerlegt. Fängt leich
 | ID | `qtcraft:hay_block` |
 | Härte | 0,5 |
 | Abbauen mit der Hand | 0,75 s |
-| Werkzeug | hoe (schneller, nicht nötig) |
+| Werkzeug | Hacke (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,06 s: [Goldhacke](tools.md#item-qtcraft-golden_hoe) |
 | Beute | [Strohballen](#block-qtcraft-hay_block) |
 | Brennbar | fängt Feuer 60, brennt ab 20 (0 bis 100) |

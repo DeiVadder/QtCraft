@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcMobManager.h"
@@ -32,10 +32,7 @@ class TestMobNavigation : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     quint32 m_nextId = 100;
 
     std::unique_ptr<QcServerWorld> makeWorld(int radius = 2)

@@ -1,6 +1,7 @@
 #include "QcServerTestFixture.h"
 
 #include "common/core/QcTickPhase.h"
+#include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -50,7 +51,7 @@ private:
         timer.start();
         m_server->tick();
         Tick tick{timer.nsecsElapsed(), index, m_server->tickPhases().lastTick()};
-        pump();
+        QcTestUtil::pump();
         return tick;
     }
 

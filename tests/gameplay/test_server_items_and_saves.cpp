@@ -1,6 +1,7 @@
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 
 #include <QFile>
 #include <QTemporaryDir>
@@ -35,7 +36,7 @@ private slots:
         // The autosave wrote the player too; remove it so only the save on disconnect can recreate it.
         QVERIFY(QFile::remove(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Raw"_s))));
         m_client->connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         // Saved with the world in the background (decision E-378).
         m_server->waitForStorage();
@@ -52,21 +53,21 @@ private slots:
         QVERIFY(m_client->dead);
 
         m_client->connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(1);
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         QVERIFY(m_client->dead);
         QCOMPARE(m_client->health, 0.0);
 
         m_client->connection.send(QcMsg::Respawn{});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(!m_client->dead);
         QCOMPARE(m_client->health, 20.0);
@@ -81,14 +82,14 @@ private slots:
         chat(u"/feed 9"_s);
 
         m_client->connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(1);
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
 
         QCOMPARE(m_client->food, 9);

@@ -27,6 +27,7 @@ std::shared_ptr<const QcContentRegistry> contentWithMod()
     crate.name = u"mod:crate"_s;
     crate.containerSlots = 9;
     if (!content->registerItem(gem) || !content->registerBlock(crate)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register the mod content");
     }
     return content;
@@ -454,7 +455,7 @@ private slots:
         m_server.reset();
 
         // Opened without the mod: the crate is air, its sticks lie where it stood.
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
         join(config);
         QVERIFY(!m_server->blockEntities().container(crate));
         QCOMPARE(droppedCount(item("qtcraft:stick")), 12);

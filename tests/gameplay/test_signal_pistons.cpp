@@ -1,4 +1,5 @@
 #include "QcCircuitFixture.h"
+#include "QcTestUtil.h"
 #include "server/signal/QcMovingBlocks.h"
 
 #include <QTemporaryDir>
@@ -10,13 +11,12 @@ namespace {
 // Base content plus a piston that refuses quasi-connectivity in its data.
 std::shared_ptr<const QcContentRegistry> contentWithDirectPiston()
 {
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+    std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
     QcBlockDefinition direct = content->block(*content->blockId(u"qtcraft:signal_piston"_s));
     direct.name = u"test:direct_piston"_s;
     direct.signal.quasiConnectivity = false;
     if (!content->registerBlock(direct)) {
-        qFatal("cannot register test:direct_piston");
+        QcTestUtil::failCase(QStringLiteral("cannot register test:direct_piston"));
     }
     return content;
 }

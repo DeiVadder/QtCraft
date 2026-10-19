@@ -1,5 +1,6 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/mobs/QcMobSteering.h"
 
@@ -166,7 +167,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QcServerClient &bystander = *m_server->entities().clients().back();
         QVERIFY(&bystander != &player());

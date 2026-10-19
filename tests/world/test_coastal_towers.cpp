@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -28,10 +28,7 @@ private:
     using Chunks = QHash<QcChunkPos, std::shared_ptr<QcChunk>>;
     using Plans = QList<std::shared_ptr<const QcCoastalTowerPlan>>;
 
-    std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcTerrainGenerator> m_terrain;
     Plans m_plans;
 

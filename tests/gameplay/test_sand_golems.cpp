@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/explosions/QcServerExplosions.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"
@@ -242,7 +243,7 @@ private:
                 m_server->world().setBlock(at, qcAirBlockId);
             }
         }
-        pump();
+        QcTestUtil::pump();
     }
 
     // The items of `name` lying in the world or about to be dropped.

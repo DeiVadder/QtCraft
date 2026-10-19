@@ -83,7 +83,7 @@ Macht Gras und Erde zu Ackerboden und hält sehr lange.
 |---|---|
 | ID | `qtcraft:diamond_hoe` |
 | Stapelgröße | 1 |
-| Werkzeug | hoe, Stufe 4: [Werkzeugstufen](tables.md#table-tools) |
+| Werkzeug | Hacke, Stufe 4: [Werkzeugstufen](tables.md#table-tools) |
 | Abbaugeschwindigkeit | × 8 |
 | Haltbarkeit | 1561 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
@@ -296,7 +296,7 @@ Macht Gras und Erde zu Ackerboden; hält lange.
 |---|---|
 | ID | `qtcraft:iron_hoe` |
 | Stapelgröße | 1 |
-| Werkzeug | hoe, Stufe 3: [Werkzeugstufen](tables.md#table-tools) |
+| Werkzeug | Hacke, Stufe 3: [Werkzeugstufen](tables.md#table-tools) |
 | Abbaugeschwindigkeit | × 6 |
 | Haltbarkeit | 250 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
@@ -509,7 +509,7 @@ Macht Gras und Erde zu Ackerboden, nutzt sich aber schnell ab.
 |---|---|
 | ID | `qtcraft:golden_hoe` |
 | Stapelgröße | 1 |
-| Werkzeug | hoe, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
+| Werkzeug | Hacke, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
 | Abbaugeschwindigkeit | × 12 |
 | Haltbarkeit | 32 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
@@ -677,7 +677,7 @@ Macht Gras und Erde zu Ackerboden. Jeder bestellte Block nutzt sie etwas ab.
 |---|---|
 | ID | `qtcraft:wooden_hoe` |
 | Stapelgröße | 1 |
-| Werkzeug | hoe, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
+| Werkzeug | Hacke, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
 | Abbaugeschwindigkeit | × 2 |
 | Haltbarkeit | 59 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
@@ -894,7 +894,7 @@ Macht Gras und Erde zu Ackerboden; hält länger als Holz.
 |---|---|
 | ID | `qtcraft:stone_hoe` |
 | Stapelgröße | 1 |
-| Werkzeug | hoe, Stufe 2: [Werkzeugstufen](tables.md#table-tools) |
+| Werkzeug | Hacke, Stufe 2: [Werkzeugstufen](tables.md#table-tools) |
 | Abbaugeschwindigkeit | × 4 |
 | Haltbarkeit | 131 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |

@@ -1,4 +1,5 @@
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/explosions/QcBlastField.h"
 #include "server/explosions/QcExplosionRays.h"
@@ -435,7 +436,7 @@ private slots:
             timer.start();
             m_server->tick();
             const qint64 ns = timer.nsecsElapsed();
-            pump();
+            QcTestUtil::pump();
             totalNs += ns;
             worstNs = std::max(worstNs, ns);
         }

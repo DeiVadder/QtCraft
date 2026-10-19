@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 
 #include <QFile>
 #include <QTemporaryDir>
@@ -75,7 +76,7 @@ private slots:
             m_client->connection.send(QcMsg::CraftRecipe{u"qtcraft:oak_planks"_s, count});
             m_client->connection.send(QcMsg::TakeCraftingResult{});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         QCOMPARE(total(), before);
         // 3 x 3-only cells stay empty without a table.
@@ -112,14 +113,14 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
         // Disconnect with the grid full, then rejoin: the logs are back in the inventory.
         m_client->connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         const auto rejoin = [this] {
             auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
             m_server->addClient(std::move(serverEnd));
             m_client = std::make_unique<RawClient>(std::move(clientEnd));
             m_client->hello(u"Raw"_s);
-            pump();
+            QcTestUtil::pump();
             ticks(2);
         };
         rejoin();
@@ -327,10 +328,10 @@ private slots:
 
         // Hardness 3.5 x 1.5 s / wooden pickaxe speed 2 = 2.6 s; one coal lights meanwhile.
         m_client->connection.send(QcMsg::StartMining{pos});
-        pump();
+        QcTestUtil::pump();
         ticks(60);
         m_client->connection.send(QcMsg::FinishMining{pos});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
 
         QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
@@ -432,7 +433,7 @@ private slots:
         chat(u"/give stone 2304"_s);
         if (disconnectFirst) {
             m_client->connection.close();
-            pump();
+            QcTestUtil::pump();
         }
 
         QVERIFY(m_server->stop().has_value());

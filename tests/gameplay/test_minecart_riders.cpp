@@ -1,5 +1,6 @@
 #include "common/world/QcMinecartBody.h"
 #include "QcRailFixture.h"
+#include "QcTestUtil.h"
 #include "server/minecarts/QcServerMinecarts.h"
 
 #include <QTemporaryDir>
@@ -31,7 +32,7 @@ private slots:
         // track's level, not inside the block under the rail, and stays there.
         ride(id);
         m_client->connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(cart(id).rider, 0u);
         m_server->waitForStorage();
@@ -191,7 +192,7 @@ private:
         input.forward = forward;
         input.yaw = yaw;
         m_client->connection.send(QcMsg::PlayerInput{input});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -227,7 +228,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
     }
 

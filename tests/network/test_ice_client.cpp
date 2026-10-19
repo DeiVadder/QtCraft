@@ -1,8 +1,8 @@
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -14,12 +14,6 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 30'000;
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // The content as the client gets it: written by the server and read back.
 QcResult<QcContentRegistry> roundTrip(const QcContentRegistry &content)
@@ -63,7 +57,7 @@ class TestIceClient : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcLocalServerHost> m_host;
     std::unique_ptr<QcClientSession> m_session;
 

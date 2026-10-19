@@ -1,5 +1,6 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
+#include "QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 #include "worldgen/structures/QcStructure.h"
 #include "worldgen/structures/QcStructurePlacement.h"
@@ -12,16 +13,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
-    if (!warnings.isEmpty()) {
-        qFatal("base content warnings: %s", qPrintable(warnings.join(u'\n')));
-    }
-    return content;
-}
 
 QString text(const char *raw)
 {
@@ -37,7 +28,8 @@ QcBlockId id(const QcContentRegistry &content, const QString &state)
 {
     const std::optional<QcBlockId> found = content.stateId(state);
     if (!found) {
-        qFatal("unknown state %s", qPrintable(state));
+        QcTestUtil::failCase(QStringLiteral("unknown state %1").arg(state));
+        return qcAirBlockId;
     }
     return *found;
 }
@@ -65,7 +57,7 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content;
 
 private slots:
-    void initTestCase() { m_content = loadContent(); }
+    void initTestCase() { m_content = QcTestUtil::loadContent(); }
 
     void parsesLayersPaletteAndExtras()
     {

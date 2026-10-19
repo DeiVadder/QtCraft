@@ -26,7 +26,7 @@ Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit 
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1, × 12, 32 Benutzungen), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1, × 2, 59 Benutzungen), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2, × 4, 131 Benutzungen), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3, × 6, 250 Benutzungen), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4, × 8, 1561 Benutzungen)
 
-**hoe**
+**Hacke**
 
 [Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1, × 12, 32 Benutzungen), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1, × 2, 59 Benutzungen), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2, × 4, 131 Benutzungen), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3, × 6, 250 Benutzungen), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4, × 8, 1561 Benutzungen)
 

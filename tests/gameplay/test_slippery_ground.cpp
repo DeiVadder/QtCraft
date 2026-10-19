@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/core/QcServerWorld.h"
 #include "server/items/QcItemEntityManager.h"
@@ -34,16 +34,14 @@ class TestSlipperyGround : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcBlockId block(const QString &name) const
     {
         const std::optional<QcBlockId> id = m_content->stateId(u"qtcraft:"_s + name);
         if (!id) {
-            qFatal("unknown block %s", qPrintable(name));
+            QcTestUtil::failCase(QStringLiteral("unknown block %1").arg(name));
+            return qcAirBlockId;
         }
         return *id;
     }

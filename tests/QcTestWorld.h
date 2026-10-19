@@ -50,6 +50,7 @@ inline QcContentRegistry qcMakeTestContent()
     stone.name = QStringLiteral("test:stone");
     stone.faceTextures.fill(QStringLiteral("test:stone"));
     if (!content.registerBlock(stone)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test:stone");
     }
 
@@ -63,6 +64,7 @@ inline QcContentRegistry qcMakeTestContent()
     water.lightOpacity = 2;
     water.faceTextures.fill(QStringLiteral("test:water"));
     if (!content.registerBlock(water)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test:water");
     }
 

@@ -1,6 +1,7 @@
 #include "clientcore/session/QcSnapshotBuffer.h"
 #include "common/gameplay/QcExperience.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 
 #include <QTemporaryDir>
@@ -282,7 +283,7 @@ private slots:
 
         m_server->orbs().clear();
         m_client->connection.send(QcMsg::Respawn{});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         chat(u"/xp set Raw 40 levels"_s);
         chat(u"/kill"_s);

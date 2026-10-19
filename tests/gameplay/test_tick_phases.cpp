@@ -1,5 +1,6 @@
 #include "common/core/QcPhaseWindow.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/tick/QcTickPhaseTimer.h"
 
@@ -117,7 +118,7 @@ private slots:
             measuredNs += outside.nsecsElapsed();
             const QcTickPhaseTimer::Durations &tick = m_server->tickPhases().lastTick();
             phasesNs += std::accumulate(tick.begin(), tick.begin() + QcTickPhases::inTick, qint64(0));
-            pump();
+            QcTestUtil::pump();
         }
 
         QVERIFY2(phasesNs <= measuredNs, qPrintable(u"phases %1 ns, ticks %2 ns"_s.arg(phasesNs).arg(measuredNs)));
@@ -138,7 +139,7 @@ private slots:
         join();
         m_server->resetTickTimes();
         m_client->connection.send(QcMsg::ChatInput{u"/help"_s});
-        pump();
+        QcTestUtil::pump();
         ticks(10);
 
         const QcTickStats::Summary summary = m_server->tickTimes();
@@ -159,7 +160,7 @@ private slots:
 
         // The first message comes with the next tick, then one every ten ticks.
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::stats});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(m_client->debugMessages.size(), 1);
         ticks(40);
@@ -180,7 +181,7 @@ private slots:
         QVERIFY(last.goals.isEmpty());
 
         m_client->connection.send(QcMsg::DebugSubscribe{0});
-        pump();
+        QcTestUtil::pump();
         ticks(30);
         QCOMPARE(m_client->debugMessages.size(), 5);
     }
@@ -197,7 +198,7 @@ private slots:
         m_server->mobs().spawn(*zombie, player + QcVec3{200.0, 0.0, 0.0}, 900002);
 
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::all});
-        pump();
+        QcTestUtil::pump();
         // Within one look for players (QcMobSteering::sightCheckTicks) the zombie sees the player.
         ticks(QcMobSteering::sightCheckTicks + 2);
         QVERIFY(!m_client->debugMessages.isEmpty());
@@ -219,7 +220,7 @@ private slots:
         for (int i = 0; i <= 20; ++i) {
             m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::stats : 0)});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QCOMPARE(m_client->debugMessages.size(), 1);
 
@@ -227,7 +228,7 @@ private slots:
         for (int i = 0; i < 20; ++i) {
             m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::all : 0)});
         }
-        pump();
+        QcTestUtil::pump();
         ticks(30);
         QCOMPARE(m_client->debugMessages.size(), 1);
     }
@@ -240,7 +241,7 @@ private slots:
         // A new subscription every tick does not bring a message every tick.
         for (int i = 0; i < 40; ++i) {
             m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::stats : QcMsg::DebugSubscribe::all)});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
         QCOMPARE(m_client->debugMessages.size(), 4);
@@ -261,7 +262,7 @@ private slots:
         m_server->mobs().spawn(*zombie, m_client->motion.position + QcVec3{4.0, 0.0, 0.0}, 900001);
 
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::all});
-        pump();
+        QcTestUtil::pump();
         ticks(40);
         QVERIFY(m_client->debugMessages.isEmpty());
         QCOMPARE(m_server->clientCount(), 1);
@@ -272,7 +273,7 @@ private slots:
         m_origin = QcServer::ClientOrigin::Remote;
         join();
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::stats});
-        pump();
+        QcTestUtil::pump();
         ticks(20);
         QVERIFY(!m_client->debugMessages.isEmpty());
 
@@ -282,7 +283,7 @@ private slots:
         ticks(20);
         QVERIFY(m_client->debugMessages.isEmpty());
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::stats});
-        pump();
+        QcTestUtil::pump();
         ticks(20);
         QVERIFY(m_client->debugMessages.isEmpty());
     }

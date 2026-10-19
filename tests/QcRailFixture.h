@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcCircuitFixture.h"
+#include "QcTestUtil.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcRails.h"
 #include "server/entities/QcEntityChecks.h"
@@ -105,14 +106,16 @@ protected:
     {
         const std::optional<QcVec3> spot = m_server->systems().minecarts.restingPlace(cell);
         if (!spot) {
-            qFatal("no rail for a cart");
+            QcTestUtil::failCase(QStringLiteral("no rail for a cart"));
+            return 0;
         }
         QcMinecart cart = m_server->carts().fromItem(item);
         cart.motion.position = *spot;
         cart.motion.velocity = velocity;
         const QcMinecart *spawned = m_server->systems().minecarts.spawn(cart);
         if (!spawned) {
-            qFatal("cart refused");
+            QcTestUtil::failCase(QStringLiteral("cart refused"));
+            return 0;
         }
         return spawned->id;
     }

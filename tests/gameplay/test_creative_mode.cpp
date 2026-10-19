@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcHunger.h"
 #include "server/gameplay/QcServerGameModes.h"
 #include "server/network/QcServerSettings.h"
@@ -44,7 +45,7 @@ private:
             input.flying = true;
             input.jump = jump;
             m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
     }
@@ -57,7 +58,7 @@ private:
             input.sequence = ++m_sequence;
             input.jump = true;
             m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
+            QcTestUtil::pump();
             ticks(1);
         }
     }

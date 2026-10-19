@@ -1,4 +1,5 @@
 #include "gameplay/QcPetFixture.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcMobFear.h"
 #include "server/projectiles/QcServerProjectiles.h"
 
@@ -25,7 +26,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return other;
     }
@@ -70,7 +71,7 @@ private slots:
     {
         m_client.reset();
         m_server.reset();
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void aDogFightsWhatHurtsItsOwner()
@@ -213,7 +214,7 @@ private slots:
         stranger.yaw = 0.0f;
         stranger.pitch = 20.0f;
         other->connection.send(QcMsg::AttackEntity{theirs});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(mob(theirs)->health < full);
     }

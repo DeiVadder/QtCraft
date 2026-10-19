@@ -19,7 +19,8 @@ QcRecipeDefinition recipe(const char *text)
 {
     const auto parsed = QcContentParser::parseRecipe(json(text), u"t"_s);
     if (!parsed) {
-        qFatal("recipe: %s", qPrintable(parsed.error()));
+        QcTestUtil::failCase(QStringLiteral("recipe: %1").arg(parsed.error()));
+        return {};
     }
     return *parsed;
 }

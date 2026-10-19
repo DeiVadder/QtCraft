@@ -1,4 +1,5 @@
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 
 using namespace Qt::StringLiterals;
 
@@ -62,7 +63,7 @@ private:
         first.name = u"aaa:first"_s;
         first.translationKey = u"item.aaa.first"_s;
         if (!content->registerItem(first) || !QcBaseContent::loadInto(*content, warnings)) {
-            qFatal("cannot load the content with an item first");
+            QcTestUtil::failCase(QStringLiteral("cannot load the content with an item first"));
         }
         warnings += content->finish();
         return content;

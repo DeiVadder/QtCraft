@@ -27,6 +27,7 @@ std::shared_ptr<const QcContentRegistry> machineContent()
         definition.machine = machine;
         definition.faceTextures.fill(name);
         if (!content->registerBlock(definition)) {
+            // Builds content for a member initialiser, outside any test case; no case can run without it.
             qFatal("cannot register block");
         }
     };
@@ -44,6 +45,7 @@ std::shared_ptr<const QcContentRegistry> machineContent()
         definition.maxStack = maxStack;
         definition.emptiesTo = emptiesTo;
         if (!content->registerItem(definition)) {
+            // Builds content for a member initialiser, outside any test case; no case can run without it.
             qFatal("cannot register item");
         }
     };
@@ -89,6 +91,8 @@ private:
     QcBlockEntities::Machine &setUp(Machines &machines, QcItemStack input, QcItemStack fuel, QcItemStack output = {})
     {
         if (!machines.entities.ensure(m_pos, block("t:furnace"))) {
+            // Callers hold on to the returned machine, and nothing could stand in for it; only broken
+            // test content (a furnace that is no machine) gets here.
             qFatal("cannot add machine");
         }
         QcBlockEntities::Machine &machine = *machines.entities.machine(m_pos);

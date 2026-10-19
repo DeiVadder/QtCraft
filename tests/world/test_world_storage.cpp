@@ -30,7 +30,7 @@ std::shared_ptr<QcContentRegistry> registryWith(const QStringList &names)
     auto content = std::make_shared<QcContentRegistry>();
     for (const QString &name : names) {
         if (!content->registerBlock(block(name))) {
-            qFatal("register failed");
+            QcTestUtil::failCase(QStringLiteral("register failed"));
         }
     }
     content->createBlockItems();

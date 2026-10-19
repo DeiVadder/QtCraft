@@ -2,6 +2,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "world/QcShowcaseTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -19,7 +20,7 @@ class TestShowcaseStations : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = QcShowcaseTestUtil::loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     // A pen of the showcase (a structure) with the kinds of creatures it holds, how many, and the
     // box it takes in the world.
@@ -158,7 +159,7 @@ private slots:
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Viewer"_s);
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
 
         const int golem = *m_content->mobIndex(u"qtcraft:sand_golem"_s);
         const auto guarding = [&](const QcGuardSite &site) {
@@ -167,7 +168,7 @@ private slots:
         int ticks = 0;
         for (; ticks < 800 && (guarding(sites[0]) == 0 || server.creatures().crumbling().crumbled() == 0); ++ticks) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
         QVERIFY2(guarding(sites[0]) == 1, qPrintable(QString::number(ticks)));
         QVERIFY2(server.creatures().crumbling().crumbled() >= 1, qPrintable(QString::number(ticks)));
@@ -200,10 +201,10 @@ private slots:
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
         client.hello(u"Viewer"_s);
-        QcShowcaseTestUtil::pump();
+        QcTestUtil::pump();
         for (int i = 0; i < 10; ++i) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
         for (const auto &[x, z] : {std::pair{8, 2}, {10, 2}, {11, 10}}) {
             const QcBlockEntities::Container *dispenser = server.blockEntities().container(temple->toWorld(QcBlockPos{x, 1, z}));
@@ -214,7 +215,7 @@ private slots:
         QVERIFY(server.systems().circuits.use(temple->toWorld(QcBlockPos{6, 1, 3})));
         for (int i = 0; i < 12; ++i) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
         QCOMPARE(*server.world().blockAt(door), qcAirBlockId);
 
@@ -224,7 +225,7 @@ private slots:
         server.world().loadChunk(hut->toWorld(QcBlockPos{8, 0, 10}).chunk());
         for (int i = 0; i < 100; ++i) {
             server.tick();
-            QcShowcaseTestUtil::pump();
+            QcTestUtil::pump();
         }
         const auto witch = std::ranges::find_if(server.mobs().mobs(), [&](const QcCreature &mob) {
             const QcBlockPos at = QcPhysics::blockContaining(mob.motion.position);

@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 
@@ -18,13 +18,7 @@ class TestVillageGeneration : public QObject
 private:
     static constexpr qint64 seed = 42;
 
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     // Checks every stair between `low` and `high` (heights) of the chunk: bottom half, the cell
     // beyond its low side and the one above that open, a block beyond its high side. Returns how

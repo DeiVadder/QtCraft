@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "QcTestUtil.h"
 #include "server/entities/QcEntities.h"
 #include "server/storage/QcEntityCodec.h"
@@ -9,12 +8,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // What a newer version would have put into an entry of `kind` (decision E-420): more fields of its
 // own component (a tail), a component of an unknown id and the header fields this version leaves
@@ -51,7 +44,7 @@ class TestEntityComponents : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcEntities::Clients m_clients;
 
     // A chunk with one entity of every kind, each with the data of a newer version.

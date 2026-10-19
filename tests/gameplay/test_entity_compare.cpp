@@ -1,5 +1,6 @@
 #include "QcBlockEntityDump.h"
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 #include "server/entities/QcEntityChecks.h"
 
 #include <QDir>
@@ -215,7 +216,8 @@ private:
         stand.equipment.at(QcEquipmentSlot::Chest) = stack("qtcraft:iron_chestplate", 1);
         stand.pose.showName = true;
         if (!m_server->stands().add(stand)) {
-            qFatal("no room for a stand");
+            QcTestUtil::failCase(QStringLiteral("no room for a stand"));
+            return 0;
         }
         return stand.id;
     }

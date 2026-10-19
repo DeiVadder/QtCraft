@@ -65,6 +65,7 @@ struct Fixture
                  R"({"name":"facing_cube","rotate":"facing","boxes":[[0,0,0,1,1,1]]})"}) {
             const QcResult<QcShapeDefinition> parsed = QcContentParser::parseShape(json(shape), u"t"_s);
             if (!parsed) {
+                // Builds content for a member initialiser, outside any test case; no case can run without it.
                 qFatal("%s", qPrintable(parsed.error()));
             }
             QVERIFY(content.registerShape(*parsed).has_value());
@@ -80,6 +81,7 @@ struct Fixture
                  R"({"name":"furnace","shape":"facing_cube","states":{"facing":["north","east","south","west"]},"textures":{"all":"side","north":"front"}})"}) {
             const QcResult<QcBlockDefinition> parsed = QcContentParser::parseBlock(json(block), u"t"_s);
             if (!parsed || !content.registerBlock(*parsed)) {
+                // Builds content for a member initialiser, outside any test case; no case can run without it.
                 qFatal("cannot register %s", block);
             }
         }

@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
@@ -20,10 +19,7 @@ class TestMobPaths : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     QcPathCellTable m_cells{*m_content};
     QcPathFinder m_finder;
     QcPathRules m_rules;
@@ -32,7 +28,8 @@ private:
     {
         const std::optional<QcBlockId> id = m_content->stateId(u"qtcraft:"_s + name);
         if (!id) {
-            qFatal("unknown block %s", qPrintable(name));
+            QcTestUtil::failCase(QStringLiteral("unknown block %1").arg(name));
+            return qcAirBlockId;
         }
         return *id;
     }

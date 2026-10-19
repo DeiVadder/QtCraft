@@ -13,7 +13,7 @@
 #include "clientcore/input/QcVirtualGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
@@ -75,8 +75,7 @@ private:
 private slots:
     void initTestCase()
     {
-        QStringList warnings;
-        std::shared_ptr<const QcContentRegistry> content = *QcBaseContent::load(warnings);
+        std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
         QcServerConfig config;
         config.viewDistance = 2;
         config.worldName = u"GamepadFocus"_s;

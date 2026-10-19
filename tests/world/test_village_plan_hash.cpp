@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillageGenerator.h"
 
@@ -22,10 +22,7 @@ private:
     // Regions -rings..rings in both directions.
     static constexpr int rings = 16;
 
-    std::shared_ptr<const QcContentRegistry> m_content = [] {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     static void addBlockPos(QCryptographicHash &hash, QcBlockPos pos)
     {

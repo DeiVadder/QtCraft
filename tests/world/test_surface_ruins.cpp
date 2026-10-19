@@ -1,5 +1,5 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcIntMath.h"
+#include "QcTestUtil.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -29,10 +29,7 @@ private:
 
     const QStringList m_names{u"qtcraft:ruined_portal"_s, u"qtcraft:ruined_portal_sunken"_s, u"qtcraft:ruined_portal_large"_s,
                               u"qtcraft:well"_s,          u"qtcraft:desert_well"_s,          u"qtcraft:oasis"_s};
-    std::shared_ptr<const QcContentRegistry> m_content = []() {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcTerrainGenerator> m_terrain;
     QHash<QString, Plans> m_plans;
 

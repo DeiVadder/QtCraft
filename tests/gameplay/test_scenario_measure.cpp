@@ -2,6 +2,7 @@
 
 #include "common/core/QcProcessMemory.h"
 #include "common/core/QcTickPhase.h"
+#include "QcTestUtil.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/tick/QcTickStats.h"
@@ -13,6 +14,7 @@
 #include <QThread>
 
 #include <algorithm>
+#include <optional>
 #include <vector>
 
 using namespace Qt::StringLiterals;
@@ -112,12 +114,13 @@ private:
         return lines;
     }
 
-    static Scene sceneFromEnvironment(const QString &file)
+    // Empty when the file of chat lines cannot be read.
+    static std::optional<Scene> sceneFromEnvironment(const QString &file)
     {
         Scene scene;
         QFile input(file);
         if (!input.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qFatal("Cannot read the chat lines %s", qPrintable(file));
+            return std::nullopt;
         }
         scene.lines = parseLines(QString::fromUtf8(input.readAll()).split(u'\n'));
         scene.seconds = env("QTCRAFT_SCENARIO_SECONDS", u"20"_s).toInt();
@@ -169,7 +172,7 @@ private:
         m_server->addClient(std::move(serverEnd), m_origin);
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->hello(u"Raw"_s);
-        pump();
+        QcTestUtil::pump();
     }
 
     // The player stands still and looks where the scene says; sent before every tick as the game's
@@ -181,7 +184,7 @@ private:
         input.yaw = scene.yaw;
         input.pitch = scene.pitch;
         m_client->connection.send(QcMsg::PlayerInput{input});
-        pump();
+        QcTestUtil::pump();
     }
 
     // Ticks without measuring until the chunks around the player are there (at most 60 s of real time).
@@ -199,7 +202,7 @@ private:
             }
             stand(scene);
             m_server->tick();
-            pump();
+            QcTestUtil::pump();
         }
     }
 
@@ -216,7 +219,7 @@ private:
         timer.start();
         m_server->tick();
         const qint64 ns = timer.nsecsElapsed();
-        pump();
+        QcTestUtil::pump();
         if (m_tick >= warmupTicks) {
             m_stats.record(0, ns);
             m_stats.addPhases(m_server->tickPhases().lastTick());
@@ -325,7 +328,9 @@ private slots:
     void scenario()
     {
         const QString file = qEnvironmentVariable("QTCRAFT_SCENARIO_MEASURE");
-        const Scene scene = file.isEmpty() ? builtinScene() : sceneFromEnvironment(file);
+        const std::optional<Scene> read = file.isEmpty() ? builtinScene() : sceneFromEnvironment(file);
+        QVERIFY2(read, qPrintable(u"Cannot read the chat lines %1"_s.arg(file)));
+        const Scene &scene = *read;
         const QString line = run(scene);
         QVERIFY(!line.isEmpty());
         qInfo().noquote() << line;

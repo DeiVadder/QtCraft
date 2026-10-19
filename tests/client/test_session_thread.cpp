@@ -1,9 +1,9 @@
 #include "clientcore/control/QcControlAim.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "network/QcTcpConnector.h"
 #include "QcRecordingTransport.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "server/network/QcNetworkServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -27,16 +27,6 @@ namespace {
 
 constexpr int timeoutMs = 20'000;
 
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    auto content = QcBaseContent::load(warnings);
-    if (!content) {
-        qFatal("content failed: %s", qPrintable(content.error()));
-    }
-    return std::move(*content);
-}
-
 // What a scripted walk sent and where it ended.
 struct Walk
 {
@@ -52,7 +42,7 @@ class TestSessionThread : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcLocalServerHost> m_host;
     std::unique_ptr<QcClientSession> m_session;
     // The session's transport; owned by the session.

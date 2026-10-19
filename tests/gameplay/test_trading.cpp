@@ -2,6 +2,7 @@
 #include "common/gameplay/QcExperience.h"
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/villages/QcVillagerHomes.h"
@@ -113,7 +114,7 @@ private:
         input.sequence = ++m_sequence;
         input.sneak = sneaking;
         m_client->connection.send(QcMsg::PlayerInput{input});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
     }
 
@@ -150,7 +151,7 @@ private:
         return offerIndex("qtcraft:wheat", "qtcraft:emerald");
     }
 
-    // A farmer whose look draws the wheat offer at level 1.
+    // A farmer whose look draws the wheat offer at level 1; when no look does, the test case fails.
     quint32 startWithWheatFarmer(double phase, const QcServerConfig &config = {})
     {
         const quint32 farmer = startWithFarmer(phase, config);
@@ -161,7 +162,8 @@ private:
                 return farmer;
             }
         }
-        qFatal("No look draws the wheat offer");
+        QcTestUtil::failCase(QStringLiteral("No look draws the wheat offer"));
+        return farmer;
     }
 
 private slots:
@@ -318,11 +320,11 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient other(std::move(clientEnd));
         other.hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         holdNear(farmer);
         other.connection.send(QcMsg::UseEntity{farmer});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(!other.trade);
         QCOMPARE(villager(farmer)->villager->trader, m_client->entityId);
@@ -332,14 +334,14 @@ private slots:
         ticks(1);
         holdNear(farmer);
         other.connection.send(QcMsg::UseEntity{farmer});
-        pump();
+        QcTestUtil::pump();
         ticks(1);
         QVERIFY(other.trade);
         QCOMPARE(villager(farmer)->villager->trader, other.entityId);
 
         // The trader leaves the game: the villager trades no more.
         other.connection.close();
-        pump();
+        QcTestUtil::pump();
         ticks(3);
         QCOMPARE(villager(farmer)->villager->trader, 0u);
     }

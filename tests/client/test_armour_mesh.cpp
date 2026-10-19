@@ -4,7 +4,7 @@
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/preview/QcPreviewScene.h"
 #include "clientcore/session/QcClientEntities.h"
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 
 #include <QTest>
 
@@ -20,12 +20,6 @@ QRectF uvOf(const QString &texture)
 {
     const double u = double(qHash(texture) % 1000) / 1000.0;
     return {u, 0.0, 0.0005, 0.0005};
-}
-
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
 }
 
 constexpr qsizetype verticesPerBox = 24;
@@ -81,7 +75,7 @@ class TestArmourMesh : public QObject
 {
     Q_OBJECT
 
-    std::shared_ptr<const QcContentRegistry> m_content = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcItemId item(const char *name) const { return *m_content->itemId(u"qtcraft:"_s + QString::fromLatin1(name)); }
 
@@ -352,4 +346,5 @@ private slots:
 };
 
 QTEST_GUILESS_MAIN(TestArmourMesh)
+#include "QcTestUtil.h"
 #include "test_armour_mesh.moc"

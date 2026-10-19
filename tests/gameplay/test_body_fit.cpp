@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcBodyFit.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
@@ -12,12 +12,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // A pig: 0.9 m wide and high.
 constexpr QcPhysics::BodySize pig{0.9, 0.9};
@@ -43,7 +37,7 @@ class TestBodyFit : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     QcBlockId id(const char *name) const { return *m_content->blockId(u"qtcraft:"_s + QString::fromLatin1(name)); }
 

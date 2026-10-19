@@ -1,4 +1,5 @@
 #include "gameplay/QcEndermanFixture.h"
+#include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/projectiles/QcProjectileFlight.h"
@@ -24,7 +25,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         auto other = std::make_unique<RawClient>(std::move(clientEnd));
         other->hello(u"Other"_s);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return other;
     }
@@ -112,7 +113,7 @@ private slots:
     {
         m_client.reset();
         m_server.reset();
-        m_content = loadContent();
+        m_content = QcTestUtil::loadContent();
     }
 
     void theAttackerIsChasedNotTheNearest()

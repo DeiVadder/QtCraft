@@ -2816,7 +2816,7 @@ Nine wheat bound into a bale, and back into nine wheat. It catches fire easily.
 | ID | `qtcraft:hay_block` |
 | Hardness | 0.5 |
 | Breaking by hand | 0.75 s |
-| Tool | hoe (faster, not needed) |
+| Tool | Hoe (faster, not needed) |
 | Breaking with the best tool | 0.06 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
 | Drops | [Hay bale](#block-qtcraft-hay_block) |
 | Flammable | catches fire 60, burns away 20 (0 to 100) |

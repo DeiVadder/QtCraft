@@ -1,4 +1,5 @@
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/storage/QcBlockEntityCodec.h"
 
@@ -103,7 +104,7 @@ private:
             ++tick;
             each();
             if (tick % 20 == 0) {
-                pump();
+                QcTestUtil::pump();
             }
         }
         return tick;
@@ -427,7 +428,7 @@ private slots:
         for (int i = 0; i < 3000; ++i) {
             m_server->tick();
         }
-        pump();
+        QcTestUtil::pump();
         QCOMPARE(m_server->world().blockAt(base.offset(0, 1, 0)), id("qtcraft:fire"));
         QCOMPARE(m_server->world().blockAt(base.offset(1, 1, 0)), id("qtcraft:oak_leaves"));
         QCOMPARE(m_server->fires().size(), 1);

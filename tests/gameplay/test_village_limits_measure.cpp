@@ -1,5 +1,6 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/mobs/QcNaturalSpawner.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/villages/QcVillages.h"
@@ -109,7 +110,7 @@ private:
             m_server->addClient(std::move(serverEnd), m_origin);
             m_players.push_back(std::make_unique<RawClient>(std::move(clientEnd)));
             m_players.back()->hello(u"Player%1"_s.arg(i));
-            pump();
+            QcTestUtil::pump();
             ticks(2);
             const QcBlockPos at = m_plans[qsizetype(i) * m_plans.size() / players]->centre;
             chat(u"/tp Player%1 %2 %3 %4"_s.arg(i).arg(at.x).arg(at.y + 2).arg(at.z + 6));
@@ -151,7 +152,7 @@ private:
             totals.budgetUsed += paths.nodesLastTick() > budget - QcServerLimits{}.pathNodesPerSearch ? 1 : 0;
             noteWaits(totals);
             if (i % 20 == 0) {
-                pump();
+                QcTestUtil::pump();
             }
         }
         std::ranges::sort(totals.times);

@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "server/villages/QcVillages.h"
 #include "world/QcVillageTestUtil.h"
 #include "worldgen/villages/QcVillagePlanCache.h"
@@ -21,13 +21,7 @@ class TestVillagePlanCache : public QObject
 private:
     static constexpr qint64 seed = 42;
 
-    static std::shared_ptr<const QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     // A planner that counts its calls; every region gets a village whose id names the region.
     static QcVillagePlanCache::Planner countingPlanner(std::atomic<int> &calls)

@@ -22341,7 +22341,7 @@
                     "label": "Werkzeug",
                     "links": [
                     ],
-                    "value": "hoe (schneller, nicht nötig)"
+                    "value": "Hacke (schneller, nicht nötig)"
                 },
                 {
                     "label": "Abbauen mit dem besten Werkzeug",
@@ -62805,7 +62805,7 @@
                             "text": "Werkzeugstufen"
                         }
                     ],
-                    "value": "hoe, Stufe 4"
+                    "value": "Hacke, Stufe 4"
                 },
                 {
                     "label": "Abbaugeschwindigkeit",
@@ -65573,7 +65573,7 @@
                             "text": "Werkzeugstufen"
                         }
                     ],
-                    "value": "hoe, Stufe 1"
+                    "value": "Hacke, Stufe 1"
                 },
                 {
                     "label": "Abbaugeschwindigkeit",
@@ -67587,7 +67587,7 @@
                             "text": "Werkzeugstufen"
                         }
                     ],
-                    "value": "hoe, Stufe 3"
+                    "value": "Hacke, Stufe 3"
                 },
                 {
                     "label": "Abbaugeschwindigkeit",
@@ -73333,7 +73333,7 @@
                             "text": "Werkzeugstufen"
                         }
                     ],
-                    "value": "hoe, Stufe 2"
+                    "value": "Hacke, Stufe 2"
                 },
                 {
                     "label": "Abbaugeschwindigkeit",
@@ -75157,7 +75157,7 @@
                             "text": "Werkzeugstufen"
                         }
                     ],
-                    "value": "hoe, Stufe 1"
+                    "value": "Hacke, Stufe 1"
                 },
                 {
                     "label": "Abbaugeschwindigkeit",
@@ -83679,7 +83679,7 @@
                     "recipes": [
                     ],
                     "text": "",
-                    "title": "hoe"
+                    "title": "Hacke"
                 },
                 {
                     "links": [

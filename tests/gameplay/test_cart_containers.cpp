@@ -1,4 +1,5 @@
 #include "QcRailFixture.h"
+#include "QcTestUtil.h"
 
 #include <algorithm>
 #include <cmath>
@@ -57,7 +58,7 @@ private:
         m_server->addClient(std::move(serverEnd));
         auto client = std::make_unique<RawClient>(std::move(clientEnd));
         client->hello(name);
-        pump();
+        QcTestUtil::pump();
         ticks(2);
         return client;
     }
@@ -127,13 +128,13 @@ private slots:
         // A second player looks in too and sees the cobblestone; a third breaks the cart.
         std::unique_ptr<RawClient> bob = joinAnother(u"Bob"_s);
         bob->connection.send(QcMsg::UseEntity{id});
-        pump();
+        QcTestUtil::pump();
         idle(1);
         QCOMPARE(bob->openMachineEntity, id);
         QCOMPARE(bob->machineStacks.value(0).count, 10);
         std::unique_ptr<RawClient> cy = joinAnother(u"Cy"_s);
         cy->connection.send(QcMsg::AttackEntity{id});
-        pump();
+        QcTestUtil::pump();
         idle(1);
 
         // Both screens close, the cobblestone lies on the ground once, and a click into the closed
@@ -145,7 +146,7 @@ private slots:
         QCOMPARE(droppedCount(item("qtcraft:chest_minecart")), 1);
         bob->connection.send(QcMsg::MoveInventoryItem{input, 0, 0});
         move(input, 0);
-        pump();
+        QcTestUtil::pump();
         idle(1);
         QCOMPARE(countOf(item("qtcraft:cobblestone")), 0);
         QVERIFY(std::ranges::none_of(bob->stacks, [this](QcItemStack stack) { return stack.item == item("qtcraft:cobblestone"); }));

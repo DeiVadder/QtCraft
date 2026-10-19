@@ -1,5 +1,6 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/villages/QcVillagerBreeding.h"
 #include "server/villages/QcVillages.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -100,7 +101,7 @@ private:
             timer.start();
             m_server->tick();
             times.append(double(timer.nsecsElapsed()) / 1e6);
-            pump();
+            QcTestUtil::pump();
             if (i == count * 3 / 4) {
                 asleep = std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) { return mob.pose == QcPose::Lying; });
             }
@@ -207,7 +208,7 @@ private slots:
         for (int i = 0; i < toMidnight; ++i) {
             m_server->tick();
             if (i % 20 == 0) {
-                pump();
+                QcTestUtil::pump();
             }
         }
         QStringList awake;

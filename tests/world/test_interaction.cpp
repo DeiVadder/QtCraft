@@ -22,6 +22,7 @@ QcContentRegistry contentWithItems()
     pickaxe.toolSpeed = 4.0;
     pickaxe.durability = 10;
     if (!content.registerItem(pickaxe)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register pickaxe");
     }
     return content;

@@ -2,6 +2,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcLightVolume.h"
+#include "QcTestUtil.h"
 
 #include <QJsonDocument>
 #include <QRandomGenerator>
@@ -21,7 +22,7 @@ void addPartialShapes(QcContentRegistry &content)
                  {"when":{"type":"top"},"boxes":[[0,0.5,0,1,1,1]]},{"when":{"type":"double"},"boxes":[[0,0,0,1,1,1]]}]})",
              R"({"name":"stairs","rotate":"facing","flip":"half","boxes":[[0,0,0,1,0.5,1],[0,0.5,0,1,1,0.5]]})"}) {
         if (!content.registerShape(*QcContentParser::parseShape(QJsonDocument::fromJson(shape).object(), u"t"_s))) {
-            qFatal("cannot register shape %s", shape);
+            QcTestUtil::failCase(QStringLiteral("cannot register shape %1").arg(QString::fromLatin1(shape)));
         }
     }
     for (const char *block : {
@@ -29,7 +30,7 @@ void addPartialShapes(QcContentRegistry &content)
              R"({"name":"stairs","shape":"stairs","states":{"facing":["north","east","south","west"],"half":["bottom","top"]},"textures":{"all":"stone"}})"}) {
         const auto parsed = QcContentParser::parseBlock(QJsonDocument::fromJson(block).object(), u"t"_s);
         if (!parsed || !content.registerBlock(*parsed)) {
-            qFatal("cannot register %s", block);
+            QcTestUtil::failCase(QStringLiteral("cannot register %1").arg(QString::fromLatin1(block)));
         }
     }
 }
@@ -49,7 +50,7 @@ std::shared_ptr<QcContentRegistry> makeContent()
         definition.lightLevel = light;
         definition.faceTextures.fill(definition.name);
         if (!content->registerBlock(definition)) {
-            qFatal("cannot register %s", name);
+            QcTestUtil::failCase(QStringLiteral("cannot register %1").arg(QString::fromLatin1(name)));
         }
     };
     add("t:stone", true, 15, 0);

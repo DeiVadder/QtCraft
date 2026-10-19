@@ -1,4 +1,3 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcCrc32.h"
 #include "QcTestUtil.h"
 #include "server/storage/QcBlockEntityCodec.h"
@@ -20,12 +19,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 QByteArray readFile(const QString &path)
 {
     QFile file(path);
@@ -43,7 +36,7 @@ class TestChunkStore : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
     std::shared_ptr<QcChunk> generated(QcChunkPos pos) const { return QcTestTerrainGenerator(m_content).generate(pos); }
 

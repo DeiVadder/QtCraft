@@ -1,6 +1,6 @@
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcBodyFit.h"
 #include "common/world/QcDayCycle.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathPlanner.h"
@@ -50,12 +50,6 @@ private:
         int golemType() const { return *content->mobIndex(u"qtcraft:iron_golem"_s); }
     };
 
-    static std::shared_ptr<QcContentRegistry> loadContent()
-    {
-        QStringList warnings;
-        return *QcBaseContent::load(warnings);
-    }
-
     // Loads the chunks of the plan and `ring` around them, then populates the plan's chunks (which
     // reconciles the claims once every chunk around the village is there).
     static void loadAround(Village &village, int ring)
@@ -71,7 +65,7 @@ private:
     }
 
     // A fixture village of the plains style with its villagers moved in and the chunks around it.
-    static Village village(const std::shared_ptr<QcContentRegistry> &content = loadContent(), int ring = 2)
+    static Village village(const std::shared_ptr<QcContentRegistry> &content = QcTestUtil::loadContent(), int ring = 2)
     {
         Village result;
         result.content = content;
@@ -186,7 +180,7 @@ private slots:
     void villagersPanickingAtAZombieSummonAGolem()
     {
         // A zombie that does not burn by day stands among three villagers on the road.
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcMobDefinition zombie = content->mobs()[*content->mobIndex(u"qtcraft:zombie"_s)];
         zombie.burnsInDaylight = false;
         content->registerMob(zombie);
@@ -415,7 +409,7 @@ private slots:
     void noGolemBeforeTheClaimsAreReconciledOrWithoutTheKind()
     {
         // Only the chunks of the village's box: its claims are not reconciled yet.
-        Village partial = village(loadContent(), 0);
+        Village partial = village(QcTestUtil::loadContent(), 0);
         QVERIFY(partial.plan);
         panic(partial, 3);
         QCOMPARE(golems(partial), 0);
@@ -436,7 +430,7 @@ private slots:
     {
         // A village not loaded holds three golems; one stands outside every village: four in the
         // world. Five loaded in the village's area count instead of its three.
-        std::shared_ptr<QcContentRegistry> content = loadContent();
+        std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
         QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
         QcVillage stored;
         stored.id = 3;

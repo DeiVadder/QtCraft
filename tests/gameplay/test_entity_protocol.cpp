@@ -1,5 +1,6 @@
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "QcTestUtil.h"
 
 #include <QTest>
 
@@ -15,7 +16,8 @@ T roundTrip(const T &message)
     const QcMessage wrapped(message);
     const QcResult<QcMessage> decoded = QcProtocol::decode(QcProtocol::encode(wrapped), QcProtocol::Peer::Server);
     if (!decoded || !std::holds_alternative<T>(*decoded)) {
-        qFatal("decode failed");
+        QcTestUtil::failCase(QStringLiteral("decode failed"));
+        return T{};
     }
     return std::get<T>(*decoded);
 }

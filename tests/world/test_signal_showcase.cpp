@@ -1,5 +1,6 @@
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "QcTestUtil.h"
 #include "server/blocks/QcRails.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
@@ -25,6 +26,7 @@ private:
     QTemporaryDir m_directory;
     QcShowcasePlan m_plan;
 
+    // The area of the demo; a demo the plan does not have fails the test case (an empty area comes back).
     QcShowcaseAreaInfo area(const QString &demo) const
     {
         for (const QcShowcaseAreaInfo &candidate : m_plan.areas) {
@@ -32,7 +34,8 @@ private:
                 return candidate;
             }
         }
-        qFatal("no demo %s", qPrintable(demo));
+        QcTestUtil::failCase(QStringLiteral("no demo %1").arg(demo));
+        return {};
     }
 
     QcBlockPos origin(const QString &demo) const { return area(demo).origin; }

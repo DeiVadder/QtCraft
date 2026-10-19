@@ -1,4 +1,5 @@
 #include "QcMachineFixture.h"
+#include "QcTestUtil.h"
 
 #include <QSet>
 
@@ -91,7 +92,8 @@ private:
     {
         const std::optional<int> type = m_content->mobIndex(QString::fromLatin1(name));
         if (!type) {
-            qFatal("Test uses the creature %s, which the content does not have", name);
+            QcTestUtil::failCase(QStringLiteral("Test uses the creature %1, which the content does not have").arg(QString::fromLatin1(name)));
+            return 0;
         }
         return m_server->mobs().spawn(*type, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
     }

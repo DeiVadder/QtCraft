@@ -21,12 +21,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-std::shared_ptr<const QcContentRegistry> baseContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
-
 // The base content with a mod item, a mod creature and a mod block that falls.
 std::shared_ptr<const QcContentRegistry> contentWithMod()
 {
@@ -39,6 +33,7 @@ std::shared_ptr<const QcContentRegistry> contentWithMod()
     QcBlockDefinition sand = content->block(*content->blockId(u"qtcraft:sand"_s));
     sand.name = u"mod:sand"_s;
     if (!content->registerItem(gem) || !content->registerBlock(sand)) {
+        // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register the mod content");
     }
     content->registerMob(beetle);
@@ -121,7 +116,7 @@ class TestEntityStorage : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = baseContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::shared_ptr<const QcContentRegistry> m_mod = contentWithMod();
 
     QcItemStack stack(const QcContentRegistry &content, const QString &name, int count) const

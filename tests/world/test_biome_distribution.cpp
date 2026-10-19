@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QTest>
@@ -6,12 +6,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    return *QcBaseContent::load(warnings);
-}
 
 // Land columns on a 16-block grid within 1024 blocks of the origin.
 struct BiomeSample
@@ -79,7 +73,7 @@ class TestBiomeDistribution : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
 private slots:
     void mountainsAreCommonAndBordersFrayed()

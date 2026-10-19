@@ -1,4 +1,4 @@
-#include "common/content/loader/QcBaseContent.h"
+#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/tick/QcTickScheduler.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -266,8 +266,7 @@ private slots:
 
     void serverTicksInRealTime()
     {
-        QStringList warnings;
-        const std::shared_ptr<const QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
         QcServer server({}, content, std::make_unique<QcTestTerrainGenerator>(content));
         QVERIFY(server.openWorld().has_value());
 
@@ -307,8 +306,7 @@ private:
     // 10 ms between rounds of events); empty when the run failed.
     static std::optional<double> lateAverageOfARun()
     {
-        QStringList warnings;
-        const std::shared_ptr<const QcContentRegistry> content = *QcBaseContent::load(warnings);
+        const std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
         QcServer server({}, content, std::make_unique<QcTestTerrainGenerator>(content));
         if (!server.openWorld().has_value()) {
             return std::nullopt;

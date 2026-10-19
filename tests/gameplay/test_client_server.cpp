@@ -1,12 +1,12 @@
 #include "clientcore/debug/QcDebugSnapshot.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcRawClient.h"
+#include "QcTestUtil.h"
 #include "server/core/QcLocalServerHost.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
@@ -21,16 +21,6 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 20000;
-
-std::shared_ptr<const QcContentRegistry> loadContent()
-{
-    QStringList warnings;
-    auto content = QcBaseContent::load(warnings);
-    if (!content) {
-        qFatal("content failed: %s", qPrintable(content.error()));
-    }
-    return std::move(*content);
-}
 
 std::unique_ptr<QcLocalServerHost> makeHost(const std::shared_ptr<const QcContentRegistry> &content, int viewDistance = 2)
 {
@@ -53,7 +43,7 @@ class TestClientServer : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<const QcContentRegistry> m_content = loadContent();
+    std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
 private slots:
     void movingBlocksNeedAKnownBlock()
@@ -256,7 +246,7 @@ private slots:
         QTest::addColumn<quint32>("item");
         QTest::addColumn<int>("count");
         QTest::addColumn<bool>("accepted");
-        const quint32 dirt = *loadContent()->itemId(u"qtcraft:dirt"_s);
+        const quint32 dirt = *QcTestUtil::loadContent()->itemId(u"qtcraft:dirt"_s);
         const int item = int(QcEntityKind::Item);
         QTest::newRow("dirt") << item << dirt << 3 << true;
         QTest::newRow("unknown item") << item << 999999u << 3 << false;
