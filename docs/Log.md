@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-19 23:50
+
+Etappe 56 erledigt: 56e keine Ausgabeparameter nach `dev` (`538cd8a`, E-694) nach drei Review-Runden mit je zwei Prüfern; Headless-Benchmark gegen `dev` ohne Unterschied über dem Rauschen (crowd mit 6 Runden −0,1 % Mittel, +2,6 % p99), voller Verify grün (3337 s). Entscheidungen des Menschen: Ausnahme „Subjekte“ (Objekte mit Identität, auf denen ein System arbeitet) bleibt; Rucksack als Etappe 68 nach 62 (eine Reihe, platziert mit ganzem Inventar, aus der Hand nur Rucksack-Reihe und Hotbar); ein bis zwei geschuldete Fenster-Benchmarks dürfen laufen, ohne die übrige Arbeit zu blockieren.
+
 ## 2026-10-19 18:10
 
 Wiederaufnahme nach der Pause. 56b Test-Fixtures nach `dev` (`f820181`): der TSan-Lauf scheiterte nur an `test_latency` an der Zeitgrenze (Last durch andere Programme), allein zweimal grün, also Last-Effekt. 56d `LazyScreen`, Enums und Fotomodus nach `dev` (`c69cf76`), TSan-Lauf grün. 56e gestartet als zwei parallele Pakete (`src/common` und der Rest von `src/`).
