@@ -11,8 +11,12 @@ directory. Its inputs are:
   - the runtime data that every test may read (RUNTIME_DATA below: content, translations, mods,
     shaders, test data, handbook exports, CMake files and presets). A change there selects all.
 
-A file counts as changed when its modification time or size differs. The fingerprints of the
-last passing run of each test live in <build dir>/.verify-test-stamps.json; a test's entry is
+A file counts as changed when its content differs (SHA-1), so a branch switch or a touch that
+leaves a file as it was selects nothing. Hashing reads a file only when its modification time or
+size differs from the hash cache <build dir>/.verify-hash-cache.json (path -> mtime, size, hash),
+which keeps a run over the thousands of inputs fast. The fingerprints of the last passing run of
+each test live in <build dir>/.verify-test-stamps.json (stamps written by an older format compare
+as changed once); a test's entry is
 only renewed after it passed (JUnit report of ctest), so a failed or interrupted run selects it
 again next time. Without a stamp file every test runs.
 
@@ -43,6 +47,7 @@ import hashlib
 import json
 import os
 import re
+import struct
 import subprocess
 import sys
 import xml.etree.ElementTree as ElementTree
@@ -50,6 +55,7 @@ import xml.etree.ElementTree as ElementTree
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STAMPS = ".verify-test-stamps.json"
 PENDING = ".verify-test-pending.json"
+HASH_CACHE = ".verify-hash-cache.json"
 
 # Paths (relative to the project) whose change selects every test: data the tests read at run
 # time without a relink, and the build description (test properties, environment, presets).
@@ -65,13 +71,88 @@ NESTED_DATA_ROOTS = ["src", "tests"]
 MAX_NAMED_PATHS = 5
 
 
-def file_state(path):
-    """Modification time and size of one file, or a marker when it is missing."""
-    try:
-        info = os.stat(path)
-    except OSError:
-        return "missing"
-    return f"{info.st_mtime_ns} {info.st_size}"
+# Mach-O 64-bit (thin) executables: load commands and the symbol type of a debug-map object file.
+MACHO_MAGIC_64 = 0xFEEDFACF
+LC_SYMTAB = 0x2
+LC_UUID = 0x1B
+LC_CODE_SIGNATURE = 0x1D
+N_OSO = 0x66
+NLIST_64_SIZE = 16
+
+
+def macho_link_noise(data):
+    """Byte ranges of a Mach-O executable that change on every link of identical objects.
+
+    The UUID, the modification times of the object files in the debug map (N_OSO entries) and the
+    code signature over both differ after a rebuild that produced the same code (a branch switch
+    and back), so the content hash leaves them out. Returns (zeroed ranges, signature offset)."""
+    if len(data) < 32 or struct.unpack_from("<I", data, 0)[0] != MACHO_MAGIC_64:
+        return [], len(data)
+
+    count = struct.unpack_from("<I", data, 16)[0]
+    zeroed, signature, offset = [], len(data), 32
+    for _ in range(count):
+        command, size = struct.unpack_from("<II", data, offset)
+        if command == LC_UUID:
+            zeroed.append((offset + 8, 16))
+        elif command == LC_CODE_SIGNATURE:
+            signature = struct.unpack_from("<I", data, offset + 8)[0]
+        elif command == LC_SYMTAB:
+            symbols, symbol_count = struct.unpack_from("<II", data, offset + 8)
+            types = data[symbols + 4:symbols + symbol_count * NLIST_64_SIZE:NLIST_64_SIZE]
+            index = types.find(N_OSO)
+            while index >= 0:
+                zeroed.append((symbols + index * NLIST_64_SIZE + 8, 8))
+                index = types.find(N_OSO, index + 1)
+        offset += size
+    return zeroed, signature
+
+
+def content_hash(path):
+    """SHA-1 of a file's content; for Mach-O executables without the link noise (see above)."""
+    with open(path, "rb") as file:
+        data = file.read()
+    zeroed, signature = macho_link_noise(data)
+    if zeroed or signature < len(data):
+        data = bytearray(data[:signature])
+        for start, length in zeroed:
+            if start + length <= len(data):
+                data[start:start + length] = bytes(length)
+    return hashlib.sha1(data).hexdigest()
+
+
+class ContentHasher:
+    """Content hashes of files, re-read only when modification time or size differ from the cache."""
+
+    def __init__(self, build_dir):
+        self.path = os.path.join(build_dir, HASH_CACHE)
+        self.cache = read_json(self.path, {})
+        self.seen = {}
+
+    def state(self, path):
+        """SHA-1 of one file's content, or a marker when it is missing or unreadable."""
+        try:
+            info = os.stat(path)
+        except OSError:
+            return "missing"
+
+        key = [info.st_mtime_ns, info.st_size]
+        entry = self.cache.get(path)
+        if isinstance(entry, list) and len(entry) == 3 and entry[:2] == key:
+            self.seen[path] = entry
+            return entry[2]
+
+        try:
+            value = content_hash(path)
+        except (OSError, struct.error):
+            return "unreadable"
+        self.seen[path] = key + [value]
+        return value
+
+    def save(self):
+        """Writes the cache, keeping only the files of this run so it does not grow without bound."""
+        if self.seen != self.cache:
+            write_json(self.path, self.seen)
 
 
 def walk_files(path):
@@ -100,12 +181,12 @@ def runtime_data_paths():
     return [path for path in paths if os.path.exists(path)]
 
 
-def snapshot(paths):
-    """State of every file below the given paths, keyed by the path relative to the project."""
+def snapshot(paths, hasher):
+    """Content hash of every file below the given paths, keyed by the path relative to the project."""
     states = {}
     for path in paths:
         for file in walk_files(path):
-            states[os.path.relpath(file, ROOT)] = file_state(file)
+            states[os.path.relpath(file, ROOT)] = hasher.state(file)
     return states
 
 
@@ -211,11 +292,11 @@ def write_json(path, value):
     os.replace(temporary, path)
 
 
-def fingerprints(tests, build_dir, data_digest):
-    """Current fingerprint of every test: the state of its inputs and the runtime data digest."""
+def fingerprints(tests, build_dir, data_digest, hasher):
+    """Current fingerprint of every test: the content of its inputs and the runtime data digest."""
     result = {}
     for name, test in tests.items():
-        inputs = snapshot(test_inputs(test, build_dir))
+        inputs = snapshot(test_inputs(test, build_dir), hasher)
         result[name] = {"inputs": digest(inputs), "data": data_digest}
     return result
 
@@ -264,8 +345,10 @@ def report(selected, considered, stamps, data_now, broad):
 def select(arguments):
     build_dir = os.path.abspath(arguments.build_dir)
     tests = load_tests(build_dir)
-    data_now = snapshot(runtime_data_paths())
-    current = fingerprints(tests, build_dir, digest(data_now))
+    hasher = ContentHasher(build_dir)
+    data_now = snapshot(runtime_data_paths(), hasher)
+    current = fingerprints(tests, build_dir, digest(data_now), hasher)
+    hasher.save()
     pending = {"tests": current, "data_files": data_now}
     write_json(os.path.join(build_dir, PENDING), pending)
     if not arguments.changed:

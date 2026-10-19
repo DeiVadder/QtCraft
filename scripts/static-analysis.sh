@@ -19,12 +19,6 @@ JOBS=${JOBS:-16}
 TIME_LIMIT=${TIME_LIMIT:-900}
 CLAZY_CHECKS=${CLAZY_CHECKS:-level0,level1,level2,no-qstring-allocations,no-ctor-missing-parent-argument,no-copyable-polymorphic,no-non-pod-global-static,no-rule-of-three}
 
-# File length limits (lines): sources and QML, headers, tests. A file may opt out only with a line
-# "NOLINT(qc-file-length): <reason>".
-SOURCE_LINE_LIMIT=800
-HEADER_LINE_LIMIT=300
-TEST_LINE_LIMIT=1000
-
 # Runs a command in its own process group and kills the whole group when the time limit expires.
 run_limited() {
     perl -e 'my $limit = shift; my $pid = fork(); if ($pid == 0) { setpgrp(0, 0); exec @ARGV or die; }
@@ -59,19 +53,17 @@ fi
 status=0
 
 echo "== file length"
-for file in $LENGTH_FILES; do
-    [ -f "$file" ] || continue
-    case "$file" in
-    "$PROJECT_DIR"/tests/*) limit=$TEST_LINE_LIMIT ;;
-    *.h) limit=$HEADER_LINE_LIMIT ;;
-    *) limit=$SOURCE_LINE_LIMIT ;;
-    esac
-    lines=$(wc -l < "$file" | tr -d ' ')
-    if [ "$lines" -gt "$limit" ] && ! grep -q 'NOLINT(qc-file-length): ' "$file"; then
-        echo "$file: $lines lines (limit $limit)"
-        status=1
-    fi
-done
+# The limits live in scripts/check-file-length.sh; a selection without C++ or QML files checks none.
+if [ "$SELECTED" -eq 0 ] || [ -n "$LENGTH_FILES" ]; then
+    # shellcheck disable=SC2086
+    "$PROJECT_DIR/scripts/check-file-length.sh" $LENGTH_FILES || status=1
+fi
+
+# Output parameters (rule in CLAUDE.md): counts only, never a finding that fails the run.
+if [ "$SELECTED" -eq 0 ]; then
+    echo "== output parameters (warning only)"
+    python3 "$PROJECT_DIR/scripts/check-out-params.py" | tail -n 1
+fi
 
 for tool in "$CLANG_TIDY" "$CLAZY"; do
     if [ ! -x "$tool" ]; then

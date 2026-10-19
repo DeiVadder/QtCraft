@@ -10,3 +10,8 @@ set_tests_properties(script_bench_ab_args PROPERTIES TIMEOUT 60)
 add_test(NAME script_bench_adaptive
     COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_bench_adaptive.sh ${PROJECT_SOURCE_DIR}/scripts/bench-adaptive.sh)
 set_tests_properties(script_bench_adaptive PROPERTIES TIMEOUT 60)
+# Test selection of verify.sh --changed by file content (decision E-405) in a throwaway git
+# repository: a touch or a branch switch and back selects nothing; runs no game and no ctest.
+add_test(NAME script_verify_tests_selection
+    COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_tests_selection.py ${PROJECT_SOURCE_DIR}/scripts/verify-tests.py)
+set_tests_properties(script_verify_tests_selection PROPERTIES TIMEOUT 60)

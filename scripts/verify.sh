@@ -14,9 +14,9 @@
 #                    alone selects only the label there (decision E-412).
 # --changed:         with --quick or --tsan-concurrent (alone it means --quick --changed): every test
 #                    step runs only the tests whose inputs changed since they last passed in that build
-#                    directory: relinked executables, files named on their command line or in
-#                    REQUIRED_FILES, and runtime data (content, translations, shaders, test data, CMake
-#                    files; a change there runs all). scripts/verify-tests.py selects and keeps the
+#                    directory: executables, files named on their command line or in REQUIRED_FILES,
+#                    and runtime data (content, translations, shaders, test data, CMake files; a change
+#                    there runs all), compared by content, so a branch switch and back selects nothing. scripts/verify-tests.py selects and keeps the
 #                    stamps in build/<preset>/.verify-test-stamps.json (decision E-405). Every run
 #                    records the tests that passed, so a run without --changed also renews the stamps.
 # Every mode first checks the source lists of the CMake files (scripts/check-cmake-lists.py, E-417)

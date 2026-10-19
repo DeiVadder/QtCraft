@@ -1,0 +1,29 @@
+#!/bin/sh
+# Pre-push hook: the fast structure checks of the working tree before anything leaves the machine
+# (under a second): the target_sources blocks of the CMake lists (scripts/check-cmake-lists.py),
+# include paths and layers (scripts/fix-includes.py --check, decisions E-418/E-419) and the file
+# length limits (scripts/check-file-length.sh). Enabled by scripts/ensure-user-presets.sh through
+# `git config core.hooksPath tools/githooks`; skip once with `git push --no-verify`.
+
+PROJECT_DIR=$(git rev-parse --show-toplevel) || exit 1
+cd "$PROJECT_DIR" || exit 1
+
+status=0
+run_check() {
+    name=$1
+    shift
+    if ! output=$("$@" 2>&1); then
+        echo "pre-push: $name failed:" >&2
+        printf '%s\n' "$output" >&2
+        status=1
+    fi
+}
+
+run_check "CMake source lists" python3 scripts/check-cmake-lists.py
+run_check "includes and layers" python3 scripts/fix-includes.py --check
+run_check "file length" scripts/check-file-length.sh
+
+if [ "$status" -ne 0 ]; then
+    echo "pre-push: structure checks failed, push aborted (git push --no-verify skips them)" >&2
+fi
+exit $status
