@@ -2,6 +2,14 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-19 16:50 (Pause)
+
+Pause auf Wunsch des Menschen. In `dev` seit 14:20: Feuchtgebiete (`b16000c`, E-660/E-661), 56a Logging zentral (`2062eed`, E-680), 56c Handbuch-Übersichten, Schichtregel, `docs/Log.md`, drei Code-Regeln (`5fd0ed2`, E-685–E-688).
+
+Offen zur Wiederaufnahme: (1) 56b Test-Fixtures (`feature/56b-test-fixtures`, fertig, Quick-Verify grün; `dev` eingemergt) – noch `scripts/verify.sh --tsan-concurrent --changed` (wurde für die Pause abgebrochen), dann mergen. (2) 56d `Main.qml`-Umbau, `LazyScreen`, Fotomodus, Enums (`feature/56d-main-qml`, Review und Fixes fertig) – der Agent baute zuletzt die Pad-Kombinationen Back+Y (Screenshot) und Back+X (HUD aus) nach Entscheidung des Menschen; Stand im Branch prüfen (evtl. WIP-Commit), fertigstellen, dann TSan-Lauf und Merge. (3) Danach 56e: bestehende Ausgabeparameter umbauen (27 skalare, 73 `void`-Funktionen mit Container-Parameter, `scripts/check-out-params.py`). Dann Etappe 57.
+
+Solange der Mensch am Rechner arbeitet: keine Fenster-Läufe, zentrale Verifies mit `QC_QUIET_WAIT=120 QC_BUILD_JOBS=8 nice -n 10`.
+
 ## 2026-10-19 14:20
 
 Stand 2026-10-19 14:20: Etappe 40 erledigt (40.3 `2e91fb8`), Etappe 51 erledigt (51.1 `d6ab241` Wüstentempel/Sandgolem, 51.4 `8c3d761` Ruinen/Brunnen/Oasen, 51.3 `f9b1ab1` Dschungel/Dschungeltempel/Hexe, 51.2 `565be0f` Sprengstoff/Küstentürme; alle mit vollem Verify und Headless-Benchmark, Fenster-Benchmarks geschuldet).
