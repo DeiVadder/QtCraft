@@ -76,6 +76,7 @@ target_sources(qc_server PRIVATE
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerSystems.h
+    core/QcServerTick.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
 )
@@ -265,11 +266,13 @@ target_sources(qc_server PRIVATE
     storage/QcWorldStorage.h storage/QcWorldStorage.cpp
 )
 target_sources(qc_server PRIVATE
+    tick/QcClientSyncPace.h tick/QcClientSyncPace.cpp
     tick/QcServerClock.h
     tick/QcTickControl.h
     tick/QcTickPhaseTimer.h tick/QcTickPhaseTimer.cpp
     tick/QcTickScheduler.h tick/QcTickScheduler.cpp
     tick/QcTickStats.h tick/QcTickStats.cpp
+    tick/QcTickSystems.h tick/QcTickSystems.cpp
 )
 target_sources(qc_server PRIVATE
     villages/QcServerTrading.h villages/QcServerTrading.cpp

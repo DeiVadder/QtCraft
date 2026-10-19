@@ -40,9 +40,11 @@
 #include "server/projectiles/QcServerProjectiles.h"
 #include "server/signal/QcServerCircuits.h"
 #include "server/storage/QcServerPersistence.h"
+#include "server/tick/QcClientSyncPace.h"
 #include "server/tick/QcTickControl.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
+#include "server/tick/QcTickSystems.h"
 #include "server/villages/QcServerTrading.h"
 #include "server/weather/QcLightningStrike.h"
 #include "server/weather/QcServerWeather.h"
@@ -173,6 +175,8 @@ public:
     // Tick rate, sprints and freezing (/tick, decision E-249); server thread only.
     QcTickScheduler &tickScheduler() { return m_ticks; }
     const QcTickControl &tickControl() const { return m_tickControl; }
+    // The systems of the tick in their order (decision E-700); server thread only.
+    [[nodiscard]] const QcTickSystems &tickSystems() const { return m_tickSystems; }
 
     // Changes the login settings for network players (a world opened to the LAN, decision E-252).
     void setLoginSettings(const QcLoginSettings &login);
@@ -218,19 +222,14 @@ private:
     // Writes identities.json when players registered since the last write (decision E-273).
     void flushIdentities();
     void flushIdentitiesWhenDue();
-    // Block updates, liquids, creatures, items, plants, falling blocks and machines of one tick.
-    void simulate();
-    // What the clients get after this tick besides their own state: the world around them
-    // (chunks, entities, debug data) and the time of day.
-    struct ClientSync
-    {
-        bool world = true;
-        bool time = false;
-    };
-    ClientSync clientSyncDue();
+    // Add the systems of the tick in their order (decision E-700), once, from the constructor: the
+    // players, saving and chunks, the simulation of the world, the updates of the clients.
+    void addUpkeepSystems();
+    void addSimulationSystems();
+    void addClientSystems();
     void refillInputBudget(Client &client) const;
     // Input budget, the world and time as due, food and the player's own state for one client.
-    void updateClient(Client &client, ClientSync sync);
+    void updateClient(Client &client, QcClientSyncPace::Due sync);
     // Timer slot: runs the due ticks and plans the next as a single shot (decision E-090).
     void runDueTicks();
     // Waits for the next tick when it is due within timerLeadNs (the timer fires that early).
@@ -243,6 +242,9 @@ private:
     QcTickScheduler m_ticks;
     QcTickPhaseTimer m_phases;
     QcTickControl m_tickControl;
+    // The systems of one tick in their order (decision E-700).
+    QcTickSystems m_tickSystems;
+    QcClientSyncPace m_syncPace;
     QcServerSounds m_sounds;
     QcBlockUpdateQueue m_blockUpdates;
     QcServerBlocks m_blocks;
@@ -286,12 +288,11 @@ private:
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
-    // Players' time (QcServerClock::playerTimeNs) of the latest autosave and sprint sync.
+    // Players' time (QcServerClock::playerTimeNs) of the latest autosave.
     qint64 m_lastAutosaveNs = 0;
     static constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
     // The first registration is written with the next tick.
     qint64 m_lastIdentityFlushNs = -identityFlushIntervalNs;
-    qint64 m_lastSprintSyncNs = 0;
     quint64 m_autosaves = 0;
     QcServerDebug m_debug;
     QcServerSystems m_systems;

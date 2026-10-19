@@ -47,6 +47,7 @@ qc_add_test(test_farming_server SOURCES gameplay/test_farming_server.cpp QcServe
 qc_add_test(test_dirt_paths SOURCES gameplay/test_dirt_paths.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_tick_systems SOURCES gameplay/test_tick_systems.cpp LIBRARIES qc_server)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
