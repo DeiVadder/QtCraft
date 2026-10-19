@@ -81,32 +81,47 @@ private:
     void drawTranslucentRuns(const QcGpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
                              QRhiCommandBuffer *commandBuffer);
 
+    // Everything built for one render pass: the pipelines and the sub-renderers that own theirs.
+    // Dropped as a unit (`m_pass = {}`) on a new QRhi or a render target whose pass they do not fit,
+    // so a new pipeline only needs a member here.
+    struct PassResources
+    {
+        std::unique_ptr<QRhiGraphicsPipeline> opaquePipeline;
+        std::unique_ptr<QRhiGraphicsPipeline> translucentPipeline;
+        // The water lists; today the same shaders and blending as translucentPipeline.
+        std::unique_ptr<QRhiGraphicsPipeline> waterPipeline;
+        std::unique_ptr<QRhiGraphicsPipeline> outlinePipeline;
+        std::unique_ptr<QRhiGraphicsPipeline> entityPipeline;
+        std::unique_ptr<QRhiGraphicsPipeline> handPipeline;
+        QcSkyRenderer skyRenderer;
+        QcDebugLineRenderer debugLineRenderer;
+        // Rain and snow, one instance per particle (decisions E-395, E-397).
+        QcPrecipitationRenderer precipitationRenderer;
+        // The pass the block and entity pipelines were created for.
+        std::unique_ptr<QRhiRenderPassDescriptor> renderPass;
+
+        // Whether the pipelines were created for a pass compatible with `target`.
+        bool fits(const QRhiRenderPassDescriptor *target) const;
+    };
+
     QRhi *m_rhi = nullptr;
     std::unique_ptr<QRhiBuffer> m_frameUniforms;
     std::unique_ptr<QRhiTexture> m_atlasTexture;
     std::unique_ptr<QRhiSampler> m_atlasSampler;
     std::unique_ptr<QRhiShaderResourceBindings> m_bindings;
-    std::unique_ptr<QRhiGraphicsPipeline> m_opaquePipeline;
-    std::unique_ptr<QRhiGraphicsPipeline> m_translucentPipeline;
-    // The water lists; today the same shaders and blending as m_translucentPipeline.
-    std::unique_ptr<QRhiGraphicsPipeline> m_waterPipeline;
-    // m_waterPipeline has the shaders, blending and resources of m_translucentPipeline. A water
+    PassResources m_pass;
+    // m_pass.waterPipeline has the shaders, blending and resources of m_pass.translucentPipeline. A water
     // pipeline of its own (stage 45.3) sets this to false where it is created.
     bool m_waterLikeTranslucent = true;
     std::unique_ptr<QRhiShaderResourceBindings> m_outlineBindings;
-    std::unique_ptr<QRhiGraphicsPipeline> m_outlinePipeline;
     std::unique_ptr<QRhiBuffer> m_outlineVertices;
     QList<QcAabb> m_selection;
     std::optional<QList<QcAabb>> m_uploadedSelection;
     quint32 m_outlineVertexCount = 0;
-    std::unique_ptr<QRhiGraphicsPipeline> m_entityPipeline;
-    std::unique_ptr<QRhiGraphicsPipeline> m_handPipeline;
     std::shared_ptr<const QcEntityMesh> m_entityMesh;
     std::shared_ptr<const QcEntityMesh> m_handMesh;
     QcGpuBuffers m_entityBuffers;
     QcGpuBuffers m_handBuffers;
-    // Kept to detect render-target changes that make the pipelines incompatible.
-    std::unique_ptr<QRhiRenderPassDescriptor> m_pipelineRenderPass;
 
     QcFramePlan m_plan = QcFramePlan::classic();
     bool m_warnedTarget = false;
@@ -120,11 +135,7 @@ private:
     quint64 m_uploadedAtlasVersion = 0;
     bool m_atlasTried = false;
     QcSkyState m_sky;
-    QcSkyRenderer m_skyRenderer;
-    QcDebugLineRenderer m_debugLineRenderer;
     std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
-    // Rain and snow, one instance per particle (decisions E-395, E-397).
-    QcPrecipitationRenderer m_precipitationRenderer;
     std::shared_ptr<const QList<QcPrecipitationDrop>> m_precipitation;
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
