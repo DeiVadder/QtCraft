@@ -1,5 +1,6 @@
 {
     "name": "cooked_mutton",
+    "kind": "food",
     "input": "raw_mutton",
     "result": {
         "item": "cooked_mutton"

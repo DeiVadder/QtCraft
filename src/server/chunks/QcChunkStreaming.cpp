@@ -3,6 +3,7 @@
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/machines/QcServerKitchen.h"
 #include "server/spawners/QcSpawnerRules.h"
 
 #include <QtLogging>
@@ -88,6 +89,11 @@ void QcChunkStreaming::sendSpawners(QcServerClient &client, QcChunkPos pos) cons
     const QList<QcBlockPos> spawners = m_state.world().spawners().positionsIn(pos);
     for (const QcBlockPos &spawner : spawners) {
         client.connection->send(QcSpawnerRules::displayOf(m_state.world(), spawner));
+    }
+    // And what lies on its campfires (decision E-772).
+    const QList<QcBlockPos> campfires = m_state.world().campfires().positionsIn(pos);
+    for (const QcBlockPos &campfire : campfires) {
+        client.connection->send(QcServerKitchen::displayOf(m_state.world(), campfire));
     }
 }
 

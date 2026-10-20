@@ -1,0 +1,17 @@
+{
+    "name": "blast_furnace",
+    "type": "shaped",
+    "pattern": [
+        "III",
+        "IFI",
+        "SSS"
+    ],
+    "key": {
+        "I": "iron_ingot",
+        "F": "furnace",
+        "S": "smooth_stone"
+    },
+    "result": {
+        "item": "blast_furnace"
+    }
+}

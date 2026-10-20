@@ -4,11 +4,13 @@
     "icon": "cooked_porkchop",
     "sections": [
         "food",
+        "cake",
         "effects"
     ],
     "related": [
         "cooked_porkchop",
         "raw_porkchop",
-        "pig"
+        "pig",
+        "cake"
     ]
 }

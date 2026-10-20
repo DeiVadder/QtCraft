@@ -10,6 +10,7 @@
 #include "common/world/QcLightVolume.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -282,6 +283,46 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
     }
 }
 
+void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame)
+{
+    // Items lie on the logs, one on each side, turned towards the middle.
+    constexpr double drawDistance = 48.0;
+    constexpr double top = 7.0 / 16.0;
+    constexpr double offset = 0.22;
+    static constexpr std::array<std::pair<double, double>, 4> places{{{-offset, -offset}, {offset, -offset}, {offset, offset}, {-offset, offset}}};
+
+    const QcClientSession &session = *m_parts.session;
+    const QcVec3 viewer = session.playerMotion().position;
+    const QHash<QcBlockPos, QList<quint32>> &campfires = session.worldMirror().extras().campfires();
+    for (auto it = campfires.cbegin(); it != campfires.cend(); ++it) {
+        const QcBlockPos pos = it.key();
+        const QcVec3 centre{pos.x + 0.5, pos.y + top, pos.z + 0.5};
+        if ((centre - viewer).length() > drawDistance) {
+            continue;
+        }
+        for (qsizetype slot = 0; slot < std::min<qsizetype>(it->size(), qsizetype(places.size())); ++slot) {
+            const QcItemId item = it->at(slot);
+            if (!frame.content.isValidItem(item)) {
+                continue;
+            }
+            const auto [dx, dz] = places[std::size_t(slot)];
+            const QcEntityMesher::LyingPlacement placement{centre + QcVec3{dx, 0.0, dz}, 45.0 + 90.0 * double(slot), entityLight(frame.world, centre)};
+            QcEntityMesher::appendLyingItem(mesh, QcFigureLook::item(frame.content, item), placement, frame.uv);
+        }
+    }
+
+    QcEntityMesher::ItemLook smoke;
+    smoke.cube = true;
+    smoke.faces.fill(QString::fromLatin1(explosionSmokeTexture));
+    m_smoke.refresh(frame.world, viewer, session.tickCount());
+    for (const QcBlockPos &campfire : m_smoke.campfires()) {
+        const QList<QcCampfireSmoke::Puff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);
+        for (const QcCampfireSmoke::Puff &puff : puffs) {
+            QcEntityMesher::appendBlock(mesh, smoke, {puff.position, puff.size}, entityLight(frame.world, puff.position), frame.uv);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
                                  const EntityFrame &frame) const
 {
@@ -386,6 +427,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
         appendCreature(*mesh, entity, frame);
     }
     appendSpawners(*mesh, frame);
+    appendCampfires(*mesh, frame);
     appendExplosions(*mesh, frame, double(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).
     if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {

@@ -151,13 +151,21 @@ Das Inventar listet, was du gerade herstellen kannst; ein Klick stellt es her. M
 
 Ein Ofen nimmt oben etwas zum Schmelzen und unten Brennstoff; rechts erscheint das Ergebnis. Er verbrennt ein Brennstoff-Item nach dem anderen, solange er Arbeit hat, und arbeitet weiter, während du fort bist, solange seine Gegend geladen ist. Beim Abbauen fällt sein Inhalt heraus.
 
+**Räucherofen und Schmelzofen**
+
+Zwei Öfen erledigen je eine Aufgabe, doppelt so schnell und mit doppelt so schnell verbrennendem Brennstoff: Der **Räucherofen** (ein Ofen mit vier Stämmen drumherum) gart nur Essen, der **Schmelzofen** (ein Ofen mit fünf Eisenbarren und drei glatten Steinen) schmilzt nur Rohmetall. Alles andere braucht weiter den gewöhnlichen Ofen. Die Tabelle der Ofenrezepte zeigt, welche Maschinen ein Rezept nehmen.
+
+**Lagerfeuer**
+
+Ein **Lagerfeuer** (Stöcke, Kohle oder Holzkohle und drei Stämme) spendet Licht und gart ohne Brennstoff: Rohes Fleisch, Fisch oder eine Kartoffel darauf benutzen legt sie aufs Feuer, bis zu vier auf einmal; nach 30 Sekunden springt jedes gegart herunter. Wer darin steht, nimmt Schaden, Feuer breitet es aber nicht aus. Mit einer Schaufel oder einem Wassereimer löschen (was darauf liegt, fällt herunter) und mit Feuerzeug wieder anzünden.
+
 **Metalle**
 
 Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barren ergeben einen Speicherblock und ein Barren neun Nuggets; beides lässt sich zurück herstellen. Eisen wird zu Werkzeugen, Rüstung, Eimern, Schienen, Türen, Gittern und mit seinen Nuggets zu Ketten und Laternen; Gold zu Goldwerkzeugen und Antriebsschienen; Kupfer zu Türen und Falltüren, die sich von Hand und mit Signal öffnen, Gittern, Ketten und Laternen.
 
 **Siehe auch**
 
-[Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Roheisen](items.md#item-qtcraft-raw_iron), [Kupferbarren](items.md#item-qtcraft-copper_ingot), [Kette](blocks.md#block-qtcraft-chain)
+[Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Roheisen](items.md#item-qtcraft-raw_iron), [Kupferbarren](items.md#item-qtcraft-copper_ingot), [Kette](blocks.md#block-qtcraft-chain), [Räucherofen](blocks.md#block-qtcraft-smoker), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire)
 
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 
@@ -165,13 +173,17 @@ Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barr
 
 Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Nahrungspunkt. Gehen leert eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Nahrungspunkte.
 
+**Kuchen**
+
+Ein **Kuchen** (drei Milcheimer, zwei Zucker, ein Ei und drei Weizen; die Eimer kommen leer zurück) wird wie ein Block aufgestellt und dort gegessen: Jede Benutzung, solange du hungrig bist, isst eines seiner sieben Stücke für 2 Nahrungspunkte, auch mit etwas anderem in der Hand. Andere können mitessen. Einmal aufgestellt lässt er sich nicht mehr aufheben; abgebaut gibt er nichts.
+
 **Heilen und Hungern**
 
 Mit mindestens 18 Nahrungspunkten heilst du alle 4 s einen Lebenspunkt. Mit leerer Nahrungsleiste verlierst du alle 4 s einen Lebenspunkt, doch Hunger allein bringt dich nie unter 1.
 
 **Siehe auch**
 
-[Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop), [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop), [Schwein](creatures.md#mob-qtcraft-pig)
+[Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop), [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop), [Schwein](creatures.md#mob-qtcraft-pig), [Kuchen](blocks.md#block-qtcraft-cake)
 
 ### <a id="chapter-qtcraft-farming"></a>Landwirtschaft
 

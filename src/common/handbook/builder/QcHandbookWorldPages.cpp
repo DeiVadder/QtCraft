@@ -209,6 +209,9 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
         }
         facts.append(std::move(ground));
     }
+    if (feature.onWater) {
+        facts.append({text.label(u"fact.onWater"_s), text.yesNo(true), {}});
+    }
     if (feature.nearWater) {
         facts.append({text.label(u"fact.nearWater"_s), text.yesNo(true), {}});
     }

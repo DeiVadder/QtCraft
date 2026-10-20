@@ -250,4 +250,30 @@ void encode(QDataStream &stream, const QcMsg::Explosion &m)
     return m;
 }
 
+void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m)
+{
+    writePos(stream, m.pos);
+    stream << quint32(m.items.size());
+    for (const quint32 item : m.items) {
+        stream << item;
+    }
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CampfireDisplay>, QDataStream &stream)
+{
+    QcMsg::CampfireDisplay m;
+    m.pos = readPos(stream);
+    quint32 count = 0;
+    stream >> count;
+    if (count > quint32(QcMsg::CampfireDisplay::maxItems)) {
+        return qcError(u"Invalid campfire display"_s);
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        quint32 item = 0;
+        stream >> item;
+        m.items.append(item);
+    }
+    return m;
+}
+
 } // namespace QcProtocolCodec

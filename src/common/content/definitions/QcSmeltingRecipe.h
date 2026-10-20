@@ -20,4 +20,7 @@ struct QcSmeltingRecipe
     // (decision E-398). Server side only.
     double experience = 0.0;
     static constexpr double maxExperience = 100.0;
+    // What is smelted ("food", "metal"; empty: anything else). Machines with `kinds` take only
+    // recipes of those kinds: the smoker food, the blast furnace metal (decision E-770).
+    QString kind = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 };

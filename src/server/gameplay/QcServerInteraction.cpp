@@ -18,6 +18,7 @@
 #include "server/gameplay/QcServerStands.h"
 #include "server/golems/QcServerGolems.h"
 #include "server/machines/QcBlockScreens.h"
+#include "server/machines/QcServerKitchen.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
 #include "server/plants/QcServerPlants.h"
@@ -170,6 +171,11 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
+    // Cake and campfires (decisions E-772, E-773).
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.kitchen.use(client, target)) {
+        return true;
+    }
+
     // Levers, buttons and repeaters (decision E-339); a spammed switch is ignored beyond its budget.
     if (clickedBlock && m_state.content().block(*clickedBlock).signal.isUsable() && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         if (client.input.rateLimiter.allow(QcRateLimiter::Kind::Switch, m_state.clock().playerTimeNs())) {
@@ -186,13 +192,20 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     const QcContentRegistry &content = m_state.content();
     const std::optional<QcBlockId> clicked = m_state.world().blockAt(message.target);
     const std::optional<QcBlockId> placed = held ? content.blockId(held->placesBlock) : std::nullopt;
-    const bool clickedSolid = clicked && content.isValidBlock(*clicked) && !content.block(*clicked).liquid;
+    const bool clickedLiquid = clicked && content.isValidBlock(*clicked) && content.block(*clicked).liquid;
+    // A floating block (a lily pad, decision E-774) goes onto the surface of the liquid it was aimed
+    // at, never into a liquid further down a column.
+    const std::optional<QcBlockId> above = m_state.world().blockAt(message.target.offset(0, 1, 0));
+    const bool surface = above && content.isValidBlock(*above) && !content.block(*above).liquid;
+    const bool floating = placed && clickedLiquid && surface && content.block(*placed).floats;
+    const QcBlockFace face = floating ? QcBlockFace::Up : message.face;
+    const bool clickedSolid = clicked && content.isValidBlock(*clicked) && !clickedLiquid;
     const std::optional<QcBlockRules::Placement> placement =
-        placed && clickedSolid && *clicked != qcAirBlockId
-            ? QcBlockRules::placement(m_state.world(), *placed, {message.target, message.face, message.hit, client.yaw, client.pitch})
+        placed && (clickedSolid || floating) && *clicked != qcAirBlockId
+            ? QcBlockRules::placement(m_state.world(), *placed, {message.target, face, message.hit, client.yaw, client.pitch})
             : std::nullopt;
 
-    const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, message.face);
+    const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, face);
     const std::optional<QcBlockId> existing = m_state.world().blockAt(target);
     // A fish bucket whose fish may not come out (decision E-501) pours nothing.
     if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)

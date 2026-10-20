@@ -555,6 +555,21 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     }
 }
 
+void appendLyingItem(QcEntityMesh &mesh, const ItemLook &look, const LyingPlacement &placement, const UvLookup &uv)
+{
+    const Turn turn(placement.yaw);
+    if (look.cube) {
+        const QcVec3 centre{0.0, itemCubeSize * 0.5, 0.0};
+        emitItem(mesh, look, [&](const QcVec3 &p) { return placement.position + turn(p + centre); }, placement.light, uv);
+        return;
+    }
+
+    // The sprite's upright plane laid down: its top points north, a hair above the surface.
+    constexpr double lift = 0.01;
+    const auto lay = [&](const QcVec3 &p) { return placement.position + turn(QcVec3{p.x, lift, itemSpriteSize * 0.5 - p.y}); };
+    emitSprite(mesh, itemSpriteSize, lay, uv(look.sprite), glowing(placement.light, look));
+}
+
 void appendOrb(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemFrame &frame, const UvLookup &uv)
 {
     // From 0.2 m for one point up to half a metre for the biggest orbs.

@@ -85,6 +85,12 @@ QString QcHandbookText::machineName(const QString &category) const
     return name.isEmpty() ? category : name;
 }
 
+QString QcHandbookText::recipeKindName(const QString &kind) const
+{
+    const QString name = lookup(u"handbook.recipeKind."_s + (kind.isEmpty() ? u"other"_s : kind));
+    return name.isEmpty() ? kind : name;
+}
+
 QString QcHandbookText::toolName(const QString &tool) const
 {
     const QString name = lookup(u"handbook.tool."_s + tool);
@@ -130,6 +136,12 @@ void QcHandbookText::addContentValues()
         m_rules.insert(block.name + u".flowDistance"_s, block.flow.distance);
         m_rules.insert(block.name + u".light"_s, block.lightLevel);
         m_rules.insert(block.name + u".hardness"_s, block.hardness);
+        if (block.bites.isEdible()) {
+            m_rules.insert(block.name + u".biteFood"_s, block.bites.food);
+        }
+        if (block.campfire.cooks()) {
+            m_rules.insert(block.name + u".cookSeconds"_s, block.campfire.seconds);
+        }
     }
 
     // Items of blocks share the block's name; the block's values win.

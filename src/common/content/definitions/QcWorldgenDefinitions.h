@@ -82,6 +82,9 @@ struct QcFeatureDefinition
     QList<QString> groundBlocks;
     // Only on ground at sea level with water right next to it (sugar cane on a shore).
     bool nearWater = false;
+    // Plants only: on the surface of the water of columns under the sea level, standing on the top
+    // water block (lily pads in swamps, decision E-774); `ground` names the water.
+    bool onWater = false;
     // Size in blocks of the patches the feature grows in (flower meadows, groves); 0 scatters it
     // evenly. The average density stays the same.
     int patchSize = 0;

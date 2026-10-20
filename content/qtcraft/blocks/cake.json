@@ -1,0 +1,33 @@
+{
+    "name": "cake",
+    "sound": "snow",
+    "shape": "cake",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 0.5,
+    "support": "below",
+    "states": {
+        "bites": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+        ]
+    },
+    "bites": {
+        "food": 2
+    },
+    "drops": [],
+    "signal": {
+        "comparator": "bites"
+    },
+    "itemTexture": "cake_item",
+    "textures": {
+        "top": "cake_top",
+        "bottom": "cake_bottom",
+        "side": "cake_side"
+    }
+}

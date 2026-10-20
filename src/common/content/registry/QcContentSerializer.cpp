@@ -439,7 +439,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     QcSmeltingRecipe recipe;
 
     qint32 resultCount = 0;
-    stream >> recipe.name >> recipe.category >> recipe.inputItem >> recipe.resultItem >> resultCount >> recipe.seconds;
+    stream >> recipe.name >> recipe.category >> recipe.kind >> recipe.inputItem >> recipe.resultItem >> resultCount >> recipe.seconds;
     recipe.resultCount = resultCount;
     const bool valid = stream.status() == QDataStream::Ok && resultCount >= 1 && resultCount <= 64 && std::isfinite(recipe.seconds)
                        && recipe.seconds >= QcSmeltingRecipe::minSeconds && recipe.seconds <= QcSmeltingRecipe::maxSeconds;
@@ -613,7 +613,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     writeList(stream, content.assets().models(), writeModel);
     writeList(stream, content.assets().appearances(), writeAppearance);
     writeList(stream, content.smeltingRecipes(), [](QDataStream &out, const QcSmeltingRecipe &recipe) {
-        out << recipe.name << recipe.category << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
+        out << recipe.name << recipe.category << recipe.kind << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
             << recipe.seconds;
     });
     writeList(stream, content.assets().sounds(), writeSound);

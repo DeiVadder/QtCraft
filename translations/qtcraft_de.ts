@@ -3447,22 +3447,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="180"/>
+        <location filename="../src/server/core/QcServer.cpp" line="182"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="391"/>
+        <location filename="../src/server/core/QcServer.cpp" line="393"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="421"/>
+        <location filename="../src/server/core/QcServer.cpp" line="423"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="183"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="184"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -3487,7 +3487,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="198"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="199"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3507,44 +3507,44 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="221"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="232"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="98"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="229"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="240"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="235"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="246"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="117"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="158"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="167"/>
         <source>Not enough room in the inventory</source>
         <translation>Nicht genug Platz im Inventar</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="172"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="181"/>
         <source>Unknown recipe %1</source>
         <translation>Unbekanntes Rezept %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="179"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="188"/>
         <source>%1 needs a crafting table nearby</source>
         <translation>%1 braucht eine Werkbank in der Nähe</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="198"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="207"/>
         <source>Crafted %1 x %2</source>
         <translation>%1 × %2 hergestellt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="201"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="210"/>
         <source>Missing ingredients or room for %1</source>
         <translation>Zutaten oder Platz für %1 fehlen</translation>
     </message>
@@ -3961,7 +3961,7 @@
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="215"/>
+        <location filename="../src/server/core/QcServer.cpp" line="217"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="79"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>

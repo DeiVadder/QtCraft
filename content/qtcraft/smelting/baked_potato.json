@@ -1,5 +1,6 @@
 {
     "name": "baked_potato",
+    "kind": "food",
     "input": "potato",
     "result": {
         "item": "baked_potato"

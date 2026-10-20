@@ -2,6 +2,7 @@
 
 #include "server/blockentities/QcBlockEntities.h"
 #include "server/blocks/QcFireQueue.h"
+#include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
 
 void QcBlockEntityExtras::keepParts(QcChunkPos pos, QcBlockEntityKept parts)
@@ -13,7 +14,8 @@ void QcBlockEntityExtras::keepParts(QcChunkPos pos, QcBlockEntityKept parts)
     }
 }
 
-void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const QcBlockEntities &entities, const QcFireQueue &fires, const QcSpawners &spawners)
+void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const QcBlockEntities &entities, const QcFireQueue &fires, const QcSpawners &spawners,
+                                          const QcCampfires &campfires)
 {
     const auto parts = m_parts.find(pos.chunk());
     if (parts == m_parts.end() || parts->entries.isEmpty()) {
@@ -41,6 +43,8 @@ void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const QcBlockEntities 
             return !fires.contains(pos);
         case Table::Spawners:
             return !spawners.contains(pos);
+        case Table::Campfires:
+            return campfires.at(pos) == nullptr;
         default:
             return false;
         }

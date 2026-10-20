@@ -1,0 +1,10 @@
+{
+    "name": "lily_pad",
+    "type": "plant",
+    "block": "lily_pad",
+    "onWater": true,
+    "patchSize": 8,
+    "ground": [
+        "water"
+    ]
+}

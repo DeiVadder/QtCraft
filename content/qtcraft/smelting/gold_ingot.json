@@ -1,5 +1,6 @@
 {
     "name": "gold_ingot",
+    "kind": "metal",
     "input": "raw_gold",
     "result": {
         "item": "gold_ingot"

@@ -112,6 +112,16 @@ QcVillageStyle::Wetland QcVillageStyles::fitWetland(QcVillageStyle::Wetland wetl
     return wetland;
 }
 
+// A plant of the wetland by name; air for none and for an unknown one (a warning).
+QcBlockId QcVillageStyles::wetlandPlant(const QcContentRegistry &content, const QString &style, const QString &name)
+{
+    const std::optional<QcBlockId> plant = name.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.stateId(name);
+    if (!plant) {
+        m_warnings.append(u"village style '%1': unknown wetland plant '%2', none"_s.arg(style, name));
+    }
+    return plant.value_or(qcAirBlockId);
+}
+
 // The style's wetland with its blocks resolved, fitted into the region's margin; std::nullopt
 // without one or with an unknown bottom block (a warning), an unknown plant is left out (a warning).
 std::optional<QcVillageStyle::Wetland> QcVillageStyles::resolveWetland(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
@@ -125,10 +135,6 @@ std::optional<QcVillageStyle::Wetland> QcVillageStyles::resolveWetland(const QcV
         m_warnings.append(u"village style '%1': unknown wetland bottom '%2', no wetland"_s.arg(definition.name, wetland.bottom));
         return std::nullopt;
     }
-    const std::optional<QcBlockId> plant = wetland.plant.isEmpty() ? std::optional<QcBlockId>(qcAirBlockId) : content.stateId(wetland.plant);
-    if (!plant) {
-        m_warnings.append(u"village style '%1': unknown wetland plant '%2', none"_s.arg(definition.name, wetland.plant));
-    }
 
     QcVillageStyle::Wetland resolved;
     resolved.bottom = *bottom;
@@ -139,8 +145,10 @@ std::optional<QcVillageStyle::Wetland> QcVillageStyles::resolveWetland(const QcV
     resolved.water = wetland.water;
     resolved.mudBand = wetland.mudBand;
     resolved.scale = wetland.scale;
-    resolved.plant = plant.value_or(qcAirBlockId);
+    resolved.plant = wetlandPlant(content, definition.name, wetland.plant);
     resolved.plantChance = wetland.plantChance;
+    resolved.floatingPlant = wetlandPlant(content, definition.name, wetland.floatingPlant);
+    resolved.floatingPlantChance = wetland.floatingPlantChance;
     return fitWetland(resolved, content.villageCatalog().settings(), definition.name);
 }
 

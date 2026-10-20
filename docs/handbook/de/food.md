@@ -50,13 +50,13 @@ Im Ofen gebratener Kabeljau; gutes Essen, und er heilt eine zahme Katze.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roher Kabeljau](#item-qtcraft-raw_cod) | [Gebratener Kabeljau](#item-qtcraft-cooked_cod) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -72,13 +72,13 @@ Gebratener Lachs, eine gute Mahlzeit.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roher Lachs](#item-qtcraft-raw_salmon) | [Gebratener Lachs](#item-qtcraft-cooked_salmon) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -94,13 +94,13 @@ Im Ofen gebratenes Hammelfleisch; gutes Essen.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -116,13 +116,13 @@ Im Ofen gebratenes Hühnchen; gutes Essen.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Hühnchen](#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -138,13 +138,13 @@ Gutes Essen, das die Nahrungsleiste weit füllt.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) | [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -176,13 +176,13 @@ Roh kaum sättigend; auf Ackerboden pflanzen oder im Ofen backen.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Kartoffel](#item-qtcraft-potato) | [Ofenkartoffel](#item-qtcraft-baked_potato) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -239,13 +239,13 @@ Eine im Ofen gebackene Kartoffel; so sättigend wie Brot.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Kartoffel](#item-qtcraft-potato) | [Ofenkartoffel](#item-qtcraft-baked_potato) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -281,13 +281,13 @@ Ein Fisch; zähmt Katzen und lässt dich an Ozelots heran. Besser im Ofen gebrat
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roher Kabeljau](#item-qtcraft-raw_cod) | [Gebratener Kabeljau](#item-qtcraft-cooked_cod) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -307,13 +307,13 @@ Fleisch eines Lachses; im Ofen gebraten schmeckt es besser.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roher Lachs](#item-qtcraft-raw_salmon) | [Gebratener Lachs](#item-qtcraft-cooked_salmon) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -333,13 +333,13 @@ Fleisch eines Schafs; im Ofen gebraten besser.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -359,13 +359,13 @@ Fleisch eines Huhns; im Ofen gebraten besser.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Hühnchen](#item-qtcraft-raw_chicken) | [Gebratenes Hühnchen](#item-qtcraft-cooked_chicken) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -385,13 +385,13 @@ Fleisch einer Kuh; im Ofen gebraten wird ein sättigendes Steak daraus.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Rindfleisch](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -411,13 +411,13 @@ Nahrung vom Schwein; im Ofen gebraten sättigt es mehr.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) | [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -437,13 +437,13 @@ Gebratenes Rindfleisch, eines der sättigendsten Essen.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Räucherofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohes Rindfleisch](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (30 s), [Räucherofen](blocks.md#block-qtcraft-smoker) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 

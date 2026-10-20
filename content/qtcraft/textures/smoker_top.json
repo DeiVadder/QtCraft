@@ -1,0 +1,8 @@
+{
+    "name": "smoker_top",
+    "pattern": "speckle",
+    "primary": "#5a5450",
+    "secondary": "#3e3a36",
+    "variation": 0.08,
+    "seed": 7701
+}

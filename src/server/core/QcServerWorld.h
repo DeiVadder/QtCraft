@@ -15,6 +15,7 @@
 #include "server/chunks/QcChunkLoaders.h"
 #include "server/chunks/QcChunkSaveState.h"
 #include "server/chunks/QcSectionMarks.h"
+#include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/villages/QcVillages.h"
@@ -77,6 +78,10 @@ public:
     // The monster spawners of the loaded chunks (decision E-520), kept in step like the fires.
     QcSpawners &spawners() { return m_spawners; }
     const QcSpawners &spawners() const { return m_spawners; }
+    // The items cooking on the campfires of the loaded chunks (decision E-772), kept in step like the
+    // spawners.
+    QcCampfires &campfires() { return m_campfires; }
+    const QcCampfires &campfires() const { return m_campfires; }
     // Which loaded chunks were furnished and the parts of their saved block entities this version
     // does not read (decisions E-520, E-440); kept in step with every block set here.
     QcBlockEntityExtras &blockEntityExtras() { return m_blockEntityExtras; }
@@ -181,6 +186,7 @@ private:
     QcBlockEntities m_blockEntities;
     QcFireQueue m_fires;
     QcSpawners m_spawners;
+    QcCampfires m_campfires;
     QcBlockEntityExtras m_blockEntityExtras;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).

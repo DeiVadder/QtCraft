@@ -156,6 +156,10 @@ Von Hühnern gelegt. Mit der Benutzen-Taste geworfen, zerplatzt es, wo es landet
 | ID | `qtcraft:egg` |
 | Stapelgröße | 16 |
 
+**Wird verwendet für**
+
+[Kuchen](blocks.md#block-qtcraft-cake)
+
 ### <a id="item-qtcraft-bucket"></a>Eimer
 
 Nimmt eine Wasser- oder Lavaquelle auf. Aus drei Eisenbarren.
@@ -202,19 +206,19 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roheisen](#item-qtcraft-raw_iron) | [Eisenbarren](#item-qtcraft-iron_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Kessel](blocks.md#block-qtcraft-cauldron), [Kette](blocks.md#block-qtcraft-chain), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Kessel](blocks.md#block-qtcraft-cauldron), [Kette](blocks.md#block-qtcraft-chain), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
 
 **Droppt aus**
 
@@ -442,13 +446,13 @@ Geschmolzenes Gold.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohgold](#item-qtcraft-raw_gold) | [Goldbarren](#item-qtcraft-gold_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -693,7 +697,11 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle)
+[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle)
+
+**Droppt aus**
+
+[Erloschenes Lagerfeuer](blocks.md#block-qtcraft-unlit_campfire) (2×), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (2×)
 
 ### <a id="item-qtcraft-cod_bucket"></a>Kabeljaueimer
 
@@ -787,7 +795,7 @@ Brennstoff für den Ofen und Teil von Fackeln.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Schwarzpulver](#item-qtcraft-gunpowder)
+[Fackel](blocks.md#block-qtcraft-torch) (Kohle oder Holzkohle), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Kohlestück](#item-qtcraft-coal_chunk) (Kohle oder Holzkohle), [Lagerfeuer](blocks.md#block-qtcraft-campfire) (Kohle oder Holzkohle), [Schwarzpulver](#item-qtcraft-gunpowder)
 
 **Droppt aus**
 
@@ -842,13 +850,13 @@ Geschmolzenes Kupfer für Türen, Gitter, Ketten und Laternen.
 
 **Im Ofen hergestellt**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohkupfer](#item-qtcraft-raw_copper) | [Kupferbarren](#item-qtcraft-copper_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -1079,6 +1087,10 @@ Frische Milch einer Kuh. Mit der Benutzen-Taste getrunken, beendet sie alle Stat
 | Stapelgröße | 1 |
 | Danach | [Eimer](#item-qtcraft-bucket) |
 
+**Wird verwendet für**
+
+[Kuchen](blocks.md#block-qtcraft-cake)
+
 ### <a id="item-qtcraft-orange_dye"></a>Orangefarbener Farbstoff
 
 Aus rotem und gelbem Farbstoff gemischt.
@@ -1165,13 +1177,13 @@ Was Eisenerz fallen lässt; ein Ofen schmilzt es zu einem Eisenbarren.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Roheisen](#item-qtcraft-raw_iron) | [Eisenbarren](#item-qtcraft-iron_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -1202,13 +1214,13 @@ Was Golderz fallen lässt; ein Ofen schmilzt es zu einem Goldbarren.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohgold](#item-qtcraft-raw_gold) | [Goldbarren](#item-qtcraft-gold_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -1239,13 +1251,13 @@ Was Kupfererz fallen lässt; ein Ofen schmilzt es zu einem Kupferbarren.
 
 **Wird im Ofen zu**
 
-*Ofen: 10 s pro Stück, braucht Brennstoff*
+*Ofen, Schmelzofen: 10 s pro Stück, braucht Brennstoff*
 
 | 1 | → |
 |---|---|
 | [Rohkupfer](#item-qtcraft-raw_copper) | [Kupferbarren](#item-qtcraft-copper_ingot) |
 
-[Ofen](blocks.md#block-qtcraft-furnace)
+[Ofen](blocks.md#block-qtcraft-furnace), [Schmelzofen](blocks.md#block-qtcraft-blast_furnace) (Tempo × 2)
 
 [Brennstoffe](tables.md#table-fuels)
 
@@ -1537,7 +1549,7 @@ Griff für Werkzeuge und Fackeln.
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Angel](#item-qtcraft-fishing_rod), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Angel](#item-qtcraft-fishing_rod), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
 
 **Droppt aus**
 
@@ -1728,7 +1740,7 @@ Ernte von reifem Weizen. Drei ergeben ein Brot; Schafe lieben ihn.
 
 **Wird verwendet für**
 
-[Brot](food.md#item-qtcraft-bread), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie), [Strohballen](blocks.md#block-qtcraft-hay_block)
+[Brot](food.md#item-qtcraft-bread), [Kuchen](blocks.md#block-qtcraft-cake), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie), [Strohballen](blocks.md#block-qtcraft-hay_block)
 
 **Droppt aus**
 
@@ -1832,7 +1844,7 @@ Aus Zuckerrohr gemacht; süßt einen Kürbiskuchen.
 
 **Wird verwendet für**
 
-[Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
+[Kuchen](blocks.md#block-qtcraft-cake), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
 
 **Droppt aus**
 

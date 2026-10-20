@@ -1,5 +1,8 @@
 {
     "name": "stripped_oak_wood",
+    "tags": [
+        "logs"
+    ],
     "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",

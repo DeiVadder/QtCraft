@@ -1,0 +1,33 @@
+{
+    "name": "smoker",
+    "sound": "stone",
+    "hardness": 3.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "machine": {
+        "category": "smelting",
+        "kinds": [
+            "food"
+        ],
+        "speed": 2.0
+    },
+    "textures": {
+        "top": "smoker_top",
+        "bottom": "smoker_top",
+        "side": "smoker_side",
+        "north": "smoker_front"
+    },
+    "signal": {
+        "comparator": "contents"
+    }
+}

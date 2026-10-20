@@ -35,7 +35,7 @@ public:
     // Biomes, ore veins and pools a block occurs in.
     QList<Link> foundIn(const QString &block) const { return m_foundIn.value(block).links(); }
     QList<Link> spawnersOn(const QString &block) const { return m_spawnersOn.value(block).links(); }
-    // Indices into the content's blocks.
+    // Indices into the content's blocks: the machines and campfires that work on a recipe category.
     QList<qsizetype> machinesByCategory(const QString &category) const { return m_machinesByCategory.value(category); }
     QStringList partsByBase(const QString &block) const { return m_partsByBase.value(block); }
 

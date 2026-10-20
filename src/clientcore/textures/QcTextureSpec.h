@@ -221,6 +221,15 @@ struct QcTextureSpec
         ChiseledBricks,
         SmoothStone,
         GlazedTerracotta,
+        // Patterns of QcTextureKitchenPatterns (decisions E-772 to E-774): the cake's frosted top
+        // (primary) with berries, its side (frosting primary over sponge secondary, the upper half
+        // clear) and its icon, the campfire's icon (logs primary, their ends secondary, a flame) and
+        // a round lily pad with a notch and veins (secondary).
+        CakeTop,
+        CakeSide,
+        CakeItem,
+        CampfireItem,
+        LilyPad,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

@@ -30,7 +30,7 @@ Touch touchOf(const std::vector<Touch> &table, QcBlockId id)
 // The stronger of both values of two touches.
 Touch strongest(Touch a, Touch b)
 {
-    return {std::max(a.damage, b.damage), std::max(a.alightTicks, b.alightTicks)};
+    return {std::max(a.damage, b.damage), std::max(a.alightTicks, b.alightTicks), a.burnsItems || b.burnsItems};
 }
 
 // Highest contact damage and burning in `section` within `local` (coordinates local to the section).
@@ -73,7 +73,8 @@ QcContactDamage::QcContactDamage(const QcContentRegistry &content)
 {
     for (std::size_t id = 0; id < m_touch.size(); ++id) {
         const QcBlockDefinition &block = content.block(QcBlockId(id));
-        m_touch[id] = {block.contactDamage, int(std::lround(block.fire.setsAlightSeconds * QcPhysics::tickRate))};
+        m_touch[id] = {block.contactDamage, int(std::lround(block.fire.setsAlightSeconds * QcPhysics::tickRate)),
+                       block.contactDamage > 0.0 && block.burnsItems};
     }
 }
 

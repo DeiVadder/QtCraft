@@ -1,5 +1,6 @@
 {
     "name": "cooked_salmon",
+    "kind": "food",
     "input": "raw_salmon",
     "result": {
         "item": "cooked_salmon"

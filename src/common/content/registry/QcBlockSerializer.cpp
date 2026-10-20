@@ -1,5 +1,6 @@
 #include "common/content/registry/QcBlockSerializer.h"
 
+#include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/registry/QcBlockStateTable.h"
 #include "common/protocol/QcStreamLimits.h"
 
@@ -144,14 +145,15 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 toolLevel = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
         >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting
-        >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.soundMaterial;
+        >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.machine.kinds
+        >> block.soundMaterial;
     for (QString &key : block.soundKeys) {
         stream >> key;
     }
 
     // Machine speed and fuel time drive server-side timers; they must stay within the parser's ranges.
     const bool machineOk = block.machine.category.size() <= 64 && std::isfinite(block.machine.speed)
-                           && block.machine.speed > 0.0 && block.machine.speed <= 100.0;
+                           && block.machine.speed > 0.0 && block.machine.speed <= 100.0 && block.machine.kinds.size() <= 16;
     if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
         || !machineOk || !QcBlockSerializer::plausibleFuel(block.fuelSeconds)) {
         stream.setStatus(QDataStream::ReadCorruptData);
@@ -284,6 +286,11 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     stream >> containerSlots >> containerColumns >> flowDistance >> block.flow.movementFactor;
     quint8 signalKind = 0;
     stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> block.slipperiness >> signalKind >> block.fire.isFire;
+    qint32 biteFood = 0;
+    qint32 campfireSlots = 0;
+    stream >> block.floats >> biteFood >> campfireSlots;
+    block.bites.food = biteFood;
+    block.campfire.slotCount = campfireSlots;
     if (signalKind >= quint8(qcSignalKindCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
@@ -301,7 +308,8 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
         || facingRule > quint8(QcFacingRule::Against) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
         || containerColumns < 1 || containerColumns > 9
-        || containerSlots > QcBlockDefinition::maxContainerSlots || !QcBlockStateTable::problem(block).isEmpty()) {
+        || containerSlots > QcBlockDefinition::maxContainerSlots || biteFood < 0 || biteFood > QcItemDefinition::maxFood
+        || campfireSlots < 0 || campfireSlots > QcCampfireDefinition::maxSlots || !QcBlockStateTable::problem(block).isEmpty()) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
@@ -328,7 +336,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
            << qint32(block.toolLevel) << block.opensCrafting << block.machine.category
-           << block.machine.speed << block.fuelSeconds << block.machine.sound << block.soundMaterial;
+           << block.machine.speed << block.fuelSeconds << block.machine.sound << block.machine.kinds << block.soundMaterial;
     for (const QString &key : block.soundKeys) {
         stream << key;
     }
@@ -372,6 +380,9 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << block.slipperiness << quint8(block.signal.kind);
     // Whether it is fire: the client shows the default fire around burning bodies.
     stream << block.fire.isFire;
+    // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
+    // take the use instead of food being eaten.
+    stream << block.floats << qint32(block.bites.food) << qint32(block.campfire.slotCount);
 }
 
 std::optional<QcBlockDefinition> readBlock(QDataStream &stream)

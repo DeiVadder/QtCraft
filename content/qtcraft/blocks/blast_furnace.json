@@ -1,0 +1,33 @@
+{
+    "name": "blast_furnace",
+    "sound": "stone",
+    "hardness": 3.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "machine": {
+        "category": "smelting",
+        "kinds": [
+            "metal"
+        ],
+        "speed": 2.0
+    },
+    "textures": {
+        "top": "blast_furnace_top",
+        "bottom": "blast_furnace_top",
+        "side": "blast_furnace_side",
+        "north": "blast_furnace_front"
+    },
+    "signal": {
+        "comparator": "contents"
+    }
+}

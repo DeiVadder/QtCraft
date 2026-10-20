@@ -16,6 +16,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     , m_villages(std::make_unique<QcVillages>(*m_content, *m_generator))
     , m_blockEntities(m_content)
     , m_spawners(*m_content)
+    , m_campfires(*m_content)
     , m_light(std::make_shared<const QcLightTable>(*m_content), {})
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
@@ -198,6 +199,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
     m_spawners.forgetChunk(pos);
+    m_campfires.forgetChunk(pos);
     m_blockEntityExtras.forgetChunk(pos);
     m_villages->forgetChunk(pos);
 }
@@ -325,8 +327,9 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_blockEntities.placed(pos, before, block);
     m_fires.noteBlock(pos, before, block);
     m_spawners.noteBlock(pos, before, block);
+    m_campfires.noteBlock(pos, block);
     if (m_blockEntityExtras.hasKeptParts()) [[unlikely]] {
-        m_blockEntityExtras.dropOrphanTails(pos, m_blockEntities, m_fires, m_spawners);
+        m_blockEntityExtras.dropOrphanTails(pos, m_blockEntities, m_fires, m_spawners, m_campfires);
     }
 
     m_saves.noteChanged(pos.chunk());

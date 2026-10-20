@@ -71,6 +71,11 @@ void QcServerBlocks::dropSpills()
         QcServerExperience::drop(m_state, QcServerExperience::takeWhole(m_state, spill.experience),
                                  {spill.pos.x + 0.5, spill.pos.y + 0.5, spill.pos.z + 0.5});
     }
+    // The items of campfires that went out or were broken (decision E-772).
+    const QList<QcCampfires::Spill> food = m_state.world().campfires().takeSpills();
+    for (const QcCampfires::Spill &spill : food) {
+        dropStacks(spill.stacks, spill.pos);
+    }
 }
 
 void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)

@@ -1,0 +1,8 @@
+{
+    "name": "blast_furnace_front",
+    "pattern": "furnace",
+    "primary": "#6e6e72",
+    "secondary": "#1a1818",
+    "variation": 0.1,
+    "seed": 7706
+}

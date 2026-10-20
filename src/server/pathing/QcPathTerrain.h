@@ -138,7 +138,7 @@ bool clearAbove(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
 }
 
 // Whether the creature can stand with its feet in `feet`: a floor below (or a low block in the
-// cell, the surface of water or a ladder it holds on to) and room for the body.
+// cell on something that carries it, the surface of water or a ladder it holds on to) and room for the body.
 template<typename Cells>
 QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 {
@@ -151,6 +151,12 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 
     const quint8 below = cells.cell(feet.offset(0, -1, 0));
     if (kind == QcPathCell::Kind::Low) {
+        // A low block is a floor on whatever carries it (a block, water under a lily pad, a snow
+        // layer on snow), not hanging over open or unknown cells.
+        const QcPathCell::Kind carrier = QcPathCell::kindOf(below);
+        if (carrier == QcPathCell::Kind::Open || carrier == QcPathCell::Kind::Unknown) {
+            return stand;
+        }
         stand.height = QcPathCell::liftOf(here);
         stand.hurts = (here & QcPathCell::hurtsFlag) != 0;
     } else if (kind == QcPathCell::Kind::Water) {

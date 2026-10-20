@@ -1,5 +1,8 @@
 {
     "name": "stripped_birch_wood",
+    "tags": [
+        "logs"
+    ],
     "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",

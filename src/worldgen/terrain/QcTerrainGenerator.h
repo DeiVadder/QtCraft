@@ -109,8 +109,13 @@ private:
     void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, const QcVillagePlan *village,
                        const QList<QcSurfacePlanner::Rect> &structures) const;
     void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
-    // The first feature of the column's biome that grows there by density, patches and shore.
-    [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
+    // Plants on the water of a column under the sea level (lily pads, decision E-774).
+    void placeFeatureOnWater(QcChunk &chunk, const Column &column, const QList<bool> &carved, int x, int z) const;
+    // Where a column offers room for a feature: dry land, ground at sea level beside water (only
+    // `nearWater` features) or the surface of water (only `onWater` features).
+    enum class Spot : quint8 { Land, Shore, Water };
+    // The first feature of the column's biome that grows there by density, patches and spot.
+    [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, Spot spot) const;
     void placeFeature(QcChunk &chunk, const Feature &feature, QcBlockPos base, double random) const;
     // The search for the spawn point (defined in the source), which keeps the last chunk it generated.
     class SpawnSearch;

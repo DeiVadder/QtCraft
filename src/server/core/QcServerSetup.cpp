@@ -36,11 +36,22 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
     return stacks;
 }
 
-// A chest gets the stacks in its slots, a machine as input, fuel and output.
+// A chest gets the stacks in its slots, a machine as input, fuel and output, a campfire one item per
+// place to cook (decision E-772).
 void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
 {
     const QcBlockId block = blockAt(state, contents.at);
     const QList<QcItemStack> stacks = stacksOf(state, contents.items);
+    if (const int places = state.world().campfires().slotsOf(block); places > 0) {
+        bool room = true;
+        for (const QcItemStack &stack : stacks) {
+            for (int item = 0; item < stack.count && room; ++item) {
+                room = state.world().campfires().put(contents.at, places, stack.item);
+            }
+        }
+        return;
+    }
+
     QcBlockEntities &entities = state.blockEntities();
     if (!entities.ensure(contents.at, block)) {
         qCWarning(lcServer) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;

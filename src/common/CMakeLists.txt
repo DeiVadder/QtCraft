@@ -15,6 +15,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcBlockProperty.h
     content/definitions/QcCoastalTowerDefinition.h
     content/definitions/QcCommandMacroDefinition.h
+    content/definitions/QcCookingDefinitions.h
     content/definitions/QcDungeonDefinition.h
     content/definitions/QcEffectDefinition.h
     content/definitions/QcExperienceDrop.h
@@ -64,6 +65,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
+    content/parser/QcCookingParser.h content/parser/QcCookingParser.cpp
     content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp

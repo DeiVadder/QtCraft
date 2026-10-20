@@ -19,6 +19,8 @@ public:
     {
         double damage = 0.0;
         int alightTicks = 0;
+        // Whether a block of them burns items (not a campfire, decision E-772).
+        bool burnsItems = false;
     };
 
     explicit QcContactDamage(const QcContentRegistry &content);

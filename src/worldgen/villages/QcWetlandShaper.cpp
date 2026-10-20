@@ -183,6 +183,12 @@ void QcWetlandShaper::plant(QcChunk &chunk, QcBlockPos local, const QcVillagePla
     const int x = chunk.pos().x * QcWorld::chunkSize + local.x;
     const int z = chunk.pos().z * QcWorld::chunkSize + local.z;
     const int waterSurface = m_terrain.seaLevel() - 1;
+    // A pool's water may carry the floating plant (lily pads, decision E-774); pieces and boardwalks
+    // have no pools.
+    if (local.y < waterSurface && m_pattern.floatingPlantAt(settings, x, z)) {
+        chunk.setBlock(local.x, waterSurface + 1, local.z, settings.floatingPlant);
+        return;
+    }
     if (local.y != waterSurface || !m_pattern.plantAt(settings, x, z)) {
         return;
     }

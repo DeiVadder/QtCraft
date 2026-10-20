@@ -91,8 +91,14 @@ bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, QcItemStack stack) 
 bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, QcItemStack stack) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
-    if (block && m_state.machineRules().machineOf(*block) && slot == QcMachineRules::fuelSlot) {
+    const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
+    if (machine && slot == QcMachineRules::fuelSlot) {
         return m_state.machineRules().fuelSeconds(stack.item) > 0.0;
+    }
+    // A machine that smelts only some kinds (smoker, blast furnace, decision E-770) takes only what it
+    // smelts, so nothing stalls its input; the furnace takes anything, as in the reference.
+    if (machine && slot == QcMachineRules::inputSlot && !machine->kinds.isEmpty()) {
+        return m_state.machineRules().recipeFor(*machine, stack.item) != nullptr;
     }
     return true;
 }

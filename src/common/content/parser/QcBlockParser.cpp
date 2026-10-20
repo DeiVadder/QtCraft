@@ -1,9 +1,9 @@
 #include "common/content/parser/QcBlockParser.h"
 
-#include "common/content/definitions/QcSmeltingRecipe.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/parser/QcBlastParser.h"
 #include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcCookingParser.h"
 #include "common/content/parser/QcFarmingParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/parser/QcLiquidParser.h"
@@ -21,9 +21,6 @@
 using namespace Qt::StringLiterals;
 
 namespace {
-
-constexpr double minMachineSpeed = 0.01;
-constexpr double maxMachineSpeed = 100.0;
 
 [[nodiscard]] std::optional<QcRenderLayer> renderLayerFromName(const QString &name)
 {
@@ -90,7 +87,7 @@ private:
     void readMiningFields();
     void readInfested(QcJsonFieldReader &infestedReader);
     void readSpawner(QcJsonFieldReader &spawnerReader);
-    void readMachine(QcJsonFieldReader &machineReader);
+    void readMachine(const QJsonObject &machineJson, QcJsonFieldReader &machineReader);
     void readDrops();
     void readSapling(const QJsonObject &saplingJson, QcJsonFieldReader &saplingReader);
     void readFlow();
@@ -296,15 +293,9 @@ void BlockReader::readSpawner(QcJsonFieldReader &spawnerReader)
     m_block.spawner = std::move(spawner);
 }
 
-void BlockReader::readMachine(QcJsonFieldReader &machineReader)
+void BlockReader::readMachine(const QJsonObject &machineJson, QcJsonFieldReader &machineReader)
 {
-    m_block.machine.category = machineReader.string(u"category"_s, QString::fromLatin1(QcSmeltingRecipe::defaultCategory));
-    m_block.machine.speed = machineReader.number(u"speed"_s, 1.0, minMachineSpeed, maxMachineSpeed);
-    m_block.machine.sound = machineReader.name(u"sound"_s, m_namespace, QString::fromLatin1(QcSoundKeys::machineActive));
-
-    if (machineReader.ok() && !QcContentFields::isValidCategory(m_block.machine.category)) {
-        machineReader.fail(QcContentFields::invalidCategoryMessage());
-    }
+    m_block.machine = QcCookingParser::parseMachine(machineJson, machineReader, m_namespace);
     if (machineReader.ok() && m_block.opensCrafting) {
         machineReader.fail(u"a block cannot be a crafting table and a machine"_s);
     }
@@ -406,6 +397,8 @@ void BlockReader::readFlow()
 void BlockReader::readBehaviourFields()
 {
     m_block.contactDamage = m_reader.number(u"contactDamage"_s, 0.0, 0.0, 100.0);
+    m_block.burnsItems = m_reader.boolean(u"burnsItems"_s, true);
+    m_block.floats = m_reader.boolean(u"floats"_s, false);
     m_block.washable = m_reader.boolean(u"washable"_s, isCross(m_block));
     m_block.falls = m_reader.boolean(u"falls"_s, false);
     if (m_block.falls && (m_block.liquid || !m_block.solid)) {
@@ -592,10 +585,14 @@ void BlockReader::readTextures()
 // The optional nested objects read between the mining fields and the liquid flow.
 void BlockReader::readNamedObjects()
 {
-    m_reader.nestedObject(u"machine"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readMachine(nested); });
+    m_reader.nestedObject(u"machine"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) { readMachine(json, nested); });
     readDrops();
     m_block.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     m_reader.nestedObject(u"infested"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readInfested(nested); });
+    m_reader.nestedObject(u"campfire"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
+        m_block.campfire = QcCookingParser::parseCampfire(json, nested, m_namespace);
+    });
+    m_reader.nestedObject(u"bites"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_block.bites = QcCookingParser::parseBites(m_block, nested); });
     m_reader.nestedObject(u"spawner"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readSpawner(nested); });
     m_reader.nestedObject(u"sapling"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) { readSapling(object, nested); });
 }

@@ -35,6 +35,8 @@ public:
     QString foodPoints(int value) const;
     QString heightRange(int minY, int maxY) const;
     QString machineName(const QString &category) const;
+    // Name of a smelting recipe kind (QcSmeltingRecipe::kind, decision E-770); empty: everything else.
+    QString recipeKindName(const QString &kind) const;
     QString toolName(const QString &tool) const;
     QString dropNote(const QcItemDrop &drop) const;
 

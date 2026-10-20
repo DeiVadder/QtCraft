@@ -4,6 +4,8 @@
     "icon": "furnace",
     "sections": [
         "furnace",
+        "special",
+        "campfire",
         "metals"
     ],
     "related": [
@@ -13,6 +15,9 @@
         "iron_ingot",
         "raw_iron",
         "copper_ingot",
-        "chain"
+        "chain",
+        "smoker",
+        "blast_furnace",
+        "campfire"
     ]
 }

@@ -96,12 +96,14 @@ struct QcVillageStyle
         int blend = 4;
         // The pools on the wetland (decision E-661): their share of the open ground, the band of
         // `bottom` around them, the noise scale in blocks, the plant beside them (air: none) and its
-        // chance per column.
+        // chance per column, and the plant on the water of the pools (air: none) with its chance.
         double water = 0.4;
         int mudBand = 2;
         double scale = 8.0;
         QcBlockId plant = qcAirBlockId;
         double plantChance = 0.0;
+        QcBlockId floatingPlant = qcAirBlockId;
+        double floatingPlantChance = 0.0;
 
         // Columns farther than this from the pieces and boardwalks keep their terrain.
         int reach() const { return margin + fray + blend; }
@@ -170,6 +172,7 @@ private:
                                                            const QString &style);
     [[nodiscard]] std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
     [[nodiscard]] QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVillageSettings &settings, const QString &style);
+    [[nodiscard]] QcBlockId wetlandPlant(const QcContentRegistry &content, const QString &style, const QString &name);
     [[nodiscard]] std::optional<QcVillageStyle::Wetland> resolveWetland(const QcVillageStyleDefinition &definition,
                                                                          const QcContentRegistry &content);
 

@@ -1,5 +1,6 @@
 {
     "name": "cooked_beef",
+    "kind": "food",
     "input": "raw_beef",
     "result": {
         "item": "cooked_beef"

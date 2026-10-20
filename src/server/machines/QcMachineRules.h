@@ -31,6 +31,8 @@ public:
     // The machine definition of a block, or null when it is no machine.
     const QcMachineDefinition *machineOf(QcBlockId block) const;
     const QcSmeltingRecipe *recipeFor(const QcMachineDefinition &machine, QcItemId input) const;
+    // The recipe of `category` for `input` if its kind is among `kinds` (empty: any; a campfire).
+    const QcSmeltingRecipe *recipeFor(const QString &category, const QStringList &kinds, QcItemId input) const;
     double fuelSeconds(QcItemId item) const;
 
     // Share of the current fuel left and of the current item done, both in [0, 1].
@@ -53,6 +55,7 @@ private:
                                         const QcSmeltingRecipe *recipe) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
-    // Recipe per category and input item, the first one in registry order.
-    QHash<QString, QHash<QcItemId, const QcSmeltingRecipe *>> m_recipes;
+    // Recipes per category and input item in registry order; a machine uses the first whose kind it
+    // takes (decision E-770).
+    QHash<QString, QHash<QcItemId, QList<const QcSmeltingRecipe *>>> m_recipes;
 };

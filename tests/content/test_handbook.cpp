@@ -354,8 +354,9 @@ private slots:
         const QcHandbookEntry::Recipe &recipe = smelts->recipes.first();
         QCOMPARE(recipe.result.target, u"item:qtcraft:iron_ingot"_s);
         QCOMPARE(recipe.seconds, 10.0);
-        QCOMPARE(targets(recipe.machines), QStringList{u"block:qtcraft:furnace"_s});
-        QCOMPARE(recipe.note, u"Furnace: 10 s per item, needs fuel"_s);
+        // The blast furnace takes raw metal too, twice as fast (decision E-770).
+        QCOMPARE(targets(recipe.machines), (QStringList{u"block:qtcraft:furnace"_s, u"block:qtcraft:blast_furnace"_s}));
+        QCOMPARE(recipe.note, u"Furnace, Blast furnace: 10 s per item, needs fuel"_s);
 
         QVERIFY(section(*ore, u"Found in"_s));
         QCOMPARE(targets(section(*ore, u"Found in"_s)->links), QStringList{u"ore:qtcraft:iron"_s});
@@ -441,7 +442,7 @@ private slots:
             return candidate.title == u"Wird im Ofen zu"_s;
         });
         QVERIFY(smelts != rawIron->sections.end() && !smelts->recipes.isEmpty());
-        QVERIFY(smelts->recipes.first().note.startsWith(u"Ofen: 10 s"_s));
+        QVERIFY(smelts->recipes.first().note.startsWith(u"Ofen, Schmelzofen: 10 s"_s));
 
         const QcHandbookEntry::Fact *lavaWater = factIn(m_english, u"block:qtcraft:lava"_s, u"Water nearby"_s);
         QVERIFY(lavaWater);
@@ -609,7 +610,7 @@ private slots:
         const QcHandbookEntry *hunger = m_english.entry(u"chapter:qtcraft:hunger"_s);
         QVERIFY(hunger);
         QVERIFY(hunger->sections.first().text.contains(u"holds 20 points"_s));
-        QVERIFY(hunger->sections[1].text.contains(u"With at least 18 food points you heal one health point every 4 s"_s));
+        QVERIFY(hunger->sections[2].text.contains(u"With at least 18 food points you heal one health point every 4 s"_s));
 
         for (const QcHandbook *book : {&m_english, &m_german, &m_moddedEnglish}) {
             for (const QcHandbookEntry &entry : book->entries()) {

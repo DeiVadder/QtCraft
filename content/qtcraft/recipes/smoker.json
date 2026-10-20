@@ -1,0 +1,16 @@
+{
+    "name": "smoker",
+    "type": "shaped",
+    "pattern": [
+        " L ",
+        "LFL",
+        " L "
+    ],
+    "key": {
+        "L": "#logs",
+        "F": "furnace"
+    },
+    "result": {
+        "item": "smoker"
+    }
+}

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Melonen](#feature-qtcraft-melon_patch) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Melonen](#feature-qtcraft-melon_patch) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -387,6 +387,21 @@ In jedem Chunk dieser Biome versucht.
 **In Biomen**
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (25 % der Säulen)
+
+### <a id="feature-qtcraft-lily_pad"></a>Seerosen
+
+| | |
+|---|---|
+| ID | `qtcraft:lily_pad` |
+| Art | Pflanze |
+| Blöcke | [Seerose](blocks.md#block-qtcraft-lily_pad) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Wasser](liquids.md#block-qtcraft-water) |
+| Auf der Wasseroberfläche | ja |
+
+**In Biomen**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp) (8 % der Säulen)
 
 ### <a id="ore-qtcraft-signal"></a>Signalerz-Vorkommen
 

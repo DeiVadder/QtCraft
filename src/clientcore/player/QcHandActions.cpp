@@ -63,6 +63,24 @@ bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
                || block->signal.isUsable());
 }
 
+// Whether `block` (none: no block aimed at) takes food used on it instead of the food being eaten:
+// cake is eaten bite by bite, a lit campfire cooks it (decisions E-772, E-773); not while sneaking.
+bool takesFood(const QcBlockDefinition *block, bool sneaking)
+{
+    return block && !sneaking && (block->bites.isEdible() || block->campfire.cooks());
+}
+
+// Whether the held item aims at liquids too: buckets and bottles take from them, a lily pad lies on
+// them (decision E-774).
+bool aimsAtLiquids(const QcContentRegistry &content, const QcItemDefinition *held)
+{
+    if (!held) {
+        return false;
+    }
+    const std::optional<QcBlockId> placed = held->placesBlock.isEmpty() ? std::nullopt : content.blockId(held->placesBlock);
+    return held->scoops || held->bottles || (placed && content.block(*placed).floats);
+}
+
 } // namespace
 
 QcHandActions::QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue)
@@ -90,9 +108,8 @@ void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentReg
     const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
     const QcItemDefinition *held = m_view.inventory.heldDefinition(content);
-    const bool scoops = held && (held->scoops || held->bottles);
     m_target = QcRaycast::cast(world, eye, direction, QcRaycast::playerReach,
-                               scoops ? QcRaycast::Targets::VisibleAndLiquids : QcRaycast::Targets::Visible);
+                               aimsAtLiquids(content, held) ? QcRaycast::Targets::VisibleAndLiquids : QcRaycast::Targets::Visible);
 
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
@@ -249,9 +266,11 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
     }
 
     // Food is eaten, drinks drunk (decision E-500) and armour put on (all sent as ConsumeItem) unless
-    // the food plants a block and a block is aimed at: then the server plants it or, where it cannot,
-    // eats it (decision E-292).
-    if (item && QcClientLauncher::consumes(*item, m_target.has_value()) && !opensScreen) {
+    // the food plants a block and a block is aimed at, or the aimed block takes food (cake, a
+    // campfire): then the server plants, cooks or eats it or, where it cannot, eats the food (decision
+    // E-292).
+    const bool fed = m_target && takesFood(targetDefinition, m_view.prediction.intent().sneak) && QcRaycast::isWithinReach(eye, m_target->block);
+    if (item && QcClientLauncher::consumes(*item, m_target.has_value()) && !opensScreen && !fed) {
         m_send(QcMsg::ConsumeItem{});
         return HandEffect::Use;
     }

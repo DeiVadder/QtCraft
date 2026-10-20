@@ -60,6 +60,9 @@ enum class QcComparatorReading : quint8 {
     // The fullness of a container minecart on the block (a detector rail, decision E-385); without
     // one the comparator takes the block's power as usual.
     Carts,
+    // Twice the bites left of a block eaten bite by bite (cake: 14 whole, 2 for the last bite;
+    // decision E-773).
+    Bites,
 };
 
 // How a block reacts to being pushed by a piston.

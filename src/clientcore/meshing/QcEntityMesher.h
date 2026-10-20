@@ -149,6 +149,18 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
 // A dropped item spinning slowly and bobbing; larger stacks show up to three copies.
 void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, const ItemFrame &frame, const UvLookup &uv);
 
+// Where an item lies flat on a block (on a campfire, decision E-772): the middle of its underside,
+// turned by `yaw` degrees, in `light`.
+struct LyingPlacement
+{
+    QcVec3 position;
+    double yaw = 0.0;
+    QcEntityLight light = 1.0f;
+};
+
+// An item lying still: its sprite face up, or a block item as a small cube standing on the spot.
+void appendLyingItem(QcEntityMesh &mesh, const ItemLook &look, const LyingPlacement &placement, const UvLookup &uv);
+
 // The texture of experience orbs, by its full content name (the base pack's "experience_orb").
 inline constexpr auto orbTexture = "qtcraft:experience_orb";
 

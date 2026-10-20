@@ -151,13 +151,21 @@ The inventory lists what you can make right now; a click crafts it. Some recipes
 
 A furnace takes something to smelt on top and fuel below; the result appears on the right. It burns one fuel item at a time while it has work, and keeps working while you are away as long as its area is loaded. Breaking it drops what is inside.
 
+**Smoker and blast furnace**
+
+Two furnaces do one job each, twice as fast and burning their fuel twice as fast: the **smoker** (a furnace with four logs around it) cooks only food, the **blast furnace** (a furnace with five iron ingots and three smooth stone) smelts only raw metal. Everything else still needs the ordinary furnace. The table of furnace recipes shows which machines take each recipe.
+
+**Campfire**
+
+A **campfire** (sticks, coal or charcoal and three logs) gives light and cooks without fuel: use raw meat, fish or a potato on it to lay it on the fire, up to four at a time; after 30 seconds each pops off cooked. It hurts whoever stands in it but does not spread fire. Put it out with a shovel or a bucket of water (what lies on it drops) and light it again with flint and steel.
+
 **Metals**
 
 Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine ingots make a storage block and one ingot makes nine nuggets; both craft back. Iron goes into tools, armour, buckets, rails, doors, bars and, with its nuggets, chains and lanterns; gold into golden tools and powered rails; copper into doors and trapdoors that open by hand and by signal, bars, chains and lanterns.
 
 **See also**
 
-[Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Raw iron](items.md#item-qtcraft-raw_iron), [Copper ingot](items.md#item-qtcraft-copper_ingot), [Chain](blocks.md#block-qtcraft-chain)
+[Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Raw iron](items.md#item-qtcraft-raw_iron), [Copper ingot](items.md#item-qtcraft-copper_ingot), [Chain](blocks.md#block-qtcraft-chain), [Smoker](blocks.md#block-qtcraft-smoker), [Blast furnace](blocks.md#block-qtcraft-blast_furnace), [Campfire](blocks.md#block-qtcraft-campfire)
 
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 
@@ -165,13 +173,17 @@ Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine 
 
 The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one food point. Walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 food points.
 
+**Cake**
+
+A **cake** (three milk buckets, two sugar, an egg and three wheat; the buckets come back empty) is placed like a block and eaten where it stands: each use while you are hungry eats one of its seven pieces for 2 food points, also with something else in your hand. Others can share it. Once placed it cannot be picked up again; breaking it gives nothing.
+
 **Healing and starving**
 
 With at least 18 food points you heal one health point every 4 s. With an empty food bar you lose one health point every 4 s, but hunger alone never takes you below 1.
 
 **See also**
 
-[Cooked porkchop](food.md#item-qtcraft-cooked_porkchop), [Raw porkchop](food.md#item-qtcraft-raw_porkchop), [Pig](creatures.md#mob-qtcraft-pig)
+[Cooked porkchop](food.md#item-qtcraft-cooked_porkchop), [Raw porkchop](food.md#item-qtcraft-raw_porkchop), [Pig](creatures.md#mob-qtcraft-pig), [Cake](blocks.md#block-qtcraft-cake)
 
 ### <a id="chapter-qtcraft-farming"></a>Farming
 

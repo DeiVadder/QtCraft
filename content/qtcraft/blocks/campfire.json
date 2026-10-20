@@ -1,0 +1,39 @@
+{
+    "name": "campfire",
+    "sound": "wood",
+    "shape": "campfire",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 2.0,
+    "tool": "axe",
+    "drops": [
+        {
+            "item": "charcoal",
+            "count": 2
+        }
+    ],
+    "signal": {
+        "movable": "immovable"
+    },
+    "light": 15,
+    "contactDamage": 1,
+    "burnsItems": false,
+    "campfire": {
+        "slots": 4,
+        "seconds": 30,
+        "kinds": [
+            "food"
+        ],
+        "extinguishesInto": "unlit_campfire"
+    },
+    "itemTexture": "campfire_item",
+    "textures": {
+        "all": "campfire_log",
+        "top": "campfire_log_top",
+        "bottom": "campfire_log_top",
+        "slots": {
+            "embers": "campfire_embers",
+            "fire": "fire"
+        }
+    }
+}

@@ -133,6 +133,7 @@ void QcServer::addSimulationSystems()
     m_tickSystems.add(Minecarts, simulating, [this] { m_minecarts.tick(); });
     m_tickSystems.add(Machines, simulating, [this] {
         m_machines.tick();
+        m_kitchen.tick();
         m_screens.update();
         m_trading.update();
     });

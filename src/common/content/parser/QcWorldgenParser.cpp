@@ -92,6 +92,10 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     }
 
     m_feature.nearWater = m_reader.boolean(u"nearWater"_s, false);
+    m_feature.onWater = m_reader.boolean(u"onWater"_s, false);
+    if (m_reader.ok() && m_feature.onWater && (m_feature.nearWater || m_feature.type != QcFeatureDefinition::Type::Plant)) {
+        m_reader.fail(u"'onWater' is for plants that are not 'nearWater'"_s);
+    }
     m_feature.patchSize = m_reader.integer(u"patchSize"_s, 0, 0, 512);
     m_feature.leavesBlock = m_reader.name(u"leaves"_s, m_namespace);
     m_feature.minHeight = m_reader.integer(u"minHeight"_s, 4, 1, 32);

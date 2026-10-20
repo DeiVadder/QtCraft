@@ -1,5 +1,6 @@
 {
     "name": "cooked_porkchop",
+    "kind": "food",
     "input": "raw_porkchop",
     "result": {
         "item": "cooked_porkchop"

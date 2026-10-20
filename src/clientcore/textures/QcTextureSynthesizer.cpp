@@ -5,6 +5,7 @@
 #include "clientcore/textures/QcTextureCraftPatterns.h"
 #include "clientcore/textures/QcTextureEmblem.h"
 #include "clientcore/textures/QcTextureFarmPatterns.h"
+#include "clientcore/textures/QcTextureKitchenPatterns.h"
 #include "clientcore/textures/QcTexturePaint.h"
 #include "clientcore/textures/QcTextureRangedPatterns.h"
 #include "clientcore/textures/QcTextureSignalPatterns.h"
@@ -564,6 +565,9 @@ Painter painterFor(Pattern pattern)
     }
     if (const Painter building = qcBuildingPatternPainter(pattern)) {
         return building;
+    }
+    if (const Painter kitchen = qcKitchenPatternPainter(pattern)) {
+        return kitchen;
     }
     const Painter armour = qcArmourPatternPainter(pattern);
     return armour ? armour : paintNoise;

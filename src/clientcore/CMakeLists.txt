@@ -105,6 +105,7 @@ target_sources(qc_clientcore PRIVATE
     preview/QcPreviewScene.h preview/QcPreviewScene.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
@@ -167,6 +168,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureDetail.h textures/QcTextureDetail.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
+    textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
     textures/QcTexturePaint.h
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp

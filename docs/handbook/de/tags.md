@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [#beds](#tag-qtcraft-beds) · [#glazed_terracotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
+**QtCraft:** [#beds](#tag-qtcraft-beds) · [#glazed_terracotta](#tag-qtcraft-glazed_terracotta) · [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Chunk-Lader](#tag-qtcraft-chunk_loaders) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Beliebiger Pfeil](#tag-qtcraft-arrows) · [Beliebiger Stamm oder beliebiges Holz](#tag-qtcraft-logs) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
 
 ## QtCraft
 
@@ -114,6 +114,22 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 [Pfeil](items.md#item-qtcraft-arrow)
 
+### <a id="tag-qtcraft-logs"></a>Beliebiger Stamm oder beliebiges Holz
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:logs` |
+
+**Items dieser Gruppe**
+
+[Birkenholz](blocks.md#block-qtcraft-birch_wood), [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log), [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood), [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood), [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log)
+
+**Wird verwendet für**
+
+[Lagerfeuer](blocks.md#block-qtcraft-campfire), [Räucherofen](blocks.md#block-qtcraft-smoker)
+
 ### <a id="tag-qtcraft-coals"></a>Kohle oder Holzkohle
 
 Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
@@ -128,4 +144,4 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk)
+[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk), [Lagerfeuer](blocks.md#block-qtcraft-campfire)

@@ -1,0 +1,8 @@
+{
+    "name": "smoker_side",
+    "pattern": "log_side",
+    "primary": "#5e4a32",
+    "secondary": "#40321f",
+    "variation": 0.1,
+    "seed": 7702
+}

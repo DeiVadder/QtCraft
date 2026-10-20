@@ -8,11 +8,13 @@
 #include <QHash>
 #include <QList>
 
+#include <algorithm>
+
 // What the server sends about the loaded chunks besides their blocks: the labels floating in them
-// (decision E-222) and the creature kinds spinning in their monster spawners (decision E-520). Both
-// go with their chunk's ChunkUnload; the spawners also with a new ChunkData of their chunk (the server
-// sends the spawners of a chunk right after its blocks, so a chunk sent again, e.g. after
-// /regenerate, keeps only the spawners it still has). The explosions near the player (decision E-604)
+// (decision E-222), the creature kinds spinning in their monster spawners (decision E-520) and the
+// items lying on their campfires (decision E-772). All go with their chunk's ChunkUnload; the
+// spawners and campfires also with a new ChunkData of their chunk (the server sends them right after
+// its blocks, so a chunk sent again, e.g. after /regenerate, keeps only those it still has). The explosions near the player (decision E-604)
 // stay as puffs of flash and smoke until they are over.
 class QcChunkExtras
 {
@@ -36,24 +38,36 @@ public:
             m_spawners.insert(display.pos, display.mob);
         }
     }
+    // The items (content ids, 0 for an empty slot) on each campfire of the loaded chunks that holds any.
+    const QHash<QcBlockPos, QList<quint32>> &campfires() const { return m_campfires; }
+    void setCampfire(const QcMsg::CampfireDisplay &display)
+    {
+        if (std::ranges::all_of(display.items, [](quint32 item) { return item == 0; })) {
+            m_campfires.remove(display.pos);
+        } else {
+            m_campfires.insert(display.pos, display.items);
+        }
+    }
     const QcExplosionEffects &explosions() const { return m_explosions; }
     void addExplosion(const QcMsg::Explosion &explosion, quint64 tick) { m_explosions.add(explosion, tick); }
     void pruneExplosions(quint64 tick) { m_explosions.prune(tick); }
-    void chunkArrived(QcChunkPos pos) { removeSpawners(pos); }
+    void chunkArrived(QcChunkPos pos) { removeBlockDisplays(pos); }
     void removeChunk(QcChunkPos pos)
     {
         m_labelGeneration += m_labels.remove(pos) ? 1 : 0;
-        removeSpawners(pos);
+        removeBlockDisplays(pos);
     }
 
 private:
-    void removeSpawners(QcChunkPos pos)
+    void removeBlockDisplays(QcChunkPos pos)
     {
         m_spawners.removeIf([pos](const auto &spawner) { return spawner.key().chunk() == pos; });
+        m_campfires.removeIf([pos](const auto &campfire) { return campfire.key().chunk() == pos; });
     }
 
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     QHash<QcBlockPos, int> m_spawners;
+    QHash<QcBlockPos, QList<quint32>> m_campfires;
     QcExplosionEffects m_explosions;
 };

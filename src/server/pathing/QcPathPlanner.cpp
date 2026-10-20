@@ -37,7 +37,14 @@ void QcPathPlanner::request(QcCreature &mob)
 int QcPathPlanner::nodesFor(const QcCreature &mob) const
 {
     const int search = std::min(m_nodesPerSearch, m_nodesPerTick);
-    return mob.path.purpose == QcMobPath::Purpose::Wander ? std::max(16, search / 4) : search;
+    if (mob.path.purpose == QcMobPath::Purpose::Wander) {
+        return std::max(16, search / 4);
+    }
+    // A goal that the last searches did not reach is searched wider, up to a whole tick's budget: a
+    // villager on the ground under its stilt house has to go round the whole underside to the
+    // stairs, while the closest cell to its bed lies straight below it.
+    const int widened = search << std::min(mob.path.failures, maxWidening);
+    return int(std::min<qint64>(widened, m_nodesPerTick));
 }
 
 void QcPathPlanner::serve(const QcBlockAccess &world, std::span<QcCreature> mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf)

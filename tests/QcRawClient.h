@@ -135,6 +135,8 @@ public:
             ++blockBatches;
         } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
             explosions.append(*explosion);
+        } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
+            campfires.insert(campfire->pos, campfire->items);
         } else {
             return false;
         }
@@ -173,6 +175,8 @@ public:
     // Block updates, single ones and those of batches (decision E-604), and how many batches came.
     QList<QcMsg::BlockUpdate> blockUpdates;
     int blockBatches = 0;
+    // What lies on each campfire, as the server last said (decision E-772).
+    QHash<QcBlockPos, QList<quint32>> campfires;
     QList<QcMsg::Explosion> explosions;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.

@@ -446,11 +446,12 @@ void QcTerrainGenerator::placeFeature(QcChunk &chunk, const Feature &feature, Qc
     });
 }
 
-std::optional<int> QcTerrainGenerator::chosenFeature(const Column &column, int x, int z, bool shore) const
+std::optional<int> QcTerrainGenerator::chosenFeature(const Column &column, int x, int z, Spot spot) const
 {
     for (const auto &[featureIndex, density] : m_definitions.biomes[column.biome].features) {
         const Feature &feature = m_definitions.features[featureIndex];
-        if (feature.nearWater != shore) {
+        const Spot wanted = feature.onWater ? Spot::Water : (feature.nearWater ? Spot::Shore : Spot::Land);
+        if (wanted != spot) {
             continue;
         }
 
@@ -472,14 +473,21 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
                                               int z) const
 {
     const Column &info = columns.at(x, z);
-    if (m_definitions.biomes[info.biome].features.isEmpty() || info.height - 1 < seaLevel()) {
+    if (m_definitions.biomes[info.biome].features.isEmpty()) {
+        return;
+    }
+    if (info.height < seaLevel()) {
+        placeFeatureOnWater(chunk, info, carved, x, z);
+        return;
+    }
+    if (info.height - 1 < seaLevel()) {
         return;
     }
 
     // Ground at sea level only takes features that want water next to them, and only where a
     // neighbouring column is under water.
     const bool shore = info.height - 1 == seaLevel();
-    const std::optional<int> featureIndex = chosenFeature(info, x, z, shore);
+    const std::optional<int> featureIndex = chosenFeature(info, x, z, shore ? Spot::Shore : Spot::Land);
     if (!featureIndex) {
         return;
     }
@@ -511,6 +519,32 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
     }
 
     placeFeature(chunk, feature, {x, top + 1, z}, qcPositionRandom(feature.seed, x, 1, z));
+}
+
+void QcTerrainGenerator::placeFeatureOnWater(QcChunk &chunk, const Column &column, const QList<bool> &carved, int x, int z) const
+{
+    const int localX = x - chunk.pos().x * QcWorld::chunkSize;
+    const int localZ = z - chunk.pos().z * QcWorld::chunkSize;
+    if (localX < 0 || localX >= QcWorld::chunkSize || localZ < 0 || localZ >= QcWorld::chunkSize) {
+        return;
+    }
+    // Like on land: nothing over ground a cave opening carved away.
+    if (carved[localZ * QcWorld::chunkSize + localX]) {
+        return;
+    }
+
+    const std::optional<int> featureIndex = chosenFeature(column, x, z, Spot::Water);
+    if (!featureIndex) {
+        return;
+    }
+
+    // The plant stands on the top water block (ice in a frozen biome is no water) in the air above it.
+    const Feature &feature = m_definitions.features[*featureIndex];
+    const QcBlockId surface = chunk.block(localX, seaLevel() - 1, localZ);
+    if ((!feature.ground.isEmpty() && !feature.ground.contains(surface)) || chunk.block(localX, seaLevel(), localZ) != qcAirBlockId) {
+        return;
+    }
+    placeFeature(chunk, feature, {x, seaLevel(), z}, qcPositionRandom(feature.seed, x, 1, z));
 }
 
 void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved,

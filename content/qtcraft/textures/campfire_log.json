@@ -1,0 +1,8 @@
+{
+    "name": "campfire_log",
+    "pattern": "log_side",
+    "primary": "#5a4428",
+    "secondary": "#3a2c1a",
+    "variation": 0.1,
+    "seed": 7721
+}

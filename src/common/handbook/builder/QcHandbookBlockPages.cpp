@@ -60,6 +60,8 @@ private:
     void addMovementFacts();
     void addUseFacts();
     void addMachineFacts();
+    // A campfire's cooking and a cake's bites (decisions E-772, E-773).
+    void addKitchenFacts();
     void addSaplingFacts();
     // Stages, pace, light and fruit of crops, moisture of soil, tilling (decisions E-289 to E-291).
     void addFarmingFacts();
@@ -390,8 +392,32 @@ void BlockPage::addUseFacts()
     if (block.machine.isMachine()) {
         addMachineFacts();
     }
+    addKitchenFacts();
     if (block.fuelSeconds > 0.0) {
         addFact(u"fuel"_s, m_text.seconds(block.fuelSeconds), {m_links.tableLink(u"fuels"_s)});
+    }
+}
+
+void BlockPage::addKitchenFacts()
+{
+    if (m_block.bites.isEdible()) {
+        const QcBlockProperty *bites = m_block.property(u"bites"_s);
+        addFact(u"bites"_s, label(u"value.bites"_s).arg(bites ? bites->values.size() : 0).arg(m_block.bites.food));
+    }
+
+    const QcCampfireDefinition &campfire = m_block.campfire;
+    if (!campfire.cooks()) {
+        return;
+    }
+    addFact(u"cooks"_s, label(u"value.cooks"_s).arg(campfire.slotCount).arg(m_text.seconds(campfire.seconds)));
+    Section processes{label(u"section.processes"_s), {}, {}, {}};
+    for (const QcSmeltingRecipe &recipe : m_content.smeltingRecipes()) {
+        if (recipe.category == campfire.category && m_recipes.usedBy(campfire.kinds, recipe)) {
+            processes.recipes.append(m_recipes.machineRecipe(recipe));
+        }
+    }
+    if (!processes.recipes.isEmpty()) {
+        m_later.append(std::move(processes));
     }
 }
 
@@ -400,10 +426,17 @@ void BlockPage::addMachineFacts()
     const QcMachineDefinition &machine = m_block.machine;
     addFact(u"machine"_s, label(u"value.machine"_s).arg(m_text.machineName(machine.category), m_text.number(machine.speed)),
             {m_links.tableLink(u"fuels"_s)});
+    if (!machine.kinds.isEmpty()) {
+        QStringList kinds;
+        for (const QString &kind : machine.kinds) {
+            kinds.append(m_text.recipeKindName(kind));
+        }
+        addFact(u"smeltsOnly"_s, kinds.join(u", "_s), {m_links.tableLink(u"smelting"_s)});
+    }
 
     Section processes{label(u"section.processes"_s), {}, {}, {}};
     for (const QcSmeltingRecipe &recipe : m_content.smeltingRecipes()) {
-        if (recipe.category == machine.category) {
+        if (recipe.category == machine.category && m_recipes.usedBy(machine.kinds, recipe)) {
             processes.recipes.append(m_recipes.machineRecipe(recipe));
         }
     }

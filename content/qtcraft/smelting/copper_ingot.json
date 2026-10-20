@@ -1,5 +1,6 @@
 {
     "name": "copper_ingot",
+    "kind": "metal",
     "input": "raw_copper",
     "result": {
         "item": "copper_ingot"

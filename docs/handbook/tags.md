@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [#beds](#tag-qtcraft-beds) · [#glazed_terracotta](#tag-qtcraft-glazed_terracotta) · [Any arrow](#tag-qtcraft-arrows) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
+**QtCraft:** [#beds](#tag-qtcraft-beds) · [#glazed_terracotta](#tag-qtcraft-glazed_terracotta) · [Any arrow](#tag-qtcraft-arrows) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
 
 ## QtCraft
 
@@ -70,6 +70,22 @@ Recipes that ask for this group take any of its items.
 
 [Black dye](items.md#item-qtcraft-black_dye), [Blue dye](items.md#item-qtcraft-blue_dye), [Brown dye](items.md#item-qtcraft-brown_dye), [Cyan dye](items.md#item-qtcraft-cyan_dye), [Gray dye](items.md#item-qtcraft-gray_dye), [Green dye](items.md#item-qtcraft-green_dye), [Light blue dye](items.md#item-qtcraft-light_blue_dye), [Light gray dye](items.md#item-qtcraft-light_gray_dye), [Lime dye](items.md#item-qtcraft-lime_dye), [Magenta dye](items.md#item-qtcraft-magenta_dye), [Orange dye](items.md#item-qtcraft-orange_dye), [Pink dye](items.md#item-qtcraft-pink_dye), [Purple dye](items.md#item-qtcraft-purple_dye), [Red dye](items.md#item-qtcraft-red_dye), [White dye](items.md#item-qtcraft-white_dye), [Yellow dye](items.md#item-qtcraft-yellow_dye)
 
+### <a id="tag-qtcraft-logs"></a>Any log or wood
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:logs` |
+
+**Items in this group**
+
+[Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood), [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log), [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood), [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log), [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood)
+
+**Used in**
+
+[Campfire](blocks.md#block-qtcraft-campfire), [Smoker](blocks.md#block-qtcraft-smoker)
+
 ### <a id="tag-qtcraft-planks"></a>Any planks
 
 Recipes that ask for this group take any of its items.
@@ -128,4 +144,4 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Coal chunk](items.md#item-qtcraft-coal_chunk), [Torch](blocks.md#block-qtcraft-torch)
+[Campfire](blocks.md#block-qtcraft-campfire), [Coal chunk](items.md#item-qtcraft-coal_chunk), [Torch](blocks.md#block-qtcraft-torch)

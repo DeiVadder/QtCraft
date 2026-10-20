@@ -37,6 +37,10 @@
         {
             "feature": "melon_patch",
             "density": 0.0015
+        },
+        {
+            "feature": "lily_pad",
+            "density": 0.08
         }
     ]
 }

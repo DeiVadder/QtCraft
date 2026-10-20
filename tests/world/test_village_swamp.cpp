@@ -463,6 +463,33 @@ private slots:
         QVERIFY(pools > 100);
     }
 
+    void poolsCarryLilyPads()
+    {
+        // The style's floating plant lies on the water of some pool columns (decision E-774), never
+        // on anything else.
+        const QcBlockId water = block(u"water"_s);
+        const QcBlockId lily = block(u"lily_pad"_s);
+        const int waterSurface = m_generator.seaLevel() - 1;
+        int pools = 0;
+        int lilies = 0;
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans().mid(0, 3);
+        for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
+            const Chunks &chunks = built(*plan);
+            for (int z = plan->minZ; z <= plan->maxZ; ++z) {
+                for (int x = plan->minX; x <= plan->maxX; ++x) {
+                    const bool pad = blockIn(chunks, {x, waterSurface + 1, z}) == lily;
+                    const std::optional<int> top = m_generator.villages().wetland().groundAt(*plan, x, z);
+                    const bool pool = top && *top < waterSurface;
+                    QVERIFY2(!pad || (pool && blockIn(chunks, {x, waterSurface, z}) == water), qPrintable(u"lily pad off a pool at %1 %2"_s.arg(x).arg(z)));
+                    pools += pool ? 1 : 0;
+                    lilies += pad ? 1 : 0;
+                }
+            }
+        }
+        qInfo("%d lily pads on %d pool columns", lilies, pools);
+        QVERIFY(lilies > pools / 20 && lilies < pools / 4);
+    }
+
     void builtTheSameInAnyOrder()
     {
         // Three villages: wetland, stilts, boardwalks and stairs written chunk by chunk.

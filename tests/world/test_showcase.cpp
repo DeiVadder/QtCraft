@@ -264,11 +264,13 @@ private slots:
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {
             const QcBlockDefinition &block = m_content->block(blockAt(m_chunks, contents.at));
-            // Contents at a rail go into the container cart standing there (decision E-386).
+            // Contents at a rail go into the container cart standing there (decision E-386), at a
+            // campfire onto the fire (decision E-772).
             const bool cart = std::ranges::any_of(setup.minecarts, [&contents](const QcWorldSetup::Cart &placed) {
                 return placed.at == contents.at && placed.item != u"qtcraft:minecart"_s;
             });
-            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine(), qPrintable(block.name));
+            QVERIFY2(cart || block.containerSlots >= contents.items.size() || block.machine.isMachine() || block.campfire.slotCount >= contents.items.size(),
+                     qPrintable(block.name));
             for (const QcStructureDefinition::Stack &stack : contents.items) {
                 items.insert(stack.item);
             }

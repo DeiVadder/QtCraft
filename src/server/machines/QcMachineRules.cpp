@@ -21,10 +21,7 @@ QcMachineRules::QcMachineRules(std::shared_ptr<const QcContentRegistry> content)
             continue;
         }
 
-        QHash<QcItemId, const QcSmeltingRecipe *> &category = m_recipes[recipe.category];
-        if (!category.contains(*input)) {
-            category.insert(*input, &recipe);
-        }
+        m_recipes[recipe.category][*input].append(&recipe);
     }
 }
 
@@ -39,11 +36,23 @@ const QcMachineDefinition *QcMachineRules::machineOf(QcBlockId block) const
 
 const QcSmeltingRecipe *QcMachineRules::recipeFor(const QcMachineDefinition &machine, QcItemId input) const
 {
-    const auto category = m_recipes.constFind(machine.category);
-    if (category == m_recipes.constEnd()) {
+    return recipeFor(machine.category, machine.kinds, input);
+}
+
+const QcSmeltingRecipe *QcMachineRules::recipeFor(const QString &category, const QStringList &kinds, QcItemId input) const
+{
+    const auto recipes = m_recipes.constFind(category);
+    if (recipes == m_recipes.constEnd()) {
         return nullptr;
     }
-    return category->value(input, nullptr);
+    // Recipes for the same input may differ in kind (a mod's food smelting into something else in
+    // the furnace): the first one the machine takes counts.
+    const auto candidates = recipes->constFind(input);
+    if (candidates == recipes->constEnd()) {
+        return nullptr;
+    }
+    const auto taken = std::ranges::find_if(*candidates, [&kinds](const QcSmeltingRecipe *recipe) { return qcAcceptsRecipeKind(kinds, recipe->kind); });
+    return taken != candidates->constEnd() ? *taken : nullptr;
 }
 
 double QcMachineRules::fuelSeconds(QcItemId item) const

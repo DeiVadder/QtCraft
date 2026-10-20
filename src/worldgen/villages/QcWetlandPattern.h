@@ -27,8 +27,12 @@ public:
     [[nodiscard]] Cover coverAt(const QcVillagePlan::Wetland &wetland, int x, int z) const;
     // Whether the column's plant (if the style has one) grows there, a pure function of the column.
     [[nodiscard]] bool plantAt(const QcVillageStyle::Wetland &settings, int x, int z) const;
+    // Whether the floating plant (if the style has one) lies on the water of a pool column.
+    [[nodiscard]] bool floatingPlantAt(const QcVillageStyle::Wetland &settings, int x, int z) const;
 
 private:
+    // The column's draw in [0, 1) for its plants.
+    [[nodiscard]] double plantDraw(int x, int z) const;
     // The noise value below which the given share of all columns lies.
     [[nodiscard]] double quantile(double share) const;
     // The pool noise at the column (scaled by the style's noise scale).

@@ -1,5 +1,6 @@
 {
     "name": "iron_ingot",
+    "kind": "metal",
     "input": "raw_iron",
     "result": {
         "item": "iron_ingot"

@@ -179,6 +179,10 @@ namespace QcRecipeParser {
     if (reader.ok() && !QcContentFields::isValidCategory(recipe.category)) {
         reader.fail(QcContentFields::invalidCategoryMessage());
     }
+    recipe.kind = reader.string(u"kind"_s);
+    if (reader.ok() && !recipe.kind.isEmpty() && !QcContentFields::isValidCategory(recipe.kind)) {
+        reader.fail(u"'kind' must be a name like a category"_s);
+    }
     recipe.inputItem = reader.name(u"input"_s, packNamespace);
     if (reader.ok() && recipe.inputItem.isEmpty()) {
         reader.fail(u"'input' is required"_s);

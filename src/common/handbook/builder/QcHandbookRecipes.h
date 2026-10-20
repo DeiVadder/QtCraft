@@ -21,6 +21,9 @@ public:
 
     Recipe craftingRecipe(const QcRecipeDefinition &recipe) const;
     Recipe machineRecipe(const QcSmeltingRecipe &recipe) const;
+    // Whether a machine taking `kinds` smelts its input by `recipe`: it takes the recipe's kind and no
+    // earlier recipe of the category for the same input (QcMachineRules::recipeFor).
+    [[nodiscard]] bool usedBy(const QStringList &kinds, const QcSmeltingRecipe &recipe) const;
     // Crafting, smelting, uses in recipes, drops and catching of `item`, as far as there are any.
     [[nodiscard]] QList<QcHandbookEntry::Section> itemSections(const QString &item) const;
 

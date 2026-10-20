@@ -176,10 +176,42 @@ QList<std::pair<QString, int>> requirements(const QcContentRegistry &content, co
 
 bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcRecipeDefinition &recipe, int times)
 {
+    const QcInventory before = inventory;
     const QList<std::pair<QString, int>> needed = requirements(content, recipe);
-    return std::ranges::all_of(needed, [&](const std::pair<QString, int> &entry) {
+    const bool taken = std::ranges::all_of(needed, [&](const std::pair<QString, int> &entry) {
         return removeIngredient(content, inventory, entry.first, entry.second * times);
     });
+    const QList<QcItemStack> containers = containersLeft(content, before, inventory);
+    return taken && std::ranges::all_of(containers, [&](QcItemStack container) {
+        return inventory.add(container.item, container.count, content) == 0;
+    });
+}
+
+QList<QcItemStack> containersLeft(const QcContentRegistry &content, const QcInventory &before, const QcInventory &after)
+{
+    QList<QcItemId> seen;
+    QList<QcItemStack> containers;
+    for (const QcItemStack &stack : before.allSlots()) {
+        if (stack.isEmpty() || seen.contains(stack.item)) {
+            continue;
+        }
+        seen.append(stack.item);
+
+        const int taken = before.countOf(stack.item) - after.countOf(stack.item);
+        const std::optional<QcItemId> container = remainderOf(content, stack.item);
+        if (taken > 0 && container) {
+            containers.append({*container, taken, 0});
+        }
+    }
+    return containers;
+}
+
+std::optional<QcItemId> remainderOf(const QcContentRegistry &content, QcItemId item)
+{
+    if (!content.isValidItem(item) || content.item(item).emptiesTo.isEmpty()) {
+        return std::nullopt;
+    }
+    return content.itemId(content.item(item).emptiesTo);
 }
 
 int timesCraftable(const QcContentRegistry &content, const QcInventory &inventory, const QcRecipeDefinition &recipe, int limit)

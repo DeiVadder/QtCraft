@@ -3,7 +3,9 @@
 #include "common/physics/QcPlayerInput.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
+#include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathFinder.h"
+#include "server/pathing/QcPathPlanner.h"
 
 #include <QJsonDocument>
 #include <QTest>
@@ -541,6 +543,54 @@ private slots:
         QVERIFY(!path.cells.empty());
         QVERIFY(std::ranges::all_of(path.cells, [](QcBlockPos cell) { return std::abs(cell.x) <= 12 && std::abs(cell.z) <= 12; }));
         QCOMPARE(path.cells.back().x, 12);
+    }
+
+    void lilyPadsAreAFloorOnWaterOnly()
+    {
+        // A pond one block deep across the way: a walker steps over the lily pads on it (decision
+        // E-774) instead of wading.
+        auto world = makeWorld();
+        world->fillBox({3, 1, -30}, {5, 1, 30}, block(u"water"_s));
+        world->fillBox({3, 2, 0}, {5, 2, 0}, block(u"lily_pad"_s));
+        const QcPathResult path = find(*world, {0, 1, 0}, {8, 1, 0});
+        QVERIFY(path.reachesGoal);
+        QVERIFY(contains(path, {4, 2, 0}));
+        QVERIFY(!anyOn(*world, path, block(u"water"_s), 0));
+        verifySteps(*world, {0, 1, 0}, path);
+
+        // A low block over an open cell is no floor; snow carries a snow layer.
+        QcPathDirectCells cells(*world, m_cells);
+        world->set({0, 3, 8}, block(u"lily_pad"_s));
+        QVERIFY(!QcPathTerrain::standAt(cells, {0, 3, 8}, m_rules).ok);
+        world->set({0, 1, 9}, block(u"snow_block"_s));
+        world->set({0, 2, 9}, block(u"snow_layer"_s));
+        QVERIFY(QcPathTerrain::standAt(cells, {0, 2, 9}, m_rules).ok);
+    }
+
+    void widensASearchThatFailed()
+    {
+        // The way round a long wall takes more nodes than one search has: each failed errand search
+        // gets twice the nodes, up to a tick's budget, until it gets there (a villager under its stilt
+        // house going round to the stairs).
+        auto world = makeWorld();
+        world->fillBox({4, 1, -28}, {4, 3, 28}, block(u"stone"_s));
+        QcPathPlanner planner(*m_content);
+        planner.setLimits(4096, 256, 256);
+        std::vector<QcCreature> mobs(1);
+        QcCreature &mob = mobs.front();
+        mob.id = 1;
+        mob.motion.position = {0.5, 1.0, 0.5};
+        QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Errand, {8.5, 1.0, 0.5}, 0);
+        QList<int> nodes;
+        for (int search = 0; search < 5 && !mob.path.reachesGoal; ++search) {
+            planner.request(mob);
+            planner.serve(*world, mobs, [this](const QcCreature &) { return m_rules; });
+            nodes.append(planner.nodesLastTick());
+        }
+        QVERIFY2(mob.path.reachesGoal, qPrintable(QString::number(nodes.size())));
+        QCOMPARE(nodes.first(), 256);
+        QVERIFY(nodes.size() >= 2);
+        QVERIFY(nodes.back() > 256 && nodes.back() <= 2048);
     }
 
     void keepsToTheNodeBudgetAndGivesTheClosestCell()

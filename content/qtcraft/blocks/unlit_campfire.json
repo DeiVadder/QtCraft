@@ -1,0 +1,30 @@
+{
+    "name": "unlit_campfire",
+    "sound": "wood",
+    "shape": "unlit_campfire",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 2.0,
+    "tool": "axe",
+    "drops": [
+        {
+            "item": "charcoal",
+            "count": 2
+        }
+    ],
+    "signal": {
+        "movable": "immovable"
+    },
+    "campfire": {
+        "lightsInto": "campfire"
+    },
+    "item": false,
+    "textures": {
+        "all": "campfire_log",
+        "top": "campfire_log_top",
+        "bottom": "campfire_log_top",
+        "slots": {
+            "embers": "campfire_ash"
+        }
+    }
+}

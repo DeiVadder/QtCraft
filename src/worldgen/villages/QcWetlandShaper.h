@@ -51,7 +51,8 @@ private:
     [[nodiscard]] bool poolFits(const QcVillagePlan &plan, int x, int z) const;
     // Shapes one column: `local` is the column in the chunk with y the terrain ground's top block.
     void shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, QcBlockId bottom) const;
-    // The style's plant on a column at the water surface beside a pool, where it grows.
+    // The style's plant on a column at the water surface beside a pool, where it grows, and its
+    // floating plant on the water of a pool column.
     void plant(QcChunk &chunk, QcBlockPos local, const QcVillagePlan &plan) const;
     // Distance from the column to the nearest piece or boardwalk (0 inside one).
     static double distanceToWet(const QcVillagePlan::Wetland &wetland, int x, int z);

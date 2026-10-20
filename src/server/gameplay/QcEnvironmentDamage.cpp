@@ -84,7 +84,7 @@ void QcEnvironmentDamage::applyContactDamage()
     }
 
     m_state.entities().items().removeWhere([this](const QcItemEntity &item) {
-        return m_state.contactDamage().in(m_state.world(), QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)) > 0.0;
+        return m_state.contactDamage().touching(m_state.world(), QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)).burnsItems;
     });
 }
 

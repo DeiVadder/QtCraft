@@ -329,6 +329,7 @@ private slots:
         const QcTerrainGenerator generator(m_base, 12345);
         const QcBlockId water = *m_base->blockId(u"qtcraft:water"_s);
         const QcBlockId ice = *m_base->blockId(u"qtcraft:ice"_s);
+        const QcBlockId lilyPad = *m_base->blockId(u"qtcraft:lily_pad"_s);
         int checked = 0;
         for (int cx = -40; cx <= 40 && checked < 50; cx += 4) {
             const auto chunk = generator.generate({cx, 0});
@@ -341,7 +342,9 @@ private slots:
                     const QcBlockId block = chunk->block(x, y, 0);
                     QVERIFY(block == water || (block == ice && y == generator.seaLevel() - 1));
                 }
-                QCOMPARE(chunk->block(x, generator.seaLevel(), 0), qcAirBlockId);
+                // Above the water is air, or a lily pad on swamp water (decision E-774).
+                const QcBlockId above = chunk->block(x, generator.seaLevel(), 0);
+                QVERIFY(above == qcAirBlockId || (above == lilyPad && chunk->block(x, generator.seaLevel() - 1, 0) == water));
                 ++checked;
             }
         }

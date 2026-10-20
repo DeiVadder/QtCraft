@@ -80,14 +80,28 @@ Recipe QcHandbookRecipes::machineRecipe(const QcSmeltingRecipe &recipe) const
     result.seconds = recipe.seconds;
 
     QStringList machineNames;
-    const QList<qsizetype> machines = m_index.machinesByCategory(recipe.category);
-    for (const qsizetype index : machines) {
+    // Machines that take every recipe of the category (the furnace) come before specialised ones.
+    QList<qsizetype> machines = m_index.machinesByCategory(recipe.category);
+    std::ranges::stable_partition(machines, [this](qsizetype index) {
         const QcBlockDefinition &machine = m_content.blocks()[index];
-        Link link = m_links.blockLink(machine.name);
-        if (machine.machine.speed != 1.0) {
-            link.note = m_text.label(u"unit.speed"_s).arg(m_text.number(machine.machine.speed));
+        return machine.machine.isMachine() && machine.machine.kinds.isEmpty();
+    });
+
+    for (const qsizetype index : std::as_const(machines)) {
+        const QcBlockDefinition &machine = m_content.blocks()[index];
+        const bool campfire = !machine.machine.isMachine();
+        if (!usedBy(campfire ? machine.campfire.kinds : machine.machine.kinds, recipe)) {
+            continue;
         }
-        machineNames.append(link.text);
+        // A campfire cooks every recipe in its own time without fuel (decision E-772): it is linked,
+        // but not named in the note about the machines' time and fuel.
+        Link link = m_links.blockLink(machine.name);
+        if (campfire) {
+            link.note = m_text.seconds(machine.campfire.seconds);
+        } else {
+            link.note = machine.machine.speed != 1.0 ? m_text.label(u"unit.speed"_s).arg(m_text.number(machine.machine.speed)) : QString();
+            machineNames.append(link.text);
+        }
         result.machines.append(std::move(link));
     }
 
@@ -97,6 +111,22 @@ Recipe QcHandbookRecipes::machineRecipe(const QcSmeltingRecipe &recipe) const
 
     result.note = m_text.label(u"recipe.machine"_s).arg(machineNames.join(u", "_s), m_text.seconds(recipe.seconds));
     return result;
+}
+
+bool QcHandbookRecipes::usedBy(const QStringList &kinds, const QcSmeltingRecipe &recipe) const
+{
+    if (!qcAcceptsRecipeKind(kinds, recipe.kind)) {
+        return false;
+    }
+    for (const QcSmeltingRecipe &earlier : m_content.smeltingRecipes()) {
+        if (&earlier == &recipe) {
+            return true;
+        }
+        if (earlier.category == recipe.category && earlier.inputItem == recipe.inputItem && qcAcceptsRecipeKind(kinds, earlier.kind)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QList<Section> QcHandbookRecipes::itemSections(const QString &item) const

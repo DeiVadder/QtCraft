@@ -101,9 +101,17 @@ QcWetlandPattern::Cover QcWetlandPattern::coverAt(const QcVillagePlan::Wetland &
 
 bool QcWetlandPattern::plantAt(const QcVillageStyle::Wetland &settings, int x, int z) const
 {
-    if (settings.plant == qcAirBlockId || settings.plantChance <= 0.0) {
-        return false;
-    }
+    return settings.plant != qcAirBlockId && plantDraw(x, z) < settings.plantChance;
+}
+
+bool QcWetlandPattern::floatingPlantAt(const QcVillageStyle::Wetland &settings, int x, int z) const
+{
+    // Pool columns never carry the plant beside the pools, so both use the same draw.
+    return settings.floatingPlant != qcAirBlockId && plantDraw(x, z) < settings.floatingPlantChance;
+}
+
+double QcWetlandPattern::plantDraw(int x, int z) const
+{
     const quint64 hash = qcMixSeed(qcMixSeed(m_plantSeed, quint32(x)), quint32(z));
-    return double(hash >> 11) * 0x1.0p-53 < settings.plantChance;
+    return double(hash >> 11) * 0x1.0p-53;
 }

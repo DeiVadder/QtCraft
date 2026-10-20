@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcBlastDefinition.h"
 #include "common/content/definitions/QcBlockProperty.h"
+#include "common/content/definitions/QcCookingDefinitions.h"
 #include "common/content/definitions/QcFarmingDefinitions.h"
 #include "common/content/definitions/QcFireDefinition.h"
 #include "common/content/definitions/QcLiquidDefinition.h"
@@ -179,8 +180,10 @@ struct QcBlockDefinition
     QString partOf;
     // Flow of a liquid block; distance and movement factor also reach the client.
     QcLiquidDefinition flow;
-    // Damage per hit to bodies touching the block (lava); items inside burn. Server side only.
+    // Damage per hit to bodies touching the block (lava); items inside burn unless `burnsItems` is
+    // false (a campfire hurts only creatures and players, decision E-772). Server side only.
     double contactDamage = 0.0;
+    bool burnsItems = true;
     // Factor on the movement of bodies inside the block (cobweb; 1 = no effect). Reaches the client.
     double slowsInside = 1.0;
     // Factors on walking speed and jump of bodies standing on the block (mud). Reach the client.
@@ -194,6 +197,13 @@ struct QcBlockDefinition
     // `hardensInto` (concrete powder into concrete). Server side only.
     QString hardensWith;
     QString hardensInto;
+    // Placed on the surface of a liquid (a lily pad, decision E-774): the player aims at the liquid
+    // and the block goes into the cell above it. Reaches the client.
+    bool floats = false;
+    // Eaten bite by bite where it stands (cake, decision E-773); the food reaches the client.
+    QcBitesDefinition bites;
+    // A campfire (decision E-772); the slots reach the client.
+    QcCampfireDefinition campfire;
     // A liquid flowing into the block breaks it with its drops (plants, torches). Server side only.
     bool washable = false;
     // Without a block below it falls as an entity and lands again (sand, gravel). Server side only.

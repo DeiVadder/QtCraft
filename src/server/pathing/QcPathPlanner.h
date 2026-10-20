@@ -31,6 +31,9 @@ public:
     // One in this many nodes of the budget is kept for creatures other than villagers while any of
     // them waits.
     static constexpr int otherCreaturesShare = 4;
+    // A search that failed this many times in a row has 2^maxWidening times the nodes of one search
+    // (at most a tick's budget); wanderers never widen.
+    static constexpr int maxWidening = 3;
 
     explicit QcPathPlanner(const QcContentRegistry &content);
 

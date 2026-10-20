@@ -209,6 +209,7 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         // from disk were generated and furnished when they first came; asking again would plan
         // regions on the tick thread for nothing.
         m_state.world().spawners().restore(arrival.blockEntities.spawners, *chunk);
+        m_state.world().campfires().restore(arrival.blockEntities.campfires, *chunk);
         if (arrival.blockEntities.furnished) {
             m_state.world().blockEntityExtras().noteFurnished(pos);
         }
@@ -506,6 +507,7 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         departure.blockEntities.blockUpdates.append(flows.value(pos));
         departure.blockEntities.fires = world.fires().takeChunk(pos, now);
         departure.blockEntities.spawners = world.spawners().takeChunk(pos);
+        departure.blockEntities.campfires = world.campfires().takeChunk(pos);
         departure.blockEntities.furnished = world.blockEntityExtras().isFurnished(pos);
         departure.blockEntities.pruneKept();
         departure.entities = entities.value(pos);
@@ -573,6 +575,7 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blockEntities.chunk = pos;
         departure.blockEntities.fires = world.fires().savedOf(pos, upcomingTick());
         departure.blockEntities.spawners = world.spawners().savedOf(pos);
+        departure.blockEntities.campfires = world.campfires().savedOf(pos);
         departure.blockEntities.furnished = world.blockEntityExtras().isFurnished(pos);
         // Kept parts go back with the record; tails of entries gone since are dropped for good.
         departure.blockEntities.kept = world.blockEntityExtras().keptParts().value(pos);

@@ -1,0 +1,17 @@
+{
+    "name": "campfire",
+    "type": "shaped",
+    "pattern": [
+        " S ",
+        "SCS",
+        "LLL"
+    ],
+    "key": {
+        "S": "stick",
+        "C": "#coals",
+        "L": "#logs"
+    },
+    "result": {
+        "item": "campfire"
+    }
+}

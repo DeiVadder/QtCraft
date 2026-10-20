@@ -32,13 +32,13 @@ A potato baked in a furnace; as filling as bread.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Potato](#item-qtcraft-potato) | [Baked potato](#item-qtcraft-baked_potato) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -87,13 +87,13 @@ Chicken cooked in a furnace; good food.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw chicken](#item-qtcraft-raw_chicken) | [Cooked chicken](#item-qtcraft-cooked_chicken) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -109,13 +109,13 @@ Cod cooked in a furnace; good food, and it heals a tame cat.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw cod](#item-qtcraft-raw_cod) | [Cooked cod](#item-qtcraft-cooked_cod) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -131,13 +131,13 @@ Mutton cooked in a furnace; good food.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw mutton](#item-qtcraft-raw_mutton) | [Cooked mutton](#item-qtcraft-cooked_mutton) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -153,13 +153,13 @@ Good food that fills a lot of the food bar.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw porkchop](#item-qtcraft-raw_porkchop) | [Cooked porkchop](#item-qtcraft-cooked_porkchop) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -175,13 +175,13 @@ Cooked salmon, a good meal.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw salmon](#item-qtcraft-raw_salmon) | [Cooked salmon](#item-qtcraft-cooked_salmon) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -236,13 +236,13 @@ Barely filling raw; plant it on farmland or bake it in a furnace.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Potato](#item-qtcraft-potato) | [Baked potato](#item-qtcraft-baked_potato) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -281,13 +281,13 @@ Meat of a cow; cook it in a furnace for a filling steak.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw beef](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -307,13 +307,13 @@ Meat of a chicken; better cooked in a furnace.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw chicken](#item-qtcraft-raw_chicken) | [Cooked chicken](#item-qtcraft-cooked_chicken) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -333,13 +333,13 @@ A fish; tames cats and lets you get close to ocelots. Better cooked in a furnace
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw cod](#item-qtcraft-raw_cod) | [Cooked cod](#item-qtcraft-cooked_cod) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -359,13 +359,13 @@ Meat of a sheep; better cooked in a furnace.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw mutton](#item-qtcraft-raw_mutton) | [Cooked mutton](#item-qtcraft-cooked_mutton) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -385,13 +385,13 @@ Food from pigs; cook it in the furnace for more.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw porkchop](#item-qtcraft-raw_porkchop) | [Cooked porkchop](#item-qtcraft-cooked_porkchop) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -411,13 +411,13 @@ Meat of a salmon; better cooked in a furnace.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw salmon](#item-qtcraft-raw_salmon) | [Cooked salmon](#item-qtcraft-cooked_salmon) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -463,12 +463,12 @@ Cooked beef, one of the most filling foods.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Smoker: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw beef](#item-qtcraft-raw_beef) | [Steak](#item-qtcraft-cooked_beef) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Campfire](blocks.md#block-qtcraft-campfire) (30 s), [Smoker](blocks.md#block-qtcraft-smoker) (speed × 2)
 
 [Fuels](tables.md#table-fuels)

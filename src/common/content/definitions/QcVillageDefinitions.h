@@ -75,7 +75,8 @@ struct QcVillageStilts
 // `margin` blocks of its pieces and boardwalks (frayed by noise up to `fray` more) the ground lies at
 // the water surface, blending back to the terrain over at least `blend` blocks; on it a noise of
 // `scale` blocks forms pools `depth` blocks deep over `water` of the open ground, ringed by `mudBand`
-// blocks of the `bottom` block, grass between, with `plant` beside the pools at `plantChance`; dry
+// blocks of the `bottom` block, grass between, with `plant` beside the pools at `plantChance` and
+// `floatingPlant` on their water at `floatingPlantChance` (lily pads, decision E-774); dry
 // ground stays where stairs lead down to land.
 struct QcVillageWetland
 {
@@ -90,6 +91,8 @@ struct QcVillageWetland
     double scale = 8.0;
     QString plant;
     double plantChance = 0.0;
+    QString floatingPlant;
+    double floatingPlantChance = 0.0;
 };
 
 // A range a village draws one value from, uniformly (inclusive).

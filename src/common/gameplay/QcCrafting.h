@@ -23,8 +23,14 @@ QList<std::pair<QString, int>> requirements(const QcRecipeDefinition &recipe);
 QList<std::pair<QString, int>> requirements(const QcContentRegistry &content, const QcRecipeDefinition &recipe);
 // Removes the ingredients of `times` crafts in the order of requirements(content, recipe); false (and
 // possibly some removed) when they are not all there, so callers work on a copy. Server and client
-// use this.
+// use this. Taken ingredients leave their container (a milk bucket its empty bucket, decision E-771);
+// false as well when there is no room for it.
 bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcRecipeDefinition &recipe, int times);
+// The containers the items taken from `before` to leave `after` give back, one stack per container
+// item and taken item.
+[[nodiscard]] QList<QcItemStack> containersLeft(const QcContentRegistry &content, const QcInventory &before, const QcInventory &after);
+// The container an item leaves when crafted with (its `emptiesTo`), if any.
+[[nodiscard]] std::optional<QcItemId> remainderOf(const QcContentRegistry &content, QcItemId item);
 // How often (at most `limit`) the inventory holds the ingredients of the recipe, as consume() takes them.
 int timesCraftable(const QcContentRegistry &content, const QcInventory &inventory, const QcRecipeDefinition &recipe, int limit);
 

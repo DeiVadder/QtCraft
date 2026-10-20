@@ -43,6 +43,17 @@ struct SpawnerDisplay
     qint32 mob = -1;
 };
 
+// Server -> client: the items lying on the campfire at `pos` (decision E-772), sent after the
+// ChunkData of its chunk and whenever they change; one content item id per slot, 0 for an empty one.
+// An empty list: nothing lies on it (or it is gone).
+struct CampfireDisplay
+{
+    static constexpr qsizetype maxItems = 4;
+
+    QcBlockPos pos;
+    QList<quint32> items;
+};
+
 struct BlockUpdate
 {
     QcBlockPos pos;

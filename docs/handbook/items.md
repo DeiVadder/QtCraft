@@ -401,7 +401,11 @@ Burnt wood: fuel as good as coal and part of torches.
 
 **Used in**
 
-[Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+
+**Dropped by**
+
+[Campfire](blocks.md#block-qtcraft-campfire) (2×), [Unlit campfire](blocks.md#block-qtcraft-unlit_campfire) (2×)
 
 ### <a id="item-qtcraft-clay_ball"></a>Clay ball
 
@@ -461,7 +465,7 @@ Fuel for the furnace and part of torches.
 
 **Used in**
 
-[Block of coal](blocks.md#block-qtcraft-coal_block), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Gunpowder](#item-qtcraft-gunpowder), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Block of coal](blocks.md#block-qtcraft-coal_block), [Campfire](blocks.md#block-qtcraft-campfire) (Coal or charcoal), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Gunpowder](#item-qtcraft-gunpowder), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
 
 **Dropped by**
 
@@ -516,13 +520,13 @@ Smelted copper for doors, bars, chains and lanterns.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw copper](#item-qtcraft-raw_copper) | [Copper ingot](#item-qtcraft-copper_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -606,6 +610,10 @@ Laid by chickens. Thrown with the use button, it bursts where it lands; one egg 
 |---|---|
 | ID | `qtcraft:egg` |
 | Stack size | 16 |
+
+**Used in**
+
+[Cake](blocks.md#block-qtcraft-cake)
 
 ### <a id="item-qtcraft-emerald"></a>Emerald
 
@@ -823,13 +831,13 @@ Smelted gold.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw gold](#item-qtcraft-raw_gold) | [Gold ingot](#item-qtcraft-gold_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -958,19 +966,19 @@ Smelted iron for tools, buckets and more.
 
 **Made in a furnace**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw iron](#item-qtcraft-raw_iron) | [Iron ingot](#item-qtcraft-iron_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Cauldron](blocks.md#block-qtcraft-cauldron), [Chain](blocks.md#block-qtcraft-chain), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Flint and steel](#item-qtcraft-flint_and_steel), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Shears](#item-qtcraft-shears), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Blast furnace](blocks.md#block-qtcraft-blast_furnace), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Cauldron](blocks.md#block-qtcraft-cauldron), [Chain](blocks.md#block-qtcraft-chain), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Flint and steel](#item-qtcraft-flint_and_steel), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Shears](#item-qtcraft-shears), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 **Dropped by**
 
@@ -1206,6 +1214,10 @@ Fresh milk from a cow. Drinking it with the use button ends all status effects, 
 | Stack size | 1 |
 | Afterwards | [Bucket](#item-qtcraft-bucket) |
 
+**Used in**
+
+[Cake](blocks.md#block-qtcraft-cake)
+
 ### <a id="item-qtcraft-minecart"></a>Minecart
 
 Set it down on a rail and get in with a use; sneak to get out. It rolls on along the track, faster downhill; the forward key pushes it while you ride. One hit breaks it.
@@ -1399,13 +1411,13 @@ What copper ore drops; a furnace smelts it into a copper ingot.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw copper](#item-qtcraft-raw_copper) | [Copper ingot](#item-qtcraft-copper_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -1436,13 +1448,13 @@ What gold ore drops; a furnace smelts it into a gold ingot.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw gold](#item-qtcraft-raw_gold) | [Gold ingot](#item-qtcraft-gold_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -1473,13 +1485,13 @@ What iron ore drops; a furnace smelts it into an iron ingot.
 
 **Smelts into**
 
-*Furnace: 10 s per item, needs fuel*
+*Furnace, Blast furnace: 10 s per item, needs fuel*
 
 | 1 | → |
 |---|---|
 | [Raw iron](#item-qtcraft-raw_iron) | [Iron ingot](#item-qtcraft-iron_ingot) |
 
-[Furnace](blocks.md#block-qtcraft-furnace)
+[Furnace](blocks.md#block-qtcraft-furnace), [Blast furnace](blocks.md#block-qtcraft-blast_furnace) (speed × 2)
 
 [Fuels](tables.md#table-fuels)
 
@@ -1648,7 +1660,7 @@ Handle of tools and torches.
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Arrow](#item-qtcraft-arrow), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Bow](#item-qtcraft-bow), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Fishing rod](#item-qtcraft-fishing_rod), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Armour stand](#item-qtcraft-armor_stand), [Arrow](#item-qtcraft-arrow), [Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Bow](#item-qtcraft-bow), [Campfire](blocks.md#block-qtcraft-campfire), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Fishing rod](#item-qtcraft-fishing_rod), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Lever](blocks.md#block-qtcraft-lever), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Rail](blocks.md#block-qtcraft-rail), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone hoe](tools.md#item-qtcraft-stone_hoe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
 
 **Dropped by**
 
@@ -1690,7 +1702,7 @@ Made from sugar cane; sweetens a pumpkin pie.
 
 **Used in**
 
-[Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
+[Cake](blocks.md#block-qtcraft-cake), [Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
 
 **Dropped by**
 
@@ -1774,7 +1786,7 @@ Harvested from ripe wheat. Three make a bread; animals like sheep love it.
 
 **Used in**
 
-[Bread](food.md#item-qtcraft-bread), [Hay bale](blocks.md#block-qtcraft-hay_block), [Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
+[Bread](food.md#item-qtcraft-bread), [Cake](blocks.md#block-qtcraft-cake), [Hay bale](blocks.md#block-qtcraft-hay_block), [Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
 
 **Dropped by**
 

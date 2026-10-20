@@ -1,0 +1,32 @@
+{
+    "name": "kitchen",
+    "showcase": { "order": 51 },
+    "palette": {
+        "P": "polished_stone",
+        "W": "water[level=0]",
+        "S": "smoker[facing=south]",
+        "B": "blast_furnace[facing=south]",
+        "F": "campfire",
+        "U": "unlit_campfire",
+        "K": "cake",
+        "k": "cake[bites=3]",
+        "L": "lily_pad"
+    },
+    "layers": [
+        ["PPPPPPPPPPP", "PPPPPPPPPPP", "PPPPPPPWWWP", "PPPPPPPWWWP", "PPPPPPPWWWP", "PPPPPPPPPPP"],
+        ["           ", " S B F U   ", "       L   ", "         L ", " K k    L  ", "           "]
+    ],
+    "contents": [
+        { "at": [1, 1, 1], "items": [{ "item": "raw_beef", "count": 8 }, { "item": "coal", "count": 4 }] },
+        { "at": [3, 1, 1], "items": [{ "item": "raw_iron", "count": 8 }, { "item": "coal", "count": 4 }] },
+        { "at": [5, 1, 1], "items": [{ "item": "raw_cod", "count": 1 }, { "item": "raw_porkchop", "count": 1 }, { "item": "potato", "count": 1 }, { "item": "raw_chicken", "count": 1 }] }
+    ],
+    "labels": [
+        { "at": [1.5, 2.8, 1.5], "text": "block.qtcraft.smoker" },
+        { "at": [3.5, 2.8, 1.5], "text": "block.qtcraft.blast_furnace" },
+        { "at": [5.5, 2.8, 1.5], "text": "block.qtcraft.campfire" },
+        { "at": [7.5, 2.8, 1.5], "text": "block.qtcraft.unlit_campfire" },
+        { "at": [2.5, 2.4, 4.5], "text": "block.qtcraft.cake" },
+        { "at": [8.5, 2.4, 3.5], "text": "block.qtcraft.lily_pad" }
+    ]
+}

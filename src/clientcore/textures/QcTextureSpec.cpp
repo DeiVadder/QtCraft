@@ -76,6 +76,9 @@ constexpr std::pair<QStringView, Pattern> patternNames[] = {
     {u"mossy_bricks", Pattern::MossyBricks}, {u"cracked_bricks", Pattern::CrackedBricks},
     {u"chiseled_bricks", Pattern::ChiseledBricks}, {u"smooth_stone", Pattern::SmoothStone},
     {u"glazed_terracotta", Pattern::GlazedTerracotta},
+    {u"cake_top", Pattern::CakeTop}, {u"cake_side", Pattern::CakeSide},
+    {u"cake_item", Pattern::CakeItem}, {u"campfire_item", Pattern::CampfireItem},
+    {u"lily_pad", Pattern::LilyPad},
 };
 
 } // namespace

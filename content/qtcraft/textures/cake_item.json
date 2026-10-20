@@ -1,0 +1,8 @@
+{
+    "name": "cake_item",
+    "pattern": "cake_item",
+    "primary": "#f4efe8",
+    "secondary": "#c89a5c",
+    "variation": 0.05,
+    "seed": 7734
+}

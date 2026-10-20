@@ -50,7 +50,11 @@ private:
     CraftOutcome craftOnce(QcServerClient &client);
     // Takes the repair result (QcRepair) once.
     CraftOutcome repairOnce(QcServerClient &client);
+    // Takes one item from each cell; a container (a milk bucket's bucket) stays in a cell it empties.
     void takeOneOfEachCell(QcServerClient &client);
+    // The containers that taking one of each cell leaves for the inventory: those of cells that keep
+    // items (decision E-771).
+    [[nodiscard]] QList<QcItemStack> containersForInventory(const QcServerClient &client) const;
     void finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore);
     bool isNearCraftingTable(const QcServerClient &client) const;
     // Whether a crafting table stands in the column (dx, dy) around `feet` within reach.

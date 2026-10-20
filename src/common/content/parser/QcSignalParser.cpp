@@ -197,6 +197,15 @@ void SignalReader::readReading()
         m_signal.reading = QcComparatorReading::Contents;
         return;
     }
+    if (value.isString() && value.toString() == u"bites"_s) {
+        // The block's bites are read before its signal; their parser checks the state 'bites'.
+        if (!m_block.bites.isEdible()) {
+            m_reader.fail(u"'comparator': \"bites\" needs 'bites'"_s);
+            return;
+        }
+        m_signal.reading = QcComparatorReading::Bites;
+        return;
+    }
     if (value.isObject()) {
         const QString property = value.toObject().value(u"property"_s).toString();
         const QcBlockProperty *found = m_block.property(property);
@@ -208,7 +217,7 @@ void SignalReader::readReading()
         m_signal.readProperty = property;
         return;
     }
-    m_reader.fail(u"'comparator' must be \"contents\", \"carts\" or an object with 'property'"_s);
+    m_reader.fail(u"'comparator' must be \"contents\", \"carts\", \"bites\" or an object with 'property'"_s);
 }
 
 void SignalReader::checkKind() const

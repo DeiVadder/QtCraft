@@ -1,0 +1,8 @@
+{
+    "name": "blast_furnace_top",
+    "pattern": "smooth_stone",
+    "primary": "#8c8c8c",
+    "secondary": "#6a6a6a",
+    "variation": 0.04,
+    "seed": 7704
+}

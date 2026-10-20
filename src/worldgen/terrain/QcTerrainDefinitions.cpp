@@ -90,6 +90,7 @@ Feature Loader::feature(const QcFeatureDefinition &definition, quint64 patchSeed
     feature.shape.maxHeight = definition.maxHeight;
     feature.shape.cone = definition.shape == u"cone"_s;
     feature.nearWater = definition.nearWater;
+    feature.onWater = definition.onWater;
     feature.patchSize = definition.patchSize;
     feature.patches = QcNoise(patchSeed);
     for (const QString &ground : definition.groundBlocks) {

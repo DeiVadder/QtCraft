@@ -20,6 +20,7 @@ struct QcTerrainDefinitions
         QcTreeShape::Params shape;
         QSet<QcBlockId> ground;
         bool nearWater = false;
+        bool onWater = false;
         int patchSize = 0;
         QcNoise patches{0};
         // Seed of the placement chances, derived from the feature's name.

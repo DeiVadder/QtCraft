@@ -37,6 +37,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_crafting(m_state, m_inventory)
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
+    , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)
@@ -45,7 +46,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits,
-                              m_ignition, m_golems})
+                              m_ignition, m_golems, m_kitchen})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
@@ -82,9 +83,10 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
     m_circuits.setIgnite([this](QcBlockPos pos) { return m_ignition.strike(pos); });
     m_blockSimulation.setIgnition(&m_ignition);
-    // Explosives catch from flint and steel, fire and power (decision E-601).
+    // Explosives catch from flint and steel, fire and power (decision E-601); unlit campfires only from
+    // flint and steel and dispensers (decision E-772).
     const auto light = [this](QcBlockPos pos) { return m_explosions.light(pos); };
-    m_ignition.setLight(light);
+    m_ignition.setLight([this](QcBlockPos pos) { return m_kitchen.light(pos) || m_explosions.light(pos); });
     m_fire.setLight(light);
     m_circuits.setLight(light);
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });

@@ -67,6 +67,8 @@ void QcHandbookIndex::indexBlocks(const QcHandbookText &text, const QcHandbookLi
 
         if (block.machine.isMachine()) {
             m_machinesByCategory[block.machine.category].append(i);
+        } else if (block.campfire.cooks()) {
+            m_machinesByCategory[block.campfire.category].append(i);
         }
 
         for (const QcItemDrop &drop : block.drops) {

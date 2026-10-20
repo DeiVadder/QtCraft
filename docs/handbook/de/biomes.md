@@ -112,7 +112,7 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 **Pflanzen und Bäume**
 
-[Blaue Orchideen](worldgen.md#feature-qtcraft-blue_orchid) (2 % der Säulen), [Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (1,2 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (1,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (16 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,15 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,6 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (30 % der Säulen)
+[Blaue Orchideen](worldgen.md#feature-qtcraft-blue_orchid) (2 % der Säulen), [Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (1,2 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (1,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (16 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,15 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,6 % der Säulen), [Seerosen](worldgen.md#feature-qtcraft-lily_pad) (8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (30 % der Säulen)
 
 **Wesen**
 

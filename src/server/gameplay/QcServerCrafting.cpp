@@ -89,9 +89,17 @@ QcServerCrafting::CraftOutcome QcServerCrafting::craftOnce(QcServerClient &clien
     const QcContentRegistry &content = m_state.content();
     const QcRecipeDefinition &definition = content.recipes()[*recipe];
     const std::optional<QcItemId> item = content.itemId(definition.resultItem);
+    // The result and the containers left over need room in the inventory; nothing drops to the
+    // floor (decision E-771).
     QcInventory result = client.inventory;
     if (!item || result.add(*item, definition.resultCount, content) > 0) {
         return CraftOutcome::NoRoom;
+    }
+    const QList<QcItemStack> containers = containersForInventory(client);
+    for (const QcItemStack &container : containers) {
+        if (result.add(container.item, container.count, content) > 0) {
+            return CraftOutcome::NoRoom;
+        }
     }
 
     client.inventory = result;
@@ -121,11 +129,33 @@ void QcServerCrafting::takeOneOfEachCell(QcServerClient &client)
     for (int row = 0; row < client.crafting.size; ++row) {
         for (int column = 0; column < client.crafting.size; ++column) {
             QcItemStack &cell = client.crafting.grid[row * 3 + column];
-            if (!cell.isEmpty() && --cell.count <= 0) {
-                cell = {};
+            if (cell.isEmpty()) {
+                continue;
+            }
+
+            // A milk bucket leaves its empty bucket in its cell; while more stay in the cell the
+            // caller has put it into the inventory (containersForInventory).
+            const std::optional<QcItemId> container = QcCrafting::remainderOf(m_state.content(), cell.item);
+            if (--cell.count <= 0) {
+                cell = container ? QcItemStack{*container, 1, 0} : QcItemStack{};
             }
         }
     }
+}
+
+QList<QcItemStack> QcServerCrafting::containersForInventory(const QcServerClient &client) const
+{
+    QList<QcItemStack> containers;
+    for (int row = 0; row < client.crafting.size; ++row) {
+        for (int column = 0; column < client.crafting.size; ++column) {
+            const QcItemStack &cell = client.crafting.grid[row * 3 + column];
+            const std::optional<QcItemId> container = cell.isEmpty() ? std::nullopt : QcCrafting::remainderOf(m_state.content(), cell.item);
+            if (container && cell.count > 1) {
+                containers.append({*container, 1, 0});
+            }
+        }
+    }
+    return containers;
 }
 
 void QcServerCrafting::takeCraftingResult(QcServerClient &client)

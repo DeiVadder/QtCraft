@@ -157,7 +157,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 **Plants and trees**
 
-[Blue orchids](worldgen.md#feature-qtcraft-blue_orchid) (2 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.15 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (30 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
+[Blue orchids](worldgen.md#feature-qtcraft-blue_orchid) (2 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Lily pads](worldgen.md#feature-qtcraft-lily_pad) (8 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.15 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (30 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
 
 **Creatures**
 

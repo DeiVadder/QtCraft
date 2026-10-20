@@ -1,0 +1,8 @@
+{
+    "name": "campfire_item",
+    "pattern": "campfire_item",
+    "primary": "#6e5432",
+    "secondary": "#a88a5a",
+    "variation": 0.05,
+    "seed": 7725
+}

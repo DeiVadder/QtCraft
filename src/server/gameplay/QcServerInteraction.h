@@ -14,6 +14,7 @@ class QcServerCircuits;
 class QcServerCrafting;
 class QcServerGolems;
 class QcServerInventory;
+class QcServerKitchen;
 class QcServerMinecarts;
 class QcServerPlants;
 class QcServerSounds;
@@ -49,6 +50,7 @@ public:
         QcServerCircuits &circuits;
         QcFireIgnition &ignition;
         QcServerGolems &golems;
+        QcServerKitchen &kitchen;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);
@@ -63,8 +65,8 @@ private:
     // Whether the player's mode lets the held item do `action` to the block at `pos` (adventure
     // allow-lists, decision E-735); false where no block is loaded.
     bool permits(const QcServerClient &client, QcAdventureRules::Action action, QcBlockPos pos) const;
-    // Opens a machine, chest or crafting table, toggles a door or switches a lever, button or repeater
-    // at `target`; false when the click is not such a use.
+    // Opens a machine, chest or crafting table, toggles a door, switches a lever, button or repeater,
+    // eats cake or cooks on a campfire at `target`; false when the click is not such a use.
     bool useClickedBlock(QcServerClient &client, QcBlockPos target);
     // Empties a liquid source into the held scooping item; false when nothing was taken.
     bool scoopLiquid(QcServerClient &client, QcBlockPos pos);

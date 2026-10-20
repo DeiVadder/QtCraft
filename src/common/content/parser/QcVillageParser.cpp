@@ -246,6 +246,8 @@ void StyleReader::readGround()
         wetland.scale = nested.number(u"scale"_s, wetland.scale, 2.0, 64.0);
         wetland.plant = nested.name(u"plant"_s, m_namespace, wetland.plant);
         wetland.plantChance = nested.number(u"plantChance"_s, wetland.plantChance, 0.0, 1.0);
+        wetland.floatingPlant = nested.name(u"floatingPlant"_s, m_namespace, wetland.floatingPlant);
+        wetland.floatingPlantChance = nested.number(u"floatingPlantChance"_s, wetland.floatingPlantChance, 0.0, 1.0);
     });
 }
 

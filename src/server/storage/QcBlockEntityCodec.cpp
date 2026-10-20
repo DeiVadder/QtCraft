@@ -136,6 +136,7 @@ public:
         };
         const auto fires = entriesOf(Table::Fires, &RecordReader::fire);
         const auto spawners = entriesOf(Table::Spawners, &RecordReader::spawner);
+        const auto campfires = entriesOf(Table::Campfires, &RecordReader::campfire);
         const auto furnished = [this](QDataStream &, quint16) {
             m_record.furnished = true;
             return true;
@@ -145,7 +146,7 @@ public:
             {known(Table::Containers, containers), known(Table::Machines, machines), known(Table::Saplings, saplings),
              known(Table::Memories, memories), known(Table::Scheduled, scheduled), known(Table::Wakes, wakes),
              known(Table::SignalWakes, signalWakes), known(Table::BlockUpdates, updates), known(Table::Fires, fires),
-             known(Table::Spawners, spawners), known(Table::Furnished, furnished)},
+             known(Table::Spawners, spawners), known(Table::Furnished, furnished), known(Table::Campfires, campfires)},
             maxTableLength);
         if (!tables) {
             return std::nullopt;
@@ -355,6 +356,21 @@ private:
         return placed && m_stream.status() == QDataStream::Ok && entry.mob.size() <= maxNameLength && m_spawners.add(entry.pos);
     }
 
+    // The items on a campfire (decision E-772), each with the seconds it has cooked.
+    bool campfire()
+    {
+        QcCampfires::Entry entry;
+        const std::optional<QcBlockPos> placed = at();
+        entry.pos = placed.value_or(QcBlockPos());
+        for (QcCampfires::Slot &slot : entry.places) {
+            slot.stack = m_stacks.read(m_stream);
+            m_stream >> slot.cooked;
+            slot.cooked = std::isfinite(slot.cooked) ? std::clamp(slot.cooked, 0.0, maxSeconds) : 0.0;
+        }
+        m_record.campfires.append(entry);
+        return placed && m_stream.status() == QDataStream::Ok && m_campfires.add(entry.pos);
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -367,6 +383,7 @@ private:
     SeenPositions m_scheduled;
     SeenPositions m_fires;
     SeenPositions m_spawners;
+    SeenPositions m_campfires;
     quint32 m_tails = 0;
     int m_droppedTails = 0;
 };
@@ -467,6 +484,13 @@ public:
         entries(Table::Spawners, m_record.spawners, [this](const QcSpawners::Entry &spawner) {
             writePos(m_stream, spawner.pos);
             m_stream << spawner.mob << spawner.delay << quint8(spawner.confined);
+        });
+        entries(Table::Campfires, m_record.campfires, [this](const QcCampfires::Entry &campfire) {
+            writePos(m_stream, campfire.pos);
+            for (const QcCampfires::Slot &slot : campfire.places) {
+                QcSaveFile::writeStack(m_stream, slot.stack, m_content);
+                m_stream << slot.cooked;
+            }
         });
         if (m_record.furnished || hasTail(Table::Furnished)) {
             m_tables.add(quint16(Table::Furnished), tableVersion, [](QDataStream &) {});

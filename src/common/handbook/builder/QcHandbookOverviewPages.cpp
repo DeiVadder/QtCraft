@@ -8,6 +8,8 @@
 #include "common/handbook/QcHandbookLinks.h"
 #include "common/handbook/QcLinkList.h"
 
+#include <QHash>
+
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -162,23 +164,36 @@ QcHandbookEntry armourTable(const QcHandbookContext &context)
     return armour;
 }
 
-// All machine recipes by result.
+// All machine recipes by result, in one section per recipe kind (decision E-770): food, metal and
+// the rest, so the page shows which machines take what.
 QcHandbookEntry smeltingTable(const QcHandbookContext &context)
 {
     QcHandbookEntry smelting = tablePage(context, u"smelting"_s, u"qtcraft:furnace"_s);
-    Section all{context.text.label(u"section.machineRecipes"_s), {}, {}, {}};
+    QStringList kinds;
+    QHash<QString, QList<Recipe>> byKind;
     for (const QcSmeltingRecipe &recipe : context.content.smeltingRecipes()) {
-        all.recipes.append(context.recipes.machineRecipe(recipe));
+        if (!byKind.contains(recipe.kind)) {
+            kinds.append(recipe.kind);
+        }
+        byKind[recipe.kind].append(context.recipes.machineRecipe(recipe));
     }
 
-    std::ranges::stable_sort(all.recipes, [](const Recipe &a, const Recipe &b) {
-        const QString keyA = QcHandbook::searchKey(a.result.text);
-        const QString keyB = QcHandbook::searchKey(b.result.text);
-        return keyA != keyB ? keyA < keyB : a.name < b.name;
-    });
+    // Kinds by name, the recipes without a kind last.
+    std::ranges::sort(kinds, [](const QString &a, const QString &b) { return a.isEmpty() != b.isEmpty() ? b.isEmpty() : a < b; });
+    for (const QString &kind : std::as_const(kinds)) {
+        Section section{context.text.label(u"section.machineRecipesOf"_s).arg(context.text.recipeKindName(kind)), {}, {}, {}};
+        section.recipes = byKind.take(kind);
+        std::ranges::stable_sort(section.recipes, [](const Recipe &a, const Recipe &b) {
+            const QString keyA = QcHandbook::searchKey(a.result.text);
+            const QString keyB = QcHandbook::searchKey(b.result.text);
+            return keyA != keyB ? keyA < keyB : a.name < b.name;
+        });
+        smelting.sections.append(std::move(section));
+    }
 
-    all.links.append(context.links.tableLink(u"fuels"_s));
-    smelting.sections.append(std::move(all));
+    if (!smelting.sections.isEmpty()) {
+        smelting.sections.last().links.append(context.links.tableLink(u"fuels"_s));
+    }
     return smelting;
 }
 

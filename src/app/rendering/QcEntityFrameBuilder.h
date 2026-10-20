@@ -3,6 +3,7 @@
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/meshing/QcCapeTracker.h"
 #include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/session/QcCampfireSmoke.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
 
@@ -65,6 +66,8 @@ private:
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
     // The small creature spinning in each monster spawner near the player (decision E-520).
     void appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The items lying on the campfires near the player and the smoke rising from them (decision E-772).
+    void appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame);
     // A falling or moving block or a lit explosive, drawn as its block.
     void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).
@@ -96,6 +99,7 @@ private:
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
+    QcCampfireSmoke m_smoke;
     QElapsedTimer m_capeClock;
     // Vertex and index count of the last entity mesh.
     std::pair<qsizetype, qsizetype> m_entityMeshSize;
