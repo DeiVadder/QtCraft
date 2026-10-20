@@ -76,6 +76,28 @@ class TestReconciliation : public QObject
 {
     Q_OBJECT
 
+private:
+    // The entity of `spawn` dies: it leaves the live list and plays the death animation for its
+    // length, even when it is spawned again (`spawn`, a player that respawns) meanwhile.
+    static void verifyDeathOutlivesRespawn(FakeServer &server, QcClientSession &session, const QcMsg::EntitySpawn &spawn)
+    {
+        server.send(QcMsg::EntityRemove{spawn.id, true});
+        QTRY_VERIFY_WITH_TIMEOUT(session.entityMirror().dying().contains(spawn.id), timeoutMs);
+        QVERIFY(!session.entities().contains(spawn.id));
+        QCOMPARE(QcLocalAnimation::poseOf(session.entityMirror().dying().value(spawn.id), 0.0).deathProgress, 0.0);
+        session.tick();
+        QVERIFY(QcLocalAnimation::poseOf(session.entityMirror().dying().value(spawn.id), 0.0).deathProgress > 0.0);
+
+        server.send(spawn);
+        QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(spawn.id), timeoutMs);
+        QVERIFY(session.entityMirror().dying().contains(spawn.id));
+        for (int i = 1; i < QcLocalAnimation::deathTicks; ++i) {
+            session.tick();
+        }
+        QVERIFY(!session.entityMirror().dying().contains(spawn.id));
+        QCOMPARE(session.entities().value(spawn.id).position.x, spawn.position.x);
+    }
+
 private slots:
     void replaysUnacknowledgedInputsOnTopOfServerState()
     {
@@ -206,24 +228,9 @@ private slots:
         QCOMPARE(pose().swingProgress, -1.0);
         QCOMPARE(pose().hurtProgress, -1.0);
 
-        // Dying: the entity leaves the live list and plays the death animation for its length,
-        // even when the player respawns meanwhile.
-        server.send(QcMsg::EntityRemove{bob, true});
-        QTRY_VERIFY_WITH_TIMEOUT(session.entityMirror().dying().contains(bob), timeoutMs);
-        QVERIFY(!session.entities().contains(bob));
-        QCOMPARE(QcLocalAnimation::poseOf(session.entityMirror().dying().value(bob), 0.0).deathProgress, 0.0);
-        session.tick();
-        QVERIFY(QcLocalAnimation::poseOf(session.entityMirror().dying().value(bob), 0.0).deathProgress > 0.0);
-
+        // Dying, then spawned again while the death animation plays.
         spawn.position = {5.5, 64.0, 5.5};
-        server.send(spawn);
-        QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(bob), timeoutMs);
-        QVERIFY(session.entityMirror().dying().contains(bob));
-        for (int i = 1; i < QcLocalAnimation::deathTicks; ++i) {
-            session.tick();
-        }
-        QVERIFY(!session.entityMirror().dying().contains(bob));
-        QCOMPARE(session.entities().value(bob).position.x, 5.5);
+        verifyDeathOutlivesRespawn(server, session, spawn);
         QCOMPARE(pose().deathProgress, -1.0);
     }
 

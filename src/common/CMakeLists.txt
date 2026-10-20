@@ -68,11 +68,13 @@ target_sources(qc_common PRIVATE
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
+    content/parser/QcLiquidParser.h content/parser/QcLiquidParser.cpp
     content/parser/QcLootTableParser.h content/parser/QcLootTableParser.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
     content/parser/QcMobReader.h content/parser/QcMobReader.cpp content/parser/QcMobReaderTraits.cpp
     content/parser/QcProjectileParser.h content/parser/QcProjectileParser.cpp
+    content/parser/QcRailParser.h content/parser/QcRailParser.cpp
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
     content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
@@ -98,6 +100,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/registry/QcItemSerializer.h content/registry/QcItemSerializer.cpp
     content/registry/QcLootTables.h content/registry/QcLootTables.cpp
     content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
     content/registry/QcNamedList.h
@@ -174,9 +177,11 @@ target_sources(qc_common PRIVATE
     handbook/builder/QcHandbookWorldPages.h handbook/builder/QcHandbookWorldPages.cpp
 )
 target_sources(qc_common PRIVATE
+    light/QcLightCells.h
     light/QcLightEngine.h light/QcLightEngine.cpp
     light/QcLightNibbles.h
     light/QcLightTable.h light/QcLightTable.cpp
+    light/QcSkyLight.h light/QcSkyLight.cpp
 )
 target_sources(qc_common PRIVATE
     physics/QcBodyFit.h physics/QcBodyFit.cpp

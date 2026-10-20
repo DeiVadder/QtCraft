@@ -69,29 +69,10 @@ QString invalid(const QString &key)
     return operators;
 }
 
-} // namespace
-
-QcResult<QcServerSettings> QcServerSettings::read(const QString &path)
+// `settings` with the whole numbers and texts of `json` (port, players, view, connections; names,
+// address, password, world).
+[[nodiscard]] QcResult<QcServerSettings> withNumbersAndTexts(const QJsonObject &json, QcServerSettings settings)
 {
-    QFile file(path);
-    if (!file.exists()) {
-        return QcServerSettings{};
-    }
-    if (!file.open(QIODevice::ReadOnly) || file.size() > maxFileBytes) {
-        return qcError(u"Cannot read %1"_s.arg(path));
-    }
-
-    QJsonParseError error{};
-    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
-    if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        return qcError(u"%1 is no valid JSON object: %2"_s.arg(path, error.errorString()));
-    }
-    return fromJson(document.object());
-}
-
-QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
-{
-    QcServerSettings settings;
     int port = settings.port;
     struct Range
     {
@@ -101,8 +82,8 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
         int *value;
     };
     const std::array<Range, 6> ranges{{{u"port"_s, 0, 65535, &port},
-                                       {u"maxPlayers"_s, 1, maxPlayersLimit, &settings.maxPlayers},
-                                       {u"viewDistance"_s, 1, maxViewDistance, &settings.viewDistance},
+                                       {u"maxPlayers"_s, 1, QcServerSettings::maxPlayersLimit, &settings.maxPlayers},
+                                       {u"viewDistance"_s, 1, QcServerSettings::maxViewDistance, &settings.viewDistance},
                                        {u"loginTimeoutSeconds"_s, 1, 600, &settings.loginTimeoutSeconds},
                                        {u"connectionBurst"_s, 1, 1000, &settings.connectionBurst},
                                        {u"maxConnectionsPerAddress"_s, 1, 1000, &settings.maxConnectionsPerAddress}}};
@@ -124,7 +105,12 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
         }
         *value = *read;
     }
+    return settings;
+}
 
+// `settings` with the seed, the connection rate and the game mode of new players from `json`.
+[[nodiscard]] QcResult<QcServerSettings> withWorldAndRates(const QJsonObject &json, QcServerSettings settings)
+{
     // A number, or its text (seeds need all 64 bits, JSON numbers have 53); empty for a random one.
     if (const QString seed = json.value(u"seed"_s).toVariant().toString(); !seed.isEmpty()) {
         bool ok = false;
@@ -147,6 +133,40 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
     } else if (json.contains(u"defaultGameMode"_s) && !json.value(u"defaultGameMode"_s).isString()) {
         return qcError(invalid(u"defaultGameMode"_s));
     }
+    return settings;
+}
+
+} // namespace
+
+QcResult<QcServerSettings> QcServerSettings::read(const QString &path)
+{
+    QFile file(path);
+    if (!file.exists()) {
+        return QcServerSettings{};
+    }
+    if (!file.open(QIODevice::ReadOnly) || file.size() > maxFileBytes) {
+        return qcError(u"Cannot read %1"_s.arg(path));
+    }
+
+    QJsonParseError error{};
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
+    if (error.error != QJsonParseError::NoError || !document.isObject()) {
+        return qcError(u"%1 is no valid JSON object: %2"_s.arg(path, error.errorString()));
+    }
+    return fromJson(document.object());
+}
+
+QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
+{
+    QcResult<QcServerSettings> parsed = withNumbersAndTexts(json, QcServerSettings{});
+    if (parsed) {
+        parsed = withWorldAndRates(json, std::move(*parsed));
+    }
+    if (!parsed) {
+        return parsed;
+    }
+    QcServerSettings settings = std::move(*parsed);
+
     if (json.contains(u"limits"_s) && !json.value(u"limits"_s).isObject()) {
         return qcError(invalid(u"limits"_s));
     }

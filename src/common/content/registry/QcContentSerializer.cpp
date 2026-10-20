@@ -1,8 +1,8 @@
 #include "common/content/registry/QcContentSerializer.h"
 
-#include "common/content/registry/QcArmourSerializer.h"
 #include "common/content/registry/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcItemSerializer.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <QJsonDocument>
@@ -58,37 +58,6 @@ void writeBoxes(QDataStream &stream, const QList<QcModelBox> &boxes)
         boxes.append(std::move(box));
     }
     return boxes;
-}
-
-void writeItem(QDataStream &stream, const QcItemDefinition &item)
-{
-    stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
-           << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage << qint32(item.food)
-           << item.fuelSeconds << quint32(item.tags.size());
-    for (const QString &tag : item.tags) {
-        stream << tag;
-    }
-    stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand << item.cartBlock << item.ignites;
-    QcArmourSerializer::write(stream, item.armour);
-    // The launcher (decision E-425): the client draws it while the use button is held, only with
-    // ammunition (the projectile kind, checked when the content was finished) outside creative mode.
-    stream << item.launcher.has_value();
-    if (item.launcher) {
-        stream << item.launcher->drawSeconds << item.launcher->speed << item.launcher->minPower << item.launcher->ammunition;
-    }
-    stream << item.projectile;
-    // Thrown by hand (decision E-427): the client swings the arm and keeps the cooldown.
-    stream << item.throwable.has_value();
-    if (item.throwable) {
-        stream << item.throwable->speed << item.throwable->cooldownSeconds << item.throwable->inaccuracyDegrees;
-    }
-    // Drunk with the use button (decision E-500): the client sends ConsumeItem.
-    stream << item.drink.has_value();
-    if (item.drink) {
-        stream << item.drink->clearsEffects;
-    }
-    // A fishing rod (decision E-503): the client sends its use as ThrowItem; the rest is the server's.
-    stream << item.fishing.has_value();
 }
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -196,71 +165,8 @@ template<typename ReadEntry>
 
 bool readItem(QDataStream &stream, QcContentRegistry &registry)
 {
-    QcItemDefinition item;
-    qint32 maxStack = 0;
-    qint32 toolLevel = 0;
-    qint32 durability = 0;
-    qint32 food = 0;
-    stream >> item.name >> item.translationKey >> item.texture >> maxStack >> item.placesBlock >> item.tool >> toolLevel
-        >> item.toolSpeed >> durability >> item.attackDamage >> food >> item.fuelSeconds;
-    const std::optional<quint32> tagCountRead = QcStreamLimits::readCount(stream, 16);
-    if (!tagCountRead) {
-        return false;
-    }
-    const quint32 tagCount = *tagCountRead;
-
-    for (quint32 t = 0; t < tagCount; ++t) {
-        QString tag;
-        stream >> tag;
-        item.tags.append(tag);
-    }
-
-    stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand >> item.cartBlock >> item.ignites;
-    std::optional<std::optional<QcArmourDefinition>> armour = QcArmourSerializer::read(stream);
-    if (!armour) {
-        return false;
-    }
-    item.armour = std::move(*armour);
-    bool launcher = false;
-    stream >> launcher;
-    if (launcher) {
-        QcLauncherDefinition read;
-        stream >> read.drawSeconds >> read.speed >> read.minPower >> read.ammunition;
-        if (!(read.drawSeconds >= 0.05 && read.drawSeconds <= 10.0) || !(read.minPower >= 0.0 && read.minPower <= 1.0)
-            || !(read.speed >= 1.0 && read.speed <= QcProjectileDefinition::maxSpeed) || read.ammunition.size() > 64) {
-            return false;
-        }
-        item.launcher = read;
-    }
-    stream >> item.projectile;
-    bool throwable = false;
-    stream >> throwable;
-    if (throwable) {
-        QcThrowableDefinition read;
-        stream >> read.speed >> read.cooldownSeconds >> read.inaccuracyDegrees;
-        if (!(read.cooldownSeconds >= 0.0 && read.cooldownSeconds <= 60.0) || !(read.speed >= 1.0 && read.speed <= QcProjectileDefinition::maxSpeed)
-            || !(read.inaccuracyDegrees >= 0.0 && read.inaccuracyDegrees <= 45.0)) {
-            return false;
-        }
-        item.throwable = read;
-    }
-    bool drink = false;
-    stream >> drink;
-    if (drink) {
-        stream >> item.drink.emplace().clearsEffects;
-    }
-    bool fishing = false;
-    stream >> fishing;
-    if (fishing) {
-        item.fishing.emplace();
-    }
-    item.maxStack = maxStack;
-    item.toolLevel = toolLevel;
-    item.durability = durability;
-    item.food = food;
-
-    return stream.status() == QDataStream::Ok && food >= 0 && food <= QcItemDefinition::maxFood
-           && QcBlockSerializer::plausibleFuel(item.fuelSeconds) && registry.registerItem(std::move(item));
+    std::optional<QcItemDefinition> item = QcItemSerializer::read(stream);
+    return item && registry.registerItem(std::move(*item));
 }
 
 [[nodiscard]] QcStatus readItems(QDataStream &stream, QcContentRegistry &registry)
@@ -694,7 +600,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     writeList(stream, content.blocks(), [&content](QDataStream &out, const QcBlockDefinition &block) {
         QcBlockSerializer::writeBlock(out, block, content.shapeOf(block));
     });
-    writeList(stream, content.items(), writeItem);
+    writeList(stream, content.items(), QcItemSerializer::write);
     writeList(stream, content.mobs(), writeMob);
     writeList(stream, content.recipes(), writeRecipe);
     writeList(stream, content.assets().textures(), [](QDataStream &out, const QcTextureDefinition &texture) {

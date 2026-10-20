@@ -10,9 +10,9 @@
 #include "server/gameplay/QcArmourStandManager.h"
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/storage/QcComponentFrames.h"
+#include "server/storage/QcCreatureComponents.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
-#include "server/storage/QcVillagerCodec.h"
 
 #include <QIODevice>
 #include <QSet>
@@ -25,17 +25,12 @@ using namespace Qt::StringLiterals;
 namespace {
 
 using Component = QcEntityCodec::Component;
+using QcEntityCodec::kindVersion;
+using QcEntityCodec::maxTypeName;
 
-// The current version of the components of each kind (QcVillagerCodec::version for villagers).
-constexpr quint16 kindVersion = 1;
-// The current versions of the creature components beyond Creature (Component::Effects, Laying).
-constexpr quint16 effectsVersion = 1;
-constexpr quint16 layingVersion = 1;
 // Longer breeding timers than a day of seconds are damaged data.
 constexpr double maxBreedingSeconds = 86400.0;
 constexpr double maxSpeed = 60.0;
-// Type names (creatures, items, block states) longer than this are damaged data.
-constexpr qsizetype maxTypeName = 512;
 
 bool isFinite(const QcVec3 &v)
 {
@@ -58,12 +53,6 @@ void writeVec(QDataStream &stream, const QcVec3 &v)
     stream >> v.x >> v.y >> v.z;
     return v;
 }
-
-void writeEffects(QDataStream &stream, const QList<QcStatusEffect> &effects)
-{
-    QcStatusEffects::write(stream, effects);
-}
-
 
 // What every entry starts with (decision E-420): what it is by name (empty where the kind says it
 // all), where it is and how it moves, its place in the table of its kind (QcEntityRecord) and its
@@ -171,11 +160,18 @@ private:
         if (!components) {
             return std::nullopt;
         }
-        if (components->dropped > 0) {
+        return kept(std::move(*components));
+    }
+
+    // The unknown components of an entry to keep; those beyond QcComponentFrames::maxKept are
+    // dropped with a warning.
+    [[nodiscard]] QcEntityComponents kept(QcComponentFrames::ReadComponents components)
+    {
+        if (components.dropped > 0) {
             const QString text = u"%1: an entity with more than %2 unknown components; %3 of them dropped"_s;
-            m_warnings.add(text.arg(m_path).arg(QcComponentFrames::maxKept).arg(components->dropped));
+            m_warnings.add(text.arg(m_path).arg(QcComponentFrames::maxKept).arg(components.dropped));
         }
-        return std::move(components->kept);
+        return std::move(components.kept);
     }
 
     // The header fields that the entries of a kind do not use in this version (decision E-420).
@@ -191,69 +187,23 @@ private:
 
     bool creature(const Header &header)
     {
-        QcEntityRecord::Ordered<QcMobManager::Stored> entry{{}, header.order};
-        QcMobManager::Stored &mob = entry.entry;
-        mob.position = header.position;
-        mob.yaw = std::fmod(header.yaw, 360.0f);
-        mob.uid = header.uid;
+        QcMobManager::Stored stored;
+        stored.position = header.position;
+        stored.yaw = std::fmod(header.yaw, 360.0f);
+        stored.uid = header.uid;
         const std::optional<int> type = m_content.mobIndex(header.type);
         // Without its creature component it is a grown creature at full health.
-        mob.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
-        const auto body = [&mob](QDataStream &in, quint16) {
-            in >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred;
-            return true;
-        };
-        const auto villager = [&mob](QDataStream &in, quint16 version) {
-            mob.villager = QcVillagerCodec::read(in, version);
-            return mob.villager.has_value();
-        };
-        const auto effects = [&mob](QDataStream &in, quint16) {
-            const std::optional<QList<QcStatusEffect>> read = QcStatusEffects::read(in);
-            mob.effects = read.value_or(QList<QcStatusEffect>());
-            return read.has_value();
-        };
-        const auto laying = [&mob](QDataStream &in, quint16) {
-            in >> mob.layTimer;
-            return true;
-        };
-        QString carried;
-        const auto carriedBlock = [&carried, &mob](QDataStream &in, quint16) {
-            const std::optional<QString> read = QcComponentFrames::readText(in, maxTypeName);
-            carried = read.value_or(QString());
-            in >> mob.keptForBlock;
-            return read.has_value();
-        };
-        const auto confined = [&mob](QDataStream &, quint16) {
-            mob.confined = true;
-            return true;
-        };
-        const auto noAi = [&mob](QDataStream &, quint16) {
-            mob.noAi = true;
-            return true;
-        };
-        const auto golem = [&mob](QDataStream &in, quint16) {
-            in >> mob.playerBuilt;
-            return true;
-        };
-        const auto tame = [&mob](QDataStream &in, quint16) {
-            QcTameState &state = mob.tame.emplace();
-            state.owner = QcComponentFrames::readText(in, maxTypeName).value_or(QString());
-            in >> state.sitting >> state.collar;
-            // A tame creature without an owner (or whose owner could not be read) cannot be.
-            return !state.owner.isEmpty();
-        };
-        std::optional<QcEntityComponents> components =
-            readComponents({known(Component::Creature, kindVersion, body), known(Component::Villager, QcVillagerCodec::version, villager),
-                            known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
-                            known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
-                            known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                            known(Component::NoAi, kindVersion, noAi)});
-        if (!components) {
+        stored.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
+        std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored));
+        if (!read) {
             return false;
         }
-        mob.kept.components = std::move(*components);
-        if (!carried.isEmpty()) {
-            mob.carried = resolvedCarried(carried);
+
+        QcEntityRecord::Ordered<QcMobManager::Stored> entry{std::move(read->mob), header.order};
+        QcMobManager::Stored &mob = entry.entry;
+        mob.kept.components = kept(std::move(read->components));
+        if (!read->carried.isEmpty()) {
+            mob.carried = resolvedCarried(read->carried);
         }
         if (!plausibleCreature(mob)) {
             return false;
@@ -588,38 +538,6 @@ void writeEntries(QDataStream &stream, const QList<QcEntityRecord::Ordered<Entry
 }
 
 // The known components of each kind, added to the writer of its entry.
-void addCreature(QcComponentFrames::Writer &components, const QcMobManager::Stored &mob, const QcContentRegistry &content)
-{
-    components.add(quint16(Component::Creature), kindVersion, [&mob](QDataStream &out) { out << mob.health << mob.breedCooldown << mob.growUp << mob.bred; });
-    if (mob.villager) {
-        components.add(quint16(Component::Villager), QcVillagerCodec::version, [&mob](QDataStream &out) { QcVillagerCodec::write(out, *mob.villager); });
-    }
-    if (!mob.effects.isEmpty()) {
-        components.add(quint16(Component::Effects), effectsVersion, [&mob](QDataStream &out) { writeEffects(out, mob.effects); });
-    }
-    if (mob.carried != qcAirBlockId) {
-        const QString state = content.stateName(mob.carried);
-        components.add(quint16(Component::Carried), kindVersion, [&state, &mob](QDataStream &out) { out << state << mob.keptForBlock; });
-    }
-    if (mob.confined) {
-        components.add(quint16(Component::Confined), kindVersion, [](QDataStream &) {});
-    }
-    if (mob.noAi) {
-        components.add(quint16(Component::NoAi), kindVersion, [](QDataStream &) {});
-    }
-    if (mob.playerBuilt) {
-        components.add(quint16(Component::Golem), kindVersion, [&mob](QDataStream &out) { out << mob.playerBuilt; });
-    }
-    // Only a creature whose laying timer runs (a timer below 0 is chosen anew when it wakes).
-    if (mob.layTimer >= 0.0) {
-        components.add(quint16(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
-    }
-    if (mob.tame) {
-        const QcTameState &tame = *mob.tame;
-        components.add(quint16(Component::Tame), kindVersion, [&tame](QDataStream &out) { out << tame.owner << tame.sitting << tame.collar; });
-    }
-}
-
 void addStand(QcComponentFrames::Writer &components, const QcArmourStand &stand, const QcContentRegistry &content)
 {
     components.add(quint16(Component::ArmourStand), kindVersion, [&](QDataStream &out) {
@@ -648,7 +566,7 @@ void writeCreatures(QDataStream &stream, const QcEntityRecord &record, const QcC
 {
     writeEntries(stream, record.creatures, [&](const QcMobManager::Stored &mob, quint64 order) {
         const Header header{content.mobs()[mob.type].name, mob.position, {}, mob.yaw, order, mob.uid};
-        writeEntry(stream, header, mob.kept.components, [&mob, &content](QcComponentFrames::Writer &components) { addCreature(components, mob, content); });
+        writeEntry(stream, header, mob.kept.components, [&mob, &content](QcComponentFrames::Writer &components) -> QcComponentFrames::Writer & { return QcCreatureComponents::write(components, mob, content); });
     });
 }
 

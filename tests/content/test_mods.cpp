@@ -106,6 +106,28 @@ class TestMods : public QObject
 {
     Q_OBJECT
 
+    // The cells of each of `blocks` between y = 1 and 40 in 12 x 12 chunks generated from chunk (0, 0).
+    static QHash<QcBlockId, int> deepCells(const QcTerrainGenerator &generator, const QList<QcBlockId> &blocks)
+    {
+        QHash<QcBlockId, int> cells;
+        for (int cz = 0; cz < 12; ++cz) {
+            for (int cx = 0; cx < 12; ++cx) {
+                const auto chunk = generator.generate({cx, cz});
+                for (int y = 1; y <= 40; ++y) {
+                    for (int z = 0; z < 16; ++z) {
+                        for (int x = 0; x < 16; ++x) {
+                            const QcBlockId block = chunk->block(x, y, z);
+                            if (blocks.contains(block)) {
+                                ++cells[block];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return cells;
+    }
+
 private slots:
     void dependenciesLoadFirstAndTiesGoById()
     {
@@ -668,24 +690,9 @@ private slots:
         QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
         const QcBlockId moltenSource = state(u"rubies:molten_ruby"_s);
         const QcBlockId lavaSource = state(u"qtcraft:lava"_s);
-        int moltenCells = 0;
-        int lavaCells = 0;
-
-        for (int cz = 0; cz < 12; ++cz) {
-            for (int cx = 0; cx < 12; ++cx) {
-                const auto chunk = generator.generate({cx, cz});
-                for (int y = 1; y <= 40; ++y) {
-                    for (int z = 0; z < 16; ++z) {
-                        for (int x = 0; x < 16; ++x) {
-                            moltenCells += chunk->block(x, y, z) == moltenSource;
-                            lavaCells += chunk->block(x, y, z) == lavaSource;
-                        }
-                    }
-                }
-            }
-        }
-        QVERIFY(moltenCells > 0);
-        QVERIFY(lavaCells > 0);
+        const QHash<QcBlockId, int> cells = deepCells(generator, {moltenSource, lavaSource});
+        QVERIFY(cells.value(moltenSource) > 0);
+        QVERIFY(cells.value(lavaSource) > 0);
     }
 
     void modsCanAddTheirOwnMachines()

@@ -2,6 +2,7 @@
 
 #include "server/chunks/QcChunkGroups.h"
 #include "server/chunks/QcChunkTickets.h"
+#include "server/chunks/QcSignalChunks.h"
 #include "server/storage/QcChunkIo.h"
 
 #include <QHash>
@@ -101,15 +102,6 @@ private:
     void forKeptChunks(Visit visit) const;
     // Gives `chunk` a load ticket for its group and asks for it; false when the limits refuse.
     bool requestTicket(QcChunkPos chunk, quint64 now, bool retry);
-    // The chunks signals wait for that are not loaded.
-    QSet<QcChunkPos> signalTargets() const;
-    // The chunks with signals on their way that the circuits look at next.
-    QSet<QcChunkPos> chunksWithSignals() const;
-    // The chunks of signals that wait for a chunk on its way (they stay, decision E-376).
-    QSet<QcChunkPos> waitingSignalChunks() const;
-    // The chunks of `candidates` loaded for circuits that a signal passes through (changes, scheduled
-    // ticks, block updates): they stay for at most the time of a ticket (decision E-410).
-    [[nodiscard]] QSet<QcChunkPos> passingSignals(const QSet<QcChunkPos> &candidates);
     // The chunks loaded for circuits: those with tickets or a waiting signal and the loaded groups
     // around them.
     QSet<QcChunkPos> circuitChunks() const;
@@ -149,6 +141,7 @@ private:
     QcServerBlocks &m_blocks;
     QcBlockUpdateQueue &m_updates;
     QcChunkTickets m_tickets;
+    QcSignalChunks m_signals;
     // Arrived chunks waiting for the rest of their group.
     QHash<QcChunkPos, QcChunkIo::Arrival> m_waiting;
     QHash<QcChunkPos, quint16> m_waitingMarks;
@@ -156,8 +149,6 @@ private:
     QSet<QcChunkPos> m_oversizeWarned;
     qsizetype m_oversizeGroups = 0;
     quint64 m_unloaded = 0;
-    // Unneeded chunks a signal passes through, since the tick they are held for it (E-410).
-    QHash<QcChunkPos, quint64> m_passingSince;
     // circuitChunks() at the last pass: a chunk the circuits kept until this tick may hold a signal.
     QSet<QcChunkPos> m_circuitChunks;
     // The inputs of the last pass that let no chunk leave.

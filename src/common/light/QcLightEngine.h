@@ -3,6 +3,7 @@
 #include "common/core/QcBlockPos.h"
 #include "common/light/QcLightNibbles.h"
 #include "common/light/QcLightTable.h"
+#include "common/light/QcSkyLight.h"
 #include "common/world/QcChunk.h"
 
 #include <QList>
@@ -111,7 +112,7 @@ private:
         // Level of every cell while `cells` is null.
         quint8 uniform = 0;
     };
-    using SkyTops = std::array<qint16, std::size_t(QcWorld::chunkSize) * QcWorld::chunkSize>;
+    using SkyTops = QcSkyLight::Tops;
     struct Column
     {
         const QcChunk *blocks = nullptr;
@@ -126,10 +127,6 @@ private:
         // every top full, sections below every top dark, the others cell by cell. Returns the
         // sections lit cell by cell, one bit per section index.
         [[nodiscard]] quint32 seedSky(const SkyTops &tops);
-
-    private:
-        // The sky light of the section from `low` to `high` that the tops cut: full above them, dark below.
-        [[nodiscard]] static std::unique_ptr<QcLightNibbles> skyCells(const SkyTops &tops, int low, int high);
     };
     struct Cell
     {
@@ -191,11 +188,8 @@ private:
     void queueRemovalSeeds(const Column &leaving, QcChunkPos pos, QcBlockFace towards, const Column &across);
     void seedBlockSources(Column &column, QcChunkPos pos);
     void seedSky(Column &column, QcChunkPos pos);
-    // The sky tops of the cell columns of `blocks` (columnTop).
-    [[nodiscard]] SkyTops skyTops(const QcChunk &blocks) const;
     // Queues the sky-lit cells of a column that border darker cells of its neighbour columns.
     void queueSkyEdges(const Column &column, QcChunkPos pos);
-    int columnTop(const QcChunk &blocks, int lx, int lz) const;
     void insert(QcChunkPos pos, const QcChunk &blocks, std::shared_ptr<const QcChunk> owner);
     // Joins a column whose own light is complete with its neighbours: light flows over its borders
     // both ways.

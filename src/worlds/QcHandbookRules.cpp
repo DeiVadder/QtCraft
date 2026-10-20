@@ -195,6 +195,55 @@ QMap<QString, double> weatherValues()
     };
 }
 
+// Food, exhaustion, regeneration and starvation.
+QMap<QString, double> hungerValues()
+{
+    return {
+        {u"hunger.maxFood"_s, QcHunger::maxFood},
+        {u"hunger.regenerationFood"_s, QcHunger::regenerationFood},
+        {u"hunger.regenerationInterval"_s, QcHunger::regenerationInterval},
+        {u"hunger.exhaustionPerFood"_s, QcHunger::exhaustionPerFood},
+        {u"hunger.starvationInterval"_s, QcHunger::starvationInterval},
+        {u"hunger.starvationFloor"_s, QcHunger::starvationFloor},
+        {u"hunger.regenerationFoodPerHealth"_s, QcHunger::regenerationExhaustion / QcHunger::exhaustionPerFood},
+        {u"hunger.walkMinutesForFullBar"_s,
+         std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
+        {u"hunger.sprintMinutesForFullBar"_s,
+         std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
+    };
+}
+
+// Spreading and burning fire, and bodies that burn.
+QMap<QString, double> fireValues()
+{
+    return {
+        {u"fire.maxAge"_s, QcFireQueue::maxAge},
+        {u"fire.stepSecondsMin"_s, QcFireRules::minStepTicks * QcPhysics::tickDuration},
+        {u"fire.stepSecondsMax"_s, (QcFireRules::minStepTicks + QcFireRules::stepTicksSpread - 1) * QcPhysics::tickDuration},
+        {u"fire.ageWithoutFuel"_s, QcFireRules::ageWithoutFuel},
+        {u"fire.spreadRadius"_s, double(QcServerLimits{}.fireSpreadRadius)},
+        {u"fire.perChunk"_s, double(QcServerLimits{}.firesPerChunk)},
+        {u"fire.total"_s, double(QcServerLimits{}.fires)},
+        {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
+        {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
+        {u"fire.sunlightSeconds"_s, QcBodyBurning::sunlightTicks * QcPhysics::tickDuration},
+    };
+}
+
+// The limits and confirmations of the commands.
+QMap<QString, double> commandValues()
+{
+    return {
+        {u"commands.maxFill"_s, double(QcServer::maxFillBlocks)},
+        {u"commands.summonLimit"_s, double(QcServerLimits{}.summonLimit)},
+        {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},
+        {u"commands.confirmFill"_s, double(QcBlockCommands::confirmFillBlocks)},
+        {u"commands.confirmRemove"_s, QcWorldCommands::confirmRemoveCount},
+        {u"commands.maxRegenerate"_s, double(QcChunkRegeneration::maxChunks)},
+        {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
+    };
+}
+
 } // namespace
 
 QMap<QString, double> values(const QcContentRegistry &content)
@@ -207,33 +256,12 @@ QMap<QString, double> values(const QcContentRegistry &content)
         {u"crafting.tableReach"_s, QcServer::craftingTableReach},
         {u"mining.secondsPerHardness"_s, QcMining::secondsPerHardness},
         {u"mining.secondsPerHardnessWithoutTool"_s, QcMining::secondsPerHardnessWithoutTool},
-        {u"hunger.maxFood"_s, QcHunger::maxFood},
-        {u"hunger.regenerationFood"_s, QcHunger::regenerationFood},
-        {u"hunger.regenerationInterval"_s, QcHunger::regenerationInterval},
-        {u"hunger.exhaustionPerFood"_s, QcHunger::exhaustionPerFood},
-        {u"hunger.starvationInterval"_s, QcHunger::starvationInterval},
-        {u"hunger.starvationFloor"_s, QcHunger::starvationFloor},
-        {u"hunger.regenerationFoodPerHealth"_s, QcHunger::regenerationExhaustion / QcHunger::exhaustionPerFood},
-        {u"hunger.walkMinutesForFullBar"_s,
-         std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
-        {u"hunger.sprintMinutesForFullBar"_s,
-         std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
         {u"farming.randomTickSeconds"_s, std::round(QcPlantGrowth::randomTickSeconds)},
         {u"farming.seedCheckSeconds"_s, QcServerPlants::seedCheckTicks * QcPhysics::tickDuration},
         {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
         {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
         {u"signal.hopperItemsPerSecond"_s, 1.0 / (double(QcServerLimits{}.hopperCooldownTicks) * QcPhysics::tickDuration)},
-        {u"fire.maxAge"_s, QcFireQueue::maxAge},
-        {u"fire.stepSecondsMin"_s, QcFireRules::minStepTicks * QcPhysics::tickDuration},
-        {u"fire.stepSecondsMax"_s, (QcFireRules::minStepTicks + QcFireRules::stepTicksSpread - 1) * QcPhysics::tickDuration},
-        {u"fire.ageWithoutFuel"_s, QcFireRules::ageWithoutFuel},
-        {u"fire.spreadRadius"_s, double(QcServerLimits{}.fireSpreadRadius)},
-        {u"fire.perChunk"_s, double(QcServerLimits{}.firesPerChunk)},
-        {u"fire.total"_s, double(QcServerLimits{}.fires)},
-        {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
-        {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
-        {u"fire.sunlightSeconds"_s, QcBodyBurning::sunlightTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcPlayerHealth::voidDamage},
         {u"void.interval"_s, QcPlayerHealth::voidDamageIntervalTicks * QcPhysics::tickDuration},
@@ -251,14 +279,10 @@ QMap<QString, double> values(const QcContentRegistry &content)
         {u"mobs.spawnRadiusMax"_s, QcNaturalSpawner::spawnRadiusMax},
         {u"mobs.despawnDistance"_s, QcMobManager::despawnDistance},
         {u"mobs.caveDepth"_s, QcNaturalSpawner::caveDepth},
-        {u"commands.maxFill"_s, double(QcServer::maxFillBlocks)},
-        {u"commands.summonLimit"_s, double(QcServerLimits{}.summonLimit)},
-        {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},
-        {u"commands.confirmFill"_s, double(QcBlockCommands::confirmFillBlocks)},
-        {u"commands.confirmRemove"_s, QcWorldCommands::confirmRemoveCount},
-        {u"commands.maxRegenerate"_s, double(QcChunkRegeneration::maxChunks)},
-        {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
+    rules.insert(hungerValues());
+    rules.insert(fireValues());
+    rules.insert(commandValues());
     rules.insert(playerValues());
     rules.insert(weatherValues());
     rules.insert(archeryValues());

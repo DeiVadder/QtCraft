@@ -47,6 +47,34 @@ private:
         m_server->mobs().spawn(pig, {x + 10.5, double(ground), z + 10.5}, m_nextId++, false, true);
     }
 
+    // Whether the chunk of the client and its eight neighbours are loaded.
+    bool clientStandsInLoadedChunks() const
+    {
+        const QcChunkPos at = QcPhysics::blockContaining(m_client->motion.position).chunk();
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dz = -1; dz <= 1; ++dz) {
+                if (!m_server->world().chunk({at.x + dx, at.z + dz})) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Whether the chest furnishChunk put into the player's chunk holds its diamonds again.
+    bool homeChestIsBack() const
+    {
+        const QcChunkPos home = m_feet.chunk();
+        const QcBlockPos chest{home.x * QcWorld::chunkSize + 8, 0, home.z * QcWorld::chunkSize + 8};
+        for (int y = 0; y < QcWorld::worldHeight; ++y) {
+            const QcBlockEntities::Container *container = m_server->blockEntities().container({chest.x, y, chest.z});
+            if (container && container->stacks[0] == QcItemStack{item("qtcraft:diamond"), 3, 0}) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     static void report(const char *what, double value, const char *unit) { qInfo("MEASURE %s %.3f %s", what, value, unit); }
 
     // A player joins while a save of every chunk runs in the background: his join reads his file and
@@ -115,17 +143,7 @@ private slots:
         m_client->hello(QStringLiteral("Raw"));
         QcTestUtil::pump();
         int waited = 0;
-        const auto standsInLoaded = [this] {
-            const QcChunkPos at = QcPhysics::blockContaining(m_client->motion.position).chunk();
-            for (int dx = -1; dx <= 1; ++dx) {
-                for (int dz = -1; dz <= 1; ++dz) {
-                    if (!m_server->world().chunk({at.x + dx, at.z + dz})) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        };
+        const auto standsInLoaded = [this] { return clientStandsInLoadedChunks(); };
         while (!standsInLoaded() && waited < 2000) {
             ticks(1);
             ++waited;
@@ -135,14 +153,7 @@ private slots:
         qInfo("MEASURE ticks-to-playing %d", waited);
 
         // Everything comes back where the player can see it.
-        const QcChunkPos home = m_feet.chunk();
-        const QcBlockPos chest{home.x * QcWorld::chunkSize + 8, 0, home.z * QcWorld::chunkSize + 8};
-        bool found = false;
-        for (int y = 0; y < QcWorld::worldHeight && !found; ++y) {
-            const QcBlockEntities::Container *container = m_server->blockEntities().container({chest.x, y, chest.z});
-            found = container && container->stacks[0] == QcItemStack{item("qtcraft:diamond"), 3, 0};
-        }
-        QVERIFY(found);
+        QVERIFY(homeChestIsBack());
     }
 };
 

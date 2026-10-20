@@ -107,6 +107,40 @@ private:
         return stages && !stages->values.isEmpty() && m_content->property(*block, crop->crop.property) == stages->values.constLast();
     }
 
+    // A structure of the showcase whose creatures are confined: its box and the block kinds in it.
+    struct Pen
+    {
+        QString name;
+        QcBlockPos low;
+        QcBlockPos high;
+        QList<QString> kinds;
+
+        bool contains(QcBlockPos pos) const
+        {
+            return pos.x >= low.x && pos.x <= high.x && pos.y >= low.y && pos.y <= high.y && pos.z >= low.z && pos.z <= high.z;
+        }
+    };
+
+    // The pens of the showcase with their chunks loaded: structures with confined creatures, or a
+    // spawner whose creatures are confined (the dungeon and mine shaft stations).
+    QList<Pen> loadedPens(QcServer &server) const
+    {
+        QList<Pen> pens;
+        for (const QcStructurePlacement &placement : m_generator.plan().placements) {
+            const QcStructure &structure = placement.structure();
+            if (std::ranges::none_of(structure.mobs, &QcStructure::Mob::confined)
+                && std::ranges::none_of(structure.spawners, &QcStructureDefinition::Spawner::confined)) {
+                continue;
+            }
+            const QcBlockPos a = placement.toWorld(QcBlockPos{0, 0, 0});
+            const QcBlockPos b = placement.toWorld(QcBlockPos{structure.sizeX() - 1, structure.sizeY() - 1, structure.sizeZ() - 1});
+            const Pen pen{structure.name(), {std::min(a.x, b.x), a.y, std::min(a.z, b.z)}, {std::max(a.x, b.x), b.y, std::max(a.z, b.z)}, {}};
+            loadAround(server, pen.low, pen.high);
+            pens.append(pen);
+        }
+        return pens;
+    }
+
 private slots:
     void penCreaturesChangeNoBlock()
     {
@@ -115,28 +149,7 @@ private slots:
         QVERIFY(server->openWorld());
         QVERIFY(m_generator.setup().mobGriefing);
 
-        struct Pen
-        {
-            QString name;
-            QcBlockPos low;
-            QcBlockPos high;
-            QList<QString> kinds;
-        };
-        QList<Pen> pens;
-        for (const QcStructurePlacement &placement : m_generator.plan().placements) {
-            const QcStructure &structure = placement.structure();
-            // Pens: confined creatures, or a spawner whose creatures are confined (the dungeon and mine
-            // shaft stations).
-            if (std::ranges::none_of(structure.mobs, &QcStructure::Mob::confined)
-                && std::ranges::none_of(structure.spawners, &QcStructureDefinition::Spawner::confined)) {
-                continue;
-            }
-            const QcBlockPos a = placement.toWorld(QcBlockPos{0, 0, 0});
-            const QcBlockPos b = placement.toWorld(QcBlockPos{structure.sizeX() - 1, structure.sizeY() - 1, structure.sizeZ() - 1});
-            const Pen pen{structure.name(), {std::min(a.x, b.x), a.y, std::min(a.z, b.z)}, {std::max(a.x, b.x), b.y, std::max(a.z, b.z)}, {}};
-            loadAround(*server, pen.low, pen.high);
-            pens.append(pen);
-        }
+        QList<Pen> pens = loadedPens(*server);
         const QStringList names = [&pens] {
             QStringList list;
             for (const Pen &pen : std::as_const(pens)) {
@@ -170,10 +183,7 @@ private slots:
         const QList<QcBlockPos> spawners = server->world().spawners().positions();
         qsizetype inPens = 0;
         for (const QcBlockPos &pos : spawners) {
-            const bool inPen = std::ranges::any_of(pens, [pos](const Pen &pen) {
-                return pos.x >= pen.low.x && pos.x <= pen.high.x && pos.y >= pen.low.y && pos.y <= pen.high.y && pos.z >= pen.low.z
-                       && pos.z <= pen.high.z;
-            });
+            const bool inPen = std::ranges::any_of(pens, [pos](const Pen &pen) { return pen.contains(pos); });
             if (inPen) {
                 QVERIFY(server->world().spawners().at(pos)->confined);
                 ++inPens;

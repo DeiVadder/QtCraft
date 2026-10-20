@@ -29,8 +29,10 @@ Checks: >
   readability-function-cognitive-complexity
 WarningsAsErrors: ''
 FormatStyle: none
+# The function length limit counts code lines without comments and blank lines (E-760), which
+# readability-function-size cannot; scripts/check-function-length.py checks it instead.
 CheckOptions:
-  readability-function-size.LineThreshold: 80
+  readability-function-size.LineThreshold: none
   readability-function-size.ParameterThreshold: 5
   readability-function-size.NestingThreshold: 4
   readability-function-cognitive-complexity.Threshold: 25

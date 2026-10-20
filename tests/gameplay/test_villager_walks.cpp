@@ -125,6 +125,33 @@ private:
         }
     }
 
+    // A villager's record with every field set.
+    static QcVillagerRecord sampleRecord()
+    {
+        QcVillagerRecord record;
+        record.village = (qint64(5) << 32) | 7;
+        record.home = QcBlockPos{100, 70, -20};
+        record.work = QcBlockPos{104, 70, -18};
+        record.profession = u"qtcraft:smith"_s;
+        record.level = 2;
+        record.experience = 15;
+        record.look = 0xdeadbeef;
+        record.style = u"qtcraft:desert"_s;
+        record.produce = 3;
+        record.sleptAt = 1234.5;
+        return record;
+    }
+
+    // The bytes QcVillagerCodec::write gives for `record` in byte `order`.
+    static QByteArray written(const QcVillagerRecord &record, QDataStream::ByteOrder order = QDataStream::BigEndian)
+    {
+        QByteArray bytes;
+        QDataStream out(&bytes, QIODevice::WriteOnly);
+        out.setByteOrder(order);
+        QcVillagerCodec::write(out, record);
+        return bytes;
+    }
+
     static QString where(const QcCreature &mob)
     {
         const auto cell = [](std::optional<QcBlockPos> pos) {
@@ -487,68 +514,23 @@ private slots:
 
     void theRecordIsSavedWithItsChunk()
     {
-        QcVillagerRecord record;
-        record.village = (qint64(5) << 32) | 7;
-        record.home = QcBlockPos{100, 70, -20};
-        record.work = QcBlockPos{104, 70, -18};
-        record.profession = u"qtcraft:smith"_s;
-        record.level = 2;
-        record.experience = 15;
-        record.look = 0xdeadbeef;
-        record.style = u"qtcraft:desert"_s;
-        record.produce = 3;
-        record.sleptAt = 1234.5;
-        QByteArray bytes;
-        {
-            QDataStream out(&bytes, QIODevice::WriteOnly);
-            QcVillagerCodec::write(out, record);
-        }
-        QDataStream in(bytes);
+        const QcVillagerRecord record = sampleRecord();
+        QDataStream in(written(record));
         QCOMPARE(QcVillagerCodec::read(in, QcVillagerCodec::version), record);
 
-        // A level out of range is damaged data.
-        record.level = 9;
-        QByteArray damaged;
-        {
-            QDataStream out(&damaged, QIODevice::WriteOnly);
-            QcVillagerCodec::write(out, record);
-        }
-        QDataStream bad(damaged);
-        QVERIFY(!QcVillagerCodec::read(bad, QcVillagerCodec::version));
-
         // In little endian as well.
-        record.level = 2;
-        QByteArray little;
-        {
-            QDataStream out(&little, QIODevice::WriteOnly);
-            out.setByteOrder(QDataStream::LittleEndian);
-            QcVillagerCodec::write(out, record);
-        }
-        QDataStream littleIn(little);
+        QDataStream littleIn(written(record, QDataStream::LittleEndian));
         littleIn.setByteOrder(QDataStream::LittleEndian);
         QCOMPARE(QcVillagerCodec::read(littleIn, QcVillagerCodec::version), record);
+    }
 
-        // Version 1 has no offers: read with none and no restock.
-        record.offers = {{u"x"_s, 1, 0}};
-        record.lastRestock = 50.0;
-        QByteArray older;
-        {
-            QDataStream out(&older, QIODevice::WriteOnly);
-            QcVillagerRecord first = record;
-            first.offers.clear();
-            QcVillagerCodec::write(out, first);
-        }
-        // The offers (a count of none), the restock time and count are the fields of version 2, the
-        // time it slept that of version 3.
-        older.chop(4 + 8 + 4 + 8);
-        QDataStream olderIn(older);
-        QcVillagerRecord defaults = record;
-        defaults.offers.clear();
-        defaults.lastRestock = -1.0;
-        defaults.restocks = 0;
-        defaults.sleptAt = -1.0;
-        QCOMPARE(QcVillagerCodec::read(olderIn, 1), defaults);
-        QVERIFY(olderIn.atEnd());
+    void damagedRecordsAreRefused()
+    {
+        // A level out of range is damaged data.
+        QcVillagerRecord record = sampleRecord();
+        record.level = 9;
+        QDataStream bad(written(record));
+        QVERIFY(!QcVillagerCodec::read(bad, QcVillagerCodec::version));
 
         // A profession claiming 2 GB is refused before it is read, as is one just over the limit.
         for (const quint32 length : {0x7ffffffeu, 2u * 129u}) {
@@ -562,6 +544,28 @@ private slots:
             QVERIFY(!QcVillagerCodec::read(hugeIn, QcVillagerCodec::version));
             QVERIFY(hugeIn.status() != QDataStream::Ok);
         }
+    }
+
+    void aRecordOfVersionOneHasNoOffers()
+    {
+        // Version 1 has no offers: read with none and no restock.
+        QcVillagerRecord record = sampleRecord();
+        record.offers = {{u"x"_s, 1, 0}};
+        record.lastRestock = 50.0;
+        QcVillagerRecord first = record;
+        first.offers.clear();
+        QByteArray older = written(first);
+        // The offers (a count of none), the restock time and count are the fields of version 2, the
+        // time it slept that of version 3.
+        older.chop(4 + 8 + 4 + 8);
+        QDataStream olderIn(older);
+        QcVillagerRecord defaults = record;
+        defaults.offers.clear();
+        defaults.lastRestock = -1.0;
+        defaults.restocks = 0;
+        defaults.sleptAt = -1.0;
+        QCOMPARE(QcVillagerCodec::read(olderIn, 1), defaults);
+        QVERIFY(olderIn.atEnd());
     }
 
     void villagersDressInTheirStyleAndProfession()

@@ -1,5 +1,6 @@
 #include "clientcore/settings/QcGameSettings.h"
 #include "clientcore/settings/QcKeyControls.h"
+#include "clientcore/settings/QcKeyLabels.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "QcTestUtil.h"
 
@@ -33,6 +34,14 @@ private:
     }
 
 private slots:
+    // Every action has a label in the UI (QcKeyLabels splits them into groups).
+    void everyActionHasALabel()
+    {
+        for (int action = 0; action < QcKeyBindings::actionCount; ++action) {
+            QVERIFY2(!QcKeyLabels::action(QcKeyBindings::Action(action)).isEmpty(), qPrintable(QString::number(action)));
+        }
+    }
+
     void defaultsHaveNoConflicts_data() { addPlatforms(); }
     void defaultsHaveNoConflicts()
     {

@@ -6,6 +6,8 @@
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcFarmingParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcLiquidParser.h"
+#include "common/content/parser/QcRailParser.h"
 #include "common/content/parser/QcShapeParser.h"
 #include "common/content/parser/QcSignalParser.h"
 #include "common/content/registry/QcBlockStateTable.h"
@@ -52,81 +54,6 @@ bool hasValues(const QcBlockDefinition &block, const QString &name, const QStrin
     return property != block.properties.cend() && std::ranges::all_of(values, [&](const QString &value) { return property->values.contains(value); });
 }
 
-[[nodiscard]] QList<QcLiquidReaction> parseLiquidReactions(const QJsonObject &flowJson, QcJsonFieldReader &flowReader,
-                                                           const QString &packNamespace)
-{
-    const QJsonValue reactions = flowJson.value(u"reactions"_s);
-    if (!reactions.isUndefined() && (!reactions.isArray() || reactions.toArray().size() > 16)) {
-        flowReader.fail(u"'reactions' must be an array of at most 16 entries"_s);
-    }
-
-    QList<QcLiquidReaction> result;
-    const QJsonArray reactionList = reactions.toArray();
-    for (const auto &entry : reactionList) {
-        const QJsonObject reactionJson = entry.toObject();
-        QcJsonFieldReader reactionReader{reactionJson, flowReader.context, {}};
-        const QcLiquidReaction reaction{reactionReader.name(u"with"_s, packNamespace), reactionReader.name(u"source"_s, packNamespace),
-                                        reactionReader.name(u"flowing"_s, packNamespace)};
-        if (!entry.isObject() || !reactionReader.ok() || reaction.with.isEmpty() || reaction.source.isEmpty()
-            || reaction.flowing.isEmpty()) {
-            flowReader.fail(reactionReader.ok() ? u"reactions need 'with', 'source' and 'flowing'"_s : reactionReader.error);
-            break;
-        }
-        result.append(reaction);
-    }
-    return result;
-}
-
-// The flow keeps its state in `level` ("0" source, then one value per block of distance) and
-// optionally `falling`.
-void checkLiquidStates(const QcBlockDefinition &block, QcJsonFieldReader &flowReader)
-{
-    const QcLiquidDefinition &liquid = block.flow;
-    const QcBlockProperty *level = block.property(u"level"_s);
-    bool levelsOk = level && level->values.size() >= liquid.distance + 1;
-    for (int i = 0; levelsOk && i < level->values.size(); ++i) {
-        levelsOk = level->values[i] == QString::number(i);
-    }
-
-    if (flowReader.ok() && !levelsOk) {
-        flowReader.fail(u"a flowing liquid needs the state 'level' with the values \"0\" to \"%1\" in order"_s.arg(liquid.distance));
-    }
-
-    const QcBlockProperty *falling = block.property(u"falling"_s);
-    if (flowReader.ok() && falling && falling->values != QStringList{u"false"_s, u"true"_s}) {
-        flowReader.fail(u"'falling' must have the values false and true"_s);
-    }
-}
-
-// A rail needs the states its track is made of (decision E-382): the direction it faces and its
-// shape; a rail without the shape `curve` never bends (decision E-384). A rail that acts on carts
-// needs its `powered` state and never bends.
-void checkRailStates(const QcBlockDefinition &block, QcJsonFieldReader &reader)
-{
-    const QcBlockProperty *facing = block.property(u"facing"_s);
-    const QcBlockProperty *shape = block.property(u"shape"_s);
-    const QStringList sides{u"north"_s, u"east"_s, u"south"_s, u"west"_s};
-    const QStringList shapes{u"straight"_s, u"ascending"_s};
-    const bool facingOk = facing && std::ranges::all_of(sides, [facing](const QString &side) { return facing->values.contains(side); });
-    const bool shapeOk = shape && std::ranges::all_of(shapes, [shape](const QString &value) { return shape->values.contains(value); });
-    if (!facingOk || !shapeOk) {
-        reader.fail(u"a rail needs the states 'facing' (north, east, south, west) and 'shape' (straight, ascending and optionally curve)"_s);
-    }
-    if (block.solid || block.liquid) {
-        reader.fail(u"a rail can be neither solid nor a liquid"_s);
-    }
-    const QcBlockProperty *powered = block.property(u"powered"_s);
-    const bool poweredOk = powered && powered->values.contains(u"true"_s) && powered->values.contains(u"false"_s);
-    if (block.railAction != QcRailAction::None && !poweredOk) {
-        reader.fail(u"a rail with 'railAction' needs the state 'powered' (true, false)"_s);
-    }
-    // Power runs along a straight line of rails (QcRails::lineOf); a ring of curves shorter than the
-    // line it reads would be cut at an arbitrary place.
-    if (block.railAction != QcRailAction::None && shape && shape->values.contains(u"curve"_s)) {
-        reader.fail(u"a rail with 'railAction' cannot have the shape 'curve'"_s);
-    }
-}
-
 void checkPartTextures(const QcBlockDefinition &block, QcJsonFieldReader &reader)
 {
     for (const QcShapePart &part : std::as_const(block.shape.parts)) {
@@ -166,7 +93,6 @@ private:
     void readDrops();
     void readSapling(const QJsonObject &saplingJson, QcJsonFieldReader &saplingReader);
     void readFlow();
-    void readRailAction();
     void readBehaviourFields();
     void readFireFields();
     void readMovementFields();
@@ -463,35 +389,10 @@ void BlockReader::readFlow()
 
     const QJsonObject flowJson = flow.toObject();
     QcJsonFieldReader flowReader{flowJson, m_reader.context + u" flow"_s, {}};
-    QcLiquidDefinition liquid;
-    liquid.distance = flowReader.integer(u"distance"_s, 7, 1, QcLiquidDefinition::maxDistance);
-    liquid.ticks = flowReader.integer(u"ticks"_s, 5, 1, QcLiquidDefinition::maxTicks);
-    liquid.infinite = flowReader.boolean(u"infinite"_s, false);
-    liquid.dropSearch = flowReader.integer(u"dropSearch"_s, 4, 0, QcLiquidDefinition::maxDropSearch);
-    liquid.movementFactor = flowReader.number(u"movement"_s, 1.0, 0.05, 2.0);
-    liquid.bucket = flowReader.name(u"bucket"_s, m_namespace);
-    liquid.bottle = flowReader.name(u"bottle"_s, m_namespace);
-    liquid.sound = flowReader.name(u"sound"_s, m_namespace);
-    liquid.reactions = parseLiquidReactions(flowJson, flowReader, m_namespace);
-    m_block.flow = std::move(liquid);
+    m_block.flow = QcLiquidParser::parseFlow(flowJson, flowReader, m_namespace);
 
-    checkLiquidStates(m_block, flowReader);
+    QcLiquidParser::checkStates(m_block, flowReader);
     m_reader.adopt(flowReader);
-}
-
-void BlockReader::readRailAction()
-{
-    const QString action = m_reader.string(u"railAction"_s, u"none"_s);
-    if (action == u"boost"_s) {
-        m_block.railAction = QcRailAction::Boost;
-    } else if (action == u"activate"_s) {
-        m_block.railAction = QcRailAction::Activate;
-    } else if (action != u"none"_s) {
-        m_reader.fail(u"'railAction' must be none, boost or activate"_s);
-    }
-    if (m_block.railAction != QcRailAction::None && !m_block.rail) {
-        m_reader.fail(u"only a rail has a 'railAction'"_s);
-    }
 }
 
 void BlockReader::readBehaviourFields()
@@ -503,10 +404,10 @@ void BlockReader::readBehaviourFields()
         m_reader.fail(u"only solid blocks can fall"_s);
     }
     m_block.rail = m_reader.boolean(u"rail"_s, false);
-    readRailAction();
+    m_block.railAction = QcRailParser::parseAction(m_block, m_reader);
     m_block.supportsAbove = m_reader.boolean(u"supportsAbove"_s, false);
     if (m_block.rail) {
-        checkRailStates(m_block, m_reader);
+        QcRailParser::checkStates(m_block, m_reader);
     }
 }
 

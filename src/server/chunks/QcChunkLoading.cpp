@@ -42,6 +42,7 @@ QcChunkLoading::QcChunkLoading(QcServerState &state, QcServerBlocks &blocks, QcB
     : m_state(state)
     , m_blocks(blocks)
     , m_updates(updates)
+    , m_signals(state, m_tickets, updates)
 {
     m_state.world().setArrivalHandler([this](QcChunkIo::Arrival &arrival) { restore(arrival); });
     m_state.world().setGroupLoader([this](QcChunkPos pos) { loadGroupNow(pos); });
@@ -285,8 +286,8 @@ void QcChunkLoading::updateTickets()
     limits.total = qsizetype(m_state.config().limits.chunkTickets);
     limits.ticks = quint64(m_state.config().limits.chunkTicketTicks);
     m_tickets.setLimits(limits);
-    const QSet<QcChunkPos> holding = waitingSignalChunks();
-    const QSet<QcChunkPos> passing = chunksWithSignals();
+    const QSet<QcChunkPos> holding = m_signals.waitingChunks();
+    const QSet<QcChunkPos> passing = m_signals.chunksWithSignals();
     m_tickets.expire(now, [this](QcChunkPos chunk) { return m_state.world().chunk(chunk) != nullptr; },
                      [this, &holding, &passing](QcChunkPos chunk) {
                          using Use = QcChunkTickets::Use;
@@ -311,39 +312,12 @@ void QcChunkLoading::updateTickets()
     for (const QcChunkPos &chunk : wishes) {
         requestTicket(chunk, now, false);
     }
-    const QList<QcChunkPos> waiting = sorted(signalTargets());
+    const QList<QcChunkPos> waiting = sorted(m_signals.targets());
     for (const QcChunkPos &chunk : waiting) {
         if (!fresh.contains(chunk)) {
             requestTicket(chunk, now, true);
         }
     }
-}
-
-bool QcChunkLoading::requestTicket(QcChunkPos chunk, quint64 now, bool retry)
-{
-    if (m_state.world().chunk(chunk) || m_tickets.contains(chunk)) {
-        return true;
-    }
-    // The ticket weighs the group that comes with the chunk.
-    const QcChunkGroups::Group group = QcChunkGroups::of(chunk, [this](QcChunkPos pos) { return marksForLoading(pos); }, groupLimit());
-    if (!m_tickets.request(chunk, now, group.oversize ? 1 : group.chunks.size(), retry)) {
-        return false;
-    }
-    request(chunk);
-    return true;
-}
-
-QSet<QcChunkPos> QcChunkLoading::signalTargets() const
-{
-    QSet<QcChunkPos> targets;
-    const QcCircuitState &circuits = m_state.circuits();
-    for (auto it = circuits.waitingOn.cbegin(); it != circuits.waitingOn.cend(); ++it) {
-        const bool signal = std::ranges::any_of(*it, [&circuits](QcBlockPos pos) { return circuits.signalWaits.contains(pos); });
-        if (signal && !m_state.world().chunk(it.key())) {
-            targets.insert(it.key());
-        }
-    }
-    return targets;
 }
 
 void QcChunkLoading::requestStrays(const QSet<QcChunkPos> &strays)
@@ -361,42 +335,12 @@ QSet<QcChunkPos> QcChunkLoading::neededChunks() const
     const auto add = [&needed](QcChunkPos chunk) { needed.insert(chunk); };
     forPlayerChunks(add);
     forKeptChunks(add);
-    needed.unite(waitingSignalChunks());
+    needed.unite(m_signals.waitingChunks());
     const QList<QcChunkPos> tickets = m_tickets.chunks();
     for (const QcChunkPos &chunk : tickets) {
         needed.insert(chunk);
     }
     return needed;
-}
-
-QSet<QcChunkPos> QcChunkLoading::chunksWithSignals() const
-{
-    QSet<QcChunkPos> chunks;
-    for (const QcCircuitState::Change &change : std::as_const(m_state.circuits().changes)) {
-        if (change.signal) {
-            chunks.insert(change.pos.chunk());
-        }
-    }
-    return chunks;
-}
-
-QSet<QcChunkPos> QcChunkLoading::waitingSignalChunks() const
-{
-    // A signal waiting for a chunk that has not arrived yet keeps its own chunk, so it can go on when
-    // that one comes: the chunk has a ticket or asks for one again each tick (decisions E-376, E-378).
-    QSet<QcChunkPos> chunks;
-    const QcCircuitState &circuits = m_state.circuits();
-    for (auto it = circuits.waitingOn.cbegin(); it != circuits.waitingOn.cend(); ++it) {
-        if ((!m_tickets.contains(it.key()) && !m_tickets.canGive()) || m_state.world().chunk(it.key())) {
-            continue;
-        }
-        for (const QcBlockPos &pos : *it) {
-            if (circuits.signalWaits.contains(pos)) {
-                chunks.insert(pos.chunk());
-            }
-        }
-    }
-    return chunks;
 }
 
 QcChunkLoading::NeededInputs QcChunkLoading::neededInputs() const
@@ -416,7 +360,7 @@ QcChunkLoading::NeededInputs QcChunkLoading::neededInputs() const
     inputs.loaders = m_state.world().loaders().changes();
     inputs.loaderLimit = m_state.config().limits.chunkLoaders;
     inputs.tickets = m_tickets.changes();
-    inputs.waitingSignals = waitingSignalChunks();
+    inputs.waitingSignals = m_signals.waitingChunks();
     return inputs;
 }
 
@@ -444,7 +388,7 @@ void QcChunkLoading::unloadUnneeded()
     }
     // A signal on its way finishes before its chunk leaves (decision E-410); a pass that kept one
     // is not settled, the next tick looks again.
-    const QSet<QcChunkPos> held = passingSignals(candidates);
+    const QSet<QcChunkPos> held = m_signals.passing(candidates, m_circuitChunks);
     candidates.subtract(held);
     const bool holding = !held.isEmpty();
     m_circuitChunks = circuitChunks();
@@ -501,9 +445,23 @@ std::optional<quint16> QcChunkLoading::loadedMarks(QcChunkPos chunk) const
     return world.chunk(chunk) ? std::optional<quint16>(world.links().marksOf(chunk)) : std::nullopt;
 }
 
+bool QcChunkLoading::requestTicket(QcChunkPos chunk, quint64 now, bool retry)
+{
+    if (m_state.world().chunk(chunk) || m_tickets.contains(chunk)) {
+        return true;
+    }
+    // The ticket weighs the group that comes with the chunk.
+    const QcChunkGroups::Group group = QcChunkGroups::of(chunk, [this](QcChunkPos pos) { return marksForLoading(pos); }, groupLimit());
+    if (!m_tickets.request(chunk, now, group.oversize ? 1 : group.chunks.size(), retry)) {
+        return false;
+    }
+    request(chunk);
+    return true;
+}
+
 QSet<QcChunkPos> QcChunkLoading::circuitChunks() const
 {
-    QSet<QcChunkPos> kept = waitingSignalChunks();
+    QSet<QcChunkPos> kept = m_signals.waitingChunks();
     const QList<QcChunkPos> tickets = m_tickets.chunks();
     for (const QcChunkPos &chunk : tickets) {
         kept.insert(chunk);
@@ -520,47 +478,6 @@ QSet<QcChunkPos> QcChunkLoading::circuitChunks() const
         }
     }
     return chunks;
-}
-
-QSet<QcChunkPos> QcChunkLoading::passingSignals(const QSet<QcChunkPos> &candidates)
-{
-    // A chunk the circuits kept until this tick without a ticket of its own (with the group of one,
-    // or held by a signal that waited there) would take a signal that runs on now into storage
-    // halfway, and nothing would bring it back. It stays while the signal passes (changes,
-    // scheduled ticks, block updates the switched components caused), at most as long as a ticket
-    // lasts, so a clock does not keep its chunk for ever. Chunks a player leaves behind go as they
-    // are; their machines resume when they come back (decision E-374).
-    if (candidates.isEmpty()) {
-        m_passingSince.clear();
-        return {};
-    }
-    QSet<QcChunkPos> passing = chunksWithSignals();
-    for (const QList<QcBlockPos> &updates : {m_updates.playerUpdates(), m_updates.commandUpdates()}) {
-        for (const QcBlockPos &pos : updates) {
-            passing.insert(pos.chunk());
-        }
-    }
-
-    const quint64 now = m_state.clock().tick();
-    const quint64 limit = quint64(m_state.config().limits.chunkTicketTicks);
-    const QcSignalSchedule &schedule = m_state.blockEntities().schedule();
-    QHash<QcChunkPos, quint64> since;
-    QSet<QcChunkPos> held;
-    const QList<QcChunkPos> ordered = sorted(candidates);
-    for (const QcChunkPos &chunk : ordered) {
-        const bool forCircuits = m_circuitChunks.contains(chunk) || m_passingSince.contains(chunk);
-        if (!forCircuits || (!passing.contains(chunk) && !schedule.hasEntriesIn(chunk))) {
-            continue;
-        }
-
-        const quint64 start = m_passingSince.value(chunk, now);
-        since.insert(chunk, start);
-        if (now - start < limit) {
-            held.insert(chunk);
-        }
-    }
-    m_passingSince = std::move(since);
-    return held;
 }
 
 void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
@@ -599,7 +516,7 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         const bool quarantined = world.saves().isQuarantined(pos);
         departure.blocks = world.remove(pos);
         // Back in the world, a signal it took along is held again for a ticket's time (E-410).
-        m_passingSince.remove(pos);
+        m_signals.forget(pos);
         ++m_unloaded;
         if (!quarantined && world.saves().storage()) {
             world.saves().noteKept(departure);

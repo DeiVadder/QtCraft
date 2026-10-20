@@ -19,6 +19,11 @@ namespace QcEntityCodec {
 
 // Entries of one kind in one chunk at most; a valid world never comes close.
 inline constexpr quint32 maxPerChunk = 65536;
+// The current version of the components of each kind (QcVillagerCodec::version for villagers; the
+// creature components beyond Creature have their own, QcCreatureComponents).
+inline constexpr quint16 kindVersion = 1;
+// Type names (creatures, items, block states) longer than this are damaged data.
+inline constexpr qsizetype maxTypeName = 512;
 
 // The ids of the components of entity entries; a later version adds ids below
 // QcComponentFrames::firstModId, a mod from it on; none is ever reused.

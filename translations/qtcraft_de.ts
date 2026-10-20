@@ -748,62 +748,62 @@
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="466"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="470"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="469"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="473"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="471"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="475"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="494"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="498"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="495"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="499"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="496"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="500"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="497"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="501"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="499"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="503"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="500"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="504"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="501"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="505"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="502"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="506"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="503"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="507"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -2321,112 +2321,112 @@
         <translation>Feststelltaste</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="70"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="71"/>
         <source>Walk forward</source>
         <translation>Vorwärts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="72"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="73"/>
         <source>Walk back</source>
         <translation>Rückwärts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="74"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="75"/>
         <source>Walk left</source>
         <translation>Nach links gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="76"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="77"/>
         <source>Walk right</source>
         <translation>Nach rechts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="78"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="79"/>
         <source>Jump, swim up</source>
         <translation>Springen, aufwärts schwimmen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="80"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="81"/>
         <source>Sneak</source>
         <translation>Schleichen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="82"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="83"/>
         <source>Sprint</source>
         <translation>Rennen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="84"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="85"/>
         <source>Look up</source>
         <translation>Nach oben sehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="86"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="87"/>
         <source>Look down</source>
         <translation>Nach unten sehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="88"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="89"/>
         <source>Turn left</source>
         <translation>Nach links drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="90"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="91"/>
         <source>Turn right</source>
         <translation>Nach rechts drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="92"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="129"/>
         <source>Mine, attack</source>
         <translation>Abbauen, angreifen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="94"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="131"/>
         <source>Place, use, eat</source>
         <translation>Setzen, benutzen, essen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="96"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="133"/>
         <source>Pick block (also middle mouse button)</source>
         <translation>Block wählen (auch mittlere Maustaste)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="98"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="135"/>
         <source>Throw item (with %1: stack)</source>
         <translation>Item werfen (mit %1: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="101"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="183"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="103"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="185"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="105"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="187"/>
         <source>Command</source>
         <translation>Befehl</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="107"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="189"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="109"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="191"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="111"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="193"/>
         <source>Debug display (off, compact, full)</source>
         <translation>Debug-Anzeige (aus, kompakt, voll)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="113"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="195"/>
         <source>Debug options</source>
         <translation>Debug-Optionen</translation>
     </message>
@@ -2435,37 +2435,37 @@
         <translation type="vanished">Bildrate und Position</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="115"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="197"/>
         <source>Labels in the world</source>
         <translation>Beschriftungen in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="117"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="199"/>
         <source>Player list (hold)</source>
         <translation>Spielerliste (halten)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="119"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="201"/>
         <source>Radial menu of the hotbar (hold, choose with the mouse)</source>
         <translation>Radialmenü der Schnellleiste (halten, mit der Maus wählen)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="121"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="203"/>
         <source>Hide HUD (photo mode)</source>
         <translation>Anzeige ausblenden (Fotomodus)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="123"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="205"/>
         <source>Screenshot</source>
         <translation>Bildschirmfoto</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="125"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="207"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="135"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="146"/>
         <source>Hotbar slot %1</source>
         <translation>Schnellleiste, Feld %1</translation>
     </message>

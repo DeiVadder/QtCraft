@@ -31,6 +31,7 @@ target_sources(qc_server PRIVATE
     chunks/QcChunkStreaming.h chunks/QcChunkStreaming.cpp
     chunks/QcChunkTickets.h chunks/QcChunkTickets.cpp
     chunks/QcSectionMarks.h chunks/QcSectionMarks.cpp
+    chunks/QcSignalChunks.h chunks/QcSignalChunks.cpp
 )
 target_sources(qc_server PRIVATE
     commands/QcAccessList.h commands/QcAccessList.cpp
@@ -246,6 +247,7 @@ target_sources(qc_server PRIVATE
     storage/QcChunkIo.h storage/QcChunkIo.cpp
     storage/QcChunkStore.h storage/QcChunkStore.cpp
     storage/QcComponentFrames.h storage/QcComponentFrames.cpp
+    storage/QcCreatureComponents.h storage/QcCreatureComponents.cpp
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp

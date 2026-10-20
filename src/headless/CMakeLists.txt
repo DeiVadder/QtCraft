@@ -5,6 +5,7 @@ qt_add_executable(qtcraft-headless
     QcHeadlessGame.h QcHeadlessGame.cpp
     QcHeadlessJoin.h QcHeadlessJoin.cpp
     QcHeadlessOptions.h QcHeadlessOptions.cpp
+    QcHeadlessTools.h QcHeadlessTools.cpp
     QcMapRenderer.h QcMapRenderer.cpp
     QcServerConsole.h QcServerConsole.cpp
     QcShowcaseTour.h QcShowcaseTour.cpp

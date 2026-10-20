@@ -1,5 +1,5 @@
 #!/bin/sh
-# Runs the size limits check, clang-tidy, clazy and qmllint over the project (or over the given files).
+# Runs the size limits checks (file and function length), clang-tidy, clazy and qmllint over the project (or over the given files).
 # Usage: scripts/static-analysis.sh [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # Every tool run is time-limited; the script exits non-zero when any tool reports findings.
@@ -57,6 +57,16 @@ echo "== file length"
 if [ "$SELECTED" -eq 0 ] || [ -n "$LENGTH_FILES" ]; then
     # shellcheck disable=SC2086
     "$PROJECT_DIR/scripts/check-file-length.sh" $LENGTH_FILES || status=1
+fi
+
+echo "== function length"
+# Code lines per function body (E-760), scripts/check-function-length.py; QML files are not checked.
+FUNCTION_FILES=$(printf '%s\n' $LENGTH_FILES | grep -E '\.(cpp|h|mm)$')
+if [ "$SELECTED" -eq 0 ]; then
+    python3 "$PROJECT_DIR/scripts/check-function-length.py" || status=1
+elif [ -n "$FUNCTION_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-function-length.py" $FUNCTION_FILES || status=1
 fi
 
 # Output parameters (rule in CLAUDE.md): counts only, never a finding that fails the run.

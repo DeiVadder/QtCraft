@@ -3,29 +3,19 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
-#include "clientcore/icons/QcAppIcon.h"
 #include "clientcore/session/QcClientSession.h"
-#include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookJson.h"
 #include "common/protocol/QcTransport.h"
 #include "headless/QcDedicatedServer.h"
-#include "headless/QcHandbookExport.h"
 #include "headless/QcHeadlessJoin.h"
 #include "headless/QcHeadlessOptions.h"
-#include "headless/QcMapRenderer.h"
+#include "headless/QcHeadlessTools.h"
 #include "headless/QcServerConsole.h"
-#include "headless/QcShowcaseTour.h"
 #include "headless/QcSignalWatcher.h"
-#include "headless/QcSoundExporter.h"
 #include "headless/QcStdinReader.h"
-#include "headless/QcTextureTools.h"
-#include "headless/QcWorldStats.h"
 #include "worldgen/generators/QcWorldGenerators.h"
-#include "worldgen/showcase/QcShowcaseGenerator.h"
-#include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worlds/QcContentFingerprint.h"
 #include "worlds/QcHandbookRules.h"
 #include "worlds/QcLocalServerHost.h"
@@ -51,147 +41,12 @@ namespace {
 
 using QcHeadlessOptions::Options;
 using QcHeadlessOptions::printError;
-using QcHeadlessOptions::printLines;
-
-// Ends the application with `code` once the event loop runs.
-void exitSoon(int code)
-{
-    QTimer::singleShot(0, qApp, [code] { QCoreApplication::exit(code); });
-}
+using QcHeadlessTools::exitSoon;
 
 // The response of a command that failed.
 [[nodiscard]] QJsonObject failure(const QString &error)
 {
     return {{u"ok"_s, false}, {u"error"_s, error}};
-}
-
-// Base game only: the icon must not depend on the mods of whoever builds the game.
-bool exportIcon(const QString &directory)
-{
-    const QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
-    if (!base) {
-        printError(u"Cannot load the base game: "_s + base.error());
-        return false;
-    }
-
-    const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(*base->registry), directory);
-    if (!written) {
-        printError(written.error());
-    }
-    exitSoon(written ? 0 : 1);
-    return true;
-}
-
-int runTextureTool(const QCommandLineParser &parser, const Options &options, const QcContentRegistry &content)
-{
-    const QString mods = parser.isSet(options.noMods) ? QString() : parser.value(options.mods);
-    if (parser.isSet(options.atlasStats)) {
-        return QcTextureTools::printAtlasStats(content, mods);
-    }
-
-    const auto list = [&parser](const QCommandLineOption &option) { return parser.value(option).split(u',', Qt::SkipEmptyParts); };
-    return QcTextureTools::exportPack(content, {parser.value(options.exportTextures), parser.value(options.textureResolution).toInt(),
-                                                list(options.texturePacks), list(options.textureKeys), parser.value(options.textureName), mods});
-}
-
-void exportSounds(const QcContentRegistry &content, const QString &directory, quint64 seed)
-{
-    const QcResult<QStringList> exported = QcSoundExporter::exportAll(content, directory, seed);
-    if (exported) {
-        printLines(*exported);
-    } else {
-        printError(exported.error());
-    }
-    exitSoon(exported ? 0 : 1);
-}
-
-void saveMap(const QImage &map, const QString &file)
-{
-    const bool saved = map.save(file);
-    if (!saved) {
-        printError(u"Cannot write map"_s);
-    }
-    exitSoon(saved ? 0 : 1);
-}
-
-// Whether a dry column and the columns 32 blocks around it lie in `biome`.
-bool wellInside(const QcTerrainGenerator &generator, int biome, int x, int z)
-{
-    const auto inside = [&](int cx, int cz) {
-        const QcTerrainGenerator::Column column = generator.column(cx, cz);
-        return column.biome == biome && column.height > generator.seaLevel() + 1;
-    };
-    return inside(x, z) && inside(x + 32, z) && inside(x - 32, z) && inside(x, z + 32) && inside(x, z - 32);
-}
-
-// The first column well inside `biome` on the square ring of `ring` blocks around the origin.
-[[nodiscard]] std::optional<QString> legendPlaceOnRing(const QcTerrainGenerator &generator, int biome, int ring)
-{
-    for (int dz = -ring; dz <= ring; dz += 16) {
-        for (int dx = -ring; dx <= ring; dx += 16) {
-            if (std::max(std::abs(dx), std::abs(dz)) == ring && wellInside(generator, biome, dx, dz)) {
-                return u"at %1,%2"_s.arg(dx).arg(dz);
-            }
-        }
-    }
-    return std::nullopt;
-}
-
-// The nearest dry column of a biome that lies well inside it, for the biome map's legend.
-QString biomeLegendPlace(const QcTerrainGenerator &generator, int biome, int radius)
-{
-    for (int ring = 0; ring <= radius; ring += 16) {
-        if (const std::optional<QString> place = legendPlaceOnRing(generator, biome, ring)) {
-            return *place;
-        }
-    }
-    return u"not found"_s;
-}
-
-void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry &content, int radius, const QString &file)
-{
-    const bool saved = QcMapRenderer::renderBiomes(generator, {0, 0, radius, std::max(1, radius / 512)}).save(file);
-    if (!saved) {
-        printError(u"Cannot write map"_s);
-    }
-    for (qsizetype i = 0; i < content.worldgen().biomes().size(); ++i) {
-        std::println("{} {} {}", i, generator.biomeName(int(i)).toStdString(), biomeLegendPlace(generator, int(i), radius).toStdString());
-    }
-    exitSoon(saved ? 0 : 1);
-}
-
-// The world generation tools (--world-stats, --slice-map, --biome-map, --map); false when none
-// was asked for.
-bool runWorldTool(const QCommandLineParser &parser, const Options &options, const QcTerrainGenerator &generator,
-                  const QcContentRegistry &content)
-{
-    if (parser.isSet(options.stats)) {
-        const int chunks = std::clamp(parser.value(options.statsRadius).toInt(), 1, 64);
-        const int biomeRadius = std::clamp(parser.value(options.mapRadius).toInt(), 256, 16384);
-        printLines(QcWorldStats::report(generator, content, chunks, biomeRadius));
-        exitSoon(0);
-        return true;
-    }
-
-    if (parser.isSet(options.slice)) {
-        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 16, 1024);
-        saveMap(QcMapRenderer::renderSlice(generator, content, {0, 0, radius, 4}), parser.value(options.slice));
-        return true;
-    }
-
-    if (parser.isSet(options.biomeMap)) {
-        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
-        writeBiomeMap(generator, content, radius, parser.value(options.biomeMap));
-        return true;
-    }
-
-    if (parser.isSet(options.map)) {
-        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
-        saveMap(QcMapRenderer::render(generator, content, {0, 0, radius, std::max(1, radius / 512)}), parser.value(options.map));
-        return true;
-    }
-
-    return false;
 }
 
 } // namespace
@@ -235,7 +90,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return true;
     }
     if (parser.isSet(options.icon)) {
-        return exportIcon(parser.value(options.icon));
+        return QcHeadlessTools::exportIcon(parser.value(options.icon));
     }
 
     const std::optional<QcHeadlessOptions::RunConfig> run = QcHeadlessOptions::readConfig(parser, options);
@@ -261,38 +116,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"Invalid --generator-options: "_s + checked.error());
         return false;
     }
-    if (parser.isSet(options.sounds)) {
-        exportSounds(*shared, parser.value(options.sounds), quint64(config.seed));
-        return true;
-    }
-    if (parser.isSet(options.handbook)) {
-        exitSoon(QcHandbookExport::markdown(parser, options, shared));
-        return true;
-    }
-    if (parser.isSet(options.handbookWeb)) {
-        exitSoon(QcHandbookExport::web(parser, options, shared));
-        return true;
-    }
-    if (parser.isSet(options.exportTextures) || parser.isSet(options.atlasStats)) {
-        exitSoon(runTextureTool(parser, options, *shared));
-        return true;
-    }
-
-    if (parser.isSet(options.tour)) {
-        const QcShowcaseGenerator showcase(shared);
-        for (const QString &warning : showcase.warnings()) {
-            printError(u"world generation warning: "_s + warning);
-        }
-        printLines(QcShowcaseTour::lines(showcase.plan()));
-        exitSoon(0);
-        return true;
-    }
-
-    const QcTerrainGenerator generator(shared, config.seed);
-    for (const QString &warning : generator.warnings()) {
-        printError(u"world generation warning: "_s + warning);
-    }
-    if (runWorldTool(parser, options, generator, *shared)) {
+    if (QcHeadlessTools::run(parser, options, config, shared)) {
         return true;
     }
     return startLocal(parser, config, timeLimit, shared);

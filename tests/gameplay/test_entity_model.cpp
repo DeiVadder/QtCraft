@@ -30,6 +30,19 @@ private:
         QSet<quint32> ids;
 
         bool operator==(const Census &) const = default;
+        // The kinds whose number of entities differs from `other` (ids may differ); empty when none.
+        QString countDifferences(const Census &other) const
+        {
+            QStringList differences;
+            for (const auto &[kind, count, expected] : {std::tuple{"creatures", creatures, other.creatures}, std::tuple{"items", items, other.items},
+                                                        std::tuple{"falling blocks", falling, other.falling},
+                                                        std::tuple{"stands", stands, other.stands}}) {
+                if (count != expected) {
+                    differences.append(u"%1: %2 instead of %3"_s.arg(QLatin1StringView(kind)).arg(count).arg(expected));
+                }
+            }
+            return differences.join(u", "_s);
+        }
     };
 
     Census census() const
@@ -47,7 +60,12 @@ private:
         return counted;
     }
 
-    // Where every entity but the player is, by id.
+    static QList<QcVec3> sortedByPlace(QList<QcVec3> places)
+    {
+        std::ranges::sort(places, [](const QcVec3 &a, const QcVec3 &b) { return std::tuple{a.x, a.y, a.z} < std::tuple{b.x, b.y, b.z}; });
+        return places;
+    }
+
     // Where the entities of these kinds are, sorted.
     QList<QcVec3> sortedPlaces(const QList<QcEntityKind> &kinds) const
     {
@@ -57,10 +75,10 @@ private:
                 sorted.append(entity.motion.position);
             }
         });
-        std::ranges::sort(sorted, [](const QcVec3 &a, const QcVec3 &b) { return std::tuple{a.x, a.y, a.z} < std::tuple{b.x, b.y, b.z}; });
-        return sorted;
+        return sortedByPlace(sorted);
     }
 
+    // Where every entity but the player is, by id.
     QHash<quint32, QcVec3> places() const
     {
         QHash<quint32, QcVec3> result;
@@ -127,6 +145,43 @@ private:
         m_server->fallingBlocks().start(QcPhysics::blockContaining(high), id("qtcraft:gravel"), m_nextId++);
     }
 
+    // Where the entity `entityId` is; none when it is gone.
+    std::optional<QcVec3> positionOf(quint32 entityId) const
+    {
+        std::optional<QcVec3> found;
+        std::as_const(m_server->entities()).forEach([&found, entityId](const QcEntity &entity) {
+            if (entity.id == entityId) {
+                found = entity.motion.position;
+            }
+        });
+        return found;
+    }
+
+    // Sand blocks on the floor of the area.
+    int sandOnTheFloor() const
+    {
+        int sand = 0;
+        for (int x = 0; x < areaSize; ++x) {
+            for (int z = 0; z < areaSize; ++z) {
+                sand += isBlock(x, 0, z, "sand") ? 1 : 0;
+            }
+        }
+        return sand;
+    }
+
+    // Saves the world, stops the server and opens the world again in a new one (without a client);
+    // false when saving or opening failed.
+    [[nodiscard]] bool reopen(const QcServerConfig &config)
+    {
+        if (!m_server->save().has_value()) {
+            return false;
+        }
+        m_client.reset();
+        m_server.reset();
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        return m_server->openWorld().has_value();
+    }
+
     void rulesHold() const
     {
         const QStringList problems = QcEntityChecks::problems(m_server->entities());
@@ -190,15 +245,7 @@ private slots:
                 entity.motion.position += QcVec3{0.2, 0.0, 0.3};
             }
         });
-        const auto position = [this, block] {
-            std::optional<QcVec3> found;
-            std::as_const(m_server->entities()).forEach([&found, block](const QcEntity &entity) {
-                if (entity.id == block) {
-                    found = entity.motion.position;
-                }
-            });
-            return found;
-        };
+        const auto position = [this, block] { return positionOf(block); };
 
         // Flipped when the block passes the head's cell.
         int waited = 0;
@@ -228,13 +275,7 @@ private slots:
         const QString there = m_content->block(*m_server->world().blockAt(landed)).name;
         QCOMPARE(there, u"qtcraft:sand"_s);
         QCOMPARE(droppedCount(item("qtcraft:sand")), 0);
-        int sand = 0;
-        for (int x = 0; x < areaSize; ++x) {
-            for (int z = 0; z < areaSize; ++z) {
-                sand += isBlock(x, 0, z, "sand") ? 1 : 0;
-            }
-        }
-        QCOMPARE(sand, 1);
+        QCOMPARE(sandOnTheFloor(), 1);
         rulesHold();
         m_client.reset();
         m_server.reset();
@@ -290,35 +331,21 @@ private slots:
         QVERIFY(allRest(false));
         QCOMPARE(m_server->fallingBlocks().all().size(), 1);
         QVERIFY(m_server->fallingBlocks().all().constFirst().motion.position.y < fallingWhenLeft.y);
-        const Census back = census();
-        QCOMPARE(back.creatures, before.creatures);
-        QCOMPARE(back.items, before.items);
-        QCOMPARE(back.falling, before.falling);
-        QCOMPARE(back.stands, before.stands);
+        const QString backDifferences = census().countDifferences(before);
+        QVERIFY2(backDifferences.isEmpty(), qPrintable(backDifferences));
         rulesHold();
 
         // Saved with the block in mid-air and opened again: every entity once, where it was.
         const QHash<quint32, QcVec3> saved = places();
         const QcVec3 fallingAt = m_server->fallingBlocks().all().constFirst().motion.position;
-        QVERIFY(m_server->save().has_value());
-        m_client.reset();
-        m_server.reset();
-        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
-        QVERIFY(m_server->openWorld().has_value());
+        QVERIFY(reopen(config));
         loadAround(far);
         const Census after = census();
-        QCOMPARE(after.creatures, before.creatures);
-        QCOMPARE(after.items, before.items);
-        QCOMPARE(after.falling, before.falling);
-        QCOMPARE(after.stands, before.stands);
+        const QString afterDifferences = after.countDifferences(before);
+        QVERIFY2(afterDifferences.isEmpty(), qPrintable(afterDifferences));
         QCOMPARE(after.ids.size(), before.ids.size());
         QCOMPARE(m_server->fallingBlocks().all().constFirst().motion.position, fallingAt);
-        QList<QcVec3> savedPlaces = saved.values();
-        QList<QcVec3> reopened = places().values();
-        const auto byPlace = [](const QcVec3 &a, const QcVec3 &b) { return std::tuple{a.x, a.y, a.z} < std::tuple{b.x, b.y, b.z}; };
-        std::ranges::sort(savedPlaces, byPlace);
-        std::ranges::sort(reopened, byPlace);
-        QCOMPARE(reopened, savedPlaces);
+        QCOMPARE(sortedByPlace(places().values()), sortedByPlace(saved.values()));
         rulesHold();
         m_server.reset();
     }

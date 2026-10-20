@@ -62,7 +62,8 @@ QString QcKeyLabels::key(int key)
     return name.isEmpty() ? u"?"_s : name;
 }
 
-QString QcKeyLabels::action(QcKeyBindings::Action action)
+// Walking, jumping and looking around.
+QString QcKeyLabels::movementAction(QcKeyBindings::Action action)
 {
     using A = QcKeyBindings::Action;
     switch (action) {
@@ -88,6 +89,42 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Turn left");
     case A::LookRight:
         return tr("Turn right");
+    // The actions of the other groups.
+    case A::Mine:
+    case A::Use:
+    case A::PickBlock:
+    case A::Drop:
+    case A::Inventory:
+    case A::Chat:
+    case A::Command:
+    case A::CameraView:
+    case A::Handbook:
+    case A::DebugOverlay:
+    case A::DebugOptions:
+    case A::Labels:
+    case A::PlayerList:
+    case A::Hotbar1:
+    case A::Hotbar2:
+    case A::Hotbar3:
+    case A::Hotbar4:
+    case A::Hotbar5:
+    case A::Hotbar6:
+    case A::Hotbar7:
+    case A::Hotbar8:
+    case A::Hotbar9:
+    case A::HotbarRadial:
+    case A::HideHud:
+    case A::Screenshot:
+    case A::Pause:
+        return {};
+    }
+}
+
+// What the hands do: mining, using, picking, throwing and the hotbar slots.
+QString QcKeyLabels::handAction(QcKeyBindings::Action action)
+{
+    using A = QcKeyBindings::Action;
+    switch (action) {
     case A::Mine:
         return tr("Mine, attack");
     case A::Use:
@@ -97,6 +134,51 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
     case A::Drop:
         return tr("Throw item (with %1: stack)")
             .arg(key(QcKeyBindings::stackModifier(QcKeyBindings::currentPlatform()) == Qt::MetaModifier ? Qt::Key_Meta : Qt::Key_Control));
+    case A::Hotbar1:
+    case A::Hotbar2:
+    case A::Hotbar3:
+    case A::Hotbar4:
+    case A::Hotbar5:
+    case A::Hotbar6:
+    case A::Hotbar7:
+    case A::Hotbar8:
+    case A::Hotbar9:
+        return tr("Hotbar slot %1").arg(int(action) - int(A::Hotbar1) + 1);
+
+    // The actions of the other groups.
+    case A::Forward:
+    case A::Back:
+    case A::Left:
+    case A::Right:
+    case A::Jump:
+    case A::Sneak:
+    case A::Sprint:
+    case A::LookUp:
+    case A::LookDown:
+    case A::LookLeft:
+    case A::LookRight:
+    case A::Inventory:
+    case A::Chat:
+    case A::Command:
+    case A::CameraView:
+    case A::Handbook:
+    case A::DebugOverlay:
+    case A::DebugOptions:
+    case A::Labels:
+    case A::PlayerList:
+    case A::HotbarRadial:
+    case A::HideHud:
+    case A::Screenshot:
+    case A::Pause:
+        return {};
+    }
+}
+
+// Screens, the camera, the debug display and the other parts of the interface.
+QString QcKeyLabels::screenAction(QcKeyBindings::Action action)
+{
+    using A = QcKeyBindings::Action;
+    switch (action) {
     case A::Inventory:
         return tr("Inventory");
     case A::Chat:
@@ -123,6 +205,22 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Screenshot");
     case A::Pause:
         return tr("Menu");
+    // The actions of the other groups.
+    case A::Forward:
+    case A::Back:
+    case A::Left:
+    case A::Right:
+    case A::Jump:
+    case A::Sneak:
+    case A::Sprint:
+    case A::LookUp:
+    case A::LookDown:
+    case A::LookLeft:
+    case A::LookRight:
+    case A::Mine:
+    case A::Use:
+    case A::PickBlock:
+    case A::Drop:
     case A::Hotbar1:
     case A::Hotbar2:
     case A::Hotbar3:
@@ -132,7 +230,17 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
     case A::Hotbar7:
     case A::Hotbar8:
     case A::Hotbar9:
-        return tr("Hotbar slot %1").arg(int(action) - int(A::Hotbar1) + 1);
+        return {};
     }
-    return {};
+}
+
+QString QcKeyLabels::action(QcKeyBindings::Action action)
+{
+    if (QString label = movementAction(action); !label.isEmpty()) {
+        return label;
+    }
+    if (QString label = handAction(action); !label.isEmpty()) {
+        return label;
+    }
+    return screenAction(action);
 }

@@ -3,6 +3,7 @@
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
 qc_add_test(test_protocol SOURCES gameplay/test_protocol.cpp LIBRARIES qc_common)
+qc_add_test(test_chunk_protocol SOURCES gameplay/test_chunk_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_entity_protocol SOURCES gameplay/test_entity_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_game_mode_protocol SOURCES gameplay/test_game_mode_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_adventure_rules SOURCES gameplay/test_adventure_rules.cpp LIBRARIES qc_common)

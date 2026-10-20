@@ -26,6 +26,41 @@ QcItemId heldBy(const QcCreature &creature, const QcMobDefinition &kind)
     return creature.carriedItem != qcNoItem ? creature.carriedItem : kind.heldItemId;
 }
 
+// The move of a creature: `now` with its turn, health, flags and what it holds.
+QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature, const QcMobDefinition &kind)
+{
+    const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
+                                     | QcMsg::poseFlags(creature.pose));
+    now.yaw = creature.yaw;
+    now.health = creature.health;
+    now.hurt = creature.hurtThisTick;
+    now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
+    now.held = heldBy(creature, kind);
+    if (creature.archer.has() && creature.archer->drawing()) {
+        now.flags = quint16(now.flags | QcMsg::Drawing);
+    }
+    return now;
+}
+
+// The move of a player: `now` with the view, health, flags (`riding` a minecart) and the selected item.
+QcMsg::EntityMove playerMove(QcMsg::EntityMove now, const QcServerClient &player, bool riding)
+{
+    const QcItemStack &held = player.inventory.selectedStack();
+    now.yaw = player.yaw;
+    now.health = player.health;
+    now.hurt = player.hurtThisTick;
+    now.pitch = player.pitch;
+    now.flags = flagsOf(player, player.swung, player.sneaking, player.sprinting);
+    if (riding) {
+        now.flags = quint16((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
+    }
+    now.held = held.isEmpty() ? qcNoItem : held.item;
+    if (player.drawing) {
+        now.flags = quint16(now.flags | QcMsg::Drawing);
+    }
+    return now;
+}
+
 } // namespace
 
 QcEntitySync::QcEntitySync(QcServerState &state)
@@ -51,33 +86,12 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     switch (entity.kind) {
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
-        const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
-                                         | QcMsg::poseFlags(creature.pose));
-        now.yaw = creature.yaw;
-        now.health = creature.health;
-        now.hurt = creature.hurtThisTick;
-        now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
-        now.held = heldBy(creature, m_state.content().mobs()[creature.type]);
-        if (creature.archer.has() && creature.archer->drawing()) {
-            now.flags = quint16(now.flags | QcMsg::Drawing);
-        }
+        now = creatureMove(now, creature, m_state.content().mobs()[creature.type]);
         break;
     }
     case QcEntityKind::Player: {
         const auto &player = entity.as<QcServerClient>();
-        const QcItemStack &held = player.inventory.selectedStack();
-        now.yaw = player.yaw;
-        now.health = player.health;
-        now.hurt = player.hurtThisTick;
-        now.pitch = player.pitch;
-        now.flags = flagsOf(player, player.swung, player.sneaking, player.sprinting);
-        if (m_state.entities().minecarts().ridden(player.id)) {
-            now.flags = quint16((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
-        }
-        now.held = held.isEmpty() ? qcNoItem : held.item;
-        if (player.drawing) {
-            now.flags = quint16(now.flags | QcMsg::Drawing);
-        }
+        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id));
         break;
     }
     case QcEntityKind::Minecart:

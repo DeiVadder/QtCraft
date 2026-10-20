@@ -96,6 +96,33 @@ private:
             timeoutMs));
     }
 
+    // Every section of the centre chunk (0, 0) of `world` looks exactly as if meshed from scratch:
+    // the meshes the scheduler sent are current.
+    void verifyCentreMeshes(const QcClientWorld &world, const QHash<quint64, std::shared_ptr<const QcChunkMesh>> &meshes) const
+    {
+        for (int section = 0; section < QcWorld::sectionCount; ++section) {
+            QcMeshInput input;
+            for (int dz = -1; dz <= 1; ++dz) {
+                for (int dx = -1; dx <= 1; ++dx) {
+                    input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
+                }
+            }
+            input.sectionIndex = section;
+            input.renderTable = m_table;
+            const QcChunkMesh direct = QcChunkMesher::mesh(input);
+            const std::shared_ptr<const QcChunkMesh> scheduled = meshes.value(qcSectionKey({0, 0}, section));
+            QCOMPARE(bool(scheduled), !direct.isEmpty());
+            if (!scheduled) {
+                continue;
+            }
+            QCOMPARE(scheduled->opaqueIndices, direct.opaqueIndices);
+            QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
+            for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
+                QCOMPARE(scheduled->opaqueVertices[i].skyLight(), direct.opaqueVertices[i].skyLight());
+            }
+        }
+    }
+
 private slots:
     void onlyChunksWithAllSideNeighboursGetMeshes()
     {
@@ -299,32 +326,8 @@ private slots:
             change({15, y, 7}, qcAirBlockId);
         }
 
-        // Every section of the centre chunk looks exactly as if meshed from scratch.
-        const auto verifyCurrent = [&] {
-            pumpUntilIdle(scheduler, world);
-            for (int section = 0; section < QcWorld::sectionCount; ++section) {
-                QcMeshInput input;
-                for (int dz = -1; dz <= 1; ++dz) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
-                    }
-                }
-                input.sectionIndex = section;
-                input.renderTable = m_table;
-                const QcChunkMesh direct = QcChunkMesher::mesh(input);
-                const std::shared_ptr<const QcChunkMesh> scheduled = meshes.value(qcSectionKey({0, 0}, section));
-                QCOMPARE(bool(scheduled), !direct.isEmpty());
-                if (!scheduled) {
-                    continue;
-                }
-                QCOMPARE(scheduled->opaqueIndices, direct.opaqueIndices);
-                QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
-                for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
-                    QCOMPARE(scheduled->opaqueVertices[i].skyLight(), direct.opaqueVertices[i].skyLight());
-                }
-            }
-        };
-        verifyCurrent();
+        pumpUntilIdle(scheduler, world);
+        verifyCentreMeshes(world, meshes);
 
         QRandomGenerator random(14);
         for (int i = 0; i < 120; ++i) {
@@ -334,7 +337,8 @@ private slots:
                 pumpUntilIdle(scheduler, world);
             }
         }
-        verifyCurrent();
+        pumpUntilIdle(scheduler, world);
+        verifyCentreMeshes(world, meshes);
     }
 
     void meshesWithEngineLightEqualTheSelfLitMesher()

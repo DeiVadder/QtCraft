@@ -2,6 +2,8 @@
 
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcSectionKey.h"
+#include "common/light/QcLightCells.h"
+#include "common/light/QcSkyLight.h"
 #include "common/world/QcLightPassage.h"
 
 #include <algorithm>
@@ -9,27 +11,16 @@
 
 namespace {
 
+using QcLightCells::columnIndex;
+using QcLightCells::floorChunk;
+using QcLightCells::horizontalFaces;
+using QcLightCells::localOf;
+
 constexpr int last = QcWorld::chunkSize - 1;
-constexpr std::array horizontalFaces{QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
-
-int floorChunk(int block)
-{
-    return block >= 0 ? block / QcWorld::chunkSize : (block + 1) / QcWorld::chunkSize - 1;
-}
-
-int localOf(int block)
-{
-    return block - floorChunk(block) * QcWorld::chunkSize;
-}
 
 int cellIndex(int x, int y, int z)
 {
     return QcChunkSection::index(localOf(x), y % QcWorld::sectionHeight, localOf(z));
-}
-
-int columnIndex(int lx, int lz)
-{
-    return lz * QcWorld::chunkSize + lx;
 }
 
 constexpr std::size_t channelIndex(QcLightEngine::Channel channel)
@@ -355,34 +346,6 @@ void QcLightEngine::seedBlockSources(Column &column, QcChunkPos pos)
     }
 }
 
-int QcLightEngine::columnTop(const QcChunk &blocks, int lx, int lz) const
-{
-    for (int sectionIndex = QcWorld::sectionCount - 1; sectionIndex >= 0; --sectionIndex) {
-        const QcChunkSection &section = blocks.section(sectionIndex);
-        if (section.isEmpty()) {
-            continue;
-        }
-        for (int ly = QcWorld::sectionHeight - 1; ly >= 0; --ly) {
-            const QcLightPassage::SkyStop stop = m_table->entry(section.block(lx, ly, lz)).skyStop;
-            if (stop != QcLightPassage::SkyStop::None) {
-                return QcLightPassage::skyTop(stop, sectionIndex * QcWorld::sectionHeight + ly);
-            }
-        }
-    }
-    return -1;
-}
-
-QcLightEngine::SkyTops QcLightEngine::skyTops(const QcChunk &blocks) const
-{
-    SkyTops tops{};
-    for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-        for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            tops[std::size_t(columnIndex(lx, lz))] = qint16(columnTop(blocks, lx, lz));
-        }
-    }
-    return tops;
-}
-
 quint32 QcLightEngine::Column::seedSky(const SkyTops &tops)
 {
     static_assert(QcWorld::sectionCount <= 32, "one bit per section");
@@ -392,7 +355,7 @@ quint32 QcLightEngine::Column::seedSky(const SkyTops &tops)
     const int highest = highestTop;
     quint32 lit = 0;
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        Section &section = light[channelIndex(Channel::Sky)][std::size_t(index)];
+        Section &section = light[std::size_t(Channel::Sky)][std::size_t(index)];
         const int low = index * QcWorld::sectionHeight;
         const int high = low + QcWorld::sectionHeight - 1;
 
@@ -403,29 +366,15 @@ quint32 QcLightEngine::Column::seedSky(const SkyTops &tops)
             continue;
         }
 
-        section.cells = skyCells(skyTop, low, high);
+        section.cells = QcSkyLight::sectionCells(skyTop, low, high);
         lit |= quint32(1) << index;
     }
     return lit;
 }
 
-std::unique_ptr<QcLightNibbles> QcLightEngine::Column::skyCells(const SkyTops &tops, int low, int high)
-{
-    auto cells = std::make_unique<QcLightNibbles>(0);
-    for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-        for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = tops[std::size_t(columnIndex(lx, lz))];
-            for (int y = std::max(low, top + 1); y <= high; ++y) {
-                cells->setLevel(QcChunkSection::index(lx, y - low, lz), maxLevel);
-            }
-        }
-    }
-    return cells;
-}
-
 void QcLightEngine::seedSky(Column &column, QcChunkPos pos)
 {
-    const quint32 lit = column.seedSky(skyTops(*column.blocks));
+    const quint32 lit = column.seedSky(QcSkyLight::tops(*column.blocks, *m_table));
     if (!m_options.trackChanges) {
         return;
     }
@@ -446,20 +395,9 @@ void QcLightEngine::queueSkyEdges(const Column &column, QcChunkPos pos)
         const Column *other = find({pos.x + floorChunk(lx), pos.z + floorChunk(lz)});
         return other ? int(other->skyTop[std::size_t(columnIndex(localOf(lx), localOf(lz)))]) : -1;
     };
-
-    for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-        for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = column.skyTop[std::size_t(columnIndex(lx, lz))];
-            int reach = top + 1;
-            for (const QcBlockFace face : horizontalFaces) {
-                const QcFaceOffset offset = qcFaceOffset(face);
-                reach = std::max(reach, topAt(lx + offset.dx, lz + offset.dz));
-            }
-            for (int y = top + 1; y <= std::min(reach, QcWorld::worldHeight - 1); ++y) {
-                m_add.push_back({pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz});
-            }
-        }
-    }
+    QcSkyLight::forEachEdgeCell(column.skyTop, topAt, [this, pos](int lx, int y, int lz) {
+        m_add.push_back({pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz});
+    });
 }
 
 void QcLightEngine::compactColumn(Column &column)
@@ -635,7 +573,7 @@ void QcLightEngine::change(QcBlockPos pos, QcBlockId previous, const QcChunk &bl
     // The sources of the column move when the change stops sky light differently.
     const std::size_t index = std::size_t(columnIndex(pos.localX(), pos.localZ()));
     const int oldTop = own->skyTop[index];
-    const int newTop = before.skyStop == after.skyStop ? oldTop : columnTop(blocks, pos.localX(), pos.localZ());
+    const int newTop = before.skyStop == after.skyStop ? oldTop : QcSkyLight::columnTop(blocks, *m_table, pos.localX(), pos.localZ());
     own->skyTop[index] = qint16(newTop);
     relight<Channel::Sky>(cell, oldTop + 1, newTop, newTop + 1, oldTop);
     compactWritten();

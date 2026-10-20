@@ -45,15 +45,14 @@ double swingLift(double progress)
     return -1.0 + smooth((p - swingBottom) / (1.0 - swingBottom));
 }
 
-BodyPose animateBody(const QcEntityPose &pose, double time)
+namespace {
+
+// The limbs of a body that swims, jumps or falls, or stands or walks on the ground (`stride` and
+// `amplitude` of the walk, `idle` the sway at rest), the body pivot at the hips.
+BodyPose movingLimbs(const QcEntityPose &pose, double time, double stride, double amplitude, double idle)
 {
     BodyPose result;
     result.bodyPivot = {0.0, hipHeight, 0.0};
-    const double stride = std::sin(pose.walkDistance * strideFrequency * M_PI);
-    const double amplitude = (pose.sprinting ? sprintAmplitude : walkAmplitude)
-                             * std::clamp(pose.speed / QcPhysics::walkSpeed, 0.0, 1.0);
-    const double idle = std::sin(time * 1.7) * 3.0;
-
     if (pose.inWater && !pose.onGround) {
         // Swimming: the body lies forward, arms sweep in wide strokes, legs flutter.
         result.bodyPitch = 70.0 * smooth(std::max(0.3, pose.speed / QcPhysics::swimSpeed));
@@ -75,6 +74,35 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         result.bone(QcBoneRole::RightArm) = {-stride * amplitude * 0.8, 3.0 + idle};
         result.bone(QcBoneRole::LeftArm) = {stride * amplitude * 0.8, -3.0 - idle};
     }
+    return result;
+}
+
+// The right arm during a swing: raised high over the head, struck down in front of the body, settled
+// back to its `rest` pitch.
+BoneRotation swingingArm(double swingProgress, double rest)
+{
+    constexpr double raised = 160.0;
+    constexpr double struck = 30.0;
+    const double progress = std::clamp(swingProgress, 0.0, 1.0);
+    const double lift = swingLift(progress);
+    double pitch = struck + (raised - struck) * (lift + 1.0) / 2.0;
+    if (progress < swingTop) {
+        pitch = rest + (raised - rest) * lift;
+    } else if (progress > swingBottom) {
+        pitch = rest + (struck - rest) * -lift;
+    }
+    return {pitch, -10.0 * std::abs(lift)};
+}
+
+} // namespace
+
+BodyPose animateBody(const QcEntityPose &pose, double time)
+{
+    const double stride = std::sin(pose.walkDistance * strideFrequency * M_PI);
+    const double amplitude = (pose.sprinting ? sprintAmplitude : walkAmplitude)
+                             * std::clamp(pose.speed / QcPhysics::walkSpeed, 0.0, 1.0);
+    const double idle = std::sin(time * 1.7) * 3.0;
+    BodyPose result = movingLimbs(pose, time, stride, amplitude, idle);
 
     if (pose.riding || pose.body == QcPose::Sitting) {
         // Sitting: the legs forward and a little apart, the arms resting.
@@ -95,19 +123,7 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         result.bodyLift = -0.12;
     }
     if (pose.swingProgress >= 0.0) {
-        // Raise the right arm high over the head, strike down in front of the body, settle back.
-        constexpr double raised = 160.0;
-        constexpr double struck = 30.0;
-        const double rest = result.bone(QcBoneRole::RightArm).pitch;
-        const double progress = std::clamp(pose.swingProgress, 0.0, 1.0);
-        const double lift = swingLift(progress);
-        double pitch = struck + (raised - struck) * (lift + 1.0) / 2.0;
-        if (progress < swingTop) {
-            pitch = rest + (raised - rest) * lift;
-        } else if (progress > swingBottom) {
-            pitch = rest + (struck - rest) * -lift;
-        }
-        result.bone(QcBoneRole::RightArm) = {pitch, -10.0 * std::abs(lift)};
+        result.bone(QcBoneRole::RightArm) = swingingArm(pose.swingProgress, result.bone(QcBoneRole::RightArm).pitch);
     }
     if (pose.hurtProgress >= 0.0) {
         result.bodyPitch -= 12.0 * std::sin(std::clamp(pose.hurtProgress, 0.0, 1.0) * M_PI);

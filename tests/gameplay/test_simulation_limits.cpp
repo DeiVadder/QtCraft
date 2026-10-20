@@ -34,7 +34,7 @@ private slots:
         m_server.reset();
     }
 
-    void defaultsAreUnchanged()
+    void signalBlockAndItemDefaultsAreUnchanged()
     {
         const QcServerLimits limits;
         QCOMPARE(limits.signalBudget, 8192);
@@ -64,6 +64,17 @@ private slots:
         QCOMPARE(limits.itemsAwake, 512);
         QCOMPARE(limits.itemsQueued, 1024);
         QCOMPARE(limits.itemsTotal, 4096);
+        QCOMPARE(limits.maxArmourStands, 4096);
+        QCOMPARE(limits.maxMinecarts, 4096);
+        QCOMPARE(limits.movingBlocksShown, 4096);
+        QCOMPARE(limits.experienceOrbs, 1024);
+        QCOMPARE(limits.projectiles, 1024);
+        QCOMPARE(limits.projectilesPerChunk, 64);
+    }
+
+    void creatureAndPlantDefaultsAreUnchanged()
+    {
+        const QcServerLimits limits;
         QCOMPARE(limits.hostileCreaturesPerPlayer, 8);
         QCOMPARE(limits.passiveCreaturesPerPlayer, 6);
         QCOMPARE(limits.ambientCreaturesPerPlayer, 10);
@@ -73,12 +84,6 @@ private slots:
         QCOMPARE(limits.leafDecaysPerTick, 8);
         QCOMPARE(limits.leafChecksPerTick, 64);
         QCOMPARE(limits.leafPendingChecks, 16384);
-        QCOMPARE(limits.maxArmourStands, 4096);
-        QCOMPARE(limits.maxMinecarts, 4096);
-        QCOMPARE(limits.movingBlocksShown, 4096);
-        QCOMPARE(limits.experienceOrbs, 1024);
-        QCOMPARE(limits.projectiles, 1024);
-        QCOMPARE(limits.projectilesPerChunk, 64);
         // Path finding of creatures (stage 37.1, decision E-400).
         QCOMPARE(limits.pathNodesPerTick, 4096);
         QCOMPARE(limits.pathNodesPerSearch, 512);
@@ -94,6 +99,13 @@ private slots:
         QCOMPARE(limits.villagerHarvestsPerTick, 4);
         QCOMPARE(limits.villageGolems, 256);
         QCOMPARE(limits.waterCreaturesPerPlayer, 5);
+        QCOMPARE(limits.spawnerCreatures, 256);
+        QCOMPARE(limits.guardians, 64);
+    }
+
+    void everyLimitIsInTheTableAndReadsBack()
+    {
+        const QcServerLimits limits;
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
         for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
@@ -101,8 +113,6 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(limits.spawnerCreatures, 256);
-        QCOMPARE(limits.guardians, 64);
         QCOMPARE(keys.size(), qsizetype(70));
         const QcServerLimits::Read defaults = QcServerLimits::fromJson({}, u"server.json"_s);
         QCOMPARE(defaults.limits, limits);

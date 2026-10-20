@@ -290,6 +290,8 @@ step "check-includes" sh -c "python3 scripts/fix-includes.py --self-test && pyth
 # Logging categories each defined once, no logging without a category in src/ (decision E-680);
 # every mode, before the build.
 step "check-logging" sh -c "python3 scripts/check-logging.py --self-test && python3 scripts/check-logging.py"
+# Samples of the function length check (E-760); the check itself runs in the static analysis.
+step "check-function-length" python3 scripts/check-function-length.py --self-test
 build_and_test debug
 for preset in $SANITIZERS; do
     build_and_test "$preset"
