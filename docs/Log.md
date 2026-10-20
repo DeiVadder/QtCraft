@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 09:25
+
+Wiederaufnahme. Der Mensch bemerkte, dass sein Fenster während eines Verify im Sekundentakt den Fokus verlor: die Offscreen-Tests des Spiels wurden beim Start kurz zur Vordergrund-App; behoben (`67d537a`, `QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM` für Skript-Läufe und alle Tests), bestätigt. 47.1 Aussehen freigegeben und gemergt (`1203c7a`, Aufnahmen als JPEG); Etappe 47 erledigt bis auf den Fenster-Benchmark. 59a und 59b zusammengeführt (`6067b71`), Benchmark und voller Verify laufen. Etappe 60 begonnen. Plan ergänzt: 48 TLS vor dem Release, 62 Blockliste freigegeben (62.1–62.4, mit Stamm-Achse, Treppen-Ecken, vertikaler Stufe, kleiner Kürbislaterne), 69 Flüsse, 70 Flussdelta.
+
 ## 2026-10-20 06:20 (Pause)
 
 Pause auf Wunsch des Menschen. Seit 05:30: Etappe 59 begonnen. 59a Zuschauer fertig mit Review-Fixes (Schwung beim Verlassen, Spawner, Blitze, Angel, Lore; Operator-Befehle bleiben erlaubt). 59b Abenteuer fertig, Review gefunden: die erlaubte Höchstgröße der Listen überschreitet die Rahmengrenze des Protokolls; Fixes begonnen und als WIP-Commit gesichert (ungeprüft). Offene Schritte stehen in `docs/FORTSCHRITT.md` („Pausiert“).
