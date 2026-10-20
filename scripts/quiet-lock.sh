@@ -21,6 +21,17 @@ for value in "$QUIET_PAUSE_MAX" "$QUIET_POLL"; do
 done
 [ "$QUIET_POLL" -ge 1 ] || QUIET_POLL=1
 
+# True when pid $1 is this shell or one of its ancestors: a bench.lock owned by it belongs to the
+# benchmark slot this run is part of (slot broker, E-781), so it never blocks the run.
+pid_is_ancestor() {
+    ancestor=$$
+    while [ -n "$ancestor" ] && [ "$ancestor" -gt 1 ]; do
+        [ "$ancestor" = "$1" ] && return 0
+        ancestor=$(ps -o ppid= -p "$ancestor" 2>/dev/null | tr -d ' ')
+    done
+    return 1
+}
+
 # Prints the owner line of the quiet lock, or nothing when it is free. Removes a stale lock.
 quiet_lock_owner() {
     [ -d "$QUIET_LOCK_DIR" ] || return 0

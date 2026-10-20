@@ -22,3 +22,7 @@ compile_commands.json
 /docs/Code-Karte.md
 /docs/Entscheidungen-Index.md
 deploy/
+
+# Python caches
+__pycache__/
+*.pyc

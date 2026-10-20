@@ -7,6 +7,11 @@
 # Waits at most QC_QUIET_PAUSE_MAX seconds (default 2700), checking every QC_QUIET_POLL seconds
 # (default 10); says once what it waits for. Exit 0 when free, 1 when a lock is still held after the
 # bound (then go on and name it in the report).
+# With the slot broker (scripts/qc-slot.py, decision E-781; started when needed, QC_SLOT=0 switches
+# it off) it asks the broker instead of polling: `qc-slot.py wait` returns once no benchmark holds
+# or awaits the machine and no live quiet lock exists. Without a reachable broker it checks the lock
+# files itself as before. A bench lock of QC_BENCH_LOCK_PID (the slot of the calling benchmark)
+# never blocks.
 # Usage: scripts/wait-quiet.sh
 
 set -u
@@ -25,6 +30,9 @@ bench_lock_owner() {
     if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
         return 0
     fi
+    if [ -n "$pid" ] && { [ "$pid" = "${QC_BENCH_LOCK_PID:-none}" ] || pid_is_ancestor "$pid"; }; then
+        return 0
+    fi
     echo "${owner:-no owner file}"
 }
 
@@ -38,6 +46,14 @@ holder() {
     bench=$(bench_lock_owner)
     [ -z "$bench" ] || echo "benchmark lock: $bench"
 }
+
+if [ "${QC_SLOT:-1}" != 0 ] && command -v python3 >/dev/null 2>&1; then
+    python3 "$PROJECT_DIR/scripts/qc-slot.py" wait --no-fallback --timeout "$QUIET_PAUSE_MAX" \
+        --who "wait-quiet $(basename "$PWD")"
+    status=$?
+    # 0: free, 1: still held after the bound; 211: no broker, check the lock files below.
+    [ "$status" -eq 211 ] || exit "$status"
+fi
 
 held=$(holder)
 [ -n "$held" ] || exit 0

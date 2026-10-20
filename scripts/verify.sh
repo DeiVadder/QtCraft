@@ -42,7 +42,15 @@
 #                    a later --changed run selects them. For agents working in parallel; the
 #                    central run before the merge runs them. The script runs at normal priority; work beside it (the next stage in its own
 # worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
-# ~/.cache/qtcraft/bench.lock exists.
+# ~/.cache/qtcraft/bench.lock is held by a live process.
+# Slot broker (scripts/qc-slot.py, decision E-781): unless QC_SLOT=0 or the run already holds a heavy
+# or bench slot (QC_SLOT_ID with QC_SLOT_KIND tsan, asan, verify or bench), the script runs itself
+# once more under `qc-slot.py run`: kind tsan for
+# --tsan-concurrent and --sanitizers tsan, asan for --sanitizers asan, verify otherwise (the full run
+# asks for cores minus two jobs). It waits until the broker grants the slot (no benchmark, jobs free
+# within the budget) and gets QC_BUILD_JOBS and QC_TEST_JOBS from it (an own value only lowers them).
+# QC_SLOT_TIMEOUT bounds the wait (seconds, default none). Without a reachable broker it goes on with
+# the lock files as before.
 # Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
@@ -57,6 +65,12 @@ cd "$PROJECT_DIR" || exit 2
 # The local presets take the Qt and Ninja paths of this machine from CMakeUserPresets.json (not in
 # git, decision E-417); a new worktree gets a copy of the main checkout's file or of the example.
 scripts/ensure-user-presets.sh || exit 2
+
+# The arguments as one quoted word list, to run the script once more under the slot broker.
+ORIGINAL_ARGS=""
+for arg in "$@"; do
+    ORIGINAL_ARGS="$ORIGINAL_ARGS '$(printf '%s' "$arg" | sed "s/'/'\\\\''/g")'"
+done
 
 MODE=full
 MODE_GIVEN=""
@@ -155,9 +169,45 @@ if [ "$MODE" = quick ] && [ "$SANITIZERS_GIVEN" -eq 0 ]; then
     SANITIZERS=""
 fi
 
+# Under the slot broker: runs this script once more as the command of a slot (exit code 211 of the
+# client: no broker reachable, go on without).
+# A held heavy or bench slot covers this run; any other slot (build, test, light) does not.
+case "${QC_SLOT_ID:+${QC_SLOT_KIND:-}}" in
+tsan | asan | verify | bench) slot_covered=1 ;;
+*) slot_covered=0 ;;
+esac
+if [ "${QC_SLOT:-1}" != 0 ] && [ "$slot_covered" -eq 0 ] && command -v python3 >/dev/null 2>&1; then
+    slot_kind=verify
+    slot_jobs=""
+    if [ -n "$TSAN_LABEL" ] || [ "$SANITIZERS" = tsan ]; then
+        slot_kind=tsan
+    elif [ "$SANITIZERS" = asan ]; then
+        slot_kind=asan
+    elif [ "$MODE" = full ]; then
+        slot_jobs="--jobs $((cores > 4 ? cores - 2 : 3))"
+    fi
+    eval "set -- $ORIGINAL_ARGS"
+    # shellcheck disable=SC2086
+    python3 scripts/qc-slot.py run --no-fallback --kind "$slot_kind" $slot_jobs --timeout "${QC_SLOT_TIMEOUT:-0}" \
+        --who "verify $MODE $(basename "$PROJECT_DIR")" -- /bin/sh "$PROJECT_DIR/scripts/verify.sh" "$@"
+    status=$?
+    [ "$status" -eq 211 ] || exit "$status"
+    echo "slot broker not reachable; going on with the lock files" >&2
+fi
+
+# A benchmark lock refuses the run while its owner process lives; a stale one (owner pid ended) or
+# the lock of the benchmark slot this run belongs to (QC_BENCH_LOCK_PID) does not.
 if [ -e "$BENCH_LOCK" ]; then
-    echo "benchmark lock $BENCH_LOCK exists ($(cat "$BENCH_LOCK/owner" 2>/dev/null)); no verify run while it is held" >&2
-    exit 2
+    bench_owner=$(cat "$BENCH_LOCK/owner" 2>/dev/null)
+    bench_pid=$(echo "$bench_owner" | sed -n 's/.*pid=\([0-9]*\).*/\1/p')
+    if [ -n "$bench_pid" ] && ! kill -0 "$bench_pid" 2>/dev/null; then
+        echo "ignoring the stale benchmark lock of a process that no longer runs ($bench_owner)" >&2
+    elif [ -n "$bench_pid" ] && { [ "$bench_pid" = "${QC_BENCH_LOCK_PID:-none}" ] || pid_is_ancestor "$bench_pid"; }; then
+        :
+    else
+        echo "benchmark lock $BENCH_LOCK exists (${bench_owner:-no owner file}); no verify run while it is held" >&2
+        exit 2
+    fi
 fi
 echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS), timing tests with $TIMING_JOBS (QC_TIMING_JOBS)"
 
@@ -292,6 +342,18 @@ step "check-includes" sh -c "python3 scripts/fix-includes.py --self-test && pyth
 step "check-logging" sh -c "python3 scripts/check-logging.py --self-test && python3 scripts/check-logging.py"
 # Samples of the function length check (E-760); the check itself runs in the static analysis.
 step "check-function-length" python3 scripts/check-function-length.py --self-test
+# Slot broker tests (E-781, about 15 s, own temporary broker each): in the full run, and in the quick
+# levels when the broker or the scripts that use it changed against the base branch.
+slot_broker_changed() {
+    {
+        git diff --name-only "$BASE_BRANCH...HEAD"
+        git diff --name-only HEAD
+        git ls-files --others --exclude-standard scripts
+    } | grep -qE '^scripts/(qc-slot\.py|tests/test_qc_slot\.py|wait-quiet\.sh|quiet-lock\.sh|verify\.sh|bench-ab\.sh)$'
+}
+if [ "$MODE" = full ] || slot_broker_changed; then
+    step "check-slot-broker" python3 scripts/tests/test_qc_slot.py
+fi
 build_and_test debug
 for preset in $SANITIZERS; do
     build_and_test "$preset"

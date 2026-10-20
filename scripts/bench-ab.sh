@@ -38,7 +38,8 @@
 # The script holds the benchmark lock ~/.cache/qtcraft/bench.lock (a directory with an owner file)
 # for the whole series and removes it at the end, also on errors and interrupts. If someone else
 # holds it, the script waits until it is gone; a lock left by a bench script whose process no longer
-# runs is taken over.
+# runs is taken over. With the slot broker (scripts/qc-slot.py, E-781) the script first waits for a
+# bench slot and runs as its command; the broker then holds the lock for it (QC_BENCH_LOCK_PID).
 #
 # The result file gets a header line per series ("# series ...": date, rounds, seconds, view,
 # scenarios, labels, keys, builds) and one line per run:
@@ -61,6 +62,12 @@ set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 . "$PROJECT_DIR/scripts/bench-groups.sh"
+
+# The arguments as one quoted word list, to run the script once more under the slot broker.
+ORIGINAL_ARGS=""
+for arg in "$@"; do
+    ORIGINAL_ARGS="$ORIGINAL_ARGS '$(printf '%s' "$arg" | sed "s/'/'\\\\''/g")'"
+done
 
 HEADLESS=0
 TOOL=bench-ab.sh
@@ -226,6 +233,23 @@ if [ "$CHECK_ONLY" -eq 1 ]; then
     exit 0
 fi
 
+# Under the slot broker (scripts/qc-slot.py, decision E-781): the series runs as the command of a
+# bench slot, granted once no build, test or verify slot is held and the load is low; the broker
+# keeps bench.lock for it (its holder is QC_BENCH_LOCK_PID). Exit code 211 of the client: no broker
+# reachable, go on with the lock alone. QC_SLOT=0 switches the broker off.
+# Only a held bench slot covers the series; inside any other slot it asks the broker for one.
+if [ "${QC_SLOT:-1}" != 0 ] && { [ -z "${QC_SLOT_ID:-}" ] || [ "${QC_SLOT_KIND:-}" != bench ]; } &&
+    command -v python3 >/dev/null 2>&1; then
+    (
+        eval "set -- $ORIGINAL_ARGS"
+        exec python3 "$PROJECT_DIR/scripts/qc-slot.py" run --no-fallback --kind bench \
+            --who "$TOOL $(basename "$RESULT")" -- /bin/sh "$PROJECT_DIR/scripts/bench-ab.sh" "$@"
+    )
+    status=$?
+    [ "$status" -eq 211 ] || exit "$status"
+    echo "slot broker not reachable; going on with the benchmark lock alone" >&2
+fi
+
 LOCK_DIR="$HOME/.cache/qtcraft/bench.lock"
 LOCK_OWNER="$TOOL pid=$$ dir=$PROJECT_DIR result=$RESULT"
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-ab.XXXXXX") || exit 2
@@ -244,6 +268,17 @@ trap 'exit 130' INT TERM HUP
 
 . "$PROJECT_DIR/scripts/bench-common.sh"
 
+# True when pid $1 is this shell or one of its ancestors: a bench.lock owned by it belongs to the
+# benchmark slot this run is part of (slot broker, E-781), so it never blocks the run.
+pid_is_ancestor() {
+    ancestor=$$
+    while [ -n "$ancestor" ] && [ "$ancestor" -gt 1 ]; do
+        [ "$ancestor" = "$1" ] && return 0
+        ancestor=$(ps -o ppid= -p "$ancestor" 2>/dev/null | tr -d ' ')
+    done
+    return 1
+}
+
 # Takes the benchmark lock, waiting while someone else holds it.
 take_lock() {
     mkdir -p "$(dirname "$LOCK_DIR")" || exit 2
@@ -251,6 +286,10 @@ take_lock() {
     while ! mkdir "$LOCK_DIR" 2>/dev/null; do
         owner=$(cat "$LOCK_DIR/owner" 2>/dev/null)
         pid=$(echo "$owner" | sed -n 's/^bench-[a-z]*\.sh pid=\([0-9]*\) .*/\1/p')
+        if [ -n "$pid" ] && { [ "$pid" = "${QC_BENCH_LOCK_PID:-none}" ] || pid_is_ancestor "$pid"; }; then
+            echo "benchmark lock held by the slot broker for this series ($owner)" >&2
+            return
+        fi
         if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
             echo "taking over the lock of a bench script that no longer runs ($owner)" >&2
             echo "$LOCK_OWNER" >"$LOCK_DIR/owner"
