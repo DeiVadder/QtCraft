@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 11:45
+
+Etappe 59 in `dev` (`7ae040f`; voller Verify grün bis auf `test_scenarios` unter ASan, allein fünfmal grün: Last-Effekt beim Aufsammeln). Etappe 60 in `dev` (`b95d167`; Review: Ofentext, Dorfplan-Prüfsumme jetzt nach Blocknamen statt IDs; voller Verify grün, Headless-Benchmark neutral). 61 in Nachbesserung nach Rückfrage des Menschen, 62.1 begonnen.
+
 ## 2026-10-20 09:25
 
 Wiederaufnahme. Der Mensch bemerkte, dass sein Fenster während eines Verify im Sekundentakt den Fokus verlor: die Offscreen-Tests des Spiels wurden beim Start kurz zur Vordergrund-App; behoben (`67d537a`, `QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM` für Skript-Läufe und alle Tests), bestätigt. 47.1 Aussehen freigegeben und gemergt (`1203c7a`, Aufnahmen als JPEG); Etappe 47 erledigt bis auf den Fenster-Benchmark. 59a und 59b zusammengeführt (`6067b71`), Benchmark und voller Verify laufen. Etappe 60 begonnen. Plan ergänzt: 48 TLS vor dem Release, 62 Blockliste freigegeben (62.1–62.4, mit Stamm-Achse, Treppen-Ecken, vertikaler Stufe, kleiner Kürbislaterne), 69 Flüsse, 70 Flussdelta.
