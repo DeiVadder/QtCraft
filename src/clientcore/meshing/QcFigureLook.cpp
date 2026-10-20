@@ -15,12 +15,12 @@ namespace QcFigureLook {
 QcEntityMesher::ModelLook player(const QcContentRegistry &content, const QcAppearance &appearance)
 {
     QcEntityMesher::ModelLook look;
-    look.model = content.model(u"qtcraft:humanoid"_s);
-    look.outfit = content.appearance(appearance.outfit);
+    look.model = content.assets().model(u"qtcraft:humanoid"_s);
+    look.outfit = content.assets().appearance(appearance.outfit);
     if (!look.outfit || look.outfit->kind != QcAppearanceDefinition::Kind::Outfit) {
-        look.outfit = content.appearance(QcAppearance().outfit);
+        look.outfit = content.assets().appearance(QcAppearance().outfit);
     }
-    look.hair = content.appearance(appearance.hair);
+    look.hair = content.assets().appearance(appearance.hair);
     if (look.hair && look.hair->kind != QcAppearanceDefinition::Kind::Hair) {
         look.hair = nullptr;
     }
@@ -43,8 +43,8 @@ Dressed armour(const QcContentRegistry &content, const QcEquipment &equipment, Q
 QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandPose &pose)
 {
     QcEntityMesher::ModelLook look;
-    look.model = content.model(u"qtcraft:armor_stand"_s);
-    look.outfit = content.appearance(u"qtcraft:armor_stand"_s);
+    look.model = content.assets().model(u"qtcraft:armor_stand"_s);
+    look.outfit = content.assets().appearance(u"qtcraft:armor_stand"_s);
     look.scale = pose.small ? 0.5 : 1.0;
     return look;
 }
@@ -105,7 +105,7 @@ QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds)
 
 const QcAppearanceDefinition *cape(const QcContentRegistry &content, const QString &name)
 {
-    const QcAppearanceDefinition *definition = name.isEmpty() ? nullptr : content.appearance(name);
+    const QcAppearanceDefinition *definition = name.isEmpty() ? nullptr : content.assets().appearance(name);
     return definition && definition->kind == QcAppearanceDefinition::Kind::Cape ? definition : nullptr;
 }
 

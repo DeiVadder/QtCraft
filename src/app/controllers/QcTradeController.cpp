@@ -33,7 +33,7 @@ QString QcTradeController::profession() const
     if (!isOpen() || !m_parts.session->content()) {
         return {};
     }
-    return m_parts.session->content()->translate(m_parts.session->trading().state().profession, m_settings.contentLanguage());
+    return m_parts.session->content()->translations().translate(m_parts.session->trading().state().profession, m_settings.contentLanguage());
 }
 
 int QcTradeController::level() const
@@ -99,7 +99,7 @@ QVariantMap QcTradeController::stackMap(QcItemStack stack) const
     const QcItemDefinition &item = content->item(stack.item);
     return {{u"icon"_s, QcItemIconUrls::url(item.name)},
             {u"count"_s, stack.count},
-            {u"label"_s, content->translate(item.translationKey, m_settings.contentLanguage())}};
+            {u"label"_s, content->translations().translate(item.translationKey, m_settings.contentLanguage())}};
 }
 
 void QcTradeController::update()

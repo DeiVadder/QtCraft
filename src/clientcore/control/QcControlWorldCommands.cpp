@@ -122,8 +122,8 @@ void QcControlWorldCommands::mine(const QJsonObject &request)
     if (request.contains(u"x"_s)) {
         pos = QcControlArguments::block(request);
         QcControlAim::lookAt(session(), *pos, std::nullopt);
-    } else if (session().target()) {
-        pos = session().target()->block;
+    } else if (session().hand().target()) {
+        pos = session().hand().target()->block;
     }
 
     if (!pos || !session().world()) {

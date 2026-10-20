@@ -27,7 +27,7 @@ void QcWorldLabelModel::update(const QList<QcScreenLabel> &labels, const QcConte
     m_language = language;
     m_rows.clear();
     for (const QcScreenLabel &label : labels) {
-        m_rows.append({label, content.translate(label.text, language)});
+        m_rows.append({label, content.translations().translate(label.text, language)});
     }
     endResetModel();
 }

@@ -29,21 +29,21 @@ bool namesSomebody(char32_t codePoint)
 QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &requested)
 {
     QcAppearance result = requested;
-    if (!isPlayable(content.appearance(requested.outfit), QcAppearanceDefinition::Kind::Outfit)) {
+    if (!isPlayable(content.assets().appearance(requested.outfit), QcAppearanceDefinition::Kind::Outfit)) {
         // The default outfit, or else any outfit the content offers.
         result.outfit = QcAppearance().outfit;
-        if (!isPlayable(content.appearance(result.outfit), QcAppearanceDefinition::Kind::Outfit)) {
-            const auto any = std::ranges::find_if(content.appearances(), [](const QcAppearanceDefinition &definition) {
+        if (!isPlayable(content.assets().appearance(result.outfit), QcAppearanceDefinition::Kind::Outfit)) {
+            const auto any = std::ranges::find_if(content.assets().appearances(), [](const QcAppearanceDefinition &definition) {
                 return isPlayable(&definition, QcAppearanceDefinition::Kind::Outfit);
             });
-            result.outfit = any != content.appearances().end() ? any->name : QString();
+            result.outfit = any != content.assets().appearances().end() ? any->name : QString();
         }
     }
 
-    if (!isPlayable(content.appearance(requested.hair), QcAppearanceDefinition::Kind::Hair)) {
+    if (!isPlayable(content.assets().appearance(requested.hair), QcAppearanceDefinition::Kind::Hair)) {
         result.hair.clear();
     }
-    if (!isPlayable(content.appearance(requested.cape), QcAppearanceDefinition::Kind::Cape)) {
+    if (!isPlayable(content.assets().appearance(requested.cape), QcAppearanceDefinition::Kind::Cape)) {
         result.cape.clear();
     }
 

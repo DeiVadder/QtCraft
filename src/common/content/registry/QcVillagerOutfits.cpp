@@ -10,7 +10,7 @@ namespace {
 
 bool isKind(const QcContentRegistry &registry, const QString &name, QcAppearanceDefinition::Kind kind)
 {
-    const QcAppearanceDefinition *appearance = registry.appearance(name);
+    const QcAppearanceDefinition *appearance = registry.assets().appearance(name);
     return appearance && appearance->kind == kind;
 }
 
@@ -54,20 +54,20 @@ QString outfitName(const QString &outfit, const QcVillagerProfession &profession
 QStringList generate(QcContentRegistry &registry)
 {
     QStringList warnings;
-    if (registry.villagerSpecies().isEmpty()) {
+    if (registry.villageCatalog().villagerSpecies().isEmpty()) {
         return warnings;
     }
 
     QList<QPair<QString, QcVillagerLook>> looks;
-    for (const QcVillagerSettings &species : std::as_const(registry).villagerSpecies()) {
+    for (const QcVillagerSettings &species : std::as_const(registry).villageCatalog().villagerSpecies()) {
         looks.append({u"villager settings '%1'"_s.arg(species.name), species.look});
     }
-    for (const QcVillageStyleDefinition &style : std::as_const(registry.villageStyles())) {
+    for (const QcVillageStyleDefinition &style : std::as_const(registry.villageCatalog().styles())) {
         if (style.look.isSet()) {
             looks.append({u"style '%1'"_s.arg(style.name), style.look});
         }
     }
-    for (const QcVillagerProfession &profession : registry.professions()) {
+    for (const QcVillagerProfession &profession : registry.villageCatalog().professions()) {
         if (!profession.hat.isEmpty() && !isKind(registry, profession.hat, QcAppearanceDefinition::Kind::Hair)) {
             warnings.append(u"profession '%1': hat '%2' is no hair style"_s.arg(profession.name, profession.hat));
         }
@@ -75,14 +75,14 @@ QStringList generate(QcContentRegistry &registry)
 
     for (const auto &[owner, look] : std::as_const(looks)) {
         warnings += checkLook(registry, look, owner);
-        const QcAppearanceDefinition *base = registry.appearance(look.outfit);
+        const QcAppearanceDefinition *base = registry.assets().appearance(look.outfit);
         if (!base || base->kind != QcAppearanceDefinition::Kind::Outfit) {
             continue;
         }
         const QcAppearanceDefinition outfit = *base;
-        for (const QcVillagerProfession &profession : registry.professions()) {
-            if (!profession.layers.isEmpty() && !registry.appearance(outfitName(outfit.name, profession))) {
-                registry.registerAppearance(joined(outfit, profession));
+        for (const QcVillagerProfession &profession : registry.villageCatalog().professions()) {
+            if (!profession.layers.isEmpty() && !registry.assets().appearance(outfitName(outfit.name, profession))) {
+                registry.assets().registerAppearance(joined(outfit, profession));
             }
         }
     }

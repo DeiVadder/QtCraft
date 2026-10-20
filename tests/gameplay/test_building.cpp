@@ -218,10 +218,10 @@ private slots:
         QVERIFY(m_content->itemId(u"qtcraft:oak_stairs"_s));
 
         // Names in both languages from the family's pattern and the material's name.
-        QCOMPARE(m_content->translate(stairs.translationKey, u"en"_s), u"Oak stairs"_s);
-        QCOMPARE(m_content->translate(stairs.translationKey, u"de"_s), u"Eichentreppe"_s);
-        QCOMPARE(m_content->translate(m_content->block(id(u"cobblestone_wall"_s)).translationKey, u"de"_s), u"Bruchsteinmauer"_s);
-        QCOMPARE(m_content->translate(m_content->block(id(u"spruce_fence_gate"_s)).translationKey, u"de"_s), u"Fichtenzauntor"_s);
+        QCOMPARE(m_content->translations().translate(stairs.translationKey, u"en"_s), u"Oak stairs"_s);
+        QCOMPARE(m_content->translations().translate(stairs.translationKey, u"de"_s), u"Eichentreppe"_s);
+        QCOMPARE(m_content->translations().translate(m_content->block(id(u"cobblestone_wall"_s)).translationKey, u"de"_s), u"Bruchsteinmauer"_s);
+        QCOMPARE(m_content->translations().translate(m_content->block(id(u"spruce_fence_gate"_s)).translationKey, u"de"_s), u"Fichtenzauntor"_s);
     }
 
     void excludedMaterialsMakeNothing()
@@ -279,7 +279,7 @@ private slots:
             registry.registerMaterial(*QcContentParser::parseMaterial(json(material), u"m"_s));
         }
 
-        registry.addTranslations(u"en"_s, {{u"material.m.marble"_s, u"Marble"_s}});
+        registry.translations().add(u"en"_s, {{u"material.m.marble"_s, u"Marble"_s}});
         const QStringList warnings = registry.finish();
 
         // Marble: steps only (posts excluded for it); basalt: nothing (excluded entry); crystal:
@@ -299,7 +299,7 @@ private slots:
         QCOMPARE(steps.hardness, 1.0);
         QCOMPARE(steps.tool, u"pickaxe"_s);
         QVERIFY(!registry.state(*registry.blockId(u"m:marble_steps"_s)).fullCube);
-        QCOMPARE(registry.translate(steps.translationKey, u"en"_s), u"Marble steps"_s);
+        QCOMPARE(registry.translations().translate(steps.translationKey, u"en"_s), u"Marble steps"_s);
         const std::optional<qsizetype> recipe = registry.recipeIndex(u"m:marble_steps"_s);
         QVERIFY(recipe);
         QCOMPARE(registry.recipes()[*recipe].resultCount, 3);

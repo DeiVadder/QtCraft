@@ -40,10 +40,10 @@ QcResult<QList<QcBlockId>> QcFlatGenerator::parseLayers(const QString &preset, c
 QcFlatGenerator::QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset)
     : m_content(std::move(content))
 {
-    QcResult<QList<QcBlockId>> layers = parseLayers(preset.isEmpty() ? m_content->flatWorld().preset : preset, *m_content);
+    QcResult<QList<QcBlockId>> layers = parseLayers(preset.isEmpty() ? m_content->worldgen().flatWorld().preset : preset, *m_content);
     if (!layers && !preset.isEmpty()) {
         m_warnings.append(u"flat world: %1; using the default layers"_s.arg(layers.error()));
-        layers = parseLayers(m_content->flatWorld().preset, *m_content);
+        layers = parseLayers(m_content->worldgen().flatWorld().preset, *m_content);
     }
     if (!layers) {
         m_warnings.append(u"flat world: %1; using stone"_s.arg(layers.error()));
@@ -67,5 +67,5 @@ std::shared_ptr<QcChunk> QcFlatGenerator::generate(QcChunkPos pos) const
 
 QcWorldSetup QcFlatGenerator::setup() const
 {
-    return QcWorldSetup::fromRules(m_content->flatWorld().rules);
+    return QcWorldSetup::fromRules(m_content->worldgen().flatWorld().rules);
 }

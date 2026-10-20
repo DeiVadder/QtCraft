@@ -77,10 +77,10 @@ QcTexturePackRef pack(const QString &id, int resolution, const QHash<QString, QI
 QcContentRegistry smallContent()
 {
     QcContentRegistry content;
-    content.registerTexture({u"t:red"_s, procedural("noise", "#c00000"), {}});
-    content.registerTexture({u"t:green"_s, procedural("noise", "#00c000"), {}});
-    content.registerTexture({u"t:blue"_s, procedural("noise", "#0000c0"), {}});
-    content.registerTexture({u"t:picture"_s, {}, png(filled(16, QColor(200, 200, 0)))});
+    content.assets().registerTexture({u"t:red"_s, procedural("noise", "#c00000"), {}});
+    content.assets().registerTexture({u"t:green"_s, procedural("noise", "#00c000"), {}});
+    content.assets().registerTexture({u"t:blue"_s, procedural("noise", "#0000c0"), {}});
+    content.assets().registerTexture({u"t:picture"_s, {}, png(filled(16, QColor(200, 200, 0)))});
     return content;
 }
 
@@ -239,11 +239,11 @@ private slots:
         QFETCH(int, resolution);
         QFETCH(int, extra);
         QcContentRegistry content;
-        content.registerTexture({u"t:red"_s, {}, png(filled(16, Qt::red))});
-        content.registerTexture({u"t:blue"_s, {}, png(filled(16, Qt::blue))});
-        content.registerTexture({u"t:green"_s, {}, png(filled(16, Qt::green))});
+        content.assets().registerTexture({u"t:red"_s, {}, png(filled(16, Qt::red))});
+        content.assets().registerTexture({u"t:blue"_s, {}, png(filled(16, Qt::blue))});
+        content.assets().registerTexture({u"t:green"_s, {}, png(filled(16, Qt::green))});
         for (int i = 0; i < extra; ++i) {
-            content.registerTexture({u"t:white%1"_s.arg(i), {}, png(filled(16, Qt::white))});
+            content.assets().registerTexture({u"t:white%1"_s.arg(i), {}, png(filled(16, Qt::white))});
         }
         const QcTextureAtlas atlas = QcTextureAtlas::build(content, {pack(u"p"_s, resolution, {})});
         QCOMPARE(atlas.image().width() != atlas.image().height(), extra > 0);
@@ -278,8 +278,8 @@ private slots:
         QImage glass(16, 16, QImage::Format_RGBA8888);
         glass.fill(QColor(200, 220, 255, 60));
         QcContentRegistry content;
-        content.registerTexture({u"t:line"_s, {}, png(line)});
-        content.registerTexture({u"t:glass"_s, {}, png(glass)});
+        content.assets().registerTexture({u"t:line"_s, {}, png(line)});
+        content.assets().registerTexture({u"t:glass"_s, {}, png(glass)});
         const QcTextureAtlas atlas = QcTextureAtlas::build(content, {pack(u"p"_s, 128, {})});
         QCOMPARE(atlas.levels().size(), 5);
 
@@ -364,7 +364,7 @@ private slots:
     void proceduralPacksPaintAtTheTileSize()
     {
         QcContentRegistry content;
-        content.registerTexture({u"t:ore"_s, procedural("ore", "#808080", "#d0a040"), {}});
+        content.assets().registerTexture({u"t:ore"_s, procedural("ore", "#808080", "#d0a040"), {}});
         QcTextureAtlas::Options options;
         options.maxTileSize = 32;
         const QcTextureAtlas atlas = QcTextureAtlas::build(content, {pack(u"hd"_s, 128, {}, {}, true)}, options);
@@ -395,7 +395,7 @@ private slots:
         QVERIFY(content.has_value());
         const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry);
         QCOMPARE(atlas.tileSize(), 16);
-        for (const QcTextureDefinition &definition : content->registry->textures()) {
+        for (const QcTextureDefinition &definition : content->registry->assets().textures()) {
             const QcResult<QcTextureSpec> spec = QcProceduralTexture::spec(definition.procedural);
             QVERIFY2(spec.has_value(), qPrintable(definition.name));
             QImage synthesized = QcTextureSynthesizer::synthesize(*spec).convertToFormat(QImage::Format_RGBA8888);
@@ -409,7 +409,7 @@ private slots:
     void otherContentChangesTheLayout()
     {
         QcContentRegistry more = smallContent();
-        more.registerTexture({u"t:extra"_s, procedural("noise", "#ffffff"), {}});
+        more.assets().registerTexture({u"t:extra"_s, procedural("noise", "#ffffff"), {}});
         const QcTextureAtlas base = QcTextureAtlas::build(smallContent());
         QVERIFY(!QcTextureAtlas::build(more).sameLayout(base));
         QVERIFY(QcTextureAtlas::build(smallContent(), {pack(u"p"_s, 128, {})}).sameLayout(base));
@@ -440,7 +440,7 @@ private slots:
         QVERIFY(content.has_value());
         const QcTexturePackRef hd = pack(u"hd"_s, 32, {}, {}, true);
         const QcTextureAtlas first = QcTextureAtlas::build(*content->registry, {hd});
-        QCOMPARE(first.sources().value(u"hd"_s), content->registry->textures().size());
+        QCOMPARE(first.sources().value(u"hd"_s), content->registry->assets().textures().size());
         QCOMPARE(first.image(), QcTextureAtlas::build(*content->registry, {hd}).image());
     }
 

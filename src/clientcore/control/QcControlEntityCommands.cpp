@@ -42,7 +42,7 @@ QJsonObject armourJson(const QcContentRegistry *content, const QcEquipment &equi
 // What the character model animates (QcEntityPose at the start of the current tick).
 QJsonObject animationJson(const QcClientEntity &entity)
 {
-    const QcEntityPose pose = QcClientSession::poseOf(entity, 0.0);
+    const QcEntityPose pose = QcLocalAnimation::poseOf(entity, 0.0);
     return {{u"speed"_s, pose.speed},
             {u"walkDistance"_s, pose.walkDistance},
             {u"onGround"_s, pose.onGround},
@@ -216,7 +216,7 @@ void QcControlEntityCommands::attack(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().attack()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().attack()) {
                                  m_context.setActiveError(u"Entity is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -255,7 +255,7 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().useItem()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().useItem()) {
                                  m_context.setActiveError(u"Entity is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -311,7 +311,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().targetEntity() != std::optional<quint32>(wanted) || !session().useItem()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(wanted) || !session().useItem()) {
                                  m_context.setActiveError(u"Minecart is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -319,7 +319,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
                              return false;
                          }
 
-                         if (session().riding().vehicle() == wanted) {
+                         if (session().prediction().riding().vehicle() == wanted) {
                              return true;
                          }
                          if (session().tickCount() >= startTick + 20) {
@@ -333,7 +333,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
 void QcControlEntityCommands::leave(const QJsonObject &request)
 {
     // Sneak until the server lets the player out of the cart.
-    if (!session().riding().isRiding()) {
+    if (!session().prediction().riding().isRiding()) {
         m_context.fail(request, u"The player rides no minecart"_s);
         return;
     }
@@ -343,7 +343,7 @@ void QcControlEntityCommands::leave(const QJsonObject &request)
     intent.sneak = true;
     session().setIntent(intent);
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(20), [this, startTick] {
-                         const bool out = !session().riding().isRiding();
+                         const bool out = !session().prediction().riding().isRiding();
                          if (!out && session().tickCount() < startTick + 20) {
                              return false;
                          }

@@ -57,8 +57,8 @@ void QcRenderBridge::updateHand(double alpha, const QcVec3 &eye, QcCameraMode mo
 void QcRenderBridge::updateSky(double alpha)
 {
     const QcClientSession &session = *m_parts.session;
-    const QcClientWeather &weather = session.weather();
-    QcSkyState sky = QcSky::at(session.worldTime() + alpha * QcPhysics::tickDuration);
+    const QcClientWeather &weather = session.worldMirror().weather();
+    QcSkyState sky = QcSky::at(session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration);
     sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(double(session.tickCount()) + alpha));
     m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
 }
@@ -70,21 +70,21 @@ void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
         return;
     }
 
-    m_precipitation.update(*session.world(), session.weather(), eye, frameSeconds);
+    m_precipitation.update(*session.world(), session.worldMirror().weather(), eye, frameSeconds);
     if (m_precipitation.particles().isEmpty()) {
         m_parts.view->setPrecipitation(nullptr);
         return;
     }
 
-    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.weather().rain()));
+    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain()));
 }
 
 void QcRenderBridge::updateSelection()
 {
     const QcClientSession &session = *m_parts.session;
-    const std::optional<QcRaycastHit> &target = session.target();
+    const std::optional<QcRaycastHit> &target = session.hand().target();
     QList<QcAabb> selection;
-    if (target && !session.targetEntity() && !m_outlineHidden) {
+    if (target && !session.hand().targetEntity() && !m_outlineHidden) {
         const std::optional<QcBlockId> block = session.world()->blockAt(target->block);
         const QcVec3 corner{double(target->block.x), double(target->block.y), double(target->block.z)};
         if (block && session.content()->isValidBlock(*block)) {

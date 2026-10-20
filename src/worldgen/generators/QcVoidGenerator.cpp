@@ -25,7 +25,7 @@ constexpr int maxY = QcWorld::worldHeight - 4;
 
 QcResult<QcVoidDefinition> QcVoidGenerator::parseOptions(const QString &options, const QcContentRegistry &content)
 {
-    QcVoidDefinition settings = content.voidWorld();
+    QcVoidDefinition settings = content.worldgen().voidWorld();
     const QStringList entries = options.split(u',', Qt::SkipEmptyParts);
     for (const QString &entry : entries) {
         const qsizetype equals = entry.indexOf(u'=');
@@ -67,7 +67,7 @@ QcVoidGenerator::QcVoidGenerator(std::shared_ptr<const QcContentRegistry> conten
     QcResult<QcVoidDefinition> parsed = parseOptions(options, *m_content);
     if (!parsed) {
         m_warnings.append(u"void world: %1; using the default platform"_s.arg(parsed.error()));
-        parsed = m_content->voidWorld();
+        parsed = m_content->worldgen().voidWorld();
     }
     const QcVoidDefinition &settings = *parsed;
     m_platform = m_content->blockId(settings.platform).value_or(m_content->blockId(QStringLiteral("qtcraft:stone")).value_or(qcAirBlockId));
@@ -95,5 +95,5 @@ std::shared_ptr<QcChunk> QcVoidGenerator::generate(QcChunkPos pos) const
 
 QcWorldSetup QcVoidGenerator::setup() const
 {
-    return QcWorldSetup::fromRules(m_content->voidWorld().rules);
+    return QcWorldSetup::fromRules(m_content->worldgen().voidWorld().rules);
 }

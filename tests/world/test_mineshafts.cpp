@@ -324,7 +324,7 @@ private slots:
         }
 
         // Several levels, staying inside the region and the heights of the settings.
-        const QcMineshaftSettings &settings = m_content->terrainSettings().mineshafts;
+        const QcMineshaftSettings &settings = m_content->worldgen().terrainSettings().mineshafts;
         int levels = 0;
         int nodes = 0;
         for (const auto &plan : std::as_const(m_plans)) {
@@ -440,7 +440,7 @@ private slots:
     {
         // Every pillar reaches solid ground, and every floor cell of a corridor has a carried one (on
         // ground, or on a pillar) within a support's spacing.
-        const int spacing = m_content->terrainSettings().mineshafts.supportSpacing;
+        const int spacing = m_content->worldgen().terrainSettings().mineshafts.supportSpacing;
         int bridges = 0;
         int pillars = 0;
         for (const auto &plan : std::as_const(m_plans)) {
@@ -543,7 +543,7 @@ private slots:
 
     void spawnersCartsAndLightsAreFurnished()
     {
-        const QcMineshaftSettings &settings = m_content->terrainSettings().mineshafts;
+        const QcMineshaftSettings &settings = m_content->worldgen().terrainSettings().mineshafts;
         int carts = 0;
         int spawners = 0;
         for (const auto &plan : std::as_const(m_plans)) {
@@ -669,9 +669,9 @@ private slots:
     void measureGenerationCost()
     {
         auto without = std::make_shared<QcContentRegistry>(*m_content);
-        QcTerrainSettings settings = without->terrainSettings();
+        QcTerrainSettings settings = without->worldgen().terrainSettings();
         settings.mineshafts.enabled = false;
-        without->setTerrainSettings(settings);
+        without->worldgen().setTerrainSettings(settings);
         const auto seconds = [](const QcTerrainGenerator &terrain, const QList<QcChunkPos> &chunks) {
             timespec start{};
             timespec end{};

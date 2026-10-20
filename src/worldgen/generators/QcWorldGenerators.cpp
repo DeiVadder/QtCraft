@@ -53,7 +53,7 @@ bool isKnown(const QString &type)
     }
 
     if (type == QLatin1StringView(flat)) {
-        return options.isEmpty() ? content.flatWorld().preset : options;
+        return options.isEmpty() ? content.worldgen().flatWorld().preset : options;
     }
     if (type == QLatin1StringView(empty)) {
         return QcVoidGenerator::optionsOf(*QcVoidGenerator::parseOptions(options, content));

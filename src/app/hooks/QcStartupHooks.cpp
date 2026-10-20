@@ -203,7 +203,7 @@ void QcStartupHooks::runOverlayStep(const QString &step)
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
     } else if (step == u"view:hide"_s || step == u"view:show"_s) {
-        showView(step == u"view:show"_s);
+        showView(step == u"view:show"_s, viewAttempts);
     } else if (step == u"fly"_s) {
         // Creative flight as after a double tap of jump (decision E-284).
         m_parts.session->gameMode().setFlightWanted(true);
@@ -227,12 +227,25 @@ void QcStartupHooks::pressKey(const QString &actionId) const
     m_screens.input.worldAction(*action, true);
 }
 
-void QcStartupHooks::showView(bool shown) const
+void QcStartupHooks::showView(bool shown, int attemptsLeft)
 {
     if (!m_parts.view) {
         qCWarning(lcGame) << "--overlay view: no world view";
         return;
     }
+
+    // A hide is only meaningful with meshed sections, a show only after the hide it follows.
+    const bool ready = shown ? !m_parts.view->isVisible() : m_parts.view->meshCount() > 0;
+    if (!ready && attemptsLeft > 0) {
+        // The screenshot waits for the step, as for every other step.
+        holdScreenshot();
+        QTimer::singleShot(viewRetryMs, this, [this, shown, attemptsLeft] {
+            showView(shown, attemptsLeft - 1);
+            releaseScreenshot();
+        });
+        return;
+    }
+
     // What the phase binding in Main.qml does when it hides the view (the binding is replaced).
     m_parts.view->setVisible(shown);
     qCInfo(lcGame).nospace() << (shown ? "World view shown (" : "World view hidden (") << m_parts.view->meshCount() << " sections)";
@@ -377,18 +390,18 @@ void QcStartupHooks::machineOpened()
     }
 
     m_fillMachineOnOpen = false;
-    QcClientSession &session = *m_parts.session;
+    const QcClientSession &session = *m_parts.session;
     if (session.machine().isContainer()) {
         for (int slot = 0; slot < 9; ++slot) {
-            session.moveInventoryItem(slot, QcMsg::MoveInventoryItem::machineInputSlot + slot);
+            session.inventoryMirror().moveItem(slot, QcMsg::MoveInventoryItem::machineInputSlot + slot);
         }
         QTimer::singleShot(1000, this, [this] { releaseScreenshot(); });
         return;
     }
 
     // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
-    session.moveInventoryItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
-    session.moveInventoryItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
+    session.inventoryMirror().moveItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
+    session.inventoryMirror().moveItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
     // A few seconds of burning show the flame and the arrow in the screenshot.
     QTimer::singleShot(2500, this, [this] { releaseScreenshot(); });
 }
@@ -397,7 +410,7 @@ void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
 {
     // The server streams the view distance (plus a ring) it granted in Welcome; a network server
     // may grant less than the settings ask for.
-    const int streamed = m_parts.session->viewDistance() > 0 ? m_parts.session->viewDistance() : viewDistance + 1;
+    const int streamed = m_parts.session->welcome().viewDistance > 0 ? m_parts.session->welcome().viewDistance : viewDistance + 1;
     const int ring = 2 * streamed + 1;
     const bool allChunksArrived = m_parts.session->world()->chunkCount() >= qsizetype(ring) * ring;
     if (m_screenshotHook && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0

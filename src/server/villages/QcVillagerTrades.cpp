@@ -60,7 +60,7 @@ QcVillagerTrades::QcVillagerTrades(const QcContentRegistry &content, const QcVil
     }
 
     // Sets in load order; an offer whose id a later set repeats is replaced in place.
-    for (const QcTradeSet &set : content.tradeSets()) {
+    for (const QcTradeSet &set : content.villageCatalog().tradeSets()) {
         QList<Offer> &offers = m_offers[set.profession];
         for (const QcTradeOffer &definition : set.offers) {
             const std::optional<Offer> offer = resolve(content, definition);

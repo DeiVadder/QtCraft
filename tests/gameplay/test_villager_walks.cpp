@@ -149,7 +149,7 @@ private slots:
         const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)]);
         QcPathFinder finder;
         QStringList unreachable;
-        for (const QcVillageStyleDefinition &definition : m_content->villageStyles()) {
+        for (const QcVillageStyleDefinition &definition : m_content->villageCatalog().styles()) {
             Village built = village(definition.name, false, {}, turns);
             QVERIFY(built.plan);
             // The well's side turned `turns`, the other half a turn more.
@@ -230,7 +230,7 @@ private slots:
         const auto homeElsewhere = std::ranges::find_if(built.plan->beds, [&](const QcVillagePlan::Spot &bed) { return !inHouse(bed.at); });
         QVERIFY(homeInside != built.plan->beds.end() && homeElsewhere != built.plan->beds.end());
         const int type = *m_content->mobIndex(u"qtcraft:villager"_s);
-        const QcVillagerSettings &settings = *m_content->villagerSettings(u"qtcraft:villager"_s);
+        const QcVillagerSettings &settings = *m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s);
         const quint32 out = built.mobs->spawn(type, {door.x + 0.5, double(door.y), door.z + 0.5}, built.nextId++);
         *built.mobs->find(out)->villager = QcVillagerHomes::settle(built.state(), homeElsewhere->at, built.mobs->find(out)->uid, settings, 1);
         // On the porch, a little off its middle line and away from the door.
@@ -327,7 +327,7 @@ private slots:
         stored.health = 20.0;
         QcVillagerRecord record;
         record.village = state.id;
-        record.profession = (*m_content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
+        record.profession = (*m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).unemployed;
         record.style = state.style;
         stored.villager = record;
         built.mobs->restore({stored}, {}, built.ids());
@@ -409,7 +409,7 @@ private slots:
         QVERIFY(start);
         const quint32 id = built.mobs->spawn(*m_content->mobIndex(u"qtcraft:villager"_s), *start, built.nextId++);
         QcCreature *walker = built.mobs->find(id);
-        *walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), 1);
+        *walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)), 1);
         bool arrived = false;
         for (int tick = 0; tick < 4800 && !arrived; ++tick) {
             this->tick(built, 0.5);
@@ -572,7 +572,7 @@ private slots:
         const QcAppearance look = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), farmer);
         QCOMPARE(look.outfit, u"qtcraft:villager_robe@qtcraft:farmer"_s);
         QCOMPARE(look.hair, u"qtcraft:villager_straw_hat"_s);
-        const QcAppearanceDefinition *outfit = m_content->appearance(look.outfit);
+        const QcAppearanceDefinition *outfit = m_content->assets().appearance(look.outfit);
         QVERIFY(outfit);
         QCOMPARE(outfit->layer(u"torso"_s)->texture, u"qtcraft:villager_farmer_apron"_s);
         QCOMPARE(outfit->layer(u"legs"_s)->texture, u"qtcraft:villager_robe"_s);
@@ -608,12 +608,12 @@ private slots:
         QCOMPARE(settings.professions.size(), 4);
         QCOMPARE(settings.forWorkstation(u"qtcraft:fisher"_s)->name, u"qtcraft:fisher"_s);
         QVERIFY(settings.profession(u"qtcraft:farmer"_s)->tendsCrops);
-        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:composter"_s), u"qtcraft:farmer"_s);
-        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:furnace"_s), u"qtcraft:smith"_s);
-        QCOMPARE(m_content->villageSettings().workstations.value(u"qtcraft:barrel"_s), u"qtcraft:fisher"_s);
-        QCOMPARE(m_content->villageSettings().workstations.size(), 3);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:composter"_s), u"qtcraft:farmer"_s);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:furnace"_s), u"qtcraft:smith"_s);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.value(u"qtcraft:barrel"_s), u"qtcraft:fisher"_s);
+        QCOMPARE(m_content->villageCatalog().settings().workstations.size(), 3);
         QCOMPARE(m_content->villagerOfStyle(u"qtcraft:plains"_s), villager);
-        QCOMPARE(m_content->golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
+        QCOMPARE(m_content->villageCatalog().golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
         QCOMPARE(settings.activityAt(0.75), QcVillagerActivity::Sleep);
         QCOMPARE(settings.activityAt(0.995), QcVillagerActivity::Home);
 

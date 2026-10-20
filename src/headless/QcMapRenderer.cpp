@@ -16,7 +16,7 @@ namespace {
 
 QColor blockColour(const QcContentRegistry &content, QcBlockId block)
 {
-    const QcTextureDefinition *texture = content.texture(content.block(block).texture(QcBlockFace::Up));
+    const QcTextureDefinition *texture = content.assets().texture(content.block(block).texture(QcBlockFace::Up));
     // Ores show the colour of their speckles.
     const bool ore = texture && texture->procedural.value(u"pattern"_s).toString() == u"ore"_s;
     const QString primary = texture ? texture->procedural.value(ore ? u"secondary"_s : u"primary"_s).toString() : QString();

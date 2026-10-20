@@ -77,7 +77,7 @@ QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry
     , m_doors(*m_content)
 {
     const QcContentRegistry &registry = *m_content;
-    for (const QcVillagerSettings &species : registry.villagerSpecies()) {
+    for (const QcVillagerSettings &species : registry.villageCatalog().villagerSpecies()) {
         m_trades.insert(species.name, QcVillagerTrades(registry, species));
     }
     m_ripe.assign(std::size_t(registry.stateCount()), false);

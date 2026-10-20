@@ -372,7 +372,7 @@ bool QcGamepadControls::runItemPress(QcClientSession &session, Press press)
         }
         return true;
     case Action::PickBlock:
-        if (const std::optional<QcRaycastHit> &target = session.target(); press.pressed && target && !session.isDead()) {
+        if (const std::optional<QcRaycastHit> &target = session.hand().target(); press.pressed && target && !session.isDead()) {
             session.gameMode().pickBlock(target->block);
         }
         return true;

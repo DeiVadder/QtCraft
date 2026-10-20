@@ -151,7 +151,7 @@ private:
 
         Walk result;
         result.position = m_session->playerMotion().position;
-        result.largestCorrection = m_session->largestCorrection();
+        result.largestCorrection = m_session->prediction().largestCorrection();
         bool moving = false;
         const QList<QcMsg::PlayerInput> sentInputs = m_wire->sentOf<QcMsg::PlayerInput>();
         for (QcMsg::PlayerInput sent : sentInputs) {
@@ -316,9 +316,9 @@ private slots:
 
         const QcVec3 cartAt = m_session->entities().value(cart).position;
         QcControlAim::lookAtPoint(*m_session, cartAt + QcVec3{0.0, 0.3, 0.0});
-        QTRY_COMPARE_WITH_TIMEOUT(m_session->targetEntity(), std::optional<quint32>(cart), timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(m_session->hand().targetEntity(), std::optional<quint32>(cart), timeoutMs);
         QVERIFY(m_session->useItem());
-        QTRY_COMPARE_WITH_TIMEOUT(m_session->riding().vehicle(), cart, timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(m_session->prediction().riding().vehicle(), cart, timeoutMs);
         waitTicks(5);
         const QcVec3 seat = m_session->playerMotion().position;
         QVERIFY2((QcVec3{seat.x, 0.0, seat.z} - QcVec3{cartAt.x, 0.0, cartAt.z}).length() < 0.5, qPrintable(QString::number(seat.x)));
@@ -326,13 +326,13 @@ private slots:
         QcPlayerInput sneak = m_session->intent();
         sneak.sneak = true;
         m_session->setIntent(sneak);
-        QTRY_VERIFY_WITH_TIMEOUT(!m_session->riding().isRiding(), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_session->prediction().riding().isRiding(), timeoutMs);
         m_session->setIntent({});
         QTRY_VERIFY_WITH_TIMEOUT(m_session->playerMotion().onGround, timeoutMs);
         waitTicks(5);
         m_session->resetCorrections();
         waitTicks(10);
-        QVERIFY2(m_session->largestCorrection() < 1e-9, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
     }
 
     void sameWalkThreadedAndInline()

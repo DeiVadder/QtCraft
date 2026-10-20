@@ -158,9 +158,9 @@ private:
 
     static void setGolemSettings(Village &village, const std::function<void(QcVillageGolemSettings &)> &change)
     {
-        QcVillageSettings settings = village.content->villageSettings();
+        QcVillageSettings settings = village.content->villageCatalog().settings();
         change(settings.golem);
-        village.content->setVillageSettings(settings);
+        village.content->villageCatalog().setSettings(settings);
     }
 
     static void removeGolems(Village &village)

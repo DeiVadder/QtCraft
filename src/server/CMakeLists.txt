@@ -4,6 +4,7 @@ qt_add_library(qc_server STATIC)
 target_sources(qc_server PRIVATE
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
+    blockentities/QcBlockEntityExtras.h blockentities/QcBlockEntityExtras.cpp
 )
 target_sources(qc_server PRIVATE
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
@@ -26,6 +27,7 @@ target_sources(qc_server PRIVATE
     chunks/QcChunkLinks.h chunks/QcChunkLinks.cpp
     chunks/QcChunkLoaders.h chunks/QcChunkLoaders.cpp
     chunks/QcChunkLoading.h chunks/QcChunkLoading.cpp
+    chunks/QcChunkSaveState.h chunks/QcChunkSaveState.cpp
     chunks/QcChunkStreaming.h chunks/QcChunkStreaming.cpp
     chunks/QcChunkTickets.h chunks/QcChunkTickets.cpp
     chunks/QcSectionMarks.h chunks/QcSectionMarks.cpp

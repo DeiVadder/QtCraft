@@ -87,7 +87,7 @@ bool placesIn(const QcContentRegistry &content, const QcVillageStyleDefinition &
     const auto isSelf = [&](const QString &name) { return content.mobIndex(name) == self; };
     for (const QcVillagePiece &piece : style.pieces) {
         for (const QcVillageBlueprint &blueprint : piece.blueprints) {
-            const QcStructureDefinition *structure = content.structure(blueprint.structure);
+            const QcStructureDefinition *structure = content.worldgen().structure(blueprint.structure);
             if (structure && std::ranges::any_of(structure->mobs, isSelf, &QcStructureDefinition::Mob::mob)) {
                 return true;
             }
@@ -100,7 +100,7 @@ bool placesIn(const QcContentRegistry &content, const QcVillageStyleDefinition &
 QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry &content, const QcMobDefinition &mob)
 {
     QList<const QcVillageStyleDefinition *> styles;
-    for (const QcVillageStyleDefinition &style : content.villageStyles()) {
+    for (const QcVillageStyleDefinition &style : content.villageCatalog().styles()) {
         if (placesIn(content, style, mob)) {
             styles.append(&style);
         }
@@ -257,7 +257,7 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     sections.append(std::move(spawnsOn));
 
     Section biomes{text.label(u"section.spawnBiomes"_s), {}, {}, {}};
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         if (mob.spawnBiomes.contains(biome.name)) {
             biomes.links.append(context.links.biomeLink(biome));
         }
@@ -280,7 +280,7 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     }
 
     Section villages{context.text.label(u"section.villages"_s), {}, {}, {}};
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         if (std::ranges::any_of(styles, [&](const QcVillageStyleDefinition *style) { return style->biomes.contains(biome.name); })) {
             villages.links.append(context.links.biomeLink(biome));
         }
@@ -316,7 +316,7 @@ Section extraSpawnSection(const QcHandbookContext &context, const QcMobDefinitio
     }
 
     Section also{text.label(u"section.alsoSpawns"_s), conditions.join(u"; "_s), {}, {}};
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         if (rule.biomes.contains(biome.name)) {
             also.links.append(context.links.biomeLink(biome));
         }
@@ -340,7 +340,7 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.name = mob.name;
     entry.category = u"creatures"_s;
     entry.pack = QcHandbookLinks::packOf(mob.name);
-    entry.title = context.content.translate(mob.translationKey, text.language());
+    entry.title = context.content.translations().translate(mob.translationKey, text.language());
     entry.icon = mob.drops.isEmpty() ? links.itemIcon(mob.catchItem) : links.itemIcon(mob.drops.first().item);
     entry.text = text.description(mob.descriptionKey, mob.name);
     entry.facts.append({text.label(u"fact.id"_s), mob.name, {}});
@@ -358,7 +358,7 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
         entry.sections.append(extraSpawnSection(context, rule));
     }
 
-    entry.englishTitle = context.content.translate(mob.translationKey, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(mob.translationKey, QcHandbookText::english());
     return entry;
 }
 

@@ -194,20 +194,20 @@ private slots:
         frame();
         QVERIFY(session().intent().forward > 0.9f);
         QVERIFY(session().intent().sneak);
-        QVERIFY(session().miningRequested());
+        QVERIFY(session().hand().miningRequested());
 
         m_screens->setOverlay(QcScreenState::Overlay::Inventory);
         frame();
         QCOMPARE(session().intent().forward, 0.0f);
         QVERIFY(!session().intent().sneak);
-        QVERIFY(!session().miningRequested());
+        QVERIFY(!session().hand().miningRequested());
         QVERIFY(m_pad.sneakToggled());
 
         m_screens->setOverlay(QcScreenState::Overlay::None);
         frame();
         QVERIFY(session().intent().sneak);
         // The trigger still held from before the screen does not mine again without a new press.
-        QVERIFY(!session().miningRequested());
+        QVERIFY(!session().hand().miningRequested());
     }
 
     // Presses while the window is in the background (suspend(), as the game calls it when the
@@ -247,7 +247,7 @@ private slots:
         session().setMining(true);
         axis(m_first, QcGamepadAxis::RightTrigger, 0.0f);
         frame();
-        QVERIFY(session().miningRequested());
+        QVERIFY(session().hand().miningRequested());
     }
 
     // A second pad takes the lead with a press, not with a drifting stick nor a pushed one while the
@@ -258,7 +258,7 @@ private slots:
         axis(m_first, QcGamepadAxis::LeftY, -1.0f);
         axis(m_first, QcGamepadAxis::RightTrigger, 1.0f);
         frame();
-        QVERIFY(session().miningRequested());
+        QVERIFY(session().hand().miningRequested());
 
         axis(second, QcGamepadAxis::LeftX, 0.3f);
         axis(second, QcGamepadAxis::RightX, 0.9f);
@@ -269,7 +269,7 @@ private slots:
         press(second, QcGamepadButton::South, true);
         QCOMPARE(m_pad.activePad(), second);
         frame();
-        QVERIFY(!session().miningRequested());
+        QVERIFY(!session().hand().miningRequested());
         QCOMPARE(session().intent().forward, 0.0f);
         press(second, QcGamepadButton::South, false);
 

@@ -24,7 +24,7 @@ Link relatedLink(const QcHandbookContext &context, const QString &name)
     if (const std::optional<int> mob = content.mobIndex(name)) {
         return context.links.mobLink(content.mobs()[*mob]);
     }
-    if (const auto biome = std::ranges::find(content.biomes(), name, &QcBiomeDefinition::name); biome != content.biomes().end()) {
+    if (const auto biome = std::ranges::find(content.worldgen().biomes(), name, &QcBiomeDefinition::name); biome != content.worldgen().biomes().end()) {
         return context.links.biomeLink(*biome);
     }
     return link;
@@ -38,7 +38,7 @@ QcHandbookEntry chapterPage(const QcHandbookContext &context, const QcHandbookCh
     entry.name = chapter.name;
     entry.category = u"playing"_s;
     entry.pack = QcHandbookLinks::packOf(chapter.name);
-    entry.title = context.content.translate(chapter.titleKey, text.language());
+    entry.title = context.content.translations().translate(chapter.titleKey, text.language());
     entry.icon = context.links.itemIcon(chapter.iconItem);
 
     for (const QString &name : chapter.sections) {
@@ -59,7 +59,7 @@ QcHandbookEntry chapterPage(const QcHandbookContext &context, const QcHandbookCh
         entry.sections.append(std::move(related));
     }
 
-    entry.englishTitle = context.content.translate(chapter.titleKey, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(chapter.titleKey, QcHandbookText::english());
     return entry;
 }
 

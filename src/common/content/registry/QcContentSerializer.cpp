@@ -443,7 +443,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
             entries.insert(key, text);
         }
 
-        registry.addTranslations(language, entries);
+        registry.translations().add(language, entries);
     }
     return {};
 }
@@ -600,7 +600,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         if (!definition) {
             return false;
         }
-        registry.registerTexture(std::move(*definition));
+        registry.assets().registerTexture(std::move(*definition));
         return true;
     });
 }
@@ -624,7 +624,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         if (!definition) {
             return false;
         }
-        registry.registerModel(std::move(*definition));
+        registry.assets().registerModel(std::move(*definition));
         return true;
     });
 }
@@ -636,7 +636,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         if (!definition) {
             return false;
         }
-        registry.registerAppearance(std::move(*definition));
+        registry.assets().registerAppearance(std::move(*definition));
         return true;
     });
 }
@@ -660,7 +660,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         if (!definition) {
             return false;
         }
-        registry.registerSound(std::move(*definition));
+        registry.assets().registerSound(std::move(*definition));
         return true;
     });
 }
@@ -697,20 +697,20 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     writeList(stream, content.items(), writeItem);
     writeList(stream, content.mobs(), writeMob);
     writeList(stream, content.recipes(), writeRecipe);
-    writeList(stream, content.textures(), [](QDataStream &out, const QcTextureDefinition &texture) {
+    writeList(stream, content.assets().textures(), [](QDataStream &out, const QcTextureDefinition &texture) {
         out << texture.name << QJsonDocument(texture.procedural).toJson(QJsonDocument::Compact) << texture.png;
     });
-    writeTranslations(stream, content.m_translations);
+    writeTranslations(stream, content.translations().tables());
     writeList(stream, content.packs(), [](QDataStream &out, const QcPackReference &pack) {
         out << pack.id << pack.name << pack.version;
     });
-    writeList(stream, content.models(), writeModel);
-    writeList(stream, content.appearances(), writeAppearance);
+    writeList(stream, content.assets().models(), writeModel);
+    writeList(stream, content.assets().appearances(), writeAppearance);
     writeList(stream, content.smeltingRecipes(), [](QDataStream &out, const QcSmeltingRecipe &recipe) {
         out << recipe.name << recipe.category << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
             << recipe.seconds;
     });
-    writeList(stream, content.sounds(), writeSound);
+    writeList(stream, content.assets().sounds(), writeSound);
     writeList(stream, content.effects(), writeEffect);
 }
 

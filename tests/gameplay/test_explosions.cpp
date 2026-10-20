@@ -332,8 +332,8 @@ private slots:
         // else, and the player at the lever takes no damage.
         buildArea();
         chat(u"/gamemode survival"_s);
-        const auto definition = std::ranges::find(m_content->structures(), u"qtcraft:explosives_station"_s, &QcStructureDefinition::name);
-        QVERIFY(definition != m_content->structures().end());
+        const auto definition = std::ranges::find(m_content->worldgen().structures(), u"qtcraft:explosives_station"_s, &QcStructureDefinition::name);
+        QVERIFY(definition != m_content->worldgen().structures().end());
         const QcStructure::Loaded station = QcStructure::fromDefinition(*definition, *m_content);
         QVERIFY(station.has_value());
         // Local y 0 is the ground layer: the area's stone floor.
@@ -380,8 +380,8 @@ private slots:
         // chest lights the explosive under it, and the chain takes the other three with it.
         buildArea();
         chat(u"/gamemode survival"_s);
-        const auto definition = std::ranges::find(m_content->structures(), u"qtcraft:coastal_tower"_s, &QcStructureDefinition::name);
-        QVERIFY(definition != m_content->structures().end());
+        const auto definition = std::ranges::find(m_content->worldgen().structures(), u"qtcraft:coastal_tower"_s, &QcStructureDefinition::name);
+        QVERIFY(definition != m_content->worldgen().structures().end());
         const QcStructure::Loaded tower = QcStructure::fromDefinition(*definition, *m_content);
         QVERIFY(tower.has_value());
         const QcBlockPos origin = at(3, 20, 3);

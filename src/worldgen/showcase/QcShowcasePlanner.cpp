@@ -32,7 +32,7 @@ QcBlockId resolved(const QcContentRegistry &content, const QString &name, const 
 
 QList<QcBlockId> groundColumnOf(const QcContentRegistry &content)
 {
-    QList<QcShowcaseDefinition::Layer> layers = content.showcase().layers;
+    QList<QcShowcaseDefinition::Layer> layers = content.worldgen().showcase().layers;
     if (layers.isEmpty()) {
         layers = {{u"qtcraft:bedrock"_s, 1}, {u"qtcraft:stone"_s, defaultStoneDepth}, {u"qtcraft:dirt"_s, 3}, {u"qtcraft:grass_block"_s, 1}};
     }
@@ -71,8 +71,8 @@ QcShowcasePlanner::QcShowcasePlanner(const QcContentRegistry &content)
     : m_content(content)
     , m_groundColumn(groundColumnOf(content))
 {
-    const QString lookout = content.showcase().lookout;
-    if (const QcStructureDefinition *definition = lookout.isEmpty() ? nullptr : content.structure(lookout)) {
+    const QString lookout = content.worldgen().showcase().lookout;
+    if (const QcStructureDefinition *definition = lookout.isEmpty() ? nullptr : content.worldgen().structure(lookout)) {
         QcStructure::Loaded structure = QcStructure::fromDefinition(*definition, content);
         m_warnings.append(QcStructure::warningsOf(structure));
         if (structure) {
@@ -87,7 +87,7 @@ QcShowcasePlanner::QcShowcasePlanner(const QcContentRegistry &content)
 
 QcShowcaseContext QcShowcasePlanner::context() const
 {
-    const QcShowcaseDefinition &settings = m_content.showcase();
+    const QcShowcaseDefinition &settings = m_content.worldgen().showcase();
     return {m_content,
             settings,
             int(m_groundColumn.size()) - 1,
@@ -100,7 +100,7 @@ QcShowcaseContext QcShowcasePlanner::context() const
 QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders()
 {
     QList<const QcStructureDefinition *> demos;
-    for (const QcStructureDefinition &structure : m_content.structures()) {
+    for (const QcStructureDefinition &structure : m_content.worldgen().structures()) {
         if (structure.showcase) {
             demos.append(&structure);
         }
@@ -137,7 +137,7 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
         builders.append([context](QcBlockPos anchor) { return QcShowcaseArmourArea::build(context, anchor); });
     }
 
-    QList<QcShowcaseCategory> categories = m_content.showcase().categories;
+    QList<QcShowcaseCategory> categories = m_content.worldgen().showcase().categories;
     if (categories.isEmpty()) {
         categories.append({u"blocks"_s, u"showcase.category.blocks"_s, {}});
     }
@@ -162,7 +162,7 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
 
 QcShowcasePlanner::Placed QcShowcasePlanner::placeNext(const QcShowcaseAreaBuilder &builder, Cursor cursor) const
 {
-    const int rowEnd = firstAreaX + m_content.showcase().rowWidth;
+    const int rowEnd = firstAreaX + m_content.worldgen().showcase().rowWidth;
     QcShowcaseArea area = builder({cursor.x, int(m_groundColumn.size()) - 1, cursor.front});
     if (cursor.x > firstAreaX && cursor.x + area.structure->sizeX() > rowEnd) {
         cursor = {firstAreaX, cursor.north - rowGap, cursor.north - rowGap};
@@ -180,7 +180,7 @@ QcShowcasePlan QcShowcasePlanner::build()
     m_plan.groundColumn = m_groundColumn;
     const QcShowcaseContext areaContext = context();
     m_plan.spawn = {0, areaContext.groundTop + 1, 0};
-    m_plan.setup.timeOfDay = m_content.showcase().timeOfDay;
+    m_plan.setup.timeOfDay = m_content.worldgen().showcase().timeOfDay;
     m_plan.setup.daylightCycle = false;
     // Every crop stage and soil state on show stays as it is (decision E-295).
     m_plan.setup.randomTicks = false;

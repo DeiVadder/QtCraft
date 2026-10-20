@@ -63,7 +63,7 @@ void QcControlMachineCommands::openMachine(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (!session().target() || session().target()->block != pos || !session().useItem()) {
+                             if (!session().hand().target() || session().hand().target()->block != pos || !session().useItem()) {
                                  m_context.setActiveError(u"The block is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -160,7 +160,7 @@ int QcControlMachineCommands::outputDestination(QcItemStack output) const
 void QcControlMachineCommands::moveMachineItem(const QJsonObject &request, int from, int to)
 {
     const quint64 startTick = session().tickCount();
-    session().moveInventoryItem(from, to, std::max(0, QcControlArguments::intField(request, u"count"_s, 0)));
+    session().inventoryMirror().moveItem(from, to, std::max(0, QcControlArguments::intField(request, u"count"_s, 0)));
     m_context.waitTicks(request, startTick, 3, [this] { return m_context.reports().machineJson(); });
 }
 

@@ -18,7 +18,7 @@ void QcServerSounds::play(const QString &key, const QcVec3 &position, float volu
         return;
     }
 
-    const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_state.content().sound(key);
+    const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_state.content().assets().sound(key);
     if (!sound) {
         return;
     }

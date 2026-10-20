@@ -108,8 +108,8 @@ inline QStringList lines(QcServer &server, const QcContentRegistry &content)
     for (const QcChunkPos &pos : chunks) {
         lines.append(chunkLines(*entities.chunk(pos), now, content));
     }
-    if (QcChunkIo *storage = server.world().storage()) {
-        const QList<QcChunkPos> stored = server.world().storedChunks();
+    if (QcChunkIo *storage = server.world().saves().storage()) {
+        const QList<QcChunkPos> stored = server.world().saves().storedChunks();
         for (const QcChunkPos &pos : stored) {
             if (!server.world().chunk(pos)) {
                 lines.append(recordLines(storage->readNow(pos).blockEntities, content));

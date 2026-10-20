@@ -8,10 +8,12 @@
 #include "common/world/QcBlockAccess.h"
 #include "common/world/QcChunk.h"
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/blockentities/QcBlockEntityExtras.h"
 #include "server/blocks/QcFireQueue.h"
 #include "server/chunks/QcBlockIndex.h"
 #include "server/chunks/QcChunkLinks.h"
 #include "server/chunks/QcChunkLoaders.h"
+#include "server/chunks/QcChunkSaveState.h"
 #include "server/chunks/QcSectionMarks.h"
 #include "server/spawners/QcSpawners.h"
 #include "server/storage/QcChunkIo.h"
@@ -75,19 +77,10 @@ public:
     // The monster spawners of the loaded chunks (decision E-520), kept in step like the fires.
     QcSpawners &spawners() { return m_spawners; }
     const QcSpawners &spawners() const { return m_spawners; }
-    // Loaded chunks whose generated block entities (the chests' loot, the spawners' kinds; decision
-    // E-520) were put in once (QcFurnishing); saved with the chunk, forgotten with it.
-    bool isFurnished(QcChunkPos pos) const { return m_furnished.contains(pos); }
-    void noteFurnished(QcChunkPos pos) { m_furnished.insert(pos); }
-    // What the saved block entities of the loaded chunks hold that this version does not read
-    // (decision E-440): unknown tables and tails of newer versions, by chunk, written back when the
-    // chunk is saved or leaves the world (QcChunkLoading) and forgotten with its block entities. The
-    // tail of an entry goes when a block set here ends the entry, so a block built anew at its place
-    // starts without it.
-    const QHash<QcChunkPos, QcBlockEntityKept> &blockEntityParts() const { return m_blockEntityParts; }
-    // Holds `parts` for a loaded chunk (nothing when they are empty).
-    void keepBlockEntityParts(QcChunkPos pos, QcBlockEntityKept parts);
-    QcBlockEntityKept takeBlockEntityParts(QcChunkPos pos) { return m_blockEntityParts.take(pos); }
+    // Which loaded chunks were furnished and the parts of their saved block entities this version
+    // does not read (decisions E-520, E-440); kept in step with every block set here.
+    QcBlockEntityExtras &blockEntityExtras() { return m_blockEntityExtras; }
+    const QcBlockEntityExtras &blockEntityExtras() const { return m_blockEntityExtras; }
     // Circuits across chunk borders (decision E-375).
     const QcChunkLinks &links() const { return m_links; }
     // Chunk loader blocks of the world, loaded or not (decision E-377).
@@ -102,11 +95,10 @@ public:
     // Reads and writes stored chunks through `io` (none: chunks are only generated); `catalog` is what
     // the storage holds. The world does not own `io`.
     void setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog);
-    QcChunkIo *storage() const { return m_io; }
-    // What the storage holds of a chunk, as far as the server knows (kept up to date by noteKept()).
-    [[nodiscard]] std::optional<Stored> stored(QcChunkPos pos) const;
-    qsizetype storedChunkCount() const { return m_catalog.size(); }
-    QList<QcChunkPos> storedChunks() const { return m_catalog.keys(); }
+    // What the storage holds of the chunks, the loaded chunks that differ from it or from the
+    // generator, the quarantined chunks (decision E-373).
+    QcChunkSaveState &saves() { return m_saves; }
+    const QcChunkSaveState &saves() const { return m_saves; }
     // Called with what was kept of every chunk that enters the world (read or generated).
     void setArrivalHandler(ArrivalHandler handler) { m_onArrival = std::move(handler); }
     // Loads a chunk now with the chunks of its group (QcChunkLoading::loadGroupNow); loadChunk() asks
@@ -134,11 +126,6 @@ public:
     // tick thread finds them planned (QcWorldGenerator::plannedGuardSitesNear, QcGuardians); one such
     // job at a time, a call while one runs is dropped.
     void planGuardSitesInBackground(QcBlockPos from, int reach);
-    // Chunks whose stored data is damaged (decision E-373): they play as generated and are never
-    // saved, until /regenerate replaces their stored data (regenerateChunk).
-    bool isQuarantined(QcChunkPos pos) const { return m_quarantined.contains(pos); }
-    // Chunks found damaged since the last call (the server tells the operators).
-    QList<QcChunkPos> takeNewlyQuarantined() { return std::exchange(m_newlyQuarantined, {}); }
 
     // Takes a chunk out of the world with what was derived from its blocks (marks, hoppers, links);
     // its block entities must have been taken before (QcBlockEntityRecord::takeFrom). Returns its blocks
@@ -170,18 +157,8 @@ public:
 
     // Chunks put into the world as changed (tests).
     void adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<QcChunk>> &chunks);
-    // Whether the blocks of a loaded chunk changed since they were last kept.
-    bool isChanged(QcChunkPos pos) const { return m_changed.contains(pos); }
-    // Whether the blocks of a loaded chunk differ from what the generator makes (changed while
-    // loaded or read from storage).
-    bool differsFromGenerated(QcChunkPos pos) const { return m_differs.contains(pos); }
-    qsizetype changedChunkCount() const { return m_changed.size(); }
     // The blocks of a changed chunk as a snapshot for keeping (a save); it counts as unchanged then.
     std::shared_ptr<const QcChunk> takeChanged(QcChunkPos pos);
-    // The chunk counts as changed again (a save failed).
-    void markChanged(QcChunkPos pos);
-    // What was handed to the storage for a chunk (keeps stored() up to date).
-    void noteKept(const QcChunkIo::Departure &departure);
 
 private:
     // Records the marked sections, the hoppers, the links, the block entities and the fires of a chunk
@@ -189,8 +166,6 @@ private:
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
     // Forgets what was derived from a chunk that left the world or is generated again.
     void forgetSections(QcChunkPos pos);
-    // Drops the kept tails of the entries at `pos` that the block just set there ended.
-    void dropOrphanTails(QcBlockPos pos);
     // `light`: the chunk's own light prepared in the background (null: computed here).
     void insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk, const std::shared_ptr<QcLightEngine::Prepared> &light);
     void generateInBackground(QcChunkPos pos, Arrival kept);
@@ -206,22 +181,16 @@ private:
     QcBlockEntities m_blockEntities;
     QcFireQueue m_fires;
     QcSpawners m_spawners;
-    QSet<QcChunkPos> m_furnished;
-    QHash<QcChunkPos, QcBlockEntityKept> m_blockEntityParts;
+    QcBlockEntityExtras m_blockEntityExtras;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).
     QcLightEngine m_light;
     // Chunks under way, with the number of their latest request.
     QHash<QcChunkPos, quint64> m_pending;
     quint64 m_nextRequest = 1;
-    QSet<QcChunkPos> m_changed;
-    QSet<QcChunkPos> m_differs;
-    QSet<QcChunkPos> m_quarantined;
-    QList<QcChunkPos> m_newlyQuarantined;
+    QcChunkSaveState m_saves;
     QList<QcChunkPos> m_newlyLoaded;
     quint64 m_loadedEpoch = 0;
-    QcChunkIo *m_io = nullptr;
-    QHash<QcChunkPos, Stored> m_catalog;
     ArrivalHandler m_onArrival;
     GroupLoader m_loadGroup;
     QcMailbox<Arrival> m_generated;

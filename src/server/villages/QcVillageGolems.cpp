@@ -41,7 +41,7 @@ QcVillageGolems::QcVillageGolems(std::shared_ptr<const QcContentRegistry> conten
 
 std::optional<int> QcVillageGolems::kind(const QString &style) const
 {
-    const QString name = m_content->golemOfStyle(style).mob;
+    const QString name = m_content->villageCatalog().golemOfStyle(style).mob;
     const std::optional<int> type = name.isEmpty() ? std::nullopt : m_content->mobIndex(name);
     if (!type && !name.isEmpty() && !m_missingLogged) {
         m_missingLogged = true;
@@ -105,7 +105,7 @@ QList<QcVillageGolems::Group> QcVillageGolems::groups(const QList<QcCreature> &m
         if (!mob.isVillager() || (id != 0 && (!villages.contains(id) || !village))) {
             continue;
         }
-        if (wants(mob, m_content->golemOfStyle(village ? village->style : QString()), context.worldTime) != Want::None) {
+        if (wants(mob, m_content->villageCatalog().golemOfStyle(village ? village->style : QString()), context.worldTime) != Want::None) {
             Group &group = byVillage[id];
             group.village = id;
             group.wanting.append(&mob);
@@ -123,7 +123,7 @@ QList<QcVillageGolems::Spawn> QcVillageGolems::summon(const Group &group, int ty
                                                      qint64 allowed)
 {
     QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
-    const QcVillageGolemSettings settings = m_content->golemOfStyle(village ? village->style : QString());
+    const QcVillageGolemSettings settings = m_content->villageCatalog().golemOfStyle(village ? village->style : QString());
     // Gossip summons with its chance once per check and village.
     const double roll = qcPositionRandom(qcMixSeed(context.seed, gossipSalt), int(group.village % 1000003), tickOf(context.worldTime), 0);
     QList<Spawn> spawns;
@@ -175,7 +175,7 @@ bool QcVillageGolems::calls(const QcCreature &summoner, const Group &group, cons
 
 void QcVillageGolems::forgetRestedChunks(double worldTime)
 {
-    const double cooldown = m_content->golemOfStyle(QString()).cooldownSeconds;
+    const double cooldown = m_content->villageCatalog().golemOfStyle(QString()).cooldownSeconds;
     m_lastWithoutVillage.removeIf([&](const auto &entry) { return entry.value() > worldTime || worldTime - entry.value() >= cooldown; });
 }
 

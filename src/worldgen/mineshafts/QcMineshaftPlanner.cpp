@@ -29,7 +29,7 @@ enum Purpose : int {
 
 QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
-    , m_settings(content.terrainSettings().mineshafts)
+    , m_settings(content.worldgen().terrainSettings().mineshafts)
     , m_seed(qcMixSeed(seed, 0x3803))
 {
     if (!m_settings.enabled) {
@@ -43,7 +43,7 @@ QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const 
 
     m_blocks = std::move(*blocks.blocks);
     for (const QcMineshaftSettings::BiomeChance &entry : std::as_const(m_settings.entranceBiomes)) {
-        if (!std::ranges::contains(content.biomes(), entry.biome, &QcBiomeDefinition::name)) {
+        if (!std::ranges::contains(content.worldgen().biomes(), entry.biome, &QcBiomeDefinition::name)) {
             m_warnings.append(u"mineshafts: 'entranceBiomes' names unknown biome '%1'"_s.arg(entry.biome));
         }
     }

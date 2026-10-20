@@ -157,7 +157,7 @@ private slots:
 
     void languagesAndThemeMatchRepository()
     {
-        QStringList languages = m_content->languages();
+        QStringList languages = m_content->translations().languages();
         languages.sort();
         QCOMPARE(languages, (QStringList{u"de"_s, u"en"_s}));
 

@@ -102,7 +102,7 @@ Section toolSection(const QcHandbookContext &context, const QString &category)
     QMap<int, QStringList> needs;
     for (const QcBlockDefinition &block : context.content.blocks()) {
         if (block.tool == category && block.toolLevel > 0 && block.partOf.isEmpty()) {
-            needs[block.toolLevel].append(context.content.translate(block.translationKey, text.language()));
+            needs[block.toolLevel].append(context.content.translations().translate(block.translationKey, text.language()));
         }
     }
 
@@ -156,7 +156,7 @@ QcHandbookEntry armourTable(const QcHandbookContext &context)
     }
 
     for (const QString &set : std::as_const(order)) {
-        const QString title = context.content.translate(u"armour_set."_s + QString(set).replace(u':', u'.'), text.language());
+        const QString title = context.content.translations().translate(u"armour_set."_s + QString(set).replace(u':', u'.'), text.language());
         armour.sections.append({title, {}, orderedLinks(sets.take(set)), {}});
     }
     return armour;
@@ -195,7 +195,7 @@ QcHandbookEntry tablePage(const QcHandbookContext &context, const QString &name,
     entry.title = context.text.label(u"table."_s + name);
     entry.text = context.text.label(u"table."_s + name + u"Text"_s);
     entry.icon = context.links.itemIcon(iconItem);
-    entry.englishTitle = context.content.translate(u"handbook.table."_s + name, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(u"handbook.table."_s + name, QcHandbookText::english());
     return entry;
 }
 

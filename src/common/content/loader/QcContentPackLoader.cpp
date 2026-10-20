@@ -291,7 +291,7 @@ void PackReader::loadTextures()
             continue;
         }
 
-        m_registry.registerTexture(*texture);
+        m_registry.assets().registerTexture(*texture);
     }
 
     const QStringList pngFiles = filesIn(m_root.filePath(u"textures"_s), u"*.png"_s);
@@ -308,7 +308,7 @@ void PackReader::loadTextures()
             continue;
         }
 
-        m_registry.registerTexture({name, {}, *png});
+        m_registry.assets().registerTexture({name, {}, *png});
     }
 }
 
@@ -363,7 +363,7 @@ void PackReader::applyStyleExtensions(const QList<std::pair<QString, QJsonObject
     for (qsizetype index = 0; index < extensions.size(); ++index) {
         const auto &[path, json] = extensions[index];
         const QcResult<QString> baseName = QcVillageParser::extendedStyle(json, m_packId);
-        const QcVillageStyleDefinition *base = baseName ? m_registry.villageStyle(*baseName) : nullptr;
+        const QcVillageStyleDefinition *base = baseName ? m_registry.villageCatalog().style(*baseName) : nullptr;
         if (!baseName) {
             m_warnings.append(u"%1: %2"_s.arg(path, baseName.error()));
             continue;
@@ -381,7 +381,7 @@ void PackReader::applyStyleExtensions(const QList<std::pair<QString, QJsonObject
             m_warnings.append(u"%1: %2"_s.arg(path, style.error()));
             continue;
         }
-        m_registry.registerVillageStyle(std::move(*style));
+        m_registry.villageCatalog().registerStyle(std::move(*style));
     }
 }
 
@@ -398,7 +398,7 @@ void PackReader::loadVillageStyles()
         } else if (json->contains(u"extends"_s)) {
             extensions.append({path, *json});
         } else if (QcResult<QcVillageStyleDefinition> style = QcVillageParser::parseVillageStyle(*json, m_packId)) {
-            m_registry.registerVillageStyle(std::move(*style));
+            m_registry.villageCatalog().registerStyle(std::move(*style));
         } else {
             m_warnings.append(u"%1: %2"_s.arg(path, style.error()));
         }
@@ -429,28 +429,28 @@ void PackReader::loadLaterDefinitions()
     loadDefinitions(u"mobs"_s, QcContentParser::parseMob,
                     [this](QcMobDefinition mob) { m_registry.registerMob(std::move(mob)); });
     loadDefinitions(u"models"_s, QcContentParser::parseModel,
-                    [this](QcModelDefinition model) { m_registry.registerModel(std::move(model)); });
+                    [this](QcModelDefinition model) { m_registry.assets().registerModel(std::move(model)); });
     loadDefinitions(u"appearance"_s, QcContentParser::parseAppearance,
-                    [this](QcAppearanceDefinition appearance) { m_registry.registerAppearance(std::move(appearance)); });
+                    [this](QcAppearanceDefinition appearance) { m_registry.assets().registerAppearance(std::move(appearance)); });
     loadDefinitions(u"sounds"_s, QcContentParser::parseSound,
-                    [this](QcSoundDefinition sound) { m_registry.registerSound(std::move(sound)); });
+                    [this](QcSoundDefinition sound) { m_registry.assets().registerSound(std::move(sound)); });
     loadDefinitions(u"biomes"_s, QcContentParser::parseBiome,
-                    [this](QcBiomeDefinition biome) { m_registry.registerBiome(std::move(biome)); });
+                    [this](QcBiomeDefinition biome) { m_registry.worldgen().registerBiome(std::move(biome)); });
     loadDefinitions(u"features"_s, QcContentParser::parseFeature,
-                    [this](QcFeatureDefinition feature) { m_registry.registerFeature(std::move(feature)); });
+                    [this](QcFeatureDefinition feature) { m_registry.worldgen().registerFeature(std::move(feature)); });
     loadDefinitions(u"ores"_s, QcContentParser::parseOre,
-                    [this](QcOreDefinition ore) { m_registry.registerOre(std::move(ore)); });
+                    [this](QcOreDefinition ore) { m_registry.worldgen().registerOre(std::move(ore)); });
     loadDefinitions(u"handbook"_s, QcContentParser::parseHandbookChapter,
                     [this](QcHandbookChapter chapter) { m_registry.registerHandbookChapter(std::move(chapter)); });
     loadDefinitions(u"structures"_s, QcContentParser::parseStructure,
-                    [this](QcStructureDefinition structure) { m_registry.registerStructure(std::move(structure)); });
+                    [this](QcStructureDefinition structure) { m_registry.worldgen().registerStructure(std::move(structure)); });
     loadVillageStyles();
     loadDefinitions(u"professions"_s, QcContentParser::parseProfession,
-                    [this](QcVillagerProfession profession) { m_registry.registerProfession(std::move(profession)); });
+                    [this](QcVillagerProfession profession) { m_registry.villageCatalog().registerProfession(std::move(profession)); });
     loadDefinitions(u"villagers"_s, QcContentParser::parseVillagerSettings,
-                    [this](QcVillagerSettings settings) { m_registry.registerVillagerSettings(std::move(settings)); });
+                    [this](QcVillagerSettings settings) { m_registry.villageCatalog().registerVillagerSettings(std::move(settings)); });
     loadDefinitions(u"trades"_s, QcContentParser::parseTradeSet,
-                    [this](QcTradeSet set) { m_registry.registerTradeSet(std::move(set)); });
+                    [this](QcTradeSet set) { m_registry.villageCatalog().registerTradeSet(std::move(set)); });
     loadDefinitions(u"projectiles"_s, QcContentParser::parseProjectile,
                     [this](QcProjectileDefinition projectile) { m_registry.registerProjectile(std::move(projectile)); });
     loadDefinitions(u"effects"_s, QcContentParser::parseEffect,
@@ -464,23 +464,23 @@ void PackReader::loadLaterDefinitions()
 void PackReader::loadWorldgenSettings()
 {
     if (auto terrain = readSettingsFile(u"worldgen/terrain.json"_s, QcContentParser::parseTerrainSettings)) {
-        m_registry.setTerrainSettings(std::move(*terrain));
+        m_registry.worldgen().setTerrainSettings(std::move(*terrain));
     }
     if (auto showcase = readSettingsFile(u"worldgen/showcase.json"_s, QcContentParser::parseShowcase)) {
-        m_registry.setShowcase(std::move(*showcase));
+        m_registry.worldgen().setShowcase(std::move(*showcase));
     }
     if (auto flat = readSettingsFile(u"worldgen/flat.json"_s, QcContentParser::parseFlat)) {
-        m_registry.setFlatWorld(std::move(*flat));
+        m_registry.worldgen().setFlatWorld(std::move(*flat));
     }
     // Read over the earlier packs' settings: a pack changes the fields it gives (decision E-421).
     const auto villageSettings = [this](const QJsonObject &json, const QString &pack) {
-        return QcVillageParser::parseVillageSettings(json, pack, m_registry.villageSettings());
+        return QcVillageParser::parseVillageSettings(json, pack, m_registry.villageCatalog().settings());
     };
     if (auto villages = readSettingsFile(u"worldgen/villages.json"_s, villageSettings)) {
-        m_registry.setVillageSettings(std::move(*villages));
+        m_registry.villageCatalog().setSettings(std::move(*villages));
     }
     if (auto empty = readSettingsFile(u"worldgen/void.json"_s, QcContentParser::parseVoid)) {
-        m_registry.setVoidWorld(std::move(*empty));
+        m_registry.worldgen().setVoidWorld(std::move(*empty));
     }
 }
 
@@ -522,9 +522,9 @@ void PackReader::loadWeatherSettings()
 {
     qsizetype added = 0;
     for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
-        added += registry.hasTranslation(it.key(), language) ? 0 : 1;
+        added += registry.translations().has(it.key(), language) ? 0 : 1;
     }
-    return registry.translationTotal() + added <= qsizetype(QcStreamLimits::maxTranslations);
+    return registry.translations().total() + added <= qsizetype(QcStreamLimits::maxTranslations);
 }
 
 void PackReader::loadTranslations()
@@ -546,7 +546,7 @@ void PackReader::loadTranslations()
             language.chop(suffix.size());
         }
         if (fitsTranslationBudget(m_registry, language, *entries)) {
-            m_registry.addTranslations(language, *entries);
+            m_registry.translations().add(language, *entries);
         } else {
             m_warnings.append(u"%1: more than %2 translations in all languages"_s.arg(path).arg(QcStreamLimits::maxTranslations));
         }

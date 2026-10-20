@@ -61,7 +61,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     : m_content(std::move(content))
     , m_seed(quint64(seed))
     , m_definitions(*m_content, quint64(seed))
-    , m_caves(quint64(seed), m_content->terrainSettings(), m_definitions)
+    , m_caves(quint64(seed), m_content->worldgen().terrainSettings(), m_definitions)
     , m_pools(m_content, m_definitions)
     , m_continentNoise(qcMixSeed(quint64(seed), 1))
     , m_detailNoise(qcMixSeed(quint64(seed), 2))

@@ -67,9 +67,9 @@ std::optional<Pool> Loader::pool(const QcFeatureDefinition &definition, quint64 
     pool.surface = definition.surface;
 
     for (const QString &biome : definition.biomes) {
-        const auto found = std::ranges::find(m_content.biomes(), biome, &QcBiomeDefinition::name);
-        if (found != m_content.biomes().end()) {
-            pool.biomes.insert(int(found - m_content.biomes().begin()));
+        const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
+        if (found != m_content.worldgen().biomes().end()) {
+            pool.biomes.insert(int(found - m_content.worldgen().biomes().begin()));
         } else {
             warn(u"Pool %1 references unknown biome %2"_s.arg(definition.name, biome));
         }
@@ -130,8 +130,8 @@ decltype(Biome::features) Loader::featuresOf(const QcBiomeDefinition &definition
 {
     decltype(Biome::features) features;
     for (const QcFeaturePlacement &placement : definition.features) {
-        const auto it = std::ranges::find(m_content.features(), placement.feature, &QcFeatureDefinition::name);
-        if (it == m_content.features().end()) {
+        const auto it = std::ranges::find(m_content.worldgen().features(), placement.feature, &QcFeatureDefinition::name);
+        if (it == m_content.worldgen().features().end()) {
             warn(u"Biome %1 references unknown feature %2"_s.arg(definition.name, placement.feature));
             continue;
         }
@@ -139,7 +139,7 @@ decltype(Biome::features) Loader::featuresOf(const QcBiomeDefinition &definition
             warn(u"Biome %1 lists the pool %2; pools are placed in every chunk"_s.arg(definition.name, placement.feature));
             continue;
         }
-        features.append({int(it - m_content.features().begin()), placement.density});
+        features.append({int(it - m_content.worldgen().features().begin()), placement.density});
     }
     return features;
 }
@@ -164,9 +164,9 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     ore.veinSize = definition.veinSize;
     ore.seed = seed;
     for (const QString &biome : definition.biomes) {
-        const auto found = std::ranges::find(m_content.biomes(), biome, &QcBiomeDefinition::name);
-        if (found != m_content.biomes().end()) {
-            ore.biomes.insert(int(found - m_content.biomes().begin()));
+        const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
+        if (found != m_content.worldgen().biomes().end()) {
+            ore.biomes.insert(int(found - m_content.worldgen().biomes().begin()));
         } else {
             warn(u"Ore %1 references unknown biome %2"_s.arg(definition.name, biome));
         }
@@ -196,7 +196,7 @@ QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes
 QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed)
 {
     Loader loader(content);
-    const QcTerrainSettings &terrain = content.terrainSettings();
+    const QcTerrainSettings &terrain = content.worldgen().terrainSettings();
     seaLevel = terrain.seaLevel;
     stone = loader.resolve(terrain.stoneBlock, qcAirBlockId);
     water = loader.resolve(terrain.waterBlock, qcAirBlockId);
@@ -206,7 +206,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
 
     // Seeds come from the names (decision E-214): new content leaves the other features and ores
     // where they were.
-    for (const QcFeatureDefinition &definition : content.features()) {
+    for (const QcFeatureDefinition &definition : content.worldgen().features()) {
         const quint64 salt = qcNameSalt(definition.name);
         if (definition.type == QcFeatureDefinition::Type::Pool) {
             if (const std::optional<Pool> pool = loader.pool(definition, qcMixSeed(seed, salt + 3))) {
@@ -218,7 +218,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         features.append(feature);
     }
 
-    for (const QcBiomeDefinition &definition : content.biomes()) {
+    for (const QcBiomeDefinition &definition : content.worldgen().biomes()) {
         const Biome biome = loader.biome(definition, stone, water);
         anyOverhangs = anyOverhangs || biome.overhang > 0;
         anyRidges = anyRidges || biome.ridges > 0.0;
@@ -238,7 +238,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
 
     naturalGround = naturalGroundOf(biomes, stone, water);
 
-    for (const QcOreDefinition &definition : content.ores()) {
+    for (const QcOreDefinition &definition : content.worldgen().ores()) {
         if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {
             ores.append(*ore);
         }

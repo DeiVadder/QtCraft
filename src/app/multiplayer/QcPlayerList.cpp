@@ -34,7 +34,7 @@ void QcPlayerList::update()
 {
     const QList<Entry> &now = m_session->players();
     if (m_received) {
-        const Changes changes = compare(m_entries, now, m_session->entityId());
+        const Changes changes = compare(m_entries, now, m_session->welcome().playerEntityId);
         for (const QString &name : changes.joined) {
             emit announced(tr("%1 joined the game").arg(name));
         }
@@ -71,7 +71,7 @@ QVariantList QcPlayerList::players() const
     QList<Entry> sorted = m_entries;
     std::ranges::sort(sorted, [](const Entry &a, const Entry &b) { return a.name.compare(b.name, Qt::CaseInsensitive) < 0; });
 
-    const quint32 own = m_session ? m_session->entityId() : 0;
+    const quint32 own = m_session ? m_session->welcome().playerEntityId : 0;
     QVariantList rows;
     for (const Entry &entry : std::as_const(sorted)) {
         rows.append(QVariantMap{{u"name"_s, entry.name}, {u"operator"_s, entry.operatorRights}, {u"self"_s, own != 0 && entry.entityId == own}});
@@ -85,7 +85,7 @@ QString QcPlayerList::serverName() const
         return {};
     }
     const QString name = m_session->login().serverName();
-    return name.isEmpty() ? m_session->worldName() : name;
+    return name.isEmpty() ? m_session->welcome().worldName : name;
 }
 
 QString QcPlayerList::motd() const

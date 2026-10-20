@@ -23,7 +23,7 @@ class TestTradeOffers : public QObject
 
 private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
-    QcVillagerTrades m_trades{*m_content, *m_content->villagerSettings(u"qtcraft:villager"_s)};
+    QcVillagerTrades m_trades{*m_content, *m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)};
 
     static QcVillagerRecord villagerOf(const QString &profession, int level, quint32 look = 7)
     {
@@ -40,14 +40,14 @@ private slots:
     void everyOfferOfTheBaseGameResolves()
     {
         // Each trade file of the base game: all its offers reach the catalog (no unknown item).
-        for (const QcTradeSet &set : m_content->tradeSets()) {
+        for (const QcTradeSet &set : m_content->villageCatalog().tradeSets()) {
             QCOMPARE(m_trades.offersOfProfession(set.profession).size(), set.offers.size());
             for (int level = 1; level <= QcTradingSettings::levelCount; ++level) {
                 QVERIFY2(std::ranges::any_of(set.offers, [level](const QcTradeOffer &offer) { return offer.level == level; }),
                          qPrintable(u"%1 has no offer of level %2"_s.arg(set.name).arg(level)));
             }
         }
-        QCOMPARE(m_content->tradeSets().size(), 3);
+        QCOMPARE(m_content->villageCatalog().tradeSets().size(), 3);
     }
 
     void aVillagerHasOffersByProfessionAndLevel()
@@ -165,8 +165,8 @@ private slots:
         }
         const QcTradeOffer replaced = m_trades.offersOfProfession(u"qtcraft:farmer"_s).constFirst().definition;
         set.offers.append({replaced.id, replaced.level, {{u"qtcraft:dirt"_s, 3}}, replaced.result, 5, 2, 1, 0});
-        modded.registerTradeSet(set);
-        const QcVillagerTrades moddedTrades(modded, *modded.villagerSettings(u"qtcraft:villager"_s));
+        modded.villageCatalog().registerTradeSet(set);
+        const QcVillagerTrades moddedTrades(modded, *modded.villageCatalog().villagerSettings(u"qtcraft:villager"_s));
 
         // At catalog level the replacement keeps its place, and the new offers are there.
         const QList<QcVillagerTrades::Offer> farmer = moddedTrades.offersOfProfession(u"qtcraft:farmer"_s);

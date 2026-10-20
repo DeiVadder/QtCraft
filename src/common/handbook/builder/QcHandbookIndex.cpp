@@ -109,15 +109,15 @@ void QcHandbookIndex::indexMobs(const QcHandbookText &text, const QcHandbookLink
 // Where blocks occur: biome layers, features listed by biomes, ore veins and pools.
 void QcHandbookIndex::indexOccurrences(const QcHandbookText &text, const QcHandbookLinks &links)
 {
-    for (const QcBiomeDefinition &biome : m_content.biomes()) {
+    for (const QcBiomeDefinition &biome : m_content.worldgen().biomes()) {
         indexBiome(biome, text, links);
     }
 
-    for (const QcOreDefinition &ore : m_content.ores()) {
+    for (const QcOreDefinition &ore : m_content.worldgen().ores()) {
         m_foundIn[ore.block].addUnique(links.oreLink(ore, text.heightRange(ore.minY, ore.maxY)));
     }
 
-    for (const QcFeatureDefinition &feature : m_content.features()) {
+    for (const QcFeatureDefinition &feature : m_content.worldgen().features()) {
         if (feature.type == QcFeatureDefinition::Type::Pool) {
             const Link link = links.featureLink(feature, text.heightRange(feature.minY, feature.maxY));
             m_foundIn[feature.trunkBlock].addUnique(link);
@@ -142,8 +142,8 @@ void QcHandbookIndex::indexBiome(const QcBiomeDefinition &biome, const QcHandboo
     }
 
     for (const QcFeaturePlacement &placement : biome.features) {
-        const auto feature = std::ranges::find(m_content.features(), placement.feature, &QcFeatureDefinition::name);
-        if (feature == m_content.features().end()) {
+        const auto feature = std::ranges::find(m_content.worldgen().features(), placement.feature, &QcFeatureDefinition::name);
+        if (feature == m_content.worldgen().features().end()) {
             continue;
         }
 

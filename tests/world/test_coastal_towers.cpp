@@ -194,7 +194,7 @@ private slots:
         const QcTerrainGenerator again(m_content, seed);
         const Plans second = plans(again);
         QCOMPARE(second.size(), m_plans.size());
-        const int size = m_content->terrainSettings().coastalTowers.regionSize;
+        const int size = m_content->worldgen().terrainSettings().coastalTowers.regionSize;
         for (qsizetype i = 0; i < m_plans.size(); ++i) {
             const QcCoastalTowerPlan &a = *m_plans[i];
             const QcCoastalTowerPlan &b = *second[i];
@@ -241,7 +241,7 @@ private slots:
     // foundation down to the ground; the door opens onto ground one can step from.
     void towersAreBuiltInAnyOrder()
     {
-        const QcCoastalTowerSettings &settings = m_content->terrainSettings().coastalTowers;
+        const QcCoastalTowerSettings &settings = m_content->worldgen().terrainSettings().coastalTowers;
         for (qsizetype i = 0; i < std::min<qsizetype>(3, m_plans.size()); ++i) {
             const QcCoastalTowerPlan &plan = *m_plans[i];
             QList<QcChunkPos> positions = chunksOf(plan);
@@ -379,8 +379,8 @@ private slots:
     void towersKeepClearOfSurfaceStructures()
     {
         constexpr int towerRegions = 12;
-        const int size = m_content->terrainSettings().coastalTowers.regionSize;
-        const int clearance = m_content->terrainSettings().coastalTowers.clearance;
+        const int size = m_content->worldgen().terrainSettings().coastalTowers.regionSize;
+        const int clearance = m_content->worldgen().terrainSettings().coastalTowers.clearance;
         const int reach = (towerRegions + 1) * size;
         qsizetype towers = 0;
         qsizetype near = 0;
@@ -419,9 +419,9 @@ private slots:
     void measureGenerationCost()
     {
         auto without = std::make_shared<QcContentRegistry>(*m_content);
-        QcTerrainSettings settings = without->terrainSettings();
+        QcTerrainSettings settings = without->worldgen().terrainSettings();
         settings.coastalTowers.enabled = false;
-        without->setTerrainSettings(settings);
+        without->worldgen().setTerrainSettings(settings);
         const auto seconds = [](const QcTerrainGenerator &terrain, const QList<QcChunkPos> &chunks) {
             timespec start{};
             timespec end{};

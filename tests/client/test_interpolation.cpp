@@ -376,7 +376,7 @@ private slots:
         watcher.start();
         QTRY_VERIFY_WITH_TIMEOUT(walker.state() == QcClientSession::State::Playing && watcher.state() == QcClientSession::State::Playing,
                                  timeoutMs);
-        QTRY_VERIFY_WITH_TIMEOUT(watcher.entities().contains(walker.entityId()), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(watcher.entities().contains(walker.welcome().playerEntityId), timeoutMs);
         QTest::qWait(1500);
 
         const auto measure = [&](bool buffered) {
@@ -395,7 +395,7 @@ private slots:
             QTimer frames;
             frames.setTimerType(Qt::PreciseTimer);
             connect(&frames, &QTimer::timeout, this, [&] {
-                const QcClientEntity entity = watcher.entities().value(walker.entityId());
+                const QcClientEntity entity = watcher.entities().value(walker.welcome().playerEntityId);
                 const double alpha = std::clamp(double(clock.elapsed() - lastTick) / tickMs, 0.0, 1.0);
                 recorder.sample(double(clock.elapsed()), entity.previousPosition.x + (entity.position.x - entity.previousPosition.x) * alpha);
             });

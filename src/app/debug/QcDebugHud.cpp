@@ -111,7 +111,7 @@ void QcDebugHud::update(const QcVec3 &feet)
             updateText(feet);
         }
         m_lightCells.clear();
-        if (const std::optional<QcRaycastHit> &target = m_parts.session->target(); lights && target) {
+        if (const std::optional<QcRaycastHit> &target = m_parts.session->hand().target(); lights && target) {
             const QcFaceOffset offset = qcFaceOffset(target->face);
             m_lightCells = lightCells(target->block.offset(offset.dx, offset.dy, offset.dz));
         }

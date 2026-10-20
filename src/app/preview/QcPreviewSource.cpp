@@ -122,7 +122,7 @@ const QcAppearance &QcPreviewSource::appearance() const
 
 QcEquipment QcPreviewSource::equipment() const
 {
-    return m_parts.session ? m_parts.session->equipment() : QcEquipment();
+    return m_parts.session ? m_parts.session->inventoryMirror().equipment() : QcEquipment();
 }
 
 QcItemId QcPreviewSource::heldItem(bool mining)

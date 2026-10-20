@@ -30,9 +30,9 @@ bool writePack(const QString &folder, int resolution, const QColor &colour)
 std::shared_ptr<const QcContentRegistry> content(const QString &extra = {})
 {
     auto registry = std::make_shared<QcContentRegistry>();
-    registry->registerTexture({u"t:red"_s, QJsonObject{{u"pattern"_s, u"noise"_s}, {u"primary"_s, u"#c00000"_s}}, {}});
+    registry->assets().registerTexture({u"t:red"_s, QJsonObject{{u"pattern"_s, u"noise"_s}, {u"primary"_s, u"#c00000"_s}}, {}});
     if (!extra.isEmpty()) {
-        registry->registerTexture({extra, QJsonObject{{u"pattern"_s, u"noise"_s}, {u"primary"_s, u"#00c000"_s}}, {}});
+        registry->assets().registerTexture({extra, QJsonObject{{u"pattern"_s, u"noise"_s}, {u"primary"_s, u"#00c000"_s}}, {}});
     }
     return registry;
 }

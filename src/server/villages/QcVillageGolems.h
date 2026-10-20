@@ -63,7 +63,7 @@ public:
 
     explicit QcVillageGolems(std::shared_ptr<const QcContentRegistry> content);
 
-    // The golems' creature kind in villages of `style` (QcContentRegistry::golemOfStyle; the empty
+    // The golems' creature kind in villages of `style` (QcVillageCatalog::golemOfStyle; the empty
     // style: the settings' own); none while the content lacks it (logged the first time) or the
     // style has no golems.
     std::optional<int> kind(const QString &style) const;

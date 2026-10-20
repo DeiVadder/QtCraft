@@ -133,10 +133,10 @@ private slots:
 
         for (const QcMobDefinition &mob : content->mobs()) {
             for (const QcMobPart &part : mob.parts) {
-                QVERIFY2(content->texture(part.texture), qPrintable(part.texture));
+                QVERIFY2(content->assets().texture(part.texture), qPrintable(part.texture));
             }
             for (const QString &language : {u"en"_s, u"de"_s}) {
-                QVERIFY(content->translate(mob.translationKey, language) != mob.translationKey);
+                QVERIFY(content->translations().translate(mob.translationKey, language) != mob.translationKey);
             }
         }
     }
@@ -149,12 +149,12 @@ private slots:
 
         for (const QcBlockDefinition &block : content->blocks()) {
             for (const QString &language : {u"en"_s, u"de"_s}) {
-                QVERIFY2(content->translate(block.translationKey, language) != block.translationKey,
+                QVERIFY2(content->translations().translate(block.translationKey, language) != block.translationKey,
                          qPrintable(language + u' ' + block.translationKey));
             }
         }
 
-        QCOMPARE(content->translate(u"block.qtcraft.stone"_s, u"de"_s), u"Stein"_s);
+        QCOMPARE(content->translations().translate(u"block.qtcraft.stone"_s, u"de"_s), u"Stein"_s);
     }
 
     void brokenEntriesAreSkippedWithWarnings()
@@ -176,7 +176,7 @@ private slots:
         QCOMPARE(loaded->warnings.size(), 2);
         QVERIFY(registry.blockId(u"testpack:good"_s).has_value());
         QVERIFY(!registry.blockId(u"testpack:bad"_s).has_value());
-        QVERIFY(registry.texture(u"testpack:good"_s));
+        QVERIFY(registry.assets().texture(u"testpack:good"_s));
     }
 
     // weather.json names its snow layer: a block of the pack that is not opaque and needs support
@@ -240,15 +240,15 @@ private slots:
     void atlasFallsBackToPlaceholder()
     {
         QcContentRegistry registry;
-        registry.registerTexture({u"a:bad"_s, QJsonObject{{u"pattern"_s, u"nope"_s}}, {}});
-        registry.registerTexture({u"a:png"_s, {}, QByteArray("not a png")});
+        registry.assets().registerTexture({u"a:bad"_s, QJsonObject{{u"pattern"_s, u"nope"_s}}, {}});
+        registry.assets().registerTexture({u"a:png"_s, {}, QByteArray("not a png")});
 
         // A small file describing a huge image is refused before it is decoded.
         QByteArray huge;
         QBuffer buffer(&huge);
         buffer.open(QIODevice::WriteOnly);
         QImage(256, 8, QImage::Format_RGBA8888).save(&buffer, "PNG");
-        registry.registerTexture({u"a:huge"_s, {}, huge});
+        registry.assets().registerTexture({u"a:huge"_s, {}, huge});
 
         const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
         QCOMPARE(atlas.problems().size(), 3);
@@ -268,7 +268,7 @@ private slots:
         QVERIFY(source.save(&buffer, "PNG"));
 
         QcContentRegistry registry;
-        registry.registerTexture({u"a:green"_s, {}, png});
+        registry.assets().registerTexture({u"a:green"_s, {}, png});
 
         const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
         QVERIFY(atlas.problems().isEmpty());

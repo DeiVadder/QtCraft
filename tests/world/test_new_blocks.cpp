@@ -180,7 +180,7 @@ private slots:
         QVERIFY(!web.solid);
         QCOMPARE(web.slowsInside, 0.25);
         QCOMPARE(web.drops.first().item, u"qtcraft:string"_s);
-        QVERIFY(std::ranges::any_of(m_content->ores(), [](const QcOreDefinition &ore) { return ore.block == u"qtcraft:cobweb"_s; }));
+        QVERIFY(std::ranges::any_of(m_content->worldgen().ores(), [](const QcOreDefinition &ore) { return ore.block == u"qtcraft:cobweb"_s; }));
         QCOMPARE(crafted({{0, "string"}, {1, "string"}, {2, "string"}, {3, "string"}}, 2), u"qtcraft:white_wool"_s);
     }
 
@@ -283,8 +283,8 @@ private slots:
         // Mud shores still carry sugar cane, grass and orchids.
         for (const char *plant : {"sugar_cane", "tall_grass", "blue_orchid"}) {
             QVERIFY2(m_content->block(block(plant)).groundBlocks.contains(u"qtcraft:mud"_s), plant);
-            const auto feature = std::ranges::find(m_content->features(), u"qtcraft:"_s + QString::fromLatin1(plant), &QcFeatureDefinition::name);
-            QVERIFY2(feature != m_content->features().end() && feature->groundBlocks.contains(u"qtcraft:mud"_s), plant);
+            const auto feature = std::ranges::find(m_content->worldgen().features(), u"qtcraft:"_s + QString::fromLatin1(plant), &QcFeatureDefinition::name);
+            QVERIFY2(feature != m_content->worldgen().features().end() && feature->groundBlocks.contains(u"qtcraft:mud"_s), plant);
         }
     }
 

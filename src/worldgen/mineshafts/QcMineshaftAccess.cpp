@@ -31,7 +31,7 @@ QcMineshaftAccess::QcMineshaftAccess(const QcTerrainGenerator &terrain, const Qc
     , m_blocks(blocks)
 {
     // Structures that do not fit were reported when the content was loaded (QcSpawnerContent).
-    for (const QcStructureDefinition &definition : content.structures()) {
+    for (const QcStructureDefinition &definition : content.worldgen().structures()) {
         if (definition.mineshaftWeight <= 0 || !settings.fitsRoom(definition.sizeX, definition.sizeY, definition.sizeZ)) {
             continue;
         }

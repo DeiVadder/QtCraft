@@ -27,15 +27,15 @@ QString QcHandbookText::english()
 
 QString QcHandbookText::lookup(const QString &key, const QString &language) const
 {
-    if (m_content.hasTranslation(key, language) || m_content.hasTranslation(key, english())) {
-        return m_content.translate(key, language);
+    if (m_content.translations().has(key, language) || m_content.translations().has(key, english())) {
+        return m_content.translations().translate(key, language);
     }
     return {};
 }
 
 QString QcHandbookText::label(const QString &key) const
 {
-    return m_content.translate(u"handbook."_s + key, m_language);
+    return m_content.translations().translate(u"handbook."_s + key, m_language);
 }
 
 QString QcHandbookText::number(double value) const

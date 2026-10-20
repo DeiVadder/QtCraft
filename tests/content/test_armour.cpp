@@ -136,11 +136,11 @@ private slots:
                 QVERIFY2(definition.durability > 0, qPrintable(definition.name));
                 QVERIFY2(!definition.armour->layers.isEmpty(), qPrintable(definition.name));
                 for (const QcArmourLayer &layer : definition.armour->layers) {
-                    QVERIFY2(m_content->texture(layer.texture), qPrintable(layer.texture));
-                    QVERIFY2(layer.front.isEmpty() || m_content->texture(layer.front), qPrintable(layer.front));
+                    QVERIFY2(m_content->assets().texture(layer.texture), qPrintable(layer.texture));
+                    QVERIFY2(layer.front.isEmpty() || m_content->assets().texture(layer.front), qPrintable(layer.front));
                 }
                 for (const QcArmourPart &part : definition.armour->parts) {
-                    QVERIFY2(m_content->texture(part.texture), qPrintable(part.texture));
+                    QVERIFY2(m_content->assets().texture(part.texture), qPrintable(part.texture));
                 }
             }
         }

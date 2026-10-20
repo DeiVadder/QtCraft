@@ -54,7 +54,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case ItemNameRole:
         return item.name;
     case LabelRole:
-        return m_content->translate(item.translationKey, m_language);
+        return m_content->translations().translate(item.translationKey, m_language);
     case CountRole:
         return stack.count;
     case IconRole:
@@ -62,7 +62,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
     case TooltipRole:
-        return tooltipOf(*m_content, stack, m_content->translate(item.translationKey, m_language));
+        return tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language));
     default:
         return {};
     }

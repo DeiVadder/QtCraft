@@ -83,7 +83,7 @@ private slots:
     void flatLayersFromAPreset()
     {
         // The base game's default: bedrock, 59 stone, 3 dirt, grass on top (y 63).
-        const QcResult<QList<QcBlockId>> standard = QcFlatGenerator::parseLayers(m_content->flatWorld().preset, *m_content);
+        const QcResult<QList<QcBlockId>> standard = QcFlatGenerator::parseLayers(m_content->worldgen().flatWorld().preset, *m_content);
         QVERIFY(standard);
         QCOMPARE(standard->size(), 64);
         QCOMPARE(standard->at(0), id("qtcraft:bedrock"));
@@ -224,7 +224,7 @@ private slots:
         const QcResult<QString> flatOptions = QcWorldGenerators::optionsToStore(u"flat"_s, {}, *m_content);
         const QcResult<QString> voidOptions = QcWorldGenerators::optionsToStore(u"void"_s, {}, *m_content);
         QVERIFY(flatOptions && voidOptions);
-        QCOMPARE(*flatOptions, m_content->flatWorld().preset);
+        QCOMPARE(*flatOptions, m_content->worldgen().flatWorld().preset);
         QCOMPARE(*voidOptions, u"platform=qtcraft:stone,radius=2,y=63"_s);
         QCOMPARE(*QcWorldGenerators::optionsToStore(u"flat"_s, u"bedrock,sand"_s, *m_content), u"bedrock,sand"_s);
         QCOMPARE(*QcWorldGenerators::optionsToStore(u"terrain"_s, {}, *m_content), QString());
@@ -236,8 +236,8 @@ private slots:
 
         // Then an update or a mod changes those defaults.
         const std::shared_ptr<QcContentRegistry> changed = QcTestUtil::baseContent()->registry;
-        changed->setFlatWorld({u"bedrock,3*sand"_s, changed->flatWorld().rules});
-        changed->setVoidWorld({u"qtcraft:glass"_s, 0, 10, changed->voidWorld().rules});
+        changed->worldgen().setFlatWorld({u"bedrock,3*sand"_s, changed->worldgen().flatWorld().rules});
+        changed->worldgen().setVoidWorld({u"qtcraft:glass"_s, 0, 10, changed->worldgen().voidWorld().rules});
 
         // Reopened from what the library lists, both look as they did.
         const QList<QcWorldLibrary::Entry> entries = library.list();

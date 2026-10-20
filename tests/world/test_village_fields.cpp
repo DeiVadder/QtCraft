@@ -199,9 +199,9 @@ private slots:
         beet.name = u"testmod:beet_crop"_s;
         QVERIFY(content->registerBlock(beet));
         for (const char *name : {"qtcraft:plains", "qtcraft:taiga", "qtcraft:desert", "qtcraft:swamp", "qtcraft:snowy"}) {
-            QcVillageStyleDefinition style = *std::ranges::find(content->villageStyles(), QString::fromLatin1(name), &QcVillageStyleDefinition::name);
+            QcVillageStyleDefinition style = *std::ranges::find(content->villageCatalog().styles(), QString::fromLatin1(name), &QcVillageStyleDefinition::name);
             style.crops = {{u"testmod:beet_crop"_s, 1}, {u"qtcraft:stone"_s, 5}};
-            content->registerVillageStyle(style);
+            content->villageCatalog().registerStyle(style);
         }
 
         const QcVillageStyles styles(*content);
@@ -222,10 +222,10 @@ private slots:
 
     void noBiomePlantsCropsOrWildCrops()
     {
-        for (const QcBiomeDefinition &biome : m_content->biomes()) {
+        for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
             for (const QcFeaturePlacement &placement : biome.features) {
-                const auto feature = std::ranges::find(m_content->features(), placement.feature, &QcFeatureDefinition::name);
-                QVERIFY(feature != m_content->features().cend());
+                const auto feature = std::ranges::find(m_content->worldgen().features(), placement.feature, &QcFeatureDefinition::name);
+                QVERIFY(feature != m_content->worldgen().features().cend());
                 const std::optional<QcBlockId> block = m_content->blockId(feature->trunkBlock);
                 QVERIFY2(!block || !isCrop(*block), qPrintable(biome.name + u" "_s + placement.feature));
                 QVERIFY2(!feature->trunkBlock.contains(u"wild_"_s), qPrintable(biome.name + u" "_s + placement.feature));

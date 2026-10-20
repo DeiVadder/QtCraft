@@ -22,7 +22,7 @@ QString problemWith(const QcContentRegistry &content, const QString &name)
 QStringList resolveDungeons(QcContentRegistry &content)
 {
     QStringList warnings;
-    QcTerrainSettings settings = content.terrainSettings();
+    QcTerrainSettings settings = content.worldgen().terrainSettings();
     QcDungeonSettings &dungeons = settings.dungeons;
     if (!dungeons.enabled) {
         return warnings;
@@ -40,7 +40,7 @@ QStringList resolveDungeons(QcContentRegistry &content)
         warnings.append(u"dungeons: unknown loot table '%1', the chests stay empty"_s.arg(dungeons.lootTable));
     }
     if (dungeons.mobs.size() != before) {
-        content.setTerrainSettings(settings);
+        content.worldgen().setTerrainSettings(settings);
     }
     return warnings;
 }
@@ -50,7 +50,7 @@ QStringList resolveDungeons(QcContentRegistry &content)
 QStringList resolveMineshafts(QcContentRegistry &content)
 {
     QStringList warnings;
-    QcTerrainSettings settings = content.terrainSettings();
+    QcTerrainSettings settings = content.worldgen().terrainSettings();
     QcMineshaftSettings &shafts = settings.mineshafts;
     if (!shafts.enabled) {
         return warnings;
@@ -60,7 +60,7 @@ QStringList resolveMineshafts(QcContentRegistry &content)
         warnings.append(u"mineshafts: %1, no spawners"_s.arg(problem));
         shafts.maxSpawners = 0;
         shafts.minSpawners = 0;
-        content.setTerrainSettings(settings);
+        content.worldgen().setTerrainSettings(settings);
     }
     if (!shafts.lootTable.isEmpty() && !content.lootTables().find(shafts.lootTable)) {
         warnings.append(u"mineshafts: unknown loot table '%1', the carts stay empty"_s.arg(shafts.lootTable));
@@ -69,7 +69,7 @@ QStringList resolveMineshafts(QcContentRegistry &content)
     if (!cart || !content.item(*cart).placesCart) {
         warnings.append(u"mineshafts: '%1' is no minecart item, no carts"_s.arg(shafts.cart));
     }
-    for (const QcStructureDefinition &structure : content.structures()) {
+    for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         const int most = QcMineshaftSettings::maxRoomFootprint;
         if (structure.mineshaftWeight > 0 && !shafts.fitsRoom(structure.sizeX, structure.sizeY, structure.sizeZ)) {
             warnings.append(u"structure '%1': a mine shaft room needs odd sides of at most %2 and a height below %3, it is left out"_s.arg(structure.name)
@@ -83,7 +83,7 @@ QStringList resolveMineshafts(QcContentRegistry &content)
 QStringList checkStructures(const QcContentRegistry &content)
 {
     QStringList warnings;
-    for (const QcStructureDefinition &structure : content.structures()) {
+    for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         for (const QcStructureDefinition::Spawner &spawner : structure.spawners) {
             if (const QString problem = problemWith(content, spawner.mob); !problem.isEmpty()) {
                 warnings.append(u"structure '%1': spawner with %2, it spawns nothing"_s.arg(structure.name, problem));

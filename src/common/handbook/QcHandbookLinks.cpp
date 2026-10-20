@@ -74,10 +74,10 @@ QString QcHandbookLinks::itemEntryId(const QString &item) const
 QString QcHandbookLinks::itemTitle(const QString &item, const QString &language) const
 {
     if (const std::optional<QcItemId> id = m_content.itemId(item)) {
-        return m_content.translate(m_content.item(*id).translationKey, language);
+        return m_content.translations().translate(m_content.item(*id).translationKey, language);
     }
     if (const std::optional<QcBlockId> id = m_content.blockId(item)) {
-        return m_content.translate(m_content.block(*id).translationKey, language);
+        return m_content.translations().translate(m_content.block(*id).translationKey, language);
     }
     return item;
 }
@@ -96,7 +96,7 @@ QString QcHandbookLinks::featureTitle(const QcFeatureDefinition &feature, const 
 
 QString QcHandbookLinks::oreTitle(const QcOreDefinition &ore, const QString &language) const
 {
-    return m_content.translate(u"handbook.ore.title"_s, language).arg(itemTitle(ore.block, language));
+    return m_content.translations().translate(u"handbook.ore.title"_s, language).arg(itemTitle(ore.block, language));
 }
 
 Link QcHandbookLinks::itemLink(const QString &item, const QString &note) const
@@ -125,12 +125,12 @@ Link QcHandbookLinks::ingredientLink(const QString &ingredient) const
 
 Link QcHandbookLinks::mobLink(const QcMobDefinition &mob, const QString &note) const
 {
-    return {u"mob:"_s + mob.name, m_content.translate(mob.translationKey, m_text.language()), {}, note};
+    return {u"mob:"_s + mob.name, m_content.translations().translate(mob.translationKey, m_text.language()), {}, note};
 }
 
 Link QcHandbookLinks::biomeLink(const QcBiomeDefinition &biome, const QString &note) const
 {
-    return {u"biome:"_s + biome.name, m_content.translate(biome.translationKey, m_text.language()), itemIcon(biome.surfaceBlock), note};
+    return {u"biome:"_s + biome.name, m_content.translations().translate(biome.translationKey, m_text.language()), itemIcon(biome.surfaceBlock), note};
 }
 
 Link QcHandbookLinks::featureLink(const QcFeatureDefinition &feature, const QString &note) const

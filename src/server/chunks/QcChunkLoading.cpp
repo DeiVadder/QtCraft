@@ -196,7 +196,7 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
     warnings.append(QcBlockEntityRecords::apply({arrival.blockEntities}, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(),
                                                 upcomingTick()));
     // What this version does not read waits for the next save of the chunk (decision E-440).
-    m_state.world().keepBlockEntityParts(pos, std::move(arrival.blockEntities.kept));
+    m_state.world().blockEntityExtras().keepParts(pos, std::move(arrival.blockEntities.kept));
     // What was kept is fitted to the blocks (a mod took a block away); spills drop in the next tick.
     if (const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(pos)) {
         m_state.blockEntities().reconcile(*chunk);
@@ -209,7 +209,7 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
         // regions on the tick thread for nothing.
         m_state.world().spawners().restore(arrival.blockEntities.spawners, *chunk);
         if (arrival.blockEntities.furnished) {
-            m_state.world().noteFurnished(pos);
+            m_state.world().blockEntityExtras().noteFurnished(pos);
         }
         if (arrival.generated) {
             QcFurnishing::furnish(m_state, pos);
@@ -438,7 +438,7 @@ void QcChunkLoading::unloadUnneeded()
     QSet<QcChunkPos> candidates;
     const QList<QcChunkPos> loaded = world.loadedChunks();
     for (const QcChunkPos &pos : loaded) {
-        if (!needed.contains(pos) && !(keepChanged && world.differsFromGenerated(pos))) {
+        if (!needed.contains(pos) && !(keepChanged && world.saves().differsFromGenerated(pos))) {
             candidates.insert(pos);
         }
     }
@@ -583,27 +583,27 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         QcChunkIo::Departure departure;
         departure.pos = pos;
         departure.blockEntities.chunk = pos;
-        departure.blockEntities.kept = world.takeBlockEntityParts(pos);
+        departure.blockEntities.kept = world.blockEntityExtras().takeParts(pos);
         departure.blockEntities.takeFrom(m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
         departure.blockEntities.blockUpdates = updates.value(pos);
         departure.blockEntities.blockUpdates.append(flows.value(pos));
         departure.blockEntities.fires = world.fires().takeChunk(pos, now);
         departure.blockEntities.spawners = world.spawners().takeChunk(pos);
-        departure.blockEntities.furnished = world.isFurnished(pos);
+        departure.blockEntities.furnished = world.blockEntityExtras().isFurnished(pos);
         departure.blockEntities.pruneKept();
         departure.entities = entities.value(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);
         m_state.entities().creatures().forgetPopulated(pos);
         departure.marks = world.links().marksOf(pos);
-        const bool quarantined = world.isQuarantined(pos);
+        const bool quarantined = world.saves().isQuarantined(pos);
         departure.blocks = world.remove(pos);
         // Back in the world, a signal it took along is held again for a ticket's time (E-410).
         m_passingSince.remove(pos);
         ++m_unloaded;
-        if (!quarantined && world.storage()) {
-            world.noteKept(departure);
-            world.storage()->keep(std::move(departure));
+        if (!quarantined && world.saves().storage()) {
+            world.saves().noteKept(departure);
+            world.saves().storage()->keep(std::move(departure));
         }
     }
     if (const qint64 ms = timer.elapsed(); ms >= slowPhaseMs) {
@@ -637,7 +637,7 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
     QHash<QcChunkPos, QcEntityRecord> entities = QcEntityRecords::collect(m_state.entities());
     QHash<QcChunkPos, QcBlockEntityRecord> blockEntities;
     const QList<QcBlockEntityRecord> records =
-        QcBlockEntityRecords::collect(m_state.blockEntities(), m_state.circuits(), upcomingTick(), world.blockEntityParts());
+        QcBlockEntityRecords::collect(m_state.blockEntities(), m_state.circuits(), upcomingTick(), world.blockEntityExtras().keptParts());
     for (const QcBlockEntityRecord &record : records) {
         blockEntities.insert(record.chunk, record);
     }
@@ -646,7 +646,7 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
     const QList<QcChunkPos> loaded = sorted(world.loadedChunks());
     departures.reserve(loaded.size());
     for (const QcChunkPos &pos : loaded) {
-        if (world.isQuarantined(pos)) {
+        if (world.saves().isQuarantined(pos)) {
             continue;
         }
         QcChunkIo::Departure departure;
@@ -656,16 +656,16 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blockEntities.chunk = pos;
         departure.blockEntities.fires = world.fires().savedOf(pos, upcomingTick());
         departure.blockEntities.spawners = world.spawners().savedOf(pos);
-        departure.blockEntities.furnished = world.isFurnished(pos);
+        departure.blockEntities.furnished = world.blockEntityExtras().isFurnished(pos);
         // Kept parts go back with the record; tails of entries gone since are dropped for good.
-        departure.blockEntities.kept = world.blockEntityParts().value(pos);
+        departure.blockEntities.kept = world.blockEntityExtras().keptParts().value(pos);
         departure.blockEntities.pruneKept();
-        world.keepBlockEntityParts(pos, departure.blockEntities.kept);
+        world.blockEntityExtras().keepParts(pos, departure.blockEntities.kept);
         departure.entities = entities.take(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);
         departure.marks = world.links().marksOf(pos);
-        world.noteKept(departure);
+        world.saves().noteKept(departure);
         departures.append(std::move(departure));
     }
     if (!blockEntities.isEmpty() || !entities.isEmpty()) {
@@ -688,14 +688,14 @@ QcChunkLoading::Numbers QcChunkLoading::numbers() const
     Numbers numbers;
     const QcServerWorld &world = m_state.world();
     numbers.loaded = world.loadedChunkCount();
-    numbers.stored = world.storedChunkCount();
+    numbers.stored = world.saves().storedChunkCount();
     numbers.waiting = m_waiting.size() + world.pendingGenerationCount();
     numbers.tickets = m_tickets.count();
     numbers.refusedTickets = m_tickets.refused();
     numbers.forced = m_state.info().forcedChunks.size();
     numbers.spawnChunks = m_state.info().spawnChunkRadius > 0 ? (2 * m_state.info().spawnChunkRadius - 1) * (2 * m_state.info().spawnChunkRadius - 1) : 0;
     numbers.loaders = m_state.world().loaders().count();
-    numbers.unsaved = world.storage() ? world.storage()->pendingChunks() : 0;
+    numbers.unsaved = world.saves().storage() ? world.saves().storage()->pendingChunks() : 0;
     numbers.unloaded = m_unloaded;
     numbers.oversizeGroups = m_oversizeGroups;
 

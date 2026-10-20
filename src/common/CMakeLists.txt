@@ -91,6 +91,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp
+    content/registry/QcAssetCatalog.h
     content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp
     content/registry/QcBlockState.h
     content/registry/QcBlockStateTable.h content/registry/QcBlockStateTable.cpp
@@ -103,8 +104,11 @@ target_sources(qc_common PRIVATE
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
     content/registry/QcSpawnerContent.h content/registry/QcSpawnerContent.cpp
+    content/registry/QcTranslations.h content/registry/QcTranslations.cpp
+    content/registry/QcVillageCatalog.h content/registry/QcVillageCatalog.cpp
     content/registry/QcVillageContent.h content/registry/QcVillageContent.cpp
     content/registry/QcVillagerOutfits.h content/registry/QcVillagerOutfits.cpp
+    content/registry/QcWorldgenCatalog.h
 )
 target_sources(qc_common PRIVATE
     core/QcAabb.h

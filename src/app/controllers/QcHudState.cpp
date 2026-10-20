@@ -22,18 +22,18 @@ void QcHudState::updateTarget()
 {
     const QcClientSession &session = *m_parts.session;
     const QcContentRegistry &content = *session.content();
-    const std::optional<QcRaycastHit> &target = session.target();
-    const std::optional<quint32> targetEntity = session.targetEntity();
+    const std::optional<QcRaycastHit> &target = session.hand().target();
+    const std::optional<quint32> targetEntity = session.hand().targetEntity();
     QString targetLabel;
     m_targetName.clear();
     if (targetEntity && session.entities().value(*targetEntity).isMinecart()) {
         const QcItemStack item = session.entities().value(*targetEntity).item;
         const QString key = content.isValidItem(item.item) ? content.item(item.item).translationKey : u"item.qtcraft.minecart"_s;
-        targetLabel = content.translate(key, m_settings.contentLanguage());
+        targetLabel = content.translations().translate(key, m_settings.contentLanguage());
     } else if (targetEntity) {
         const QcClientEntity entity = session.entities().value(*targetEntity);
         const QcMobDefinition *creature = entity.creature(content);
-        targetLabel = creature ? content.translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;
+        targetLabel = creature ? content.translations().translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;
         if (creature) {
             m_targetName = u"mob:"_s + creature->name;
         }
@@ -41,21 +41,21 @@ void QcHudState::updateTarget()
     } else if (target) {
         if (const std::optional<QcBlockId> block = session.world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = content.block(*block);
-            targetLabel = content.translate(definition.translationKey, m_settings.contentLanguage());
+            targetLabel = content.translations().translate(definition.translationKey, m_settings.contentLanguage());
             m_targetName = definition.name;
         }
     }
 
-    if (targetLabel != m_targetLabel || session.miningProgress() != m_miningProgress) {
+    if (targetLabel != m_targetLabel || session.hand().miningProgress() != m_miningProgress) {
         m_targetLabel = targetLabel;
-        m_miningProgress = session.miningProgress();
+        m_miningProgress = session.hand().miningProgress();
         emit frameStateChanged();
     }
 }
 
 void QcHudState::updateTimeOfDay(double alpha)
 {
-    const double time = m_parts.session->worldTime() + alpha * QcPhysics::tickDuration;
+    const double time = m_parts.session->worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
     const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
@@ -89,7 +89,7 @@ QList<QcWorldLabel> QcHudState::standLabels() const
 const QHash<QcChunkPos, QList<QcWorldLabel>> &QcHudState::labelsToDraw()
 {
     static const QHash<QcChunkPos, QList<QcWorldLabel>> none;
-    const QHash<QcChunkPos, QList<QcWorldLabel>> &world = m_settings.showLabels() ? m_parts.session->labels() : none;
+    const QHash<QcChunkPos, QList<QcWorldLabel>> &world = m_settings.showLabels() ? m_parts.session->worldMirror().extras().labels() : none;
     QList<QcWorldLabel> stands = standLabels();
     if (stands.isEmpty()) {
         return world;

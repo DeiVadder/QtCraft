@@ -80,11 +80,11 @@ private slots:
     void translationFallsBackToEnglishThenKey()
     {
         QcContentRegistry registry;
-        registry.addTranslations(u"en"_s, {{u"k.stone"_s, u"Stone"_s}, {u"k.dirt"_s, u"Dirt"_s}});
-        registry.addTranslations(u"de"_s, {{u"k.stone"_s, u"Stein"_s}});
-        QCOMPARE(registry.translate(u"k.stone"_s, u"de"_s), u"Stein"_s);
-        QCOMPARE(registry.translate(u"k.dirt"_s, u"de"_s), u"Dirt"_s);
-        QCOMPARE(registry.translate(u"k.unknown"_s, u"de"_s), u"k.unknown"_s);
+        registry.translations().add(u"en"_s, {{u"k.stone"_s, u"Stone"_s}, {u"k.dirt"_s, u"Dirt"_s}});
+        registry.translations().add(u"de"_s, {{u"k.stone"_s, u"Stein"_s}});
+        QCOMPARE(registry.translations().translate(u"k.stone"_s, u"de"_s), u"Stein"_s);
+        QCOMPARE(registry.translations().translate(u"k.dirt"_s, u"de"_s), u"Dirt"_s);
+        QCOMPARE(registry.translations().translate(u"k.unknown"_s, u"de"_s), u"k.unknown"_s);
     }
 
     void serializationRoundTripPreservesEverything()
@@ -100,9 +100,9 @@ private slots:
         glass.drops = {{u"a:shard"_s, 3}};
         glass.faceTextures[std::size_t(QcBlockFace::Up)] = u"a:glass_top"_s;
         QVERIFY(registry.registerBlock(glass).has_value());
-        registry.registerTexture({u"a:glass"_s, json(R"({"pattern":"glass","seed":3})"), {}});
-        registry.registerTexture({u"a:png"_s, {}, QByteArray("\x89PNG-bytes", 10)});
-        registry.addTranslations(u"de"_s, {{u"block.a.glass"_s, u"Glas"_s}});
+        registry.assets().registerTexture({u"a:glass"_s, json(R"({"pattern":"glass","seed":3})"), {}});
+        registry.assets().registerTexture({u"a:png"_s, {}, QByteArray("\x89PNG-bytes", 10)});
+        registry.translations().add(u"de"_s, {{u"block.a.glass"_s, u"Glas"_s}});
 
         QByteArray data;
         {
@@ -128,10 +128,10 @@ private slots:
         QCOMPARE(read.texture(QcBlockFace::Up), u"a:glass_top"_s);
         QCOMPARE(read.texture(QcBlockFace::North), u"a:glass"_s);
 
-        QCOMPARE(copy->textures().size(), 2);
-        QCOMPARE(copy->texture(u"a:glass"_s)->procedural.value(u"seed"_s).toInt(), 3);
-        QCOMPARE(copy->texture(u"a:png"_s)->png, QByteArray("\x89PNG-bytes", 10));
-        QCOMPARE(copy->translate(u"block.a.glass"_s, u"de"_s), u"Glas"_s);
+        QCOMPARE(copy->assets().textures().size(), 2);
+        QCOMPARE(copy->assets().texture(u"a:glass"_s)->procedural.value(u"seed"_s).toInt(), 3);
+        QCOMPARE(copy->assets().texture(u"a:png"_s)->png, QByteArray("\x89PNG-bytes", 10));
+        QCOMPARE(copy->translations().translate(u"block.a.glass"_s, u"de"_s), u"Glas"_s);
     }
 
     void truncatedContentIsRejected()
@@ -421,7 +421,7 @@ private slots:
         QcModelDefinition model;
         model.name = u"a:biped"_s;
         model.bones = {{u"arm"_s, QcBoneRole::RightArm, {0.3, 1.3, 0.0}, {{{0.2, 0.7, -0.1}, {0.4, 1.3, 0.1}, u"arm"_s}}}};
-        registry.registerModel(model);
+        registry.assets().registerModel(model);
 
         QcAppearanceDefinition hair;
         hair.name = u"a:bun"_s;
@@ -429,7 +429,7 @@ private slots:
         hair.layers = {{u"hair"_s, u"a:hair"_s, QcTint::Hair}};
         hair.boxes = {{{-0.1, 1.8, 0.0}, {0.1, 1.9, 0.2}, u"hair"_s}};
         hair.playable = false;
-        registry.registerAppearance(hair);
+        registry.assets().registerAppearance(hair);
 
         QcMobDefinition mob;
         mob.name = u"a:ghoul"_s;
@@ -448,15 +448,15 @@ private slots:
         const QcResult<QcContentRegistry> copy = QcContentRegistry::readFrom(in);
         QVERIFY2(copy.has_value(), qcErrorText(copy).constData());
 
-        QCOMPARE(copy->model(u"a:biped"_s)->bones.first().role, QcBoneRole::RightArm);
-        QCOMPARE(copy->model(u"a:biped"_s)->bones.first().boxes.first().to, (QcVec3{0.4, 1.3, 0.1}));
-        QCOMPARE(copy->appearance(u"a:bun"_s)->kind, QcAppearanceDefinition::Kind::Hair);
-        QCOMPARE(copy->appearance(u"a:bun"_s)->layers.first().tint, QcTint::Hair);
-        QCOMPARE(copy->appearance(u"a:bun"_s)->boxes.size(), 1);
-        QVERIFY(!copy->appearance(u"a:bun"_s)->playable);
+        QCOMPARE(copy->assets().model(u"a:biped"_s)->bones.first().role, QcBoneRole::RightArm);
+        QCOMPARE(copy->assets().model(u"a:biped"_s)->bones.first().boxes.first().to, (QcVec3{0.4, 1.3, 0.1}));
+        QCOMPARE(copy->assets().appearance(u"a:bun"_s)->kind, QcAppearanceDefinition::Kind::Hair);
+        QCOMPARE(copy->assets().appearance(u"a:bun"_s)->layers.first().tint, QcTint::Hair);
+        QCOMPARE(copy->assets().appearance(u"a:bun"_s)->boxes.size(), 1);
+        QVERIFY(!copy->assets().appearance(u"a:bun"_s)->playable);
         QCOMPARE(copy->mobs().first().skeleton, u"a:biped"_s);
         QVERIFY(copy->mobs().first().armsForward);
-        QVERIFY(!copy->model(u"a:missing"_s));
+        QVERIFY(!copy->assets().model(u"a:missing"_s));
     }
 
     void invisibleBlocksNeedNoTextures()

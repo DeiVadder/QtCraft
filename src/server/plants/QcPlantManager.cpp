@@ -13,7 +13,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
     , m_random(quint32(seed ^ (seed >> 32) ^ 0x5A91u))
 {
     QHash<QString, QcTreeShape::Params> features;
-    for (const QcFeatureDefinition &feature : m_content->features()) {
+    for (const QcFeatureDefinition &feature : m_content->worldgen().features()) {
         QcTreeShape::Params params;
         params.type = feature.type;
         params.trunk = m_content->blockId(feature.trunkBlock).value_or(qcAirBlockId);

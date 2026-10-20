@@ -86,8 +86,8 @@ QJsonObject partBlockJson(const PartSource &source, const QString &name, const Q
 void addPartTranslations(QcContentRegistry &registry, const PartSource &source, const QString &translationKey)
 {
     for (const auto &[language, format] : source.family.translations) {
-        if (!registry.hasTranslation(translationKey, language)) {
-            registry.addTranslations(language, {{translationKey, format.arg(registry.translate(source.material.translationKey, language))}});
+        if (!registry.translations().has(translationKey, language)) {
+            registry.translations().add(language, {{translationKey, format.arg(registry.translations().translate(source.material.translationKey, language))}});
         }
     }
 }

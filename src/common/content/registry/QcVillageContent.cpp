@@ -21,7 +21,7 @@ struct Workstations
     Workstations result;
     QHash<QString, QString> &workstations = result.kinds;
     QStringList &warnings = result.warnings;
-    for (const QcVillagerProfession &profession : registry.professions()) {
+    for (const QcVillagerProfession &profession : registry.villageCatalog().professions()) {
         for (const QString &block : profession.workstationBlocks) {
             if (!registry.blockId(block)) {
                 warnings.append(u"profession '%1': workstation '%2' is no block"_s.arg(profession.name, block));
@@ -74,8 +74,8 @@ struct StyleOwners
 [[nodiscard]] QStringList settleStyle(QcContentRegistry &registry, const StyleOwners &owners, qsizetype index)
 {
     QStringList warnings;
-    registry.updateVillageStyle(index, [&](QcVillageStyleDefinition &style) {
-        const QList<QcVillageStyleDefinition> &styles = std::as_const(registry).villageStyles();
+    registry.villageCatalog().updateStyle(index, [&](QcVillageStyleDefinition &style) {
+        const QList<QcVillageStyleDefinition> &styles = std::as_const(registry).villageCatalog().styles();
         const QStringList biomes = style.biomes;
         for (const QString &biome : biomes) {
             // A biome without an owner is no claim of two styles.
@@ -98,9 +98,9 @@ struct StyleOwners
 // Takes from each style of `registry` the biomes and the fallback it does not own.
 [[nodiscard]] QStringList settleBiomes(QcContentRegistry &registry)
 {
-    const StyleOwners owners = ownersOf(registry.villageStyles());
+    const StyleOwners owners = ownersOf(registry.villageCatalog().styles());
     QStringList warnings;
-    for (qsizetype index = 0; index < registry.villageStyles().size(); ++index) {
+    for (qsizetype index = 0; index < registry.villageCatalog().styles().size(); ++index) {
         warnings += settleStyle(registry, owners, index);
     }
     return warnings;
@@ -110,7 +110,7 @@ struct StyleOwners
 {
     QStringList warnings;
     for (const QString &biome : style.biomes) {
-        if (!registry.biome(biome)) {
+        if (!registry.worldgen().biome(biome)) {
             warnings.append(u"village style '%1': unknown biome '%2'"_s.arg(style.name, biome));
         }
     }
@@ -133,13 +133,13 @@ QStringList resolveSpecies(QcContentRegistry &registry)
 {
     Workstations workstations = workstationsOf(registry);
     QStringList warnings = std::move(workstations.warnings);
-    QcVillageSettings settings = registry.villageSettings();
+    QcVillageSettings settings = registry.villageCatalog().settings();
     settings.workstations = std::move(workstations.kinds);
-    registry.setVillageSettings(std::move(settings));
+    registry.villageCatalog().setSettings(std::move(settings));
 
     QStringList broken;
-    const QList<QcVillagerProfession> professions = registry.professions();
-    registry.updateVillagerSpecies([&](QcVillagerSettings &species) {
+    const QList<QcVillagerProfession> professions = registry.villageCatalog().professions();
+    registry.villageCatalog().updateVillagerSpecies([&](QcVillagerSettings &species) {
         species.professions = professions;
         const QcVillagerProfession *unemployed = species.profession(species.unemployed);
         if (!unemployed || !unemployed->workstation.isEmpty()) {
@@ -148,7 +148,7 @@ QStringList resolveSpecies(QcContentRegistry &registry)
         }
     });
     for (const QString &name : std::as_const(broken)) {
-        registry.removeVillagerSettings(name);
+        registry.villageCatalog().removeVillagerSettings(name);
     }
     return warnings;
 }
@@ -156,10 +156,10 @@ QStringList resolveSpecies(QcContentRegistry &registry)
 QStringList resolveStyles(QcContentRegistry &registry)
 {
     QStringList warnings = settleBiomes(registry);
-    for (const QcVillageStyleDefinition &style : registry.villageStyles()) {
+    for (const QcVillageStyleDefinition &style : registry.villageCatalog().styles()) {
         warnings += checkStyleNames(registry, style);
     }
-    const QString &villager = registry.villageSettings().villager;
+    const QString &villager = registry.villageCatalog().settings().villager;
     if (!villager.isEmpty() && !isVillager(registry, villager)) {
         warnings.append(u"village settings: 'villager' names no villager creature: '%1'"_s.arg(villager));
     }

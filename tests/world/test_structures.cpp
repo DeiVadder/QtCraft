@@ -417,16 +417,16 @@ private slots:
     void baseStructuresLoad()
     {
         // Every structure of the base game resolves without warnings.
-        QVERIFY(m_content->structures().size() >= 8);
-        for (const QcStructureDefinition &definition : m_content->structures()) {
+        QVERIFY(m_content->worldgen().structures().size() >= 8);
+        for (const QcStructureDefinition &definition : m_content->worldgen().structures()) {
             const QcStructure::Loaded structure = QcStructure::fromDefinition(definition, *m_content);
             QVERIFY2(structure, qPrintable(structure ? QString() : structure.error().error));
             QVERIFY2(structure->warnings().isEmpty(), qPrintable(structure->warnings().join(u'\n')));
             for (const QcStructureDefinition::Label &label : definition.labels) {
-                QVERIFY2(m_content->hasTranslation(label.text, u"en"_s), qPrintable(label.text));
+                QVERIFY2(m_content->translations().has(label.text, u"en"_s), qPrintable(label.text));
             }
-            QVERIFY2(m_content->hasTranslation(definition.translationKey, u"en"_s), qPrintable(definition.translationKey));
-            QVERIFY2(m_content->hasTranslation(definition.translationKey, u"de"_s), qPrintable(definition.translationKey));
+            QVERIFY2(m_content->translations().has(definition.translationKey, u"en"_s), qPrintable(definition.translationKey));
+            QVERIFY2(m_content->translations().has(definition.translationKey, u"de"_s), qPrintable(definition.translationKey));
         }
     }
 };

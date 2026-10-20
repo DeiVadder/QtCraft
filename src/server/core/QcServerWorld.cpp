@@ -2,7 +2,6 @@
 
 #include "common/light/QcLightTable.h"
 #include "common/world/QcLightVolume.h"
-#include "server/core/QcServerLogging.h"
 
 #include <QThread>
 
@@ -42,20 +41,13 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
 
 void QcServerWorld::setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog)
 {
-    m_io = io;
-    m_catalog = std::move(catalog);
-    if (m_io) {
+    m_saves.setStorage(io, std::move(catalog));
+    if (io) {
         // Only the immutable light table goes to the I/O thread, which may outlive the world.
-        m_io->setPreparation([table = m_light.sharedTable()](Arrival &arrival) {
+        io->setPreparation([table = m_light.sharedTable()](Arrival &arrival) {
             arrival.light = QcLightEngine(table, {}).prepare(*arrival.blocks);
         });
     }
-}
-
-std::optional<QcServerWorld::Stored> QcServerWorld::stored(QcChunkPos pos) const
-{
-    const auto it = m_catalog.constFind(pos);
-    return it == m_catalog.cend() ? std::nullopt : std::optional<Stored>(*it);
 }
 
 quint16 QcServerWorld::linkMarksOf(QcChunkPos pos) const
@@ -63,7 +55,7 @@ quint16 QcServerWorld::linkMarksOf(QcChunkPos pos) const
     if (m_chunks.contains(pos)) {
         return m_links.marksOf(pos);
     }
-    return m_catalog.value(pos).marks;
+    return m_saves.storedMarks(pos);
 }
 
 void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
@@ -98,8 +90,8 @@ void QcServerWorld::requestChunk(QcChunkPos pos)
 
     const quint64 request = m_nextRequest++;
     m_pending.insert(pos, request);
-    if (m_io && m_catalog.contains(pos)) {
-        m_io->read(pos, request);
+    if (m_saves.hasStored(pos)) {
+        m_saves.storage()->read(pos, request);
     } else {
         generateInBackground(pos, {});
     }
@@ -109,8 +101,8 @@ std::vector<QcServerWorld::Arrival> QcServerWorld::collectArrivals()
 {
     std::vector<Arrival> ready;
     std::vector<Arrival> arrived = m_generated.takeAll();
-    if (m_io) {
-        for (Arrival &read : m_io->takeArrivals()) {
+    if (QcChunkIo *io = m_saves.storage()) {
+        for (Arrival &read : io->takeArrivals()) {
             arrived.push_back(std::move(read));
         }
     }
@@ -120,11 +112,7 @@ std::vector<QcServerWorld::Arrival> QcServerWorld::collectArrivals()
             continue;
         }
         if (!arrival.error.isEmpty()) {
-            // Damaged data stays on disk untouched; the chunk plays as generated and is never kept.
-            qCCritical(lcServer) << "Chunk" << arrival.pos.x << arrival.pos.z << "cannot be read, it plays as generated and is not saved:"
-                                 << arrival.error;
-            m_quarantined.insert(arrival.pos);
-            m_newlyQuarantined.append(arrival.pos);
+            m_saves.quarantine(arrival.pos, arrival.error);
             generateInBackground(arrival.pos, {});
             continue;
         }
@@ -156,10 +144,8 @@ void QcServerWorld::admit(Arrival &&arrival)
         return;
     }
     insert(pos, arrival.blocks, arrival.light);
-    if (m_catalog.value(pos).has(QcChunkStore::Kind::Blocks)) {
-        m_differs.insert(pos);
-    }
-    if (m_onArrival && !m_quarantined.contains(pos)) {
+    m_saves.noteArrived(pos);
+    if (m_onArrival && !m_saves.isQuarantined(pos)) {
         m_onArrival(arrival);
     }
 }
@@ -212,8 +198,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
     m_spawners.forgetChunk(pos);
-    m_furnished.remove(pos);
-    m_blockEntityParts.remove(pos);
+    m_blockEntityExtras.forgetChunk(pos);
     m_villages->forgetChunk(pos);
 }
 
@@ -225,12 +210,10 @@ std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
 QcServerWorld::Arrival QcServerWorld::produceNow(QcChunkPos pos)
 {
     Arrival arrival;
-    if (m_io && m_catalog.contains(pos) && !m_quarantined.contains(pos)) {
-        arrival = m_io->readNow(pos);
+    if (m_saves.hasStored(pos) && !m_saves.isQuarantined(pos)) {
+        arrival = m_saves.storage()->readNow(pos);
         if (!arrival.error.isEmpty()) {
-            qCCritical(lcServer) << "Chunk" << pos.x << pos.z << "cannot be read, it plays as generated and is not saved:" << arrival.error;
-            m_quarantined.insert(pos);
-            m_newlyQuarantined.append(pos);
+            m_saves.quarantine(pos, arrival.error);
             arrival = {};
         }
     }
@@ -269,15 +252,13 @@ std::shared_ptr<const QcChunk> QcServerWorld::remove(QcChunkPos pos)
     m_light.removeChunk(pos);
     ++m_loadedEpoch;
     forgetSections(pos);
-    m_differs.remove(pos);
-    // A quarantined chunk is never kept (its stored data stays as it is).
-    const bool changed = m_changed.remove(pos) && !m_quarantined.contains(pos);
+    const bool changed = m_saves.noteLeft(pos);
     return changed ? std::shared_ptr<const QcChunk>(std::move(chunk)) : nullptr;
 }
 
 void QcServerWorld::unloadChunk(QcChunkPos pos)
 {
-    if (m_differs.contains(pos)) {
+    if (m_saves.differsFromGenerated(pos)) {
         return;
     }
     // The light engine lets go of the chunk's column first, while the chunk still exists.
@@ -295,8 +276,8 @@ std::shared_ptr<QcChunk> QcServerWorld::takeChunk(QcChunkPos pos)
     std::shared_ptr<QcChunk> chunk = m_chunks.take(pos);
     m_light.removeChunk(pos);
     ++m_loadedEpoch;
-    m_changed.remove(pos);
-    m_differs.remove(pos);
+    // Nothing is kept of it.
+    m_saves.noteLeft(pos);
     forgetSections(pos);
     return chunk;
 }
@@ -314,10 +295,7 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
     forgetSections(pos);
     m_blockEntities.forgetChunk(pos);
     noteSections(pos, **it);
-    // Its damaged data is given up: what plays now replaces it in the next save.
-    m_quarantined.remove(pos);
-    m_changed.insert(pos);
-    m_differs.insert(pos);
+    m_saves.noteRegenerated(pos);
     return true;
 }
 
@@ -347,12 +325,11 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_blockEntities.placed(pos, before, block);
     m_fires.noteBlock(pos, before, block);
     m_spawners.noteBlock(pos, before, block);
-    if (!m_blockEntityParts.isEmpty()) [[unlikely]] {
-        dropOrphanTails(pos);
+    if (m_blockEntityExtras.hasKeptParts()) [[unlikely]] {
+        m_blockEntityExtras.dropOrphanTails(pos, m_blockEntities, m_fires, m_spawners);
     }
 
-    m_changed.insert(pos.chunk());
-    m_differs.insert(pos.chunk());
+    m_saves.noteChanged(pos.chunk());
     return true;
 }
 
@@ -361,95 +338,13 @@ void QcServerWorld::adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<Qc
     for (auto it = chunks.constBegin(); it != chunks.constEnd(); ++it) {
         m_pending.remove(it.key());
         insert(it.key(), it.value(), nullptr);
-        m_changed.insert(it.key());
-        m_differs.insert(it.key());
+        m_saves.noteChanged(it.key());
     }
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::takeChanged(QcChunkPos pos)
 {
-    if (!m_changed.contains(pos) || m_quarantined.contains(pos)) {
-        return nullptr;
-    }
-    m_changed.remove(pos);
-    return m_chunks.value(pos);
-}
-
-void QcServerWorld::markChanged(QcChunkPos pos)
-{
-    if (m_chunks.contains(pos)) {
-        m_changed.insert(pos);
-    }
-}
-
-void QcServerWorld::keepBlockEntityParts(QcChunkPos pos, QcBlockEntityKept parts)
-{
-    if (parts.isEmpty()) {
-        m_blockEntityParts.remove(pos);
-    } else {
-        m_blockEntityParts[pos] = std::move(parts);
-    }
-}
-
-void QcServerWorld::dropOrphanTails(QcBlockPos pos)
-{
-    const auto parts = m_blockEntityParts.find(pos.chunk());
-    if (parts == m_blockEntityParts.end() || parts->entries.isEmpty()) {
-        return;
-    }
-    const auto tails = parts->entries.find(pos);
-    if (tails == parts->entries.end()) {
-        return;
-    }
-
-    // Scheduled ticks stay with a changed block (QcBlockEntities::placed); the backstop for them
-    // and for entries that end without a block change is QcBlockEntityRecord::pruneKept.
-    using Table = QcBlockEntityRecord::Table;
-    tails->removeIf([this, pos](const QcEntityComponent &tail) {
-        switch (Table(tail.id)) {
-        case Table::Containers:
-            return m_blockEntities.container(pos) == nullptr;
-        case Table::Machines:
-            return m_blockEntities.machine(pos) == nullptr;
-        case Table::Saplings:
-            return m_blockEntities.sapling(pos) == nullptr;
-        case Table::Memories:
-            return m_blockEntities.memory(pos) == nullptr;
-        case Table::Fires:
-            return !m_fires.contains(pos);
-        case Table::Spawners:
-            return !m_spawners.contains(pos);
-        default:
-            return false;
-        }
-    });
-    if (tails->isEmpty()) {
-        parts->entries.erase(tails);
-    }
-    if (parts->isEmpty()) {
-        m_blockEntityParts.erase(parts);
-    }
-}
-
-void QcServerWorld::noteKept(const QcChunkIo::Departure &departure)
-{
-    using Kind = QcChunkStore::Kind;
-    Stored stored = m_catalog.value(departure.pos);
-    const auto set = [&stored](Kind kind, bool present) {
-        const auto bit = quint8(1u << quint8(kind));
-        stored.kinds = present ? quint8(stored.kinds | bit) : quint8(stored.kinds & ~bit);
-    };
-    if (departure.blocks) {
-        set(Kind::Blocks, true);
-    }
-    set(Kind::BlockEntities, !departure.blockEntities.isEmpty() || departure.marks != 0);
-    set(Kind::Entities, !departure.entities.isEmpty() || departure.entities.populated);
-    stored.marks = departure.marks;
-    if (stored.kinds == 0) {
-        m_catalog.remove(departure.pos);
-    } else {
-        m_catalog.insert(departure.pos, stored);
-    }
+    return m_saves.takeChanged(pos) ? m_chunks.value(pos) : nullptr;
 }
 
 bool QcServerWorld::mayHaveLightSourceNear(QcBlockPos pos, int reach) const

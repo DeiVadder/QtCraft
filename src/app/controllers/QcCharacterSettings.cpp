@@ -95,10 +95,10 @@ QVariantList QcCharacterSettings::appearanceList(QcAppearanceDefinition::Kind ki
 {
     QVariantList list;
     const QcContentRegistry &content = this->content();
-    for (const QcAppearanceDefinition &definition : content.appearances()) {
+    for (const QcAppearanceDefinition &definition : content.assets().appearances()) {
         if (definition.kind == kind && definition.playable) {
             list.append(QVariantMap{{u"name"_s, definition.name},
-                                    {u"label"_s, content.translate(definition.translationKey, m_settings.contentLanguage())}});
+                                    {u"label"_s, content.translations().translate(definition.translationKey, m_settings.contentLanguage())}});
         }
     }
     return list;
@@ -107,7 +107,7 @@ QVariantList QcCharacterSettings::appearanceList(QcAppearanceDefinition::Kind ki
 QStringList QcCharacterSettings::playableNames(QcAppearanceDefinition::Kind kind) const
 {
     QStringList names;
-    for (const QcAppearanceDefinition &definition : content().appearances()) {
+    for (const QcAppearanceDefinition &definition : content().assets().appearances()) {
         if (definition.kind == kind && definition.playable) {
             names.append(definition.name);
         }

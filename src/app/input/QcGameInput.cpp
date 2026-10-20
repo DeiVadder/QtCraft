@@ -422,7 +422,7 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
 
 void QcGameInput::pickBlock() const
 {
-    const std::optional<QcRaycastHit> &target = m_parts.session->target();
+    const std::optional<QcRaycastHit> &target = m_parts.session->hand().target();
     if (target && !m_parts.session->isDead()) {
         m_parts.session->gameMode().pickBlock(target->block);
     }

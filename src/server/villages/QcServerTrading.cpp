@@ -230,7 +230,7 @@ void QcServerTrading::update()
 QcMsg::TradeState QcServerTrading::stateOf(const QcCreature &villager) const
 {
     const QcVillager &record = *villager.villager;
-    const QcVillagerProfession *profession = m_state.content().profession(record.profession);
+    const QcVillagerProfession *profession = m_state.content().villageCatalog().profession(record.profession);
     const auto [start, end] = trades(villager).levelRange(record.level);
     QcMsg::TradeState state{villager.id, profession ? profession->translationKey : QString(), record.level, record.experience, start, end, {}};
 

@@ -39,12 +39,12 @@ bool knowsItem(const QcContentRegistry &content, const QString &name)
 
 bool knowsTexture(const QcContentRegistry &content, const QString &name)
 {
-    return name.isEmpty() || content.texture(name) != nullptr;
+    return name.isEmpty() || content.assets().texture(name) != nullptr;
 }
 
 bool knowsSound(const QcContentRegistry &content, const QString &name)
 {
-    return name.isEmpty() || content.sound(name) != nullptr;
+    return name.isEmpty() || content.assets().sound(name) != nullptr;
 }
 
 [[nodiscard]] QStringList checkRecipeReferences(const QcContentRegistry &content)
@@ -111,15 +111,15 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
         }
     }
 
-    if (!mob.skeleton.isEmpty() && !content.model(mob.skeleton)) {
+    if (!mob.skeleton.isEmpty() && !content.assets().model(mob.skeleton)) {
         warnings.append(u"mob %1: unknown skeleton '%2'"_s.arg(mob.name, mob.skeleton));
     }
 
-    const QcAppearanceDefinition *outfit = mob.outfit.isEmpty() ? nullptr : content.appearance(mob.outfit);
+    const QcAppearanceDefinition *outfit = mob.outfit.isEmpty() ? nullptr : content.assets().appearance(mob.outfit);
     if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
         warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
     }
-    const QcAppearanceDefinition *cape = mob.cape.isEmpty() ? nullptr : content.appearance(mob.cape);
+    const QcAppearanceDefinition *cape = mob.cape.isEmpty() ? nullptr : content.assets().appearance(mob.cape);
     if (!mob.cape.isEmpty() && (!cape || cape->kind != QcAppearanceDefinition::Kind::Cape)) {
         warnings.append(u"mob %1: unknown cape '%2'"_s.arg(mob.name, mob.cape));
     }
@@ -182,7 +182,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
             warnings.append(u"item %1: carries unknown block '%2'"_s.arg(definition.name, definition.cartBlock));
         }
     }
-    for (const QcStructureDefinition &structure : content.structures()) {
+    for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         for (const QcStructureDefinition::Cart &cart : structure.minecarts) {
             const std::optional<QcItemId> item = content.itemId(cart.item);
             if (!item || !content.item(*item).placesCart) {
@@ -204,7 +204,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
         warnings.append(checkMobReferences(content, mob));
     }
 
-    for (const QcAppearanceDefinition &appearance : content.appearances()) {
+    for (const QcAppearanceDefinition &appearance : content.assets().appearances()) {
         for (const QcAppearanceLayer &layer : appearance.layers) {
             if (!knowsTexture(content, layer.texture)) {
                 warnings.append(u"appearance %1: unknown texture '%2'"_s.arg(appearance.name, layer.texture));
@@ -244,25 +244,25 @@ constexpr qint64 maxPoolAttemptsPerChunk = 64;
 QString worldgenProblem(const QcContentRegistry &content)
 {
     qint64 oreBlocks = 0;
-    for (const QcOreDefinition &ore : content.ores()) {
+    for (const QcOreDefinition &ore : content.worldgen().ores()) {
         oreBlocks += qint64(ore.veinsPerChunk) * ore.veinSize;
     }
-    if (content.ores().size() > maxOres || oreBlocks > maxOreBlocksPerChunk) {
+    if (content.worldgen().ores().size() > maxOres || oreBlocks > maxOreBlocksPerChunk) {
         return u"too many ores (at most %1 definitions and %2 ore blocks per chunk)"_s.arg(maxOres).arg(maxOreBlocksPerChunk);
     }
 
     qsizetype placements = 0;
-    for (const QcBiomeDefinition &biome : content.biomes()) {
+    for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
         placements += biome.features.size();
     }
-    if (content.biomes().size() > maxBiomes || content.features().size() > maxFeatures || placements > maxPlacements) {
+    if (content.worldgen().biomes().size() > maxBiomes || content.worldgen().features().size() > maxFeatures || placements > maxPlacements) {
         return u"too many biomes or features (at most %1 biomes, %2 features, %3 feature placements)"_s.arg(maxBiomes)
             .arg(maxFeatures)
             .arg(maxPlacements);
     }
 
     qint64 poolAttempts = 0;
-    for (const QcFeatureDefinition &feature : content.features()) {
+    for (const QcFeatureDefinition &feature : content.worldgen().features()) {
         poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? feature.attempts : 0;
     }
     if (poolAttempts > maxPoolAttemptsPerChunk) {
@@ -278,20 +278,20 @@ QString countProblem(const QcContentRegistry &content)
 {
     const auto tooMany = [](qsizetype count) { return std::cmp_greater(count, QcStreamLimits::maxDefinitions); };
     if (tooMany(content.blockCount()) || tooMany(content.itemCount()) || tooMany(content.mobs().size())
-        || tooMany(content.recipes().size()) || tooMany(content.smeltingRecipes().size()) || tooMany(content.textures().size())
-        || tooMany(content.languages().size())
-        || tooMany(content.models().size()) || tooMany(content.appearances().size())
+        || tooMany(content.recipes().size()) || tooMany(content.smeltingRecipes().size()) || tooMany(content.assets().textures().size())
+        || tooMany(content.translations().languages().size())
+        || tooMany(content.assets().models().size()) || tooMany(content.assets().appearances().size())
         || content.packs().size() > 1024) {
         return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);
     }
 
-    if (std::cmp_greater(content.translationTotal(), QcStreamLimits::maxTranslations)) {
+    if (std::cmp_greater(content.translations().total(), QcStreamLimits::maxTranslations)) {
         return u"clients would reject the content (more than %1 translations in all languages)"_s.arg(QcStreamLimits::maxTranslations);
     }
 
-    const QStringList languages = content.languages();
+    const QStringList languages = content.translations().languages();
     for (const QString &language : languages) {
-        if (tooMany(content.translationCount(language))) {
+        if (tooMany(content.translations().count(language))) {
             return u"clients would reject the content (more than %1 translations for '%2')"_s.arg(QcStreamLimits::maxDefinitions)
                 .arg(language);
         }

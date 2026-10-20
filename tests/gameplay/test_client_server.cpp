@@ -69,8 +69,8 @@ private slots:
         QcClientSession session(host->connectClient(), u"Tester"_s);
         session.start();
         QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
-        QCOMPARE(session.worldName(), u"Test"_s);
-        QCOMPARE(session.seed(), 7);
+        QCOMPARE(session.welcome().worldName, u"Test"_s);
+        QCOMPARE(session.welcome().seed, 7);
         QVERIFY(session.content());
         QCOMPARE(session.content()->blockCount(), m_content->blockCount());
 
@@ -98,20 +98,20 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
 
         session.sendChat(u"/tick rate 40"_s);
-        QTRY_COMPARE_WITH_TIMEOUT(session.timeSpeed(), 2.0, timeoutMs);
-        double before = session.worldTime();
+        QTRY_COMPARE_WITH_TIMEOUT(session.worldMirror().timeSpeed(), 2.0, timeoutMs);
+        double before = session.worldMirror().worldTime();
         for (int i = 0; i < 10; ++i) {
             session.tick();
         }
-        QCOMPARE(session.worldTime(), before + 10 * QcPhysics::tickDuration * 2.0);
+        QCOMPARE(session.worldMirror().worldTime(), before + 10 * QcPhysics::tickDuration * 2.0);
 
         session.sendChat(u"/tick freeze"_s);
-        QTRY_COMPARE_WITH_TIMEOUT(session.timeSpeed(), 0.0, timeoutMs);
-        before = session.worldTime();
+        QTRY_COMPARE_WITH_TIMEOUT(session.worldMirror().timeSpeed(), 0.0, timeoutMs);
+        before = session.worldMirror().worldTime();
         for (int i = 0; i < 10; ++i) {
             session.tick();
         }
-        QCOMPARE(session.worldTime(), before);
+        QCOMPARE(session.worldMirror().worldTime(), before);
         QVERIFY(host->shutdown().has_value());
     }
 
@@ -154,7 +154,7 @@ private slots:
         session.setIntent({});
 
         // Once all inputs are acknowledged the predicted state equals the authoritative one.
-        QTRY_VERIFY_WITH_TIMEOUT(session.pendingInputCount() <= 1 && session.playerMotion().onGround
+        QTRY_VERIFY_WITH_TIMEOUT(session.prediction().pendingInputCount() <= 1 && session.playerMotion().onGround
                                      && std::abs(session.playerMotion().velocity.z) < 1e-9,
                                  timeoutMs);
         const QcVec3 end = session.playerMotion().position;

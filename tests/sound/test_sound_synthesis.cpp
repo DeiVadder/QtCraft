@@ -232,13 +232,13 @@ private slots:
         QcContentRegistry content;
         QcSoundDefinition small = sound(u"t:small"_s, {layer(QcSoundWave::Noise, 0.1)});
         small.variants = 3;
-        content.registerSound(small);
+        content.assets().registerSound(small);
 
         // Each long sound needs 10 s x 8 variants = 3,528,000 samples: four fit into the budget.
         for (int i = 0; i < 6; ++i) {
             QcSoundDefinition big = sound(u"t:big%1"_s.arg(i), {layer(QcSoundWave::Noise, QcSoundDefinition::maxLayerSeconds)});
             big.variants = QcSoundDefinition::maxVariants;
-            content.registerSound(big);
+            content.assets().registerSound(big);
         }
 
         const QcSoundBank bank = QcSoundBank::build(content, rate);

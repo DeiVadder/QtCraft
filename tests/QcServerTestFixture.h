@@ -124,7 +124,7 @@ protected:
     // Loads every chunk the world's storage holds at once, in a fixed order (comparison runs).
     void loadStored()
     {
-        QList<QcChunkPos> stored = m_server->world().storedChunks();
+        QList<QcChunkPos> stored = m_server->world().saves().storedChunks();
         std::ranges::sort(stored, {}, [](QcChunkPos chunk) { return std::pair{chunk.x, chunk.z}; });
         for (const QcChunkPos &chunk : std::as_const(stored)) {
             m_server->world().loadChunk(chunk);

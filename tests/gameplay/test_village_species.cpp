@@ -63,26 +63,26 @@ private:
         Village result;
         result.content = QcTestUtil::loadContent();
         QcContentRegistry &content = *result.content;
-        QcVillagerSettings gnomes = *content.villagerSettings(u"qtcraft:villager"_s);
+        QcVillagerSettings gnomes = *content.villageCatalog().villagerSettings(u"qtcraft:villager"_s);
         gnomes.name = u"test:gnome"_s;
-        content.registerVillagerSettings(gnomes);
+        content.villageCatalog().registerVillagerSettings(gnomes);
         addKind(content, u"qtcraft:villager"_s, u"test:gnome"_s, gnomes.name);
         addKind(content, u"qtcraft:pig"_s, u"test:golem_a"_s);
         addKind(content, u"qtcraft:pig"_s, u"test:golem_b"_s);
-        QcVillageSettings settings = content.villageSettings();
+        QcVillageSettings settings = content.villageCatalog().settings();
         // Every villager that panics summons a golem on its own (decision E-470).
         settings.golem.mob = u"test:golem_a"_s;
         settings.golem.minVillagers = 1;
         settings.golem.cooldownSeconds = 300.0;
-        content.setVillageSettings(settings);
+        content.villageCatalog().setSettings(settings);
 
         result.plan = QcVillageFixture::plan(content, {});
         if (!result.plan) {
             return result;
         }
-        const QList<QcVillageStyleDefinition> &styles = content.villageStyles();
+        const QList<QcVillageStyleDefinition> &styles = content.villageCatalog().styles();
         const auto planned = std::ranges::find(styles, result.plan->style, &QcVillageStyleDefinition::name);
-        content.updateVillageStyle(planned - styles.begin(), [](QcVillageStyleDefinition &style) {
+        content.villageCatalog().updateStyle(planned - styles.begin(), [](QcVillageStyleDefinition &style) {
             style.villager = u"test:gnome"_s;
             style.golem = QcVillageGolemPatch{};
             style.golem->mob = u"test:golem_b"_s;

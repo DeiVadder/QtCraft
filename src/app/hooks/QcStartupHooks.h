@@ -72,6 +72,10 @@ public:
 private:
     static constexpr int loadedScreenAttempts = 40;
     static constexpr int loadedScreenRetryMs = 50;
+    // `view:hide` waits up to viewAttempts * viewRetryMs for the view to hold meshed sections,
+    // `view:show` as long for a pending hide (slow builds such as TSan mesh later).
+    static constexpr int viewAttempts = 300;
+    static constexpr int viewRetryMs = 100;
 
     void sendStartupChat();
     void openStartupOverlay();
@@ -82,8 +86,9 @@ private:
     void runOverlayStep(const QString &step);
     // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
     void pressKey(const QString &actionId) const;
-    // `view:hide` / `view:show`: hides or shows the world view as the phase binding does.
-    void showView(bool shown) const;
+    // `view:hide` / `view:show`: hides or shows the world view as the phase binding does; a hide
+    // waits for meshed sections, a show for the hide before it (`attemptsLeft` retries).
+    void showView(bool shown, int attemptsLeft);
     // Opens the screen of an --overlay name (QcScreenState::overlayFromName).
     void openOverlay(const QString &name) const;
     // "pick:", "open:" and "text:" steps: they act on a control of a shown screen and wait up to

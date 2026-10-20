@@ -87,7 +87,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
 {
     QList<const QcFeatureDefinition *> trees;
     int tallest = 1;
-    for (const QcFeatureDefinition &feature : context.content.features()) {
+    for (const QcFeatureDefinition &feature : context.content.worldgen().features()) {
         if (isTree(feature)) {
             trees.append(&feature);
             tallest = std::max(tallest, feature.maxHeight);

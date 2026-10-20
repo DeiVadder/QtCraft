@@ -123,9 +123,9 @@ private:
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
         for (const QString &name : {u"qtcraft:jungle_temple"_s, u"qtcraft:witch_hut"_s}) {
-            QcStructureDefinition structure = *content->structure(name);
+            QcStructureDefinition structure = *content->worldgen().structure(name);
             structure.surface.reset();
-            content->registerStructure(structure);
+            content->worldgen().registerStructure(structure);
         }
         return content;
     }

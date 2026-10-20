@@ -39,7 +39,7 @@ void QcVillageCommands::profession(const QcCommandContext &context)
     const QString name = context.args[0].contains(u':') ? context.args[0] : u"qtcraft:"_s + context.args[0];
     bool numeric = context.args.size() < 2;
     const int level = context.args.size() < 2 ? 1 : context.args[1].toInt(&numeric);
-    if (!m_state.content().profession(name) || !numeric || level < 1 || level > QcVillagerRecord::maxLevel || context.args.size() > 2) {
+    if (!m_state.content().villageCatalog().profession(name) || !numeric || level < 1 || level > QcVillagerRecord::maxLevel || context.args.size() > 2) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /profession <profession> [level]"));
         return;
     }

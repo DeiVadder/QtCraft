@@ -65,7 +65,7 @@ QcWeather::Climate QcServerWeather::climateAt(int x, int z) const
         return *it;
     }
     const QString biome = m_state.world().generator().biomeAt(x, z);
-    const QcWeather::Climate climate = QcWeather::climateOf(biome.isEmpty() ? nullptr : m_state.content().biome(biome));
+    const QcWeather::Climate climate = QcWeather::climateOf(biome.isEmpty() ? nullptr : m_state.content().worldgen().biome(biome));
     m_climates.insert(key, climate);
     return climate;
 }

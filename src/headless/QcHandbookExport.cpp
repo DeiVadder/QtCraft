@@ -50,7 +50,7 @@ QcHandbook build(const QcContentRegistry &content, const QString &language)
 // The languages of the content, English first.
 QStringList languages(const QcContentRegistry &content)
 {
-    QStringList list = content.languages();
+    QStringList list = content.translations().languages();
     list.removeAll(u"en"_s);
     std::ranges::sort(list);
     list.prepend(u"en"_s);

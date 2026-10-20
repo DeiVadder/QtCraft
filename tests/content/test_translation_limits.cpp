@@ -61,14 +61,14 @@ const QcModStatus *find(const QList<QcModStatus> &mods, const QString &id)
 qsizetype baseTotalWhileReading()
 {
     QcContentRegistry base;
-    return QcBaseContent::loadInto(base) ? base.translationTotal() : 0;
+    return QcBaseContent::loadInto(base) ? base.translations().total() : 0;
 }
 
 // The base game's translations after finish(), with the names of its building parts.
 qsizetype baseTotalFinished()
 {
     const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
-    return base ? base->registry->translationTotal() : 0;
+    return base ? base->registry->translations().total() : 0;
 }
 
 } // namespace
@@ -84,12 +84,12 @@ private slots:
     void totalCountsEveryLanguage()
     {
         QcContentRegistry registry;
-        registry.addTranslations(u"en"_s, {{u"a"_s, u"A"_s}, {u"b"_s, u"B"_s}});
-        registry.addTranslations(u"de"_s, {{u"a"_s, u"A"_s}});
-        registry.addTranslations(u"en"_s, {{u"a"_s, u"A2"_s}});
-        QCOMPARE(registry.translationTotal(), 3);
-        QCOMPARE(registry.translationKeys(u"en"_s), (QStringList{u"a"_s, u"b"_s}));
-        QCOMPARE(registry.translationKeys(u"fr"_s), QStringList());
+        registry.translations().add(u"en"_s, {{u"a"_s, u"A"_s}, {u"b"_s, u"B"_s}});
+        registry.translations().add(u"de"_s, {{u"a"_s, u"A"_s}});
+        registry.translations().add(u"en"_s, {{u"a"_s, u"A2"_s}});
+        QCOMPARE(registry.translations().total(), 3);
+        QCOMPARE(registry.translations().keys(u"en"_s), (QStringList{u"a"_s, u"b"_s}));
+        QCOMPARE(registry.translations().keys(u"fr"_s), QStringList());
     }
 
     void aFileBeyondOneLanguageIsRefusedBeforeItsTableIsBuilt()
@@ -117,7 +117,7 @@ private slots:
             for (qsizetype i = 0; i < perLanguage; ++i) {
                 entries.insert(QString::number(i), QString());
             }
-            registry.addTranslations(u"l%1"_s.arg(language), entries);
+            registry.translations().add(u"l%1"_s.arg(language), entries);
         }
 
         const auto roundTrip = [](const QcContentRegistry &content) {
@@ -131,9 +131,9 @@ private slots:
         };
 
         // Exactly the budget is fine, one more entry is not.
-        QCOMPARE(registry.translationTotal(), qsizetype(QcStreamLimits::maxTranslations));
+        QCOMPARE(registry.translations().total(), qsizetype(QcStreamLimits::maxTranslations));
         QVERIFY(roundTrip(registry).has_value());
-        registry.addTranslations(u"extra"_s, {{u"k"_s, u"v"_s}});
+        registry.translations().add(u"extra"_s, {{u"k"_s, u"v"_s}});
         const QcResult<QcContentRegistry> refused = roundTrip(registry);
         QVERIFY(!refused.has_value());
         QVERIFY2(refused.error().contains(u"translations"_s), qPrintable(refused.error()));
@@ -159,13 +159,13 @@ private slots:
         const QcModStatus *status = find(loaded->mods, u"many"_s);
         QVERIFY(status);
         QCOMPARE(status->state, QcModStatus::State::Loaded);
-        QVERIFY(loaded->content->translationTotal() <= qsizetype(QcStreamLimits::maxTranslations));
-        QCOMPARE(loaded->content->translate(u"block.qtcraft.stone"_s, u"en"_s), u"Rock"_s);
+        QVERIFY(loaded->content->translations().total() <= qsizetype(QcStreamLimits::maxTranslations));
+        QCOMPARE(loaded->content->translations().translate(u"block.qtcraft.stone"_s, u"en"_s), u"Rock"_s);
 
         // The files are checked against the unfinished content (without part names).
         const qsizetype fitting = (QcStreamLimits::maxTranslations - baseTotalWhileReading()) / perFile;
-        QCOMPARE(loaded->content->translationTotal(), baseTotalFinished() + fitting * perFile);
-        QCOMPARE(loaded->content->languages().size(), 2 + fitting);
+        QCOMPARE(loaded->content->translations().total(), baseTotalFinished() + fitting * perFile);
+        QCOMPARE(loaded->content->translations().languages().size(), 2 + fitting);
         const qsizetype skipped = std::ranges::count_if(status->warnings, [](const QString &warning) {
             return warning.contains(u"more than 262144 translations in all languages"_s);
         });
@@ -202,7 +202,7 @@ private slots:
         QVERIFY(status);
         QCOMPARE(status->state, QcModStatus::State::Failed);
         QVERIFY2(status->reason.contains(u"more than 262144 translations in all languages"_s), qPrintable(status->reason));
-        QCOMPARE(loaded->content->translationTotal(), baseTotalFinished());
+        QCOMPARE(loaded->content->translations().total(), baseTotalFinished());
     }
 };
 

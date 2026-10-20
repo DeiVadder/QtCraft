@@ -202,7 +202,7 @@ private slots:
             departure.pos = pos;
             departure.blocks = world->takeChunk(pos);
             QVERIFY(departure.blocks);
-            world->noteKept(departure);
+            world->saves().noteKept(departure);
             io.keep(std::move(departure));
         }
         QCOMPARE(differenceToFreshEngine(*world), QString());
@@ -220,7 +220,7 @@ private slots:
         }, 30000));
         QCOMPARE(prepared, kept.size());
         for (const QcChunkPos pos : kept) {
-            QVERIFY(world->differsFromGenerated(pos));
+            QVERIFY(world->saves().differsFromGenerated(pos));
         }
         QCOMPARE(differenceToFreshEngine(*world), QString());
     }

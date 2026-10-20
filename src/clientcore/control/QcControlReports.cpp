@@ -43,8 +43,8 @@ QJsonObject QcControlReports::playerStatus() const
     const QMetaEnum stateEnum = QMetaEnum::fromType<QcClientSession::State>();
     status.insert(u"state"_s, QString::fromLatin1(stateEnum.valueToKey(int(m_session.state()))));
     status.insert(u"tick"_s, qint64(m_session.tickCount()));
-    status.insert(u"world"_s, m_session.worldName());
-    status.insert(u"seed"_s, QString::number(m_session.seed()));
+    status.insert(u"world"_s, m_session.welcome().worldName);
+    status.insert(u"seed"_s, QString::number(m_session.welcome().seed));
 
     const QcEntityMotion &motion = m_session.playerMotion();
     status.insert(u"position"_s, vectorJson(motion.position));
@@ -53,8 +53,8 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"inWater"_s, motion.inWater);
     status.insert(u"flying"_s, motion.flying);
     // The minecart ridden (decision E-382) and the largest prediction correction since the session began.
-    status.insert(u"riding"_s, m_session.riding().isRiding() ? QJsonValue(qint64(m_session.riding().vehicle())) : QJsonValue());
-    status.insert(u"largestCorrection"_s, m_session.largestCorrection());
+    status.insert(u"riding"_s, m_session.prediction().riding().isRiding() ? QJsonValue(qint64(m_session.prediction().riding().vehicle())) : QJsonValue());
+    status.insert(u"largestCorrection"_s, m_session.prediction().largestCorrection());
     status.insert(u"gameMode"_s, QString(QcGameModes::name(m_session.gameMode().mode())));
     status.insert(u"yaw"_s, m_session.intent().yaw);
     status.insert(u"pitch"_s, m_session.intent().pitch);
@@ -77,11 +77,11 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"experienceLevel"_s, m_session.vitals().experienceLevel());
     status.insert(u"experiencePoints"_s, m_session.vitals().experiencePoints());
     status.insert(u"experienceForNext"_s, m_session.vitals().experienceForNext());
-    status.insert(u"worldTime"_s, m_session.worldTime());
-    status.insert(u"night"_s, QcDayCycle::isNight(m_session.worldTime()));
+    status.insert(u"worldTime"_s, m_session.worldMirror().worldTime());
+    status.insert(u"night"_s, QcDayCycle::isNight(m_session.worldMirror().worldTime()));
     status.insert(u"weather"_s, weatherJson());
 
-    if (const std::optional<quint32> entity = m_session.targetEntity()) {
+    if (const std::optional<quint32> entity = m_session.hand().targetEntity()) {
         status.insert(u"targetEntity"_s, qint64(*entity));
     }
 
@@ -98,7 +98,7 @@ QJsonObject QcControlReports::playerStatus() const
 
 QJsonObject QcControlReports::weatherJson() const
 {
-    const QcClientWeather &weather = m_session.weather();
+    const QcClientWeather &weather = m_session.worldMirror().weather();
     const int eyeY = int(std::floor(m_session.playerMotion().position.y + QcPhysics::playerEyeHeight));
     const QcPrecipitation falling = weather.precipitationAt(eyeY);
     QString precipitation = u"none"_s;
@@ -115,7 +115,7 @@ QJsonObject QcControlReports::weatherJson() const
 
 std::optional<QJsonObject> QcControlReports::targetJson() const
 {
-    const auto &target = m_session.target();
+    const auto &target = m_session.hand().target();
     if (!target) {
         return std::nullopt;
     }
@@ -154,8 +154,8 @@ QJsonObject QcControlReports::inventoryJson() const
     }
 
     QJsonArray grid;
-    for (qsizetype i = 0; i < m_session.craftingGrid().size(); ++i) {
-        const QJsonValue stack = stackJson(m_session.craftingGrid()[i]);
+    for (qsizetype i = 0; i < m_session.inventoryMirror().craftingGrid().size(); ++i) {
+        const QJsonValue stack = stackJson(m_session.inventoryMirror().craftingGrid()[i]);
         if (!stack.isNull()) {
             QJsonObject entry = stack.toObject();
             entry.insert(u"slot"_s, int(36 + i));
@@ -165,9 +165,9 @@ QJsonObject QcControlReports::inventoryJson() const
 
     return {{u"selectedSlot"_s, m_session.inventory().selectedHotbarSlot()},
             {u"slots"_s, stacks},
-            {u"craftingSize"_s, m_session.craftingSize()},
+            {u"craftingSize"_s, m_session.inventoryMirror().craftingSize()},
             {u"craftingGrid"_s, grid},
-            {u"craftingResult"_s, stackJson(m_session.craftingResult())}};
+            {u"craftingResult"_s, stackJson(m_session.inventoryMirror().craftingResult())}};
 }
 
 QJsonObject QcControlReports::machineJson() const
@@ -203,8 +203,8 @@ QJsonObject QcControlReports::soundsJson() const
     const QcVec3 ears = m_session.playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
     QJsonArray sounds;
-    for (const QcSoundCue &cue : m_session.recentSounds()) {
-        const QcSoundDefinition *definition = content ? content->sound(cue.key) : nullptr;
+    for (const QcSoundCue &cue : m_session.sounds().recent()) {
+        const QcSoundDefinition *definition = content ? content->assets().sound(cue.key) : nullptr;
         QJsonObject entry{{u"key"_s, cue.key},
                           {u"origin"_s, cue.origin == QcSoundCue::Origin::Server ? u"server"_s : u"local"_s},
                           {u"position"_s, vectorJson(cue.position)},
@@ -224,7 +224,7 @@ QJsonObject QcControlReports::soundsJson() const
         sounds.append(entry);
     }
 
-    const QcAmbience::Levels &ambience = m_session.ambience();
+    const QcAmbience::Levels &ambience = m_session.sounds().ambience();
     return {{u"sounds"_s, sounds},
             {u"ambience"_s, QJsonObject{{u"wind"_s, ambience.wind}, {u"cave"_s, ambience.cave}, {u"water"_s, ambience.water}, {u"rain"_s, ambience.rain}}}};
 }

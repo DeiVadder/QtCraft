@@ -101,7 +101,7 @@ private slots:
         QSet<QString> styles;
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             const QString biome = generator.biomeAt(plan->centre.x, plan->centre.z);
-            const QcBiomeDefinition *definition = m_content->biome(biome);
+            const QcBiomeDefinition *definition = m_content->worldgen().biome(biome);
             QVERIFY(definition);
             // Never in oceans, mountains or other biomes without villages.
             QVERIFY2(definition->villages, qPrintable(biome));
@@ -134,7 +134,7 @@ private slots:
         const QcVillageStyles styles(*m_content);
         QVERIFY2(styles.warnings().isEmpty(), qPrintable(styles.warnings().join(u"; "_s)));
         const auto styleOf = [&](const char *biome) {
-            const QcVillageStyle *style = styles.forBiome(*m_content->biome(QString::fromLatin1(biome)));
+            const QcVillageStyle *style = styles.forBiome(*m_content->worldgen().biome(QString::fromLatin1(biome)));
             return style ? style->name : QString();
         };
         QCOMPARE(styleOf("qtcraft:plains"), u"qtcraft:plains"_s);
@@ -149,7 +149,7 @@ private slots:
         QCOMPARE(styleOf("qtcraft:mountains"), QString());
         QCOMPARE(styleOf("qtcraft:forest"), QString());
 
-        QcBiomeDefinition modBiome = *m_content->biome(u"qtcraft:plains"_s);
+        QcBiomeDefinition modBiome = *m_content->worldgen().biome(u"qtcraft:plains"_s);
         modBiome.name = u"mod:steppe"_s;
         QCOMPARE(styles.forBiome(modBiome)->name, u"qtcraft:plains"_s);
 
@@ -198,10 +198,10 @@ private slots:
         chest.palette = {u"qtcraft:chest"_s};
         chest.cells = {0};
         chest.contents.append({{0, 0, 0}, {{u"qtcraft:bread"_s, 3}}});
-        content->registerStructure(chest);
-        QcVillageStyleDefinition plains = *std::ranges::find(content->villageStyles(), u"qtcraft:plains"_s, &QcVillageStyleDefinition::name);
+        content->worldgen().registerStructure(chest);
+        QcVillageStyleDefinition plains = *std::ranges::find(content->villageCatalog().styles(), u"qtcraft:plains"_s, &QcVillageStyleDefinition::name);
         plains.lamp = chest.name;
-        content->registerVillageStyle(plains);
+        content->villageCatalog().registerStyle(plains);
 
         const QcVillageStyles styles(*content);
         const QStringList &warnings = styles.warnings();

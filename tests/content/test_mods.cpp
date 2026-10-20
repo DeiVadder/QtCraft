@@ -205,7 +205,7 @@ private slots:
             QCOMPARE(mod.state, QcModStatus::State::Failed);
         }
         QVERIFY(std::ranges::any_of(loaded->mods, [](const QcModStatus &mod) { return mod.reason.contains(u"symbolic link"_s); }));
-        QVERIFY(!loaded->content->texture(u"rubies:leak"_s));
+        QVERIFY(!loaded->content->assets().texture(u"rubies:leak"_s));
         QVERIFY(loaded->content->blockId(u"rubies:ruby_ore"_s));
 #else
         QSKIP("POSIX pipes and links only");
@@ -247,7 +247,7 @@ private slots:
         QCOMPARE(loadedIds(loaded->mods), QStringList{u"rubies"_s});
         QVERIFY(find(loaded->mods, u"huge"_s)->reason.contains(u"MiB"_s));
         QVERIFY(find(loaded->mods, u"needs_huge"_s)->reason.contains(u"huge"_s));
-        QVERIFY(!loaded->content->texture(u"huge:t0"_s));
+        QVERIFY(!loaded->content->assets().texture(u"huge:t0"_s));
         QCOMPARE(loaded->content->packs().size(), 2);
     }
 
@@ -287,10 +287,10 @@ private slots:
         QVERIFY(timer.elapsed() < 20000);
         QVERIFY(find(loaded->mods, u"links"_s)->reason.contains(u"MiB left"_s));
         QVERIFY(find(loaded->mods, u"words"_s)->warnings.join(u'\n').contains(u"more than 65536 translations in one file"_s));
-        QVERIFY(!loaded->content->hasTranslation(u"k1"_s, u"en"_s));
+        QVERIFY(!loaded->content->translations().has(u"k1"_s, u"en"_s));
         QCOMPARE(loadedIds(loaded->mods), (QStringList{u"wg"_s, u"words"_s}));
         QVERIFY(std::ranges::any_of(loaded->mods, [](const QcModStatus &mod) { return mod.reason.contains(u"too long"_s); }));
-        QVERIFY(loaded->content->terrainSettings().seaLevel != 3);
+        QVERIFY(loaded->content->worldgen().terrainSettings().seaLevel != 3);
 #else
         QSKIP("POSIX links only");
 #endif
@@ -337,7 +337,7 @@ private slots:
         const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY(loaded.has_value());
         QVERIFY(find(loaded->mods, u"ores"_s)->reason.contains(u"too many ores"_s));
-        QVERIFY(std::ranges::none_of(loaded->content->ores(), [](const QcOreDefinition &ore) { return ore.name.startsWith(u"ores:"_s); }));
+        QVERIFY(std::ranges::none_of(loaded->content->worldgen().ores(), [](const QcOreDefinition &ore) { return ore.name.startsWith(u"ores:"_s); }));
 
         // Pools: the base game's two attempts plus 7 × 8 fit 64 per chunk, one more mod does not.
         writeJson(dir.filePath(u"pools/pack.json"_s), {{u"id"_s, u"pools"_s}, {u"version"_s, u"1"_s}});
@@ -452,7 +452,7 @@ private slots:
         // b3 each tip it over, b2 and b4 are harmless, b5 depends on b3.
         const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
         QVERIFY(base.has_value());
-        const int baseEntries = int(base->registry->translationCount(u"en"_s));
+        const int baseEntries = int(base->registry->translations().count(u"en"_s));
 
         writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
         writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, int(QcStreamLimits::maxDefinitions) - baseEntries - 500));
@@ -531,9 +531,9 @@ private slots:
         QVERIFY(content.itemId(u"rubies:ruby_block"_s)); // block item created for mod blocks too
         QVERIFY(content.itemId(u"rubies:ruby_sword"_s));
         QVERIFY(content.mobIndex(u"rubies:crystal_beetle"_s));
-        QVERIFY(std::ranges::any_of(content.ores(), [](const QcOreDefinition &ore) { return ore.block == u"rubies:ruby_ore"_s; }));
-        QCOMPARE(content.translate(u"item.rubies.ruby"_s, u"de"_s), u"Rubin"_s);
-        QVERIFY(content.texture(u"rubies:ruby"_s));
+        QVERIFY(std::ranges::any_of(content.worldgen().ores(), [](const QcOreDefinition &ore) { return ore.block == u"rubies:ruby_ore"_s; }));
+        QCOMPARE(content.translations().translate(u"item.rubies.ruby"_s, u"de"_s), u"Rubin"_s);
+        QVERIFY(content.assets().texture(u"rubies:ruby"_s));
 
         // Building parts from the mod's material with the base families (walls left out) and the
         // mod's own pillar family, which also applies to the base stones; the excluded ore gets none.
@@ -544,7 +544,7 @@ private slots:
         QVERIFY(content.blockId(u"qtcraft:cobblestone_pillar"_s));
         QVERIFY(!content.blockId(u"rubies:ruby_ore_stairs"_s));
         QCOMPARE(content.block(*content.blockId(u"rubies:ruby_stairs"_s)).toolLevel, 3);
-        QCOMPARE(content.translate(content.block(*content.blockId(u"rubies:ruby_pillar"_s)).translationKey, u"de"_s), u"Rubinsäule"_s);
+        QCOMPARE(content.translations().translate(content.block(*content.blockId(u"rubies:ruby_pillar"_s)).translationKey, u"de"_s), u"Rubinsäule"_s);
         QCOMPARE(content.state(*content.blockId(u"rubies:ruby_pillar"_s)).boxes.size(), 3);
 
         // A glowing block with its own inline shape.
@@ -654,8 +654,8 @@ private slots:
         world.set({3, 70, 3}, state(u"qtcraft:stone"_s));
         QVERIFY(!QcBlockRules::isSupported(world, {3, 71, 3}, state(u"rubies:ruby_rose"_s)));
 
-        const auto plains = std::ranges::find(content->biomes(), u"qtcraft:plains"_s, &QcBiomeDefinition::name);
-        QVERIFY(plains != content->biomes().end());
+        const auto plains = std::ranges::find(content->worldgen().biomes(), u"qtcraft:plains"_s, &QcBiomeDefinition::name);
+        QVERIFY(plains != content->worldgen().biomes().end());
         QVERIFY(std::ranges::any_of(plains->features, [](const QcFeaturePlacement &placement) {
             return placement.feature == u"rubies:ruby_rose"_s;
         }));
@@ -791,7 +791,7 @@ private slots:
         QCOMPARE(loadedIds(loaded->mods), (QStringList{u"rubies"_s, u"tweak"_s}));
         QCOMPARE(content.block(*content.blockId(u"qtcraft:glass"_s)).hardness, 9.0);
         QCOMPARE(content.item(*content.itemId(u"rubies:ruby"_s)).maxStack, 16);
-        QCOMPARE(content.translate(u"item.qtcraft.stick"_s, u"en"_s), u"Twig"_s);
+        QCOMPARE(content.translations().translate(u"item.qtcraft.stick"_s, u"en"_s), u"Twig"_s);
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"broken.json"_s); }));
         QVERIFY(std::ranges::none_of(warnings, [](const QString &w) { return w.contains(u"glass"_s); }));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"unknown item 'tweak:nothing'"_s); }));

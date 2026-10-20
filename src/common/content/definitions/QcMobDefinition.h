@@ -195,7 +195,7 @@ struct QcMobDefinition
     // The villager settings it lives by (villagers/<name>.json, decision E-421); set exactly when
     // `villager` is. Server side only.
     QString villagerSettings;
-    // The index of those settings in QcContentRegistry::villagerSpecies (QcContentRegistry::finish),
+    // The index of those settings in QcVillageCatalog::villagerSpecies (QcContentRegistry::finish),
     // -1 before.
     int villagerSettingsIndex = -1;
     QList<QcItemDrop> drops;

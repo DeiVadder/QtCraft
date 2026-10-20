@@ -113,15 +113,15 @@ private slots:
             QcPlayerInput down;
             down.pitch = -90.0f;
             session.setIntent(down);
-            QVERIFY(session.target().has_value());
-            mined = session.target()->block;
+            QVERIFY(session.hand().target().has_value());
+            mined = session.hand().target()->block;
             session.setMining(true);
             QTRY_VERIFY_WITH_TIMEOUT(session.world()->blockAt(mined) == std::optional<QcBlockId>(qcAirBlockId), timeoutMs);
             session.setMining(false);
             QTRY_VERIFY_WITH_TIMEOUT(session.inventory().slot(1).count == 1, timeoutMs);
 
             // Wait until the player has fallen into the hole and the server agrees.
-            QTRY_VERIFY_WITH_TIMEOUT(session.playerMotion().onGround && session.pendingInputCount() <= 1
+            QTRY_VERIFY_WITH_TIMEOUT(session.playerMotion().onGround && session.prediction().pendingInputCount() <= 1
                                          && session.playerMotion().position.y < mined.y + 0.5,
                                      timeoutMs);
             position = session.playerMotion().position;
@@ -143,7 +143,7 @@ private slots:
         QCOMPARE(session.inventory().slot(0).count, 7);
         QCOMPARE(session.inventory().slot(1).item, *m_content->itemId(u"qtcraft:dirt"_s));
         QCOMPARE(session.playerMotion().position, position);
-        QCOMPARE(session.worldName(), u"Saved"_s);
+        QCOMPARE(session.welcome().worldName, u"Saved"_s);
         QVERIFY(server->shutdown().has_value());
     }
 

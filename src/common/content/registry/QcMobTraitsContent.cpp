@@ -48,7 +48,7 @@ Part<QcTameDefinition> resolveTame(const QcContentRegistry &content, const QcMob
 QStringList checkStructurePets(const QcContentRegistry &content)
 {
     QStringList warnings;
-    for (const QcStructureDefinition &structure : content.structures()) {
+    for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         for (const QcStructureDefinition::Mob &mob : structure.mobs) {
             const std::optional<int> type = mob.owner.isEmpty() ? std::nullopt : content.mobIndex(mob.mob);
             if (!mob.owner.isEmpty() && (!type || !content.mobs()[*type].tameable)) {

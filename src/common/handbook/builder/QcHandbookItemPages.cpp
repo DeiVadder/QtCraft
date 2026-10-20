@@ -25,7 +25,7 @@ bool isTool(const QcItemDefinition &item)
     facts.append({text.label(u"fact.wornOn"_s), text.label(u"slot."_s + qcEquipmentSlotName(armour.slot)), {}});
     facts.append({text.label(u"fact.armourPoints"_s), u"+"_s + QString::number(armour.points), {context.links.tableLink(u"armour"_s)}});
     const QString setKey = u"armour_set."_s + QString(armour.set).replace(u':', u'.');
-    facts.append({text.label(u"fact.armourSet"_s), context.content.translate(setKey, text.language()), {}});
+    facts.append({text.label(u"fact.armourSet"_s), context.content.translations().translate(setKey, text.language()), {}});
     return facts;
 }
 
@@ -149,7 +149,7 @@ QcHandbookEntry itemPage(const QcHandbookContext &context, const QcItemDefinitio
     entry.name = item.name;
     entry.category = isTool(item) || item.armour ? u"tools"_s : (item.food > 0 ? u"food"_s : u"items"_s);
     entry.pack = QcHandbookLinks::packOf(item.name);
-    entry.title = context.content.translate(item.translationKey, text.language());
+    entry.title = context.content.translations().translate(item.translationKey, text.language());
     entry.icon = item.name;
     entry.text = text.description(item.descriptionKey, item.name);
 
@@ -166,7 +166,7 @@ QcHandbookEntry itemPage(const QcHandbookContext &context, const QcItemDefinitio
         }
     }
 
-    entry.englishTitle = context.content.translate(item.translationKey, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(item.translationKey, QcHandbookText::english());
     return entry;
 }
 

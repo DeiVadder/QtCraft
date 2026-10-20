@@ -21,7 +21,7 @@ QcVillagePlanner::QcVillagePlanner(const QcTerrainGenerator &terrain, const QcCo
     : m_terrain(terrain)
     , m_content(content)
     , m_styles(styles)
-    , m_settings(content.villageSettings())
+    , m_settings(content.villageCatalog().settings())
     , m_spacing(spacingOf(m_settings))
     , m_roads(terrain, content)
     , m_pieces(terrain, content, styles)
@@ -49,7 +49,7 @@ const QcVillageStyle *QcVillagePlanner::styleAt(int x, int z) const
     if (column.landFactor < 0.99 || column.overhang >= 1.0) {
         return nullptr;
     }
-    const QcBiomeDefinition *biome = m_content.biome(m_terrain.biomeName(column.biome));
+    const QcBiomeDefinition *biome = m_content.worldgen().biome(m_terrain.biomeName(column.biome));
     const QcVillageStyle *style = biome ? m_styles.forBiome(*biome) : nullptr;
     // A style over water stands on wet ground too, one on land only above the sea level.
     if (!style || (!style->overWater && column.height - 1 <= m_terrain.seaLevel())) {

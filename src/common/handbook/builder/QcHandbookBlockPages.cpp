@@ -88,7 +88,7 @@ QcHandbookEntry BlockPage::build()
     m_entry.name = block.name;
     m_entry.category = block.liquid ? u"liquids"_s : (block.partOf.isEmpty() ? u"blocks"_s : u"parts"_s);
     m_entry.pack = QcHandbookLinks::packOf(block.name);
-    m_entry.title = m_content.translate(block.translationKey, m_text.language());
+    m_entry.title = m_content.translations().translate(block.translationKey, m_text.language());
     m_entry.icon = m_links.itemLink(block.name).icon;
     m_entry.text = m_text.description(block.descriptionKey, block.name);
 
@@ -109,7 +109,7 @@ QcHandbookEntry BlockPage::build()
     addDescriptiveFacts();
     addSections();
 
-    m_entry.englishTitle = m_content.translate(block.translationKey, QcHandbookText::english());
+    m_entry.englishTitle = m_content.translations().translate(block.translationKey, QcHandbookText::english());
     return std::move(m_entry);
 }
 
@@ -416,11 +416,11 @@ void BlockPage::addSaplingFacts()
         return;
     }
 
-    const auto feature = std::ranges::find(m_content.features(), sapling.feature, &QcFeatureDefinition::name);
+    const auto feature = std::ranges::find(m_content.worldgen().features(), sapling.feature, &QcFeatureDefinition::name);
     Fact grows{label(u"fact.growsInto"_s),
                label(u"unit.secondsRange"_s).arg(m_text.number(sapling.minSeconds), m_text.number(sapling.maxSeconds)),
                {}};
-    if (feature != m_content.features().end()) {
+    if (feature != m_content.worldgen().features().end()) {
         grows.links.append(m_links.featureLink(*feature));
     }
     m_entry.facts.append(std::move(grows));

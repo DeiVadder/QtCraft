@@ -202,7 +202,7 @@ private slots:
         const QcContentRegistry &content = *m_content;
         const auto categoryOf = [&content](const char *name) {
             const QcBlockDefinition &block = content.block(*content.blockId(QString::fromLatin1(name)));
-            return content.showcase().categories[QcShowcaseCategories::categoryOf(block, content)].name;
+            return content.worldgen().showcase().categories[QcShowcaseCategories::categoryOf(block, content)].name;
         };
         QCOMPARE(categoryOf("qtcraft:water"), u"liquids"_s);
         QCOMPARE(categoryOf("qtcraft:oak_stairs"), u"parts"_s);
@@ -298,7 +298,7 @@ private slots:
         content->registerMob(lancer);
         const QcShowcaseGenerator generator(content);
         const QHash<QcChunkPos, std::shared_ptr<QcChunk>> chunks = generateAll(generator);
-        const QcBlockId glass = *content->blockId(content->showcase().enclosure);
+        const QcBlockId glass = *content->blockId(content->worldgen().showcase().enclosure);
 
         // From where each hostile creature stands, the glass in every direction is thicker than what
         // its reach (from its centre) leaves once it presses against the glass.
@@ -367,7 +367,7 @@ private slots:
         for (auto it = plan.labelsByChunk.constBegin(); it != plan.labelsByChunk.constEnd(); ++it) {
             for (const QcWorldLabel &label : it.value()) {
                 QCOMPARE((QcBlockPos{int(std::floor(label.position.x)), 0, int(std::floor(label.position.z))}.chunk()), it.key());
-                QVERIFY2(m_content->hasTranslation(label.text, u"en"_s) || label.text.isEmpty(), qPrintable(label.text));
+                QVERIFY2(m_content->translations().has(label.text, u"en"_s) || label.text.isEmpty(), qPrintable(label.text));
                 QVERIFY(label.text.size() <= QcWorldLabel::maxTextLength);
                 texts.insert(label.text);
                 headings += label.heading ? 1 : 0;

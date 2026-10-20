@@ -226,7 +226,7 @@ private slots:
 
     void climateByBiomeAndHeight()
     {
-        const auto climate = [this](const char *biome) { return QcWeather::climateOf(m_content->biome(QString::fromLatin1(biome))); };
+        const auto climate = [this](const char *biome) { return QcWeather::climateOf(m_content->worldgen().biome(QString::fromLatin1(biome))); };
         QCOMPARE(QcWeather::precipitationAt(climate("qtcraft:tundra"), 64), QcPrecipitation::Snow);
         QCOMPARE(QcWeather::precipitationAt(climate("qtcraft:taiga"), 70), QcPrecipitation::Snow);
         QCOMPARE(QcWeather::precipitationAt(climate("qtcraft:desert"), 70), QcPrecipitation::None);
@@ -241,7 +241,7 @@ private slots:
         join({}, std::make_unique<QcTerrainGenerator>(m_content, 42));
         const QcTerrainGenerator generator(m_content, 42);
         for (int x = -2000; x <= 2000; x += 250) {
-            const QcBiomeDefinition *biome = m_content->biome(generator.biomeAt(x, 300));
+            const QcBiomeDefinition *biome = m_content->worldgen().biome(generator.biomeAt(x, 300));
             QCOMPARE(m_server->systems().weather.climateAt(x, 300), QcWeather::climateOf(biome));
         }
     }

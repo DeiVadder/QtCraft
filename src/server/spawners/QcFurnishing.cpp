@@ -72,7 +72,7 @@ namespace QcFurnishing {
 void furnish(QcServerState &state, QcChunkPos pos)
 {
     QcServerWorld &world = state.world();
-    if (world.isFurnished(pos) || !world.chunk(pos)) {
+    if (world.blockEntityExtras().isFurnished(pos) || !world.chunk(pos)) {
         return;
     }
     // Without a spawner, a block with storage or a rail there is nothing to put in; most chunks end
@@ -86,7 +86,7 @@ void furnish(QcServerState &state, QcChunkPos pos)
     if (furnishing.isEmpty()) {
         // Furnished with nothing: a chunk whose blocks come back unchanged (generated again) does not
         // ask again.
-        world.noteFurnished(pos);
+        world.blockEntityExtras().noteFurnished(pos);
         return;
     }
 
@@ -105,7 +105,7 @@ void furnish(QcServerState &state, QcChunkPos pos)
             placeCart(state, cart);
         }
     }
-    world.noteFurnished(pos);
+    world.blockEntityExtras().noteFurnished(pos);
 }
 
 } // namespace QcFurnishing

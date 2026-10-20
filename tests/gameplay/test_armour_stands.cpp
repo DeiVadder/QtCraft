@@ -547,10 +547,10 @@ private slots:
             return std::ranges::count_if(m_client->chatLines, [](const QString &line) { return line.contains(u"is damaged"_s); });
         };
         QCOMPARE(told(), 1);
-        QVERIFY(m_server->world().isQuarantined(m_standChunk));
+        QVERIFY(m_server->world().saves().isQuarantined(m_standChunk));
         chat(u"/regenerate %1 %2"_s.arg(m_standChunk.x * QcWorld::chunkSize).arg(m_standChunk.z * QcWorld::chunkSize));
         chat(u"/confirm"_s);
-        QVERIFY(!m_server->world().isQuarantined(m_standChunk));
+        QVERIFY(!m_server->world().saves().isQuarantined(m_standChunk));
         QVERIFY(m_server->save().has_value());
         QVERIFY(storedBlob(path) != before);
         cleanup();
@@ -558,7 +558,7 @@ private slots:
         ticks(1);
         QcTestUtil::pump();
         QVERIFY(m_server->world().chunk(m_standChunk));
-        QVERIFY(!m_server->world().isQuarantined(m_standChunk));
+        QVERIFY(!m_server->world().saves().isQuarantined(m_standChunk));
         QCOMPARE(told(), 0);
     }
 

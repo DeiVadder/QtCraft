@@ -173,8 +173,8 @@ private slots:
         QImage picture = cutOutTile();
         picture.setPixelColor(5, 5, QColor(10, 20, 30, 128));
         QcContentRegistry content;
-        content.registerTexture({u"t:red"_s, flat("#c00000"), {}});
-        content.registerTexture({u"t:picture"_s, {}, png(picture)});
+        content.assets().registerTexture({u"t:red"_s, flat("#c00000"), {}});
+        content.assets().registerTexture({u"t:picture"_s, {}, png(picture)});
         QImage packed = cutOutTile();
         packed.setPixelColor(3, 3, QColor(200, 100, 50, 128));
         const QcTexturePackRef images = pack(u"images"_s, 16, {{u"t:red"_s, packed}});

@@ -182,10 +182,10 @@ private slots:
     void theRareCentreLeavesOtherVillagesAlone()
     {
         auto plain = std::make_shared<QcContentRegistry>(*m_content);
-        QcVillageStyleDefinition desert = *std::ranges::find(plain->villageStyles(), u"qtcraft:desert"_s, &QcVillageStyleDefinition::name);
+        QcVillageStyleDefinition desert = *std::ranges::find(plain->villageCatalog().styles(), u"qtcraft:desert"_s, &QcVillageStyleDefinition::name);
         QVERIFY(desert.rareCentreChance > 0.0);
         desert.rareCentreChance = 0.0;
-        plain->registerVillageStyle(desert);
+        plain->villageCatalog().registerStyle(desert);
         const QcTerrainGenerator withCentre(m_content, 42);
         const QcTerrainGenerator without(plain, 42);
         QCryptographicHash withHash(QCryptographicHash::Sha256);

@@ -322,9 +322,9 @@ private slots:
         // The world's figures (head yaw 0) are drawn exactly as before the head could turn: these
         // fingerprints were taken from the meshes of the commit before stage 22 (78618f4).
         QcEntityMesher::ModelLook look;
-        look.model = content.model(u"qtcraft:humanoid"_s);
-        look.outfit = content.appearance(u"qtcraft:miner"_s);
-        look.hair = content.appearance(u"qtcraft:cap"_s);
+        look.model = content.assets().model(u"qtcraft:humanoid"_s);
+        look.outfit = content.assets().appearance(u"qtcraft:miner"_s);
+        look.hair = content.assets().appearance(u"qtcraft:cap"_s);
         look.colors.shirtColor = 0x123456;
         look.colors.skinColor = 0xb97b56;
         QcEntityMesher::ItemLook held;

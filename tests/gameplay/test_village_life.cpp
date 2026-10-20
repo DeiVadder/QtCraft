@@ -254,7 +254,7 @@ private slots:
         QCOMPARE(built.state().population, int(before + 1));
         const QcCreature *child = youngest(built);
         QVERIFY(child);
-        QCOMPARE(child->villager->profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QCOMPARE(child->villager->profession, (*built.content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QVERIFY(child->villager->home);
         QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager->home)->claimedBy, child->uid);
         QCOMPARE(child->villager->style, built.state().style);
@@ -320,7 +320,7 @@ private slots:
         }
         mobs[0].villager->profession = u"qtcraft:farmer"_s;
         mobs[0].villager->produce = 10;
-        mobs[1].villager->profession = (*content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
+        mobs[1].villager->profession = (*content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).unemployed;
         mobs[1].motion.position = {1.0, 0.0, 0.0};
 
         // No village of id 7 is known: no child, but the farmer shares all the same.
@@ -357,7 +357,7 @@ private slots:
         child = built.mobs->find(childId);
         QVERIFY(child->isYoung());
         QVERIFY(!child->villager->work);
-        QCOMPARE(child->villager->profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QCOMPARE(child->villager->profession, (*built.content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QCOMPARE(child->villager->activity, QcVillagerActivity::Wander);
 
         // Grown up, it takes a workstation and its profession.
@@ -366,7 +366,7 @@ private slots:
         child = built.mobs->find(childId);
         QVERIFY(!child->isYoung());
         QVERIFY(child->villager->work);
-        QVERIFY(child->villager->profession != (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QVERIFY(child->villager->profession != (*built.content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).unemployed);
         QCOMPARE(child->villager->activity, QcVillagerActivity::Work);
     }
 
@@ -443,10 +443,10 @@ private slots:
         // Regions of 128 blocks: the chunks around a village reach into the neighbouring regions.
         // Loading the last of them (one in another region) reconciles the village's claims.
         std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-        QcVillageSettings settings = content->villageSettings();
+        QcVillageSettings settings = content->villageCatalog().settings();
         settings.spacing = 128;
         settings.radius = 48;
-        content->setVillageSettings(settings);
+        content->villageCatalog().setSettings(settings);
         auto generator = std::make_unique<QcTerrainGenerator>(content, seed);
         const int spacing = generator->villages().spacing();
         QCOMPARE(spacing, 128);

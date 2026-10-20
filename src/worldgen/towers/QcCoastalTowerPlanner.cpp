@@ -32,7 +32,7 @@ constexpr int solidLayers = 3;
 QcCoastalTowerPlanner::QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
     , m_content(content)
-    , m_settings(content.terrainSettings().coastalTowers)
+    , m_settings(content.worldgen().terrainSettings().coastalTowers)
     , m_seed(qcMixSeed(seed, qcNameSalt(u"coastal_towers"_s)))
 {
     if (m_settings.enabled) {
@@ -51,7 +51,7 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
 
     // A tower must stay inside its region with a column to spare on each side.
     for (const QcCoastalTowerSettings::Structure &entry : std::as_const(m_settings.structures)) {
-        const QcStructureDefinition *definition = content.structure(entry.structure);
+        const QcStructureDefinition *definition = content.worldgen().structure(entry.structure);
         QcStructure::Loaded structure = definition ? QcStructure::fromDefinition(*definition, content)
                                                    : std::unexpected(QcStructure::Failure{u"unknown"_s, {}});
         m_warnings.append(QcStructure::warningsOf(structure));

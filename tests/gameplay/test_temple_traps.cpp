@@ -42,7 +42,7 @@ private:
         chat(u"/gamerule mobSpawning false"_s);
         chat(u"/gamerule daylightCycle false"_s);
         chat(u"/gamemode survival"_s);
-        QcStructure::Loaded structure = QcStructure::fromDefinition(*m_content->structure(u"qtcraft:jungle_temple"_s), *m_content);
+        QcStructure::Loaded structure = QcStructure::fromDefinition(*m_content->worldgen().structure(u"qtcraft:jungle_temple"_s), *m_content);
         QVERIFY(structure);
         m_temple.emplace(std::make_shared<const QcStructure>(std::move(*structure)), m_feet.offset(-8, 24, -8), turns, *m_content);
 

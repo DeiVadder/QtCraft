@@ -146,7 +146,7 @@ private slots:
 
         report("wall", double(wall.elapsed()) / 1e3, "s");
         report("most-loaded", double(mostLoaded), "chunks");
-        report("stored", double(m_server->world().storedChunkCount()), "chunks");
+        report("stored", double(m_server->world().saves().storedChunkCount()), "chunks");
         reportTicks(std::move(ticks));
         cleanup();
     }

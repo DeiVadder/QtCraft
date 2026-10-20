@@ -51,7 +51,7 @@ private:
 
 const QcModelDefinition *referenceModel(const QcContentRegistry &content)
 {
-    return content.model(u"qtcraft:humanoid"_s);
+    return content.assets().model(u"qtcraft:humanoid"_s);
 }
 
 QList<QcEntityMesher::Attachment> layers(const QcArmourDefinition &armour, const QcModelDefinition &reference)

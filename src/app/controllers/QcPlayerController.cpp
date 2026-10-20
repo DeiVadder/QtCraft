@@ -86,7 +86,7 @@ QVariantList QcPlayerController::effects() const
             continue;
         }
         list.append(QVariantMap{{u"name"_s, effect.name},
-                                {u"label"_s, content->translate(definition->translationKey, m_settings.contentLanguage())},
+                                {u"label"_s, content->translations().translate(definition->translationKey, m_settings.contentLanguage())},
                                 {u"icon"_s, definition->icon},
                                 {u"colour"_s, QColor(QRgb(definition->colour)).name()},
                                 {u"seconds"_s, (effect.ticksLeft + 19) / 20},
@@ -148,7 +148,7 @@ double QcPlayerController::machineProgress() const
 
 int QcPlayerController::craftingSize() const
 {
-    return m_parts.session ? m_parts.session->craftingSize() : 2;
+    return m_parts.session ? m_parts.session->inventoryMirror().craftingSize() : 2;
 }
 
 void QcPlayerController::selectHotbarSlot(int slot) const
@@ -163,7 +163,7 @@ void QcPlayerController::moveItem(int from, int to, int count) const
     const int fromSlot = QcInventoryModel::slotOfRow(from);
     const int toSlot = QcInventoryModel::slotOfRow(to);
     if (m_parts.session && fromSlot >= 0 && toSlot >= 0) {
-        m_parts.session->moveInventoryItem(fromSlot, toSlot, count);
+        m_parts.session->inventoryMirror().moveItem(fromSlot, toSlot, count);
     }
 }
 
@@ -173,23 +173,23 @@ void QcPlayerController::quickMove(int row) const
         return;
     }
     if (row == QcInventoryModel::resultRow) {
-        m_parts.session->quickMoveItem(QcMsg::QuickMoveItem::craftingResultSlot);
+        m_parts.session->inventoryMirror().quickMoveItem(QcMsg::QuickMoveItem::craftingResultSlot);
     } else if (const int slot = QcInventoryModel::slotOfRow(row); slot >= 0) {
-        m_parts.session->quickMoveItem(slot);
+        m_parts.session->inventoryMirror().quickMoveItem(slot);
     }
 }
 
 void QcPlayerController::takeCraftingResult() const
 {
     if (m_parts.session) {
-        m_parts.session->takeCraftingResult();
+        m_parts.session->inventoryMirror().takeCraftingResult();
     }
 }
 
 void QcPlayerController::craftRecipe(const QString &recipe) const
 {
     if (m_parts.session) {
-        m_parts.session->craftRecipe(recipe);
+        m_parts.session->inventoryMirror().craftRecipe(recipe);
     }
 }
 
@@ -203,7 +203,7 @@ void QcPlayerController::respawn() const
 int QcPlayerController::armour() const
 {
     const auto content = m_parts.session ? m_parts.session->content() : nullptr;
-    return content ? QcArmour::points(*content, m_parts.session->equipment()) : 0;
+    return content ? QcArmour::points(*content, m_parts.session->inventoryMirror().equipment()) : 0;
 }
 
 int QcPlayerController::maxArmour()
@@ -240,8 +240,8 @@ void QcPlayerController::useContent()
 void QcPlayerController::updateInventory()
 {
     const QcClientSession &session = *m_parts.session;
-    m_inventory->setInventory(session.inventory(), session.craftingGrid(), session.craftingResult(),
-                              session.machine().isOpen() ? session.machine().stacks() : QList<QcItemStack>(), session.equipment());
+    m_inventory->setInventory(session.inventory(), session.inventoryMirror().craftingGrid(), session.inventoryMirror().craftingResult(),
+                              session.machine().isOpen() ? session.machine().stacks() : QList<QcItemStack>(), session.inventoryMirror().equipment());
     updateCraftableRecipes();
     emit craftingChanged();
 }
@@ -257,7 +257,7 @@ void QcPlayerController::updateCraftableRecipes()
     }
 
     for (const QcRecipeDefinition &recipe : content->recipes()) {
-        if (QcCrafting::gridSizeNeeded(recipe) > session.craftingSize()) {
+        if (QcCrafting::gridSizeNeeded(recipe) > session.inventoryMirror().craftingSize()) {
             continue;
         }
         const int possible = QcCrafting::timesCraftable(*content, session.inventory(), recipe, 64);
@@ -268,7 +268,7 @@ void QcPlayerController::updateCraftableRecipes()
 
         const QcItemDefinition &definition = content->item(*result);
         m_craftableRecipes.append(QVariantMap{{u"recipe"_s, recipe.name},
-                                              {u"label"_s, content->translate(definition.translationKey, m_settings.contentLanguage())},
+                                              {u"label"_s, content->translations().translate(definition.translationKey, m_settings.contentLanguage())},
                                               {u"icon"_s, QcItemIconUrls::url(definition.name)},
                                               {u"count"_s, recipe.resultCount},
                                               {u"possible"_s, possible}});
@@ -284,12 +284,12 @@ void QcPlayerController::nameOpenMachine()
         // A container cart: named after its item, its rows as long as those of the block it carries.
         const QcClientEntity cart = session.entities().value(session.machine().entity());
         const std::optional<QcBlockId> carried = cart.cartBlock(*content);
-        m_machineLabel = content->isValidItem(cart.item.item) ? content->translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
+        m_machineLabel = content->isValidItem(cart.item.item) ? content->translations().translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
         m_containerColumns = carried ? content->block(*carried).containerColumns : 9;
         return;
     }
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
-    m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
+    m_machineLabel = block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
     m_containerColumns = block ? content->block(*block).containerColumns : 9;
 }
 

@@ -94,7 +94,7 @@ void QcControlTradeCommands::openTrade(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().targetEntity() != std::optional<quint32>(wanted) || !session().useItem()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(wanted) || !session().useItem()) {
                                  m_context.setActiveError(u"The villager is not in reach or not in sight"_s);
                                  return true;
                              }

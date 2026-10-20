@@ -92,28 +92,28 @@ private slots:
 
         // Both professions and the base ones, each species with all of them.
         const QcContentRegistry &content = *loaded.content;
-        QCOMPARE(content.professions().size(), 6);
-        QVERIFY(content.profession(u"bakery:baker"_s));
-        QVERIFY(content.profession(u"library:librarian"_s));
+        QCOMPARE(content.villageCatalog().professions().size(), 6);
+        QVERIFY(content.villageCatalog().profession(u"bakery:baker"_s));
+        QVERIFY(content.villageCatalog().profession(u"library:librarian"_s));
         const QcVillagerSettings &species = content.villagerSettingsOf(*content.mobIndex(u"qtcraft:villager"_s));
         QCOMPARE(species.professions.size(), 6);
         QCOMPARE(species.forWorkstation(u"bakery:baker"_s)->name, u"bakery:baker"_s);
-        const QHash<QString, QString> &workstations = content.villageSettings().workstations;
+        const QHash<QString, QString> &workstations = content.villageCatalog().settings().workstations;
         QCOMPARE(workstations.value(u"qtcraft:crafting_table"_s), u"bakery:baker"_s);
         QCOMPARE(workstations.value(u"qtcraft:bookshelf"_s), u"library:librarian"_s);
         QCOMPARE(workstations.value(u"qtcraft:composter"_s), u"qtcraft:farmer"_s);
 
         // The baker's apron is joined with the villagers' outfit; the librarian has its own routine
         // and number of offers.
-        const QcVillagerProfession &bakerProfession = *content.profession(u"bakery:baker"_s);
-        QVERIFY(content.appearance(QcVillagerOutfits::outfitName(u"qtcraft:villager_tunic"_s, bakerProfession)));
-        QCOMPARE(content.profession(u"library:librarian"_s)->offersPerLevel, 3);
+        const QcVillagerProfession &bakerProfession = *content.villageCatalog().profession(u"bakery:baker"_s);
+        QVERIFY(content.assets().appearance(QcVillagerOutfits::outfitName(u"qtcraft:villager_tunic"_s, bakerProfession)));
+        QCOMPARE(content.villageCatalog().profession(u"library:librarian"_s)->offersPerLevel, 3);
         QCOMPARE(species.activityAt(0.7, u"library:librarian"_s), QcVillagerActivity::Sleep);
         QCOMPARE(species.activityAt(0.25, u"library:librarian"_s), QcVillagerActivity::Work);
         QCOMPARE(species.activityAt(0.7, u"qtcraft:farmer"_s), QcVillagerActivity::Sleep);
         QCOMPARE(species.activityAt(0.5, u"library:librarian"_s), QcVillagerActivity::Work);
         QCOMPARE(species.activityAt(0.5, u"qtcraft:farmer"_s), QcVillagerActivity::Home);
-        QVERIFY(std::ranges::any_of(content.tradeSets(), [](const QcTradeSet &set) { return set.profession == u"bakery:baker"_s; }));
+        QVERIFY(std::ranges::any_of(content.villageCatalog().tradeSets(), [](const QcTradeSet &set) { return set.profession == u"bakery:baker"_s; }));
     }
 
     void aBlockTwoProfessionsNameGoesToTheLaterOne()
@@ -123,13 +123,13 @@ private slots:
                                           {{u"professions/gardener.json"_s, R"({"name": "gardener", "workstations": ["qtcraft:composter"]})"}});
         const Loaded loaded = load({compost});
         QVERIFY(anyContains(loaded.warnings, u"'compost:gardener' keeps it"_s));
-        QCOMPARE(loaded.content->villageSettings().workstations.value(u"qtcraft:composter"_s), u"compost:gardener"_s);
+        QCOMPARE(loaded.content->villageCatalog().settings().workstations.value(u"qtcraft:composter"_s), u"compost:gardener"_s);
     }
 
     void modsExtendThePlainsStyleInPackOrder()
     {
         QTemporaryDir dir;
-        const qsizetype pieces = load({}).content->villageStyle(u"qtcraft:plains"_s)->pieces.size();
+        const qsizetype pieces = load({}).content->villageCatalog().style(u"qtcraft:plains"_s)->pieces.size();
         const QString forest = writePack(dir.path(), u"forest_fields"_s,
                                          {{u"villages/plains.json"_s, R"({"formatVersion": 1, "extends": "qtcraft:plains",
                                              "add": {"biomes": ["qtcraft:forest", "qtcraft:plains"], "crops": [{"block": "qtcraft:pumpkin_stem", "weight": 2}]}})"},
@@ -142,7 +142,7 @@ private slots:
         QVERIFY2(loaded.warnings.isEmpty(), qPrintable(loaded.warnings.join(u'\n')));
 
         // Both mods' biomes, once each, the crop and the layout; the rest as the base has it.
-        const QcVillageStyleDefinition *plains = loaded.content->villageStyle(u"qtcraft:plains"_s);
+        const QcVillageStyleDefinition *plains = loaded.content->villageCatalog().style(u"qtcraft:plains"_s);
         QVERIFY(plains);
         QCOMPARE(plains->biomes, (QStringList{u"qtcraft:plains"_s, u"qtcraft:forest"_s, u"qtcraft:birch_forest"_s}));
         QCOMPARE(plains->crops.constLast().block, u"qtcraft:pumpkin_stem"_s);
@@ -153,7 +153,7 @@ private slots:
         QCOMPARE(plains->centre, u"qtcraft:village_plains_well"_s);
 
         // A named extension is a new style from a copy of the base as it was then.
-        const QcVillageStyleDefinition *meadow = loaded.content->villageStyle(u"forest_fields:meadow"_s);
+        const QcVillageStyleDefinition *meadow = loaded.content->villageCatalog().style(u"forest_fields:meadow"_s);
         QVERIFY(meadow);
         QCOMPARE(meadow->biomes, QStringList{u"qtcraft:mountains"_s});
         QVERIFY(!meadow->fallback);
@@ -171,7 +171,7 @@ private slots:
         const Loaded loaded = load({pack});
         QVERIFY(anyContains(loaded.warnings, u"names no village style: 'moon'"_s));
         QVERIFY(anyContains(loaded.warnings, u"'add' and 'remove' need 'extends'"_s));
-        QVERIFY(!loaded.content->villageStyle(u"lost:broken"_s));
+        QVERIFY(!loaded.content->villageCatalog().style(u"lost:broken"_s));
     }
 
     void aSecondVillagerSpeciesLivesByItsOwnSettings()
@@ -202,18 +202,18 @@ private slots:
 
         // The style's villages are the gnomes', without golems; other villages keep the base's.
         QCOMPARE(content.villagerOfStyle(u"gnomes:gnome_village"_s), gnome);
-        QVERIFY(content.golemOfStyle(u"gnomes:gnome_village"_s).mob.isEmpty());
+        QVERIFY(content.villageCatalog().golemOfStyle(u"gnomes:gnome_village"_s).mob.isEmpty());
         QCOMPARE(content.villagerOfStyle(u"qtcraft:plains"_s), villager);
-        QCOMPARE(content.golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
+        QCOMPARE(content.villageCatalog().golemOfStyle(u"qtcraft:plains"_s).mob, u"qtcraft:iron_golem"_s);
 
         // Residents are data: kind and count per village.
-        const QList<QcVillageResident> &residents = content.villageStyle(u"gnomes:gnome_village"_s)->residents;
+        const QList<QcVillageResident> &residents = content.villageCatalog().style(u"gnomes:gnome_village"_s)->residents;
         QCOMPARE(residents.size(), 2);
         QCOMPARE(residents[0].mob, u"qtcraft:pig"_s);
         QCOMPARE(residents[0].max, 3);
         QCOMPARE(residents[1].min, 1);
         QCOMPARE(residents[1].max, 1);
-        QVERIFY(content.villageStyle(u"qtcraft:plains"_s)->residents.isEmpty());
+        QVERIFY(content.villageCatalog().style(u"qtcraft:plains"_s)->residents.isEmpty());
     }
 
     void aNamedCopyStartsWithoutTheBaseBiomes()
@@ -228,14 +228,14 @@ private slots:
 
         // The copy builds nowhere until it names biomes; the plains stay the fallback.
         const QcContentRegistry &content = *loaded.content;
-        QVERIFY(content.villageStyle(u"copies:copy"_s)->biomes.isEmpty());
-        QVERIFY(!content.villageStyle(u"copies:copy"_s)->fallback);
-        QVERIFY(content.villageStyle(u"qtcraft:plains"_s)->fallback);
-        QCOMPARE(content.villageStyle(u"qtcraft:plains"_s)->biomes, QStringList{u"qtcraft:plains"_s});
+        QVERIFY(content.villageCatalog().style(u"copies:copy"_s)->biomes.isEmpty());
+        QVERIFY(!content.villageCatalog().style(u"copies:copy"_s)->fallback);
+        QVERIFY(content.villageCatalog().style(u"qtcraft:plains"_s)->fallback);
+        QCOMPARE(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes, QStringList{u"qtcraft:plains"_s});
 
         // `remove` moves the desert from its base style to the mod's.
-        QVERIFY(content.villageStyle(u"qtcraft:desert"_s)->biomes.isEmpty());
-        QCOMPARE(content.villageStyle(u"copies:dunes"_s)->biomes, QStringList{u"qtcraft:desert"_s});
+        QVERIFY(content.villageCatalog().style(u"qtcraft:desert"_s)->biomes.isEmpty());
+        QCOMPARE(content.villageCatalog().style(u"copies:dunes"_s)->biomes, QStringList{u"qtcraft:desert"_s});
     }
 
     void aBiomeTwoStylesNameGoesToTheLaterChangedOne()
@@ -252,11 +252,11 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"'qtcraft:plains' and 'qtcraft:taiga' both name biome 'qtcraft:plains'"_s));
         QVERIFY(anyContains(loaded.warnings, u"'qtcraft:plains' and 'first:meadow' are both the fallback; 'first:meadow'"_s));
         QVERIFY(anyContains(loaded.warnings, u"village style 'qtcraft:taiga': unknown biome 'qtcraft:moon'"_s));
-        QCOMPARE(content.villageStyle(u"qtcraft:taiga"_s)->biomes, (QStringList{u"qtcraft:taiga"_s, u"qtcraft:plains"_s, u"qtcraft:moon"_s}));
-        QVERIFY(content.villageStyle(u"qtcraft:plains"_s)->biomes.isEmpty());
-        QVERIFY(content.villageStyle(u"first:meadow"_s)->biomes.isEmpty());
-        QVERIFY(content.villageStyle(u"first:meadow"_s)->fallback);
-        QVERIFY(!content.villageStyle(u"qtcraft:plains"_s)->fallback);
+        QCOMPARE(content.villageCatalog().style(u"qtcraft:taiga"_s)->biomes, (QStringList{u"qtcraft:taiga"_s, u"qtcraft:plains"_s, u"qtcraft:moon"_s}));
+        QVERIFY(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes.isEmpty());
+        QVERIFY(content.villageCatalog().style(u"first:meadow"_s)->biomes.isEmpty());
+        QVERIFY(content.villageCatalog().style(u"first:meadow"_s)->fallback);
+        QVERIFY(!content.villageCatalog().style(u"qtcraft:plains"_s)->fallback);
     }
 
     void extensionsBuildOnExtensionsAndAFullDefinitionDropsThem()
@@ -273,12 +273,12 @@ private slots:
         const Loaded loaded = load({first, second});
         QVERIFY2(loaded.warnings.isEmpty(), qPrintable(loaded.warnings.join(u'\n')));
 
-        const QcVillageStyleDefinition *meadow = loaded.content->villageStyle(u"first:meadow"_s);
-        const qsizetype baseCrops = load({}).content->villageStyle(u"qtcraft:plains"_s)->crops.size();
+        const QcVillageStyleDefinition *meadow = loaded.content->villageCatalog().style(u"first:meadow"_s);
+        const qsizetype baseCrops = load({}).content->villageCatalog().style(u"qtcraft:plains"_s)->crops.size();
         QCOMPARE(meadow->crops.size(), baseCrops + 2);
         QCOMPARE(meadow->crops[baseCrops].block, u"qtcraft:carrot_crop"_s);
         QCOMPARE(meadow->crops.constLast().block, u"qtcraft:potato_crop"_s);
-        const QcVillageStyleDefinition *plains = loaded.content->villageStyle(u"qtcraft:plains"_s);
+        const QcVillageStyleDefinition *plains = loaded.content->villageCatalog().style(u"qtcraft:plains"_s);
         QVERIFY(plains->crops.isEmpty());
         QCOMPARE(plains->pieces.size(), 1);
     }
@@ -296,7 +296,7 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"b_meadow.json defines; rename this file to sort after it"_s));
         QVERIFY(anyContains(loaded.warnings, u"c_bad.json: village style: 'extends' must name a village style"_s));
         QVERIFY(anyContains(loaded.warnings, u"d_bad_name.json: village style extending 'qtcraft:plains'"_s));
-        QVERIFY(loaded.content->villageStyle(u"order:meadow"_s)->crops.size() == loaded.content->villageStyle(u"qtcraft:plains"_s)->crops.size());
+        QVERIFY(loaded.content->villageCatalog().style(u"order:meadow"_s)->crops.size() == loaded.content->villageCatalog().style(u"qtcraft:plains"_s)->crops.size());
     }
 
     void villageSettingsOfALaterPackChangeOnlyTheirFields()
@@ -313,7 +313,7 @@ private slots:
 
         // Villagers and golems stay; each pack changes what it gives.
         const QcContentRegistry &content = *loaded.content;
-        const QcVillageSettings &settings = content.villageSettings();
+        const QcVillageSettings &settings = content.villageCatalog().settings();
         QCOMPARE(settings.spacing, 512);
         QCOMPARE(settings.villager, u"qtcraft:villager"_s);
         QCOMPARE(settings.bell, u"qtcraft:bell"_s);
@@ -322,13 +322,13 @@ private slots:
         QCOMPARE(settings.golem.gossipChance, 0.1);
 
         // A style's golem fields go over the settings' as they end up.
-        const QcVillageGolemSettings guarded = content.golemOfStyle(u"first:guarded"_s);
+        const QcVillageGolemSettings guarded = content.villageCatalog().golemOfStyle(u"first:guarded"_s);
         QCOMPARE(guarded.mob, u"second:gnome"_s);
         QCOMPARE(guarded.minVillagers, 5);
         QCOMPARE(guarded.cooldownSeconds, 60.0);
         QCOMPARE(guarded.grudgeSeconds, 90.0);
         QCOMPARE(guarded.gatherDistance, 10.0);
-        QCOMPARE(content.golemOfStyle(u"qtcraft:plains"_s).minVillagers, 3);
+        QCOMPARE(content.villageCatalog().golemOfStyle(u"qtcraft:plains"_s).minVillagers, 3);
     }
 
     void namesTheContentLacksAreWarnedAbout()
@@ -348,7 +348,7 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"villager settings 'odd:gnome': 'unemployed' must name a profession without workstations; left out"_s));
         QVERIFY(anyContains(loaded.warnings, u"mob 'odd:gnome': no villager settings 'odd:gnome'"_s));
         const QcContentRegistry &content = *loaded.content;
-        QVERIFY(!content.villagerSettings(u"odd:gnome"_s));
+        QVERIFY(!content.villageCatalog().villagerSettings(u"odd:gnome"_s));
         QVERIFY(!content.mobs()[*content.mobIndex(u"odd:gnome"_s)].villager);
         const int villager = *content.mobIndex(u"qtcraft:villager"_s);
         QCOMPARE(content.villagerSettingsOf(villager).name, u"qtcraft:villager"_s);
@@ -388,11 +388,11 @@ private slots:
         QCOMPARE(loaded.warnings.count(), 6);
         QCOMPARE(std::ranges::count_if(loaded.warnings, [](const QString &w) { return w.contains(u"is newer than this game reads (up to 1)"_s); }), 5);
         QVERIFY(anyContains(loaded.warnings, u"'formatVersion' must be a whole number"_s));
-        QVERIFY(!content.profession(u"future:pilot"_s));
-        QVERIFY(!content.villageStyle(u"future:sky"_s));
-        QVERIFY(!content.villagerSettings(u"future:robot"_s));
-        QVERIFY(std::ranges::none_of(content.tradeSets(), [](const QcTradeSet &set) { return set.name == u"future:pilot"_s; }));
-        QCOMPARE(content.villageSettings().spacing, 384);
+        QVERIFY(!content.villageCatalog().profession(u"future:pilot"_s));
+        QVERIFY(!content.villageCatalog().style(u"future:sky"_s));
+        QVERIFY(!content.villageCatalog().villagerSettings(u"future:robot"_s));
+        QVERIFY(std::ranges::none_of(content.villageCatalog().tradeSets(), [](const QcTradeSet &set) { return set.name == u"future:pilot"_s; }));
+        QCOMPARE(content.villageCatalog().settings().spacing, 384);
     }
 
     void filesOfTheEarlierFormatSayWhereTheirContentWent()
@@ -411,7 +411,7 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"'workstation' moved to 'workstations'"_s));
         QVERIFY(anyContains(loaded.warnings, u"'workstations' moved to the professions"_s));
         QVERIFY(anyContains(loaded.warnings, u"'villager' names villager settings"_s));
-        QCOMPARE(loaded.content->villageSettings().workstations.size(), 3);
+        QCOMPARE(loaded.content->villageCatalog().settings().workstations.size(), 3);
     }
 };
 

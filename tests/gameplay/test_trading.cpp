@@ -517,10 +517,10 @@ private slots:
         const std::shared_ptr<const QcContentRegistry> base = m_content;
         const auto restore = qScopeGuard([this, base] { m_content = base; });
         auto content = std::make_shared<QcContentRegistry>(*base);
-        QcVillagerSettings gnomes = *content->villagerSettings(u"qtcraft:villager"_s);
+        QcVillagerSettings gnomes = *content->villageCatalog().villagerSettings(u"qtcraft:villager"_s);
         gnomes.name = u"test:gnome"_s;
         gnomes.trading.offersPerLevel = 1;
-        content->registerVillagerSettings(gnomes);
+        content->villageCatalog().registerVillagerSettings(gnomes);
         QcMobDefinition gnome = content->mobs()[*content->mobIndex(u"qtcraft:villager"_s)];
         gnome.name = u"test:gnome"_s;
         gnome.villagerSettings = gnomes.name;
@@ -542,7 +542,7 @@ private slots:
     {
         // Young with the farmer's offers all the same (a child is unemployed): it only looks up.
         const quint32 farmer = startWithWheatFarmer(meetPhase);
-        villager(farmer)->growUp = (*m_content->villagerSettings(u"qtcraft:villager"_s)).breeding.growUpSeconds;
+        villager(farmer)->growUp = (*m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)).breeding.growUpSeconds;
         QCOMPARE(openWithWheat(farmer, 0), -1);
         QVERIFY(!m_client->trade);
         QCOMPARE(villager(farmer)->villager->trader, 0u);

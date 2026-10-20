@@ -30,9 +30,9 @@ private:
     std::shared_ptr<const QcContentRegistry> withoutVillages() const
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcVillageSettings settings = content->villageSettings();
+        QcVillageSettings settings = content->villageCatalog().settings();
         settings.chance = 0.0;
-        content->setVillageSettings(settings);
+        content->villageCatalog().setSettings(settings);
         return content;
     }
 
@@ -149,7 +149,7 @@ private:
     static QSet<const QcStructure *> styleStructures(const QcTerrainGenerator &generator, const QcContentRegistry &content)
     {
         QSet<const QcStructure *> shared;
-        for (const QcVillageStyleDefinition &definition : content.villageStyles()) {
+        for (const QcVillageStyleDefinition &definition : content.villageCatalog().styles()) {
             const QcVillageStyle *style = generator.villages().styles().named(definition.name);
             if (!style) {
                 continue;

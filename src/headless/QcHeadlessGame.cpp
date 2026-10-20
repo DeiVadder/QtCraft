@@ -154,7 +154,7 @@ void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry 
     if (!saved) {
         printError(u"Cannot write map"_s);
     }
-    for (qsizetype i = 0; i < content.biomes().size(); ++i) {
+    for (qsizetype i = 0; i < content.worldgen().biomes().size(); ++i) {
         std::println("{} {} {}", i, generator.biomeName(int(i)).toStdString(), biomeLegendPlace(generator, int(i), radius).toStdString());
     }
     exitSoon(saved ? 0 : 1);
@@ -710,9 +710,9 @@ QJsonObject QcHeadlessGame::handbookCommand(const QJsonObject &request)
 {
     // Only languages the content has get a handbook of their own, so the cache stays small.
     const QString language = request.value(u"language"_s).toString(u"en"_s);
-    if (!m_content->languages().contains(language)) {
+    if (!m_content->translations().languages().contains(language)) {
         return {{u"ok"_s, false},
-                {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->languages().join(u", "_s))}};
+                {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->translations().languages().join(u", "_s))}};
     }
 
     const QcHandbook &book = handbook(language);

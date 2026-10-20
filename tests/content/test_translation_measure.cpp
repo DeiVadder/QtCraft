@@ -53,12 +53,12 @@ private:
     static QList<QHash<QString, QString>> copyTables(const QcContentRegistry &content)
     {
         QList<QHash<QString, QString>> tables;
-        const QStringList languages = content.languages();
+        const QStringList languages = content.translations().languages();
         for (const QString &language : languages) {
             QHash<QString, QString> table;
-            const QStringList keys = content.translationKeys(language);
+            const QStringList keys = content.translations().keys(language);
             for (const QString &key : keys) {
-                const QString text = content.translate(key, language);
+                const QString text = content.translations().translate(key, language);
                 table.insert(QString(key.constData(), key.size()), QString(text.constData(), text.size()));
             }
             tables.append(table);
@@ -102,9 +102,9 @@ private:
             qInfo("MEASURE mod %s: %s", qPrintable(mod.info.id), mod.reason.isEmpty() ? "loaded" : qPrintable(mod.reason));
         }
 
-        const qsizetype entries = loaded->content->translationTotal();
+        const qsizetype entries = loaded->content->translations().total();
         qInfo("MEASURE translations after loading %lld entries in %lld languages", qlonglong(entries),
-              qlonglong(loaded->content->languages().size()));
+              qlonglong(loaded->content->translations().languages().size()));
         report("heap after loading", heapMb() - heapBefore, "MB");
         report("peak before", peakBefore, "MB");
         report("peak after", QcProcessMemory::peakMb(), "MB");
@@ -125,10 +125,10 @@ private slots:
         for (const QcBlockDefinition &block : content.blocks()) {
             parts += block.partOf.isEmpty() ? 0 : 1;
         }
-        const QStringList languages = content.languages();
+        const QStringList languages = content.translations().languages();
         for (const QString &language : languages) {
-            qInfo("MEASURE translations %s %lld entries", qPrintable(language), qlonglong(content.translationCount(language)));
-            QVERIFY(content.translationCount(language) > parts);
+            qInfo("MEASURE translations %s %lld entries", qPrintable(language), qlonglong(content.translations().count(language)));
+            QVERIFY(content.translations().count(language) > parts);
         }
         qInfo("MEASURE part blocks %lld", qlonglong(parts));
         report("content load", loadMs, "ms");
@@ -137,7 +137,7 @@ private slots:
         const double tablesBefore = heapMb();
         const QList<QHash<QString, QString>> tables = copyTables(content);
         report("translation tables heap", heapMb() - tablesBefore, "MB");
-        QCOMPARE(tables.size(), content.languages().size());
+        QCOMPARE(tables.size(), content.translations().languages().size());
     }
 
     // Reading and parsing the base game's language files alone.

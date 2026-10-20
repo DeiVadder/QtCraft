@@ -25,9 +25,9 @@ private:
     // Without mine shafts: they would only make every generated chunk slower (test_mineshafts).
     std::shared_ptr<const QcContentRegistry> m_content = []() {
         std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-        QcTerrainSettings settings = content->terrainSettings();
+        QcTerrainSettings settings = content->worldgen().terrainSettings();
         settings.mineshafts.enabled = false;
-        content->setTerrainSettings(settings);
+        content->worldgen().setTerrainSettings(settings);
         return std::shared_ptr<const QcContentRegistry>(std::move(content));
     }();
 
@@ -134,7 +134,7 @@ private slots:
     void corridorsEndInCavesWithinTheirLimits()
     {
         const QcTerrainGenerator terrain(m_content, seed);
-        const QcDungeonSettings &settings = m_content->terrainSettings().dungeons;
+        const QcDungeonSettings &settings = m_content->worldgen().terrainSettings().dungeons;
         int corridors = 0;
         int lights = 0;
         // A light at `lightDistance` (taxicab, light falls by one per cell) leaves the spawn area dark
@@ -324,9 +324,9 @@ private slots:
     void measureGenerationCost()
     {
         auto without = std::make_shared<QcContentRegistry>(*m_content);
-        QcTerrainSettings settings = without->terrainSettings();
+        QcTerrainSettings settings = without->worldgen().terrainSettings();
         settings.dungeons.enabled = false;
-        without->setTerrainSettings(settings);
+        without->worldgen().setTerrainSettings(settings);
         const auto rate = [](const QcTerrainGenerator &terrain, int offset) {
             QElapsedTimer timer;
             timer.start();

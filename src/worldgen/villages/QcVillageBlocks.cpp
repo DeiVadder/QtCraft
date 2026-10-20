@@ -7,7 +7,7 @@ QcVillageBlocks::QcVillageBlocks(const QcContentRegistry &content)
     , m_bell(std::size_t(content.stateCount()))
     , m_kind(std::size_t(content.stateCount()))
 {
-    const QcVillageSettings &settings = content.villageSettings();
+    const QcVillageSettings &settings = content.villageCatalog().settings();
     for (auto it = settings.workstations.constBegin(); it != settings.workstations.constEnd(); ++it) {
         if (!content.blockId(it.key())) {
             m_warnings.append(u"village settings: unknown workstation block '%1'"_s.arg(it.key()));

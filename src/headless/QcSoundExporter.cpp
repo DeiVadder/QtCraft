@@ -62,7 +62,7 @@ namespace QcSoundExporter {
     }
 
     QStringList report;
-    for (const QcSoundDefinition &sound : content.sounds()) {
+    for (const QcSoundDefinition &sound : content.assets().sounds()) {
         const QcSampleBuffer buffer = QcSoundSynthesizer::render(sound, 0);
         QString file = sound.name;
         file.replace(u':', u'_').replace(u'/', u'_');

@@ -104,8 +104,8 @@ private slots:
             QVERIFY(QcMining::breakSeconds(infested, nullptr) < 1.6);
             QVERIFY(QcMining::breakSeconds(infested, nullptr) < QcMining::breakSeconds(plain, nullptr) / 2.0);
         }
-        const auto ore = std::ranges::find(m_content->ores(), u"qtcraft:infested_stone"_s, &QcOreDefinition::name);
-        QVERIFY(ore != m_content->ores().end());
+        const auto ore = std::ranges::find(m_content->worldgen().ores(), u"qtcraft:infested_stone"_s, &QcOreDefinition::name);
+        QVERIFY(ore != m_content->worldgen().ores().end());
         QCOMPARE(ore->biomes, (QList<QString>{u"qtcraft:mountains"_s}));
     }
 

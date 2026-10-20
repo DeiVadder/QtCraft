@@ -71,7 +71,7 @@ private:
         elapsed.start();
         QMetaObject::Connection connection = connect(m_session.get(), &QcClientSession::ticked, this, [&] {
             m_session->setIntent(intent(tick++));
-            mostPending = std::max(mostPending, m_session->pendingInputCount());
+            mostPending = std::max(mostPending, m_session->prediction().pendingInputCount());
         });
         // A run that does not finish shows as too few pending inputs in the checks.
         [[maybe_unused]] const bool finished = QTest::qWaitFor([&] { return tick >= ticks; }, timeoutMs);
@@ -144,11 +144,11 @@ private slots:
         QTest::qWait(2 * (delayMs + jitterMs) + 200);
 
         // Every server state matched the prediction it answered: no correction, so no jump on screen.
-        qInfo("largest correction %.6f m, most pending inputs %lld, largest one-way delay %lld ms", m_session->largestCorrection(),
+        qInfo("largest correction %.6f m, most pending inputs %lld, largest one-way delay %lld ms", m_session->prediction().largestCorrection(),
               qlonglong(mostPending), qlonglong(m_link->largestDelayMs()));
-        QVERIFY2(m_session->largestCorrection() < 1e-6, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-6, qPrintable(QString::number(m_session->prediction().largestCorrection())));
         // The client sends an input every tick, also standing still: a round trip of them waits.
-        QVERIFY(m_session->pendingInputCount() <= (2 * (delayMs + jitterMs)) / 50 + 3);
+        QVERIFY(m_session->prediction().pendingInputCount() <= (2 * (delayMs + jitterMs)) / 50 + 3);
         // The inputs in flight are what the round trip holds, far from the limits of client and server.
         // The client sends one per its tick: a slower tick (sanitizers, a busy machine) holds fewer.
         const double msPerTick = std::max(50.0, m_lastMsPerTick);
@@ -175,7 +175,7 @@ private slots:
         });
         QTest::qWait(500);
         QVERIFY(m_session->playerMotion().position.z < double(feet.z + 2));
-        QVERIFY(m_session->largestCorrection() < 2.0);
+        QVERIFY(m_session->prediction().largestCorrection() < 2.0);
     }
 
     void miningAndPlacingWithLatency_data()
@@ -200,8 +200,8 @@ private slots:
         QcPlayerInput look;
         look.pitch = -50.0f;
         m_session->setIntent(look);
-        QTRY_VERIFY_WITH_TIMEOUT(m_session->target().has_value() && m_session->target()->face == QcBlockFace::Up, timeoutMs);
-        const QcBlockPos target = m_session->target()->block.offset(0, 1, 0);
+        QTRY_VERIFY_WITH_TIMEOUT(m_session->hand().target().has_value() && m_session->hand().target()->face == QcBlockFace::Up, timeoutMs);
+        const QcBlockPos target = m_session->hand().target()->block.offset(0, 1, 0);
         QElapsedTimer timer;
         timer.start();
         QVERIFY(m_session->useItem());

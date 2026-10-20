@@ -563,7 +563,7 @@ private:
 
     void checkCape(QcArmourStand &stand)
     {
-        const QcAppearanceDefinition *cape = stand.cape.isEmpty() ? nullptr : m_content.appearance(stand.cape);
+        const QcAppearanceDefinition *cape = stand.cape.isEmpty() ? nullptr : m_content.assets().appearance(stand.cape);
         if (!stand.cape.isEmpty() && (!cape || cape->kind != QcAppearanceDefinition::Kind::Cape)) {
             warnOnce(u"cape on a stand"_s, stand.cape);
             stand.cape.clear();

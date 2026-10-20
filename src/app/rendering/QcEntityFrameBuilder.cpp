@@ -176,7 +176,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         return;
     }
 
-    QcEntityPose pose = QcClientSession::poseOf(entity, frame.alpha);
+    QcEntityPose pose = QcLocalAnimation::poseOf(entity, frame.alpha);
     QcEntityMesher::ModelLook look;
     if (creature && creature->villager) {
         // Villagers wear the look the server gave them (decision E-411).
@@ -184,8 +184,8 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         look.scale = creature->height / QcEntityMesher::modelHeight * placement.scale;
     } else if (creature && !creature->skeleton.isEmpty()) {
         const QcMobDefinition &definition = *creature;
-        look.model = frame.content.model(definition.skeleton);
-        look.outfit = frame.content.appearance(definition.outfit);
+        look.model = frame.content.assets().model(definition.skeleton);
+        look.outfit = frame.content.assets().appearance(definition.outfit);
         look.scale = definition.height / QcEntityMesher::modelHeight * placement.scale;
         look.cape = QcFigureLook::cape(frame.content, definition.cape);
         pose.armsForward = definition.armsForward;
@@ -243,7 +243,7 @@ void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFram
     smoke.cube = true;
     smoke.faces.fill(QString::fromLatin1(explosionSmokeTexture));
 
-    for (const QcExplosionEffects::Puff &puff : m_parts.session->explosions().puffs()) {
+    for (const QcExplosionEffects::Puff &puff : m_parts.session->worldMirror().extras().explosions().puffs()) {
         if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
             const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->position);
             QcEntityMesher::appendBlock(mesh, look->flash ? flash : smoke, {look->position, look->size}, light, frame.uv);
@@ -261,7 +261,7 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
 
     const QcClientSession &session = *m_parts.session;
     const QcVec3 viewer = session.playerMotion().position;
-    const QHash<QcBlockPos, int> &spawners = session.spawnerDisplays();
+    const QHash<QcBlockPos, int> &spawners = session.worldMirror().extras().spawners();
     for (auto it = spawners.cbegin(); it != spawners.cend(); ++it) {
         const QcBlockPos pos = it.key();
         const QcVec3 feet{pos.x + 0.5, pos.y + 0.18, pos.z + 0.5};
@@ -313,10 +313,10 @@ void QcEntityFrameBuilder::appendCartLoad(QcEntityMesh &mesh, const QcClientEnti
 void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     const QcClientSession &session = *m_parts.session;
-    const QcVec3 feet = lerp(session.previousPlayerMotion().position, session.playerMotion().position, frame.alpha);
+    const QcVec3 feet = lerp(session.prediction().previousMotion().position, session.playerMotion().position, frame.alpha);
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.equipment(), playerLook(m_settings.character()->appearance()));
+    const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
     const QcEntityPose pose = localPose(frame.alpha);
 
     QcAnimator::BodyPose body = QcAnimator::animateBody(pose, frame.seconds);
@@ -356,7 +356,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     mesh->indices.reserve(m_entityMeshSize.second);
     const QcClientSession &session = *m_parts.session;
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
-    const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldTime() + alpha * QcPhysics::tickDuration};
+    const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration};
     m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
 
     for (const QcClientEntity &entity : session.entities()) {
@@ -382,7 +382,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
             appendCreature(*mesh, entity, frame);
         }
     }
-    for (const QcClientEntity &entity : session.dyingEntities()) {
+    for (const QcClientEntity &entity : session.entityMirror().dying()) {
         appendCreature(*mesh, entity, frame);
     }
     appendSpawners(*mesh, frame);
@@ -409,7 +409,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
     const QcHandTimers timers = session.handTimers(alpha);
-    const double seconds = session.worldTime() + alpha * QcPhysics::tickDuration;
+    const double seconds = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
     const QcBlockPos head{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};

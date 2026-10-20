@@ -496,7 +496,7 @@ private slots:
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);
         QVERIFY(!m_server->world().spawners().at(plan->spawner)->confined);
         QVERIFY(!m_server->world().spawners().at(extra));
-        QVERIFY(m_server->world().isFurnished(chest.chunk()));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         QcBlockEntities::Container *container = m_server->blockEntities().container(chest);
         QVERIFY(container);
         QVERIFY(std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
@@ -540,7 +540,7 @@ private slots:
         m_server->world().loadChunk(plan->spawner.chunk());
         m_server->world().loadChunk(chest.chunk());
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);
-        QVERIFY(m_server->world().isFurnished(chest.chunk()));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         QcBlockEntities::Container *container = m_server->blockEntities().container(chest);
         QVERIFY(container);
         QVERIFY(std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
@@ -551,7 +551,7 @@ private slots:
         QVERIFY(!m_server->world().chunk(chest.chunk()));
         m_server->world().loadChunk(chest.chunk());
         m_server->world().loadChunk(plan->spawner.chunk());
-        QVERIFY(m_server->world().isFurnished(chest.chunk()));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         container = m_server->blockEntities().container(chest);
         QVERIFY(container);
         QVERIFY(std::ranges::all_of(container->stacks, [](QcItemStack stack) { return stack.isEmpty(); }));
@@ -571,7 +571,7 @@ private slots:
         asked->count = 0;
         m_server->world().loadChunk(far);
         QCOMPARE(asked->count.load(), 1);
-        QVERIFY(m_server->world().isFurnished(far));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(far));
 
         // Unchanged it leaves and is generated again with its kept mark.
         ticks(200);
@@ -585,7 +585,7 @@ private slots:
         QVERIFY(!m_server->world().chunk(far));
         m_server->world().loadChunk(far);
         QCOMPARE(asked->count.load(), 1);
-        QVERIFY(m_server->world().isFurnished(far));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(far));
     }
 
     // A mine shaft's chest minecart is put on its rail with loot once (decision E-570): it is saved
@@ -599,7 +599,7 @@ private slots:
         join({}, std::move(terrain));
         const auto cartsAtRail = [this, rail] { return cartsAt(rail); };
         m_server->world().loadChunk(rail.chunk());
-        QVERIFY(m_server->world().isFurnished(rail.chunk()));
+        QVERIFY(m_server->world().blockEntityExtras().isFurnished(rail.chunk()));
         QCOMPARE(cartsAtRail().size(), 1);
         QcMinecart &cart = *cartsAtRail().constFirst();
         QCOMPARE(cart.item, u"qtcraft:chest_minecart"_s);

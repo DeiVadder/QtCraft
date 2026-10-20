@@ -42,7 +42,7 @@ void noteBlow(QcServerWorld &world, QcCreature &mob, quint32 player, const QStri
     // Grudges that ran out are forgotten, so the list stays as long as the players are many.
     village->grudges.until.removeIf([worldTime](const auto &grudge) { return grudge.value() <= worldTime; });
     if (!name.isEmpty()) {
-        village->grudges.until.insert(name, worldTime + world.content().golemOfStyle(village->style).grudgeSeconds);
+        village->grudges.until.insert(name, worldTime + world.content().villageCatalog().golemOfStyle(village->style).grudgeSeconds);
     }
 }
 

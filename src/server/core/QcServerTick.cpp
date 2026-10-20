@@ -173,7 +173,7 @@ void QcServer::addClientSystems()
 
 void QcServer::reportDamagedChunks()
 {
-    const QList<QcChunkPos> damaged = m_state.world().takeNewlyQuarantined();
+    const QList<QcChunkPos> damaged = m_state.world().saves().takeNewlyQuarantined();
     for (const QcChunkPos &chunk : damaged) {
         const QString x = QString::number(chunk.x * QcWorld::chunkSize);
         const QString z = QString::number(chunk.z * QcWorld::chunkSize);

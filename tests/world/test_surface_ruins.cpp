@@ -38,7 +38,7 @@ private:
         return terrain.surfaceStructures().planner().kindIndex(name).value_or(-1);
     }
 
-    int spacingOf(const QString &name) const { return m_content->structure(name)->surface->spacing; }
+    int spacingOf(const QString &name) const { return m_content->worldgen().structure(name)->surface->spacing; }
 
     Plans plans(const QcTerrainGenerator &terrain, const QString &name, bool reversed = false) const
     {
@@ -205,9 +205,9 @@ private:
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
         for (const QString &name : m_names) {
-            QcStructureDefinition definition = *content->structure(name);
+            QcStructureDefinition definition = *content->worldgen().structure(name);
             definition.surface.reset();
-            content->registerStructure(definition);
+            content->worldgen().registerStructure(definition);
         }
         return content;
     }
@@ -258,7 +258,7 @@ private slots:
             const Plans again = plans(fresh, name, true);
             const Plans &first = m_plans[name];
             QCOMPARE(again.size(), first.size());
-            const QStringList biomes = m_content->structure(name)->surface->biomes;
+            const QStringList biomes = m_content->worldgen().structure(name)->surface->biomes;
             const int spacing = spacingOf(name);
             for (qsizetype i = 0; i < first.size(); ++i) {
                 const QcStructurePlacement &plan = *first[i];
@@ -284,7 +284,7 @@ private slots:
             QVERIFY(otherPlans.isEmpty() || otherPlans.front()->origin() != first.front()->origin());
         }
         // Oases only in the desert, wells in their biomes.
-        QCOMPARE(m_content->structure(u"qtcraft:oasis"_s)->surface->biomes, QStringList{u"qtcraft:desert"_s});
+        QCOMPARE(m_content->worldgen().structure(u"qtcraft:oasis"_s)->surface->biomes, QStringList{u"qtcraft:desert"_s});
     }
 
     void ruinsVaryFromCopyToCopy()

@@ -12,7 +12,7 @@ QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcCo
     : m_terrain(terrain)
     , m_content(content)
 {
-    for (const QcStructureDefinition &definition : content.structures()) {
+    for (const QcStructureDefinition &definition : content.worldgen().structures()) {
         if (!definition.surface) {
             continue;
         }

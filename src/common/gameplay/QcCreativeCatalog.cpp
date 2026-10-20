@@ -13,8 +13,8 @@ QcCreativeCatalog::QcCreativeCatalog(const QcContentRegistry &content, const QSt
     m_entries.reserve(items.size());
     for (qsizetype i = 0; i < items.size(); ++i) {
         const QcItemDefinition &item = items[i];
-        const QString label = content.translate(item.translationKey, language);
-        const QString english = content.translate(item.translationKey, u"en"_s);
+        const QString label = content.translations().translate(item.translationKey, language);
+        const QString english = content.translations().translate(item.translationKey, u"en"_s);
         // "qtcraft:oak_planks" is also found as "oak planks".
         const QString id = item.name.section(u':', -1).replace(u'_', u' ');
         const QString search = QcHandbook::searchKey(label + u'\n' + english + u'\n' + item.name + u'\n' + id);

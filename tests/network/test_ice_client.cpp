@@ -120,7 +120,7 @@ private:
     {
         // The answers to every input arrive.
         QTest::qWait(2 * (delayMs + jitterMs) + 200);
-        QVERIFY2(m_session->largestCorrection() < 1e-9, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
     }
 
 private slots:

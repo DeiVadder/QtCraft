@@ -403,7 +403,7 @@ private slots:
         std::unique_ptr<QcServer> server = makeServer(directory.path());
         QVERIFY(server->openWorld());
         const QList<std::shared_ptr<const QcVillagePlan>> plans = QcShowcaseGenerator(m_content).plan().villages;
-        QCOMPARE(plans.size(), m_content->villageStyles().size());
+        QCOMPARE(plans.size(), m_content->villageCatalog().styles().size());
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             const QcChunkPos low = QcBlockPos{plan->minX, 0, plan->minZ}.chunk();
             const QcChunkPos high = QcBlockPos{plan->maxX, 0, plan->maxZ}.chunk();

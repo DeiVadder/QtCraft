@@ -260,7 +260,7 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
 
 QString QcGameController::defaultFlatLayers()
 {
-    return m_library->content().flatWorld().preset;
+    return m_library->content().worldgen().flatWorld().preset;
 }
 
 void QcGameController::playWorld(const QString &folder)

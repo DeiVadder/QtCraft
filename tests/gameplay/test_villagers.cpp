@@ -122,7 +122,7 @@ private:
         const quint32 entity = m_server->entities().newId();
         m_server->mobs().spawn(villagerType(), at, entity);
         QcCreature *mob = m_server->mobs().find(entity);
-        *mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), look);
+        *mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, (*m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)), look);
         return *mob;
     }
 
@@ -586,7 +586,7 @@ private slots:
         const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
         const quint32 entity = settle(head, centreOf(m_feet.offset(5, 0, 0))).id;
         ticks(2);
-        const QcVillagerBreedingSettings &breeding = m_content->villagerSettings(u"qtcraft:villager"_s)->breeding;
+        const QcVillagerBreedingSettings &breeding = m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)->breeding;
         QVERIFY(breeding.foods.value(u"qtcraft:bread"_s) > 0);
         const auto drop = [this](const char *name, int count, const QcVec3 &at) {
             QcItemEntityManager::Drop item;

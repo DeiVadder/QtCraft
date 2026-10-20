@@ -117,7 +117,7 @@ int QcTextureAtlas::tileSizeFor(QcAtlasLayout layout, const Options &options)
 QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcTexturePackStack &packs, const Options &options)
 {
     QcTextureAtlas atlas;
-    const QList<QcTextureDefinition> &definitions = content.textures();
+    const QList<QcTextureDefinition> &definitions = content.assets().textures();
     const QcAtlasLayout layout(definitions.size() + 1);
     atlas.m_requestedTileSize = QcTextureSources::resolutionOf(packs, QcTexturePackManifest::maxResolution);
     atlas.m_tileSize = atlas.tileSizeFor(layout, options);

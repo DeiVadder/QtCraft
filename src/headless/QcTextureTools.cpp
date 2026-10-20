@@ -88,7 +88,7 @@ int exportPack(const QcContentRegistry &content, const ExportRequest &request)
 
     const QDir directory(request.directory);
     QHash<QString, QImage> written;
-    for (const QcTextureDefinition &definition : content.textures()) {
+    for (const QcTextureDefinition &definition : content.assets().textures()) {
         if (!request.keys.isEmpty() && !request.keys.contains(definition.name)) {
             continue;
         }

@@ -137,14 +137,14 @@ private slots:
     void baseGameOffersTheGreenCape()
     {
         const QcContentRegistry &content = *m_base;
-        const QcAppearanceDefinition *green = content.appearance(u"qtcraft:green_cape"_s);
+        const QcAppearanceDefinition *green = content.assets().appearance(u"qtcraft:green_cape"_s);
         QVERIFY(green);
         QCOMPARE(green->kind, QcAppearanceDefinition::Kind::Cape);
         QVERIFY(green->playable);
         for (const QString &slot : {u"emblem"_s, u"outside"_s, u"inside"_s, u"edge"_s}) {
-            QVERIFY2(green->layer(slot) && content.texture(green->layer(slot)->texture), qPrintable(slot));
+            QVERIFY2(green->layer(slot) && content.assets().texture(green->layer(slot)->texture), qPrintable(slot));
         }
-        QCOMPARE(content.translate(green->translationKey, u"de"_s), u"Grüner Umhang"_s);
+        QCOMPARE(content.translations().translate(green->translationKey, u"de"_s), u"Grüner Umhang"_s);
 
         // The showcase's caped mannequin wears it.
         const auto mannequin = std::ranges::find(content.mobs(), u"qtcraft:caped_mannequin"_s, &QcMobDefinition::name);
@@ -152,8 +152,8 @@ private slots:
         QCOMPARE(QcFigureLook::cape(content, mannequin->cape), green);
         // Drawn like the world draws skeleton creatures: the whole figure and its cape.
         QcEntityMesher::ModelLook look;
-        look.model = content.model(mannequin->skeleton);
-        look.outfit = content.appearance(mannequin->outfit);
+        look.model = content.assets().model(mannequin->skeleton);
+        look.outfit = content.assets().appearance(mannequin->outfit);
         look.scale = mannequin->height / QcEntityMesher::modelHeight;
         QVERIFY(look.isValid());
         QcEntityMesh bare;
@@ -179,8 +179,8 @@ private slots:
         QDataStream in(bytes);
         const QcResult<QcContentRegistry> read = QcContentSerializer::read(in);
         QVERIFY2(read, qPrintable(read ? QString() : read.error()));
-        const QcAppearanceDefinition *original = m_base->appearance(u"qtcraft:green_cape"_s);
-        const QcAppearanceDefinition *copy = read->appearance(u"qtcraft:green_cape"_s);
+        const QcAppearanceDefinition *original = m_base->assets().appearance(u"qtcraft:green_cape"_s);
+        const QcAppearanceDefinition *copy = read->assets().appearance(u"qtcraft:green_cape"_s);
         QVERIFY(copy);
         QCOMPARE(copy->kind, QcAppearanceDefinition::Kind::Cape);
         QCOMPARE(copy->cape, original->cape);
@@ -247,7 +247,7 @@ private slots:
 
         // Hanging straight: everything behind the torso's back (z = 0.125, the figure faces -Z),
         // from the shoulders down; the emblem on the outer side, the inside towards the back.
-        const QcCapeShape shape = content.appearance(u"qtcraft:green_cape"_s)->cape;
+        const QcCapeShape shape = content.assets().appearance(u"qtcraft:green_cape"_s)->cape;
         const QList<QcEntityVertex> cape = with.mesh.vertices.mid(without.mesh.vertices.size());
         for (const QcEntityVertex &vertex : cape) {
             QVERIFY(vertex.z >= 0.125 + shape.offset - 1e-5);

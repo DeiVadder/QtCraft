@@ -78,7 +78,7 @@ private slots:
         QVERIFY(!client.takeSession());
         QCOMPARE(session->login().serverName(), u"Kiste"_s);
         QCOMPARE(session->login().motd(), u"Hallo"_s);
-        QCOMPARE(session->viewDistance(), 1);
+        QCOMPARE(session->welcome().viewDistance, 1);
         QTRY_COMPARE_WITH_TIMEOUT(session->state(), QcClientSession::State::Playing, timeoutMs);
         QTRY_VERIFY_WITH_TIMEOUT(!session->players().isEmpty() && session->players().first().name == u"Ann"_s, timeoutMs);
         QVERIFY(session->world() && session->content());

@@ -124,7 +124,7 @@ void QcScreenState::closeSessionScreens() const
     // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
     // the furnace or chest screen closes the block.
     if (m_overlay != Overlay::Inventory) {
-        m_parts.session->closeCrafting();
+        m_parts.session->inventoryMirror().closeCrafting();
     }
     if (m_overlay != Overlay::Furnace && m_overlay != Overlay::Chest) {
         m_parts.session->closeMachine();

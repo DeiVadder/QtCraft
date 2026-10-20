@@ -243,19 +243,19 @@ private slots:
             }
             for (int action = 0; action < qcBlockSoundActionCount; ++action) {
                 const QString name = key(block, QcBlockSoundAction(action));
-                QVERIFY2(content.sound(name), qPrintable(block.name + u": "_s + name));
+                QVERIFY2(content.assets().sound(name), qPrintable(block.name + u": "_s + name));
             }
         }
 
         // Spreading water and lava make their own sounds.
         for (const char *liquid : {"qtcraft:water", "qtcraft:lava"}) {
             const QString &name = content.block(*content.blockId(QString::fromLatin1(liquid))).flow.sound;
-            QVERIFY2(!name.isEmpty() && content.sound(name), liquid);
+            QVERIFY2(!name.isEmpty() && content.assets().sound(name), liquid);
         }
 
         for (const QcMobDefinition &mob : content.mobs()) {
             for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
-                QVERIFY2(content.sound(name), qPrintable(mob.name + u": "_s + name));
+                QVERIFY2(content.assets().sound(name), qPrintable(mob.name + u": "_s + name));
             }
         }
 
@@ -264,14 +264,14 @@ private slots:
                                  QcSoundKeys::mobDeath, QcSoundKeys::machineActive, QcSoundKeys::liquidHiss, QcSoundKeys::bucketFill,
                                  QcSoundKeys::bucketEmpty, QcSoundKeys::bottleCatch, QcSoundKeys::signalClick, QcSoundKeys::pistonOut,
                                  QcSoundKeys::pistonIn, QcSoundKeys::torchFizz}) {
-            const QcSoundDefinition *sound = content.sound(QString::fromLatin1(name));
+            const QcSoundDefinition *sound = content.assets().sound(QString::fromLatin1(name));
             QVERIFY2(sound, name);
             QCOMPARE(sound->bus, QcSoundBus::Effects);
             QVERIFY(!sound->loop);
         }
 
         for (const char *name : {QcSoundKeys::ambientWind, QcSoundKeys::ambientCave, QcSoundKeys::ambientWater}) {
-            const QcSoundDefinition *sound = content.sound(QString::fromLatin1(name));
+            const QcSoundDefinition *sound = content.assets().sound(QString::fromLatin1(name));
             QVERIFY2(sound, name);
             QCOMPARE(sound->bus, QcSoundBus::Ambient);
             QVERIFY(sound->loop);
@@ -298,12 +298,12 @@ private slots:
         const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         QVERIFY2(loaded.has_value(), qcErrorText(loaded));
         const QcContentRegistry &content = *loaded->content;
-        QVERIFY(content.sound(u"bells:chime"_s));
-        const QcSoundDefinition *stone = content.sound(u"qtcraft:block.stone.break"_s);
+        QVERIFY(content.assets().sound(u"bells:chime"_s));
+        const QcSoundDefinition *stone = content.assets().sound(u"qtcraft:block.stone.break"_s);
         QVERIFY(stone);
         QCOMPARE(stone->volume, 0.3);
         QCOMPARE(stone->layers.constFirst().wave, QcSoundWave::Square);
-        QVERIFY(!content.sound(u"bells:broken"_s));
+        QVERIFY(!content.assets().sound(u"bells:broken"_s));
 
         const QcBlockDefinition &bell = content.block(*content.blockId(u"bells:bell"_s));
         QCOMPARE(key(bell, QcBlockSoundAction::Hit), u"bells:chime"_s);
@@ -331,13 +331,13 @@ private slots:
         const QcContentRegistry &content = *loaded->content;
         const QcBlockDefinition &ruby = content.block(*content.blockId(u"rubies:ruby_block"_s));
         QCOMPARE(key(ruby, QcBlockSoundAction::Break), u"rubies:block.crystal.break"_s);
-        QVERIFY(content.sound(u"rubies:block.crystal.break"_s));
+        QVERIFY(content.assets().sound(u"rubies:block.crystal.break"_s));
 
         // The ore keeps the base game's stone sounds.
         QCOMPARE(key(content.block(*content.blockId(u"rubies:ruby_ore"_s)), QcBlockSoundAction::Break), u"qtcraft:block.stone.break"_s);
         const QcMobDefinition &beetle = content.mobs()[*content.mobIndex(u"rubies:crystal_beetle"_s)];
         QCOMPARE(beetle.deathSound, u"rubies:mob.crystal_beetle.death"_s);
-        QVERIFY(content.sound(beetle.ambientSound));
+        QVERIFY(content.assets().sound(beetle.ambientSound));
     }
 };
 

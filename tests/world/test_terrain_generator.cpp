@@ -46,7 +46,7 @@ std::shared_ptr<QcContentRegistry> flatContent(bool caves)
     terrain.waterBlock = u"t:water"_s;
     terrain.bedrockBlock = u"t:bedrock"_s;
     terrain.caves = caves;
-    content->setTerrainSettings(terrain);
+    content->worldgen().setTerrainSettings(terrain);
     QcBiomeDefinition biome;
     biome.name = u"t:flat"_s;
     biome.baseHeight = 80.0;
@@ -54,7 +54,7 @@ std::shared_ptr<QcContentRegistry> flatContent(bool caves)
     biome.surfaceBlock = u"t:red"_s;
     biome.subsurfaceBlock = u"t:red"_s;
     biome.subsurfaceDepth = 2;
-    content->registerBiome(biome);
+    content->worldgen().registerBiome(biome);
     return content;
 }
 
@@ -312,7 +312,7 @@ private:
     // level.
     QString countCaveFloor(const QcTerrainGenerator &generator, QcChunkPos pos, CaveFloorCounts &counts) const
     {
-        const QcTerrainSettings &terrain = m_base->terrainSettings();
+        const QcTerrainSettings &terrain = m_base->worldgen().terrainSettings();
         const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
         const QcBlockId bedrock = *m_base->blockId(u"qtcraft:bedrock"_s);
         const auto chunk = generator.generate(pos);
@@ -413,7 +413,7 @@ private:
     QString caveMismatchInColumn(const QcTerrainGenerator &generator, const QcChunk &chunk, int x, int z, int &checked) const
     {
         const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
-        const int liquidLevel = m_base->terrainSettings().caveLiquidLevel;
+        const int liquidLevel = m_base->worldgen().terrainSettings().caveLiquidLevel;
         const QcBlockId bedrock = *m_base->blockId(u"qtcraft:bedrock"_s);
         // Cobwebs grow into carved air like ores into stone.
         const QcBlockId cobweb = *m_base->blockId(u"qtcraft:cobweb"_s);
@@ -479,7 +479,7 @@ private:
                 for (int x = 0; x < 16; ++x) {
                     // Pools only: the lava lakes at the bottom of the caves (up to caveLiquidLevel)
                     // and the lakes on the surface are other features.
-                    if (chunk.block(x, y, z) != lava || y <= m_base->terrainSettings().caveLiquidLevel || y >= QcWorld::seaLevel) {
+                    if (chunk.block(x, y, z) != lava || y <= m_base->worldgen().terrainSettings().caveLiquidLevel || y >= QcWorld::seaLevel) {
                         continue;
                     }
                     cells.append({chunk.pos().x * 16 + x, y, chunk.pos().z * 16 + z});
@@ -511,17 +511,17 @@ private:
     std::shared_ptr<QcContentRegistry> contentWithManyPools() const
     {
         auto content = std::make_shared<QcContentRegistry>(*m_base);
-        QcFeatureDefinition lava = *std::ranges::find(content->features(), u"qtcraft:lava_pool"_s, &QcFeatureDefinition::name);
+        QcFeatureDefinition lava = *std::ranges::find(content->worldgen().features(), u"qtcraft:lava_pool"_s, &QcFeatureDefinition::name);
         lava.attempts = 8;
         lava.chance = 1.0;
         lava.maxY = 60;
-        content->registerFeature(lava);
+        content->worldgen().registerFeature(lava);
         QcFeatureDefinition water = lava;
         water.name = u"t:water_pool"_s;
         water.trunkBlock = u"qtcraft:water"_s;
         water.radius = 5;
         water.depth = 3;
-        content->registerFeature(water);
+        content->worldgen().registerFeature(water);
         return content;
     }
 
@@ -622,7 +622,7 @@ private slots:
         ore.maxY = 20;
         ore.veinsPerChunk = 20;
         ore.veinSize = 6;
-        content->registerOre(ore);
+        content->worldgen().registerOre(ore);
 
         const QcTerrainGenerator generator(content, 9);
         const QcBlockId oreId = *content->blockId(u"t:ore"_s);
@@ -729,7 +729,7 @@ private slots:
     void cavesOpenOnlyAtEntrancesAndHoldLavaDeepDown()
     {
         const QcTerrainGenerator generator(m_base, 42);
-        const QcTerrainSettings &terrain = m_base->terrainSettings();
+        const QcTerrainSettings &terrain = m_base->worldgen().terrainSettings();
         CaveFloorCounts counts;
         constexpr int half = 8;
         for (int cz = -half; cz < half; ++cz) {
@@ -759,8 +759,8 @@ private slots:
 
     void lavaLakesLieOpenOnDryLandOfTheirBiomes()
     {
-        const auto lake = std::ranges::find(m_base->features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
-        QVERIFY(lake != m_base->features().end() && lake->surface);
+        const auto lake = std::ranges::find(m_base->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
+        QVERIFY(lake != m_base->worldgen().features().end() && lake->surface);
 
         int lakes = 0;
         for (const qint64 seed : {42, 777}) {
@@ -885,7 +885,7 @@ private slots:
         QVERIFY(!other.isEmpty());
         QVERIFY(other != first);
         for (const QcBlockPos &cell : first) {
-            QVERIFY(cell.y > m_base->terrainSettings().caveLiquidLevel && cell.y < 44);
+            QVERIFY(cell.y > m_base->worldgen().terrainSettings().caveLiquidLevel && cell.y < 44);
         }
     }
 
@@ -958,12 +958,12 @@ private slots:
             QJsonObject{{u"name"_s, u"p"_s}, {u"type"_s, u"pool"_s}, {u"block"_s, u"lava"_s}, {u"attempts"_s, 9}}, u"t"_s));
         QVERIFY(!QcContentParser::parseFeature(
             QJsonObject{{u"name"_s, u"p"_s}, {u"type"_s, u"pool"_s}, {u"block"_s, u"lava"_s}, {u"depth"_s, 0}}, u"t"_s));
-        content->registerFeature(*pool);
+        content->worldgen().registerFeature(*pool);
 
         // A biome listing a pool is warned about; the pool still appears in caves.
-        QcBiomeDefinition biome = content->biomes().constFirst();
+        QcBiomeDefinition biome = content->worldgen().biomes().constFirst();
         biome.features.append({u"t:pond"_s, 0.5});
-        content->registerBiome(biome);
+        content->worldgen().registerBiome(biome);
         const QcTerrainGenerator generator(content, 77);
         const QStringList &warnings = generator.warnings();
         QCOMPARE(warnings.size(), qsizetype(1));

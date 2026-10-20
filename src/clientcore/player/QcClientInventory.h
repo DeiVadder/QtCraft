@@ -61,11 +61,11 @@ public:
     void resendLostSelection();
     void setClock(Clock clock) { m_now = std::move(clock); }
     // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
-    void moveItem(int from, int to, int count) const;
+    void moveItem(int from, int to, int count = 0) const;
     // Shift-click: the server moves the stack to where it belongs (QcMsg::QuickMoveItem).
     void quickMoveItem(int slot) const;
     void takeCraftingResult() const;
-    void craftRecipe(const QString &recipe, int count) const;
+    void craftRecipe(const QString &recipe, int count = 1) const;
     void closeCrafting() const;
 
 private:

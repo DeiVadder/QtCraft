@@ -55,7 +55,7 @@ QcDebugSnapshot::Entities countEntities(const QcClientSession &session)
 
 QString targetEntityName(const QcClientSession &session)
 {
-    const std::optional<quint32> id = session.targetEntity();
+    const std::optional<quint32> id = session.hand().targetEntity();
     if (!id) {
         return {};
     }
@@ -90,8 +90,8 @@ QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const s
     QcDebugSnapshot snapshot;
     snapshot.clientTick = session.tickCount();
     snapshot.protocol = QcProtocol::version;
-    snapshot.worldName = session.worldName();
-    snapshot.seed = session.seed();
+    snapshot.worldName = session.welcome().worldName;
+    snapshot.seed = session.welcome().seed;
     snapshot.position = feet.value_or(session.playerMotion().position);
     snapshot.yaw = session.intent().yaw;
     snapshot.pitch = session.intent().pitch;
@@ -109,7 +109,7 @@ QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const s
     snapshot.targetEntity = targetEntityName(session);
     const QcBlockPos feetBlock = snapshot.block();
     snapshot.feetLight = QcLightProbe(*world, feetBlock).at(feetBlock);
-    if (const std::optional<QcRaycastHit> &hit = session.target()) {
+    if (const std::optional<QcRaycastHit> &hit = session.hand().target()) {
         snapshot.target = targetOf(*world, *hit);
     }
     return snapshot;

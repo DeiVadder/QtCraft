@@ -87,7 +87,7 @@ void QcFrameDriver::onFrame()
     m_targets.gamepad.applyFrame(*m_parts.session, frameSeconds, m_targets.input.worldFocused());
 
     const double alpha = std::clamp(double(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
-    const QcVec3 feet = lerp(m_parts.session->previousPlayerMotion().position, m_parts.session->playerMotion().position, alpha);
+    const QcVec3 feet = lerp(m_parts.session->prediction().previousMotion().position, m_parts.session->playerMotion().position, alpha);
     const QcVec3 eye = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     // The control interface may switch the view too; the session holds the current mode.
     const QcCameraMode mode = m_parts.session->isDead() ? QcCameraMode::FirstPerson : m_parts.session->cameraMode();

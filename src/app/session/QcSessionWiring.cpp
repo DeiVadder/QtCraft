@@ -35,7 +35,7 @@ void QcSessionWiring::connectWorld()
     });
     connect(session, &QcClientSession::ticked, this, [this] {
         emit ticked();
-        m_targets.audio.setAmbience(m_parts.session->ambience());
+        m_targets.audio.setAmbience(m_parts.session->sounds().ambience());
     });
     connect(session, &QcClientSession::soundCue, this, [this](const QcSoundCue &cue) {
         const QcVec3 ears = m_parts.session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};

@@ -33,7 +33,7 @@ QcPiecePlacer::QcPiecePlacer(const QcTerrainGenerator &terrain, const QcContentR
     : m_terrain(terrain)
     , m_content(content)
     , m_styles(styles)
-    , m_settings(content.villageSettings())
+    , m_settings(content.villageCatalog().settings())
 {
 }
 

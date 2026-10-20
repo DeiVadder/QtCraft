@@ -245,7 +245,7 @@ private slots:
         buzz.layers = {{QcSoundWave::Saw, 220.0, 330.0, 0.1, 1.5, 0.2, 1.0, 0.5, 2000.0, 100.0, 4.0, 0.3, 50.0},
                        {QcSoundWave::Crackle, 440.0, 0.0, 0.0, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 900.0}};
         QVERIFY(buzz.problem().isEmpty());
-        content->registerSound(buzz);
+        content->assets().registerSound(buzz);
 
         const QcMsg::ContentSync copy = roundTrip(QcMsg::ContentSync{content});
         const QcBlockDefinition &block = copy.content->block(*copy.content->blockId(u"a:furnace"_s));
@@ -256,28 +256,28 @@ private slots:
         QCOMPARE(bee.ambientSound, u"a:buzz"_s);
         QCOMPARE(bee.hurtSound, u"a:ouch"_s);
         QCOMPARE(bee.deathSound, u"a:gone"_s);
-        QCOMPARE(copy.content->sounds().size(), 1);
-        QVERIFY(*copy.content->sound(u"a:buzz"_s) == buzz);
+        QCOMPARE(copy.content->assets().sounds().size(), 1);
+        QVERIFY(*copy.content->assets().sound(u"a:buzz"_s) == buzz);
 
         // A client must not trust the server's synthesis parameters: they decide its work and memory.
         QcSoundDefinition huge = buzz;
         huge.name = u"a:huge"_s;
         huge.variants = QcSoundDefinition::maxVariants + 1;
-        content->registerSound(huge);
+        content->assets().registerSound(huge);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
 
         huge.variants = 1;
         huge.layers[0].duration = QcSoundDefinition::maxLayerSeconds + 1.0;
-        content->registerSound(huge);
+        content->assets().registerSound(huge);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
 
         huge.layers[0].duration = 1.0;
         huge.layers[0].frequency = std::numeric_limits<double>::quiet_NaN();
-        content->registerSound(huge);
+        content->assets().registerSound(huge);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
 
         huge.layers[0].frequency = 220.0;
-        content->registerSound(huge);
+        content->assets().registerSound(huge);
         QVERIFY(QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
     }
 

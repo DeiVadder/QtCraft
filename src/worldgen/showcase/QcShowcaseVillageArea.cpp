@@ -120,7 +120,7 @@ namespace QcShowcaseVillageArea {
 
 bool hasStyles(const QcContentRegistry &content)
 {
-    return !content.villageStyles().isEmpty();
+    return !content.villageCatalog().styles().isEmpty();
 }
 
 QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
@@ -130,7 +130,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     int width = 1;
     int depth = frontGap;
     int height = 2;
-    for (const QcVillageStyleDefinition &definition : context.content.villageStyles()) {
+    for (const QcVillageStyleDefinition &definition : context.content.villageCatalog().styles()) {
         const QcVillageStyle *style = styles.named(definition.name);
         if (!style) {
             continue;

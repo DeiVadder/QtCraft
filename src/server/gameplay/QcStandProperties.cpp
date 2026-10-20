@@ -101,7 +101,7 @@ bool applyCape(const QcContentRegistry &content, QcArmourStand &stand, const QSt
         return true;
     }
 
-    const QcAppearanceDefinition *cape = content.appearance(qualified(name));
+    const QcAppearanceDefinition *cape = content.assets().appearance(qualified(name));
     if (!cape || cape->kind != QcAppearanceDefinition::Kind::Cape) {
         return false;
     }

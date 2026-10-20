@@ -95,7 +95,7 @@ private slots:
         }
         QTRY_COMPARE_WITH_TIMEOUT(server.inputs.size(), 3, timeoutMs);
         QCOMPARE(server.inputs.constLast().sequence, 3u);
-        QCOMPARE(session.pendingInputCount(), 3);
+        QCOMPARE(session.prediction().pendingInputCount(), 3);
 
         // The server disagrees: after input 1 the player stands at x = 5.5, already at walking speed.
         QcEntityMotion corrected;
@@ -103,7 +103,7 @@ private slots:
         corrected.velocity = {QcPhysics::walkSpeed, 0.0, 0.0};
         corrected.onGround = true;
         server.sendState(1, corrected);
-        QTRY_COMPARE_WITH_TIMEOUT(session.pendingInputCount(), 2, timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(session.prediction().pendingInputCount(), 2, timeoutMs);
 
         // Inputs 2 and 3 are replayed: at full walking speed each tick moves 4.3 m/s * 0.05 s = 0.215 m east.
         const QcEntityMotion &motion = session.playerMotion();
@@ -117,7 +117,7 @@ private slots:
         final.position.x = 7.0;
         final.velocity = {};
         server.sendState(3, final);
-        QTRY_COMPARE_WITH_TIMEOUT(session.pendingInputCount(), 0, timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(session.prediction().pendingInputCount(), 0, timeoutMs);
         QCOMPARE(session.playerMotion(), final);
     }
 
@@ -137,7 +137,7 @@ private slots:
         still.position = {0.5, 64.0, 0.5};
         still.onGround = true;
         server.sendState(2, still);
-        QTRY_COMPARE_WITH_TIMEOUT(session.pendingInputCount(), 2, timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(session.prediction().pendingInputCount(), 2, timeoutMs);
         const QcEntityMotion before = session.playerMotion();
 
         // An older acknowledgement arriving late must neither roll back the prediction nor drop inputs.
@@ -145,7 +145,7 @@ private slots:
         stale.position.x = -20.0;
         server.sendState(1, stale);
         QTest::qWait(100);
-        QCOMPARE(session.pendingInputCount(), 2);
+        QCOMPARE(session.prediction().pendingInputCount(), 2);
         QCOMPARE(session.playerMotion(), before);
     }
 
@@ -165,7 +165,7 @@ private slots:
         spawn.flags = QcMsg::OnGround;
         server.send(spawn);
         QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(bob), timeoutMs);
-        const auto pose = [&] { return QcClientSession::poseOf(session.entities().value(bob), 0.0); };
+        const auto pose = [&] { return QcLocalAnimation::poseOf(session.entities().value(bob), 0.0); };
         QCOMPARE(pose().swingProgress, -1.0);
         QCOMPARE(pose().hurtProgress, -1.0);
 
@@ -200,7 +200,7 @@ private slots:
         arrive({step(QcMsg::OnGround | QcMsg::Swing, true)});
         QCOMPARE(pose().swingProgress, 0.0);
         QVERIFY(pose().hurtProgress >= 0.0);
-        for (int i = 0; i < QcClientSession::swingTicks; ++i) {
+        for (int i = 0; i < QcLocalAnimation::swingTicks; ++i) {
             session.tick();
         }
         QCOMPARE(pose().swingProgress, -1.0);
@@ -209,20 +209,20 @@ private slots:
         // Dying: the entity leaves the live list and plays the death animation for its length,
         // even when the player respawns meanwhile.
         server.send(QcMsg::EntityRemove{bob, true});
-        QTRY_VERIFY_WITH_TIMEOUT(session.dyingEntities().contains(bob), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(session.entityMirror().dying().contains(bob), timeoutMs);
         QVERIFY(!session.entities().contains(bob));
-        QCOMPARE(QcClientSession::poseOf(session.dyingEntities().value(bob), 0.0).deathProgress, 0.0);
+        QCOMPARE(QcLocalAnimation::poseOf(session.entityMirror().dying().value(bob), 0.0).deathProgress, 0.0);
         session.tick();
-        QVERIFY(QcClientSession::poseOf(session.dyingEntities().value(bob), 0.0).deathProgress > 0.0);
+        QVERIFY(QcLocalAnimation::poseOf(session.entityMirror().dying().value(bob), 0.0).deathProgress > 0.0);
 
         spawn.position = {5.5, 64.0, 5.5};
         server.send(spawn);
         QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(bob), timeoutMs);
-        QVERIFY(session.dyingEntities().contains(bob));
-        for (int i = 1; i < QcClientSession::deathTicks; ++i) {
+        QVERIFY(session.entityMirror().dying().contains(bob));
+        for (int i = 1; i < QcLocalAnimation::deathTicks; ++i) {
             session.tick();
         }
-        QVERIFY(!session.dyingEntities().contains(bob));
+        QVERIFY(!session.entityMirror().dying().contains(bob));
         QCOMPARE(session.entities().value(bob).position.x, 5.5);
         QCOMPARE(pose().deathProgress, -1.0);
     }

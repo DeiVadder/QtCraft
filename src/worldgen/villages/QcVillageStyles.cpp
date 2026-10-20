@@ -141,14 +141,14 @@ std::optional<QcVillageStyle::Wetland> QcVillageStyles::resolveWetland(const QcV
     resolved.scale = wetland.scale;
     resolved.plant = plant.value_or(qcAirBlockId);
     resolved.plantChance = wetland.plantChance;
-    return fitWetland(resolved, content.villageSettings(), definition.name);
+    return fitWetland(resolved, content.villageCatalog().settings(), definition.name);
 }
 
 QcVillageStyles::QcVillageStyles(const QcContentRegistry &content)
     : m_blocks(content)
     , m_warnings(m_blocks.warnings())
 {
-    for (const QcVillageStyleDefinition &definition : content.villageStyles()) {
+    for (const QcVillageStyleDefinition &definition : content.villageCatalog().styles()) {
         std::optional<QcVillageStyle> style = resolve(definition, content);
         if (!style) {
             continue;
@@ -270,7 +270,7 @@ std::optional<QcVillageStyle::Piece> QcVillageStyles::piece(const QcVillagePiece
 std::optional<QcVillageStyle::Blueprint> QcVillageStyles::blueprint(const QString &name, const QcVillageStyleDefinition &style,
                                                                     const QcContentRegistry &content)
 {
-    const QcStructureDefinition *definition = content.structure(name);
+    const QcStructureDefinition *definition = content.worldgen().structure(name);
     if (!definition) {
         m_warnings.append(u"village style '%1': unknown structure '%2'"_s.arg(style.name, name));
         return std::nullopt;

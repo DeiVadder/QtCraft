@@ -99,7 +99,7 @@ private:
         // The answers to the inputs up to the first hit arrive; the player dies only 2 s later.
         QTest::qWait(2 * (delayMs + jitterMs) + 200);
         QVERIFY(!m_session->isDead());
-        QVERIFY2(m_session->largestCorrection() < 1e-9, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
 
         QTRY_VERIFY_WITH_TIMEOUT(m_session->isDead(), timeoutMs);
         QTRY_VERIFY_WITH_TIMEOUT(m_chat.contains(u"Player fell out of the world"_s), timeoutMs);

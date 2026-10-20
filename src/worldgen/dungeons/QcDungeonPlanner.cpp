@@ -76,7 +76,7 @@ private:
 
 QcDungeonPlanner::QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed)
     : m_terrain(terrain)
-    , m_settings(content.terrainSettings().dungeons)
+    , m_settings(content.worldgen().terrainSettings().dungeons)
     , m_seed(qcMixSeed(seed, 0x3801))
 {
     if (!m_settings.enabled) {

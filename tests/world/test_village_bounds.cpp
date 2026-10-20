@@ -35,10 +35,10 @@ private:
     std::shared_ptr<const QcContentRegistry> modded(int spacing, int radius) const
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcVillageSettings settings = content->villageSettings();
+        QcVillageSettings settings = content->villageCatalog().settings();
         settings.spacing = spacing;
         settings.radius = radius;
-        content->setVillageSettings(settings);
+        content->villageCatalog().setSettings(settings);
 
         QcStructureDefinition lamp;
         lamp.name = u"mod:wide_lamp"_s;
@@ -47,8 +47,8 @@ private:
         lamp.sizeZ = 7;
         lamp.palette = {u"qtcraft:cobblestone"_s};
         lamp.cells.fill(0, qsizetype(lamp.sizeX) * lamp.sizeY * lamp.sizeZ);
-        content->registerStructure(lamp);
-        const QList<QcVillageStyleDefinition> styles = content->villageStyles();
+        content->worldgen().registerStructure(lamp);
+        const QList<QcVillageStyleDefinition> styles = content->villageCatalog().styles();
         for (QcVillageStyleDefinition style : styles) {
             if (style.name == u"qtcraft:plains"_s) {
                 style.lamp = lamp.name;
@@ -58,7 +58,7 @@ private:
                 style.wetland.fray = 8;
                 style.wetland.blend = 8;
             }
-            content->registerVillageStyle(style);
+            content->villageCatalog().registerStyle(style);
         }
         return content;
     }
@@ -192,7 +192,7 @@ private slots:
         const QStringList &warnings = styles.warnings();
         // The wetland is fitted into the margin, with a warning.
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"wetland reaches 28 blocks"_s); }));
-        QVERIFY(styles.named(u"qtcraft:swamp"_s)->wetland.reach() <= QcVillagePlanner::freeMargin(content->villageSettings()));
+        QVERIFY(styles.named(u"qtcraft:swamp"_s)->wetland.reach() <= QcVillagePlanner::freeMargin(content->villageCatalog().settings()));
         QCOMPARE(styles.named(u"qtcraft:plains"_s)->lamp.first().structure()->name(), u"mod:wide_lamp"_s);
 
         const QcTerrainGenerator generator(content, seed);

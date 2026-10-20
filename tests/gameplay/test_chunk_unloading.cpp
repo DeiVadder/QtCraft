@@ -400,7 +400,7 @@ private slots:
             ticks(1);
         }
         QVERIFY(m_server->items().items().isEmpty());
-        QVERIFY(m_server->world().stored(far).has_value());
+        QVERIFY(m_server->world().saves().stored(far).has_value());
         m_server->world().loadChunk(far);
         QCOMPARE(m_server->items().items().size(), 1);
     }
@@ -621,7 +621,7 @@ private slots:
         const qsizetype square = qsizetype(2 * m_viewDistance + 3) * qsizetype(2 * m_viewDistance + 3);
         QVERIFY2(mostLoaded <= 2 * square, qPrintable(QString::number(mostLoaded)));
         QVERIFY2(mostEntities <= 30, qPrintable(QString::number(mostEntities)));
-        QVERIFY(m_server->world().storedChunkCount() >= legs);
+        QVERIFY(m_server->world().saves().storedChunkCount() >= legs);
 
         // Back at a chunk passed long ago: its block and its item are there.
         const QcBlockPos early = start.offset(5 * QcWorld::chunkSize, 0, 0);

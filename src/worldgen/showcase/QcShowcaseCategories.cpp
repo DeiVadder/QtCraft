@@ -66,7 +66,7 @@ bool matches(const QcShowcaseMatch &match, const QcBlockDefinition &block)
 
 int categoryOf(const QcBlockDefinition &block, const QcContentRegistry &content)
 {
-    const QList<QcShowcaseCategory> &categories = content.showcase().categories;
+    const QList<QcShowcaseCategory> &categories = content.worldgen().showcase().categories;
     for (int i = 0; i < categories.size(); ++i) {
         if (matches(categories[i].match, block)) {
             return i;
@@ -77,7 +77,7 @@ int categoryOf(const QcBlockDefinition &block, const QcContentRegistry &content)
 
 QList<QList<quint32>> sort(const QcContentRegistry &content)
 {
-    QList<QList<quint32>> sorted(std::max<qsizetype>(1, content.showcase().categories.size()));
+    QList<QList<quint32>> sorted(std::max<qsizetype>(1, content.worldgen().showcase().categories.size()));
     for (qsizetype type = 0; type < content.blocks().size(); ++type) {
         const QcBlockDefinition &block = content.blocks()[type];
         if (block.renderLayer == QcRenderLayer::Invisible || block.name == QLatin1StringView(QcContentRegistry::airName)) {

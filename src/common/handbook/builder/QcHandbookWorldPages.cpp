@@ -51,8 +51,8 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
 
     Section features{text.label(u"section.features"_s), {}, {}, {}};
     for (const QcFeaturePlacement &placement : biome.features) {
-        const auto feature = std::ranges::find(content.features(), placement.feature, &QcFeatureDefinition::name);
-        if (feature == content.features().end()) {
+        const auto feature = std::ranges::find(content.worldgen().features(), placement.feature, &QcFeatureDefinition::name);
+        if (feature == content.worldgen().features().end()) {
             text.addProblem(u"biome %1: unknown feature %2"_s.arg(biome.name, placement.feature));
             continue;
         }
@@ -87,7 +87,7 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.name = biome.name;
     entry.category = u"biomes"_s;
     entry.pack = QcHandbookLinks::packOf(biome.name);
-    entry.title = context.content.translate(biome.translationKey, text.language());
+    entry.title = context.content.translations().translate(biome.translationKey, text.language());
     entry.icon = context.links.itemIcon(biome.surfaceBlock);
     entry.text = text.description(biome.descriptionKey, biome.name);
 
@@ -101,7 +101,7 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
 
     entry.facts += layerFacts(context, biome);
     entry.sections += biomeSections(context, biome);
-    entry.englishTitle = context.content.translate(biome.translationKey, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(biome.translationKey, QcHandbookText::english());
     return entry;
 }
 
@@ -109,7 +109,7 @@ QcHandbookEntry terrainPage(const QcHandbookContext &context)
 {
     const QcHandbookText &text = context.text;
     const QcHandbookLinks &links = context.links;
-    const QcTerrainSettings &terrain = context.content.terrainSettings();
+    const QcTerrainSettings &terrain = context.content.worldgen().terrainSettings();
 
     QcHandbookEntry entry;
     entry.id = u"world:terrain"_s;
@@ -128,19 +128,19 @@ QcHandbookEntry terrainPage(const QcHandbookContext &context)
     entry.facts.append({text.label(u"fact.caves"_s), text.yesNo(terrain.caves), {}});
 
     Section ores{text.label(u"section.ores"_s), {}, {}, {}};
-    for (const QcOreDefinition &ore : context.content.ores()) {
+    for (const QcOreDefinition &ore : context.content.worldgen().ores()) {
         ores.links.append(links.oreLink(ore, text.heightRange(ore.minY, ore.maxY)));
     }
     ores.links = QcHandbookLinks::sortedLinks(std::move(ores.links));
     entry.sections.append(std::move(ores));
 
     Section biomes{text.label(u"section.biomes"_s), {}, {}, {}};
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         biomes.links.append(links.biomeLink(biome));
     }
     biomes.links = QcHandbookLinks::sortedLinks(std::move(biomes.links));
     entry.sections.append(std::move(biomes));
-    entry.englishTitle = context.content.translate(u"handbook.world.terrain"_s, QcHandbookText::english());
+    entry.englishTitle = context.content.translations().translate(u"handbook.world.terrain"_s, QcHandbookText::english());
     return entry;
 }
 
@@ -158,7 +158,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
 
     entry.facts.append({text.label(u"fact.id"_s), ore.name, {}});
     entry.facts.append({text.label(u"fact.block"_s), {}, {links.blockLink(ore.block)}});
-    const QString replaces = ore.replaces.isEmpty() ? context.content.terrainSettings().stoneBlock : ore.replaces;
+    const QString replaces = ore.replaces.isEmpty() ? context.content.worldgen().terrainSettings().stoneBlock : ore.replaces;
     if (context.content.blockId(replaces) == qcAirBlockId) {
         // Veins in air hang in caves (cobwebs); air has no page.
         entry.facts.append({text.label(u"fact.replaces"_s), text.label(u"value.caveAir"_s), {}});
@@ -220,7 +220,7 @@ Section featureBiomes(const QcHandbookContext &context, const QcFeatureDefinitio
 {
     const QcHandbookText &text = context.text;
     QcLinkList placing;
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         for (const QcFeaturePlacement &placement : biome.features) {
             if (placement.feature == feature.name) {
                 placing.addUnique(context.links.biomeLink(biome, perColumn(text, placement)));
@@ -230,7 +230,7 @@ Section featureBiomes(const QcHandbookContext &context, const QcFeatureDefinitio
 
     Section biomes{text.label(u"section.inBiomes"_s), {}, {}, {}};
     if (feature.type == QcFeatureDefinition::Type::Pool) {
-        for (const QcBiomeDefinition &biome : context.content.biomes()) {
+        for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
             if (feature.biomes.contains(biome.name)) {
                 placing.addUnique(context.links.biomeLink(biome));
             }
@@ -277,16 +277,16 @@ namespace QcHandbookWorldPages {
 QList<QcHandbookEntry> build(const QcHandbookContext &context)
 {
     QList<QcHandbookEntry> entries;
-    for (const QcBiomeDefinition &biome : context.content.biomes()) {
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
         entries.append(biomePage(context, biome));
     }
-    if (!context.content.terrainSettings().stoneBlock.isEmpty()) {
+    if (!context.content.worldgen().terrainSettings().stoneBlock.isEmpty()) {
         entries.append(terrainPage(context));
     }
-    for (const QcOreDefinition &ore : context.content.ores()) {
+    for (const QcOreDefinition &ore : context.content.worldgen().ores()) {
         entries.append(orePage(context, ore));
     }
-    for (const QcFeatureDefinition &feature : context.content.features()) {
+    for (const QcFeatureDefinition &feature : context.content.worldgen().features()) {
         entries.append(featurePage(context, feature));
     }
     return entries;

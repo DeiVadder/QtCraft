@@ -22,7 +22,7 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
     QList<QcChunkPos> done;
     for (const QcChunkPos &chunk : chunks) {
         // A stored chunk that is not loaded comes in first, so its stored copy is replaced too.
-        if (!m_state.world().chunk(chunk) && m_state.world().stored(chunk)) {
+        if (!m_state.world().chunk(chunk) && m_state.world().saves().stored(chunk)) {
             m_state.world().loadChunk(chunk);
         }
         if (!m_state.world().regenerateChunk(chunk)) {

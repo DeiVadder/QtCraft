@@ -229,10 +229,10 @@ struct QcVillageStyleDefinition
     QcVillagerLook look;
     // The creature kind living in its villages (a mob with "villager"); empty: the settings'.
     QString villager;
-    // Its golems over the settings' (QcContentRegistry::golemOfStyle; an empty mob: none).
+    // Its golems over the settings' (QcVillageCatalog::golemOfStyle; an empty mob: none).
     std::optional<QcVillageGolemPatch> golem;
     QList<QcVillageResident> residents;
-    // When the style was last registered (QcContentRegistry::registerVillageStyle counts up): of two
+    // When the style was last registered (QcVillageCatalog::registerStyle counts up): of two
     // styles naming a biome or being the fallback, the later registered one keeps it
     // (QcVillageContent::resolveStyles, decision E-421).
     int registered = 0;

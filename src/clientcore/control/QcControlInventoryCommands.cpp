@@ -60,7 +60,7 @@ void QcControlInventoryCommands::inventory(const QJsonObject &request)
 void QcControlInventoryCommands::moveItem(const QJsonObject &request)
 {
     const quint64 startTick = session().tickCount();
-    session().moveInventoryItem(QcControlArguments::intField(request, u"from"_s, 0), QcControlArguments::intField(request, u"to"_s, 0),
+    session().inventoryMirror().moveItem(QcControlArguments::intField(request, u"from"_s, 0), QcControlArguments::intField(request, u"to"_s, 0),
                                 std::max(0, QcControlArguments::intField(request, u"count"_s, 0)));
     m_context.waitTicks(request, startTick, inventoryTicks);
 }
@@ -105,14 +105,14 @@ void QcControlInventoryCommands::recipes(const QJsonObject &request)
 void QcControlInventoryCommands::craft(const QJsonObject &request)
 {
     const quint64 startTick = session().tickCount();
-    session().craftRecipe(request.value(u"recipe"_s).toString(), std::clamp(QcControlArguments::intField(request, u"count"_s, 1), 1, 64));
+    session().inventoryMirror().craftRecipe(request.value(u"recipe"_s).toString(), std::clamp(QcControlArguments::intField(request, u"count"_s, 1), 1, 64));
     m_context.waitTicks(request, startTick, inventoryTicks);
 }
 
 void QcControlInventoryCommands::takeResult(const QJsonObject &request)
 {
     const quint64 startTick = session().tickCount();
-    session().takeCraftingResult();
+    session().inventoryMirror().takeCraftingResult();
     m_context.waitTicks(request, startTick, inventoryTicks);
 }
 
@@ -141,7 +141,7 @@ void QcControlInventoryCommands::pickBlock(const QJsonObject &request)
     }
 
     const quint64 startTick = session().tickCount();
-    const std::optional<QcRaycastHit> &target = session().target();
+    const std::optional<QcRaycastHit> &target = session().hand().target();
     if (!target || session().isDead()) {
         m_context.fail(request, u"No block in view"_s);
         return;
@@ -154,6 +154,6 @@ void QcControlInventoryCommands::closeCrafting(const QJsonObject &request)
 {
     // Returns the grid to the inventory and leaves a crafting table's 3 x 3 grid.
     const quint64 startTick = session().tickCount();
-    session().closeCrafting();
+    session().inventoryMirror().closeCrafting();
     m_context.waitTicks(request, startTick, inventoryTicks);
 }

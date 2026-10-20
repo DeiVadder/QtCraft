@@ -122,8 +122,6 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
 {
     if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
         onWelcome(*welcome);
-    } else if (const auto *sync = std::get_if<QcMsg::ContentSync>(&message)) {
-        onContentSync(*sync);
     } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
         m_disconnectMessage = *disconnect;
         closeWithError(QcChatText::display(*disconnect));
@@ -140,46 +138,35 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
 
 bool QcClientSession::handleWorldMessage(const QcMessage &message)
 {
-    if (const auto *chunkData = std::get_if<QcMsg::ChunkData>(&message)) {
-        m_extras.chunkArrived(chunkData->chunk->pos());
-        onChunkData(*chunkData);
-    } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
-        m_extras.removeChunk(unload->pos);
-        if (m_world) {
-            m_world->removeChunk(unload->pos);
-            emit chunkUnloaded(unload->pos);
-        }
-    } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
-        m_extras.setLabels(*labels);
-    } else if (const auto *spawner = std::get_if<QcMsg::SpawnerDisplay>(&message)) {
-        m_extras.setSpawner(*spawner);
-    } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
+    if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
         m_debug.receive(*debug);
-    } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
-        const QcBlockId previous = m_world ? m_world->blockAt(update->pos).value_or(qcAirBlockId) : qcAirBlockId;
-        if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
-            emit blockChanged(update->pos, previous);
-        }
-    } else if (const auto *batch = std::get_if<QcMsg::BlockBatch>(&message)) {
-        // One copy per chunk; the meshes gather the light changes into one job (decision E-604).
-        const QList<std::pair<QcBlockPos, QcBlockId>> changed = m_world ? m_world->setBlocks(batch->updates) : QList<std::pair<QcBlockPos, QcBlockId>>{};
-        for (const auto &[pos, previous] : changed) {
-            emit blockChanged(pos, previous);
-        }
-    } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
-        m_extras.addExplosion(*explosion, m_tickCount);
-    } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
+        return true;
+    }
+    if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
         cue({sound->key, sound->position, sound->volume, sound->pitch, QcSoundCue::Origin::Server, m_tickCount});
-    } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
-        m_worldTime = *time;
-    } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
-        m_weather.receive(*weather);
-    } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
-        m_weather.lightning(*strike, playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, m_tickCount);
-    } else {
+        return true;
+    }
+
+    // Only a lightning strike needs the listener (its thunder).
+    const bool lightning = std::holds_alternative<QcMsg::Lightning>(message);
+    const QcVec3 eye = lightning ? playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0} : QcVec3{};
+    const std::optional<QcWorldMirror::Change> change = m_worldMirror.handle(message, eye, m_tickCount);
+    if (!change) {
         return false;
     }
 
+    if (!change->error.isEmpty()) {
+        closeWithError(change->error);
+    } else if (change->contentReady) {
+        emit contentReady();
+    } else if (change->loaded) {
+        emit chunkLoaded(*change->loaded);
+    } else if (change->unloaded) {
+        emit chunkUnloaded(*change->unloaded);
+    }
+    for (const auto &[pos, previous] : change->blocks) {
+        emit blockChanged(pos, previous);
+    }
     return true;
 }
 
@@ -208,7 +195,7 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
 bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 {
     if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
-        if (!m_inventory.apply(*inventory, m_content.get())) {
+        if (!m_inventory.apply(*inventory, m_worldMirror.content().get())) {
             closeWithError(u"Server sent an invalid inventory"_s);
             return true;
         }
@@ -232,7 +219,7 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 bool QcClientSession::handleEntityMessage(const QcMessage &message)
 {
     if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
-        if (!m_entities.spawn(*spawn, m_content.get())) {
+        if (!m_entities.spawn(*spawn, m_worldMirror.content().get())) {
             closeWithError(u"Server sent an unknown entity type"_s);
         }
     } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
@@ -269,31 +256,6 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
     m_debug.welcomed();
 }
 
-void QcClientSession::onContentSync(const QcMsg::ContentSync &sync)
-{
-    if (m_content) {
-        // Block ids of loaded chunks would no longer match; content changes need a reconnect.
-        closeWithError(u"Server sent content twice"_s);
-        return;
-    }
-
-    m_content = sync.content;
-    m_world = std::make_unique<QcClientWorld>(m_content);
-    emit contentReady();
-}
-
-void QcClientSession::onChunkData(const QcMsg::ChunkData &chunkData)
-{
-    if (!m_world || !QcClientWorld::knowsBlocksOf(*chunkData.chunk, *m_content)) {
-        closeWithError(u"Server sent invalid chunk data"_s);
-        return;
-    }
-
-    const QcChunkPos pos = chunkData.chunk->pos();
-    m_world->setChunk(chunkData.chunk);
-    emit chunkLoaded(pos);
-}
-
 void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)
 {
     if (m_state == State::Disconnected) {
@@ -301,7 +263,7 @@ void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)
     }
 
     adopt(reconciled.after);
-    if (m_state == State::Loading && m_world) {
+    if (m_state == State::Loading && m_worldMirror.world()) {
         setState(State::Playing);
     }
 }
@@ -324,23 +286,19 @@ void QcClientSession::tick()
 
 void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
 {
-    if (m_state != State::Playing || !m_world) {
+    if (m_state != State::Playing || !m_worldMirror.world()) {
         adopt(event.after);
         return;
     }
 
     ++m_tickCount;
-    m_extras.pruneExplosions(m_tickCount);
-    if (m_worldTime.running) {
-        // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
-        m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;
-    }
+    m_worldMirror.tick(m_tickCount);
     m_entities.tick();
 
     // A hotbar selection the server dropped is sent again (decision E-582).
     m_inventory.resendLostSelection();
     m_animation.tick(m_inventory.heldItem(), m_hand.isMining());
-    m_hand.tickLauncher(*m_content, m_worldTime.speed);
+    m_hand.tickLauncher(*m_worldMirror.content(), m_worldMirror.timeSpeed());
     updateSounds();
     adopt(event.after);
     if (!event.predicted) {
@@ -355,13 +313,13 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
         const QcEntityMotion &motion = m_prediction.motion();
         const QcEntityMotion &previous = m_prediction.previousMotion();
         m_animation.stepped(previous, motion);
-        const QList<QcSoundCue> steps = m_sounds.local().update(previous, motion, m_prediction.intent().sneak, *m_world);
+        const QList<QcSoundCue> steps = m_sounds.local().update(previous, motion, m_prediction.intent().sneak, *m_worldMirror.world());
         for (const QcSoundCue &step : steps) {
             cue(step);
         }
     }
 
-    apply(m_hand.updateMining(*m_world, *m_content));
+    apply(m_hand.updateMining(*m_worldMirror.world(), *m_worldMirror.content()));
     emit ticked();
 }
 
@@ -374,11 +332,11 @@ void QcClientSession::cue(QcSoundCue cue)
 
 void QcClientSession::updateSounds()
 {
-    m_entities.stepSounds(*m_world, [this](const QcSoundCue &step) { cue(step); });
+    m_entities.stepSounds(*m_worldMirror.world(), [this](const QcSoundCue &step) { cue(step); });
     const QcVec3 eye = playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    const double rain = m_weather.rainAt(int(std::floor(eye.y)));
-    m_sounds.updateAmbience(*m_world, eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
-    const QList<QcSoundCue> thunder = m_weather.tick(m_tickCount);
+    const double rain = m_worldMirror.weather().rainAt(int(std::floor(eye.y)));
+    m_sounds.updateAmbience(*m_worldMirror.world(), eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
+    const QList<QcSoundCue> thunder = m_worldMirror.weather().tick(m_tickCount);
     for (const QcSoundCue &sound : thunder) {
         cue(sound);
     }
@@ -386,8 +344,8 @@ void QcClientSession::updateSounds()
 
 void QcClientSession::refreshTarget()
 {
-    if (m_world) {
-        m_hand.refreshTarget(*m_world, *m_content);
+    if (m_worldMirror.world()) {
+        m_hand.refreshTarget(*m_worldMirror.world(), *m_worldMirror.content());
     } else {
         m_hand.clearTarget();
     }
@@ -398,7 +356,7 @@ bool QcClientSession::useItem()
     if (m_state != State::Playing || m_vitals.isDead()) {
         return false;
     }
-    return apply(m_hand.use(*m_world, *m_content));
+    return apply(m_hand.use(*m_worldMirror.world(), *m_worldMirror.content()));
 }
 
 bool QcClientSession::attack()
@@ -479,7 +437,7 @@ void QcClientSession::sendChat(const QString &text)
 
 bool QcClientSession::handleMachineMessage(const QcMessage &message)
 {
-    const std::optional<QcClientMachineScreen::Change> change = m_machine.handle(message, m_content.get());
+    const std::optional<QcClientMachineScreen::Change> change = m_machine.handle(message, m_worldMirror.content().get());
     if (!change) {
         return false;
     }

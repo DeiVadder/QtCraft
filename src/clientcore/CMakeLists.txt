@@ -120,6 +120,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
+    session/QcWorldMirror.h session/QcWorldMirror.cpp
 )
 target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp

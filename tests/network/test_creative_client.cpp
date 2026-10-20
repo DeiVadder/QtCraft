@@ -196,7 +196,7 @@ private slots:
         QVERIFY(m_session->playerMotion().onGround);
         // The answers to the last inputs arrive.
         QTest::qWait(2 * (delayMs + jitterMs) + 200);
-        QVERIFY2(m_session->largestCorrection() < 1e-9, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
     }
 
     void savedFlightGoesOnAfterRejoining()
@@ -224,7 +224,7 @@ private slots:
         QVERIFY(m_session->playerMotion().flying);
         // (A fall would cover metres in this time.)
         QVERIFY(std::abs(m_session->playerMotion().position.y - height) < 1e-3);
-        QVERIFY2(m_session->largestCorrection() < 1e-9, qPrintable(QString::number(m_session->largestCorrection())));
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
 
         // Dying ends the wish: a player comes back on the ground.
         m_session->sendChat(u"/kill"_s);
@@ -242,7 +242,7 @@ private slots:
         // The bin: an empty stack clears the slot.
         m_session->gameMode().creativeItem(3, {});
         QTRY_VERIFY_WITH_TIMEOUT(m_session->inventory().slot(3).isEmpty(), timeoutMs);
-        QVERIFY(m_session->largestCorrection() < 1e-9);
+        QVERIFY(m_session->prediction().largestCorrection() < 1e-9);
     }
 
     void survivalCannotTakeOff()
@@ -250,7 +250,7 @@ private slots:
         start(QcGameMode::Survival, 25, 10);
         takeOff();
         QVERIFY(!m_session->playerMotion().flying);
-        QVERIFY(m_session->largestCorrection() < 1e-9);
+        QVERIFY(m_session->prediction().largestCorrection() < 1e-9);
     }
 
     void creativeBreaksWithoutWaiting()

@@ -157,7 +157,7 @@ private slots:
         QVERIFY(!bare.vertices.isEmpty());
         const qsizetype boxes = QcArmourLook::attachments(*m_content, set("iron")).size();
         // Under the helmet the hair is left out, so it cannot poke through.
-        const QcAppearanceDefinition *hair = m_content->appearance(QcAppearance().hair);
+        const QcAppearanceDefinition *hair = m_content->assets().appearance(QcAppearance().hair);
         QVERIFY(hair);
         QCOMPARE(iron.vertices.size(), bare.vertices.size() + (boxes - hair->boxes.size()) * verticesPerBox);
 

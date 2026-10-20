@@ -93,13 +93,13 @@ private:
     std::shared_ptr<QcContentRegistry> contentWith(double rareCentreChance, bool surface) const
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcVillageStyleDefinition desert = *std::ranges::find(content->villageStyles(), u"qtcraft:desert"_s, &QcVillageStyleDefinition::name);
+        QcVillageStyleDefinition desert = *std::ranges::find(content->villageCatalog().styles(), u"qtcraft:desert"_s, &QcVillageStyleDefinition::name);
         desert.rareCentreChance = rareCentreChance;
-        content->registerVillageStyle(desert);
+        content->villageCatalog().registerStyle(desert);
         if (!surface) {
-            QcStructureDefinition temple = *content->structure(u"qtcraft:desert_temple"_s);
+            QcStructureDefinition temple = *content->worldgen().structure(u"qtcraft:desert_temple"_s);
             temple.surface.reset();
-            content->registerStructure(temple);
+            content->worldgen().registerStructure(temple);
         }
         return content;
     }

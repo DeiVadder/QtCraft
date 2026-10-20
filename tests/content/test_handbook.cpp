@@ -162,13 +162,13 @@ private slots:
             const QcHandbookEntry *entry = book.entry(u"mob:"_s + mob.name);
             QVERIFY2(entry && entry->category == u"creatures"_s, qPrintable(mob.name));
         }
-        for (const QcBiomeDefinition &biome : content.biomes()) {
+        for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
             QVERIFY2(book.entry(u"biome:"_s + biome.name), qPrintable(biome.name));
         }
-        for (const QcOreDefinition &ore : content.ores()) {
+        for (const QcOreDefinition &ore : content.worldgen().ores()) {
             QVERIFY2(book.entry(u"ore:"_s + ore.name), qPrintable(ore.name));
         }
-        for (const QcFeatureDefinition &feature : content.features()) {
+        for (const QcFeatureDefinition &feature : content.worldgen().features()) {
             QVERIFY2(book.entry(u"feature:"_s + feature.name), qPrintable(feature.name));
         }
         for (const QcHandbookChapter &chapter : content.handbookChapters()) {
@@ -309,7 +309,7 @@ private slots:
         QVERIFY(bare.entry(u"block:test:plain"_s)->text.isEmpty());
 
         // A mod's description may quote values; unknown names stay and are reported.
-        content.addTranslations(u"en"_s, {{u"block.test.plain.description"_s, u"Hardness {test:plain.hardness}, {test:nothing.value}."_s}});
+        content.translations().add(u"en"_s, {{u"block.test.plain.description"_s, u"Hardness {test:plain.hardness}, {test:nothing.value}."_s}});
         const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         const QcHandbookEntry *entry = book.entry(u"block:test:plain"_s);
         QVERIFY(entry);
@@ -555,7 +555,7 @@ private slots:
             text += u" {test:other%1}"_s.arg(i);
         }
 
-        content.addTranslations(u"en"_s, {{u"block.test.noisy.description"_s, text}});
+        content.translations().add(u"en"_s, {{u"block.test.noisy.description"_s, text}});
         const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values(content), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         const QcHandbookEntry *entry = book.entry(u"block:test:noisy"_s);
         QVERIFY(entry);
@@ -589,10 +589,10 @@ private slots:
         QcContentRegistry content;
         QVERIFY(QcContentPackLoader::load(dir.path(), content).has_value());
 
-        QStringList languages = content.languages();
+        QStringList languages = content.translations().languages();
         languages.sort();
         QCOMPARE(languages, (QStringList{u"de"_s, u"en"_s, u"pt.BR"_s}));
-        QCOMPARE(content.translate(u"b"_s, u"de"_s), u"B"_s);
+        QCOMPARE(content.translations().translate(u"b"_s, u"de"_s), u"B"_s);
     }
 
     void creaturePagesShowSpawnRules()

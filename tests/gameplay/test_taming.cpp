@@ -114,7 +114,7 @@ private slots:
         QcStructureDefinition pen;
         pen.name = u"qtcraft:test_pen"_s;
         pen.mobs = {{.mob = u"qtcraft:pig"_s, .at = {}, .owner = u"showcase"_s}, {.mob = u"qtcraft:cat"_s, .at = {}, .owner = u"showcase"_s}};
-        content.registerStructure(pen);
+        content.worldgen().registerStructure(pen);
         const QStringList warnings = QcMobTraitsContent::checkStructurePets(content);
         QCOMPARE(warnings.size(), 1);
         QVERIFY(warnings.front().contains(u"qtcraft:pig"_s));

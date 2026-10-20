@@ -16,7 +16,7 @@ T pick(const QList<T> &choices, const QList<T> &defaults, quint32 seed, int shif
 
 const QcVillagerLook &lookOf(const QcContentRegistry &content, const QcVillagerSettings &species, const QString &style)
 {
-    const QcVillageStyleDefinition *definition = content.villageStyle(style);
+    const QcVillageStyleDefinition *definition = content.villageCatalog().style(style);
     return definition && definition->look.isSet() ? definition->look : species.look;
 }
 

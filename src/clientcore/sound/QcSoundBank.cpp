@@ -9,7 +9,7 @@ QcSoundBank QcSoundBank::build(const QcContentRegistry &content, int sampleRate)
     QcSoundBank bank;
     bank.m_sampleRate = sampleRate;
 
-    for (const QcSoundDefinition &sound : content.sounds()) {
+    for (const QcSoundDefinition &sound : content.assets().sounds()) {
         // Checked before rendering, so an oversized mod sound costs no time either.
         const auto needed = qsizetype(std::ceil(sound.seconds() * sampleRate)) * sound.variants;
         if (bank.m_totalSamples + needed > maxSamples) {

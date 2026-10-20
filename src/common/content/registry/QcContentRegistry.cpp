@@ -266,26 +266,6 @@ std::optional<QcItemId> QcContentRegistry::itemId(const QString &name) const
     return *it;
 }
 
-void QcContentRegistry::registerTexture(QcTextureDefinition definition)
-{
-    const auto existing = m_textureIndex.constFind(definition.name);
-    if (existing != m_textureIndex.constEnd()) {
-        m_textures[*existing] = std::move(definition);
-        return;
-    }
-
-    m_textureIndex.insert(definition.name, m_textures.size());
-    m_textures.append(std::move(definition));
-}
-
-void QcContentRegistry::addTranslations(const QString &language, const QHash<QString, QString> &entries)
-{
-    QHash<QString, QString> &table = m_translations[language];
-    for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
-        table.insert(it.key(), it.value());
-    }
-}
-
 namespace {
 
 // A fishing rod checked against the content (decision E-503): what is left of its fishing and the
@@ -388,7 +368,7 @@ QStringList QcContentRegistry::finish()
     // keep the index of theirs. It keeps its abilities except opening doors, which only the villager
     // AI carries out (decision E-423).
     m_mobs.updateAll([this, &warnings](QcMobDefinition &mob) {
-        const std::optional<qsizetype> settings = m_villagerSettings.indexOf(mob.villagerSettings);
+        const std::optional<qsizetype> settings = m_villages.villagerSettingsIndex(mob.villagerSettings);
         mob.villagerSettingsIndex = mob.villager && settings ? int(*settings) : -1;
         if (mob.villager && mob.villagerSettingsIndex < 0) {
             warnings.append(u"mob '%1': no villager settings '%2'; it is no villager%3"_s.arg(mob.name, mob.villagerSettings,
@@ -475,26 +455,6 @@ std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
     return index ? std::optional<int>(int(*index)) : std::nullopt;
 }
 
-void QcContentRegistry::registerModel(QcModelDefinition definition)
-{
-    m_models.set(std::move(definition));
-}
-
-const QcModelDefinition *QcContentRegistry::model(const QString &name) const
-{
-    return m_models.find(name);
-}
-
-void QcContentRegistry::registerAppearance(QcAppearanceDefinition definition)
-{
-    m_appearances.set(std::move(definition));
-}
-
-const QcAppearanceDefinition *QcContentRegistry::appearance(const QString &name) const
-{
-    return m_appearances.find(name);
-}
-
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
 {
     m_recipes.set(std::move(definition));
@@ -518,79 +478,16 @@ const QcSmeltingRecipe *QcContentRegistry::smeltingRecipe(const QString &categor
     return it == m_smeltingRecipes.items().end() ? nullptr : &*it;
 }
 
-void QcContentRegistry::registerSound(QcSoundDefinition definition)
-{
-    m_sounds.set(std::move(definition));
-}
-
-const QcSoundDefinition *QcContentRegistry::sound(const QString &name) const
-{
-    return m_sounds.find(name);
-}
-
-const QcBiomeDefinition *QcContentRegistry::biome(const QString &name) const
-{
-    return m_biomes.find(name);
-}
-
-void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
-{
-    m_biomes.set(std::move(definition));
-}
-
 void QcContentRegistry::registerHandbookChapter(QcHandbookChapter chapter)
 {
     m_handbookChapters.set(std::move(chapter));
 }
 
-void QcContentRegistry::registerFeature(QcFeatureDefinition definition)
-{
-    m_features.set(std::move(definition));
-}
-
-void QcContentRegistry::registerOre(QcOreDefinition definition)
-{
-    m_ores.set(std::move(definition));
-}
-
-void QcContentRegistry::registerVillageStyle(QcVillageStyleDefinition style)
-{
-    const auto latest = std::ranges::max_element(m_villageStyles.items(), {}, &QcVillageStyleDefinition::registered);
-    style.registered = latest == m_villageStyles.items().end() ? 1 : latest->registered + 1;
-    m_villageStyles.set(std::move(style));
-}
-
-const QcVillageStyleDefinition *QcContentRegistry::villageStyle(const QString &name) const
-{
-    return m_villageStyles.find(name);
-}
-
 std::optional<int> QcContentRegistry::villagerOfStyle(const QString &style) const
 {
-    const QcVillageStyleDefinition *definition = villageStyle(style);
-    const std::optional<int> type = mobIndex(definition && !definition->villager.isEmpty() ? definition->villager : m_villageSettings.villager);
+    const QcVillageStyleDefinition *definition = m_villages.style(style);
+    const std::optional<int> type = mobIndex(definition && !definition->villager.isEmpty() ? definition->villager : m_villages.settings().villager);
     return type && m_mobs.items()[*type].villager ? type : std::nullopt;
-}
-
-QcVillageGolemSettings QcContentRegistry::golemOfStyle(const QString &style) const
-{
-    const QcVillageStyleDefinition *definition = villageStyle(style);
-    return definition && definition->golem ? definition->golem->over(m_villageSettings.golem) : m_villageSettings.golem;
-}
-
-void QcContentRegistry::registerVillagerSettings(QcVillagerSettings settings)
-{
-    m_villagerSettings.set(std::move(settings));
-}
-
-const QcVillagerSettings *QcContentRegistry::villagerSettings(const QString &name) const
-{
-    return m_villagerSettings.find(name);
-}
-
-void QcContentRegistry::removeVillagerSettings(const QString &name)
-{
-    m_villagerSettings.remove(name);
 }
 
 const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) const
@@ -602,23 +499,13 @@ const QcVillagerSettings &QcContentRegistry::villagerSettingsOf(int mobType) con
 
     // The index finish() keeps, while it still names these settings; else by name.
     const QcMobDefinition &mob = m_mobs.items()[mobType];
-    const QList<QcVillagerSettings> &all = m_villagerSettings.items();
+    const QList<QcVillagerSettings> &all = m_villages.villagerSpecies();
     const qsizetype index = mob.villagerSettingsIndex;
     if (index >= 0 && index < all.size() && all[index].name == mob.villagerSettings) {
         return all[index];
     }
-    const QcVillagerSettings *settings = villagerSettings(mob.villagerSettings);
+    const QcVillagerSettings *settings = m_villages.villagerSettings(mob.villagerSettings);
     return settings ? *settings : none;
-}
-
-void QcContentRegistry::registerProfession(QcVillagerProfession profession)
-{
-    m_professions.set(std::move(profession));
-}
-
-const QcVillagerProfession *QcContentRegistry::profession(const QString &name) const
-{
-    return m_professions.find(name);
 }
 
 void QcContentRegistry::registerProjectile(QcProjectileDefinition projectile)
@@ -639,21 +526,6 @@ void QcContentRegistry::registerEffect(QcEffectDefinition effect)
 const QcEffectDefinition *QcContentRegistry::effect(const QString &name) const
 {
     return m_effects.find(name);
-}
-
-void QcContentRegistry::registerTradeSet(QcTradeSet set)
-{
-    m_tradeSets.set(std::move(set));
-}
-
-void QcContentRegistry::registerStructure(QcStructureDefinition structure)
-{
-    m_structures.set(std::move(structure));
-}
-
-const QcStructureDefinition *QcContentRegistry::structure(const QString &name) const
-{
-    return m_structures.find(name);
 }
 
 void QcContentRegistry::registerCommandMacro(QcCommandMacroDefinition macro)
@@ -689,48 +561,6 @@ std::optional<QcBlockId> QcContentRegistry::defaultFire() const
         }
     }
     return std::nullopt;
-}
-
-const QcTextureDefinition *QcContentRegistry::texture(const QString &name) const
-{
-    const auto it = m_textureIndex.constFind(name);
-    return it == m_textureIndex.constEnd() ? nullptr : &m_textures[*it];
-}
-
-QString QcContentRegistry::translate(const QString &key, const QString &language) const
-{
-    for (const QString &candidate : {language, QString::fromLatin1(fallbackLanguage)}) {
-        const auto table = m_translations.constFind(candidate);
-        if (table != m_translations.constEnd()) {
-            const auto entry = table->constFind(key);
-            if (entry != table->constEnd()) {
-                return *entry;
-            }
-        }
-    }
-    return key;
-}
-
-qsizetype QcContentRegistry::translationTotal() const
-{
-    qsizetype total = 0;
-    for (const QHash<QString, QString> &table : m_translations) {
-        total += table.size();
-    }
-    return total;
-}
-
-QStringList QcContentRegistry::translationKeys(const QString &language) const
-{
-    QStringList keys = m_translations.value(language).keys();
-    keys.sort();
-    return keys;
-}
-
-bool QcContentRegistry::hasTranslation(const QString &key, const QString &language) const
-{
-    const auto table = m_translations.constFind(language);
-    return table != m_translations.constEnd() && table->contains(key);
 }
 
 void QcContentRegistry::writeTo(QDataStream &stream) const

@@ -465,16 +465,16 @@ private slots:
 
         join(config);
         loadAround(filled);
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk), record.kept);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk), record.kept);
         QCOMPARE(m_server->blockEntities().container(filled)->stacks[0].count, 5);
         QVERIFY(m_server->world().setBlock(broken, qcAirBlockId));
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk).entries.size(), 2);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk).entries.size(), 2);
         // Rebuilt before any save: the new chest starts without the old one's tail.
         QVERIFY(m_server->world().setBlock(broken, id("qtcraft:chest")));
         QVERIFY(m_server->blockEntities().container(broken));
-        QVERIFY(!m_server->world().blockEntityParts().value(chunk).entries.contains(broken));
+        QVERIFY(!m_server->world().blockEntityExtras().keptParts().value(chunk).entries.contains(broken));
         QVERIFY(m_server->save().has_value());
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk).entries.size(), 2);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk).entries.size(), 2);
         m_client.reset();
         m_server.reset();
 
@@ -508,15 +508,15 @@ private slots:
         join(config);
         m_unloadChunks = false;
         m_server->world().loadChunk(chunk);
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk), record.kept);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk), record.kept);
         for (int i = 0; i < 200 && m_server->world().chunk(chunk); ++i) {
             ticks(1);
         }
         QVERIFY(!m_server->world().chunk(chunk));
-        QVERIFY(!m_server->world().blockEntityParts().contains(chunk));
+        QVERIFY(!m_server->world().blockEntityExtras().keptParts().contains(chunk));
 
         m_server->world().loadChunk(chunk);
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk), record.kept);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk), record.kept);
         QCOMPARE(m_server->blockEntities().container(filled)->stacks[0].count, 5);
         m_client.reset();
         m_server.reset();
@@ -524,13 +524,13 @@ private slots:
         // Regenerated in a world that keeps its chunks loaded.
         join(config);
         m_server->world().loadChunk(chunk);
-        QCOMPARE(m_server->world().blockEntityParts().value(chunk), record.kept);
+        QCOMPARE(m_server->world().blockEntityExtras().keptParts().value(chunk), record.kept);
         const QcBlockPos corner{chunk.x * QcWorld::chunkSize, 0, chunk.z * QcWorld::chunkSize};
         chat(u"/regenerate %1 %2"_s.arg(corner.x).arg(corner.z));
         chat(u"/confirm"_s);
         ticks(1);
         QVERIFY(!m_server->blockEntities().container(filled));
-        QVERIFY(!m_server->world().blockEntityParts().contains(chunk));
+        QVERIFY(!m_server->world().blockEntityExtras().keptParts().contains(chunk));
     }
 };
 
