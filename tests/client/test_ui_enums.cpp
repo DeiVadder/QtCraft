@@ -86,6 +86,39 @@ private slots:
         settings.setFieldOfView(500.0);
     }
 
+    // The UI scale (decision E-725) is an enumeration property; an unknown step warns and changes
+    // nothing, the same step again is silent; the choice is saved with the settings and read back.
+    void uiScaleIsAnEnumAndPersists()
+    {
+        QcSessionParts parts;
+        QcAudioEngine audio;
+        QcWorldLibraryController library;
+        {
+            QcSettingsController settings(parts, library, &audio);
+            const QMetaProperty property = settings.metaObject()->property(settings.metaObject()->indexOfProperty("uiScale"));
+            QVERIFY(property.isEnumType());
+            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Percent100);
+            QSignalSpy changed(&settings, &QcSettingsController::settingsChanged);
+
+            QVERIFY(settings.setProperty("uiScale", int(QcUiScaling::Step::Auto)));
+            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Auto);
+            QCOMPARE(changed.count(), 1);
+            settings.setUiScale(QcUiScaling::Step::Auto);
+            QCOMPARE(changed.count(), 1);
+
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown UI scale 9"_s));
+            settings.setUiScale(QcUiScaling::Step(9));
+            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Auto);
+
+            settings.setUiScale(QcUiScaling::Step::Percent175);
+            settings.saveSettings();
+        }
+
+        QcSettingsController loaded(parts, library, &audio);
+        loaded.loadSettings();
+        QCOMPARE(loaded.uiScale(), QcUiScaling::Step::Percent175);
+    }
+
     // The preview's animation is an enumeration property in QcPreviewPose's order.
     void previewAnimationIsAnEnum()
     {

@@ -19,6 +19,23 @@ ApplicationWindow {
     // The game for the items made by loaders (their own `game` property hides the id there).
     readonly property GameController controller: game
 
+    // The UI scale (decision E-725): the player's choice and the window; Ui.px() and
+    // Ui.hudPx() take their factors from here.
+    Binding {
+        target: UiScaling
+        property: "setting"
+        value: game.settings.uiScale
+    }
+    Binding {
+        target: UiScaling
+        property: "windowSize"
+        value: Qt.size(root.width, root.height)
+    }
+    // Controls (buttons, boxes, labels, tooltips, popups) inherit the window's font.
+    WindowFont {
+        target: root
+    }
+
     GameController {
         id: game
 
@@ -209,6 +226,7 @@ ApplicationWindow {
     // The pad on the screens (decisions E-583, E-584): its buttons, the ring around its focus and the
     // keyboard for text fields.
     Loader {
+        objectName: "padHintsLoader"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         active: game.gamepad.active
@@ -229,8 +247,8 @@ ApplicationWindow {
     Column {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 48
-        spacing: 8
+        anchors.topMargin: Ui.px(48)
+        spacing: Ui.px(8)
         visible: !game.photo.capturing
 
         // A pad connected, disconnected or took over; made for the first notice.

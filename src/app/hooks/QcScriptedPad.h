@@ -19,7 +19,8 @@ class QcGamepadUi;
 // and plays it from then on; it is in use after its first press (the first stays connected, so the
 // world does not pause).
 // Steps run one after another, each once the one before has been reported, so a slow machine
-// delays them but never reorders or overlaps them. reportFrames rendered frames after each step
+// delays them but never reorders or overlaps them; stepReported() follows each report, so a
+// screenshot can wait for the steps instead of the wall clock. reportFrames rendered frames after each step
 // the log gets a line "padFocus: <focused item>", while it is open "padRadial: <slot>", and while
 // the on-screen keyboard is open "padKeyboard: <text>" (as the field shows it: a password's dots).
 class QcScriptedPad : public QObject
@@ -39,6 +40,10 @@ public:
 
     // Whether a startup script line has pad steps.
     static bool wanted(const QStringList &overlays);
+
+signals:
+    // A queued step ran and its lines are logged.
+    void stepReported();
 
 private:
     // A step of the script, read.

@@ -17,20 +17,20 @@ Item {
     HudLabel {
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.margins: 8
+        anchors.margins: Ui.hudPx(8)
         visible: overlay.level > 0
         text: overlay.game.hud.debug.generalText
-        font.pixelSize: overlay.level === 2 ? 13 : 14
+        font.pixelSize: Ui.hudPx(overlay.level === 2 ? 13 : 14)
     }
 
     Column {
         objectName: "debugTimings"
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.rightMargin: 8
-        anchors.topMargin: 40
+        anchors.rightMargin: Ui.hudPx(8)
+        anchors.topMargin: Ui.hudPx(40)
         visible: overlay.level === 2
-        spacing: 4
+        spacing: Ui.hudPx(4)
 
         HudLabel {
             anchors.right: parent.right
@@ -78,17 +78,17 @@ Item {
         readonly property bool limitShown: graph.limitShown
 
         anchors.right: parent.right
-        width: 260
-        height: 64
+        width: Ui.hudPx(260)
+        height: Ui.hudPx(64)
         color: Theme.hudBackdrop
-        radius: 3
+        radius: Ui.hudPx(3)
 
         DebugGraph {
             id: graph
 
             anchors.fill: parent
-            anchors.margins: 4
-            anchors.topMargin: 18
+            anchors.margins: Ui.hudPx(4)
+            anchors.topMargin: Ui.hudPx(18)
             values: panel.values
             capacity: 240
             maxValue: panel.scaleTop
@@ -98,12 +98,12 @@ Item {
         }
 
         Label {
-            x: 6
-            y: 2
+            x: Ui.hudPx(6)
+            y: Ui.hudPx(2)
             textFormat: Text.PlainText
             text: panel.title
             color: Theme.text
-            font.pixelSize: 11
+            font.pixelSize: Ui.hudPx(11)
         }
     }
 }

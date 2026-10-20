@@ -55,7 +55,7 @@ ColumnLayout {
         message = "";
     }
 
-    spacing: 8
+    spacing: Ui.px(8)
 
     // Takes the next key while a slot waits for one. It takes the shortcuts too (Esc would close the
     // settings otherwise), so every key reaches it.
@@ -93,11 +93,12 @@ ColumnLayout {
     ListView {
         id: keyList
 
+        Accessible.name: qsTr("Keys")
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Layout.minimumHeight: 160
+        Layout.minimumHeight: Ui.px(160)
         clip: true
-        spacing: 2
+        spacing: Ui.px(2)
         model: page.keys.rows
         ScrollBar.vertical: ThemedScrollBar {}
 
@@ -106,8 +107,8 @@ ColumnLayout {
 
             required property var modelData
 
-            width: ListView.view.width - 12
-            spacing: 8
+            width: ListView.view.width - Ui.px(12)
+            spacing: Ui.px(8)
 
             Label {
                 Layout.fillWidth: true
@@ -122,10 +123,14 @@ ColumnLayout {
                     required property int index
                     readonly property bool capturing: page.captureAction === keyRow.modelData.action && page.captureSlot === index
 
-                    Layout.preferredWidth: 130
+                    Layout.preferredWidth: Ui.px(130)
                     enabled: !keyRow.modelData.fixed
                     highlighted: capturing
                     text: capturing ? qsTr("Press a key …") : (index === 0 ? keyRow.modelData.primary : keyRow.modelData.secondary)
+                    // "–" or an arrow says little without the row: the action, which key and the key.
+                    Accessible.name: qsTr("%1, %2: %3").arg(keyRow.modelData.label)
+                                     .arg(index === 0 ? qsTr("primary key") : qsTr("secondary key"))
+                                     .arg(text === "–" ? qsTr("none") : text)
                     onClicked: page.startCapture(keyRow.modelData.action, index)
                 }
             }

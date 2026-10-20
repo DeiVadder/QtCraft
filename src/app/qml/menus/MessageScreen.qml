@@ -23,8 +23,8 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: Math.min(parent.width - 32, 520)
-        spacing: 16
+        width: Math.min(parent.width - Ui.px(32), Ui.px(520))
+        spacing: Ui.px(16)
 
         Label {
             id: message
@@ -35,7 +35,7 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap
             color: Theme.text
-            font.pixelSize: 22
+            font.pixelSize: Ui.px(22)
         }
 
         Button {

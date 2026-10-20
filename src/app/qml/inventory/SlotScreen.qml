@@ -87,8 +87,10 @@ Rectangle {
             pickedSlot = -1;
     }
 
+    // A click beside the slots puts the stack back: nothing a screen reader offers.
     MouseArea {
         anchors.fill: parent
+        Accessible.ignored: true
         onClicked: {
             screen.pickedSlot = -1;
             screen.carriedItem = "";
@@ -98,9 +100,9 @@ Rectangle {
     // Opaque panel so the crosshair and the world do not show through the slots.
     Rectangle {
         anchors.fill: screen.panelContent
-        anchors.margins: -20
+        anchors.margins: Ui.px(-20)
         visible: screen.panelContent !== null
-        radius: 6
+        radius: Ui.px(6)
         color: Theme.panel
         border.color: Theme.panelBorder
     }

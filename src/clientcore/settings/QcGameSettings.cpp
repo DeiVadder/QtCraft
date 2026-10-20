@@ -145,6 +145,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.photoHidesHand = file.value(u"photoHidesHand"_s, true).toBool();
     settings.language = cleanLanguage(file.value(u"language"_s).toString());
     settings.cameraMode = QcViewCamera::fromName(file.value(u"cameraMode"_s).toString()).value_or(QcCameraMode::FirstPerson);
+    settings.uiScale = QcUiScale::fromName(file.value(u"uiScale"_s).toString()).value_or(QcUiScale::defaultStep);
 
     settings.appearance = QcCharacterProfile::loadAppearance(file, u"character"_s);
     settings.characterPresets = QcCharacterProfile::loadPresets(file);
@@ -183,6 +184,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"photoHidesHand"_s, photoHidesHand);
     file.setValue(u"language"_s, language);
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));
+    file.setValue(u"uiScale"_s, QcUiScale::name(uiScale));
 
     QcCharacterProfile::saveAppearance(file, u"character"_s, appearance);
     QcCharacterProfile::savePresets(file, characterPresets);

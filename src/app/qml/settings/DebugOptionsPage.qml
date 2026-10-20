@@ -12,11 +12,11 @@ ColumnLayout {
 
     required property GameController game
 
-    spacing: 8
+    spacing: Ui.px(8)
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Ui.px(12)
 
         Label {
             text: qsTr("Debug display (%1)").arg(page.game.settings.keys.labels.debugOverlay)
@@ -25,6 +25,7 @@ ColumnLayout {
             id: levelBox
 
             objectName: "debugLevel"
+            Accessible.name: qsTr("Debug display")
             Layout.fillWidth: true
             model: [qsTr("Off"), qsTr("Compact: frame rate and frame time"), qsTr("Full: position, light, target, time breakdown")]
             currentIndex: page.game.settings.debug.level

@@ -12,9 +12,9 @@ Rectangle {
     // Read by the column of notices in Main.qml (the effective `visible` would loop through it).
     readonly property bool showing: timer.running
 
-    width: label.implicitWidth + 28
-    height: label.implicitHeight + 14
-    radius: 4
+    width: label.implicitWidth + Ui.hudPx(28)
+    height: label.implicitHeight + Ui.hudPx(14)
+    radius: Ui.hudPx(4)
     color: Theme.hudBackdrop
     visible: timer.running
 
@@ -25,7 +25,7 @@ Rectangle {
         anchors.centerIn: parent
         text: notice.game.gamepad.pads.notice
         color: Theme.text
-        font.pixelSize: 15
+        font.pixelSize: Ui.hudPx(15)
     }
 
     Timer {

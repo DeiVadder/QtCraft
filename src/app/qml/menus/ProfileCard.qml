@@ -17,25 +17,25 @@ Rectangle {
 
     signal customizeRequested
 
-    implicitHeight: 168
-    radius: 4
+    implicitHeight: Ui.px(168)
+    radius: Ui.px(4)
     color: Theme.scrim
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 8
-        spacing: 12
+        anchors.margins: Ui.px(8)
+        spacing: Ui.px(12)
 
         Rectangle {
-            Layout.preferredWidth: 104
+            Layout.preferredWidth: Ui.px(104)
             Layout.fillHeight: true
-            radius: 4
+            radius: Ui.px(4)
             color: Theme.panelRaised
 
             CharacterPreviewHost {
                 previewName: "profilePreview"
                 anchors.fill: parent
-                anchors.margins: 2
+                anchors.margins: Ui.px(2)
                 source: card.game.preview
                 // A gentle idle motion is enough in the menu.
                 framesPerSecond: 15
@@ -46,12 +46,12 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            spacing: 6
+            spacing: Ui.px(6)
 
             Label {
                 text: qsTr("Your character")
                 color: Theme.text
-                font.pixelSize: 17
+                font.pixelSize: Ui.px(17)
                 font.bold: true
             }
             Label {

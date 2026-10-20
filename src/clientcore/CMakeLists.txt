@@ -133,6 +133,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcKeyLabels.h settings/QcKeyLabels.cpp
     settings/QcScreenChoice.h settings/QcScreenChoice.cpp
     settings/QcUiPalette.h settings/QcUiPalette.cpp
+    settings/QcUiScale.h settings/QcUiScale.cpp
 )
 target_sources(qc_clientcore PRIVATE
     sound/QcAmbience.h sound/QcAmbience.cpp

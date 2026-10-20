@@ -27,11 +27,11 @@ Popup {
     }
 
     anchors.centerIn: parent
-    width: Math.min(parent.width - 64, 820)
-    height: Math.min(parent.height - 64, 560)
+    width: Math.min(parent.width - Ui.px(64), Ui.px(820))
+    height: Math.min(parent.height - Ui.px(64), Ui.px(560))
     modal: true
     focus: true
-    padding: 20
+    padding: Ui.px(20)
     closePolicy: screen.game.multiplayer.joining ? Popup.NoAutoClose : Popup.CloseOnEscape
 
     onAboutToShow: {
@@ -59,37 +59,38 @@ Popup {
         // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                   && event.key !== Qt.Key_Backtab
-        spacing: 12
+        spacing: Ui.px(12)
 
         Label {
             text: qsTr("Multiplayer")
-            font.pixelSize: 24
+            font.pixelSize: Ui.px(24)
             font.bold: true
         }
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 20
+            spacing: Ui.px(20)
 
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.preferredWidth: 420
-                spacing: 6
+                Layout.preferredWidth: Ui.px(420)
+                spacing: Ui.px(6)
 
                 Label {
                     text: qsTr("Recent servers")
-                    font.pixelSize: 18
+                    font.pixelSize: Ui.px(18)
                 }
 
                 ListView {
                     id: recentList
 
+                    Accessible.name: qsTr("Recent servers")
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-                    spacing: 4
+                    spacing: Ui.px(4)
                     model: screen.game.multiplayer.settings.recentServers
 
                     Label {
@@ -116,11 +117,11 @@ Popup {
             }
 
             ColumnLayout {
-                Layout.preferredWidth: 300
-                Layout.maximumWidth: 300
+                Layout.preferredWidth: Ui.px(300)
+                Layout.maximumWidth: Ui.px(300)
                 Layout.alignment: Qt.AlignTop
                 enabled: !screen.game.multiplayer.joining
-                spacing: 6
+                spacing: Ui.px(6)
 
                 Label {
                     text: qsTr("Server address")
@@ -130,6 +131,7 @@ Popup {
                     id: addressField
 
                     objectName: "serverAddress"
+                    Accessible.name: qsTr("Server address")
                     Layout.fillWidth: true
                     placeholderText: qsTr("host, host:port or [IPv6]:port")
                     selectByMouse: true
@@ -143,6 +145,7 @@ Popup {
                 TextField {
                     id: nameField
 
+                    Accessible.name: qsTr("Player name")
                     Layout.fillWidth: true
                     maximumLength: 32
                     selectByMouse: true
@@ -156,6 +159,7 @@ Popup {
                 TextField {
                     id: passwordField
 
+                    Accessible.name: qsTr("Password (only if the server has one)")
                     Layout.fillWidth: true
                     echoMode: TextInput.Password
                     selectByMouse: true
@@ -167,7 +171,7 @@ Popup {
                     text: qsTr("Passwords are never saved. The game connects directly to the address, without encryption.")
                     wrapMode: Text.Wrap
                     color: Theme.textSecondary
-                    font.pixelSize: 12
+                    font.pixelSize: Ui.px(12)
                 }
 
                 Button {
@@ -182,11 +186,11 @@ Popup {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Ui.px(12)
 
             BusyIndicator {
-                Layout.preferredWidth: 32
-                Layout.preferredHeight: 32
+                Layout.preferredWidth: Ui.px(32)
+                Layout.preferredHeight: Ui.px(32)
                 visible: screen.game.multiplayer.joining
                 running: visible
             }

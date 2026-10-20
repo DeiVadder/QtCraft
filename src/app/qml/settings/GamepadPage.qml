@@ -86,12 +86,12 @@ Flickable {
         id: content
 
         // A gutter on the right for the scroll bar.
-        width: page.width - 14
-        spacing: 10
+        width: page.width - Ui.px(14)
+        spacing: Ui.px(10)
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Ui.px(12)
 
             Label {
                 text: qsTr("Settings for")
@@ -100,6 +100,7 @@ Flickable {
                 id: profileBox
 
                 objectName: "gamepadProfile"
+                Accessible.name: qsTr("Settings for")
                 Layout.fillWidth: true
                 textRole: "text"
                 valueRole: "value"
@@ -112,7 +113,7 @@ Flickable {
         RowLayout {
             Layout.fillWidth: true
             visible: page.options.profileKey.length > 0
-            spacing: 12
+            spacing: Ui.px(12)
 
             Label {
                 Layout.fillWidth: true
@@ -173,7 +174,7 @@ Flickable {
                 readonly property bool capturing: page.captureAction === modelData.action
 
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Ui.px(8)
 
                 Label {
                     Layout.fillWidth: true
@@ -203,7 +204,7 @@ Flickable {
                     opacity: 0.7
                 }
                 Button {
-                    Layout.preferredWidth: 170
+                    Layout.preferredWidth: Ui.px(170)
                     enabled: page.options.editable && page.game.gamepad.pads.list.length > 0
                     highlighted: bindingRow.capturing
                     text: bindingRow.capturing ? qsTr("Press a button …") : qsTr("Change")
@@ -228,7 +229,7 @@ Flickable {
         }
 
         RowLayout {
-            spacing: 12
+            spacing: Ui.px(12)
 
             Button {
                 text: qsTr("Reset buttons")

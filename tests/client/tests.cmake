@@ -88,6 +88,8 @@ qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARI
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
 qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
+# The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
+qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
 target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.

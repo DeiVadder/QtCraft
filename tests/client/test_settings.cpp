@@ -69,6 +69,7 @@ private slots:
         settings.showLabels = false;
         settings.language = u"de"_s;
         settings.cameraMode = QcCameraMode::Front;
+        settings.uiScale = QcUiScale::Step::Percent150;
         settings.appearance.outfit = u"mod:robe"_s;
         settings.appearance.hair.clear();
         settings.appearance.skinColor = 0x010203;
@@ -307,7 +308,7 @@ private slots:
         const QString path = dir.filePath(u"settings.ini"_s);
         QFile file(path);
         QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("[General]\ncameraMode=sideways\n[character]\nskin=red\nhairColor=#12345\nshirt=#00ff0g\n"
+        file.write("[General]\ncameraMode=sideways\nuiScale=133\n[character]\nskin=red\nhairColor=#12345\nshirt=#00ff0g\n"
                    "pants=#abcdef\noutfit=");
         file.write(QByteArray(QcAppearance::maxNameLength + 1, 'x'));
         file.write("\n");
@@ -316,6 +317,7 @@ private slots:
         const QcGameSettings settings = QcGameSettings::load(path);
         const QcAppearance defaults;
         QCOMPARE(settings.cameraMode, QcCameraMode::FirstPerson);
+        QCOMPARE(settings.uiScale, QcUiScale::defaultStep);
         QCOMPARE(settings.appearance.skinColor, defaults.skinColor);
         QCOMPARE(settings.appearance.hairColor, defaults.hairColor);
         QCOMPARE(settings.appearance.shirtColor, defaults.shirtColor);

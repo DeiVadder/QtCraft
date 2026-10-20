@@ -5,31 +5,37 @@
     <name>CharacterPresets</name>
     <message>
         <location filename="../src/app/qml/character/CharacterPresets.qml" line="21"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="26"/>
         <source>Preset</source>
         <translation>Vorlage</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="29"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="30"/>
         <source>Choose a look</source>
         <translation>Aussehen wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="34"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="35"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="51"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="50"/>
+        <source>Preset name</source>
+        <translation>Name der Vorlage</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="53"/>
         <source>Name for a new preset</source>
         <translation>Name für eine neue Vorlage</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="51"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="53"/>
         <source>Name of a preset to replace</source>
         <translation>Name einer Vorlage, die ersetzt werden soll</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="79"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="81"/>
         <source>All %1 places for your own presets are taken: delete one, or save under the name of one to replace it.</source>
         <translation>Alle %1 Plätze für eigene Vorlagen sind belegt: Lösche eine oder speichere unter dem Namen einer vorhandenen, um sie zu ersetzen.</translation>
     </message>
@@ -38,7 +44,7 @@
         <translation type="vanished">Alle Plätze für Vorlagen sind belegt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterPresets.qml" line="60"/>
+        <location filename="../src/app/qml/character/CharacterPresets.qml" line="62"/>
         <source>Save preset</source>
         <translation>Vorlage speichern</translation>
     </message>
@@ -90,56 +96,59 @@
     </message>
     <message>
         <location filename="../src/app/qml/character/CharacterScreen.qml" line="148"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="153"/>
         <source>Outfit</source>
         <translation>Kleidung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="161"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="162"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="167"/>
         <source>Hair</source>
         <translation>Frisur</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="174"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="176"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="181"/>
         <source>Cape</source>
         <translation>Umhang</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="188"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="191"/>
         <source>Skin</source>
         <translation>Haut</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="193"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="196"/>
         <source>Hair colour</source>
         <translation>Haarfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="198"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="201"/>
         <source>Shirt</source>
         <translation>Oberteil</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="203"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="206"/>
         <source>Trousers</source>
         <translation>Hose</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="215"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="218"/>
         <source>Press %1 in the game to look at your character from behind or from the front.</source>
         <translation>Mit %1 im Spiel siehst du deinen Charakter von hinten oder von vorne.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="224"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="227"/>
         <source>Random</source>
         <translation>Zufall</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="228"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="231"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterScreen.qml" line="235"/>
+        <location filename="../src/app/qml/character/CharacterScreen.qml" line="238"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
@@ -151,12 +160,17 @@
         <translation type="vanished">Chat oder /Befehl (z. B. /help), Start auf der Tastatur sendet, B bricht ab</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/ChatOverlay.qml" line="28"/>
+        <location filename="../src/app/qml/hud/ChatOverlay.qml" line="24"/>
+        <source>Chat</source>
+        <translation>Chat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/hud/ChatOverlay.qml" line="29"/>
         <source>Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels</source>
         <translation>Chat oder /Befehl (z. B. /help), %1 auf der Tastatur sendet, %2 bricht ab</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/ChatOverlay.qml" line="29"/>
+        <location filename="../src/app/qml/hud/ChatOverlay.qml" line="30"/>
         <source>Chat or /command (e.g. /help), Enter to send, Esc to cancel</source>
         <translation>Chat oder /Befehl (z. B. /help), Enter sendet, Esc bricht ab</translation>
     </message>
@@ -199,22 +213,47 @@
         <translation>Klicke auf eine Taste und drücke die neue. Esc bricht ab, die Rücktaste entfernt die Taste. Eine Taste, die eine andere Aktion nutzt, wird getauscht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="128"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="96"/>
+        <source>Keys</source>
+        <translation>Tasten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="129"/>
         <source>Press a key …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="145"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="131"/>
+        <source>%1, %2: %3</source>
+        <translation>%1, %2: %3</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="132"/>
+        <source>primary key</source>
+        <translation>erste Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="132"/>
+        <source>secondary key</source>
+        <translation>zweite Taste</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="133"/>
+        <source>none</source>
+        <translation>keine</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="150"/>
         <source>On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).</source>
         <translation>Auf einem Mac erreichen F1–F12 das Spiel nur mit gedrückter fn-Taste oder wenn in den Systemeinstellungen (Tastatur) „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ eingeschaltet ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="151"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="156"/>
         <source>Reset to defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="155"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="160"/>
         <source>All keys are back to their defaults.</source>
         <translation>Alle Tasten sind wieder auf dem Standard.</translation>
     </message>
@@ -227,32 +266,48 @@
         <translation>Kreativ-Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="96"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="95"/>
+        <source>Search items</source>
+        <translation>Gegenstände suchen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="97"/>
         <source>Search items (name or id) …</source>
         <translation>Gegenstände suchen (Name oder ID) …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="158"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="107"/>
+        <source>Items</source>
+        <translation>Items</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="161"/>
         <source>No item matches the search.</source>
         <translation>Kein Gegenstand passt zur Suche.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="165"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="168"/>
         <source>Items shown: %1</source>
         <translation>Angezeigt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="179"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="182"/>
         <source>Crafting and armour</source>
         <translation>Herstellen und Rüstung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="203"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="193"/>
+        <source>Bin</source>
+        <translation>Mülleimer</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="194"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="208"/>
         <source>Bin: drop a stack here to delete it</source>
         <translation>Mülleimer: hier abgelegte Stapel werden gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="223"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="228"/>
         <source>%1 on an item: a full stack, %2: one, %3: straight into the inventory. %1 on a slot puts it there. %4/%5 switch the tabs, %6 closes.</source>
         <translation>%1 auf einem Item: ein voller Stapel, %2: eins, %3: direkt ins Inventar. %1 auf einem Feld legt es dort ab. %4/%5 wechseln die Reiter, %6 schließt.</translation>
     </message>
@@ -261,7 +316,7 @@
         <translation type="vanished">A auf einem Item: ein voller Stapel, X: eins, Y: direkt ins Inventar. A auf einem Feld legt es dort ab. LB/RB wechseln die Reiter, B schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="226"/>
+        <location filename="../src/app/qml/inventory/CreativeScreen.qml" line="231"/>
         <source>Left click on an item: a full stack, right click: one, shift-click: straight into the inventory. Click a slot to put it there. %1 or Esc closes (Esc while typing in the search).</source>
         <translation>Linksklick auf einen Gegenstand: ein voller Stapel, Rechtsklick: einer, Umschalt-Klick: direkt ins Inventar. Ein Klick auf ein Feld legt ihn dort ab. %1 oder Esc schließt (Esc beim Tippen in der Suche).</translation>
     </message>
@@ -301,52 +356,57 @@
         <translation>Debug-Anzeige (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="29"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="28"/>
+        <source>Debug display</source>
+        <translation>Debug-Anzeige</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="30"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="29"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="30"/>
         <source>Compact: frame rate and frame time</source>
         <translation>Kompakt: Bildrate und Frame-Zeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="29"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="30"/>
         <source>Full: position, light, target, time breakdown</source>
         <translation>Voll: Position, Licht, Ziel, Zeitaufteilung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="36"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="37"/>
         <source>Shown in the world</source>
         <translation>In der Welt anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="41"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="42"/>
         <source>Chunk and section borders</source>
         <translation>Chunk- und Sektionsgrenzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="46"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="47"/>
         <source>Hitboxes of creatures, players and items</source>
         <translation>Hitboxen von Wesen, Spielern und Items</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="51"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="52"/>
         <source>Light values around the target (sky, block)</source>
         <translation>Lichtwerte um das Ziel (Himmel, Block)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="56"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="57"/>
         <source>Where creatures are heading</source>
         <translation>Wohin Wesen wollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="62"/>
         <source>Flash sections when they are meshed again</source>
         <translation>Neu vernetzte Sektionen aufblitzen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="73"/>
+        <location filename="../src/app/qml/settings/DebugOptionsPage.qml" line="74"/>
         <source>%1 opens these options in the world. Measured values also go to the log with --stats &lt;ms&gt;.</source>
         <translation>%1 öffnet diese Optionen in der Welt. Mit --stats &lt;ms&gt; gehen die Messwerte auch ins Log.</translation>
     </message>
@@ -445,96 +505,97 @@
     </message>
     <message>
         <location filename="../src/app/qml/settings/GamepadPage.qml" line="97"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="103"/>
         <source>Settings for</source>
         <translation>Einstellungen für</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="121"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="122"/>
         <source>This controller model has its own settings.</source>
         <translation>Dieses Controller-Modell hat eigene Einstellungen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="122"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="123"/>
         <source>This controller uses the settings for all controllers.</source>
         <translation>Dieser Controller nutzt die Einstellungen für alle Controller.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="123"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="124"/>
         <source>Over USB and over Bluetooth a controller counts as two models.</source>
         <translation>Über USB und über Bluetooth zählt ein Controller als zwei Modelle.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="127"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="128"/>
         <source>Use the shared settings</source>
         <translation>Gemeinsame Einstellungen nutzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="127"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="128"/>
         <source>Own settings</source>
         <translation>Eigene Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="144"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="145"/>
         <source>No controller connected. Xbox, PlayStation and Switch Pro controllers and most others work over USB or Bluetooth.</source>
         <translation>Kein Controller angeschlossen. Xbox-, PlayStation- und Switch-Pro-Controller und die meisten anderen funktionieren über USB oder Bluetooth.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="145"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="146"/>
         <source>Connected: %1. The controller you press a button on is used.</source>
         <translation>Angeschlossen: %1. Es gilt der Controller, auf dem du eine Taste drückst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="146"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="147"/>
         <source>%1 (in use)</source>
         <translation>%1 (in Benutzung)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="156"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="157"/>
         <source>Radial menu only: the hotbar shows just the slot in the hand</source>
         <translation>Nur Radialmenü: Die Schnellleiste zeigt nur das Feld in der Hand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="162"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="163"/>
         <source>Buttons</source>
         <translation>Tasten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="202"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="203"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="209"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="210"/>
         <source>Press a button …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="209"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="210"/>
         <source>Change</source>
         <translation>Ändern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="227"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="228"/>
         <source>The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).</source>
         <translation>Die Trigger bauen ab und benutzen; in Menüs behalten die Tasten ihre Plätze (unten bestätigt, rechts geht zurück).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="234"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="235"/>
         <source>Reset buttons</source>
         <translation>Tasten zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="239"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="240"/>
         <source>The buttons are back to their defaults.</source>
         <translation>Die Tasten sind wieder wie zu Beginn belegt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="243"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="244"/>
         <source>Reset everything</source>
         <translation>Alles zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="248"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="249"/>
         <source>All values and buttons are back to their defaults.</source>
         <translation>Alle Werte und Tasten sind wieder wie zu Beginn.</translation>
     </message>
@@ -543,81 +604,122 @@
     <name>GamepadValues</name>
     <message>
         <location filename="../src/app/qml/settings/GamepadValues.qml" line="20"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="26"/>
         <source>Look speed</source>
         <translation>Umsehgeschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="35"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="36"/>
         <source>%1°/s</source>
         <translation>%1°/s</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="40"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="41"/>
         <source>Invert looking up and down</source>
         <translation>Auf und ab umsehen umkehren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="46"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="47"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="52"/>
         <source>Stick dead zone</source>
         <translation>Totzone der Sticks</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="59"/>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="94"/>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="112"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="61"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="98"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="117"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="64"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="66"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="71"/>
         <source>Response curve</source>
         <translation>Kennlinie</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="81"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="84"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="89"/>
         <source>Trigger dead zone</source>
         <translation>Totzone der Trigger</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="98"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="102"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="108"/>
         <source>Trigger acts at</source>
         <translation>Trigger wirkt ab</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadValues.qml" line="117"/>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="122"/>
         <source>Vibrate when hurt (if the controller can)</source>
         <translation>Vibrieren bei Schaden (wenn der Controller es kann)</translation>
     </message>
 </context>
 <context>
+    <name>HandbookLink</name>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookLink.qml" line="19"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+</context>
+<context>
+    <name>HandbookRecipe</name>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookRecipe.qml" line="31"/>
+        <source>Empty</source>
+        <translation>Leer</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookRecipe.qml" line="31"/>
+        <source>%1 × %2</source>
+        <translation>%1 × %2</translation>
+    </message>
+</context>
+<context>
     <name>HandbookScreen</name>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="124"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="125"/>
         <source>‹ Back</source>
         <translation>‹ Zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="130"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="131"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
         <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="144"/>
+        <source>Search the handbook</source>
+        <translation>Im Handbuch suchen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="146"/>
         <source>Search blocks, items, creatures …</source>
         <translation>Blöcke, Items, Wesen suchen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="165"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="167"/>
         <source>Close (Esc)</source>
         <translation>Schließen (Esc)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="241"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="180"/>
+        <source>Categories</source>
+        <translation>Kategorien</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="219"/>
+        <source>Entries</source>
+        <translation>Einträge</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="245"/>
         <source>Nothing found.</source>
         <translation>Nichts gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="499"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="505"/>
         <source>%1 on a name or an item opens its page. %2 closes.</source>
         <translation>%1 auf einem Namen oder Item öffnet seine Seite. %2 schließt.</translation>
     </message>
@@ -626,7 +728,7 @@
         <translation type="vanished">A auf einem Namen oder Item öffnet seine Seite. B schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="500"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="506"/>
         <source>Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.</source>
         <translation>Klicke auf einen Namen oder ein Item, um seine Seite zu öffnen. Rücktaste geht zurück, Esc oder %1 schließt.</translation>
     </message>
@@ -634,7 +736,7 @@
 <context>
     <name>HotbarRadial</name>
     <message>
-        <location filename="../src/app/qml/gamepad/HotbarRadial.qml" line="71"/>
+        <location filename="../src/app/qml/gamepad/HotbarRadial.qml" line="73"/>
         <source>Empty hand</source>
         <translation>Leere Hand</translation>
     </message>
@@ -646,57 +748,57 @@
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="457"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="462"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="459"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="464"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="479"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="487"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="480"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="488"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="481"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="489"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="482"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="490"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="484"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="492"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="485"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="493"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="486"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="494"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="487"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="495"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="488"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="496"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -743,18 +845,37 @@
     </message>
     <message>
         <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="164"/>
+        <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="171"/>
         <source>Can craft now</source>
         <translation>Jetzt herstellbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="182"/>
+        <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="184"/>
         <source>Collect materials to see recipes here.</source>
         <translation>Sammle Material, um hier Rezepte zu sehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="194"/>
+        <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="196"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
+    </message>
+</context>
+<context>
+    <name>ItemSlot</name>
+    <message>
+        <location filename="../src/app/qml/controls/ItemSlot.qml" line="49"/>
+        <source>Empty slot</source>
+        <translation>Leeres Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/controls/ItemSlot.qml" line="49"/>
+        <source>%1, %2 items</source>
+        <translation>%1, %2 Stück</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/controls/ItemSlot.qml" line="112"/>
+        <source>Handbook page of %1</source>
+        <translation>Handbuchseite zu %1</translation>
     </message>
 </context>
 <context>
@@ -771,61 +892,64 @@
     </message>
     <message>
         <location filename="../src/app/qml/menus/LanScreen.qml" line="75"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="81"/>
         <source>Port (0: any free port)</source>
         <translation>Port (0: ein beliebiger freier Port)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="91"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="92"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="98"/>
         <source>Password (empty: anyone may join)</source>
         <translation>Passwort (leer: jeder darf beitreten)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="103"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="105"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="111"/>
         <source>Players at most</source>
         <translation>Höchstens Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="118"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="121"/>
         <source>Could not open the world: %1</source>
         <translation>Die Welt konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="129"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="132"/>
         <source>Open to other players</source>
         <translation>Für andere Spieler öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="136"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="139"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="150"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="153"/>
         <source>The world is open on port %1.</source>
         <translation>Die Welt ist auf Port %1 offen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="157"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="160"/>
         <source>Friends in your network choose Multiplayer in the main menu and join with one of these addresses:</source>
         <translation>Freunde in deinem Netzwerk wählen im Hauptmenü „Mehrspieler“ und treten mit einer dieser Adressen bei:</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="178"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="181"/>
         <source>This computer has no network address other players could reach.</source>
         <translation>Dieser Computer hat keine Netzwerkadresse, die andere Spieler erreichen könnten.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="185"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="188"/>
         <source>The firewall may ask whether QtCraft may accept incoming connections: allow it. Players over the internet need the port forwarded in your router (see the handbook).</source>
         <translation>Die Firewall fragt eventuell, ob QtCraft eingehende Verbindungen annehmen darf: erlaube es. Spieler über das Internet brauchen eine Portweiterleitung im Router (siehe Handbuch).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="197"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="200"/>
         <source>Stop hosting</source>
         <translation>Hosten beenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/LanScreen.qml" line="202"/>
+        <location filename="../src/app/qml/menus/LanScreen.qml" line="205"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -838,22 +962,22 @@
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="181"/>
+        <location filename="../src/app/qml/Main.qml" line="215"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="181"/>
+        <location filename="../src/app/qml/Main.qml" line="215"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="275"/>
+        <location filename="../src/app/qml/Main.qml" line="310"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="280"/>
+        <location filename="../src/app/qml/Main.qml" line="315"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -871,151 +995,157 @@
     </message>
     <message>
         <location filename="../src/app/qml/menus/MainMenu.qml" line="82"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="90"/>
         <source>Your worlds</source>
         <translation>Deine Welten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="99"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="100"/>
         <source>No saved worlds yet.</source>
         <translation>Noch keine gespeicherten Welten.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="137"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="138"/>
         <source>Last played %1 · Showcase</source>
         <translation>Zuletzt gespielt %1 · Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="139"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="140"/>
         <source>Last played %1 · Flat</source>
         <translation>Zuletzt gespielt %1 · Flach</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="141"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="142"/>
         <source>Last played %1 · Void</source>
         <translation>Zuletzt gespielt %1 · Leere</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="142"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="143"/>
         <source>Last played %1 · Seed %2</source>
         <translation>Zuletzt gespielt %1 · Seed %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="150"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="151"/>
         <source>Play</source>
         <translation>Spielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="157"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="158"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="187"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="188"/>
         <source>New world</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="215"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="216"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="223"/>
         <source>World name</source>
         <translation>Name der Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="223"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="225"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="228"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="230"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="238"/>
         <source>World type</source>
         <translation>Welttyp</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="240"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="243"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="241"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="244"/>
         <source>Flat</source>
         <translation>Flach</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="242"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="245"/>
         <source>Void</source>
         <translation>Leere</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="243"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="246"/>
         <source>Showcase</source>
         <translation>Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="251"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="254"/>
         <source>The same layers everywhere, no caves or trees, no creatures of their own accord.</source>
         <translation>Überall dieselben Schichten, keine Höhlen oder Bäume, keine Wesen von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="252"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="255"/>
         <source>Nothing but a small platform; noon, no creatures of their own accord.</source>
         <translation>Nur eine kleine Plattform; Mittag, keine Wesen von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="253"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="256"/>
         <source>A flat world with every block, creature and item on show, at noon.</source>
         <translation>Eine flache Welt, in der alle Blöcke, Wesen und Gegenstände zu sehen sind, zur Mittagszeit.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="254"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="257"/>
         <source>Hills, mountains, caves, oceans and biomes.</source>
         <translation>Hügel, Gebirge, Höhlen, Meere und Biome.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="259"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="262"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="269"/>
         <source>Seed (number or text, empty for random)</source>
         <translation>Seed (Zahl oder Text, leer für Zufall)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="273"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="277"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="284"/>
         <source>Layers from the bottom up (empty for the default)</source>
         <translation>Schichten von unten nach oben (leer für die Vorgabe)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="287"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="292"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="300"/>
         <source>Game mode</source>
         <translation>Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="299"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="305"/>
         <source>Survival</source>
         <translation>Überleben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="300"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="306"/>
         <source>Creative</source>
         <translation>Kreativ</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="309"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="315"/>
         <source>Every block and item without limit, flying, instant breaking, no damage or hunger.</source>
         <translation>Alle Blöcke und Gegenstände ohne Grenze, Fliegen, sofortiges Abbauen, kein Schaden und kein Hunger.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="310"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="316"/>
         <source>Gather, craft and survive: health, hunger and creatures count.</source>
         <translation>Sammeln, herstellen und überleben: Gesundheit, Hunger und Wesen zählen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="318"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="324"/>
         <source>Keep inventory on death</source>
         <translation>Inventar beim Tod behalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="328"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="334"/>
         <source>Create and play</source>
         <translation>Erstellen und spielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="350"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="356"/>
         <source>Multiplayer</source>
         <translation>Mehrspieler</translation>
     </message>
@@ -1028,7 +1158,7 @@
         <translation type="vanished">Eine flache Welt, in der alle Blöcke, Wesen und Gegenstände zu sehen sind, zur Mittagszeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="357"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="363"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
@@ -1037,27 +1167,27 @@
         <translation type="vanished">Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="364"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="370"/>
         <source>Mods</source>
         <translation>Mods</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="371"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="377"/>
         <source>Handbook (%1)</source>
         <translation>Handbuch (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="379"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="385"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="442"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="450"/>
         <source>Delete world</source>
         <translation>Welt löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="446"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="456"/>
         <source>Delete “%1” permanently? This cannot be undone.</source>
         <translation>„%1“ endgültig löschen? Das lässt sich nicht rückgängig machen.</translation>
     </message>
@@ -1074,6 +1204,7 @@
     <name>ModsScreen</name>
     <message>
         <location filename="../src/app/qml/menus/ModsScreen.qml" line="33"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="57"/>
         <source>Mods</source>
         <translation>Mods</translation>
     </message>
@@ -1093,37 +1224,42 @@
         <translation>Wer eine Welt ohne einen Mod öffnet, mit dem sie gespielt wurde, verliert darin dessen Blöcke und Items.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="66"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="67"/>
         <source>No mods installed. Put a mod folder with a pack.json into the mods directory.</source>
         <translation>Keine Mods installiert. Lege einen Mod-Ordner mit pack.json in das Mod-Verzeichnis.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="90"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="91"/>
         <source>%1 %2</source>
         <translation>%1 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="105"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="106"/>
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="106"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="107"/>
         <source>Disabled</source>
         <translation>Abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="107"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="108"/>
         <source>Not loaded: %1</source>
         <translation>Nicht geladen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="126"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="115"/>
+        <source>Enable %1</source>
+        <translation>%1 einschalten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="128"/>
         <source>Open mods folder</source>
         <translation>Mod-Ordner öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/ModsScreen.qml" line="134"/>
+        <location filename="../src/app/qml/menus/ModsScreen.qml" line="136"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -1142,66 +1278,70 @@
     </message>
     <message>
         <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="82"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="89"/>
         <source>Recent servers</source>
         <translation>Zuletzt genutzte Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="99"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="100"/>
         <source>Servers you join appear here.</source>
         <translation>Server, denen du beitrittst, erscheinen hier.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="126"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="127"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="134"/>
         <source>Server address</source>
         <translation>Serveradresse</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="134"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="136"/>
         <source>host, host:port or [IPv6]:port</source>
         <translation>Host, Host:Port oder [IPv6]:Port</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="140"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="142"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="148"/>
         <source>Player name</source>
         <translation>Spielername</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="153"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="156"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="162"/>
         <source>Password (only if the server has one)</source>
         <translation>Passwort (nur, wenn der Server eines hat)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="167"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="171"/>
         <source>Passwords are never saved. The game connects directly to the address, without encryption.</source>
         <translation>Passwörter werden nie gespeichert. Das Spiel verbindet sich direkt mit der Adresse, ohne Verschlüsselung.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="175"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="179"/>
         <source>Join</source>
         <translation>Beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="199"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="203"/>
         <source>Connecting to %1 …</source>
         <translation>Verbinde mit %1 …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="200"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="204"/>
         <source>Logging in …</source>
         <translation>Melde an …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="201"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="205"/>
         <source>Could not join: %1</source>
         <translation>Beitreten fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="207"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="211"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="213"/>
+        <location filename="../src/app/qml/menus/MultiplayerScreen.qml" line="217"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -1209,27 +1349,32 @@
 <context>
     <name>OnScreenKeyboard</name>
     <message>
-        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="185"/>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="170"/>
+        <source>Key %1</source>
+        <translation>Taste %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="187"/>
         <source>Shift</source>
         <translation>Umschalt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="194"/>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="196"/>
         <source>Space</source>
         <translation>Leertaste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="200"/>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="202"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="206"/>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="208"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="214"/>
+        <location filename="../src/app/qml/gamepad/OnScreenKeyboard.qml" line="216"/>
         <source>%1: delete  %2: space  %3/%4: cursor  %5: done  %6: close</source>
         <translation>%1: löschen  %2: Leerzeichen  %3/%4: Cursor  %5: fertig  %6: schließen</translation>
     </message>
@@ -1783,14 +1928,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="219"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="244"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="224"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="249"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="239"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="248"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="244"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="253"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -1799,22 +1944,22 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="272"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="272"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="293"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="298"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="318"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="323"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -1859,12 +2004,12 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="308"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="423"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="428"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -2289,27 +2434,27 @@
 <context>
     <name>QcMultiplayerController</name>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="86"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="88"/>
         <source>Enter a player name</source>
         <translation>Gib einen Spielernamen ein</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="91"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="93"/>
         <source>Player names may not contain &lt;, &gt; or &amp;</source>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="96"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="98"/>
         <source>Invalid address: %1</source>
         <translation>Ungültige Adresse: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="112"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="114"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="170"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="172"/>
         <source>Only a running single-player world can be opened to the network</source>
         <translation>Nur eine laufende Einzelspielerwelt kann für das Netzwerk geöffnet werden</translation>
     </message>
@@ -2739,7 +2884,7 @@
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="467"/>
         <location filename="../src/server/commands/QcEffectCommands.cpp" line="45"/>
         <location filename="../src/server/commands/QcExperienceCommands.cpp" line="54"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="133"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="130"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
     </message>
@@ -2801,7 +2946,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcBlockCommands.cpp" line="47"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="144"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="154"/>
         <source>Usage: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states] [creature]</source>
         <translation>Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände] [Wesen]</translation>
     </message>
@@ -2830,7 +2975,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcBlockCommands.cpp" line="56"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="166"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="177"/>
         <source>Usage: /clear &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; [block]</source>
         <translation>Verwendung: /clear &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; [Block]</translation>
     </message>
@@ -2841,7 +2986,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcBlockCommands.cpp" line="60"/>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="241"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="254"/>
         <source>Usage: /regenerate [&lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;]]</source>
         <translation>Verwendung: /regenerate [&lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;]]</translation>
     </message>
@@ -2866,48 +3011,48 @@
         <translation>Ein Spawner kann %1 nicht hervorbringen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="109"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="114"/>
         <source>This changes up to %1 blocks.</source>
         <translation>Das ändert bis zu %1 Blöcke.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="124"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="134"/>
         <source>Unknown block: %1</source>
         <translation>Unbekannter Block: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="200"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="212"/>
         <source>Nothing set: the chunks are not loaded or there are too many machines</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen oder es gibt zu viele Maschinen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="201"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="213"/>
         <source>Nothing set: the chunks are not loaded</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="206"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="218"/>
         <source>Filled %1 blocks with %2</source>
         <translation>%1 Blöcke mit %2 gefüllt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="248"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="261"/>
         <location filename="../src/server/commands/QcChunkCommands.cpp" line="56"/>
         <source>At most %1 chunks at once</source>
         <translation>Höchstens %1 Chunks auf einmal</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="259"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="272"/>
         <source>Regenerating %1 chunks from %2 %3 to %4 %5 discards every change in them.</source>
         <translation>Das Neuerzeugen von %1 Chunks von %2 %3 bis %4 %5 verwirft jede Änderung darin.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="264"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="277"/>
         <source>Regenerated %1 chunks (%2 were not loaded and unchanged)</source>
         <translation>%1 Chunks neu erzeugt (%2 waren nicht geladen und unverändert)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcBlockCommands.cpp" line="203"/>
+        <location filename="../src/server/commands/QcBlockCommands.cpp" line="215"/>
         <source>Set %1 at %2 %3 %4</source>
         <translation>%1 bei %2 %3 %4 gesetzt</translation>
     </message>
@@ -3027,7 +3172,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="65"/>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="282"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="280"/>
         <source>Usage: /remove &lt;mobs|hostile|animals|ambient|items|stands|all|&lt;creature&gt;|item:&lt;item&gt;&gt; [radius|world]</source>
         <translation>Verwendung: /remove &lt;mobs|hostile|animals|ambient|items|stands|all|&lt;Wesen&gt;|item:&lt;Item&gt;&gt; [Radius|world]</translation>
     </message>
@@ -3133,12 +3278,12 @@
         <translation>Speicher: %1 MB jetzt, %2 MB höchstens</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="295"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="292"/>
         <source>Removed %1 creatures, %2 item stacks and %3 armour stands</source>
         <translation>%1 Wesen, %2 Item-Stapel und %3 Rüstungsständer entfernt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="303"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="300"/>
         <source>This removes %1 creatures, %2 item stacks and %3 armour stands.</source>
         <translation>Das entfernt %1 Wesen, %2 Item-Stapel und %3 Rüstungsständer.</translation>
     </message>
@@ -3163,7 +3308,7 @@
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="626"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="183"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -3173,22 +3318,22 @@
         <translation>Die Spielerdaten lassen sich nicht laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="105"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="104"/>
         <source>access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty with the whitelist on, and changes are not saved until the file is repaired</source>
         <translation>access.json ist beschädigt und konnte nicht beiseitegelegt werden: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet, und Änderungen werden nicht gespeichert, bis die Datei repariert ist</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="110"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="109"/>
         <source>access.json was damaged: operators, bans and the whitelist start empty with the whitelist on; the damaged file was kept as %1</source>
         <translation>access.json war beschädigt: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet; die beschädigte Datei liegt als %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcPlayerJoin.cpp" line="127"/>
+        <location filename="../src/server/login/QcPlayerJoin.cpp" line="126"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="641"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="198"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3381,7 +3526,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="61"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="302"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="297"/>
         <source>Usage: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;player&gt;, /tp &lt;player&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; or /tp &lt;player&gt; &lt;target player&gt;</source>
         <translation>Verwendung: /tp &lt;x&gt; &lt;y&gt; &lt;z&gt;, /tp &lt;Spieler&gt;, /tp &lt;Spieler&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; oder /tp &lt;Spieler&gt; &lt;Zielspieler&gt;</translation>
     </message>
@@ -3402,7 +3547,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="74"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="211"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="206"/>
         <source>Usage: /whitelist &lt;on|off|list|add &lt;player&gt;|remove &lt;player&gt;&gt;</source>
         <translation>Verwendung: /whitelist &lt;on|off|list|add &lt;Spieler&gt;|remove &lt;Spieler&gt;&gt;</translation>
     </message>
@@ -3437,128 +3582,128 @@
         <translation>%1 Spieler online: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="127"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="125"/>
         <source>Kicked by %1</source>
         <translation>Von %1 getrennt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="128"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="126"/>
         <source>Kicked by %1: %2</source>
         <translation>Von %1 getrennt: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="131"/>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="149"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="128"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="146"/>
         <source>The host of the world cannot be kicked or banned</source>
         <translation>Der Gastgeber der Welt kann nicht getrennt oder gesperrt werden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="136"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="133"/>
         <source>Kicked %1</source>
         <translation>%1 getrennt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="157"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="153"/>
         <source>Banned by %1</source>
         <translation>Von %1 gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="158"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="154"/>
         <source>Banned by %1: %2</source>
         <translation>Von %1 gesperrt: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="161"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="156"/>
         <source>Banned %1</source>
         <translation>%1 gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="173"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="168"/>
         <source>%1 is not banned</source>
         <translation>%1 ist nicht gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="176"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="171"/>
         <source>Unbanned %1</source>
         <translation>Sperre von %1 aufgehoben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="183"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="178"/>
         <source>%1 banned names</source>
         <translation>%1 gesperrte Namen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="196"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="191"/>
         <source>The whitelist is on</source>
         <translation>Die Whitelist ist eingeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="196"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="191"/>
         <source>The whitelist is off</source>
         <translation>Die Whitelist ist ausgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="198"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="193"/>
         <source>The whitelist is on: %1</source>
         <translation>Die Whitelist ist eingeschaltet: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="199"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="194"/>
         <source>The whitelist is off: %1</source>
         <translation>Die Whitelist ist ausgeschaltet: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="208"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="203"/>
         <source>%1 is on the whitelist</source>
         <translation>%1 steht auf der Whitelist</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="208"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="203"/>
         <source>%1 is not on the whitelist</source>
         <translation>%1 steht nicht auf der Whitelist</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="220"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="215"/>
         <source>Operators: %1</source>
         <translation>Operatoren: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="232"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="227"/>
         <source>The host of the world is always an operator</source>
         <translation>Der Gastgeber der Welt ist immer Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="240"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="235"/>
         <source>You are now an operator</source>
         <translation>Du bist jetzt Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="241"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="236"/>
         <source>You are no longer an operator</source>
         <translation>Du bist kein Operator mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="249"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="244"/>
         <source>%1 is an operator</source>
         <translation>%1 ist Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="249"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="244"/>
         <source>%1 is no operator</source>
         <translation>%1 ist kein Operator</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="271"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="266"/>
         <source>The list is full (at most %1 names)</source>
         <translation>Die Liste ist voll (höchstens %1 Namen)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="278"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="273"/>
         <source>The change applies but could not be saved: %1</source>
         <translation>Die Änderung gilt, konnte aber nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="310"/>
+        <location filename="../src/server/commands/QcPlayerCommands.cpp" line="305"/>
         <source>Teleported %1 to %2 %3 %4</source>
         <translation>%1 nach %2 %3 %4 teleportiert</translation>
     </message>
@@ -3668,59 +3813,59 @@
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="103"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="100"/>
         <source>Wrong server password</source>
         <translation>Falsches Server-Passwort</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="108"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="105"/>
         <source>Your game content differs from the server&apos;s: %1</source>
         <translation>Dein Spielinhalt weicht vom Server ab: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="120"/>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="127"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="116"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="123"/>
         <source>Invalid player identity</source>
         <translation>Ungültige Spieleridentität</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="125"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="121"/>
         <source>The name %1 belongs to another player on this server</source>
         <translation>Der Name %1 gehört auf diesem Server einem anderen Spieler</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="132"/>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="174"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="128"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="167"/>
         <source>This server cannot register new players</source>
         <translation>Dieser Server kann keine neuen Spieler mehr registrieren</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="159"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="152"/>
         <source>A player named %1 is already on this server</source>
         <translation>Ein Spieler namens %1 ist bereits auf diesem Server</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="163"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="156"/>
         <source>The server is full (%1 players)</source>
         <translation>Der Server ist voll (%1 Spieler)</translation>
     </message>
     <message>
-        <location filename="../src/server/login/QcServerLogin.cpp" line="195"/>
+        <location filename="../src/server/login/QcServerLogin.cpp" line="188"/>
         <source>The login took too long</source>
         <translation>Die Anmeldung hat zu lange gedauert</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="363"/>
+        <location filename="../src/server/commands/QcAccessList.cpp" line="375"/>
         <source>You are banned from this world</source>
         <translation>Du bist in dieser Welt gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="364"/>
+        <location filename="../src/server/commands/QcAccessList.cpp" line="376"/>
         <source>You are banned from this world: %1</source>
         <translation>Du bist in dieser Welt gesperrt: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="367"/>
+        <location filename="../src/server/commands/QcAccessList.cpp" line="379"/>
         <source>You are not on the whitelist of this world</source>
         <translation>Du stehst nicht auf der Whitelist dieser Welt</translation>
     </message>
@@ -4005,135 +4150,135 @@
         <translation>Die Datei kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="89"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="103"/>
         <source>Not a texture file (expected &lt;name&gt;.png or &lt;name&gt;.json with a-z, 0-9, _, - and .)</source>
         <translation>Keine Texturdatei (erwartet &lt;name&gt;.png oder &lt;name&gt;.json mit a-z, 0-9, _, - und .)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="96"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="125"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="110"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="141"/>
         <source>More than %1 entries; the rest was not read</source>
         <translation>Mehr als %1 Einträge; der Rest wurde nicht gelesen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="109"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="124"/>
         <source>Expected a folder &apos;textures&apos; (links are not followed)</source>
         <translation>Erwartet wird ein Ordner „textures“ (Verknüpfungen werden nicht verfolgt)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="118"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="132"/>
         <source>Expected a namespace folder such as textures/qtcraft</source>
         <translation>Erwartet wird ein Namensraum-Ordner wie textures/qtcraft</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="140"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="236"/>
         <source>… and %1 more problems</source>
         <translation>… und %1 weitere Probleme</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="153"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="157"/>
         <source>Not a valid JSON object</source>
         <translation>Kein gültiges JSON-Objekt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="162"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="166"/>
         <source>Invalid procedural texture: %1</source>
         <translation>Ungültige prozedurale Textur: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="190"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="214"/>
         <source>Skipped: the pack&apos;s images exceed the memory budget of %1 MiB</source>
         <translation>Übersprungen: Die Bilder des Pakets überschreiten das Speicherbudget von %1 MiB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="196"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="220"/>
         <source>Has %1 animation frames; textures are not animated yet, the first frame is used</source>
         <translation>Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="214"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="283"/>
         <source>The preview image is missing</source>
         <translation>Das Vorschaubild fehlt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="219"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="229"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="288"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="298"/>
         <source>The preview must be a PNG of at most 512 x 512 pixels</source>
         <translation>Die Vorschau muss ein PNG mit höchstens 512 × 512 Pixeln sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="240"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="309"/>
         <source>The pack has no manifest</source>
         <translation>Das Paket hat kein Manifest</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="266"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="254"/>
         <source>More than %1 texture files; the rest was skipped</source>
         <translation>Mehr als %1 Texturdateien; der Rest wurde übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="287"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="328"/>
         <source>Not a PNG image</source>
         <translation>Kein PNG-Bild</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="295"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="308"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="336"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="349"/>
         <source>The image is damaged and cannot be decoded</source>
         <translation>Das Bild ist beschädigt und kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="301"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="342"/>
         <source>The image is %1 x %2 pixels; this pack needs %3 x %3 (or a vertical strip of such frames)</source>
         <translation>Das Bild hat %1 × %2 Pixel; dieses Paket braucht %3 × %3 (oder einen senkrechten Streifen solcher Bilder)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="24"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="51"/>
         <source>&apos;%1&apos; in the manifest must be a text of at most %2 characters</source>
         <translation>„%1“ im Manifest muss ein Text mit höchstens %2 Zeichen sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="40"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="64"/>
         <source>&apos;credits&apos; in the manifest must be a list of at most %1 entries</source>
         <translation>„credits“ im Manifest muss eine Liste mit höchstens %1 Einträgen sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="48"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="73"/>
         <source>Every entry of &apos;credits&apos; must be an object</source>
         <translation>Jeder Eintrag in „credits“ muss ein Objekt sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="69"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="97"/>
         <source>&apos;resolution&apos; must be a power of two from %1 to %2</source>
         <translation>„resolution“ muss eine Zweierpotenz von %1 bis %2 sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="82"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="108"/>
         <source>Unsupported manifest format (expected &apos;format&apos;: %1)</source>
         <translation>Nicht unterstütztes Manifest-Format (erwartet „format“: %1)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="97"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="121"/>
         <source>&apos;preview&apos; must name a PNG file in the pack folder</source>
         <translation>„preview“ muss eine PNG-Datei im Paketordner nennen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="109"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="133"/>
         <source>The manifest is larger than %1 KiB</source>
         <translation>Das Manifest ist größer als %1 KiB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="117"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="141"/>
         <source>The manifest is not a valid JSON object</source>
         <translation>Das Manifest ist kein gültiges JSON-Objekt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="129"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="156"/>
         <source>The manifest needs a &apos;name&apos;</source>
         <translation>Das Manifest braucht einen „name“</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="106"/>
+        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="109"/>
         <source>Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit the GPU texture size and the memory budget</source>
         <translation>Texturen werden mit %1x statt %2x gezeigt: Das Spiel nutzt höchstens 256x, und der Atlas muss in die Texturgrenze der GPU und das Speicherbudget passen</translation>
     </message>
@@ -4192,7 +4337,7 @@
 <context>
     <name>QcWorldLibraryController</name>
     <message>
-        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="55"/>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="60"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
@@ -4200,52 +4345,52 @@
 <context>
     <name>QcWorldStarter</name>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="27"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="26"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="43"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="42"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the creatures, items and armour stands saved in it.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sich die Welt ohne die darin gespeicherten Wesen, Gegenstände und Rüstungsständer öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="47"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="46"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the contents of the chests and machines saved in it.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sich die Welt ohne die darin gespeicherten Inhalte der Truhen und Maschinen öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="51"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="50"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open with the chunks saved in it generated anew; their changes are lost.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sie die Welt öffnen, mit den darin gespeicherten Chunks neu erzeugt; ihre Änderungen gehen verloren.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="55"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="54"/>
         <source>The last save of this world broke off and cannot be finished. Removing %1 and every file ending in .next from the world folder lets the world open as it was saved the time before.</source>
         <translation>Das letzte Speichern dieser Welt brach ab und lässt sich nicht beenden. Werden %1 und alle Dateien mit der Endung .next aus dem Weltordner entfernt, öffnet sich die Welt so, wie sie davor gespeichert wurde.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="85"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="72"/>
         <source>Cannot start the world: %1</source>
         <translation>Die Welt kann nicht gestartet werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="95"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="77"/>
         <source>Cannot load the world: it was made by the unknown world type &apos;%1&apos;</source>
         <translation>Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="100"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="85"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="111"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="96"/>
         <source>It is already open in another QtCraft window or process. Close it there first.</source>
         <translation>Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="114"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="99"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
@@ -4253,27 +4398,32 @@
 <context>
     <name>RecentServerRow</name>
     <message>
-        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="56"/>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="22"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="58"/>
         <source>%1 · last joined %2</source>
         <translation>%1 · zuletzt beigetreten %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="57"/>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="59"/>
         <source>last joined %1</source>
         <translation>zuletzt beigetreten %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="64"/>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="66"/>
         <source>Join</source>
         <translation>Beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="72"/>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="74"/>
         <source>Remove %1 from the list</source>
         <translation>%1 aus der Liste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="77"/>
+        <location filename="../src/app/qml/menus/RecentServerRow.qml" line="79"/>
         <source>Remove from the list</source>
         <translation>Aus der Liste entfernen</translation>
     </message>
@@ -4281,32 +4431,33 @@
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="50"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="51"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="63"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="64"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="66"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="67"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="73"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="74"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="109"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="110"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="115"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="124"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="126"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -4314,22 +4465,24 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="128"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="130"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="135"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="164"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="168"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="173"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="181"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="186"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
@@ -4338,101 +4491,131 @@
         <translation type="vanished">Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="188"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="193"/>
         <source>Show labels in the world (%1)</source>
         <translation>Beschriftungen in der Welt anzeigen (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="201"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="206"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="211"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="160"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="213"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="229"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="245"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="261"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="164"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="219"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="236"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="253"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="270"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="333"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="334"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="335"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="336"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="337"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="338"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="344"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="70"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="71"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="77"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="78"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="146"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="149"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="155"/>
         <source>FOV effects</source>
         <translation>Sichtfeld-Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="195"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="200"/>
         <source>Hiding the HUD (%1) hides the hand too</source>
         <translation>Anzeige ausblenden (%1) blendet auch die Hand aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="217"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="223"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="228"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="233"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="240"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="245"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="249"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="257"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="262"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="266"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="275"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="272"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="281"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="286"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="282"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="292"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="283"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="293"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="284"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="294"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="290"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="300"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="305"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="301"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="312"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="311"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="321"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="327"/>
+        <source>Interface size</source>
+        <translation>Größe der Oberfläche</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="332"/>
+        <source>Auto</source>
+        <translation>Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="353"/>
+        <source>Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.</source>
+        <translation>Bildschirme erscheinen in diesem Fenster mit %1 %, die Anzeige im Spiel mit %2 %. Ein größeres Fenster zeigt sie größer.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="362"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="339"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="390"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
@@ -4454,42 +4637,47 @@
         <translation type="vanished">%1 (%2x)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="104"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="63"/>
+        <source>Texture packs</source>
+        <translation>Texturpakete</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="105"/>
         <source>(%1x)</source>
         <translation>(%1x)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="120"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="121"/>
         <source>Built in</source>
         <translation>Eingebaut</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="120"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="121"/>
         <source>From a mod</source>
         <translation>Aus einem Mod</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="120"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="121"/>
         <source>Own pack</source>
         <translation>Eigenes Paket</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="120"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="121"/>
         <source>Licence: %1</source>
         <translation>Lizenz: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="129"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="130"/>
         <source>Credits: %1</source>
         <translation>Mitwirkende: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="138"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="139"/>
         <source>Cannot be used: %1</source>
         <translation>Nicht nutzbar: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="147"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="148"/>
         <source>%n file(s) skipped or changed:</source>
         <translation>
             <numerusform>%n Datei übersprungen oder angepasst:</numerusform>
@@ -4497,22 +4685,29 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="162"/>
+        <source>Use %1</source>
+        <translation>%1 verwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="173"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="179"/>
         <source>Higher priority</source>
         <translation>Höherer Vorrang</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="186"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="184"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="190"/>
         <source>Lower priority</source>
         <translation>Niedrigerer Vorrang</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="199"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="203"/>
         <source>Open texture pack folder</source>
         <translation>Texturpaket-Ordner öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="203"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="207"/>
         <source>Reload</source>
         <translation>Neu laden</translation>
     </message>
@@ -4520,22 +4715,49 @@
 <context>
     <name>TradeScreen</name>
     <message>
-        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="95"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="36"/>
+        <source>%1 × %2</source>
+        <translation>%1 × %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="37"/>
+        <source>%1 for %2</source>
+        <translation>%1 für %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="52"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="107"/>
         <source>sold out</source>
         <translation>ausverkauft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="121"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="52"/>
+        <source>%1 of %2 trades left</source>
+        <translation>noch %1 von %2 Tauschen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="133"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="141"/>
         <source>Offers</source>
         <translation>Angebote</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="145"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="158"/>
         <source>%1 – %2</source>
         <translation>%1 – %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="221"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="213"/>
+        <source>Trade: %1</source>
+        <translation>Tauschen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="213"/>
+        <source>No offer chosen</source>
+        <translation>Kein Angebot gewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="237"/>
         <source>Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.</source>
         <translation>Wähle links ein Angebot. %1 auf dem Ergebnis handelt einmal, %2 so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz auf. %3 schließt.</translation>
     </message>
@@ -4544,7 +4766,7 @@
         <translation type="vanished">Links ein Angebot wählen. A auf dem Ergebnis handelt einmal, Y so oft, wie du bezahlen kannst. Der Dorfbewohner füllt an seinem Arbeitsplatz nach. B schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="223"/>
+        <location filename="../src/app/qml/inventory/TradeScreen.qml" line="239"/>
         <source>Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.</source>
         <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
     </message>

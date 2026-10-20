@@ -14,7 +14,7 @@ SlotScreen {
     readonly property int gridFirst: 36
     // Small windows (from the minimum 1024 x 640 on): a smaller preview and recipe list, so the
     // panel keeps its margin to the window's edges.
-    readonly property bool narrow: width < 1200
+    readonly property bool narrow: width < Ui.px(1200)
 
     resultSlot: 45
     panelContent: content
@@ -23,18 +23,18 @@ SlotScreen {
         id: content
 
         anchors.centerIn: parent
-        spacing: screen.narrow ? 16 : 28
+        spacing: Ui.px(screen.narrow ? 16 : 28)
 
         // The character as others see it, the armour slots (head to feet) beside it and the armour
         // points below them (decision E-234).
         RowLayout {
             Layout.alignment: Qt.AlignTop
-            spacing: 8
+            spacing: Ui.px(8)
 
             ColumnLayout {
                 objectName: "equipmentColumn"
                 Layout.alignment: Qt.AlignTop
-                spacing: 2
+                spacing: Ui.px(2)
 
                 Repeater {
                     model: SlotRange {
@@ -58,20 +58,20 @@ SlotScreen {
                     Layout.alignment: Qt.AlignHCenter
                     text: qsTr("Armour: %1").arg(screen.game.player.armour)
                     color: Theme.text
-                    font.pixelSize: 15
+                    font.pixelSize: Ui.px(15)
                 }
             }
 
             Rectangle {
-                Layout.preferredWidth: screen.narrow ? 120 : 160
-                Layout.preferredHeight: screen.narrow ? 200 : 260
-                radius: 4
+                Layout.preferredWidth: Ui.px(screen.narrow ? 120 : 160)
+                Layout.preferredHeight: Ui.px(screen.narrow ? 200 : 260)
+                radius: Ui.px(4)
                 color: Theme.panelRaised
 
                 CharacterPreviewHost {
                     previewName: "inventoryPreview"
                     anchors.fill: parent
-                    anchors.margins: 2
+                    anchors.margins: Ui.px(2)
                     source: screen.game.preview
                     paused: screen.game.handbook.isOpen
                 }
@@ -79,10 +79,10 @@ SlotScreen {
         }
 
         ColumnLayout {
-            spacing: 12
+            spacing: Ui.px(12)
 
             RowLayout {
-                spacing: 16
+                spacing: Ui.px(16)
 
                 // Creative mode: back to the item catalogue.
                 Button {
@@ -96,14 +96,14 @@ SlotScreen {
                     Layout.fillWidth: true
                     text: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")
                     color: Theme.text
-                    font.pixelSize: 24
+                    font.pixelSize: Ui.px(24)
                     font.bold: true
                 }
 
                 GridLayout {
                     columns: screen.game.player.craftingSize
-                    rowSpacing: 2
-                    columnSpacing: 2
+                    rowSpacing: Ui.px(2)
+                    columnSpacing: Ui.px(2)
 
                     Repeater {
                         model: SlotRange {
@@ -125,7 +125,7 @@ SlotScreen {
                 Label {
                     text: "→"
                     color: Theme.text
-                    font.pixelSize: 28
+                    font.pixelSize: Ui.px(28)
                 }
 
                 Repeater {
@@ -146,7 +146,7 @@ SlotScreen {
             }
 
             Label {
-                Layout.maximumWidth: 9 * 54
+                Layout.maximumWidth: Ui.px(9 * 54)
                 wrapMode: Text.Wrap
                 text: screen.game.gamepad.active ? qsTr("%1: pick up and put down. %2: put down one. %3: move the stack across (on the result: craft as many as possible). %4 closes.")
                         .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
@@ -156,21 +156,23 @@ SlotScreen {
         }
 
         ColumnLayout {
-            Layout.preferredWidth: screen.narrow ? 200 : 260
+            Layout.preferredWidth: Ui.px(screen.narrow ? 200 : 260)
             Layout.fillHeight: true
-            spacing: 6
+            spacing: Ui.px(6)
 
             Label {
                 text: qsTr("Can craft now")
                 color: Theme.text
-                font.pixelSize: 18
+                font.pixelSize: Ui.px(18)
             }
 
             ListView {
+                objectName: "craftableRecipes"
+                Accessible.name: qsTr("Can craft now")
                 Layout.fillWidth: true
-                Layout.preferredHeight: 360
+                Layout.preferredHeight: Ui.px(360)
                 clip: true
-                spacing: 2
+                spacing: Ui.px(2)
                 model: screen.game.player.craftableRecipes
 
                 Label {

@@ -14,10 +14,12 @@ Rectangle {
     signal joinRequested(string address)
     signal removeRequested(string address)
 
-    height: 56
+    height: Ui.px(56)
     activeFocusOnTab: true
-    radius: 4
+    radius: Ui.px(4)
     color: hover.hovered ? Theme.rowHighlight : Theme.scrim
+    Accessible.role: Accessible.ListItem
+    Accessible.name: row.modelData.name.length > 0 ? qsTr("%1 (%2)").arg(row.modelData.name).arg(row.modelData.address) : row.modelData.address
 
     HoverHandler {
         id: hover
@@ -30,12 +32,12 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 8
-        spacing: 8
+        anchors.margins: Ui.px(8)
+        spacing: Ui.px(8)
 
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 2
+            spacing: Ui.px(2)
 
             Label {
                 Layout.fillWidth: true

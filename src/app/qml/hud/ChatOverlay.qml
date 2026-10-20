@@ -21,10 +21,11 @@ Item {
     TextField {
         id: input
 
+        Accessible.name: qsTr("Chat")
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 12
+        anchors.margins: Ui.hudPx(12)
         placeholderText: overlay.game.gamepad.active ? qsTr("Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels").arg(overlay.game.gamepad.pads.texts.start).arg(overlay.game.gamepad.pads.texts.east)
                                                    : qsTr("Chat or /command (e.g. /help), Enter to send, Esc to cancel")
         Keys.onEscapePressed: overlay.game.overlay = GameController.Overlay.None

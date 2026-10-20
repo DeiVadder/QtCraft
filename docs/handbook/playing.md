@@ -75,6 +75,10 @@ You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you 
 
 In the inventory, furnace and chest screens a left click picks a stack up and puts it down (merging or swapping), a right click puts down a single item. The list on the right of the inventory crafts recipes directly.
 
+**Interface size**
+
+**Settings → General → Interface size** makes the HUD and every screen larger or smaller: 75 % to 200 % in steps of 25, or *Auto*, which picks the size from the window (a window of 1920 × 1080 gives 150 %, 2560 × 1440 gives 200 %). A screen never grows beyond the window: in a small window the screens stay as large as fits, and the number next to the choice shows the size in use; the HUD needs less room and may grow further. Screen readers find every button, slider, list and slot by its name (a slot by its item and count).
+
 **Photo mode**
 
 **P / F6** hides the HUD: the crosshair, the hotbar, the hearts, the chat lines, the labels and the outline of the block you look at, and the hand as well unless you switch that off under Settings → General. Press it again to show everything. **K / F2** saves a picture of the window as a PNG file in the folder *screenshots* next to your worlds, named after the date and time; a short notice tells you its name. On a gamepad hold **Back** and press the upper face button for a screenshot or the left face button to hide the HUD; the player list shows meanwhile, and the two buttons do nothing else.

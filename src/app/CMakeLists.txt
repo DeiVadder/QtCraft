@@ -28,6 +28,7 @@ target_sources(qc_app_core PRIVATE
     debug/QcGraphItem.h debug/QcGraphItem.cpp
 )
 target_sources(qc_app_core PRIVATE
+    hooks/QcAccessibilityCheck.h hooks/QcAccessibilityCheck.cpp
     hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
@@ -59,6 +60,7 @@ target_sources(qc_app_core PRIVATE
     models/QcItemIconUrls.h models/QcItemIconUrls.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
+    models/QcUiScaling.h models/QcUiScaling.cpp
     models/QcUiTheme.h
     models/QcWorldLabelModel.h models/QcWorldLabelModel.cpp
 )
@@ -120,7 +122,15 @@ target_include_directories(qc_app_core_headers INTERFACE ${PROJECT_SOURCE_DIR}/s
 target_link_libraries(qc_app_core PUBLIC
     qc_app_core_headers qc_common qc_worlds qc_clientcore qc_audio
     Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
+# The accessibility check of screenshot runs reads the Accessible attached properties
+# (QcAccessibilityCheck, E-725). The public QAccessible::queryAccessibleInterface() is no substitute
+# in Qt 6.8: without an active platform accessibility (offscreen runs, no screen reader) it returns
+# no interface, and after QAccessible::setActive(true) it reports every item invisible with an
+# empty name; Accessible.ignored is not exposed publicly at all.
+target_link_libraries(qc_app_core PRIVATE Qt::QuickPrivate)
 
+# The sizes of the UI at the player's scale (decision E-725), one instance for every screen.
+set_source_files_properties(qml/controls/Ui.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 qt_add_qml_module(qc_app_core
     URI QtCraft
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
@@ -134,6 +144,8 @@ qt_add_qml_module(qc_app_core
         qml/controls/LazyScreen.qml
         qml/controls/ThemedScrollBar.qml
         qml/controls/ThemedToolTip.qml
+        qml/controls/Ui.qml
+        qml/controls/WindowFont.qml
         qml/gamepad/FocusRing.qml
         qml/gamepad/HotbarRadial.qml
         qml/gamepad/OnScreenKeyboard.qml

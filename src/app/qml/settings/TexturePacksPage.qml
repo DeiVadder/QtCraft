@@ -14,7 +14,7 @@ ColumnLayout {
     required property GameController game
     readonly property var packs: page.game.settings.texturePacks
 
-    spacing: 8
+    spacing: Ui.px(8)
 
     Label {
 
@@ -60,11 +60,12 @@ ColumnLayout {
         id: packList
 
         objectName: "texturePackList"
+        Accessible.name: qsTr("Texture packs")
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Layout.minimumHeight: 200
+        Layout.minimumHeight: Ui.px(200)
         clip: true
-        spacing: 6
+        spacing: Ui.px(6)
         model: page.packs.packs
         ScrollBar.vertical: ThemedScrollBar {}
 
@@ -75,15 +76,15 @@ ColumnLayout {
             required property int index
 
             // A gutter on the right for the scroll bar.
-            width: ListView.view.width - 14
+            width: ListView.view.width - Ui.px(14)
 
             RowLayout {
                 anchors.fill: parent
-                spacing: 10
+                spacing: Ui.px(10)
 
                 Image {
-                    Layout.preferredWidth: 96
-                    Layout.preferredHeight: 48
+                    Layout.preferredWidth: Ui.px(96)
+                    Layout.preferredHeight: Ui.px(48)
                     Layout.alignment: Qt.AlignTop
                     source: packRow.modelData.preview
                     sourceSize: Qt.size(96, 48)
@@ -93,7 +94,7 @@ ColumnLayout {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 2
+                    spacing: Ui.px(2)
 
                     Label {
 
@@ -154,20 +155,22 @@ ColumnLayout {
 
                 ColumnLayout {
                     Layout.alignment: Qt.AlignTop
-                    spacing: 2
+                    spacing: Ui.px(2)
 
                     Switch {
                         objectName: "texturePackSwitch_" + packRow.modelData.id
+                        Accessible.name: qsTr("Use %1").arg(packRow.modelData.name)
                         enabled: packRow.modelData.error.length === 0
                         checked: packRow.modelData.active
                         onToggled: page.packs.setActive(packRow.modelData.id, checked)
                     }
                     RowLayout {
                         visible: packRow.modelData.active
-                        spacing: 2
+                        spacing: Ui.px(2)
 
                         Button {
                             text: "▲"
+                            Accessible.name: qsTr("Higher priority")
                             enabled: packRow.index > 0
                             onClicked: page.packs.move(packRow.modelData.id, -1)
 
@@ -178,6 +181,7 @@ ColumnLayout {
                         }
                         Button {
                             text: "▼"
+                            Accessible.name: qsTr("Lower priority")
                             enabled: packRow.index + 1 < page.packs.packs.length && page.packs.packs[packRow.index + 1].active
                             onClicked: page.packs.move(packRow.modelData.id, 1)
 

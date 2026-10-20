@@ -20,22 +20,22 @@ SlotScreen {
         id: content
 
         anchors.centerIn: parent
-        spacing: 12
+        spacing: Ui.px(12)
 
         Label {
             textFormat: Text.PlainText
             text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
             color: Theme.text
-            font.pixelSize: 24
+            font.pixelSize: Ui.px(24)
             font.bold: true
         }
 
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 24
+            spacing: Ui.px(24)
 
             ColumnLayout {
-                spacing: 6
+                spacing: Ui.px(6)
 
                 Repeater {
                     model: SlotRange {
@@ -54,17 +54,17 @@ SlotScreen {
                 Rectangle {
                     objectName: "flame"
                     Layout.alignment: Qt.AlignHCenter
-                    implicitWidth: 26
-                    implicitHeight: 26
-                    radius: 4
+                    implicitWidth: Ui.px(26)
+                    implicitHeight: Ui.px(26)
+                    radius: Ui.px(4)
                     color: Theme.slotBorder
 
                     Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: parent.width - 6
-                        height: (parent.height - 4) * screen.game.player.machineBurn
-                        radius: 3
+                        width: parent.width - Ui.px(6)
+                        height: (parent.height - Ui.px(4)) * screen.game.player.machineBurn
+                        radius: Ui.px(3)
                         gradient: Gradient {
                             GradientStop {
                                 position: 0
@@ -95,15 +95,15 @@ SlotScreen {
             // The arrow fills while the current item is worked on.
             Item {
                 objectName: "progressArrow"
-                implicitWidth: 72
-                implicitHeight: 28
+                implicitWidth: Ui.px(72)
+                implicitHeight: Ui.px(28)
 
                 Rectangle {
                     id: shaft
 
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 52
-                    height: 10
+                    width: Ui.px(52)
+                    height: Ui.px(10)
                     color: Theme.slotBorder
 
                     Rectangle {
@@ -118,7 +118,7 @@ SlotScreen {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "▶"
                     color: screen.game.player.machineProgress > 0 ? Theme.text : Theme.textMuted
-                    font.pixelSize: 20
+                    font.pixelSize: Ui.px(20)
                 }
             }
 
@@ -140,7 +140,7 @@ SlotScreen {
         }
 
         Label {
-            Layout.maximumWidth: 9 * 54
+            Layout.maximumWidth: Ui.px(9 * 54)
             wrapMode: Text.Wrap
             text: screen.game.gamepad.active ? qsTr("Put something to smelt on top and fuel below. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.")
                     .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)

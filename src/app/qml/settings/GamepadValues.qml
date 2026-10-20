@@ -12,8 +12,8 @@ GridLayout {
     required property GamepadOptions options
 
     columns: 3
-    columnSpacing: 12
-    rowSpacing: 10
+    columnSpacing: Ui.px(12)
+    rowSpacing: Ui.px(10)
     enabled: options.editable
 
     Label {
@@ -23,6 +23,7 @@ GridLayout {
         id: lookSpeed
 
         objectName: "padLookSpeed"
+        Accessible.name: qsTr("Look speed")
         Layout.fillWidth: true
         from: 30
         to: 720
@@ -31,7 +32,7 @@ GridLayout {
         onMoved: values.options.lookSpeed = value
     }
     Label {
-        Layout.preferredWidth: 90
+        Layout.preferredWidth: Ui.px(90)
         text: qsTr("%1°/s").arg(Math.round(lookSpeed.value))
     }
 
@@ -48,6 +49,7 @@ GridLayout {
     Slider {
         id: deadZone
 
+        Accessible.name: qsTr("Stick dead zone")
         Layout.fillWidth: true
         from: 0
         to: 0.5
@@ -66,6 +68,7 @@ GridLayout {
     Slider {
         id: curve
 
+        Accessible.name: qsTr("Response curve")
         Layout.fillWidth: true
         from: 0.5
         to: 3
@@ -83,6 +86,7 @@ GridLayout {
     Slider {
         id: triggerDeadZone
 
+        Accessible.name: qsTr("Trigger dead zone")
         Layout.fillWidth: true
         from: 0
         to: 0.5
@@ -101,6 +105,7 @@ GridLayout {
         id: triggerThreshold
 
         objectName: "padTriggerThreshold"
+        Accessible.name: qsTr("Trigger acts at")
         Layout.fillWidth: true
         from: 0.1
         to: 0.9

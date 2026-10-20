@@ -6,6 +6,7 @@
 #include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcDebugSettings.h"
 #include "app/input/QcKeyControlsForeign.h"
+#include "app/models/QcUiScaling.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/settings/QcGameSettings.h"
 
@@ -18,7 +19,7 @@ class QcWorldLibraryController;
 struct QcSessionParts;
 
 // The player's settings (GameController.settings), stored in a file below the data root
-// (QTCRAFT_DATA_DIR in tests): view distance, field of view and its effects, mouse, labels, language, camera mode
+// (QTCRAFT_DATA_DIR in tests): view distance, field of view and its effects, mouse, labels, language, UI scale, camera mode
 // and keys, with the volumes, the character's look and the debug display as their own objects. The accessors
 // are the QML properties of this one responsibility.
 class QcSettingsController : public QObject
@@ -40,6 +41,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
     Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
+    // Size of the HUD and the screens (decision E-725): UiScaling.Step.Auto or Percent75 … Percent200.
+    Q_PROPERTY(QcUiScaling::Step uiScale READ uiScale WRITE setUiScale NOTIFY settingsChanged FINAL)
     // The player's keys.
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
@@ -94,6 +97,8 @@ public:
     void setCameraMode(CameraMode mode);
     QcCameraMode cameraModeValue() const { return m_cameraMode; }
     void setCameraModeValue(QcCameraMode mode);
+    QcUiScaling::Step uiScale() const { return QcUiScaling::fromValue(m_uiScale); }
+    void setUiScale(QcUiScaling::Step step);
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcCharacterSettings *character() const { return m_character; }
@@ -127,6 +132,7 @@ private:
     bool m_photoHidesHand = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
+    QcUiScale::Step m_uiScale = QcUiScale::defaultStep;
     QString m_contentLanguage = QStringLiteral("en");
     QcGameSettings m_storedSettings;
     int m_commandLineViewDistance = 0;

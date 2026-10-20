@@ -18,9 +18,9 @@ Item {
                                     pink: Theme.padPink })[symbol.colour ?? ""] ?? Theme.text
     // Shoulders, triggers and words are wider than a disc.
     readonly property bool wide: shape === "shoulder" || shape === "trigger" || (shape === "label" && label.length > 1)
-    property real size: 22
+    property real size: Ui.px(22)
 
-    implicitWidth: wide ? Math.max(size * 1.5, text.implicitWidth + 10) : size
+    implicitWidth: wide ? Math.max(size * 1.5, text.implicitWidth + Ui.px(10)) : size
     implicitHeight: size
 
     Canvas {

@@ -37,7 +37,7 @@ Loader {
         background: Rectangle {
             color: Theme.tooltipBackground
             border.color: Theme.panelBorder
-            radius: 3
+            radius: Ui.px(3)
         }
     }
 }

@@ -31,6 +31,12 @@ SlotScreen {
 
     panelContent: content
 
+    // An offer as a screen reader reads it (decision E-725): "1 × Iron Sword for 2 × Emerald".
+    function offerText(offer: var): string {
+        const stack = item => item.count > 1 ? qsTr("%1 × %2").arg(item.count).arg(item.label) : item.label;
+        return qsTr("%1 for %2").arg(stack(offer.result)).arg(offer.costs.map(stack).join(", "));
+    }
+
     component OfferRow: Rectangle {
         id: row
 
@@ -41,18 +47,22 @@ SlotScreen {
 
         objectName: "offer" + index
         activeFocusOnTab: true
-        implicitWidth: 260
-        implicitHeight: 40
-        radius: 4
+        Accessible.role: Accessible.ListItem
+        Accessible.name: screen.offerText(offer)
+        Accessible.description: offer.soldOut ? qsTr("sold out") : qsTr("%1 of %2 trades left").arg(offer.maxUses - offer.uses).arg(offer.maxUses)
+        Accessible.selected: screen.trade.selected === index
+        implicitWidth: Ui.px(260)
+        implicitHeight: Ui.px(40)
+        radius: Ui.px(4)
         color: screen.trade.selected === index ? Theme.rowHighlight : (rowArea.containsMouse ? Theme.slotHover : Theme.slot)
         border.color: screen.trade.selected === index ? Theme.selection : Theme.slotBorder
         opacity: offer.soldOut ? 0.5 : 1.0
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 6
-            anchors.rightMargin: 8
-            spacing: 4
+            anchors.leftMargin: Ui.px(6)
+            anchors.rightMargin: Ui.px(8)
+            spacing: Ui.px(4)
 
             Repeater {
                 model: row.offer.costs
@@ -62,9 +72,10 @@ SlotScreen {
                     activeFocusOnTab: false
                     required property var modelData
 
-                    implicitWidth: 34
-                    implicitHeight: 34
+                    implicitWidth: Ui.px(34)
+                    implicitHeight: Ui.px(34)
                     slotIcon: modelData.icon
+                    slotLabel: modelData.label
                     slotCount: modelData.count
                     slotEmpty: modelData.icon.length === 0
                     enabled: false
@@ -79,9 +90,10 @@ SlotScreen {
             ItemSlot {
                 // A picture of the trade; the row or the result takes the pad's focus.
                 activeFocusOnTab: false
-                implicitWidth: 34
-                implicitHeight: 34
+                implicitWidth: Ui.px(34)
+                implicitHeight: Ui.px(34)
                 slotIcon: row.offer.result.icon
+                slotLabel: row.offer.result.label
                 slotCount: row.offer.result.count
                 slotEmpty: row.offer.result.icon.length === 0
                 enabled: false
@@ -94,7 +106,7 @@ SlotScreen {
             Label {
                 text: row.offer.soldOut ? qsTr("sold out") : (row.offer.maxUses - row.offer.uses) + "/" + row.offer.maxUses
                 color: Theme.textSecondary
-                font.pixelSize: 12
+                font.pixelSize: Ui.px(12)
             }
         }
 
@@ -111,25 +123,26 @@ SlotScreen {
         id: content
 
         anchors.centerIn: parent
-        spacing: 20
+        spacing: Ui.px(20)
 
         ColumnLayout {
             Layout.alignment: Qt.AlignTop
-            spacing: 6
+            spacing: Ui.px(6)
 
             Label {
                 text: qsTr("Offers")
                 color: Theme.heading
-                font.pixelSize: 18
+                font.pixelSize: Ui.px(18)
                 font.bold: true
             }
 
             ListView {
                 objectName: "offers"
-                implicitWidth: 260
-                implicitHeight: Math.min(contentHeight, 9 * 44)
+                Accessible.name: qsTr("Offers")
+                implicitWidth: Ui.px(260)
+                implicitHeight: Math.min(contentHeight, Ui.px(9 * 44))
                 clip: true
-                spacing: 4
+                spacing: Ui.px(4)
                 model: screen.trade.offers.length
                 delegate: OfferRow {}
                 ScrollBar.vertical: ThemedScrollBar {}
@@ -137,14 +150,14 @@ SlotScreen {
         }
 
         ColumnLayout {
-            spacing: 12
+            spacing: Ui.px(12)
 
             Label {
                 objectName: "villagerTitle"
                 textFormat: Text.PlainText
                 text: qsTr("%1 – %2").arg(screen.trade.profession).arg(screen.trade.levelName)
                 color: Theme.text
-                font.pixelSize: 24
+                font.pixelSize: Ui.px(24)
                 font.bold: true
             }
 
@@ -152,8 +165,8 @@ SlotScreen {
             Rectangle {
                 objectName: "levelBar"
                 Layout.fillWidth: true
-                implicitHeight: 8
-                radius: 3
+                implicitHeight: Ui.px(8)
+                radius: Ui.px(3)
                 color: Theme.slotBorder
 
                 Rectangle {
@@ -161,7 +174,7 @@ SlotScreen {
                     height: parent.height - 2
                     x: 1
                     y: 1
-                    radius: 2
+                    radius: Ui.px(2)
                     color: Theme.experience
                 }
             }
@@ -169,7 +182,7 @@ SlotScreen {
             RowLayout {
                 objectName: "chosenOffer"
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 12
+                spacing: Ui.px(12)
                 visible: screen.chosen !== null
 
                 Repeater {
@@ -181,6 +194,7 @@ SlotScreen {
                         required property var modelData
 
                         slotIcon: modelData.icon
+                        slotLabel: modelData.label
                         slotCount: modelData.count
                         slotEmpty: modelData.icon.length === 0
                         enabled: false
@@ -190,11 +204,13 @@ SlotScreen {
                 Label {
                     text: "▶"
                     color: screen.chosen && screen.chosen.affordable && !screen.chosen.soldOut ? Theme.text : Theme.textMuted
-                    font.pixelSize: 22
+                    font.pixelSize: Ui.px(22)
                 }
 
                 ItemSlot {
                     objectName: "tradeResult"
+                    slotLabel: screen.chosen ? screen.chosen.result.label : ""
+                    Accessible.name: screen.chosen ? qsTr("Trade: %1").arg(screen.offerText(screen.chosen)) : qsTr("No offer chosen")
                     slotIcon: screen.chosen ? screen.chosen.result.icon : ""
                     slotCount: screen.chosen ? screen.chosen.result.count : 0
                     slotEmpty: !screen.chosen
@@ -216,7 +232,7 @@ SlotScreen {
             }
 
             Label {
-                Layout.maximumWidth: 9 * 54
+                Layout.maximumWidth: Ui.px(9 * 54)
                 wrapMode: Text.Wrap
                 text: screen.game.gamepad.active ? qsTr("Choose an offer on the left. %1 on the result trades once, %2 trades as often as you can pay. The villager restocks at its workstation. %3 closes.")
                       .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)

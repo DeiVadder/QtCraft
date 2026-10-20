@@ -27,12 +27,12 @@ Popup {
         capeBox.currentIndex = capeBox.indexOfValue(character.look.cape);
     }
 
-    x: 32
+    x: Ui.px(32)
     y: (parent.height - height) / 2
-    width: Math.min(parent.width - 64, 940)
+    width: Math.min(parent.width - Ui.px(64), Ui.px(940))
     modal: true
     focus: true
-    padding: 20
+    padding: Ui.px(20)
 
     onAboutToShow: showStoredLook()
     onClosed: game.settings.saveSettings()
@@ -56,10 +56,10 @@ Popup {
         required property var colors
 
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Ui.px(6)
 
         Label {
-            Layout.preferredWidth: 110
+            Layout.preferredWidth: Ui.px(110)
             text: row.label
         }
         Repeater {
@@ -81,11 +81,11 @@ Popup {
                         next.forceActiveFocus(Qt.TabFocusReason);
                 }
 
-                width: 28
-                height: 28
-                radius: 4
+                width: Ui.px(28)
+                height: Ui.px(28)
+                radius: Ui.px(4)
                 color: modelData
-                border.width: chosen ? 3 : 2
+                border.width: Ui.px(chosen ? 3 : 2)
                 border.color: chosen ? Theme.heading : Theme.swatchBorder
                 activeFocusOnTab: true
                 Accessible.role: Accessible.RadioButton
@@ -100,10 +100,10 @@ Popup {
                 // Focus ring outside the edge.
                 Rectangle {
                     anchors.fill: parent
-                    anchors.margins: -4
-                    radius: 6
+                    anchors.margins: Ui.px(-4)
+                    radius: Ui.px(6)
                     color: Theme.clear
-                    border.width: 2
+                    border.width: Ui.px(2)
                     border.color: Theme.link
                     visible: swatch.activeFocus
                 }
@@ -121,7 +121,7 @@ Popup {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 20
+        spacing: Ui.px(20)
 
         ColumnLayout {
             Layout.fillWidth: true
@@ -130,26 +130,27 @@ Popup {
             // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
             Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                       && event.key !== Qt.Key_Backtab
-            spacing: 10
+            spacing: Ui.px(10)
 
             Label {
                 text: qsTr("Character")
-                font.pixelSize: 24
+                font.pixelSize: Ui.px(24)
                 font.bold: true
             }
 
             GridLayout {
                 Layout.fillWidth: true
                 columns: 2
-                columnSpacing: 12
+                columnSpacing: Ui.px(12)
 
                 Label {
-                    Layout.preferredWidth: 110
+                    Layout.preferredWidth: Ui.px(110)
                     text: qsTr("Outfit")
                 }
                 ComboBox {
                     id: outfitBox
 
+                    Accessible.name: qsTr("Outfit")
                     Layout.fillWidth: true
                     textRole: "label"
                     valueRole: "name"
@@ -163,6 +164,7 @@ Popup {
                 ComboBox {
                     id: hairBox
 
+                    Accessible.name: qsTr("Hair")
                     Layout.fillWidth: true
                     textRole: "label"
                     valueRole: "name"
@@ -176,6 +178,7 @@ Popup {
                 ComboBox {
                     id: capeBox
 
+                    Accessible.name: qsTr("Cape")
                     Layout.fillWidth: true
                     textRole: "label"
                     valueRole: "name"
@@ -240,9 +243,9 @@ Popup {
         }
 
         CharacterPreviewPanel {
-            Layout.preferredWidth: 300
+            Layout.preferredWidth: Ui.px(300)
             Layout.fillHeight: true
-            Layout.minimumHeight: 460
+            Layout.minimumHeight: Ui.px(460)
             game: screen.game
         }
     }

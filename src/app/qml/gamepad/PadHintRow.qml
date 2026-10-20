@@ -12,9 +12,10 @@ Row {
 
     required property GameController game
     property var entries: []
-    property int fontSize: 13
+    // Already scaled (Ui.px or Ui.hudPx, decision E-725); the symbols grow with it.
+    property int fontSize: Ui.px(13)
 
-    spacing: 14
+    spacing: Ui.px(14)
 
     Repeater {
         model: row.entries
@@ -24,11 +25,11 @@ Row {
 
             required property var modelData
 
-            spacing: 5
+            spacing: Ui.px(5)
 
             PadGlyph {
                 anchors.verticalCenter: parent.verticalCenter
-                size: row.fontSize + 7
+                size: Math.round(row.fontSize * 20 / 13)
                 symbol: row.game.gamepad.pads.glyph(row.game.gamepad.pads.family, entry.modelData.input)
             }
             Label {

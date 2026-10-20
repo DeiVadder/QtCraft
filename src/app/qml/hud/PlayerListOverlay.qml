@@ -16,10 +16,10 @@ Item {
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 48
-        width: Math.min(parent.width - 64, 420)
-        height: content.implicitHeight + 24
-        radius: 6
+        anchors.topMargin: Ui.hudPx(48)
+        width: Math.min(parent.width - Ui.hudPx(64), Ui.hudPx(420))
+        height: content.implicitHeight + Ui.hudPx(24)
+        radius: Ui.hudPx(6)
         color: Theme.hudBackdrop
         border.color: Theme.panelBorder
 
@@ -29,15 +29,15 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.margins: 12
-            spacing: 4
+            anchors.margins: Ui.hudPx(12)
+            spacing: Ui.hudPx(4)
 
             Label {
                 Layout.fillWidth: true
                 textFormat: Text.PlainText
                 text: overlay.game.multiplayer.players.serverName
                 color: Theme.heading
-                font.pixelSize: 20
+                font.pixelSize: Ui.hudPx(20)
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
                 elide: Text.ElideRight
@@ -75,15 +75,15 @@ Item {
                     required property var modelData
 
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 26
-                    radius: 3
+                    Layout.preferredHeight: Ui.hudPx(26)
+                    radius: Ui.hudPx(3)
                     color: playerRow.modelData.self ? Theme.rowHighlight : Theme.clear
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 8
-                        spacing: 8
+                        anchors.leftMargin: Ui.hudPx(8)
+                        anchors.rightMargin: Ui.hudPx(8)
+                        spacing: Ui.hudPx(8)
 
                         Label {
                             Layout.fillWidth: true
@@ -98,7 +98,7 @@ Item {
                             visible: playerRow.modelData.operator
                             text: qsTr("Operator")
                             color: Theme.warning
-                            font.pixelSize: 12
+                            font.pixelSize: Ui.hudPx(12)
                         }
                     }
                 }

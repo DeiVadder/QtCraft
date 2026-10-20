@@ -4,6 +4,7 @@
 #include "clientcore/settings/QcCharacterProfile.h"
 #include "clientcore/settings/QcDebugOptions.h"
 #include "clientcore/settings/QcGamepadSettings.h"
+#include "clientcore/settings/QcUiScale.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcKeyBindings.h"
@@ -46,6 +47,9 @@ struct QcGameSettings
     // "" follows the system language, otherwise a two-letter language code such as "de".
     QString language;
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;
+    // Size of the HUD and the screens (decision E-725), stored as "uiScale" ("auto", "75" … "200");
+    // an unknown value gives the default.
+    QcUiScale::Step uiScale = QcUiScale::defaultStep;
     // The player's look; names are checked against the content by the server.
     QcAppearance appearance;
     // Looks the player saved under a name (at most QcCharacterProfile::maxPresets).

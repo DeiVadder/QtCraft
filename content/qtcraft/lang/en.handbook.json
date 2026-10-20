@@ -220,6 +220,8 @@
     "chapter.qtcraft.controls.photo.title": "Photo mode",
     "chapter.qtcraft.controls.screens.text": "In the inventory, furnace and chest screens a left click picks a stack up and puts it down (merging or swapping), a right click puts down a single item. The list on the right of the inventory crafts recipes directly.",
     "chapter.qtcraft.controls.screens.title": "Screens",
+    "chapter.qtcraft.controls.size.text": "**Settings → General → Interface size** makes the HUD and every screen larger or smaller: 75 % to 200 % in steps of 25, or *Auto*, which picks the size from the window (a window of 1920 × 1080 gives 150 %, 2560 × 1440 gives 200 %). A screen never grows beyond the window: in a small window the screens stay as large as fits, and the number next to the choice shows the size in use; the HUD needs less room and may grow further. Screen readers find every button, slider, list and slot by its name (a slot by its item and count).",
+    "chapter.qtcraft.controls.size.title": "Interface size",
     "chapter.qtcraft.crafting": "Crafting",
     "chapter.qtcraft.crafting.book.text": "The inventory lists what you can make right now; a click crafts it. Some recipes ask for a group such as any planks or coal or charcoal: every item of the group fits.",
     "chapter.qtcraft.crafting.book.title": "Recipe list and groups",

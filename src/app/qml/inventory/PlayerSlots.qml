@@ -12,8 +12,8 @@ GridLayout {
     required property SlotScreen owner
 
     columns: 9
-    rowSpacing: 2
-    columnSpacing: 2
+    rowSpacing: Ui.px(2)
+    columnSpacing: Ui.px(2)
 
     Repeater {
         model: SlotRange {
@@ -25,7 +25,7 @@ GridLayout {
             owner: grid.owner
             Layout.row: slot < 9 ? 4 : Math.floor((slot - 9) / 9)
             Layout.column: slot % 9
-            Layout.topMargin: slot < 9 ? 12 : 0
+            Layout.topMargin: slot < 9 ? Ui.px(12) : 0
         }
     }
 }

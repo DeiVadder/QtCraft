@@ -12,23 +12,25 @@ Rectangle {
 
     signal activated(string target)
 
-    implicitWidth: row.implicitWidth + 12
-    implicitHeight: 28
+    implicitWidth: row.implicitWidth + Ui.px(12)
+    implicitHeight: Ui.px(28)
     activeFocusOnTab: true
-    radius: 3
+    Accessible.role: Accessible.Link
+    Accessible.name: chip.link.note.length > 0 ? qsTr("%1 (%2)").arg(chip.link.text).arg(chip.link.note) : chip.link.text
+    radius: Ui.px(3)
     color: hover.hovered ? Theme.linkHover : Theme.linkBackground
     border.color: Theme.separator
 
     RowLayout {
         id: row
 
-        x: 6
+        x: Ui.px(6)
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 5
+        spacing: Ui.px(5)
 
         Image {
-            Layout.preferredWidth: 20
-            Layout.preferredHeight: 20
+            Layout.preferredWidth: Ui.px(20)
+            Layout.preferredHeight: Ui.px(20)
             visible: chip.link.icon.length > 0
             source: visible ? ItemIcons.source(chip.link.icon, ItemIcons.generation) : ""
             sourceSize: Qt.size(20, 20)

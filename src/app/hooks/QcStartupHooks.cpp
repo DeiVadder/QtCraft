@@ -73,6 +73,14 @@ void QcStartupHooks::setStartupScript(QStringList chatLines, const QStringList &
     }
 }
 
+void QcStartupHooks::setScriptedPad(QcScriptedPad *pad)
+{
+    m_scriptedPad = pad;
+    if (pad) {
+        connect(pad, &QcScriptedPad::stepReported, this, [this] { releaseScreenshot(); });
+    }
+}
+
 void QcStartupHooks::setScreenshotHook(QcScreenshotHook *hook)
 {
     m_screenshotHook = hook;
@@ -189,8 +197,9 @@ void QcStartupHooks::scheduleOverlaySteps()
 void QcStartupHooks::runOverlayStep(const QString &step)
 {
     if (step.startsWith(u"pad:"_s)) {
-        if (m_scriptedPad) {
-            m_scriptedPad->run(QStringView(step).mid(4));
+        // Held until the step is reported (QcScriptedPad::stepReported).
+        if (m_scriptedPad && m_scriptedPad->run(QStringView(step).mid(4))) {
+            holdScreenshot();
         }
     } else if (step.startsWith(u"pick:"_s) || step.startsWith(u"open:"_s) || step.startsWith(u"text:"_s)) {
         runOnLoadedScreen(step, 0);

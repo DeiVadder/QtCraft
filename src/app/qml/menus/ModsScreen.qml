@@ -13,11 +13,11 @@ Popup {
     required property GameController game
 
     anchors.centerIn: parent
-    width: Math.min(parent.width - 64, 760)
-    height: Math.min(parent.height - 64, 560)
+    width: Math.min(parent.width - Ui.px(64), Ui.px(760))
+    height: Math.min(parent.height - Ui.px(64), Ui.px(560))
     modal: true
     focus: true
-    padding: 16
+    padding: Ui.px(16)
 
     onOpened: game.library.refreshMods()
 
@@ -27,11 +27,11 @@ Popup {
         // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                   && event.key !== Qt.Key_Backtab
-        spacing: 8
+        spacing: Ui.px(8)
 
         Label {
             text: qsTr("Mods")
-            font.pixelSize: 24
+            font.pixelSize: Ui.px(24)
             font.bold: true
         }
 
@@ -54,10 +54,11 @@ Popup {
         ListView {
             id: modList
 
+            Accessible.name: qsTr("Mods")
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
-            spacing: 6
+            spacing: Ui.px(6)
             model: screen.game.library.mods
 
             Label {
@@ -78,11 +79,11 @@ Popup {
 
                 RowLayout {
                     anchors.fill: parent
-                    spacing: 12
+                    spacing: Ui.px(12)
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 2
+                        spacing: Ui.px(2)
 
                         Label {
                             textFormat: Text.PlainText
@@ -111,6 +112,7 @@ Popup {
                     }
 
                     Switch {
+                        Accessible.name: qsTr("Enable %1").arg(modRow.modelData.name)
                         visible: modRow.modelData.id.length > 0
                         checked: modRow.modelData.state !== "disabled"
                         onToggled: screen.game.library.setModEnabled(modRow.modelData.id, checked)

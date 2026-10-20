@@ -71,6 +71,7 @@ void QcSettingsController::loadSettings()
     setPhotoHidesHand(m_storedSettings.photoHidesHand);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
+    m_uiScale = m_storedSettings.uiScale;
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings.audio);
@@ -99,6 +100,7 @@ void QcSettingsController::saveSettings()
     settings.photoHidesHand = m_photoHidesHand;
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
+    settings.uiScale = m_uiScale;
     settings.appearance = m_character->appearance();
     settings.characterPresets = m_character->savedPresets();
     settings.audio = m_audio->volumes();
@@ -217,5 +219,20 @@ void QcSettingsController::setCameraModeValue(QcCameraMode mode)
     if (m_parts.session) {
         m_parts.session->setCameraMode(m_cameraMode);
     }
+    emit settingsChanged();
+}
+
+void QcSettingsController::setUiScale(QcUiScaling::Step step)
+{
+    if (!QcUiScaling::known(step)) {
+        qCWarning(lcGame) << "Ignoring unknown UI scale" << int(step);
+        return;
+    }
+    // The same step again changes nothing (the screen's box sets it on every choice).
+    if (QcUiScaling::toValue(step) == m_uiScale) {
+        return;
+    }
+
+    m_uiScale = QcUiScaling::toValue(step);
     emit settingsChanged();
 }

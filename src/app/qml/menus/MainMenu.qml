@@ -53,44 +53,45 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 32
-        spacing: 16
+        anchors.margins: Ui.px(32)
+        spacing: Ui.px(16)
 
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("QtCraft")
             color: Theme.text
             // Smaller in a low window, so the lists and the form keep their room.
-            font.pixelSize: menu.height < 760 ? 48 : 64
+            font.pixelSize: Ui.px(menu.height < Ui.px(760) ? 48 : 64)
             font.bold: true
         }
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.maximumWidth: 900
+            Layout.maximumWidth: Ui.px(900)
             Layout.alignment: Qt.AlignHCenter
-            spacing: 24
+            spacing: Ui.px(24)
 
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.preferredWidth: 540
-                spacing: 8
+                Layout.preferredWidth: Ui.px(540)
+                spacing: Ui.px(8)
 
                 Label {
                     text: qsTr("Your worlds")
                     color: Theme.text
-                    font.pixelSize: 20
+                    font.pixelSize: Ui.px(20)
                 }
 
                 ListView {
                     id: worldList
 
+                    Accessible.name: qsTr("Your worlds")
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-                    spacing: 4
+                    spacing: Ui.px(4)
                     model: menu.game.library.worlds
 
                     Label {
@@ -106,24 +107,24 @@ Rectangle {
                         required property var modelData
 
                         width: ListView.view.width
-                        height: 64
-                        radius: 4
+                        height: Ui.px(64)
+                        radius: Ui.px(4)
                         color: Theme.scrim
 
                         RowLayout {
                             anchors.fill: parent
-                            anchors.margins: 8
-                            spacing: 8
+                            anchors.margins: Ui.px(8)
+                            spacing: Ui.px(8)
 
                             ColumnLayout {
                                 Layout.fillWidth: true
-                                spacing: 2
+                                spacing: Ui.px(2)
 
                                 Label {
                                     textFormat: Text.PlainText
                                     text: worldRow.modelData.name
                                     color: Theme.text
-                                    font.pixelSize: 17
+                                    font.pixelSize: Ui.px(17)
                                     font.bold: true
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
@@ -179,14 +180,14 @@ Rectangle {
             ColumnLayout {
                 Layout.fillWidth: false
                 Layout.fillHeight: true
-                Layout.preferredWidth: 320
-                Layout.maximumWidth: 320
-                spacing: 8
+                Layout.preferredWidth: Ui.px(320)
+                Layout.maximumWidth: Ui.px(320)
+                spacing: Ui.px(8)
 
                 Label {
                     text: qsTr("New world")
                     color: Theme.text
-                    font.pixelSize: 20
+                    font.pixelSize: Ui.px(20)
                 }
 
                 Flickable {
@@ -197,7 +198,7 @@ Rectangle {
                     Layout.fillHeight: true
                     Layout.preferredHeight: contentHeight
                     Layout.maximumHeight: contentHeight
-                    Layout.minimumHeight: 64
+                    Layout.minimumHeight: Ui.px(64)
                     clip: true
                     contentWidth: width
                     contentHeight: formFields.implicitHeight
@@ -208,8 +209,8 @@ Rectangle {
                         id: formFields
 
                         // The column keeps a gutter on the right for the scroll bar.
-                        width: newWorldForm.width - 14
-                        spacing: 8
+                        width: newWorldForm.width - Ui.px(14)
+                        spacing: Ui.px(8)
 
                         Label {
                             text: qsTr("World name")
@@ -219,6 +220,7 @@ Rectangle {
                         TextField {
                             id: worldName
 
+                            Accessible.name: qsTr("World name")
                             Layout.fillWidth: true
                             text: qsTr("New World")
                             selectByMouse: true
@@ -233,6 +235,7 @@ Rectangle {
                             id: worldType
 
                             objectName: "worldTypeChoice"
+                            Accessible.name: qsTr("World type")
                             Layout.fillWidth: true
                             textRole: "text"
                             valueRole: "value"
@@ -263,6 +266,7 @@ Rectangle {
                         TextField {
                             id: seed
 
+                            Accessible.name: qsTr("Seed (number or text, empty for random)")
                             visible: worldType.currentValue === "terrain"
                             Layout.fillWidth: true
                             selectByMouse: true
@@ -277,6 +281,7 @@ Rectangle {
                         TextField {
                             id: flatLayers
 
+                            Accessible.name: qsTr("Layers from the bottom up (empty for the default)")
                             visible: worldType.currentValue === "flat"
                             Layout.fillWidth: true
                             selectByMouse: true
@@ -292,6 +297,7 @@ Rectangle {
                             id: gameMode
 
                             objectName: "gameModeChoice"
+                            Accessible.name: qsTr("Game mode")
                             Layout.fillWidth: true
                             textRole: "text"
                             valueRole: "value"
@@ -324,7 +330,7 @@ Rectangle {
                 Button {
                     objectName: "createWorldButton"
                     Layout.fillWidth: true
-                    Layout.rightMargin: 14
+                    Layout.rightMargin: Ui.px(14)
                     text: qsTr("Create and play")
                     highlighted: true
                     onClicked: menu.game.createWorld(worldName.text,
@@ -338,11 +344,11 @@ Rectangle {
 
                 GridLayout {
                     Layout.fillWidth: true
-                    Layout.topMargin: 8
-                    Layout.rightMargin: 14
+                    Layout.topMargin: Ui.px(8)
+                    Layout.rightMargin: Ui.px(14)
                     columns: 2
-                    columnSpacing: 8
-                    rowSpacing: 8
+                    columnSpacing: Ui.px(8)
+                    rowSpacing: Ui.px(8)
 
                     Button {
                         Layout.fillWidth: true
@@ -438,11 +444,15 @@ Rectangle {
         property string worldName
 
         anchors.centerIn: parent
+        // A fixed width: the style's implicit width would follow the scaled font in a loop.
+        width: Math.min(parent.width - Ui.px(64), Ui.px(460))
         modal: true
         title: qsTr("Delete world")
         standardButtons: Dialog.Yes | Dialog.Cancel
 
         Label {
+            width: deleteDialog.availableWidth
+            wrapMode: Text.Wrap
             text: qsTr("Delete “%1” permanently? This cannot be undone.").arg(deleteDialog.worldName)
         }
 

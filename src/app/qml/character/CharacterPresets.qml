@@ -14,15 +14,16 @@ GridLayout {
     required property var character
 
     columns: 3
-    columnSpacing: 8
+    columnSpacing: Ui.px(8)
 
     Label {
-        Layout.preferredWidth: 110
+        Layout.preferredWidth: Ui.px(110)
         text: qsTr("Preset")
     }
     ComboBox {
         id: presetBox
 
+        Accessible.name: qsTr("Preset")
         Layout.fillWidth: true
         textRole: "label"
         model: presets.character.presets
@@ -41,11 +42,12 @@ GridLayout {
     }
 
     Item {
-        Layout.preferredWidth: 110
+        Layout.preferredWidth: Ui.px(110)
     }
     TextField {
         id: presetName
 
+        Accessible.name: qsTr("Preset name")
         Layout.fillWidth: true
         selectByMouse: true
         placeholderText: presets.character.canSavePreset ? qsTr("Name for a new preset") : qsTr("Name of a preset to replace")
@@ -67,7 +69,7 @@ GridLayout {
     }
 
     Item {
-        Layout.preferredWidth: 110
+        Layout.preferredWidth: Ui.px(110)
         visible: fullHint.visible
     }
     Label {

@@ -14,14 +14,14 @@ Rectangle {
 
     parent: game.gamepad.focusLayer ?? home
     z: 1000
-    x: origin.x - 3
-    y: origin.y - 3
-    width: game.gamepad.focusRect.width + 6
-    height: game.gamepad.focusRect.height + 6
+    x: origin.x - Ui.px(3)
+    y: origin.y - Ui.px(3)
+    width: game.gamepad.focusRect.width + 2 * Ui.px(3)
+    height: game.gamepad.focusRect.height + 2 * Ui.px(3)
     // The rect is clipped to the lists around the focus: empty while it is scrolled away.
     visible: game.gamepad.focusShown && game.gamepad.focusRect.width > 0 && game.gamepad.focusRect.height > 0
     color: Theme.clear
     border.color: Theme.focusRing
-    border.width: 3
-    radius: 4
+    border.width: Ui.px(3)
+    radius: Ui.px(4)
 }

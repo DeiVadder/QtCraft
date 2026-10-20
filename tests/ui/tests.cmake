@@ -129,6 +129,15 @@ if(NOT QC_SANITIZERS)
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 240)
+    # Every screen and the HUD at 100 % and at 200 % (limited to what fits) in a 1280 x 720 window:
+    # nothing outside the window, every control with an accessible name and role (decision E-725).
+    foreach(scale 100 200)
+        add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
+            ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
+        # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 900 COST 60
+            REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
+    endforeach()
 endif()
 # The menu's multiplayer screen with a refused join (nobody listens on port 1), and a world opened
 # to the network on this computer only with the open-to-LAN screen and the player list, load

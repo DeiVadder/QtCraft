@@ -17,11 +17,11 @@ Rectangle {
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: 4
-    width: row.implicitWidth + 24
-    height: row.implicitHeight + 10
+    anchors.bottomMargin: Ui.px(4)
+    width: row.implicitWidth + Ui.px(24)
+    height: row.implicitHeight + Ui.px(10)
     visible: game.gamepad.focusShown && !covered
-    radius: 4
+    radius: Ui.px(4)
     color: Theme.hudBackdrop
 
     PadHintRow {

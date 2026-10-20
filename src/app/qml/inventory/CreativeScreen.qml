@@ -53,24 +53,24 @@ SlotScreen {
         id: content
 
         anchors.centerIn: parent
-        spacing: 24
+        spacing: Ui.px(24)
 
         ColumnLayout {
             Layout.alignment: Qt.AlignTop
-            Layout.preferredWidth: 8 * 54
-            spacing: 8
+            Layout.preferredWidth: Ui.px(8 * 54)
+            spacing: Ui.px(8)
 
             Label {
                 text: qsTr("Creative items")
                 color: Theme.text
-                font.pixelSize: 24
+                font.pixelSize: Ui.px(24)
                 font.bold: true
             }
 
             Flow {
                 objectName: "creativeTabs"
                 Layout.fillWidth: true
-                spacing: 4
+                spacing: Ui.px(4)
 
                 Repeater {
                     model: screen.catalogue.categoryNames
@@ -92,6 +92,7 @@ SlotScreen {
                 id: search
 
                 objectName: "creativeSearch"
+                Accessible.name: qsTr("Search items")
                 Layout.fillWidth: true
                 placeholderText: qsTr("Search items (name or id) …")
                 selectByMouse: true
@@ -103,11 +104,12 @@ SlotScreen {
                 id: items
 
                 objectName: "creativeItems"
+                Accessible.name: qsTr("Items")
                 // Eight columns and a gutter for the scroll bar.
-                Layout.preferredWidth: 8 * 54 + 12
-                Layout.preferredHeight: 6 * 54
-                cellWidth: 54
-                cellHeight: 54
+                Layout.preferredWidth: Ui.px(8 * 54 + 12)
+                Layout.preferredHeight: Ui.px(6 * 54)
+                cellWidth: Ui.px(54)
+                cellHeight: Ui.px(54)
                 clip: true
                 model: screen.catalogue
                 boundsBehavior: Flickable.StopAtBounds
@@ -125,6 +127,7 @@ SlotScreen {
                     infoEnabled: screen.pickedSlot < 0 && screen.carriedItem.length === 0
                     onInfoRequested: item => screen.game.handbook.open(item)
                     slotIcon: icon
+                    slotLabel: label
                     slotEmpty: false
                     highlighted: hover.hovered
 
@@ -169,10 +172,10 @@ SlotScreen {
 
         ColumnLayout {
             Layout.alignment: Qt.AlignTop
-            spacing: 12
+            spacing: Ui.px(12)
 
             RowLayout {
-                spacing: 12
+                spacing: Ui.px(12)
 
                 Button {
                     objectName: "creativeCrafting"
@@ -187,6 +190,8 @@ SlotScreen {
                 // The bin: a picked-up stack or the carried item disappears.
                 ItemSlot {
                     objectName: "creativeBin"
+                    Accessible.name: qsTr("Bin")
+                    Accessible.description: qsTr("Bin: drop a stack here to delete it")
                     slotEmpty: true
                     highlighted: binHover.hovered
                     infoEnabled: false
@@ -195,7 +200,7 @@ SlotScreen {
                         anchors.centerIn: parent
                         text: "✕"
                         color: Theme.textSecondary
-                        font.pixelSize: 22
+                        font.pixelSize: Ui.px(22)
                     }
 
                     ThemedToolTip {
@@ -218,7 +223,7 @@ SlotScreen {
             }
 
             Label {
-                Layout.maximumWidth: 9 * 54
+                Layout.maximumWidth: Ui.px(9 * 54)
                 wrapMode: Text.Wrap
                 text: screen.game.gamepad.active ? qsTr("%1 on an item: a full stack, %2: one, %3: straight into the inventory. %1 on a slot puts it there. %4/%5 switch the tabs, %6 closes.")
                         .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north)

@@ -16,13 +16,13 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        spacing: 16
+        spacing: Ui.px(16)
 
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("You died")
             color: Theme.text
-            font.pixelSize: 48
+            font.pixelSize: Ui.px(48)
             font.bold: true
         }
 

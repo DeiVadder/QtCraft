@@ -22,15 +22,15 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: Math.min(parent.width - 32, 560)
-        spacing: 16
+        width: Math.min(parent.width - Ui.px(32), Ui.px(560))
+        spacing: Ui.px(16)
 
         Label {
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
             text: screen.game.multiplayer.networkGame ? qsTr("Disconnected from the server") : qsTr("The game ended")
             color: Theme.text
-            font.pixelSize: 30
+            font.pixelSize: Ui.px(30)
             font.bold: true
             wrapMode: Text.Wrap
         }
@@ -41,13 +41,13 @@ Rectangle {
             textFormat: Text.PlainText
             text: screen.game.statusText
             color: Theme.textSecondary
-            font.pixelSize: 18
+            font.pixelSize: Ui.px(18)
             wrapMode: Text.Wrap
         }
 
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 12
+            spacing: Ui.px(12)
 
             Button {
                 visible: screen.game.multiplayer.networkGame && screen.game.multiplayer.lastAddress.length > 0

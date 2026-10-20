@@ -24,11 +24,11 @@ Popup {
 
     objectName: "lanScreen"
     anchors.centerIn: parent
-    width: Math.min(parent.width - 64, 520)
-    height: Math.min(implicitHeight, parent.height - 32)
+    width: Math.min(parent.width - Ui.px(64), Ui.px(520))
+    height: Math.min(implicitHeight, parent.height - Ui.px(32))
     modal: true
     focus: true
-    padding: 20
+    padding: Ui.px(20)
 
     onAboutToShow: {
         screen.failure = "";
@@ -50,11 +50,11 @@ Popup {
         // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                   && event.key !== Qt.Key_Backtab
-        spacing: 8
+        spacing: Ui.px(8)
 
         Label {
             text: qsTr("Open to LAN")
-            font.pixelSize: 24
+            font.pixelSize: Ui.px(24)
             font.bold: true
         }
 
@@ -62,7 +62,7 @@ Popup {
         ColumnLayout {
             Layout.fillWidth: true
             visible: screen.game.multiplayer.lanPort === 0
-            spacing: 6
+            spacing: Ui.px(6)
 
             Label {
                 Layout.fillWidth: true
@@ -78,6 +78,7 @@ Popup {
             TextField {
                 id: portField
 
+                Accessible.name: qsTr("Port (0: any free port)")
                 Layout.fillWidth: true
                 validator: IntValidator {
                     bottom: 0
@@ -94,6 +95,7 @@ Popup {
             TextField {
                 id: passwordField
 
+                Accessible.name: qsTr("Password (empty: anyone may join)")
                 Layout.fillWidth: true
                 echoMode: TextInput.Password
                 selectByMouse: true
@@ -106,6 +108,7 @@ Popup {
             SpinBox {
                 id: maxPlayers
 
+                Accessible.name: qsTr("Players at most")
                 from: 1
                 to: 64
                 editable: true
@@ -122,7 +125,7 @@ Popup {
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Ui.px(8)
 
                 Button {
                     Layout.fillWidth: true
@@ -143,7 +146,7 @@ Popup {
         ColumnLayout {
             Layout.fillWidth: true
             visible: screen.game.multiplayer.lanPort > 0
-            spacing: 6
+            spacing: Ui.px(6)
 
             Label {
                 Layout.fillWidth: true
@@ -185,12 +188,12 @@ Popup {
                 text: qsTr("The firewall may ask whether QtCraft may accept incoming connections: allow it. Players over the internet need the port forwarded in your router (see the handbook).")
                 wrapMode: Text.Wrap
                 color: Theme.textSecondary
-                font.pixelSize: 12
+                font.pixelSize: Ui.px(12)
             }
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Ui.px(8)
 
                 Button {
                     Layout.fillWidth: true

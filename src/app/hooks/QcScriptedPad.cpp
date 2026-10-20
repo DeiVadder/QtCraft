@@ -157,5 +157,6 @@ void QcScriptedPad::report()
     std::fflush(stderr);
 
     m_running = false;
+    emit stepReported();
     runNext();
 }

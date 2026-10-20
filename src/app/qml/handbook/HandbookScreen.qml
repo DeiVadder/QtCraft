@@ -97,28 +97,29 @@ Rectangle {
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
-    // Swallows clicks so nothing below reacts.
+    // Swallows clicks so nothing below reacts; nothing a screen reader offers.
     MouseArea {
         anchors.fill: parent
+        Accessible.ignored: true
         acceptedButtons: Qt.AllButtons
         onWheel: wheel => wheel.accepted = true
     }
 
     Rectangle {
         anchors.fill: parent
-        anchors.margins: 20
-        radius: 6
+        anchors.margins: Ui.px(20)
+        radius: Ui.px(6)
         color: Theme.panel
         border.color: Theme.panelBorder
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 14
-            spacing: 10
+            anchors.margins: Ui.px(14)
+            spacing: Ui.px(10)
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 10
+                spacing: Ui.px(10)
 
                 Button {
                     text: qsTr("‹ Back")
@@ -129,7 +130,7 @@ Rectangle {
                 Label {
                     text: qsTr("Handbook")
                     color: Theme.text
-                    font.pixelSize: 24
+                    font.pixelSize: Ui.px(24)
                     font.bold: true
                 }
 
@@ -140,7 +141,8 @@ Rectangle {
                 TextField {
                     id: searchField
 
-                    Layout.preferredWidth: 320
+                    Accessible.name: qsTr("Search the handbook")
+                    Layout.preferredWidth: Ui.px(320)
                     placeholderText: qsTr("Search blocks, items, creatures …")
                     selectByMouse: true
                     Keys.onPressed: event => {
@@ -170,12 +172,13 @@ Rectangle {
             RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                spacing: 12
+                spacing: Ui.px(12)
 
                 ListView {
                     id: categoryList
 
-                    Layout.preferredWidth: 190
+                    Accessible.name: qsTr("Categories")
+                    Layout.preferredWidth: Ui.px(190)
                     Layout.fillHeight: true
                     clip: true
                     spacing: 1
@@ -196,7 +199,7 @@ Rectangle {
 
                         Label {
                             anchors.right: parent.right
-                            anchors.rightMargin: 10
+                            anchors.rightMargin: Ui.px(10)
                             anchors.verticalCenter: parent.verticalCenter
                             text: categoryRow.modelData.count
                             color: Theme.textMuted
@@ -213,6 +216,7 @@ Rectangle {
                 ListView {
                     id: entryList
 
+                    Accessible.name: qsTr("Entries")
                     // Highlights the open page in the list and scrolls it into view.
                     function select() {
                         const index = screen.listed.findIndex(row => row.id === screen.current);
@@ -221,7 +225,7 @@ Rectangle {
                             positionViewAtIndex(index, ListView.Contain);
                     }
 
-                    Layout.preferredWidth: 270
+                    Layout.preferredWidth: Ui.px(270)
                     Layout.fillHeight: true
                     clip: true
                     spacing: 1
@@ -250,17 +254,19 @@ Rectangle {
                         readonly property bool header: modelData.header !== undefined
 
                         width: ListView.view.width
-                        height: header ? 30 : 36
+                        height: Ui.px(header ? 30 : 36)
+                        // The row draws its own content; the name is for screen readers.
+                        Accessible.name: header ? modelData.header : modelData.title
                         enabled: !header
                         highlighted: !header && modelData.id === screen.current
                         onClicked: screen.navigate(modelData.id, true)
 
                         contentItem: RowLayout {
-                            spacing: 8
+                            spacing: Ui.px(8)
 
                             Image {
-                                Layout.preferredWidth: 24
-                                Layout.preferredHeight: 24
+                                Layout.preferredWidth: Ui.px(24)
+                                Layout.preferredHeight: Ui.px(24)
                                 visible: !entryRow.header
                                 source: !entryRow.header && entryRow.modelData.icon.length > 0 ? ItemIcons.source(entryRow.modelData.icon, ItemIcons.generation) : ""
                                 sourceSize: Qt.size(24, 24)
@@ -283,7 +289,7 @@ Rectangle {
                                     visible: screen.searching && !entryRow.header
                                     text: entryRow.header ? "" : entryRow.modelData.categoryTitle
                                     color: Theme.textMuted
-                                    font.pixelSize: 11
+                                    font.pixelSize: Ui.px(11)
                                 }
                             }
                         }
@@ -303,7 +309,7 @@ Rectangle {
                     Layout.fillHeight: true
                     clip: true
                     contentWidth: width
-                    contentHeight: pageColumn.implicitHeight + 20
+                    contentHeight: pageColumn.implicitHeight + Ui.px(20)
                     boundsBehavior: Flickable.StopAtBounds
 
                     ScrollBar.vertical: ThemedScrollBar {}
@@ -311,22 +317,22 @@ Rectangle {
                     ColumnLayout {
                         id: pageColumn
 
-                        width: pageView.width - 16
-                        spacing: 12
+                        width: pageView.width - Ui.px(16)
+                        spacing: Ui.px(12)
 
                         RowLayout {
-                            spacing: 12
+                            spacing: Ui.px(12)
 
                             Rectangle {
-                                Layout.preferredWidth: 56
-                                Layout.preferredHeight: 56
+                                Layout.preferredWidth: Ui.px(56)
+                                Layout.preferredHeight: Ui.px(56)
                                 visible: (screen.page.icon || "").length > 0
                                 color: Theme.panelRaised
-                                radius: 3
+                                radius: Ui.px(3)
 
                                 Image {
                                     anchors.fill: parent
-                                    anchors.margins: 6
+                                    anchors.margins: Ui.px(6)
                                     source: parent.visible ? ItemIcons.source(screen.page.icon, ItemIcons.generation) : ""
                                     sourceSize: Qt.size(44, 44)
                                     smooth: false
@@ -334,12 +340,12 @@ Rectangle {
                             }
 
                             ColumnLayout {
-                                spacing: 2
+                                spacing: Ui.px(2)
 
                                 Label {
                                     text: screen.page.title || ""
                                     color: Theme.text
-                                    font.pixelSize: 26
+                                    font.pixelSize: Ui.px(26)
                                     font.bold: true
                                 }
 
@@ -355,7 +361,7 @@ Rectangle {
                             visible: text.length > 0
                             text: screen.page.text || ""
                             color: Theme.text
-                            font.pixelSize: 15
+                            font.pixelSize: Ui.px(15)
                             wrapMode: Text.Wrap
                             textFormat: Text.MarkdownText
                         }
@@ -364,17 +370,17 @@ Rectangle {
                         Rectangle {
                             Layout.fillWidth: true
                             visible: factRepeater.count > 0
-                            implicitHeight: factColumn.implicitHeight + 12
+                            implicitHeight: factColumn.implicitHeight + Ui.px(12)
                             color: Theme.rowHighlight
-                            radius: 4
+                            radius: Ui.px(4)
 
                             ColumnLayout {
                                 id: factColumn
 
-                                x: 8
-                                y: 6
-                                width: parent.width - 16
-                                spacing: 4
+                                x: Ui.px(8)
+                                y: Ui.px(6)
+                                width: parent.width - Ui.px(16)
+                                spacing: Ui.px(4)
 
                                 Repeater {
                                     id: factRepeater
@@ -387,12 +393,12 @@ Rectangle {
                                         required property var modelData
 
                                         Layout.fillWidth: true
-                                        spacing: 10
+                                        spacing: Ui.px(10)
 
                                         Label {
-                                            Layout.preferredWidth: 210
+                                            Layout.preferredWidth: Ui.px(210)
                                             Layout.alignment: Qt.AlignTop
-                                            topPadding: 4
+                                            topPadding: Ui.px(4)
                                             text: factRow.modelData.label
                                             color: Theme.textMuted
                                             wrapMode: Text.Wrap
@@ -400,11 +406,11 @@ Rectangle {
 
                                         Flow {
                                             Layout.fillWidth: true
-                                            spacing: 6
+                                            spacing: Ui.px(6)
 
                                             Label {
                                                 visible: text.length > 0
-                                                topPadding: 4
+                                                topPadding: Ui.px(4)
                                                 width: Math.min(implicitWidth, parent.width)
                                                 text: factRow.modelData.value
                                                 color: Theme.text
@@ -436,13 +442,13 @@ Rectangle {
                                 required property var modelData
 
                                 Layout.fillWidth: true
-                                spacing: 6
+                                spacing: Ui.px(6)
 
                                 Label {
                                     visible: text.length > 0
                                     text: sectionColumn.modelData.title
                                     color: Theme.heading
-                                    font.pixelSize: 18
+                                    font.pixelSize: Ui.px(18)
                                     font.bold: true
                                 }
 
@@ -451,7 +457,7 @@ Rectangle {
                                     visible: text.length > 0
                                     text: sectionColumn.modelData.text
                                     color: Theme.text
-                                    font.pixelSize: 15
+                                    font.pixelSize: Ui.px(15)
                                     wrapMode: Text.Wrap
                                     textFormat: Text.MarkdownText
                                 }
@@ -459,7 +465,7 @@ Rectangle {
                                 Flow {
                                     Layout.fillWidth: true
                                     visible: sectionColumn.modelData.recipes.length > 0
-                                    spacing: 18
+                                    spacing: Ui.px(18)
 
                                     Repeater {
                                         model: sectionColumn.modelData.recipes
@@ -476,7 +482,7 @@ Rectangle {
                                 Flow {
                                     Layout.fillWidth: true
                                     visible: sectionColumn.modelData.links.length > 0
-                                    spacing: 6
+                                    spacing: Ui.px(6)
 
                                     Repeater {
                                         model: sectionColumn.modelData.links

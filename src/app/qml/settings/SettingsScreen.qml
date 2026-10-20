@@ -17,19 +17,20 @@ Popup {
     property int startPage
     // Room kept free below the screen for the pad's hints (PadHints, about 40 px high) while they
     // show: the screen moves up by it and gets shorter if it must.
-    readonly property real padHintsRoom: game.gamepad.focusShown ? 48 : 0
+    readonly property real padHintsRoom: game.gamepad.focusShown ? Ui.px(48) : 0
 
     x: (parent.width - width) / 2
     y: (parent.height - height - padHintsRoom) / 2
-    width: Math.min(parent.width - 64, 720)
-    height: Math.min(implicitHeight, parent.height - 32 - padHintsRoom)
+    width: Math.min(parent.width - Ui.px(64), Ui.px(720))
+    height: Math.min(implicitHeight, parent.height - Ui.px(32) - padHintsRoom)
     modal: true
     focus: true
-    padding: 20
+    padding: Ui.px(20)
 
     onAboutToShow: {
         languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
         cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
+        uiScaleBox.currentIndex = uiScaleBox.indexOfValue(game.settings.uiScale);
         pages.currentIndex = startPage;
         controlsPage.clear();
     }
@@ -44,11 +45,11 @@ Popup {
         // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                   && event.key !== Qt.Key_Backtab
-        spacing: 10
+        spacing: Ui.px(10)
 
         Label {
             text: qsTr("Settings")
-            font.pixelSize: 24
+            font.pixelSize: Ui.px(24)
             font.bold: true
         }
 
@@ -100,10 +101,10 @@ Popup {
                     id: generalPage
 
                     // A gutter on the right for the scroll bar.
-                    width: generalScroll.width - 14
+                    width: generalScroll.width - Ui.px(14)
                     columns: 3
-                    columnSpacing: 12
-                    rowSpacing: 10
+                    columnSpacing: Ui.px(12)
+                    rowSpacing: Ui.px(10)
 
                     Label {
                         text: qsTr("View distance")
@@ -111,6 +112,7 @@ Popup {
                     Slider {
                         id: viewDistance
 
+                        Accessible.name: qsTr("View distance")
                         Layout.fillWidth: true
                         from: 2
                         to: 16
@@ -120,7 +122,7 @@ Popup {
                         onMoved: screen.game.settings.viewDistance = value
                     }
                     Label {
-                        Layout.preferredWidth: 90
+                        Layout.preferredWidth: Ui.px(90)
                         text: qsTr("%n chunk(s)", "", viewDistance.value)
                     }
 
@@ -130,6 +132,7 @@ Popup {
                     Slider {
                         id: fieldOfView
 
+                        Accessible.name: qsTr("Field of view")
                         Layout.fillWidth: true
                         from: 50
                         to: 110
@@ -149,6 +152,7 @@ Popup {
                         id: fovEffects
 
                         objectName: "fovEffects"
+                        Accessible.name: qsTr("FOV effects")
                         Layout.fillWidth: true
                         from: 0
                         to: 1
@@ -166,6 +170,7 @@ Popup {
                     Slider {
                         id: sensitivity
 
+                        Accessible.name: qsTr("Mouse sensitivity")
                         Layout.fillWidth: true
                         from: 0.02
                         to: 1.0
@@ -203,6 +208,7 @@ Popup {
                     Slider {
                         id: masterVolume
 
+                        Accessible.name: qsTr("Master volume")
                         Layout.fillWidth: true
                         from: 0
                         to: 1
@@ -219,6 +225,7 @@ Popup {
                     Slider {
                         id: effectsVolume
 
+                        Accessible.name: qsTr("Effects")
                         Layout.fillWidth: true
                         from: 0
                         to: 1
@@ -235,6 +242,7 @@ Popup {
                     Slider {
                         id: musicVolume
 
+                        Accessible.name: qsTr("Music")
                         Layout.fillWidth: true
                         from: 0
                         to: 1
@@ -251,6 +259,7 @@ Popup {
                     Slider {
                         id: ambientVolume
 
+                        Accessible.name: qsTr("Ambience")
                         Layout.fillWidth: true
                         from: 0
                         to: 1
@@ -274,6 +283,7 @@ Popup {
                     ComboBox {
                         id: cameraBox
 
+                        Accessible.name: qsTr("View")
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         textRole: "text"
@@ -292,6 +302,7 @@ Popup {
                     ComboBox {
                         id: languageBox
 
+                        Accessible.name: qsTr("Language")
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         textRole: "text"
@@ -303,6 +314,46 @@ Popup {
                             { text: "Deutsch", value: "de" }
                         ]
                         onActivated: screen.game.settings.language = currentValue
+                    }
+
+                    // The size of the HUD and the screens (decision E-725); Auto follows the window.
+                    Label {
+                        text: qsTr("Interface size")
+                    }
+                    ComboBox {
+                        id: uiScaleBox
+
+                        objectName: "uiScaleBox"
+                        Accessible.name: qsTr("Interface size")
+                        Layout.fillWidth: true
+                        textRole: "text"
+                        valueRole: "value"
+                        model: [
+                            { text: qsTr("Auto"), value: UiScaling.Step.Auto },
+                            { text: qsTr("%1 %").arg(75), value: UiScaling.Step.Percent75 },
+                            { text: qsTr("%1 %").arg(100), value: UiScaling.Step.Percent100 },
+                            { text: qsTr("%1 %").arg(125), value: UiScaling.Step.Percent125 },
+                            { text: qsTr("%1 %").arg(150), value: UiScaling.Step.Percent150 },
+                            { text: qsTr("%1 %").arg(175), value: UiScaling.Step.Percent175 },
+                            { text: qsTr("%1 %").arg(200), value: UiScaling.Step.Percent200 }
+                        ]
+                        onActivated: screen.game.settings.uiScale = currentValue
+                    }
+                    // The size in use (Auto's choice, or less where the window is too small).
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(UiScaling.scale * 100))
+                    }
+
+                    // A window too small for the chosen size shows the screens as large as fits.
+                    Label {
+                        objectName: "uiScaleLimited"
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                        visible: UiScaling.scale < UiScaling.requested
+                        text: qsTr("Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.")
+                              .arg(Math.round(UiScaling.scale * 100)).arg(Math.round(UiScaling.hudScale * 100))
+                        wrapMode: Text.Wrap
+                        opacity: 0.7
                     }
 
                     Label {

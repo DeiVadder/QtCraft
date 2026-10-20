@@ -34,14 +34,14 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: Math.min(parent.width - 32, 320)
-        spacing: 10
+        width: Math.min(parent.width - Ui.px(32), Ui.px(320))
+        spacing: Ui.px(10)
 
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Game paused")
             color: Theme.text
-            font.pixelSize: 28
+            font.pixelSize: Ui.px(28)
             font.bold: true
         }
 

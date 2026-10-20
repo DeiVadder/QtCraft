@@ -220,6 +220,8 @@
     "chapter.qtcraft.controls.photo.title": "Fotomodus",
     "chapter.qtcraft.controls.screens.text": "Im Inventar, im Ofen und in Truhen nimmt ein Linksklick einen Stapel auf und legt ihn wieder ab (zusammenlegen oder tauschen), ein Rechtsklick legt ein einzelnes Item ab. Die Liste rechts im Inventar stellt Rezepte direkt her.",
     "chapter.qtcraft.controls.screens.title": "Bildschirme",
+    "chapter.qtcraft.controls.size.text": "**Einstellungen → Allgemein → Größe der Oberfläche** macht die Anzeige im Spiel und alle Bildschirme größer oder kleiner: 75 % bis 200 % in Schritten von 25, oder *Automatisch*, das die Größe aus dem Fenster wählt (ein Fenster von 1920 × 1080 ergibt 150 %, 2560 × 1440 ergibt 200 %). Ein Bildschirm wächst nie über das Fenster hinaus: in einem kleinen Fenster bleiben die Bildschirme so groß, wie es passt, und die Zahl neben der Auswahl zeigt die verwendete Größe; die Anzeige im Spiel braucht weniger Platz und darf weiter wachsen. Bildschirmleser finden jede Schaltfläche, jeden Schieberegler, jede Liste und jedes Feld unter seinem Namen (ein Feld unter Gegenstand und Anzahl).",
+    "chapter.qtcraft.controls.size.title": "Größe der Oberfläche",
     "chapter.qtcraft.crafting": "Herstellen",
     "chapter.qtcraft.crafting.book.text": "Das Inventar listet, was du gerade herstellen kannst; ein Klick stellt es her. Manche Rezepte verlangen eine Gruppe wie beliebige Bretter oder Kohle oder Holzkohle: Jedes Item der Gruppe passt.",
     "chapter.qtcraft.crafting.book.title": "Rezeptliste und Gruppen",

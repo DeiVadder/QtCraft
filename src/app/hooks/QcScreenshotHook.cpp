@@ -1,6 +1,7 @@
 #include "app/hooks/QcScreenshotHook.h"
 
 #include "app/debug/QcAppLogging.h"
+#include "app/hooks/QcAccessibilityCheck.h"
 #include "app/hooks/QcLayoutCheck.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "common/core/QcProcessMemory.h"
@@ -39,6 +40,7 @@ QcScreenshotHook *QcScreenshotHook::createFromEnvironment(QQuickWindow *window, 
     auto *hook = new QcScreenshotHook(window, filePath, frames, parent);
     hook->m_checkLayout = qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1;
     hook->m_logUiStats = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
+    hook->m_checkAccessibility = qEnvironmentVariableIntValue("QTCRAFT_ACCESSIBILITY_CHECK") == 1;
     return hook;
 }
 
@@ -89,6 +91,9 @@ void QcScreenshotHook::onFrameSwapped()
     if (m_logUiStats) {
         logUiStats();
     }
+    if (m_checkAccessibility) {
+        logAccessibilityCheck();
+    }
     const QImage image = m_grabber ? m_grabber() : m_window->grabWindow();
     if (image.isNull() || !image.save(m_filePath)) {
         qCCritical(lcScreenshot) << "Failed to save screenshot to" << m_filePath;
@@ -123,4 +128,13 @@ void QcScreenshotHook::logUiStats() const
     const qsizetype objects = m_window->findChildren<QObject *>().size();
     const qsizetype items = m_window->findChildren<QQuickItem *>().size();
     qCInfo(lcScreenshot).noquote() << u"UI stats: objects %1 items %2 memory %3 MB"_s.arg(objects).arg(items).arg(QcProcessMemory::currentMb(), 0, 'f', 1);
+}
+
+void QcScreenshotHook::logAccessibilityCheck() const
+{
+    const QStringList unnamed = QcAccessibilityCheck::unnamedControls(*m_window->contentItem());
+    for (const QString &control : unnamed) {
+        qCWarning(lcScreenshot).noquote() << "No accessible name:" << control;
+    }
+    qCInfo(lcScreenshot).noquote() << u"Accessibility check: %1 controls without a name"_s.arg(unnamed.size());
 }

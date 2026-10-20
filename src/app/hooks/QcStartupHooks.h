@@ -53,7 +53,8 @@ public:
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
     // The virtual pad of "@<ms> pad:<step>" lines (QcScriptedPad); they run in the main menu too.
-    void setScriptedPad(QcScriptedPad *pad) { m_scriptedPad = pad; }
+    // The screenshot waits until every queued step has been reported.
+    void setScriptedPad(QcScriptedPad *pad);
     // The screenshot to take once the world is loaded.
     void setScreenshotHook(QcScreenshotHook *hook);
     QcBenchmarkRun *benchmark() const { return m_benchmark; }

@@ -14,12 +14,12 @@ ColumnLayout {
     // The CharacterPreview while the panel is shown, else null.
     readonly property CharacterPreview preview: host.preview
 
-    spacing: 6
+    spacing: Ui.px(6)
 
     Rectangle {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        radius: 4
+        radius: Ui.px(4)
         color: Theme.panelRaised
         border.color: Theme.panelBorder
 
@@ -28,7 +28,7 @@ ColumnLayout {
 
             previewName: "characterPreview"
             anchors.fill: parent
-            anchors.margins: 2
+            anchors.margins: Ui.px(2)
             source: panel.game.preview
             paused: panel.game.handbook.isOpen
         }
@@ -36,7 +36,7 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: 4
+        spacing: Ui.px(4)
 
         Button {
             Layout.fillWidth: true
@@ -59,7 +59,7 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: 4
+        spacing: Ui.px(4)
 
         Repeater {
             model: [

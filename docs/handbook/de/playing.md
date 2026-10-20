@@ -75,6 +75,10 @@ Du gehst mit 4,3 m/s, rennst mit 5,6 m/s und schleichst mit 1,3 m/s; beim Schlei
 
 Im Inventar, im Ofen und in Truhen nimmt ein Linksklick einen Stapel auf und legt ihn wieder ab (zusammenlegen oder tauschen), ein Rechtsklick legt ein einzelnes Item ab. Die Liste rechts im Inventar stellt Rezepte direkt her.
 
+**Größe der Oberfläche**
+
+**Einstellungen → Allgemein → Größe der Oberfläche** macht die Anzeige im Spiel und alle Bildschirme größer oder kleiner: 75 % bis 200 % in Schritten von 25, oder *Automatisch*, das die Größe aus dem Fenster wählt (ein Fenster von 1920 × 1080 ergibt 150 %, 2560 × 1440 ergibt 200 %). Ein Bildschirm wächst nie über das Fenster hinaus: in einem kleinen Fenster bleiben die Bildschirme so groß, wie es passt, und die Zahl neben der Auswahl zeigt die verwendete Größe; die Anzeige im Spiel braucht weniger Platz und darf weiter wachsen. Bildschirmleser finden jede Schaltfläche, jeden Schieberegler, jede Liste und jedes Feld unter seinem Namen (ein Feld unter Gegenstand und Anzahl).
+
 **Fotomodus**
 
 **P / F6** blendet die Anzeige aus: Fadenkreuz, Schnellleiste, Herzen, Chatzeilen, Beschriftungen und den Rahmen um den anvisierten Block, dazu die Hand, sofern du das unter Einstellungen → Allgemein nicht abschaltest. Ein zweiter Druck zeigt alles wieder. **K / F2** speichert ein Bild des Fensters als PNG-Datei im Ordner *screenshots* neben deinen Welten, benannt nach Datum und Uhrzeit; ein kurzer Hinweis nennt den Namen. Auf dem Gamepad hältst du **Back** und drückst die obere Aktionstaste für ein Bildschirmfoto oder die linke, um die Anzeige auszublenden; die Spielerliste erscheint dabei, und die beiden Tasten tun sonst nichts.

@@ -8,6 +8,7 @@
         "gamepad",
         "moving",
         "screens",
+        "size",
         "photo"
     ]
 }

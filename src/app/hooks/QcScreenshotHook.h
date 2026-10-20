@@ -16,7 +16,9 @@ class QQuickWindow;
 // outside the window (QcLayoutCheck) and a summary line "Layout check: <n> items outside the window".
 // With QTCRAFT_UI_STATS=1 it logs, also just before the picture, the line "UI stats: objects <n>
 // items <n> memory <MB> MB": the QML objects below the window, its Qt Quick items and the
-// resident memory of the process (decision E-690).
+// resident memory of the process (decision E-690). With QTCRAFT_ACCESSIBILITY_CHECK=1 it logs
+// every shown control without an accessible name or role (QcAccessibilityCheck) and a summary line
+// "Accessibility check: <n> controls without a name" (decision E-725).
 class QcScreenshotHook : public QObject
 {
     Q_OBJECT
@@ -42,6 +44,7 @@ private:
     void onFrameSwapped();
     void logLayoutCheck() const;
     void logUiStats() const;
+    void logAccessibilityCheck() const;
 
     QPointer<QQuickWindow> m_window;
     std::function<QImage()> m_grabber;
@@ -51,4 +54,5 @@ private:
     bool m_done = false;
     bool m_checkLayout = false;
     bool m_logUiStats = false;
+    bool m_checkAccessibility = false;
 };

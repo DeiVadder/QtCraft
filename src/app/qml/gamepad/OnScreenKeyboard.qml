@@ -75,11 +75,11 @@ Popup {
 
     objectName: "onScreenKeyboard"
     x: Math.round((areaWidth - width) / 2)
-    y: areaHeight - height - 24
+    y: areaHeight - height - Ui.px(24)
     modal: true
     focus: true
     closePolicy: Popup.CloseOnEscape
-    padding: 14
+    padding: Ui.px(14)
     onOpened: {
         if (keyboard.firstKey)
             keyboard.firstKey.forceActiveFocus(Qt.TabFocusReason);
@@ -93,11 +93,11 @@ Popup {
     background: Rectangle {
         color: Theme.panel
         border.color: Theme.panelBorder
-        radius: 6
+        radius: Ui.px(6)
     }
 
     contentItem: ColumnLayout {
-        spacing: 6
+        spacing: Ui.px(6)
 
         // Pad commands besides moving and pressing keys (QcMenuNavigator asks this first).
         function gamepadCommand(command: string): bool {
@@ -127,13 +127,13 @@ Popup {
         Label {
             objectName: "keyboardPreview"
             Layout.fillWidth: true
-            Layout.preferredWidth: 560
+            Layout.preferredWidth: Ui.px(560)
             // displayText: what the field shows (a password's dots); a TextEdit has only its text.
             text: keyboard.target ? (keyboard.editor.displayText ?? keyboard.editor.text) : ""
             color: Theme.text
             elide: Text.ElideLeft
-            font.pixelSize: 18
-            padding: 6
+            font.pixelSize: Ui.px(18)
+            padding: Ui.px(6)
 
             background: Rectangle {
                 color: Theme.slot
@@ -151,7 +151,7 @@ Popup {
                 required property int index
 
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 4
+                spacing: Ui.px(4)
 
                 Repeater {
                     model: keyRow.modelData
@@ -164,8 +164,10 @@ Popup {
                         readonly property string character: keyboard.shifted ? modelData.charAt(1) : modelData.charAt(0)
 
                         objectName: "key_" + modelData.charAt(0)
-                        Layout.preferredWidth: 46
+                        Layout.preferredWidth: Ui.px(46)
                         text: character
+                        // A sign alone names nothing for a screen reader: "Key -".
+                        Accessible.name: qsTr("Key %1").arg(character)
                         onClicked: keyboard.type(character)
                         Component.onCompleted: {
                             if (keyRow.index === 1 && index === 0)
@@ -178,7 +180,7 @@ Popup {
 
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 4
+            spacing: Ui.px(4)
 
             Button {
                 objectName: "keyShift"
@@ -190,7 +192,7 @@ Popup {
 
             Button {
                 objectName: "keySpace"
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: Ui.px(200)
                 text: qsTr("Space")
                 onClicked: keyboard.type(" ")
             }
@@ -214,7 +216,7 @@ Popup {
             text: qsTr("%1: delete  %2: space  %3/%4: cursor  %5: done  %6: close").arg(keyboard.buttonTexts.west).arg(keyboard.buttonTexts.north)
                       .arg(keyboard.buttonTexts.leftShoulder).arg(keyboard.buttonTexts.rightShoulder).arg(keyboard.buttonTexts.start).arg(keyboard.buttonTexts.east)
             color: Theme.textMuted
-            font.pixelSize: 12
+            font.pixelSize: Ui.px(12)
         }
     }
 }

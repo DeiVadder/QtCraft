@@ -80,13 +80,13 @@ Item {
         id: crosshair
 
         anchors.centerIn: parent
-        width: 18
-        height: 18
+        width: Ui.hudPx(18)
+        height: Ui.hudPx(18)
 
         Rectangle {
             anchors.centerIn: parent
             width: parent.width
-            height: 2
+            height: Ui.hudPx(2)
             color: Theme.crosshair
             border.color: Theme.textOutline
             border.width: 0.5
@@ -94,7 +94,7 @@ Item {
 
         Rectangle {
             anchors.centerIn: parent
-            width: 2
+            width: Ui.hudPx(2)
             height: parent.height
             color: Theme.crosshair
             border.color: Theme.textOutline
@@ -106,10 +106,10 @@ Item {
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: crosshair.bottom
-        anchors.topMargin: 12
+        anchors.topMargin: Ui.hudPx(12)
         visible: hud.game.hud.miningProgress > 0
-        width: 80
-        height: 6
+        width: Ui.hudPx(80)
+        height: Ui.hudPx(6)
         color: Theme.hudBackdrop
 
         Rectangle {
@@ -122,10 +122,10 @@ Item {
     HudLabel {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 12
+        anchors.topMargin: Ui.hudPx(12)
         visible: text.length > 0
         text: hud.game.hud.targetLabel
-        font.pixelSize: 16
+        font.pixelSize: Ui.hudPx(16)
     }
 
     // The chat lines above the status rows; long lines wrap within the window.
@@ -133,10 +133,10 @@ Item {
         id: chat
 
         objectName: "hudChat"
-        x: 12
-        y: hud.statusTop - 6 - height
-        width: hud.width - 24
-        spacing: 2
+        x: Ui.hudPx(12)
+        y: hud.statusTop - Ui.hudPx(6) - height
+        width: hud.width - 2 * x
+        spacing: Ui.hudPx(2)
 
         Repeater {
             model: hud.game.hud.chatLines
@@ -147,21 +147,22 @@ Item {
                 width: Math.min(implicitWidth, chat.width)
                 wrapMode: Text.Wrap
                 text: modelData
-                font.pixelSize: 15
+                font.pixelSize: Ui.hudPx(15)
             }
         }
     }
 
     // Armour points above the hearts while something is worn: ten chestplates, two points each
-    // (decision E-234).
+    // (decision E-234). The icons are pixel art: drawn at their 20 px source size and enlarged
+    // with the HUD scale without smoothing (smooth: false), as the slots draw their 32 px icons.
     Row {
         id: armourBar
 
         objectName: "armourBar"
         anchors.left: hotbar.left
         anchors.bottom: hearts.top
-        anchors.bottomMargin: 2
-        spacing: 2
+        anchors.bottomMargin: Ui.hudPx(2)
+        spacing: Ui.hudPx(2)
         visible: hud.game.player.armour > 0 && !hud.game.player.creative
 
         Repeater {
@@ -173,8 +174,8 @@ Item {
                 required property int index
                 readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.armour - index * 2) / 2))
 
-                width: 20
-                height: 20
+                width: Ui.hudPx(20)
+                height: Ui.hudPx(20)
 
                 Image {
                     anchors.fill: parent
@@ -210,8 +211,8 @@ Item {
         anchors.left: hotbar.left
         anchors.right: hotbar.right
         anchors.bottom: hotbar.top
-        anchors.bottomMargin: 4
-        height: 7
+        anchors.bottomMargin: Ui.hudPx(4)
+        height: Ui.hudPx(7)
         visible: !hud.game.player.creative
         color: Theme.slotBorder
         border.color: Theme.textOutline
@@ -240,7 +241,7 @@ Item {
         color: Theme.experience
         style: Text.Outline
         styleColor: Theme.textOutline
-        font.pixelSize: 15
+        font.pixelSize: Ui.hudPx(15)
         font.bold: true
     }
 
@@ -254,7 +255,7 @@ Item {
         anchors.left: hotbar.left
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
-        spacing: 2
+        spacing: Ui.hudPx(2)
         visible: !hud.game.player.creative
 
         Repeater {
@@ -266,14 +267,14 @@ Item {
                 required property int index
                 readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.health - index * 2) / 2))
 
-                width: 22
-                height: 22
+                width: Ui.hudPx(22)
+                height: Ui.hudPx(22)
 
                 Text {
                     anchors.fill: parent
                     text: "\u2665"
                     color: Theme.slotBorder
-                    font.pixelSize: 22
+                    font.pixelSize: Ui.hudPx(22)
                     horizontalAlignment: Text.AlignHCenter
                 }
 
@@ -289,7 +290,7 @@ Item {
                         color: hud.game.player.heartColour !== "" ? hud.game.player.heartColour : Theme.health
                         style: Text.Outline
                         styleColor: Theme.textOutline
-                        font.pixelSize: 22
+                        font.pixelSize: Ui.hudPx(22)
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
@@ -298,6 +299,7 @@ Item {
     }
 
     // Ten food icons, two food points each, emptying from the left like the hearts fill from it.
+    // Pixel art like the armour icons: 22 px sources enlarged without smoothing.
     Row {
         id: foodBar
 
@@ -305,7 +307,7 @@ Item {
         anchors.right: hotbar.right
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
-        spacing: 2
+        spacing: Ui.hudPx(2)
         visible: !hud.game.player.creative
         layoutDirection: Qt.RightToLeft
 
@@ -318,8 +320,8 @@ Item {
                 required property int index
                 readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.food - index * 2) / 2))
 
-                width: 22
-                height: 22
+                width: Ui.hudPx(22)
+                height: Ui.hudPx(22)
 
                 Image {
                     anchors.fill: parent
@@ -354,7 +356,7 @@ Item {
 
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.margins: 8
+        anchors.margins: Ui.hudPx(8)
         text: hud.game.hud.timeOfDay
     }
 
@@ -365,8 +367,8 @@ Item {
 
         anchors.right: parent.right
         anchors.top: timeOfDay.bottom
-        anchors.margins: 8
-        spacing: 4
+        anchors.margins: Ui.hudPx(8)
+        spacing: Ui.hudPx(4)
 
         Repeater {
             model: hud.game.player.effects
@@ -377,18 +379,18 @@ Item {
                 required property var modelData
 
                 anchors.right: parent.right
-                spacing: 4
+                spacing: Ui.hudPx(4)
 
                 Rectangle {
-                    width: 22
-                    height: 22
-                    radius: 4
+                    width: Ui.hudPx(22)
+                    height: Ui.hudPx(22)
+                    radius: Ui.hudPx(4)
                     color: Qt.alpha(effectRow.modelData.colour, 0.6)
                     border.color: effectRow.modelData.colour
 
                     Image {
                         anchors.fill: parent
-                        anchors.margins: 2
+                        anchors.margins: Ui.hudPx(2)
                         visible: effectRow.modelData.icon !== ""
                         source: visible ? ItemIcons.source(effectRow.modelData.icon, ItemIcons.generation) : ""
                         smooth: false
@@ -397,7 +399,7 @@ Item {
 
                 HudLabel {
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 13
+                    font.pixelSize: Ui.hudPx(13)
                     text: (effectRow.modelData.level > 1 ? effectRow.modelData.label + " " + effectRow.modelData.levelName : effectRow.modelData.label)
                           + "  " + Math.floor(effectRow.modelData.seconds / 60) + ":" + String(effectRow.modelData.seconds % 60).padStart(2, "0")
                 }
@@ -410,8 +412,8 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: hint.top
-        anchors.bottomMargin: 8
-        spacing: 2
+        anchors.bottomMargin: Ui.hudPx(8)
+        spacing: Ui.hudPx(2)
 
         // The first nine inventory rows are the hotbar.
         Repeater {
@@ -427,6 +429,7 @@ Item {
                 required property real durability
                 required property bool empty
 
+                unit: Ui.hudScale
                 baseColor: Theme.hudSlot
                 activeFocusOnTab: false
                 slotIcon: icon
@@ -447,12 +450,16 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 6
+        anchors.bottomMargin: Ui.hudPx(6)
+        // Wraps rather than reaching past the window's edges at a large scale.
+        width: Math.min(implicitWidth, hud.width - Ui.hudPx(24))
+        wrapMode: Text.Wrap
+        horizontalAlignment: Text.AlignHCenter
         // The pad's hints of a screen take this place (PadHints); the pad's world hints lie over it
         // (padHint), so the rows above keep their place.
         visible: !hud.game.gamepad.focusShown
         opacity: hud.game.gamepad.active ? 0 : 1
-        font.pixelSize: 13
+        font.pixelSize: Ui.hudPx(13)
         text: hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
                     .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
@@ -465,16 +472,19 @@ Item {
     Loader {
         id: padHint
 
+        objectName: "hudPadHint"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: hint.verticalCenter
         active: hud.game.gamepad.active && !hud.game.gamepad.focusShown
+        // Ten buttons in one row: at a large HUD scale the row shrinks to the window's width.
+        scale: Math.min(1, (hud.width - Ui.hudPx(16)) / Math.max(1, width))
 
         sourceComponent: PadHintRow {
             readonly property var actions: hud.game.gamepad.actions
 
             game: hud.game
-            fontSize: 12
-            spacing: 11
+            fontSize: Ui.hudPx(12)
+            spacing: Ui.hudPx(11)
             entries: [
                 { input: actions.mine, text: qsTr("mine/attack") },
                 { input: actions.use, text: qsTr("use/place") },

@@ -20,6 +20,8 @@ ItemSlot {
     property bool clickSound: true
 
     infoItem: itemName
+    slotLabel: label
+    Accessible.description: tooltip
     infoEnabled: owner.pickedSlot < 0
     onInfoRequested: item => owner.game.handbook.open(item)
     slotIcon: icon

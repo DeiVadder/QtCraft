@@ -13,14 +13,15 @@ Item {
     required property GameController game
     // The pad's menu or the one of the key with the mouse (decision E-614).
     readonly property int highlighted: game.gamepad.radialOpen ? game.gamepad.radialSlot : game.input.radialSlot
-    readonly property real radius: 130
+    // Sized with the HUD (decision E-725).
+    readonly property real radius: Ui.hudPx(130)
 
-    width: 2 * radius + 80
+    width: 2 * radius + Ui.hudPx(80)
     height: width
 
     Rectangle {
         anchors.centerIn: parent
-        width: 2 * radial.radius + 76
+        width: 2 * radial.radius + Ui.hudPx(76)
         height: width
         radius: width / 2
         color: Theme.scrim
@@ -52,6 +53,7 @@ Item {
             scale: current ? 1.3 : 1.0
             // An empty place stays visible against the world.
             baseColor: empty ? Theme.slot : Theme.hudSlot
+            unit: Ui.hudScale
             activeFocusOnTab: false
             slotIcon: icon
             slotCount: count
@@ -64,7 +66,7 @@ Item {
             Label {
                 parent: radial
                 anchors.centerIn: parent
-                width: 2 * radial.radius - 80
+                width: 2 * radial.radius - Ui.hudPx(80)
                 visible: radialSlot.current
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.Wrap
@@ -72,7 +74,7 @@ Item {
                 color: Theme.text
                 style: Text.Outline
                 styleColor: Theme.textOutline
-                font.pixelSize: 15
+                font.pixelSize: Ui.hudPx(15)
                 font.bold: true
             }
         }
