@@ -4,10 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-Stand 2026-10-20 04:20. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
+Stand 2026-10-20 05:30. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
 - **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 51, 56 und 57 erledigt (zuletzt 57c Fassaden geteilt `195aa03`, E-715–E-717; davor 57a Tick-Systeme `0393ef5`, 57d Renderer-Ressourcen `1a034be`, 57b Schicht `qc_worlds` `8bad1f3`).
-- **Läuft:** Etappe 47 (Feinschliff Darstellung, dazu UI-Skalierung und Zugänglichkeitsrollen, P16) wird geplant.
+- **Läuft:** Etappe 47: 47.2 UI-Skalierung und Zugänglichkeitsrollen in `dev` (`1709682`, E-725); 47.1 Feinschliff Darstellung (`feature/47-1-render-polish`, E-720–E-724) fertig und geprüft, wartet auf die Freigabe des Aussehens durch den Menschen (Vergleichsseite mit den Aufnahmen vorher/nachher). Fenster-Benchmark für 47 (anisotrope Filterung im Shader, geschätzt +10–20 % Block-Pass in weiten flachen Ansichten) geschuldet. Etappe 58 bleibt ausgesetzt (braucht Fenster-Messungen); weiter mit 59.
 - **Danach:** 58 (Client-Speicher bei 16 Chunks), 59 (Spielmodi Zuschauer und Abenteuer), 60–66 und 68; Reihenfolge in der Tabelle „Etappen“.
 - **Fenster-Läufe** nur nach Freigabe des Menschen; headless und offscreen sind erlaubt.
 

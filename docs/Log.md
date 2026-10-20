@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 05:30
+
+Etappe 47: 47.2 UI-Skalierung (75–200 %, Auto nach logischer Fenstergröße, Faktor auf 1024 × 640 bzw. 640 × 360 begrenzt) und Zugänglichkeitsrollen in `dev` (`1709682`); im Review gefunden: die Fensterschrift kehrte nach 200 % nicht auf 100 % zurück. 47.1 (Beschriftungen, anisotrope Filterung im Shader, Arm, Grundhelligkeit nach Himmelslicht, Laub) fertig, Review behoben (Blockkanten, Zweierpotenz-Pakete, Grenzen der Beschriftungen), `dev` eingemergt, Beschriftungen folgen der HUD-Skalierung; wartet auf die Freigabe des Aussehens. Etappe 58 bleibt ausgesetzt; 59 beginnt.
+
 ## 2026-10-20 04:20
 
 Etappe 57 erledigt: 57c Fassaden geteilt (`195aa03`; Registry mit vier Katalogen, `QcChunkSaveState` und `QcBlockEntityExtras` aus der Server-Welt, `QcWorldMirror` aus der Client-Session; zwei Reviews ohne Befund zum Verhalten). Fenster-Benchmark `@core` gegen `dev` vor 57a ohne Regression, voller Verify grün bis auf den neuen Test `app_offscreen_view_hidden_keeps_sections`, der unter TSan von einer festen Wartezeit abhing (zum Ausblenden noch kein Abschnitt gemesht); der Testhaken wartet jetzt auf gemeshte Abschnitte, der Test lief danach unter TSan zweimal grün. Weiter mit Etappe 47.
