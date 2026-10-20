@@ -1,0 +1,15 @@
+{
+    "name": "small_signal_torch",
+    "type": "shaped",
+    "pattern": [
+        "c",
+        "|"
+    ],
+    "key": {
+        "c": "signal_dust_chunk",
+        "|": "stick"
+    },
+    "result": {
+        "item": "small_signal_torch"
+    }
+}

@@ -160,6 +160,8 @@
                 "block:qtcraft:gravel",
                 "block:qtcraft:sticky_signal_piston",
                 "block:qtcraft:small_torch",
+                "block:qtcraft:small_signal_torch",
+                "block:qtcraft:small_signal_torch_off",
                 "block:qtcraft:coal_block",
                 "block:qtcraft:signal_piston_head",
                 "block:qtcraft:composter",
@@ -417,6 +419,7 @@
                 "item:qtcraft:black_dye",
                 "item:qtcraft:gunpowder",
                 "item:qtcraft:fishing_bobber",
+                "item:qtcraft:signal_dust_chunk",
                 "item:qtcraft:emerald",
                 "item:qtcraft:spider_eye",
                 "item:qtcraft:stick",
@@ -45293,6 +45296,89 @@
             "sections": [
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:signal_dust_from_chunks",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:signal_dust",
+                                "note": "",
+                                "target": "block:qtcraft:signal_dust",
+                                "text": "Signalstaub"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:powered_rail",
                             "note": "",
@@ -45346,6 +45432,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_dispenser",
                             "text": "Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
                         },
                         {
                             "icon": "qtcraft:signal_dropper",
@@ -46988,6 +47080,231 @@
             ],
             "text": "Neun Schleimbälle zusammengepresst.",
             "title": "Schleimblock"
+        },
+        "block:qtcraft:small_signal_torch": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Small Signal Torch",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:small_signal_torch"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Licht",
+                    "links": [
+                    ],
+                    "value": "4 von 15"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "eine feste Fläche, an der es hängt"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Holz"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:small_signal_torch",
+            "id": "block:qtcraft:small_signal_torch",
+            "name": "qtcraft:small_signal_torch",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signalstaubstück"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:small_signal_torch",
+                            "needsTable": false,
+                            "note": "Handwerksraster",
+                            "result": {
+                                "icon": "qtcraft:small_signal_torch",
+                                "note": "",
+                                "target": "block:qtcraft:small_signal_torch",
+                                "text": "Kleine Signalfackel"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch_off",
+                            "text": "Kleine Signalfackel (aus)"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Eine halbe Signalfackel: ein Inverter wie die große, aber sie gibt nur Stärke 7, ihr Signal reicht also sieben Staub weit, und sie versorgt keinen festen Block über sich, also bekommt auch nichts auf diesem Block über sie Strom. Eine Lampe oder ein Kolben direkt auf ihr wird trotzdem versorgt. Sie glimmt schwach; sie entsteht aus einem Signalstaubstück über einem Stock, neun aus einem Staub.",
+            "title": "Kleine Signalfackel"
+        },
+        "block:qtcraft:small_signal_torch_off": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Small Signal Torch (off)",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:small_signal_torch_off"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "eine feste Fläche, an der es hängt"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Holz"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west)"
+                }
+            ],
+            "icon": "",
+            "id": "block:qtcraft:small_signal_torch_off",
+            "name": "qtcraft:small_signal_torch_off",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Eine kleine Signalfackel, deren Block versorgt ist, oder eine ausgebrannte.",
+            "title": "Kleine Signalfackel (aus)"
         },
         "block:qtcraft:small_torch": {
             "category": "blocks",
@@ -58293,7 +58610,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Hebel bleibt an oder aus. Ein Steinknopf gibt eine Sekunde lang Signal, einer aus Holz anderthalb. Eine Holzdruckplatte wird von allem gedrückt, was darauf liegt oder steht, eine aus Stein nur von Spielern und Wesen; sie springt etwa eine Sekunde, nachdem sie frei ist, zurück. Eine Signalfackel leuchtet, solange ihr Block nicht versorgt ist, zwei Ticks nach der Änderung: ein Inverter. Öfter als achtmal in drei Sekunden an- und ausgeschaltet, brennt sie für acht Sekunden aus. Ein Signal-Repeater gibt ein Signal von hinten nach vorn weiter, nach einer bis vier Stufen zu zwei Ticks (Benutzen ändert die Verzögerung); ein kurzer Puls kommt so lang heraus wie seine Verzögerung, und ein versorgter Repeater, der auf seine Seite zeigt, sperrt ihn.",
+                    "text": "Ein Hebel bleibt an oder aus. Ein Steinknopf gibt eine Sekunde lang Signal, einer aus Holz anderthalb. Eine Holzdruckplatte wird von allem gedrückt, was darauf liegt oder steht, eine aus Stein nur von Spielern und Wesen; sie springt etwa eine Sekunde, nachdem sie frei ist, zurück. Eine Signalfackel leuchtet, solange ihr Block nicht versorgt ist, zwei Ticks nach der Änderung: ein Inverter. Öfter als achtmal in drei Sekunden an- und ausgeschaltet, brennt sie für acht Sekunden aus. Eine kleine Signalfackel macht dasselbe mit Stärke 7 und versorgt keinen Block über sich, nur ein Bauteil direkt auf ihr. Ein Signal-Repeater gibt ein Signal von hinten nach vorn weiter, nach einer bis vier Stufen zu zwei Ticks (Benutzen ändert die Verzögerung); ein kurzer Puls kommt so lang heraus wie seine Verzögerung, und ein versorgter Repeater, der auf seine Seite zeigt, sperrt ihn.",
                     "title": "Quellen"
                 },
                 {
@@ -58377,6 +58694,12 @@
                             "text": "Signalstaub"
                         },
                         {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        },
+                        {
                             "icon": "qtcraft:signal_ore",
                             "note": "",
                             "target": "block:qtcraft:signal_ore",
@@ -58387,6 +58710,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_torch",
                             "text": "Signalfackel"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
                         },
                         {
                             "icon": "qtcraft:lever",
@@ -75658,6 +75987,89 @@
             "text": "Schnitzt einen Kürbis zu einem geschnitzten Kürbis; dabei fallen vier Kürbiskerne heraus.",
             "title": "Schere"
         },
+        "item:qtcraft:signal_dust_chunk": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Signal Dust chunk",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:signal_dust_chunk"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:signal_dust_chunk",
+            "id": "item:qtcraft:signal_dust_chunk",
+            "name": "qtcraft:signal_dust_chunk",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signalstaub"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:signal_dust_chunk",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:signal_dust_chunk",
+                                "note": "",
+                                "target": "item:qtcraft:signal_dust_chunk",
+                                "text": "Signalstaubstück"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signalstaub"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                }
+            ],
+            "text": "Ein Neuntel Signalstaub: neun ergeben wieder einen Staub, eines über einem Stock eine kleine Signalfackel.",
+            "title": "Signalstaubstück"
+        },
         "item:qtcraft:slimeball": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -76153,6 +76565,12 @@
                             "note": "",
                             "target": "block:qtcraft:small_torch",
                             "text": "Kleine Fackel"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
                         },
                         {
                             "icon": "qtcraft:ladder",
@@ -85132,6 +85550,12 @@
                             "text": "Kleine Fackel"
                         },
                         {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "0, aus der Härte",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
+                        },
+                        {
                             "icon": "qtcraft:cornflower",
                             "note": "0, aus der Härte",
                             "target": "block:qtcraft:cornflower",
@@ -85866,6 +86290,12 @@
                             "text": "Glühwürmchenglas"
                         },
                         {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "4 von 15",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
+                        },
+                        {
                             "icon": "qtcraft:magma_block",
                             "note": "3 von 15",
                             "target": "block:qtcraft:magma_block",
@@ -85930,6 +86360,12 @@
                             "note": "gibt 15, solange ein Spieler oder Wesen darauf steht",
                             "target": "block:qtcraft:stone_pressure_plate",
                             "text": "Steindruckplatte"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "gibt 7, außer ihr Block hat Strom, 2 Ticks nach einer Änderung; brennt nach 8 Wechseln in 60 Ticks durch; versorgt keinen Block über sich (ein Bauteil darauf bekommt trotzdem Strom)",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
                         },
                         {
                             "icon": "qtcraft:signal_torch",
@@ -87607,6 +88043,12 @@
                             "note": "Licht geht durch, Wesen erscheinen darin",
                             "target": "block:qtcraft:small_torch",
                             "text": "Kleine Fackel"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Kleine Signalfackel"
                         },
                         {
                             "icon": "qtcraft:cornflower",

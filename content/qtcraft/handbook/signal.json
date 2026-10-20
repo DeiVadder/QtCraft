@@ -18,8 +18,10 @@
     ],
     "related": [
         "signal_dust",
+        "signal_dust_chunk",
         "signal_ore",
         "signal_torch",
+        "small_signal_torch",
         "lever",
         "stone_button",
         "oak_pressure_plate",

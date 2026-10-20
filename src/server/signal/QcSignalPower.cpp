@@ -75,7 +75,7 @@ int QcSignalPower::strongPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Plate:
         return towards == QcBlockFace::Down ? state.power : 0;
     case QcSignalKind::Torch:
-        return state.on && towards == QcBlockFace::Up ? state.power : 0;
+        return state.on && state.strongPowersAbove && towards == QcBlockFace::Up ? state.power : 0;
     default:
         return 0;
     }
@@ -179,7 +179,9 @@ QcSignalPower::Positions QcSignalPower::targets(QcBlockPos pos, QcSignalState st
         cells.append(qcNeighbour(pos, QcBlockFace::Down));
         break;
     case QcSignalKind::Torch:
-        cells.append(qcNeighbour(pos, QcBlockFace::Up));
+        if (state.strongPowersAbove) {
+            cells.append(qcNeighbour(pos, QcBlockFace::Up));
+        }
         break;
     case QcSignalKind::Dust:
         cells.append(qcNeighbour(pos, QcBlockFace::Down));

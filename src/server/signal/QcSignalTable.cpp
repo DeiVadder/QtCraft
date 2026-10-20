@@ -179,6 +179,7 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     state.delay = quint8(std::clamp(content.property(id, u"delay"_s).toInt(), 1, 4));
     state.locked = isFlag(content, id, u"locked"_s) || content.property(id, u"enabled"_s) == u"false"_s;
     state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
+    state.strongPowersAbove = signal.strongPowersAbove;
 
     if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator) {
         state.power = quint8(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));

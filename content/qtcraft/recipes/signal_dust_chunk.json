@@ -1,0 +1,11 @@
+{
+    "name": "signal_dust_chunk",
+    "type": "shapeless",
+    "ingredients": [
+        "signal_dust"
+    ],
+    "result": {
+        "item": "signal_dust_chunk",
+        "count": 9
+    }
+}

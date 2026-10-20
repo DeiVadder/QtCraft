@@ -175,6 +175,15 @@ private slots:
         QCOMPARE(property(demo, 0, 1, 5, u"north"_s), u"none"_s);
         QCOMPARE(property(demo, 7, 1, 5, u"power"_s), u"0"_s);
         QCOMPARE(property(demo, 14, 1, 5, u"east"_s), u"up"_s);
+        // The small Signal Torch: 7 at its dust, 1 at the seventh, which still lights the lamp, and
+        // the lamp right on it lights; a lamp on a stone on it stays dark, on the large torch's stone
+        // it lights (decision E-745).
+        QCOMPARE(property(demo, 2, 1, 8, u"power"_s), u"7"_s);
+        QCOMPARE(property(demo, 8, 1, 8, u"power"_s), u"1"_s);
+        QCOMPARE(block(demo, 9, 1, 8), u"signal_lamp_lit"_s);
+        QCOMPARE(block(demo, 1, 2, 8), u"signal_lamp_lit"_s);
+        QCOMPARE(block(demo, 11, 3, 8), u"signal_lamp"_s);
+        QCOMPARE(block(demo, 14, 3, 8), u"signal_lamp_lit"_s);
     }
 
     void quirksHappen()

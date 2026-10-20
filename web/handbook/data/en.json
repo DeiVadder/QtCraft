@@ -250,6 +250,8 @@
                 "block:qtcraft:signal_torch",
                 "block:qtcraft:signal_torch_off",
                 "block:qtcraft:slime_block",
+                "block:qtcraft:small_signal_torch",
+                "block:qtcraft:small_signal_torch_off",
                 "block:qtcraft:small_torch",
                 "block:qtcraft:smooth_sandstone",
                 "block:qtcraft:snow_block",
@@ -420,6 +422,7 @@
                 "item:qtcraft:raw_iron",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:shears",
+                "item:qtcraft:signal_dust_chunk",
                 "item:qtcraft:slimeball",
                 "item:qtcraft:snowball",
                 "item:qtcraft:spider_eye",
@@ -45293,6 +45296,89 @@
             "sections": [
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:signal_dust_from_chunks",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:signal_dust",
+                                "note": "",
+                                "target": "block:qtcraft:signal_dust",
+                                "text": "Signal Dust"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:chunk_loader",
                             "note": "",
@@ -45322,6 +45408,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_dropper",
                             "text": "Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
                         },
                         {
                             "icon": "qtcraft:signal_lamp",
@@ -46988,6 +47080,231 @@
             ],
             "text": "Nine slimeballs pressed together.",
             "title": "Slime block"
+        },
+        "block:qtcraft:small_signal_torch": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Small Signal Torch",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:small_signal_torch"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.05 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light",
+                    "links": [
+                    ],
+                    "value": "4 of 15"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Washed away by liquids",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:small_signal_torch",
+            "id": "block:qtcraft:small_signal_torch",
+            "name": "qtcraft:small_signal_torch",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:small_signal_torch",
+                            "needsTable": false,
+                            "note": "Crafting grid",
+                            "result": {
+                                "icon": "qtcraft:small_signal_torch",
+                                "note": "",
+                                "target": "block:qtcraft:small_signal_torch",
+                                "text": "Small Signal Torch"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch_off",
+                            "text": "Small Signal Torch (off)"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "Half a Signal Torch: an inverter like the large one, but it gives only strength 7, so its signal reaches seven dust, and it does not power a solid block above it, so nothing on that block gets power through it. A lamp or piston sitting right on it is still powered. It glows dimly; it is made from a Signal Dust chunk over a stick, nine from one dust.",
+            "title": "Small Signal Torch"
+        },
+        "block:qtcraft:small_signal_torch_off": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Small Signal Torch (off)",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:small_signal_torch_off"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.05 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Washed away by liquids",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west)"
+                }
+            ],
+            "icon": "",
+            "id": "block:qtcraft:small_signal_torch_off",
+            "name": "qtcraft:small_signal_torch_off",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A Small Signal Torch whose block is powered, or one that burnt out.",
+            "title": "Small Signal Torch (off)"
         },
         "block:qtcraft:small_torch": {
             "category": "blocks",
@@ -58293,7 +58610,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "A lever stays on or off. A stone button gives a signal for one second, a wooden one for one and a half. A wooden pressure plate is pressed by anything lying or standing on it, a stone one only by players and creatures; it springs back about a second after it is free. A Signal Torch is on unless its block is powered, two ticks after the change: an inverter. Switched on and off more than eight times within three seconds it burns out for eight seconds. A Signal Repeater passes a signal from back to front after one to four steps of two ticks (use it to change the delay); a short pulse comes out as long as its delay, and a powered repeater pointing at its side locks it.",
+                    "text": "A lever stays on or off. A stone button gives a signal for one second, a wooden one for one and a half. A wooden pressure plate is pressed by anything lying or standing on it, a stone one only by players and creatures; it springs back about a second after it is free. A Signal Torch is on unless its block is powered, two ticks after the change: an inverter. Switched on and off more than eight times within three seconds it burns out for eight seconds. A Small Signal Torch does the same with strength 7 and does not power a block above it, only a component sitting right on it. A Signal Repeater passes a signal from back to front after one to four steps of two ticks (use it to change the delay); a short pulse comes out as long as its delay, and a powered repeater pointing at its side locks it.",
                     "title": "Sources"
                 },
                 {
@@ -58377,6 +58694,12 @@
                             "text": "Signal Dust"
                         },
                         {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        },
+                        {
                             "icon": "qtcraft:signal_ore",
                             "note": "",
                             "target": "block:qtcraft:signal_ore",
@@ -58387,6 +58710,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_torch",
                             "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
                         },
                         {
                             "icon": "qtcraft:lever",
@@ -75658,6 +75987,89 @@
             "text": "Carves a pumpkin into a carved pumpkin; four pumpkin seeds fall out.",
             "title": "Shears"
         },
+        "item:qtcraft:signal_dust_chunk": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Signal Dust chunk",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:signal_dust_chunk"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:signal_dust_chunk",
+            "id": "item:qtcraft:signal_dust_chunk",
+            "name": "qtcraft:signal_dust_chunk",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signal Dust"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:signal_dust_chunk",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:signal_dust_chunk",
+                                "note": "",
+                                "target": "item:qtcraft:signal_dust_chunk",
+                                "text": "Signal Dust chunk"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dust",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dust",
+                            "text": "Signal Dust"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                }
+            ],
+            "text": "A ninth of a Signal Dust: nine make one dust again, and one over a stick makes a Small Signal Torch.",
+            "title": "Signal Dust chunk"
+        },
         "item:qtcraft:slimeball": {
             "category": "items",
             "categoryTitle": "Items",
@@ -76129,6 +76541,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_torch",
                             "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
                         },
                         {
                             "icon": "qtcraft:small_torch",
@@ -85198,6 +85616,12 @@
                             "text": "Slime block"
                         },
                         {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
+                        },
+                        {
                             "icon": "qtcraft:small_torch",
                             "note": "0, from hardness",
                             "target": "block:qtcraft:small_torch",
@@ -85866,6 +86290,12 @@
                             "text": "Firefly glass"
                         },
                         {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "4 of 15",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
+                        },
+                        {
                             "icon": "qtcraft:magma_block",
                             "note": "3 of 15",
                             "target": "block:qtcraft:magma_block",
@@ -85936,6 +86366,12 @@
                             "note": "gives 15 unless its block is powered, 2 ticks after a change; burns out after 8 switches in 60 ticks",
                             "target": "block:qtcraft:signal_torch",
                             "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "gives 7 unless its block is powered, 2 ticks after a change; burns out after 8 switches in 60 ticks; does not power a block above it (a component on it still gets power)",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
                         },
                         {
                             "icon": "qtcraft:signal_observer",
@@ -87685,6 +88121,12 @@
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:signal_torch",
                             "text": "Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:small_signal_torch",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:small_signal_torch",
+                            "text": "Small Signal Torch"
                         },
                         {
                             "icon": "qtcraft:small_torch",

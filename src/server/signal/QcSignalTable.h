@@ -34,6 +34,9 @@ struct QcSignalState
     bool locked = false;
     // Comparators in subtract mode.
     bool subtract = false;
+    // Torches: whether a lit one strongly powers a conductor above it
+    // (QcSignalDefinition::strongPowersAbove).
+    bool strongPowersAbove = true;
     // Dust connections towards north, east, south and west.
     std::array<QcDustSide, 4> sides{};
     // A full solid opaque block that passes power (stone, lamps), whatever its kind.

@@ -71,6 +71,7 @@ qc_add_test(test_village_limits_measure SOURCES gameplay/test_village_limits_mea
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
 qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_signal_circuits SOURCES gameplay/test_signal_circuits.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_small_signal_torch SOURCES gameplay/test_small_signal_torch.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_bodies SOURCES gameplay/test_signal_bodies.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)

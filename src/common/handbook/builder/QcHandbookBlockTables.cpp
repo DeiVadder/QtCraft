@@ -110,6 +110,9 @@ QcHandbookEntry signalTable(const QcHandbookContext &context)
         if (!signal.conducts) {
             note += context.text.label(u"value.signal.insulates"_s);
         }
+        if (signal.kind == QcSignalKind::Torch && !signal.strongPowersAbove) {
+            note += context.text.label(u"value.signal.noStrongAbove"_s);
+        }
         roles[std::size_t(signalRole(signal.kind))].append({int(signal.kind), context.links.blockLink(block.name, note)});
     }
 

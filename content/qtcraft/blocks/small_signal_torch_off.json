@@ -1,0 +1,39 @@
+{
+    "name": "small_signal_torch_off",
+    "sound": "wood",
+    "shape": "small_torch",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "itemTexture": "small_signal_torch_item",
+    "textures": {
+        "all": "small_signal_torch_off",
+        "top": "small_signal_torch_off_top",
+        "bottom": "small_signal_torch_off"
+    },
+    "drops": [
+        {
+            "item": "small_signal_torch"
+        }
+    ],
+    "signal": {
+        "type": "torch",
+        "power": 7,
+        "strongPowersAbove": false,
+        "active": false,
+        "counterpart": "small_signal_torch"
+    },
+    "item": false
+}

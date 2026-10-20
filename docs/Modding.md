@@ -304,6 +304,7 @@ A block joins circuits with a `signal` object (decision E-333). `type` picks a b
 | `sticky`, `pushLimit`, `head` | Pistons: pull back the block in front, blocks pushed at most (default 12), the block of the extended head |
 | `quasiConnectivity` | Pistons: also powered through the block above them, noticed only on a block update next to them (default `true`; the world's game rule `quasiConnectivity` can switch it off for all) |
 | `active`, `counterpart` | Torches and lamps come as two blocks (light belongs to a block): `active` marks the lit one, `counterpart` names the other one with the same properties |
+| `strongPowersAbove` | Torches: whether a lit torch strongly powers a conductor above it, which passes the power on to dust and components around it (default `true`; the Small Signal Torch `false`, decision E-745). A component directly above a torch is powered either way |
 | `movable` | How pistons treat the block: `default` (unbreakable blocks stay, blocks that hang, wash away, flow or give way break, the rest moves), `push`, `immovable`, `breaks` |
 | `conducts` | Whether a full solid opaque block passes power (default `true`; pistons and heads `false`) |
 

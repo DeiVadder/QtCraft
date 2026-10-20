@@ -8,7 +8,7 @@
 // Who powers what (decision E-333), read from the world as it is. A source sends power directly
 // into its neighbouring components and dust (a lever into all six, a torch into all but its block,
 // a repeater only forwards) and strongly into a conductor (the block a lever or button hangs on,
-// the block under a plate, above a torch, in front of a repeater). Dust powers the block it lies on
+// the block under a plate, above a torch but not a small one, in front of a repeater). Dust powers the block it lies on
 // and the blocks its lines point at weakly. A strongly powered conductor powers neighbouring dust
 // and components; a weakly powered one only components, never dust, so dust does not feed itself
 // through blocks. All answers are maxima over the six faces: the order of the faces never matters.

@@ -167,6 +167,7 @@ void SignalReader::readKindFields()
     m_signal.quasiConnectivity = m_reader.boolean(u"quasiConnectivity"_s, true);
     m_signal.active = m_reader.boolean(u"active"_s, true);
     m_signal.counterpart = m_reader.name(u"counterpart"_s, m_namespace);
+    m_signal.strongPowersAbove = m_reader.boolean(u"strongPowersAbove"_s, true);
     m_signal.head = m_reader.name(u"head"_s, m_namespace);
     m_signal.usesItems = m_reader.boolean(u"uses"_s, true);
 }

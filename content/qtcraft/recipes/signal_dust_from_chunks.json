@@ -1,0 +1,15 @@
+{
+    "name": "signal_dust_from_chunks",
+    "type": "shaped",
+    "pattern": [
+        "CCC",
+        "CCC",
+        "CCC"
+    ],
+    "key": {
+        "C": "signal_dust_chunk"
+    },
+    "result": {
+        "item": "signal_dust"
+    }
+}

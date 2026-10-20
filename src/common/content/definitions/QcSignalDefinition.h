@@ -104,6 +104,9 @@ struct QcSignalDefinition
     // the lit one, `counterpart` names the other (same properties). Server side only.
     bool active = true;
     QString counterpart;
+    // Torches: strongly power a conductor above them (stone on top passes the power on); the small
+    // Signal Torch does not, though it still powers a component above it directly (decision E-745).
+    bool strongPowersAbove = true;
     // Pistons: the block of the extended head (`facing` like the piston, `sticky` from the piston).
     QString head;
     // Dispensers: use items with a dispense action (else every item is thrown, a dropper).
