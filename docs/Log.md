@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 04:20
+
+Etappe 57 erledigt: 57c Fassaden geteilt (`195aa03`; Registry mit vier Katalogen, `QcChunkSaveState` und `QcBlockEntityExtras` aus der Server-Welt, `QcWorldMirror` aus der Client-Session; zwei Reviews ohne Befund zum Verhalten). Fenster-Benchmark `@core` gegen `dev` vor 57a ohne Regression, voller Verify grün bis auf den neuen Test `app_offscreen_view_hidden_keeps_sections`, der unter TSan von einer festen Wartezeit abhing (zum Ausblenden noch kein Abschnitt gemesht); der Testhaken wartet jetzt auf gemeshte Abschnitte, der Test lief danach unter TSan zweimal grün. Weiter mit Etappe 47.
+
 ## 2026-10-20 02:05
 
 Fenster-Benchmark der Etappen 51 und 56 nachgeholt (`69b32e4` gegen `538cd8a`, `@core`, `@ui`, `explosive-chain`): keine Regression, Spitzenspeicher 3–16 % niedriger. Etappe 57: 57a Tick-Systeme als Liste (`0393ef5`), 57d Renderer-Ressourcen nach Lebensdauer und `FrameInput` (`1a034be`; dabei gefunden: nach einem QRhi-Wechsel wurden die Chunk-Meshes nie neu geschickt, jetzt `meshesLost`/`remeshAll`), 57b Schicht `qc_worlds` (`8bad1f3`; `src/app` ohne Server-Header und Server-Typen, gemeinsame Datentypen nach `common`/`network`) nach Review, Nachbesserung und zentralem TSan-Lauf in `dev`. 57c (Fassaden teilen) läuft.

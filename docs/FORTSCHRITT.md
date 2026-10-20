@@ -4,11 +4,11 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-Stand 2026-10-20 02:05. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
+Stand 2026-10-20 04:20. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
-- **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 51 und 56 erledigt (zuletzt 56e keine Ausgabeparameter `538cd8a`, E-694).
-- **Läuft:** Etappe 57: 57a Tick-Systeme als Liste (`0393ef5`, E-700), 57d Renderer-Ressourcen und `FrameInput` (`1a034be`, E-710) und 57b Schicht `qc_worlds` (`8bad1f3`, E-705) sind in `dev`; offen 57c Fassaden teilen (`feature/57c-facades`, E-715–E-719), danach voller Verify und Etappe 57 abschließen. Fenster-Benchmarks von 51 und 56 nachgeholt (2026-10-20, ohne Regression, `docs/Performance-Verlauf.md`).
-- **Danach:** Etappe 57 (Architektur entlasten: Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden teilen, `QcWorldRenderer` DeviceResources und FrameInput), dann 47 und 58; Reihenfolge in der Tabelle „Etappen“ (neu: 68 Rucksack nach 62).
+- **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 51, 56 und 57 erledigt (zuletzt 57c Fassaden geteilt `195aa03`, E-715–E-717; davor 57a Tick-Systeme `0393ef5`, 57d Renderer-Ressourcen `1a034be`, 57b Schicht `qc_worlds` `8bad1f3`).
+- **Läuft:** Etappe 47 (Feinschliff Darstellung, dazu UI-Skalierung und Zugänglichkeitsrollen, P16) wird geplant.
+- **Danach:** 58 (Client-Speicher bei 16 Chunks), 59 (Spielmodi Zuschauer und Abenteuer), 60–66 und 68; Reihenfolge in der Tabelle „Etappen“.
 - **Fenster-Läufe** nur nach Freigabe des Menschen; headless und offscreen sind erlaubt.
 
 ## Arbeitsweise und offene Messungen
@@ -93,7 +93,7 @@ Stand 2026-10-20 02:05. Ältere Stände und der Verlauf stehen datiert in `docs/
 | 46 | Client nach Zuständigkeit gliedern, Session-Tick auf eigenem Thread | erledigt | 2026-10-19 | vom Menschen 2026-10-13 eingeplant, am 2026-10-14 mit dem früheren Vorschlag 44 zusammengelegt (E-370); Punkt 46; 46.1 Client nach Zuständigkeit neu gliedern (auch Lebensdauer der Teile von `QcGameController`), 46.2 Session-Tick auf eigenem Thread; vor 40 (Gamepad) |
 | 40 | Gamepad-Unterstützung | erledigt | 2026-10-19 | früher 33; vom Menschen 2026-10-12 hinten angehängt; Punkt 40; SDL3 als Submodule (einmal gebaut, gemeinsamer Cache), Hotbar plus Radialmenü; nach 46.2 |
 | 56 | Aufräumen nach der Projektanalyse | erledigt (56a–56e, `538cd8a`) | | vom Menschen 2026-10-19 aus der Projektanalyse beauftragt; P1 (CI/Push) und P2 (Windows-VM) vorerst nicht; nach 51, vor 57, 47 und 58; P3 Pre-push-Hook mit den Strukturprüfungen, P4 alte Branches und Worktrees aufräumen, P7 Logging-Kategorien zentral (aus Etappe 50 vorgezogen), P8 gemeinsame Test-Fixtures, P9 Testauswahl nach Dateiinhalt statt Änderungszeit, P20 Doku: Schichtregel korrigieren, Abschlussbericht als historisch kennzeichnen, „Laufender Stand“ in ein datiertes Log |
-| 57 | Architektur entlasten | in Arbeit | | vom Menschen 2026-10-19 aus der Projektanalyse beauftragt; P1 (CI/Push) und P2 (Windows-VM) vorerst nicht; nach 56, vor 47; P10 Tick-Systeme des Servers als Liste, P11 eigene Schicht `qc_worlds` und strengere `LAYERS` für `app`, P12 Fassaden teilen: `QcContentRegistry`, `QcClientSession`, `QcServerWorld` |
+| 57 | Architektur entlasten | erledigt (57a–57d, `195aa03`) | | vom Menschen 2026-10-19 aus der Projektanalyse beauftragt; P1 (CI/Push) und P2 (Windows-VM) vorerst nicht; nach 56, vor 47; P10 Tick-Systeme des Servers als Liste, P11 eigene Schicht `qc_worlds` und strengere `LAYERS` für `app`, P12 Fassaden teilen: `QcContentRegistry`, `QcClientSession`, `QcServerWorld` |
 | 47 | Feinschliff Darstellung | geplant | | vom Menschen 2026-10-14 eingeplant (E-370, Projektzeugnis); Punkt 47; Beschriftungen nahe der HUD, anisotrope Filterung, Arm, Mindesthelligkeit, ruhigeres Laub; Screenshots vorher/nachher, GUI-Benchmark offen; vorgezogen vor neue Inhalte nach 51; dazu UI-Skalierung und Zugänglichkeitsrollen (P16); Reihenfolge vom Menschen 2026-10-19 aus der Projektanalyse beauftragt; P1 (CI/Push) und P2 (Windows-VM) vorerst nicht |
 | 58 | Client-Speicher bei 16 Chunks | geplant (ausgesetzt) | | vom Menschen 2026-10-19 aus der Projektanalyse beauftragt; P1 (CI/Push) und P2 (Windows-VM) vorerst nicht; nach 47; P14 Speicher des Clients bei Sichtweite 16 senken; braucht Fenster-Messungen, vom Menschen vorerst ausgesetzt |
 | 59 | Spielmodi Zuschauer und Abenteuer | geplant | | vom Menschen 2026-10-19 eingeplant, direkt nach 58; Zuschauer: durch Blöcke fliegen, unsichtbar, keine Interaktion (freie Kamera, aus dem Fotomodus herausgenommen); Abenteuer: kein Abbauen und Bauen außer wo erlaubt, wie im Vorbild |

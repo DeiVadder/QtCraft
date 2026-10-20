@@ -2309,3 +2309,7 @@ Release-Builds, `dev` `f9b1ab1` gegen `feature/51-2-explosives` nach dem Merge, 
 | handbook | −0,8 % | +2,8 % | +3,3 % | −5,4 % | −1,4 % | −3,5 % |
 
 Bewertung: keine Regression über der 10-%-Schwelle, die nicht in der Streuung liegt (stand Tick +10,7 % bei 77 % Streuung; crowd GPU +6,6 % unter der Schwelle). Der Spitzenspeicher sinkt in allen Szenarien um 3–16 % (56d: Bildschirme erst bei Bedarf geladen, `LazyScreen`). `explosive-chain` ist gegen `pre51` nicht vergleichbar (die Basis hat keinen Sprengstoff, die Szene sprengt dort nichts: Tick +1179 %, GUI-CPU +283 % sind die Explosionen selbst); absolut: Frame p99 10,2 ms, Tick Ø 1,77 ms, Spitzenspeicher 327 MB, innerhalb der Ziele aus `docs/Performance.md`. Damit sind die Fenster-Benchmarks von 51 und 56 nachgeholt.
+
+## Fenster: Etappe 57, Release (2026-10-20)
+
+`scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, rotierte Reihenfolge; Basis `pre57` = `538cd8a`, Kandidat `s57` = 57a–57d (Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden geteilt, Renderer-Ressourcen nach Lebensdauer und `FrameInput`). GPU Ø, Render-CPU Ø, GUI-CPU Ø, Tick Ø und Spitzenspeicher in allen vier Szenarien innerhalb von ±6 % (meist ±3 %); Frame p99 stand +11,7 % bei 55 % Streuung (die bekannte Zweiteilung je Lauf zwischen etwa 10 und 15 ms), sprint −8,5 %, showcase −9,7 %, crowd +0,4 %. Keine Regression. Headless (`@server`) für 57a und 57c je innerhalb von ±4 %.
