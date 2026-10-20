@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 15:15 (Pause)
+
+Pause auf Wunsch des Menschen. 62.2a und 62.2b mitten in der Arbeit angehalten, Stand je als WIP-Commit gesichert (ungeprüft). Aufträge: 62.2a Schild (Texteingabe, Text im Bild, Server-Prüfung), Notenblock (Bretter + Signalstaubstück, Instrument nach Block darunter), Zielblock (Heu + 4 Stücke, Stärke nach Trefferabstand), Signal-Kontrollleuchte (Glasscheibe + Stück, färbbar), Kompass und Uhr (Eisen bzw. Gold + 4 Stücke); 62.2b Räucherofen und Schmelzofen (Schmelz-Kategorien), Lagerfeuer (4 Kochplätze, Schaden, löschen und anzünden), Kuchen (7 Bissen), Seerose (Sumpf und Feuchtgebiet).
+
 ## 2026-10-20 14:45
 
 Etappe 61 in `dev` (`3fe1f5b`; nach Rückfragen des Menschen: Bauteil direkt auf der kleinen Signalfackel wird versorgt, ein Block darüber nicht stark; Rezept aus Signalstaubstücken). Größengrenzen in Code-Zeilen (`eeb4885`, E-760; 28 Stellen nach Zuständigkeit geteilt, eigenes Prüfskript für Funktionen). 62.1 Bauvarianten in `dev` (`8a2ba52`; Review: Protokoll 52, Laub an entrindeten Stämmen, bemooste Blöcke aus Ranken). 62.2a und 62.2b gestartet. Plan ergänzt: 62.2 mit Signal-Kontrollleuchte (färbbar), Stück-Rezepten, Kompass und Uhr; 71 Karten nach 62.4; 72 API-Dokumentation vor dem Release; voller Verify nur für komplette Etappen.
