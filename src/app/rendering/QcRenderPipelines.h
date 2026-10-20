@@ -34,8 +34,6 @@ inline constexpr float minimumLight = 0.08f;
 // minimumLight + skyLightFloor, under trees a little less, in caves without sky light it stays at
 // minimumLight. In daylight the sky light itself is brighter than the floor.
 inline constexpr float skyLightFloor = 0.16f;
-// Most samples the block shader takes along a slanted footprint (decision E-721).
-inline constexpr float anisotropicSamples = 8.0f;
 
 // A shader baked by qt_add_shaders (":/shaders/<name>.qsb"); invalid and logged in `category`
 // (the renderer that needs it) when missing.

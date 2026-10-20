@@ -30,6 +30,8 @@ struct QcGpuBuffers
 struct QcGpuMesh
 {
     QcGpuBuffers opaque;
+    // Cut-out faces of the opaque pass (alpha-tested, QcChunkMesh).
+    QcGpuBuffers cutout;
     QcGpuBuffers translucent;
     QcGpuBuffers water;
     // Faces towards the void below the world, drawn only from below y = 0 (QcChunkMesh).
@@ -38,9 +40,16 @@ struct QcGpuMesh
     QList<quint32> translucentRuns;
     QVector3D boundsMin;
     QVector3D boundsMax;
-    // GPU bytes of all four lists (section buffer statistics).
-    quint64 bytes() const { return opaque.bytes() + translucent.bytes() + water.bytes() + underside.bytes(); }
+    // GPU bytes of all five lists (section buffer statistics).
+    quint64 bytes() const { return opaque.bytes() + cutout.bytes() + translucent.bytes() + water.bytes() + underside.bytes(); }
     QVector3D centre() const { return (boundsMin + boundsMax) * 0.5f; }
+    // Whether a frame draws anything of the section: any list with faces; the underside only from
+    // below the world (a section of plants or leaves alone has only cut-out faces, decision E-756).
+    bool isDrawable(bool belowWorld) const
+    {
+        return opaque.indexCount > 0 || cutout.indexCount > 0 || translucent.indexCount > 0 || water.indexCount > 0
+               || (belowWorld && underside.indexCount > 0);
+    }
 };
 
 // The sections of the world on the GPU, one mesh per section key: the meshes received since the

@@ -6,6 +6,7 @@
 #include "clientcore/light/QcSky.h"
 #include "clientcore/meshing/QcChunkMesh.h"
 #include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/settings/QcGameSettings.h"
 #include "clientcore/weather/QcPrecipitationField.h"
 #include "common/core/QcAabb.h"
 #include "common/core/QcBlockPos.h"
@@ -51,6 +52,8 @@ public:
         QcSkyState sky = QcSky::at(QcDayCycle::startTime);
         float fogStart = 80.0f;
         float fogEnd = 128.0f;
+        // Most samples along a slanted footprint (decision E-721); 1 is plain mip mapping.
+        int anisotropicSamples = QcGameSettings::defaultTextureFiltering;
         // Outlined boxes of the targeted block in world space; empty for none.
         QList<QcAabb> selection;
         std::shared_ptr<const QcEntityMesh> entityMesh;
@@ -81,6 +84,8 @@ public:
     // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.
     void setSky(const QcSkyState &sky);
     void setFogRange(float start, float end);
+    // Texture filtering of the blocks (decision E-721): 1, 2, 4 or 8 samples.
+    void setAnisotropicSamples(int samples);
     // Debug visualisations for this frame (decision E-225); null or empty draws none.
     void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines);
     // Rain and snow for this frame, one instance per particle (QcPrecipitationField); null or empty

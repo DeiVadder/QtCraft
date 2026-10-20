@@ -73,7 +73,7 @@ An invalid or missing manifest makes the pack unusable; the settings show why.
 
 ## Image textures
 
-One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully transparent pixels are holes (leaves, plants, items); partial transparency is kept where the game draws a block as translucent (glass, water, ice). Faces of blocks, item icons and the body parts of figures use the same squares as the 16×16 originals, so the easiest start is an export at the resolution you want.
+One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully transparent pixels are holes on cut-out blocks (`"render": "cutout"`: leaves, plants, torches), on items and on figures; partial transparency is kept where the game draws a block as translucent (glass, water, ice). Blocks of the opaque layer (the default: stone, logs, planks and the like) are drawn without alpha test (decision E-756), so a transparent pixel in their textures shows in its colour, not as a hole; a texture pack must keep those textures fully opaque. Faces of blocks, item icons and the body parts of figures use the same squares as the 16×16 originals, so the easiest start is an export at the resolution you want.
 
 **Animation:** the game has no animated textures yet. A vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames) is accepted and its first frame is used; the settings note it.
 

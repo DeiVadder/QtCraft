@@ -800,6 +800,8 @@ There are no accounts: every installation has a random key that proves your name
 
 **Settings → Texture packs** changes how blocks, items, creatures, your character and the icons look. **QtCraft HD** paints the game's own textures at 32, 64 or 128 pixels with finer detail; **Storybook** is a small pack of drawn images with outlines and warm colours. Changes apply at once, also in a running world, and only on your computer: other players keep their own choice.
 
+**Settings → General → Texture filtering** keeps distant ground seen at a flat angle sharp and free of stripes and rings: *4×* by default, *8×* a little sharper still, *2×* and *Off* cost the graphics card less (*Off* shows rings on far grass).
+
 **Several packs at once**
 
 Switch on up to 16 packs. A pack you switch on goes to the top; the arrows change the order. For every texture the highest pack that has it wins, then the next one, and finally the game's own texture, so a small pack can change just a few blocks.

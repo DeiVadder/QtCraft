@@ -104,6 +104,14 @@ void QcWorldView::setFogRange(float start, float end)
     update();
 }
 
+void QcWorldView::setAnisotropicSamples(int samples)
+{
+    if (m_frame.anisotropicSamples != samples) {
+        m_frame.anisotropicSamples = samples;
+        update();
+    }
+}
+
 void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines)
 {
     if (lines || m_frame.debugLines) {

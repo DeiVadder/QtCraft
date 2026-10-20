@@ -31,6 +31,7 @@ Popup {
         languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
         cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
         uiScaleBox.currentIndex = uiScaleBox.indexOfValue(game.settings.uiScale);
+        textureFilteringBox.currentIndex = textureFilteringBox.indexOfValue(game.settings.textureFiltering);
         pages.currentIndex = startPage;
         controlsPage.clear();
     }
@@ -162,6 +163,29 @@ Popup {
                     }
                     Label {
                         text: qsTr("%1 %").arg(Math.round(fovEffects.value * 100))
+                    }
+
+                    // Filtering of surfaces seen at a flat angle (decision E-721): more samples keep
+                    // distant ground sharper and cost more GPU time.
+                    Label {
+                        text: qsTr("Texture filtering")
+                    }
+                    ComboBox {
+                        id: textureFilteringBox
+
+                        objectName: "textureFilteringBox"
+                        Accessible.name: qsTr("Texture filtering")
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 2
+                        textRole: "text"
+                        valueRole: "value"
+                        model: [
+                            { text: qsTr("Off"), value: GameSettings.TextureFiltering.Off },
+                            { text: qsTr("%1×").arg(2), value: GameSettings.TextureFiltering.X2 },
+                            { text: qsTr("%1×").arg(4), value: GameSettings.TextureFiltering.X4 },
+                            { text: qsTr("%1×").arg(8), value: GameSettings.TextureFiltering.X8 }
+                        ]
+                        onActivated: screen.game.settings.textureFiltering = currentValue
                     }
 
                     Label {

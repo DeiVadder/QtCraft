@@ -27,6 +27,9 @@ struct QcGameSettings
     static constexpr double defaultMouseSensitivity = 0.15;
     static constexpr double minMouseSensitivity = 0.02;
     static constexpr double maxMouseSensitivity = 1.0;
+    // Most samples the block shader takes along a slanted footprint (decision E-721): 1 (off), 2,
+    // 4 or 8.
+    static constexpr int defaultTextureFiltering = 4;
     // Volumes are shares in 0..1.
     static constexpr double defaultMasterVolume = 0.8;
     static constexpr double defaultEffectsVolume = 1.0;
@@ -50,6 +53,9 @@ struct QcGameSettings
     // Size of the HUD and the screens (decision E-725), stored as "uiScale" ("auto", "75" … "200");
     // an unknown value gives the default.
     QcUiScale::Step uiScale = QcUiScale::defaultStep;
+    // Texture filtering of surfaces seen at a flat angle, stored as "textureFiltering" (1, 2, 4 or
+    // 8 samples); another value gives the default.
+    int textureFiltering = defaultTextureFiltering;
     // The player's look; names are checked against the content by the server.
     QcAppearance appearance;
     // Looks the player saved under a name (at most QcCharacterProfile::maxPresets).
@@ -78,6 +84,8 @@ struct QcGameSettings
     static constexpr int maxTexturePacks = 16;
 
     static int clampViewDistance(int chunks);
+    // Whether `samples` is one of the texture filtering choices (1, 2, 4 or 8).
+    static bool isTextureFiltering(int samples) { return samples == 1 || samples == 2 || samples == 4 || samples == 8; }
     static double clampFieldOfView(double degrees);
     // Clamps to 0..1; NaN and infinities give the default (full effects), like the other clamps.
     static double clampFovEffects(double share);

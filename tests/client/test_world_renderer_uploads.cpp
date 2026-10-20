@@ -6,6 +6,7 @@
 // The game's shaders are not part of this test, so no pipeline exists and nothing is drawn, but the
 // uploads of every frame still go to the GPU.
 
+#include "app/rendering/QcGpuMeshStore.h"
 #include "app/rendering/QcWorldView.h"
 #include "clientcore/meshing/QcChunkMesh.h"
 
@@ -123,6 +124,27 @@ private slots:
     {
         if (!m_control) {
             QSKIP("no Metal device for the offscreen render control");
+        }
+    }
+
+    // A section is drawn when any of its lists has faces: one with only cut-out faces (plants or
+    // leaves alone above a section boundary) too; the underside only from below the world (E-756).
+    void sectionsWithOnlyCutOutFacesAreDrawable()
+    {
+        QcGpuMesh mesh;
+        QVERIFY(!mesh.isDrawable(false));
+        QVERIFY(!mesh.isDrawable(true));
+        mesh.cutout.indexCount = 6;
+        QVERIFY(mesh.isDrawable(false));
+        mesh.cutout.indexCount = 0;
+        mesh.underside.indexCount = 6;
+        QVERIFY(!mesh.isDrawable(false));
+        QVERIFY(mesh.isDrawable(true));
+        for (QcGpuBuffers *buffers : {&mesh.opaque, &mesh.translucent, &mesh.water}) {
+            mesh.underside.indexCount = 0;
+            buffers->indexCount = 6;
+            QVERIFY(mesh.isDrawable(false));
+            buffers->indexCount = 0;
         }
     }
 

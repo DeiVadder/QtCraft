@@ -800,6 +800,8 @@ Es gibt keine Konten: Jede Installation hat einen zufälligen Schlüssel, der au
 
 **Einstellungen → Texturpakete** ändert, wie Blöcke, Gegenstände, Wesen, deine Figur und die Symbole aussehen. **QtCraft HD** malt die eigenen Texturen des Spiels mit 32, 64 oder 128 Pixeln und feineren Details; **Storybook** ist ein kleines Paket gezeichneter Bilder mit Umrissen und warmen Farben. Änderungen gelten sofort, auch in einer laufenden Welt, und nur auf deinem Rechner: Andere Spieler behalten ihre eigene Wahl.
 
+**Einstellungen → Allgemein → Texturfilterung** hält entfernten Boden, den du flach siehst, scharf und frei von Streifen und Ringen: *4×* ist der Standard, *8×* noch etwas schärfer, *2×* und *Aus* belasten die Grafikkarte weniger (*Aus* zeigt Ringe auf fernem Gras).
+
 **Mehrere Pakete zugleich**
 
 Schalte bis zu 16 Pakete ein. Ein eingeschaltetes Paket kommt nach oben; die Pfeile ändern die Reihenfolge. Für jede Textur gilt das oberste Paket, das sie hat, dann das nächste und zuletzt die Textur des Spiels. So kann ein kleines Paket auch nur einige Blöcke ändern.

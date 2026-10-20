@@ -2313,3 +2313,30 @@ Bewertung: keine Regression über der 10-%-Schwelle, die nicht in der Streuung l
 ## Fenster: Etappe 57, Release (2026-10-20)
 
 `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, rotierte Reihenfolge; Basis `pre57` = `538cd8a`, Kandidat `s57` = 57a–57d (Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden geteilt, Renderer-Ressourcen nach Lebensdauer und `FrameInput`). GPU Ø, Render-CPU Ø, GUI-CPU Ø, Tick Ø und Spitzenspeicher in allen vier Szenarien innerhalb von ±6 % (meist ±3 %); Frame p99 stand +11,7 % bei 55 % Streuung (die bekannte Zweiteilung je Lauf zwischen etwa 10 und 15 ms), sprint −8,5 %, showcase −9,7 %, crowd +0,4 %. Keine Regression. Headless (`@server`) für 57a und 57c je innerhalb von ±4 %.
+
+## Fenster: Paket 47.1b (Texturfilterung, fester und ausgeschnittener Durchgang getrennt), Release (2026-10-20)
+
+`scripts/bench-ab.sh`, Szenarien stand, sprint, light, glass, 10 s je Lauf, adaptiv 3–6 Runden (alle Szenarien liefen 6), rotierte Reihenfolge, ruhige Maschine (Last < 4). Basis `pre` = Stand vor 47.1 (`dev` vor E-721), `o4` = 47.1 wie zusammengeführt (Filterung mit bis zu 8 Abtastungen, ein Shader mit `discard` für alle undurchsichtigen Blöcke), `sp4` = 47.1b (E-756: feste Flächen ohne `discard`, ausgeschnittene getrennt; Filterung „4×“, der Standard). GPU Ø ms, Mittel der Runden (Streuung in Klammern):
+
+| Szenario | pre | o4 (47.1) | sp4 (47.1b, Standard) |
+|----------|----:|----------:|----------------------:|
+| stand | 1,91 (2 %) | 2,71 (5 %), +41,7 % | 1,48 (8 %), **−22,7 %** |
+| sprint | 2,06 (4 %) | 2,85 (5 %), +38,4 % | 1,77 (5 %), **−14,3 %** |
+| light | 1,67 (2 %) | 2,24 (4 %), +33,6 % | 1,52 (7 %), **−9,0 %** |
+| glass | 2,10 (2 %) | 2,69 (16 %), +27,9 % | 2,08 (5 %), **−0,9 %** |
+
+Ursache der Kosten von 47.1 (Versuch vorab, `S/bench4`: derselbe Shader ohne `discard`, 3 Runden: stand −33 %, light −17 % gegenüber `pre`): Mit `discard` schattiert die GPU jede verdeckte Fläche (keine Hidden-Surface-Removal), die Filterung zählte je Überzeichnungsschicht. Mit der Trennung (E-756) ist der Standard billiger als der Stand vor 47.1. Frame p99, Render-CPU, GUI-CPU und Tick innerhalb der (großen) Streuung; Spitzenspeicher `sp4` +3,5 % (eigene Puffer je Abschnitt für die ausgeschnittenen Flächen, ein Shader mehr).
+
+Die Einstellungen der Filterung, zweite Reihe (3 Runden, sonst gleich; `sp1` = Aus, `sp2` = 2×, `sp8` = 8×, alle mit E-756), GPU Ø ms gegen `pre`:
+
+| Szenario | pre | sp1 (Aus) | sp2 | sp8 |
+|----------|----:|----------:|----:|----:|
+| stand | 1,92 (4 %) | 1,41 (2 %), −26,6 % | 1,50 (2 %), −22,0 % | 1,51 (1 %), −21,5 % |
+| sprint | 2,09 (1 %) | 1,57 (0 %), −24,9 % | 1,73 (7 %), −17,1 % | 1,79 (3 %), −14,1 % |
+| light | 1,66 (4 %) | 1,43 (2 %), −13,9 % | 1,54 (1 %), −7,4 % | 1,55 (4 %), −6,9 % |
+| glass | 2,10 (1 %) | 1,86 (1 %), −11,6 % | 2,10 (1 %), −0,2 % | 2,14 (1 %), +1,8 % |
+
+Die Filterung selbst kostet also gegenüber *Aus* rund 5–13 % GPU-Zeit (4× und 8× fast gleich: die Abtastzahl ist eine Zweierpotenz unter dem Seitenverhältnis, mehr als 4 kommt selten vor); Spitzenspeicher in allen Einstellungen +3–5 % (die getrennten Puffer, nicht die Filterung).
+
+Nachmessung nach der Korrektur der Sichtbarkeit (Abschnitte mit nur ausgeschnittenen Flächen wurden in der ersten Fassung nicht gezeichnet, E-756; `sp4b` = 7f69d77, 3 Runden, sonst gleich), GPU Ø ms gegen `pre`: stand 1,89 (4 %) → 1,51 (1 %), **−20,0 %**; sprint 2,07 (3 %) → 1,78 (3 %), **−13,9 %**; light 1,66 (4 %) → 1,55 (1 %), **−7,0 %**; glass 2,09 (3 %) → 2,11 (2 %), +0,9 %. Die Szenen der Benchmarks haben kaum solche Abschnitte (Gras und Blumen an Abschnittsgrenzen), die Werte der ersten Messung gelten also weiter; Spitzenspeicher +4–5 %.
+

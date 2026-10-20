@@ -43,6 +43,9 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
     // Size of the HUD and the screens (decision E-725): UiScaling.Step.Auto or Percent75 … Percent200.
     Q_PROPERTY(QcUiScaling::Step uiScale READ uiScale WRITE setUiScale NOTIFY settingsChanged FINAL)
+    // GameSettings.TextureFiltering.Off, X2, X4 or X8 (decision E-721).
+    Q_PROPERTY(QcSettingsController::TextureFiltering textureFiltering READ textureFiltering WRITE setTextureFiltering NOTIFY
+                   settingsChanged FINAL)
     // The player's keys.
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
@@ -58,6 +61,9 @@ public:
     // QcCameraMode for QML, in its order.
     enum class CameraMode { FirstPerson, Behind, Front, Side };
     Q_ENUM(CameraMode)
+    // Most samples along a slanted footprint (decision E-721); the value is the sample count.
+    enum class TextureFiltering { Off = 1, X2 = 2, X4 = 4, X8 = 8 };
+    Q_ENUM(TextureFiltering)
 
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
                          QObject *parent = nullptr);
@@ -99,6 +105,10 @@ public:
     void setCameraModeValue(QcCameraMode mode);
     QcUiScaling::Step uiScale() const { return QcUiScaling::fromValue(m_uiScale); }
     void setUiScale(QcUiScaling::Step step);
+    TextureFiltering textureFiltering() const { return m_textureFiltering; }
+    void setTextureFiltering(TextureFiltering filtering);
+    // Samples of the choice, for the renderer (1: plain mip mapping).
+    int textureFilteringSamples() const { return int(m_textureFiltering); }
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcCharacterSettings *character() const { return m_character; }
@@ -133,6 +143,7 @@ private:
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcUiScale::Step m_uiScale = QcUiScale::defaultStep;
+    TextureFiltering m_textureFiltering = TextureFiltering(QcGameSettings::defaultTextureFiltering);
     QString m_contentLanguage = QStringLiteral("en");
     QcGameSettings m_storedSettings;
     int m_commandLineViewDistance = 0;

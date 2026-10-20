@@ -6,6 +6,9 @@
 #include <QList>
 
 // Triangle mesh of one chunk section. Opaque and translucent geometry are drawn in separate passes.
+// Within the opaque pass the cut-out faces (leaves, plants, torches: QcRenderLayer::Cutout, texels
+// discarded by alpha) have lists of their own, so the solid faces are drawn by a pipeline without
+// `discard`, which lets the GPU reject hidden fragments before shading them (decision E-756).
 // Translucent liquids (water) have lists of their own, apart from the other translucent faces (glass,
 // ice), so a render mode can give water its own pipeline (decision E-390); today's renderer blends
 // both in one back-to-front pass, within a section in the order the mesher emitted them
@@ -17,6 +20,8 @@ struct QcChunkMesh
 {
     QList<QcBlockVertex> opaqueVertices;
     QList<quint32> opaqueIndices;
+    QList<QcBlockVertex> cutoutVertices;
+    QList<quint32> cutoutIndices;
     QList<QcBlockVertex> translucentVertices;
     QList<quint32> translucentIndices;
     QList<QcBlockVertex> waterVertices;
@@ -34,6 +39,7 @@ struct QcChunkMesh
 
     bool isEmpty() const
     {
-        return opaqueIndices.isEmpty() && translucentIndices.isEmpty() && waterIndices.isEmpty() && undersideIndices.isEmpty();
+        return opaqueIndices.isEmpty() && cutoutIndices.isEmpty() && translucentIndices.isEmpty() && waterIndices.isEmpty()
+               && undersideIndices.isEmpty();
     }
 };

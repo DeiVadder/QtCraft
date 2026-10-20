@@ -15,7 +15,7 @@
 <context>
     <name>SettingsScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="126"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="127"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>

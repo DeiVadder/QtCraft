@@ -80,7 +80,12 @@ QcGameController::QcGameController(QObject *parent)
     m_gamepad.setSettings(m_settings->gamepad());
     // The pad asks for screens as their keys do (decision E-580).
     connect(&m_gamepad, &QcGamepadControls::worldAction, m_input.get(), &QcGameInput::worldAction);
-    connect(m_settings.get(), &QcSettingsController::settingsChanged, this, [this] { m_gamepad.setSettings(m_settings->gamepad()); });
+    connect(m_settings.get(), &QcSettingsController::settingsChanged, this, [this] {
+        m_gamepad.setSettings(m_settings->gamepad());
+        if (m_parts.view) {
+            m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
+        }
+    });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
     // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
     // menu draws its icons and previews again.
@@ -140,6 +145,7 @@ void QcGameController::setView(QcWorldView *view)
             attachWindow(m_parts.view->window());
         }
         connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
+        m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
         connect(m_parts.view, &QcWorldView::meshesLost, this, [this] {
             if (m_parts.meshes) {
                 m_parts.meshes->remeshAll();

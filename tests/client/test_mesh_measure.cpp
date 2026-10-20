@@ -82,6 +82,7 @@ class TestMeshMeasure : public QObject
             meshNs += ns;
             maxNs = std::max(maxNs, ns);
             opaque.add(mesh.opaqueVertices, mesh.opaqueIndices);
+            opaque.add(mesh.cutoutVertices, mesh.cutoutIndices);
             translucent.add(mesh.translucentVertices, mesh.translucentIndices);
             water.add(mesh.waterVertices, mesh.waterIndices);
             underside.add(mesh.undersideVertices, mesh.undersideIndices);

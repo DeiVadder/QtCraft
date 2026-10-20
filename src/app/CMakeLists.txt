@@ -278,6 +278,16 @@ qt_add_shaders(qtcraft "qtcraft_opaque_shaders"
     OUTPUTS
         shaders/block_opaque.frag.qsb
 )
+# The solid blocks of the opaque pass are drawn without alpha test (decision E-756).
+qt_add_shaders(qtcraft "qtcraft_solid_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_OPAQUE=1 QC_SOLID=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+    OUTPUTS
+        shaders/block_solid.frag.qsb
+)
 
 qt_add_translations(qtcraft
     SOURCE_TARGETS qtcraft qc_app_core qc_clientcore qc_server qc_worlds qc_network

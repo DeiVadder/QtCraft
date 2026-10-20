@@ -444,8 +444,9 @@ public:
 private:
     static constexpr float maxLevel = float(Lighting::maxLevel);
 
-    // `open` is the cell the face looks into; an opaque face looking below the world goes to the
-    // underside lists, translucent liquids to the water lists.
+    // `open` is the cell the face looks into; translucent liquids go to the water lists, cut-out
+    // faces to the cutout lists (also below the world: they are never drawn without alpha test), a
+    // solid face looking below the world to the underside lists.
     Output outputFor(const Entry &entry, Cell open)
     {
         if (entry.material == QcSurfaceMaterial::Water) {
@@ -453,6 +454,9 @@ private:
         }
         if (entry.layer == QcRenderLayer::Translucent) {
             return {m_mesh.translucentVertices, m_mesh.translucentIndices, &m_mesh.translucentRuns, 1};
+        }
+        if (entry.layer == QcRenderLayer::Cutout) {
+            return {m_mesh.cutoutVertices, m_mesh.cutoutIndices};
         }
         if (open.y < 0) {
             return {m_mesh.undersideVertices, m_mesh.undersideIndices};

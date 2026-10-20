@@ -407,6 +407,63 @@ private slots:
         }
     }
 
+    // Blocks of the opaque layer are drawn without alpha test (decision E-756): none of their
+    // textures may have a transparent texel, else it would show in its colour.
+    void opaqueBlocksHaveNoTransparentTexels()
+    {
+        const auto content = QcTestUtil::baseContent();
+        QVERIFY(content.has_value());
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry);
+        const auto hasTransparentTexel = [&atlas](const QString &texture) {
+            const QImage tile = atlas.tile(texture).convertToFormat(QImage::Format_RGBA8888);
+            for (int y = 0; y < tile.height(); ++y) {
+                for (int x = 0; x < tile.width(); ++x) {
+                    if (tile.pixelColor(x, y).alpha() < QcAlphaCoverage::cutoff) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        int checked = 0;
+        for (const QcBlockDefinition &block : content->registry->blocks()) {
+            if (block.renderLayer != QcRenderLayer::Opaque) {
+                continue;
+            }
+            QStringList textures(block.faceTextures.begin(), block.faceTextures.end());
+            for (const auto &[slot, texture] : block.textureSlots) {
+                textures.append(texture);
+            }
+            for (const QString &texture : textures) {
+                if (texture.isEmpty()) {
+                    continue;
+                }
+                ++checked;
+                QVERIFY2(!hasTransparentTexel(texture), qPrintable(block.name + u": "_s + texture));
+            }
+        }
+        QVERIFY(checked > 100);
+        QVERIFY2(atlas.problems().isEmpty(), qPrintable(atlas.problems().join(u"; "_s)));
+
+        // The atlas reports the same for a block definition in the game and in the log; every
+        // bundled HD pack keeps the opaque textures opaque too.
+        QcBlockDefinition holed = content->registry->block(*content->registry->blockId(u"qtcraft:stone"_s));
+        holed.name = u"t:holed"_s;
+        holed.faceTextures.fill(u"qtcraft:oak_leaves"_s);
+        QcContentRegistry withHole = *content->registry;
+        QVERIFY(withHole.registerBlock(holed).has_value());
+        const QStringList problems = QcTextureAtlas::build(withHole).problems();
+        QCOMPARE(problems.size(), 1);
+        QVERIFY2(problems.front().contains(u"t:holed"_s) && problems.front().contains(u"transparent texels"_s), qPrintable(problems.front()));
+        const QList<QcTexturePackLibrary::Entry> entries = QcTexturePackLibrary::scan(QcTexturePackLibrary::roots({}));
+        for (const QString &id : {u"builtin:qtcraft_hd_32"_s, u"builtin:qtcraft_hd_64"_s, u"builtin:qtcraft_hd_128"_s, u"builtin:storybook_32"_s}) {
+            const QcTextureStackBuild::Result built = QcTextureStackBuild::run(stackRequest({id}, entries, {}, content->registry));
+            QVERIFY2(built.atlas, qPrintable(id));
+            QVERIFY2(built.atlas->problems().isEmpty(), qPrintable(id + u": "_s + built.atlas->problems().join(u"; "_s)));
+        }
+    }
+
     // Other content (other textures) means other UVs: then the game makes a new render table and
     // meshes (QcWorldAtlas::apply); the same content never does.
     void otherContentChangesTheLayout()

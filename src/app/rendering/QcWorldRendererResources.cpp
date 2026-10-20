@@ -226,9 +226,11 @@ void QcWorldPassResources::createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *tar
     const QShader fragmentShader = loadShader(u":/shaders/block.frag.qsb"_s, lcRenderer());
     // The opaque pass writes alpha 1 (decision E-332): mip levels give cut-out texels an alpha
     // between 0 and 1, which a screenshot or a transparent target would read as half transparent. A
-    // colour write mask without alpha did the same but cost up to a third more GPU time.
-    const QShader opaqueFragmentShader = loadShader(u":/shaders/block_opaque.frag.qsb"_s, lcRenderer());
-    opaquePipeline = blocks.build(opaqueFragmentShader, false);
+    // colour write mask without alpha did the same but cost up to a third more GPU time. Its solid
+    // faces take a shader without `discard`, so the GPU shades only the fragments that stay visible
+    // (decision E-756); the cut-out faces keep the alpha test.
+    solidPipeline = blocks.build(loadShader(u":/shaders/block_solid.frag.qsb"_s, lcRenderer()), false);
+    cutoutPipeline = blocks.build(loadShader(u":/shaders/block_opaque.frag.qsb"_s, lcRenderer()), false);
     translucentPipeline = blocks.build(fragmentShader, true);
     waterPipeline = blocks.build(fragmentShader, true);
 
@@ -274,7 +276,8 @@ void QcWorldPassResources::createOutlinePipeline(QRhi *rhi, QRhiRenderTarget *ta
 
 void QcWorldPassResources::releaseAtlasPipelines()
 {
-    opaquePipeline.reset();
+    solidPipeline.reset();
+    cutoutPipeline.reset();
     translucentPipeline.reset();
     waterPipeline.reset();
     entityPipeline.reset();

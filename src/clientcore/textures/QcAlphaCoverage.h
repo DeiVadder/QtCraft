@@ -16,6 +16,10 @@ namespace QcAlphaCoverage {
 // The shader discards texels with alpha below 0.1.
 inline constexpr int cutoff = 26;
 
+// True when `tile` (RGBA8888) has a texel the shader would discard (alpha below the cut-off):
+// such a texture must not be used by a block of the opaque layer, which is drawn without alpha
+// test (decision E-756).
+bool hasTexelBelowCutoff(const QImage &tile);
 // Per tile: the share of texels at or above the cut-off for cut-out tiles (alpha only 0 or 255,
 // with at least one transparent texel), -1 for all others.
 QList<double> measure(const QImage &level, QcAtlasLayout layout, qsizetype tiles, int tileSize);

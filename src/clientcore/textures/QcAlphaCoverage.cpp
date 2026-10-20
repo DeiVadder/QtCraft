@@ -7,6 +7,20 @@
 
 namespace QcAlphaCoverage {
 
+bool hasTexelBelowCutoff(const QImage &tile)
+{
+    const QImage image = tile.format() == QImage::Format_RGBA8888 ? tile : tile.convertToFormat(QImage::Format_RGBA8888);
+    for (int y = 0; y < image.height(); ++y) {
+        const uchar *line = image.constScanLine(y);
+        for (int x = 0; x < image.width(); ++x) {
+            if (line[std::ptrdiff_t(x) * 4 + 3] < cutoff) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 namespace {
 
 // Alpha of texel (x, y) of the tile whose top left corner is `origin`.

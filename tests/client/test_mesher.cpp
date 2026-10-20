@@ -143,10 +143,12 @@ private slots:
         in.sectionIndex = 1;
         const QcChunkMesh mesh = QcChunkMesher::mesh(in);
 
-        // Four quads of the plant plus all six faces of the stone below: the plant hides nothing.
-        QCOMPARE(quadCount(mesh.opaqueIndices), 4 + 6);
+        // Four quads of the plant in the cut-out list, all six faces of the stone below in the
+        // solid one: the plant hides nothing.
+        QCOMPARE(quadCount(mesh.opaqueIndices), 6);
+        QCOMPARE(quadCount(mesh.cutoutIndices), 4);
         int plantVertices = 0;
-        for (const QcBlockVertex &v : mesh.opaqueVertices) {
+        for (const QcBlockVertex &v : mesh.cutoutVertices) {
             // Stone corners lie on whole coordinates, the inset plant corners strictly inside.
             if (v.x > 3.0f && v.x < 4.0f) {
                 ++plantVertices;
@@ -158,16 +160,16 @@ private slots:
 
         // Each diagonal is drawn once from each side: the triangles of a pair face opposite ways.
         const auto normal = [&mesh](int quad) {
-            const quint32 *index = mesh.opaqueIndices.constData() + qsizetype(quad) * 6;
-            const QVector3D a = position(mesh.opaqueVertices[index[0]]);
-            const QVector3D b = position(mesh.opaqueVertices[index[1]]);
-            const QVector3D c = position(mesh.opaqueVertices[index[2]]);
+            const quint32 *index = mesh.cutoutIndices.constData() + qsizetype(quad) * 6;
+            const QVector3D a = position(mesh.cutoutVertices[index[0]]);
+            const QVector3D b = position(mesh.cutoutVertices[index[1]]);
+            const QVector3D c = position(mesh.cutoutVertices[index[2]]);
             return QVector3D::crossProduct(b - a, c - a).normalized();
         };
 
         int pairs = 0;
-        for (int i = 0; i < 10; ++i) {
-            for (int j = i + 1; j < 10; ++j) {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = i + 1; j < 4; ++j) {
                 if (std::abs(normal(i).y()) < 0.01f && (normal(i) + normal(j)).length() < 0.01f) {
                     ++pairs;
                 }
@@ -282,16 +284,17 @@ private slots:
         plant->setBlock(3, 0, 5, f.sapling);
         const QcChunkMesh plantMesh = QcChunkMesher::mesh(f.input(plant));
         QVERIFY(plantMesh.undersideIndices.isEmpty());
-        QCOMPARE(quadCount(plantMesh.opaqueIndices), 4);
+        QCOMPARE(quadCount(plantMesh.cutoutIndices), 4);
 
-        // Leaves (cutout) are drawn in the opaque pass: their down face goes to the underside.
+        // Leaves (cutout) keep their down face in the cut-out list: the underside is drawn without
+        // alpha test (decision E-756).
         auto leaves = std::make_shared<QcChunk>();
         leaves->setBlock(3, 0, 5, f.leaves);
         const QcChunkMesh leavesMesh = QcChunkMesher::mesh(f.input(leaves));
-        QCOMPARE(quadCount(leavesMesh.undersideIndices), 1);
-        QCOMPARE(facesDown(leavesMesh.undersideVertices), 1);
-        QCOMPARE(quadCount(leavesMesh.opaqueIndices), 5);
-        QCOMPARE(facesDown(leavesMesh.opaqueVertices), 0);
+        QVERIFY(leavesMesh.undersideIndices.isEmpty());
+        QVERIFY(leavesMesh.opaqueIndices.isEmpty());
+        QCOMPARE(quadCount(leavesMesh.cutoutIndices), 6);
+        QCOMPARE(facesDown(leavesMesh.cutoutVertices), 1);
 
         // Glass (translucent) keeps its down face in the translucent list, sorted with the rest.
         auto glass = std::make_shared<QcChunk>();
@@ -429,24 +432,28 @@ private slots:
             QCOMPARE(v.material(), QcSurfaceMaterial::Translucent);
         }
 
+        // Solid faces in the opaque list, cut-out faces and plants in the cut-out list (E-756).
         QMap<QcSurfaceMaterial, int> materials;
-        for (qsizetype i = 0; i < mesh.opaqueVertices.size(); i += 4) {
-            const QcBlockVertex &first = mesh.opaqueVertices[i];
-            ++materials[first.material()];
-            if (first.material() == QcSurfaceMaterial::Plant) {
-                QVERIFY(!first.normal());
-                continue;
-            }
-            // The normal is the face's direction: all four corners lie in its plane.
-            const QcBlockFace face = *first.normal();
-            const QcFaceOffset offset = qcFaceOffset(face);
-            for (qsizetype k = i; k < i + 4; ++k) {
-                QCOMPARE(mesh.opaqueVertices[k].normal(), std::optional<QcBlockFace>(face));
-                QCOMPARE(mesh.opaqueVertices[k].x * float(offset.dx), first.x * float(offset.dx));
-                QCOMPARE(mesh.opaqueVertices[k].y * float(offset.dy), first.y * float(offset.dy));
-                QCOMPARE(mesh.opaqueVertices[k].z * float(offset.dz), first.z * float(offset.dz));
+        for (const QList<QcBlockVertex> *vertices : {&mesh.opaqueVertices, &mesh.cutoutVertices}) {
+            for (qsizetype i = 0; i < vertices->size(); i += 4) {
+                const QcBlockVertex &first = (*vertices)[i];
+                ++materials[first.material()];
+                if (first.material() == QcSurfaceMaterial::Plant) {
+                    QVERIFY(!first.normal());
+                    continue;
+                }
+                // The normal is the face's direction: all four corners lie in its plane.
+                const QcBlockFace face = *first.normal();
+                const QcFaceOffset offset = qcFaceOffset(face);
+                for (qsizetype k = i; k < i + 4; ++k) {
+                    QCOMPARE((*vertices)[k].normal(), std::optional<QcBlockFace>(face));
+                    QCOMPARE((*vertices)[k].x * float(offset.dx), first.x * float(offset.dx));
+                    QCOMPARE((*vertices)[k].y * float(offset.dy), first.y * float(offset.dy));
+                    QCOMPARE((*vertices)[k].z * float(offset.dz), first.z * float(offset.dz));
+                }
             }
         }
+        QCOMPARE(mesh.opaqueVertices.size(), 24);
         QCOMPARE(materials.value(QcSurfaceMaterial::Solid), 6);
         QCOMPARE(materials.value(QcSurfaceMaterial::Cutout), 6);
         QCOMPARE(materials.value(QcSurfaceMaterial::Plant), 4);
@@ -492,7 +499,7 @@ private slots:
         chunk->setBlock(5, 2, 5, f.leaves);
         chunk->setBlock(6, 2, 5, f.leaves);
         const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
-        QCOMPARE(quadCount(mesh.opaqueIndices), 12);
+        QCOMPARE(quadCount(mesh.cutoutIndices), 12);
     }
 
     void openSkyIsFullyLit()

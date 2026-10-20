@@ -119,6 +119,42 @@ private slots:
         QCOMPARE(loaded.uiScale(), QcUiScaling::Step::Percent175);
     }
 
+    // Texture filtering (decision E-721) is an enumeration property whose values are the sample
+    // counts; an unknown value warns and changes nothing, the choice is saved and read back.
+    void textureFilteringIsAnEnumAndPersists()
+    {
+        QcSessionParts parts;
+        QcAudioEngine audio;
+        QcWorldLibraryController library;
+        using Filtering = QcSettingsController::TextureFiltering;
+        {
+            QcSettingsController settings(parts, library, &audio);
+            const QMetaProperty property = settings.metaObject()->property(settings.metaObject()->indexOfProperty("textureFiltering"));
+            QVERIFY(property.isEnumType());
+            QCOMPARE(settings.textureFiltering(), Filtering::X4);
+            QCOMPARE(settings.textureFilteringSamples(), 4);
+            QSignalSpy changed(&settings, &QcSettingsController::settingsChanged);
+
+            QVERIFY(settings.setProperty("textureFiltering", int(Filtering::Off)));
+            QCOMPARE(settings.textureFilteringSamples(), 1);
+            QCOMPARE(changed.count(), 1);
+            settings.setTextureFiltering(Filtering::Off);
+            QCOMPARE(changed.count(), 1);
+
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown texture filtering 3"_s));
+            settings.setTextureFiltering(Filtering(3));
+            QCOMPARE(settings.textureFiltering(), Filtering::Off);
+
+            settings.setTextureFiltering(Filtering::X8);
+            settings.saveSettings();
+        }
+
+        QcSettingsController loaded(parts, library, &audio);
+        loaded.loadSettings();
+        QCOMPARE(loaded.textureFiltering(), Filtering::X8);
+        QCOMPARE(loaded.textureFilteringSamples(), 8);
+    }
+
     // The preview's animation is an enumeration property in QcPreviewPose's order.
     void previewAnimationIsAnEnum()
     {

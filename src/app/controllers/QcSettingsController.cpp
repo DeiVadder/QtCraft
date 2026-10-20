@@ -72,6 +72,7 @@ void QcSettingsController::loadSettings()
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
     m_uiScale = m_storedSettings.uiScale;
+    m_textureFiltering = TextureFiltering(m_storedSettings.textureFiltering);
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings.audio);
@@ -101,6 +102,7 @@ void QcSettingsController::saveSettings()
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.uiScale = m_uiScale;
+    settings.textureFiltering = int(m_textureFiltering);
     settings.appearance = m_character->appearance();
     settings.characterPresets = m_character->savedPresets();
     settings.audio = m_audio->volumes();
@@ -234,5 +236,20 @@ void QcSettingsController::setUiScale(QcUiScaling::Step step)
     }
 
     m_uiScale = QcUiScaling::toValue(step);
+    emit settingsChanged();
+}
+
+void QcSettingsController::setTextureFiltering(TextureFiltering filtering)
+{
+    if (!QcGameSettings::isTextureFiltering(int(filtering))) {
+        qCWarning(lcGame) << "Ignoring unknown texture filtering" << int(filtering);
+        return;
+    }
+    // The same choice again changes nothing (the screen's box sets it on every choice).
+    if (filtering == m_textureFiltering) {
+        return;
+    }
+
+    m_textureFiltering = filtering;
     emit settingsChanged();
 }

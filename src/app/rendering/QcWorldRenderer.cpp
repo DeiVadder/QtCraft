@@ -15,7 +15,6 @@
 #include <utility>
 
 using QcRenderPipelines::FrameUniforms;
-using QcRenderPipelines::anisotropicSamples;
 using QcRenderPipelines::minimumLight;
 using QcRenderPipelines::skyLightFloor;
 
@@ -159,7 +158,7 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.atlas[0] = float(m_device.atlasGrid.width());
     uniforms.atlas[1] = float(m_device.atlasGrid.height());
     uniforms.atlas[2] = m_device.atlasCellPixels;
-    uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? anisotropicSamples : 1.0f;
+    uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? float(m_frame.anisotropicSamples) : 1.0f;
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
@@ -286,8 +285,7 @@ QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjectio
     const QcGpuMeshStore::Meshes &meshes = m_meshStore.meshes();
     view.visible.reserve(qsizetype(meshes.size()));
     for (const auto &[key, mesh] : meshes) {
-        const bool drawable = mesh.opaque.indexCount > 0 || mesh.translucent.indexCount > 0 || mesh.water.indexCount > 0 || view.belowWorld;
-        if (drawable && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
+        if (mesh.isDrawable(view.belowWorld) && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
             view.visible.append(&mesh);
         }
     }
@@ -296,13 +294,28 @@ QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjectio
 
 void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
-    commandBuffer->setGraphicsPipeline(m_pass.opaquePipeline.get());
+    commandBuffer->setGraphicsPipeline(m_pass.solidPipeline.get());
     commandBuffer->setShaderResources();
     for (const QcGpuMesh *mesh : view.visible) {
         drawBuffers(commandBuffer, mesh->opaque);
         if (view.belowWorld) {
             drawBuffers(commandBuffer, mesh->underside);
         }
+    }
+
+    // The cut-out faces after all solid ones (decision E-756): with the depth of the solid world
+    // written first, most of their hidden fragments fail the depth test before shading too.
+    bool cutoutPipelineSet = false;
+    for (const QcGpuMesh *mesh : view.visible) {
+        if (mesh->cutout.indexCount == 0) {
+            continue;
+        }
+        if (!cutoutPipelineSet) {
+            commandBuffer->setGraphicsPipeline(m_pass.cutoutPipeline.get());
+            commandBuffer->setShaderResources();
+            cutoutPipelineSet = true;
+        }
+        drawBuffers(commandBuffer, mesh->cutout);
     }
 }
 

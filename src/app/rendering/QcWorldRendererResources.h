@@ -83,7 +83,7 @@ struct QcWorldPassResources
     // same sample count (QRhiRenderPassDescriptor::isCompatible is not documented to compare it).
     [[nodiscard]] bool fits(const QRhiRenderTarget *target) const;
     // Whether the block pipelines exist, without which the world is not drawn.
-    [[nodiscard]] bool hasBlockPipelines() const { return opaquePipeline && translucentPipeline && waterPipeline; }
+    [[nodiscard]] bool hasBlockPipelines() const { return solidPipeline && cutoutPipeline && translucentPipeline && waterPipeline; }
 
     // The block, water, entity and hand pipelines for `target`, all with `atlasBindings`
     // (QcWorldDeviceResources::atlasBindings); remembers the pass and sample count they were built
@@ -96,7 +96,10 @@ struct QcWorldPassResources
     // tried again; the outline and the sub-renderers do not read the atlas and stay.
     void releaseAtlasPipelines();
 
-    std::unique_ptr<QRhiGraphicsPipeline> opaquePipeline;
+    // The opaque pass: solid faces without alpha test, cut-out faces (leaves, plants) with it
+    // (decision E-756).
+    std::unique_ptr<QRhiGraphicsPipeline> solidPipeline;
+    std::unique_ptr<QRhiGraphicsPipeline> cutoutPipeline;
     std::unique_ptr<QRhiGraphicsPipeline> translucentPipeline;
     // The water lists; today the same shaders and blending as translucentPipeline.
     std::unique_ptr<QRhiGraphicsPipeline> waterPipeline;

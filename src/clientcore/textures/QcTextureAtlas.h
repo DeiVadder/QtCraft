@@ -71,6 +71,10 @@ private:
     int m_tileSize = 16;
     int m_requestedTileSize = 16;
     QHash<QString, QRectF> m_uvs;
+    // One problem per texture with a transparent texel that a block of the opaque layer uses: it
+    // is drawn without alpha test (decision E-756).
+    QStringList transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const;
+
     QStringList m_problems;
     QcTexturePackProblems m_notices;
     QHash<QString, int> m_sources;

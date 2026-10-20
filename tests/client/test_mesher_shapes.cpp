@@ -403,7 +403,8 @@ private slots:
     {
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(5, 20, 5, *m_f.content.blockId(u"t:torch"_s));
-        const QList<Quad> list = quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).opaqueVertices);
+        // A torch is cut out: its faces lie in the cut-out list (decision E-756).
+        const QList<Quad> list = quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).cutoutVertices);
 
         // A thin box: six faces. All but the bottom lie inside the cell and get the torch's own
         // light; the bottom lies on the floor of the cell and is lit by the cells below (level 13 and

@@ -73,6 +73,7 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
 
         QcGpuMesh gpuMesh;
         gpuMesh.opaque = createBuffers(updates, mesh->opaqueVertices, mesh->opaqueIndices);
+        gpuMesh.cutout = createBuffers(updates, mesh->cutoutVertices, mesh->cutoutIndices);
         gpuMesh.translucent = createBuffers(updates, mesh->translucentVertices, mesh->translucentIndices);
         gpuMesh.water = createBuffers(updates, mesh->waterVertices, mesh->waterIndices);
         gpuMesh.underside = createBuffers(updates, mesh->undersideVertices, mesh->undersideIndices);
@@ -81,7 +82,8 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
         QVector3D low(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
                       std::numeric_limits<float>::max());
         QVector3D high = -low;
-        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices, &mesh->waterVertices, &mesh->undersideVertices}) {
+        for (const QList<QcBlockVertex> *list :
+             {&mesh->opaqueVertices, &mesh->cutoutVertices, &mesh->translucentVertices, &mesh->waterVertices, &mesh->undersideVertices}) {
             for (const QcBlockVertex &vertex : *list) {
                 low = QVector3D(std::min(low.x(), vertex.x), std::min(low.y(), vertex.y), std::min(low.z(), vertex.z));
                 high = QVector3D(std::max(high.x(), vertex.x), std::max(high.y(), vertex.y), std::max(high.z(), vertex.z));

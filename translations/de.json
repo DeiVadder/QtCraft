@@ -789,5 +789,7 @@
     "Edit sign": "Schild beschriften",
     "Line %1 of the sign": "Zeile %1 des Schilds",
     "%1 on the keyboard goes to the next line": "%1 auf der Tastatur springt zur nächsten Zeile",
-    "Enter goes to the next line, Esc is done": "Enter springt zur nächsten Zeile, Esc beendet"
+    "Enter goes to the next line, Esc is done": "Enter springt zur nächsten Zeile, Esc beendet",
+    "Texture filtering": "Texturfilterung",
+    "%1×": "%1×"
 }

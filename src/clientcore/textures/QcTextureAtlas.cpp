@@ -6,6 +6,7 @@
 #include "clientcore/textures/QcPixelFont.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
+#include <QSet>
 #include <QThread>
 #include <QtGlobal>
 
@@ -171,8 +172,35 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
             }
         }
     }
+    atlas.m_problems.append(atlas.transparentTexelsOfOpaqueBlocks(content));
     atlas.m_problems.removeDuplicates();
     return atlas;
+}
+
+QStringList QcTextureAtlas::transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const
+{
+    QStringList problems;
+    QSet<QString> checked;
+    for (const QcBlockDefinition &block : content.blocks()) {
+        if (block.renderLayer != QcRenderLayer::Opaque) {
+            continue;
+        }
+        QStringList textures(block.faceTextures.begin(), block.faceTextures.end());
+        for (const auto &[slot, texture] : block.textureSlots) {
+            textures.append(texture);
+        }
+        for (const QString &texture : textures) {
+            if (texture.isEmpty() || !m_uvs.contains(texture) || checked.contains(texture)) {
+                continue;
+            }
+            checked.insert(texture);
+            if (QcAlphaCoverage::hasTexelBelowCutoff(tile(texture))) {
+                problems.append(u"Block %1 of the opaque layer uses texture %2 with transparent texels; they are drawn in their colour (render it as cutout)"_s
+                                    .arg(block.name, texture));
+            }
+        }
+    }
+    return problems;
 }
 
 qint64 QcTextureAtlas::bytes() const
