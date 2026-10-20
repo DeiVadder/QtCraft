@@ -1,0 +1,16 @@
+{
+    "name": "chain",
+    "type": "shaped",
+    "pattern": [
+        "N",
+        "I",
+        "N"
+    ],
+    "key": {
+        "N": "iron_nugget",
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "chain"
+    }
+}

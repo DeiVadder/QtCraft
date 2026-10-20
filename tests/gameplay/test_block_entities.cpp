@@ -100,14 +100,14 @@ private slots:
         rulesHold("resized");
 
         // Stone takes container and machine away; their contents drop.
-        fill(4, 0, 2, {stack("qtcraft:iron_ore", 3)});
+        fill(4, 0, 2, {stack("qtcraft:raw_iron", 3)});
         put(2, 0, 2, u"stone"_s);
         put(4, 0, 2, u"stone"_s);
         QVERIFY(!entities().container(at(2, 0, 2)));
         QVERIFY(!entities().machine(at(4, 0, 2)));
         ticks(1);
         QCOMPARE(everywhere("qtcraft:dirt"), 7);
-        QCOMPARE(everywhere("qtcraft:iron_ore"), 3);
+        QCOMPARE(everywhere("qtcraft:raw_iron"), 3);
         rulesHold("removed");
     }
 
@@ -203,7 +203,7 @@ private slots:
         put(6, 0, 6, u"signal_hopper[facing=down]"_s);
         put(7, 0, 6, u"signal_dispenser[facing=up]"_s);
         fill(4, 0, 6, {stack("qtcraft:diamond", 5)});
-        fill(5, 0, 6, {stack("qtcraft:iron_ore", 4)});
+        fill(5, 0, 6, {stack("qtcraft:raw_iron", 4)});
         fill(6, 0, 6, {stack("qtcraft:dirt", 3)});
         fill(7, 0, 6, {stack("qtcraft:stick", 9)});
         ticks(2);
@@ -218,11 +218,11 @@ private slots:
         m_origin = origin;
         m_turns = turns;
         QCOMPARE(countIn(5, 0, 6, "qtcraft:diamond"), 5);
-        QCOMPARE(countIn(6, 0, 6, "qtcraft:iron_ore"), 4);
+        QCOMPARE(countIn(6, 0, 6, "qtcraft:raw_iron"), 4);
         QCOMPARE(countIn(7, 0, 6, "qtcraft:dirt"), 3);
         QCOMPARE(countIn(8, 0, 6, "qtcraft:stick"), 9);
         QCOMPARE(everywhere("qtcraft:diamond"), 5);
-        QCOMPARE(everywhere("qtcraft:iron_ore"), 4);
+        QCOMPARE(everywhere("qtcraft:raw_iron"), 4);
         QCOMPARE(everywhere("qtcraft:dirt"), 3);
         QCOMPARE(everywhere("qtcraft:stick"), 9);
         rulesHold("reopened");
@@ -237,7 +237,7 @@ private slots:
             put(x, 0, 1, u"chest[facing=south]"_s);
             fill(x, 0, 1, {stack("qtcraft:diamond", 2)});
             put(x, 0, 2, u"furnace[facing=south]"_s);
-            fill(x, 0, 2, {stack("qtcraft:iron_ore", 1)});
+            fill(x, 0, 2, {stack("qtcraft:raw_iron", 1)});
             put(x, -1, 3, u"grass_block"_s);
             chat(u"/setblock %1 %2 %3 oak_sapling"_s.arg(at(x, 0, 3).x).arg(at(x, 0, 3).y).arg(at(x, 0, 3).z));
             put(x, 0, 4, u"signal_torch"_s);
@@ -264,7 +264,7 @@ private slots:
         // Contents of a regenerated chunk are lost, not dropped (decision E-246).
         QCOMPARE(m_server->items().items().size(), itemsBefore);
         QCOMPARE(countIn(10, 0, 1, "qtcraft:diamond"), 2);
-        QCOMPARE(countIn(10, 0, 2, "qtcraft:iron_ore"), 1);
+        QCOMPARE(countIn(10, 0, 2, "qtcraft:raw_iron"), 1);
         QVERIFY(entities().sapling(at(10, 0, 3)));
         QVERIFY(entities().memory(at(10, 0, 4)));
         QVERIFY(entities().schedule().contains(at(10, 0, 5)));

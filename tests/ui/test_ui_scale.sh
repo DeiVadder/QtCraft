@@ -66,7 +66,7 @@ check inventory $world --chat "/give diamond_sword" --chat "/give stone 30" --ov
 # shellcheck disable=SC2086
 check creative $world --game-mode creative --overlay creative
 # shellcheck disable=SC2086
-check furnace $world --look 0,-89 --chat "/give iron_ore 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
+check furnace $world --look 0,-89 --chat "/give raw_iron 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
 # shellcheck disable=SC2086
 check chest $world --look 0,-89 --chat "/give stone 20" --chat "/setblock ~ ~-1 ~ chest" --overlay chest
 # shellcheck disable=SC2086

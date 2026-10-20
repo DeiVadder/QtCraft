@@ -1,0 +1,9 @@
+{
+    "name": "copper_ingot",
+    "input": "raw_copper",
+    "result": {
+        "item": "copper_ingot"
+    },
+    "seconds": 10,
+    "experience": 0.7
+}

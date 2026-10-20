@@ -1,0 +1,11 @@
+{
+    "name": "copper_ingot_from_copper_block",
+    "type": "shapeless",
+    "ingredients": [
+        "copper_block"
+    ],
+    "result": {
+        "item": "copper_ingot",
+        "count": 9
+    }
+}

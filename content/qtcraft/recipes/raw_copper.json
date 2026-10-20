@@ -1,0 +1,11 @@
+{
+    "name": "raw_copper",
+    "type": "shapeless",
+    "ingredients": [
+        "raw_copper_block"
+    ],
+    "result": {
+        "item": "raw_copper",
+        "count": 9
+    }
+}

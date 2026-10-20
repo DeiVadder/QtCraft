@@ -183,9 +183,9 @@ private slots:
                  std::optional<QcBlockId>(m_content->withProperty(id("qtcraft:furnace"), u"facing"_s, u"south"_s)));
         QVERIFY(m_server->blockEntities().machine(pos));
         // Machine slots mean nothing before a machine is open.
-        chat(u"/give iron_ore 3"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
-        QCOMPARE(countOf(item("qtcraft:iron_ore")), 3);
+        chat(u"/give raw_iron 3"_s);
+        move(slotOf(item("qtcraft:raw_iron")), input);
+        QCOMPARE(countOf(item("qtcraft:raw_iron")), 3);
 
         send(QcMsg::UseItem{pos, QcBlockFace::West});
         QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
@@ -196,16 +196,16 @@ private slots:
         // Dirt is no fuel, and nothing goes into the output.
         move(slotOf(item("qtcraft:dirt")), fuel);
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
-        move(slotOf(item("qtcraft:iron_ore")), output);
-        QCOMPARE(countOf(item("qtcraft:iron_ore")), 3);
+        move(slotOf(item("qtcraft:raw_iron")), output);
+        QCOMPARE(countOf(item("qtcraft:raw_iron")), 3);
         QVERIFY(m_client->machineStacks[2].isEmpty());
 
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
-        QCOMPARE(countOf(item("qtcraft:iron_ore")), 0);
-        // Iron ore takes 10 s (content/qtcraft/smelting/iron_ingot.json); one coal burns 80 s.
+        QCOMPARE(countOf(item("qtcraft:raw_iron")), 0);
+        // Raw iron takes 10 s (content/qtcraft/smelting/iron_ingot.json); one coal burns 80 s.
         ticks(10 * int(QcPhysics::tickRate) + 5);
-        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:iron_ore"), 2, 0}));
+        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:raw_iron"), 2, 0}));
         QVERIFY(m_client->machineStacks[1].isEmpty());
         QCOMPARE(m_client->machineStacks[2], (QcItemStack{item("qtcraft:iron_ingot"), 1, 0}));
         QVERIFY(m_client->machineBurn > 0.8f && m_client->machineBurn < 0.9f);
@@ -223,7 +223,7 @@ private slots:
         send(QcMsg::CloseMachine{});
         QVERIFY(!m_server->blockEntities().machine(pos)->stacks[0].isEmpty());
         move(input, 21);
-        QCOMPARE(countOf(item("qtcraft:iron_ore")), 0);
+        QCOMPARE(countOf(item("qtcraft:raw_iron")), 0);
         move(slotOf(item("qtcraft:dirt")), fuel);
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
     }
@@ -234,10 +234,10 @@ private slots:
         const QcBlockPos pos = openFurnace();
         QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
 
-        chat(u"/give iron_ore 2"_s);
+        chat(u"/give raw_iron 2"_s);
         chat(u"/give lava_bucket 1"_s);
         chat(u"/give dirt 3"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:lava_bucket")), fuel);
         QCOMPARE(countOf(item("qtcraft:lava_bucket")), 0);
         ticks(10 * int(QcPhysics::tickRate) + 5);
@@ -255,9 +255,9 @@ private slots:
         move(dirt, 25);
         QCOMPARE(m_client->stacks[25], (QcItemStack{item("qtcraft:dirt"), 3, 0}));
 
-        chat(u"/give iron_ore 1"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
-        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:iron_ore"), 2, 0}));
+        chat(u"/give raw_iron 1"_s);
+        move(slotOf(item("qtcraft:raw_iron")), input);
+        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:raw_iron"), 2, 0}));
 
         // Non-fuel cannot be put next to the bucket or swapped in for it.
         move(25, fuel);
@@ -319,10 +319,10 @@ private slots:
         join();
         const QcBlockPos pos = openFurnace();
 
-        chat(u"/give iron_ore 3"_s);
+        chat(u"/give raw_iron 3"_s);
         chat(u"/give coal 2"_s);
         chat(u"/give wooden_pickaxe"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:wooden_pickaxe"))});
 
@@ -337,7 +337,7 @@ private slots:
         QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
         QVERIFY(!m_server->blockEntities().machine(pos));
         QVERIFY(m_client->machineClosed);
-        QCOMPARE(droppedCount(item("qtcraft:iron_ore")), 3);
+        QCOMPARE(droppedCount(item("qtcraft:raw_iron")), 3);
         QCOMPARE(droppedCount(item("qtcraft:coal")), 1);
         QCOMPARE(droppedCount(item("qtcraft:furnace")), 1);
     }
@@ -350,9 +350,9 @@ private slots:
         config.autosaveSeconds = 0;
         join(config);
         const QcBlockPos pos = openFurnace();
-        chat(u"/give iron_ore 3"_s);
+        chat(u"/give raw_iron 3"_s);
         chat(u"/give coal 2"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
         const QcBlockEntities::Machine before = *m_server->blockEntities().machine(pos);
         QCOMPARE(before.stacks[1].count, 1);

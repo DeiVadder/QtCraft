@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -431,6 +431,68 @@ A ninth of a piece of coal: a little fuel, black dye and small torches.
 
 [Black dye](#item-qtcraft-black_dye), [Coal](#item-qtcraft-coal), [Small torch](blocks.md#block-qtcraft-small_torch)
 
+### <a id="item-qtcraft-copper_ingot"></a>Copper ingot
+
+Smelted copper for doors, bars, chains and lanterns.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_ingot` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of copper](blocks.md#block-qtcraft-copper_block) | 9 × [Copper ingot](#item-qtcraft-copper_ingot) |
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) | [Copper ingot](#item-qtcraft-copper_ingot) |
+| [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) |  |
+| [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) | [Copper nugget](#item-qtcraft-copper_nugget) |  |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw copper](#item-qtcraft-raw_copper) | [Copper ingot](#item-qtcraft-copper_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Block of copper](blocks.md#block-qtcraft-copper_block), [Copper bars](blocks.md#block-qtcraft-copper_bars), [Copper chain](blocks.md#block-qtcraft-copper_chain), [Copper door](blocks.md#block-qtcraft-copper_door), [Copper nugget](#item-qtcraft-copper_nugget), [Copper trapdoor](blocks.md#block-qtcraft-copper_trapdoor)
+
+### <a id="item-qtcraft-copper_nugget"></a>Copper nugget
+
+A ninth of a copper ingot, for copper chains and lanterns.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_nugget` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Copper ingot](#item-qtcraft-copper_ingot) | 9 × [Copper nugget](#item-qtcraft-copper_nugget) |
+
+**Used in**
+
+[Copper chain](blocks.md#block-qtcraft-copper_chain), [Copper ingot](#item-qtcraft-copper_ingot), [Copper lantern](blocks.md#block-qtcraft-copper_lantern)
+
 ### <a id="item-qtcraft-cyan_dye"></a>Cyan dye
 
 Colours wool, glass, terracotta and concrete cyan.
@@ -707,7 +769,7 @@ Smelted gold.
 
 | 1 | → |
 |---|---|
-| [Gold ore](blocks.md#block-qtcraft-gold_ore) | [Gold ingot](#item-qtcraft-gold_ingot) |
+| [Raw gold](#item-qtcraft-raw_gold) | [Gold ingot](#item-qtcraft-gold_ingot) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
 
@@ -842,7 +904,7 @@ Smelted iron for tools, buckets and more.
 
 | 1 | → |
 |---|---|
-| [Iron ore](blocks.md#block-qtcraft-iron_ore) | [Iron ingot](#item-qtcraft-iron_ingot) |
+| [Raw iron](#item-qtcraft-raw_iron) | [Iron ingot](#item-qtcraft-iron_ingot) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
 
@@ -850,7 +912,7 @@ Smelted iron for tools, buckets and more.
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Cauldron](blocks.md#block-qtcraft-cauldron), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Flint and steel](#item-qtcraft-flint_and_steel), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Shears](#item-qtcraft-shears), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Cauldron](blocks.md#block-qtcraft-cauldron), [Chain](blocks.md#block-qtcraft-chain), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Flint and steel](#item-qtcraft-flint_and_steel), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Shears](#item-qtcraft-shears), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 **Dropped by**
 
@@ -858,7 +920,7 @@ Smelted iron for tools, buckets and more.
 
 ### <a id="item-qtcraft-iron_nugget"></a>Iron nugget
 
-A ninth of an iron ingot, for small metal parts like lanterns.
+A ninth of an iron ingot, for small metal parts like lanterns and chains.
 
 | | |
 |---|---|
@@ -875,7 +937,7 @@ A ninth of an iron ingot, for small metal parts like lanterns.
 
 **Used in**
 
-[Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer)
+[Chain](blocks.md#block-qtcraft-chain), [Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer)
 
 ### <a id="item-qtcraft-lapis_lazuli"></a>Lapis lazuli
 
@@ -1259,6 +1321,117 @@ Mixed from red and blue dye.
 **Used in**
 
 [Purple concrete powder](blocks.md#block-qtcraft-purple_concrete_powder), [Purple stained glass](blocks.md#block-qtcraft-purple_stained_glass), [Purple terracotta](blocks.md#block-qtcraft-purple_terracotta), [Purple wool](blocks.md#block-qtcraft-purple_wool)
+
+### <a id="item-qtcraft-raw_copper"></a>Raw copper
+
+What copper ore drops; a furnace smelts it into a copper ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_copper` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of raw copper](blocks.md#block-qtcraft-raw_copper_block) | 9 × [Raw copper](#item-qtcraft-raw_copper) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw copper](#item-qtcraft-raw_copper) | [Copper ingot](#item-qtcraft-copper_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Block of raw copper](blocks.md#block-qtcraft-raw_copper_block)
+
+**Dropped by**
+
+[Copper ore](blocks.md#block-qtcraft-copper_ore) (2–5×)
+
+### <a id="item-qtcraft-raw_gold"></a>Raw gold
+
+What gold ore drops; a furnace smelts it into a gold ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_gold` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of raw gold](blocks.md#block-qtcraft-raw_gold_block) | 9 × [Raw gold](#item-qtcraft-raw_gold) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw gold](#item-qtcraft-raw_gold) | [Gold ingot](#item-qtcraft-gold_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Block of raw gold](blocks.md#block-qtcraft-raw_gold_block)
+
+**Dropped by**
+
+[Gold ore](blocks.md#block-qtcraft-gold_ore)
+
+### <a id="item-qtcraft-raw_iron"></a>Raw iron
+
+What iron ore drops; a furnace smelts it into an iron ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_iron` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of raw iron](blocks.md#block-qtcraft-raw_iron_block) | 9 × [Raw iron](#item-qtcraft-raw_iron) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw iron](#item-qtcraft-raw_iron) | [Iron ingot](#item-qtcraft-iron_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Block of raw iron](blocks.md#block-qtcraft-raw_iron_block)
+
+**Dropped by**
+
+[Iron ore](blocks.md#block-qtcraft-iron_ore)
 
 ### <a id="item-qtcraft-red_dye"></a>Red dye
 

@@ -339,7 +339,7 @@ private slots:
         QCOMPARE(fact(*ore, u"Breaking by hand"_s)->value, u"15 s"_s);
         QCOMPARE(fact(*ore, u"Breaking with the best tool"_s)->value, u"0.56 s"_s);
         QCOMPARE(targets(fact(*ore, u"Breaking with the best tool"_s)->links), QStringList{u"item:qtcraft:diamond_pickaxe"_s});
-        QCOMPARE(targets(fact(*ore, u"Drops"_s)->links), QStringList{u"block:qtcraft:iron_ore"_s});
+        QCOMPARE(targets(fact(*ore, u"Drops"_s)->links), QStringList{u"item:qtcraft:raw_iron"_s});
         QCOMPARE(fact(*ore, u"Drops without the right tool"_s)->value, u"nothing"_s);
 
         const QcHandbookEntry::Section *minedWith = section(*ore, u"Mined with"_s);
@@ -347,7 +347,11 @@ private slots:
         QCOMPARE(targets(minedWith->links), (QStringList{u"item:qtcraft:stone_pickaxe"_s, u"item:qtcraft:iron_pickaxe"_s,
                                                          u"item:qtcraft:diamond_pickaxe"_s}));
 
-        const QcHandbookEntry::Section *smelts = section(*ore, u"Smelts into"_s);
+        // The ore drops raw iron (decision E-740), which smelts.
+        QVERIFY(!section(*ore, u"Smelts into"_s));
+        const QcHandbookEntry *raw = m_english.entry(u"item:qtcraft:raw_iron"_s);
+        QVERIFY(raw);
+        const QcHandbookEntry::Section *smelts = section(*raw, u"Smelts into"_s);
         QVERIFY(smelts);
         QCOMPARE(smelts->recipes.size(), 1);
         const QcHandbookEntry::Recipe &recipe = smelts->recipes.first();
@@ -367,7 +371,7 @@ private slots:
         // The ingot's page shows where it comes from and what it makes.
         const QcHandbookEntry *ingot = m_english.entry(u"item:qtcraft:iron_ingot"_s);
         QVERIFY(ingot);
-        QCOMPARE(section(*ingot, u"Made in a furnace"_s)->recipes.first().cells.first().target, u"block:qtcraft:iron_ore"_s);
+        QCOMPARE(section(*ingot, u"Made in a furnace"_s)->recipes.first().cells.first().target, u"item:qtcraft:raw_iron"_s);
         const QStringList usedIn = targets(section(*ingot, u"Used in"_s)->links);
         for (const QString &result : {u"item:qtcraft:iron_pickaxe"_s, u"item:qtcraft:bucket"_s}) {
             QVERIFY2(usedIn.contains(result), qPrintable(result));
@@ -434,9 +438,13 @@ private slots:
         QVERIFY(furnaceGerman);
         QCOMPARE(furnaceGerman->value, u"Schmelzen, Tempo × 1"_s);
 
-        const QcHandbookEntry *ironOre = m_german.entry(u"block:qtcraft:iron_ore"_s);
-        QVERIFY(ironOre && !ironOre->sections.isEmpty() && !ironOre->sections.first().recipes.isEmpty());
-        QVERIFY(ironOre->sections.first().recipes.first().note.startsWith(u"Ofen: 10 s"_s));
+        const QcHandbookEntry *rawIron = m_german.entry(u"item:qtcraft:raw_iron"_s);
+        QVERIFY(rawIron);
+        const auto smelts = std::ranges::find_if(rawIron->sections, [](const QcHandbookEntry::Section &candidate) {
+            return candidate.title == u"Wird im Ofen zu"_s;
+        });
+        QVERIFY(smelts != rawIron->sections.end() && !smelts->recipes.isEmpty());
+        QVERIFY(smelts->recipes.first().note.startsWith(u"Ofen: 10 s"_s));
 
         const QcHandbookEntry::Fact *lavaWater = factIn(m_english, u"block:qtcraft:lava"_s, u"Water nearby"_s);
         QVERIFY(lavaWater);
@@ -835,7 +843,15 @@ private slots:
         QCOMPARE(json.value(u"packName"_s).toString(), u"QtCraft"_s);
         QCOMPARE(json.value(u"facts"_s).toArray().size(), ore->facts.size());
 
-        const QJsonObject recipe = json.value(u"sections"_s).toArray().first().toObject().value(u"recipes"_s).toArray().first().toObject();
+        // The ore drops raw iron (decision E-740), whose page carries the furnace recipe.
+        const QJsonObject raw = QcHandbookJson::entry(m_english, *m_english.entry(u"item:qtcraft:raw_iron"_s));
+        QJsonObject recipe;
+        const QJsonArray sections = raw.value(u"sections"_s).toArray();
+        for (const auto &section : sections) {
+            if (section.toObject().value(u"title"_s).toString() == u"Smelts into"_s) {
+                recipe = section.toObject().value(u"recipes"_s).toArray().first().toObject();
+            }
+        }
         QCOMPARE(recipe.value(u"kind"_s).toString(), u"machine"_s);
         QCOMPARE(recipe.value(u"seconds"_s).toDouble(), 10.0);
 

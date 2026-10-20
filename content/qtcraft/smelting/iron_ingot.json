@@ -1,6 +1,6 @@
 {
     "name": "iron_ingot",
-    "input": "iron_ore",
+    "input": "raw_iron",
     "result": {
         "item": "iron_ingot"
     },

@@ -54,6 +54,23 @@
             "playerExperience": 1
         },
         {
+            "level": 1,
+            "costs": [
+                {
+                    "item": "copper_ingot",
+                    "count": 10
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 12,
+            "villagerExperience": 2,
+            "playerExperience": 1,
+            "demand": 1
+        },
+        {
             "level": 2,
             "costs": [
                 {
@@ -101,6 +118,22 @@
             "villagerExperience": 10,
             "playerExperience": 5,
             "demand": 1
+        },
+        {
+            "level": 2,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "chain",
+                "count": 3
+            },
+            "maxUses": 12,
+            "villagerExperience": 10,
+            "playerExperience": 5
         },
         {
             "level": 3,

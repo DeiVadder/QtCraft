@@ -1,0 +1,11 @@
+{
+    "name": "raw_iron",
+    "type": "shapeless",
+    "ingredients": [
+        "raw_iron_block"
+    ],
+    "result": {
+        "item": "raw_iron",
+        "count": 9
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "name": "copper_bars",
+    "sound": "stone",
+    "shape": "pane",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "blastResistance": 6.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "connects": {
+        "group": "pane"
+    },
+    "states": {
+        "north": [
+            false,
+            true
+        ],
+        "east": [
+            false,
+            true
+        ],
+        "south": [
+            false,
+            true
+        ],
+        "west": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "copper_bars",
+    "textures": {
+        "all": "copper_bars"
+    }
+}

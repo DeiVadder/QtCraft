@@ -155,7 +155,7 @@ private slots:
             // The workshop's furnace got its ore, the item chests hold every item.
             bool furnaceFilled = false;
             server->blockEntities().forEachMachine([&](const QcBlockEntities::Machine &machine) {
-                furnaceFilled = furnaceFilled || machine.stacks[QcMachineRules::inputSlot].item == *m_content->itemId(u"qtcraft:iron_ore"_s);
+                furnaceFilled = furnaceFilled || machine.stacks[QcMachineRules::inputSlot].item == *m_content->itemId(u"qtcraft:raw_iron"_s);
             });
             QVERIFY(furnaceFilled);
             QVERIFY(storedItems(*server) >= m_content->itemCount());

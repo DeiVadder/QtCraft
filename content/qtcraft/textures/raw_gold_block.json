@@ -1,0 +1,8 @@
+{
+    "name": "raw_gold_block",
+    "pattern": "raw_block",
+    "primary": "#e8c43a",
+    "secondary": "#a8821c",
+    "variation": 0.08,
+    "seed": 6006
+}

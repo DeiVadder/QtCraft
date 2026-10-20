@@ -1,0 +1,11 @@
+{
+    "name": "raw_gold",
+    "type": "shapeless",
+    "ingredients": [
+        "raw_gold_block"
+    ],
+    "result": {
+        "item": "raw_gold",
+        "count": 9
+    }
+}

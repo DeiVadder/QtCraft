@@ -1,0 +1,8 @@
+{
+    "name": "copper_door_lower",
+    "pattern": "door_lower",
+    "primary": "#c8703e",
+    "secondary": "#8a4a28",
+    "variation": 0.08,
+    "seed": 6018
+}

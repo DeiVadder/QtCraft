@@ -1,0 +1,8 @@
+{
+    "name": "copper_chain_links",
+    "pattern": "chain",
+    "primary": "#9a5634",
+    "secondary": "#d08a5c",
+    "variation": 0.08,
+    "seed": 6013
+}

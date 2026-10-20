@@ -1,0 +1,29 @@
+{
+    "name": "metalwork",
+    "showcase": { "order": 52 },
+    "palette": {
+        "P": "polished_stone",
+        "B": "stone_bricks",
+        "c": "chain[axis=y]",
+        "C": "copper_chain[axis=y]",
+        "h": "chain[axis=x]",
+        "L": "lantern[attach=ceiling]",
+        "K": "copper_lantern[attach=ceiling]",
+        "l": "copper_lantern[attach=floor]"
+    },
+    "layers": [
+        ["PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP"],
+        ["         ", "         ", "B       B", "         ", "    c    ", "B       B"],
+        ["         ", "         ", "B L K c B", "         ", "    l    ", "BhhhhhhhB"],
+        ["         ", "         ", "B c C c B", "         ", "         ", "B       B"],
+        ["         ", "         ", "B c C c B", "         ", "         ", "         "],
+        ["         ", "         ", "BBBBBBBBB", "         ", "         ", "         "]
+    ],
+    "labels": [
+        { "at": [2.5, 6.8, 2.5], "text": "block.qtcraft.lantern" },
+        { "at": [4.5, 7.3, 2.5], "text": "block.qtcraft.copper_lantern" },
+        { "at": [6.5, 6.8, 2.5], "text": "block.qtcraft.chain" },
+        { "at": [4.5, 4.0, 4.5], "text": "structure.qtcraft.metalwork.standing" },
+        { "at": [4.5, 4.4, 5.5], "text": "structure.qtcraft.metalwork.lying" }
+    ]
+}

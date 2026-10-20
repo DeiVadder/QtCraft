@@ -1,0 +1,15 @@
+{
+    "name": "copper_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "copper_ingot"
+    },
+    "result": {
+        "item": "copper_block"
+    }
+}

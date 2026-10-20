@@ -1,0 +1,8 @@
+{
+    "name": "copper_lantern",
+    "pattern": "lantern",
+    "primary": "#9a5a38",
+    "secondary": "#a8f0b4",
+    "variation": 0.08,
+    "seed": 6015
+}

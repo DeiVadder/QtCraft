@@ -4,6 +4,11 @@
     "hardness": 3.0,
     "tool": "pickaxe",
     "toolLevel": 2,
+    "drops": [
+        {
+            "item": "raw_iron"
+        }
+    ],
     "textures": {
         "all": "iron_ore"
     }

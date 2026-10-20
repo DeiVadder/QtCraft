@@ -67,6 +67,28 @@ bool hasSolidFace(const QcBlockAccess &world, QcBlockPos pos, QcBlockFace toward
            && content.state(*block).fullFace[std::size_t(towards)];
 }
 
+// The axis a face lies across: "x" for east and west, "y" for up and down, "z" for north and south.
+QString axisName(QcBlockFace face)
+{
+    const QcFaceOffset offset = qcFaceOffset(face);
+    return offset.dx != 0 ? u"x"_s : (offset.dy != 0 ? u"y"_s : u"z"_s);
+}
+
+// Whether the block at `holder` holds a block attached to its side `side`: a solid block with that
+// side completely covered, or a block whose `axis` runs through that side, like the end of a chain
+// (decision E-742).
+bool holdsAttached(const QcBlockAccess &world, QcBlockPos holder, QcBlockFace side)
+{
+    if (hasSolidFace(world, holder, side)) {
+        return true;
+    }
+
+    const std::optional<QcBlockId> block = world.blockAt(holder);
+    const QcContentRegistry &content = world.content();
+    return block && content.isValidBlock(*block) && hasProperty(content, *block, u"axis"_s)
+           && content.property(*block, u"axis"_s) == axisName(side);
+}
+
 bool replaceableAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
@@ -208,7 +230,9 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
         const QString attach = towards == QcBlockFace::Down ? u"floor"_s : (towards == QcBlockFace::Up ? u"ceiling"_s : faceName(towards));
         oriented = assigned(content, *oriented, u"attach"_s, attach);
     }
-    return oriented;
+
+    // Chains (decision E-742) run along the axis of the clicked face.
+    return oriented ? assigned(content, *oriented, u"axis"_s, axisName(face)) : oriented;
 }
 
 // The lower half of a door at `target` with its hinge; std::nullopt without room for the upper half.
@@ -402,7 +426,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         }
 
         const QcBlockPos holder = qcNeighbour(pos, *towards);
-        return !world.blockAt(holder) || hasSolidFace(world, holder, opposite(*towards));
+        return !world.blockAt(holder) || holdsAttached(world, holder, opposite(*towards));
     }
     }
     return true;

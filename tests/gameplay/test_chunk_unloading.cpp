@@ -143,7 +143,7 @@ private:
         put(2, 0, 2, u"chest[facing=south]"_s);
         fill(2, 0, 2, {stack("qtcraft:diamond", 5), stack("qtcraft:stick", 7)});
         put(4, 0, 2, u"furnace[facing=south]"_s);
-        fill(4, 0, 2, {stack("qtcraft:iron_ore", 6), stack("qtcraft:coal", 2)});
+        fill(4, 0, 2, {stack("qtcraft:raw_iron", 6), stack("qtcraft:coal", 2)});
         put(6, 1, 2, u"chest[facing=south]"_s);
         fill(6, 1, 2, {stack("qtcraft:cobblestone", 9)});
         put(6, 0, 2, u"signal_hopper[facing=down]"_s);
@@ -351,7 +351,7 @@ private slots:
         put(x + 3, 0, 6, u"signal_dispenser[facing=up]"_s);
         put(x + 4, 0, 6, u"signal_dropper[facing=up]"_s);
         fill(x, 0, 6, {stack("qtcraft:diamond", 5), stack("qtcraft:stick", 7)});
-        fill(x + 1, 0, 6, {stack("qtcraft:iron_ore", 4), stack("qtcraft:coal", 2)});
+        fill(x + 1, 0, 6, {stack("qtcraft:raw_iron", 4), stack("qtcraft:coal", 2)});
         fill(x + 2, 0, 6, {stack("qtcraft:gold_ingot", 3)});
         fill(x + 3, 0, 6, {stack("qtcraft:cobblestone", 6)});
         fill(x + 4, 0, 6, {stack("qtcraft:wheat_seeds", 8)});

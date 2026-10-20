@@ -1,0 +1,33 @@
+{
+    "name": "copper_trapdoor",
+    "sound": "stone",
+    "shape": "trapdoor",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "copper_trapdoor"
+    },
+    "toolLevel": 1,
+    "signal": {
+        "type": "opener"
+    }
+}

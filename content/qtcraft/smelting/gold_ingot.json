@@ -1,6 +1,6 @@
 {
     "name": "gold_ingot",
-    "input": "gold_ore",
+    "input": "raw_gold",
     "result": {
         "item": "gold_ingot"
     },

@@ -131,14 +131,14 @@ private slots:
         join();
         const QcBlockPos pos = openFurnace();
         QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
-        chat(u"/give iron_ore 3"_s);
+        chat(u"/give raw_iron 3"_s);
         chat(u"/give coal 2"_s);
         chat(u"/give dirt 2"_s);
         // Ore into the input, coal onto the fuel, dirt nowhere.
-        quickMove(slotOf(item("qtcraft:iron_ore")));
+        quickMove(slotOf(item("qtcraft:raw_iron")));
         quickMove(slotOf(item("qtcraft:coal")));
         quickMove(slotOf(item("qtcraft:dirt")));
-        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:iron_ore"), 3, 0}));
+        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:raw_iron"), 3, 0}));
         // The furnace lit at once and burns one coal.
         QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:coal"), 1, 0}));
         QCOMPARE(countOf(item("qtcraft:coal")), 0);

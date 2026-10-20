@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
+**QtCraft:** [Angel](#item-qtcraft-fishing_rod) · [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Bogen](#item-qtcraft-bow) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Ei](#item-qtcraft-egg) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Enderperle](#item-qtcraft-ender_pearl) · [Faden](#item-qtcraft-string) · [Feder](#item-qtcraft-feather) · [Feuerstein](#item-qtcraft-flint) · [Feuerzeug](#item-qtcraft-flint_and_steel) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Heiltrank](#item-qtcraft-healing_potion) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kabeljaueimer](#item-qtcraft-cod_bucket) · [Knochen](#item-qtcraft-bone) · [Knochenmehl](#item-qtcraft-bone_meal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kupferbarren](#item-qtcraft-copper_ingot) · [Kupfernugget](#item-qtcraft-copper_nugget) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lachseimer](#item-qtcraft-salmon_bucket) · [Lapislazuli](#item-qtcraft-lapis_lazuli) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Lore](#item-qtcraft-minecart) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Milcheimer](#item-qtcraft-milk_bucket) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Pfeil](#item-qtcraft-arrow) · [Roheisen](#item-qtcraft-raw_iron) · [Rohgold](#item-qtcraft-raw_gold) · [Rohkupfer](#item-qtcraft-raw_copper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schere](#item-qtcraft-shears) · [Schleimball](#item-qtcraft-slimeball) · [Schneeball](#item-qtcraft-snowball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Schwarzpulver](#item-qtcraft-gunpowder) · [Schwimmer](#item-qtcraft-fishing_bobber) · [Smaragd](#item-qtcraft-emerald) · [Spinnenauge](#item-qtcraft-spider_eye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Trichterlore](#item-qtcraft-hopper_minecart) · [Truhenlore](#item-qtcraft-chest_minecart) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Wurftrank der Vergiftung](#item-qtcraft-poison_splash_potion) · [Wurftrank des Schadens](#item-qtcraft-harming_splash_potion) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -206,7 +206,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 | 1 | → |
 |---|---|
-| [Eisenerz](blocks.md#block-qtcraft-iron_ore) | [Eisenbarren](#item-qtcraft-iron_ingot) |
+| [Roheisen](#item-qtcraft-raw_iron) | [Eisenbarren](#item-qtcraft-iron_ingot) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -214,7 +214,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Kessel](blocks.md#block-qtcraft-cauldron), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Feuerzeug](#item-qtcraft-flint_and_steel), [Kessel](blocks.md#block-qtcraft-cauldron), [Kette](blocks.md#block-qtcraft-chain), [Lore](#item-qtcraft-minecart), [Schere](#item-qtcraft-shears), [Schiene](blocks.md#block-qtcraft-rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
 
 **Droppt aus**
 
@@ -222,7 +222,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 ### <a id="item-qtcraft-iron_nugget"></a>Eisennugget
 
-Ein Neuntel eines Eisenbarrens, für kleine Metallteile wie Laternen.
+Ein Neuntel eines Eisenbarrens, für kleine Metallteile wie Laternen und Ketten.
 
 | | |
 |---|---|
@@ -239,7 +239,7 @@ Ein Neuntel eines Eisenbarrens, für kleine Metallteile wie Laternen.
 
 **Wird verwendet für**
 
-[Eisenbarren](#item-qtcraft-iron_ingot), [Laterne](blocks.md#block-qtcraft-lantern), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator)
+[Eisenbarren](#item-qtcraft-iron_ingot), [Kette](blocks.md#block-qtcraft-chain), [Laterne](blocks.md#block-qtcraft-lantern), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator)
 
 ### <a id="item-qtcraft-ender_pearl"></a>Enderperle
 
@@ -446,7 +446,7 @@ Geschmolzenes Gold.
 
 | 1 | → |
 |---|---|
-| [Golderz](blocks.md#block-qtcraft-gold_ore) | [Goldbarren](#item-qtcraft-gold_ingot) |
+| [Rohgold](#item-qtcraft-raw_gold) | [Goldbarren](#item-qtcraft-gold_ingot) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -757,6 +757,68 @@ Ein Neuntel Kohle: etwas Brennstoff, schwarzer Farbstoff und kleine Fackeln.
 
 [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kohle](#item-qtcraft-coal), [Schwarzer Farbstoff](#item-qtcraft-black_dye)
 
+### <a id="item-qtcraft-copper_ingot"></a>Kupferbarren
+
+Geschmolzenes Kupfer für Türen, Gitter, Ketten und Laternen.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_ingot` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Kupferblock](blocks.md#block-qtcraft-copper_block) | 9 × [Kupferbarren](#item-qtcraft-copper_ingot) |
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupferbarren](#item-qtcraft-copper_ingot) |
+| [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) |  |
+| [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) | [Kupfernugget](#item-qtcraft-copper_nugget) |  |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohkupfer](#item-qtcraft-raw_copper) | [Kupferbarren](#item-qtcraft-copper_ingot) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Kupferblock](blocks.md#block-qtcraft-copper_block), [Kupferfalltür](blocks.md#block-qtcraft-copper_trapdoor), [Kupfergitter](blocks.md#block-qtcraft-copper_bars), [Kupferkette](blocks.md#block-qtcraft-copper_chain), [Kupfernugget](#item-qtcraft-copper_nugget), [Kupfertür](blocks.md#block-qtcraft-copper_door)
+
+### <a id="item-qtcraft-copper_nugget"></a>Kupfernugget
+
+Ein Neuntel eines Kupferbarrens, für Kupferketten und -laternen.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_nugget` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Kupferbarren](#item-qtcraft-copper_ingot) | 9 × [Kupfernugget](#item-qtcraft-copper_nugget) |
+
+**Wird verwendet für**
+
+[Kupferbarren](#item-qtcraft-copper_ingot), [Kupferkette](blocks.md#block-qtcraft-copper_chain), [Kupferlaterne](blocks.md#block-qtcraft-copper_lantern)
+
 ### <a id="item-qtcraft-pumpkin_seeds"></a>Kürbiskerne
 
 Vier aus einem Kürbis. Auf Ackerboden gepflanzt wachsen sie zu einem Kürbisstängel.
@@ -1025,6 +1087,117 @@ Wird mit dem Bogen geschossen. Sein Schaden wächst mit seiner Geschwindigkeit; 
 **Droppt aus**
 
 [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
+
+### <a id="item-qtcraft-raw_iron"></a>Roheisen
+
+Was Eisenerz fallen lässt; ein Ofen schmilzt es zu einem Eisenbarren.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_iron` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Roheisenblock](blocks.md#block-qtcraft-raw_iron_block) | 9 × [Roheisen](#item-qtcraft-raw_iron) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Roheisen](#item-qtcraft-raw_iron) | [Eisenbarren](#item-qtcraft-iron_ingot) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Roheisenblock](blocks.md#block-qtcraft-raw_iron_block)
+
+**Droppt aus**
+
+[Eisenerz](blocks.md#block-qtcraft-iron_ore)
+
+### <a id="item-qtcraft-raw_gold"></a>Rohgold
+
+Was Golderz fallen lässt; ein Ofen schmilzt es zu einem Goldbarren.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_gold` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Rohgoldblock](blocks.md#block-qtcraft-raw_gold_block) | 9 × [Rohgold](#item-qtcraft-raw_gold) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohgold](#item-qtcraft-raw_gold) | [Goldbarren](#item-qtcraft-gold_ingot) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Rohgoldblock](blocks.md#block-qtcraft-raw_gold_block)
+
+**Droppt aus**
+
+[Golderz](blocks.md#block-qtcraft-gold_ore)
+
+### <a id="item-qtcraft-raw_copper"></a>Rohkupfer
+
+Was Kupfererz fallen lässt; ein Ofen schmilzt es zu einem Kupferbarren.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_copper` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Rohkupferblock](blocks.md#block-qtcraft-raw_copper_block) | 9 × [Rohkupfer](#item-qtcraft-raw_copper) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohkupfer](#item-qtcraft-raw_copper) | [Kupferbarren](#item-qtcraft-copper_ingot) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Rohkupferblock](blocks.md#block-qtcraft-raw_copper_block)
+
+**Droppt aus**
+
+[Kupfererz](blocks.md#block-qtcraft-copper_ore) (2–5×)
 
 ### <a id="item-qtcraft-pink_dye"></a>Rosafarbener Farbstoff
 

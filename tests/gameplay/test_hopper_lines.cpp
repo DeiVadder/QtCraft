@@ -153,7 +153,7 @@ private slots:
     void manyLinesOverFurnaces()
     {
         // 15 lines of 134 hoppers, each over 20 hoppers into 20 furnaces: 2310 hoppers in all, a
-        // stack of iron ore dropped on the start of every line.
+        // stack of raw iron dropped on the start of every line.
         constexpr int rows = 15;
         constexpr int length = 134;
         prepare(length, rows * 3);
@@ -171,7 +171,7 @@ private slots:
         QCOMPARE(m_server->world().hoppers().size(), rows * (length + 20));
         for (int r = 0; r < rows; ++r) {
             QcItemEntityManager::Drop entity;
-            entity.stack = stack("qtcraft:iron_ore", 64);
+            entity.stack = stack("qtcraft:raw_iron", 64);
             entity.position = {m_base.x + 0.5, m_base.y + 3.0, m_base.z + 3 * r + 0.5};
             entity.pickupDelay = 0.0;
             QVERIFY(m_server->items().spawn(entity, m_nextItemId++) != 0);
@@ -182,12 +182,12 @@ private slots:
         const auto firstFurnaces = [&] {
             int total = 0;
             for (int r = 0; r < rows; ++r) {
-                total += countAt(m_base.offset(4, 0, 3 * r), "qtcraft:iron_ore");
+                total += countAt(m_base.offset(4, 0, 3 * r), "qtcraft:raw_iron");
             }
             return total;
         };
         QVERIFY(ticksUntil(6 * 8 + 64 * 8 + 32, [&] { return firstFurnaces() == rows * 64; }) > 0);
-        QCOMPARE(everywhere("qtcraft:iron_ore"), rows * 64);
+        QCOMPARE(everywhere("qtcraft:raw_iron"), rows * 64);
     }
 };
 

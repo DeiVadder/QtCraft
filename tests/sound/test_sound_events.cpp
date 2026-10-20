@@ -302,10 +302,10 @@ private slots:
         ticks(200);
         QVERIFY(m_client->soundsNamed(u"qtcraft:machine.furnace"_s).isEmpty());
 
-        chat(u"/give iron_ore 8"_s);
+        chat(u"/give raw_iron 8"_s);
         chat(u"/give coal 1"_s);
         send(QcMsg::UseItem{furnace, QcBlockFace::West});
-        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:iron_ore")), QcMsg::MoveInventoryItem::machineInputSlot, 0});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:raw_iron")), QcMsg::MoveInventoryItem::machineInputSlot, 0});
         send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:coal")), QcMsg::MoveInventoryItem::machineFuelSlot, 0});
         send(QcMsg::CloseMachine{});
         QVERIFY(m_server->blockEntities().machine(furnace)->burnRemaining > 0.0);

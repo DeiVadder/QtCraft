@@ -1,0 +1,8 @@
+{
+    "name": "copper_ingot",
+    "pattern": "ingot",
+    "primary": "#e0804a",
+    "secondary": "#e0804a",
+    "variation": 0.05,
+    "seed": 6008
+}

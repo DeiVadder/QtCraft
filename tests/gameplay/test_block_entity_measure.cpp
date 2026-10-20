@@ -53,7 +53,7 @@ private:
             const QcBlockPos furnace = base.offset(i * 2, 0, 4);
             QVERIFY(m_server->world().setBlock(furnace, id("qtcraft:furnace")));
             QVERIFY(ensureEntity(furnace));
-            m_server->blockEntities().machine(furnace)->stacks = {stackOf("qtcraft:iron_ore", 64), stackOf("qtcraft:coal", 64), QcItemStack{}};
+            m_server->blockEntities().machine(furnace)->stacks = {stackOf("qtcraft:raw_iron", 64), stackOf("qtcraft:coal", 64), QcItemStack{}};
 
             const QcBlockPos hopper = base.offset(i * 2, 0, 8);
             setChest(hopper.offset(0, 1, 0), {stackOf("qtcraft:cobblestone", 64)});

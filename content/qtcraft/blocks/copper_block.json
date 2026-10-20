@@ -1,0 +1,11 @@
+{
+    "name": "copper_block",
+    "sound": "stone",
+    "hardness": 3.0,
+    "blastResistance": 6.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "textures": {
+        "all": "copper_block"
+    }
+}

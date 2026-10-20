@@ -585,7 +585,7 @@ scene_chat() {
     village-night) printf '%s\n' "/time set night" "/fill ~ ~ ~ ~ ~11 ~ stone" "/tp ~ ~12 ~" ;;
     minecarts) minecarts_chat ;;
     inventory) printf '%s\n' "/give iron_pickaxe 1" "/give oak_planks 64" "/give torch 32" ;;
-    furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
+    furnace) printf '%s\n' "/give raw_iron 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
     forest-fire) forest_fire_chat ;;
     explosive-chain)

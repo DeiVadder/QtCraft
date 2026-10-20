@@ -341,9 +341,9 @@ private slots:
         put(4, 0, 8, u"sticky_signal_piston[facing=east]"_s);
         put(5, 0, 8, u"furnace[facing=south]"_s);
         QVERIFY(ensureEntity(at(5, 0, 8)));
-        m_server->blockEntities().machine(at(5, 0, 8))->stacks[0] = {item("qtcraft:iron_ore"), 3, 0};
+        m_server->blockEntities().machine(at(5, 0, 8))->stacks[0] = {item("qtcraft:raw_iron"), 3, 0};
         m_server->blockEntities().machine(at(5, 0, 8))->progress = 4.0;
-        m_server->blockEntities().machine(at(5, 0, 8))->progressItem = item("qtcraft:iron_ore");
+        m_server->blockEntities().machine(at(5, 0, 8))->progressItem = item("qtcraft:raw_iron");
         chestWithDiamonds(6, 0, 8);
         QVERIFY(at(6, 0, 8).chunk() != at(7, 0, 8).chunk());
         ticks(1);

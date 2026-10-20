@@ -1,0 +1,15 @@
+{
+    "name": "copper_ingot_from_nuggets",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NNN",
+        "NNN"
+    ],
+    "key": {
+        "N": "copper_nugget"
+    },
+    "result": {
+        "item": "copper_ingot"
+    }
+}

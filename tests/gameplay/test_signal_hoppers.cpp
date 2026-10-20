@@ -167,16 +167,16 @@ private slots:
         put(4, 2, 4, u"signal_hopper[facing=down]"_s);
         put(4, 0, 4, u"signal_hopper[facing=east]"_s);
         put(5, 0, 4, u"barrel[facing=north]"_s);
-        fill(4, 2, 4, {stack("qtcraft:iron_ore", 2)});
+        fill(4, 2, 4, {stack("qtcraft:raw_iron", 2)});
         fill(4, 1, 4, {{}, stack("qtcraft:coal", 4), stack("qtcraft:iron_ingot", 3)});
 
         // From above into the input; from below out of the output only.
         ticks(1);
-        QCOMPARE(slotsAt(4, 1, 4).value(QcMachineRules::inputSlot).item, item("qtcraft:iron_ore"));
+        QCOMPARE(slotsAt(4, 1, 4).value(QcMachineRules::inputSlot).item, item("qtcraft:raw_iron"));
         QCOMPARE(countIn(4, 0, 4, "qtcraft:iron_ingot"), 1);
         QCOMPARE(countIn(4, 0, 4, "qtcraft:coal"), 0);
         ticks(800);
-        QCOMPARE(everywhere("qtcraft:iron_ore") + everywhere("qtcraft:iron_ingot"), 5);
+        QCOMPARE(everywhere("qtcraft:raw_iron") + everywhere("qtcraft:iron_ingot"), 5);
         QCOMPARE(countIn(5, 0, 4, "qtcraft:iron_ingot"), 5);
     }
 

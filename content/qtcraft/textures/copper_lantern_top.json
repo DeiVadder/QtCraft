@@ -1,0 +1,8 @@
+{
+    "name": "copper_lantern_top",
+    "pattern": "noise",
+    "primary": "#8a5032",
+    "secondary": "#6e4028",
+    "variation": 0.15,
+    "seed": 6016
+}

@@ -1,0 +1,16 @@
+{
+    "name": "copper_chain",
+    "type": "shaped",
+    "pattern": [
+        "N",
+        "I",
+        "N"
+    ],
+    "key": {
+        "N": "copper_nugget",
+        "I": "copper_ingot"
+    },
+    "result": {
+        "item": "copper_chain"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "copper_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#e0844c",
+    "variation": 0.08,
+    "seed": 6001
+}

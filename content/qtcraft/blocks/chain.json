@@ -1,0 +1,26 @@
+{
+    "name": "chain",
+    "sound": "stone",
+    "shape": "chain",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "blastResistance": 6.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "itemTexture": "chain_links",
+    "textures": {
+        "all": "chain_links",
+        "slots": {
+            "links": "chain_links",
+            "across": "chain_links_across"
+        }
+    }
+}

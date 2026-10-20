@@ -266,7 +266,89 @@ QColor paintStainedGlass(const QcTextureSpec &spec, int x, int y, QColor)
     return QColor(spec.primary.red(), spec.primary.green(), spec.primary.blue(), 120);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 19> painters = {{
+// A chunk of raw metal: three overlapping lumps with a ragged rim, lighter towards the top left,
+// stony spots (secondary) here and there.
+QColor paintRawChunk(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    static constexpr std::array<std::array<double, 3>, 3> lumps = {{{6.5, 8.5, 4.4}, {10.0, 6.0, 3.4}, {9.5, 10.5, 3.6}}};
+    double nearest = 2.0;
+    for (const auto &[cx, cy, radius] : lumps) {
+        const double distance = std::hypot(x - cx, y - cy) / radius + 0.12 * noise(spec.seed + 5, x, y);
+        nearest = std::min(nearest, distance);
+    }
+    if (nearest > 1.0) {
+        return clear();
+    }
+
+    if (nearest > 0.8) {
+        return scaled(spec.secondary, 0.85);
+    }
+    if (hashPixel(spec.seed + 7, x, y) % 6 == 0) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    return scaled(color, 1.12 - 0.02 * (x + y - 8));
+}
+
+// Block of raw metal: rounded lumps around jittered points of a 4 x 4 grid (wrapping, so the face
+// tiles), brighter in their middle, with crevices (secondary) where two lumps meet.
+QColor paintRawBlock(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    constexpr int cell = 4;
+    constexpr int cells = size / cell;
+    double first = 1e9;
+    double second = 1e9;
+    for (int cy = -1; cy <= cells; ++cy) {
+        for (int cx = -1; cx <= cells; ++cx) {
+            const quint32 jitter = hashPixel(spec.seed + 11, (cx + cells) % cells, (cy + cells) % cells);
+            const double px = cx * cell + 0.5 + double(jitter % cell);
+            const double py = cy * cell + 0.5 + double((jitter / cell) % cell);
+            const double distance = std::hypot(x - px, y - py);
+            second = std::min(second, std::max(first, distance));
+            first = std::min(first, distance);
+        }
+    }
+
+    if (second - first < 0.9) {
+        return scaled(spec.secondary, 0.9);
+    }
+    if (hashPixel(spec.seed + 13, x, y) % 7 == 0) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    return scaled(color, 1.15 - 0.1 * first);
+}
+
+// Chain links along `along` (the running direction) through the middle four pixels of `across`:
+// a link seen face on (a ring around a hole) and one seen edge on (a short bar), every 8 pixels.
+QColor paintChainLinks(const QcTextureSpec &spec, int along, int across)
+{
+    if (across < 6 || across > 9) {
+        return clear();
+    }
+
+    const int step = along % 8;
+    const bool middle = across == 7 || across == 8;
+    const bool ring = step <= 4 && (step == 0 || step == 4 ? middle : !middle);
+    const bool bar = step > 4 && middle;
+    if (!ring && !bar) {
+        return clear();
+    }
+    if (across == 6 || (bar && across == 7)) {
+        return varied(spec, spec.secondary, along, across, 3);
+    }
+    return across == 9 ? scaled(spec.primary, 0.75) : varied(spec, spec.primary, along, across);
+}
+
+QColor paintChain(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    return paintChainLinks(spec, y, x);
+}
+
+QColor paintChainAcross(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    return paintChainLinks(spec, x, y);
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 23> painters = {{
     {Pattern::Nugget, paintNugget},
     {Pattern::MetalBlock, paintMetalBlock},
     {Pattern::Bars, paintBars},
@@ -286,6 +368,10 @@ constexpr std::array<std::pair<Pattern, Painter>, 19> painters = {{
     {Pattern::BarrelSide, paintBarrelSide},
     {Pattern::BarrelTop, paintBarrelTop},
     {Pattern::StainedGlass, paintStainedGlass},
+    {Pattern::RawChunk, paintRawChunk},
+    {Pattern::RawBlock, paintRawBlock},
+    {Pattern::Chain, paintChain},
+    {Pattern::ChainAcross, paintChainAcross},
 }};
 
 } // namespace

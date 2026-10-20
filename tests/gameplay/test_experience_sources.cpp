@@ -66,13 +66,13 @@ private:
         return {low, high};
     }
 
-    // Lets the furnace east of the player smelt `count` iron ore with enough coal.
+    // Lets the furnace east of the player smelt `count` raw iron with enough coal.
     QcBlockPos smeltIron(int count)
     {
         const QcBlockPos pos = openFurnace();
-        chat(u"/give iron_ore %1"_s.arg(count));
+        chat(u"/give raw_iron %1"_s.arg(count));
         chat(u"/give coal 2"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
         for (int i = 0; i < 20 * 12 * count && m_server->blockEntities().machine(pos)->stacks[2].count < count; ++i) {
             ticks(1);
@@ -234,9 +234,9 @@ private slots:
         // Smelting one more and taking it releases both.
         QVERIFY(m_server->world().setBlock(below, id("qtcraft:stone")));
         send(QcMsg::UseItem{pos, QcBlockFace::West});
-        chat(u"/give iron_ore 1"_s);
+        chat(u"/give raw_iron 1"_s);
         chat(u"/give coal 1"_s);
-        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
         for (int i = 0; i < 20 * 15 && furnace()->stacks[2].isEmpty(); ++i) {
             ticks(1);

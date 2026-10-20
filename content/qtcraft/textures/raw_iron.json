@@ -1,0 +1,8 @@
+{
+    "name": "raw_iron",
+    "pattern": "raw_chunk",
+    "primary": "#d8af93",
+    "secondary": "#9a7660",
+    "variation": 0.08,
+    "seed": 6002
+}

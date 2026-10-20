@@ -41,6 +41,8 @@ using namespace Qt::StringLiterals;
         {u"fern"_s, Pattern::Fern},         {u"firefly_glass"_s, Pattern::FireflyGlass},
         {u"barrel_side"_s, Pattern::BarrelSide}, {u"barrel_top"_s, Pattern::BarrelTop},
         {u"stained_glass"_s, Pattern::StainedGlass},
+        {u"raw_chunk"_s, Pattern::RawChunk}, {u"raw_block"_s, Pattern::RawBlock},
+        {u"chain"_s, Pattern::Chain},       {u"chain_across"_s, Pattern::ChainAcross},
         {u"helmet"_s, Pattern::Helmet},     {u"chestplate"_s, Pattern::Chestplate},
         {u"leggings"_s, Pattern::Leggings}, {u"boots"_s, Pattern::Boots},
         {u"armour_plate"_s, Pattern::ArmourPlate}, {u"armour_leather"_s, Pattern::ArmourLeather},

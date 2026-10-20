@@ -57,11 +57,15 @@
                 "block:qtcraft:black_terracotta",
                 "block:qtcraft:black_wool",
                 "block:qtcraft:coal_block",
+                "block:qtcraft:copper_block",
                 "block:qtcraft:diamond_block",
                 "block:qtcraft:emerald_block",
                 "block:qtcraft:gold_block",
                 "block:qtcraft:iron_block",
                 "block:qtcraft:lapis_block",
+                "block:qtcraft:raw_copper_block",
+                "block:qtcraft:raw_gold_block",
+                "block:qtcraft:raw_iron_block",
                 "block:qtcraft:blue_concrete",
                 "block:qtcraft:blue_concrete_powder",
                 "block:qtcraft:blue_ice",
@@ -84,6 +88,7 @@
                 "block:qtcraft:carved_pumpkin",
                 "block:qtcraft:carved_sandstone",
                 "block:qtcraft:cauldron",
+                "block:qtcraft:chain",
                 "block:qtcraft:chest",
                 "block:qtcraft:chunk_loader",
                 "block:qtcraft:clay",
@@ -91,6 +96,12 @@
                 "block:qtcraft:cobblestone",
                 "block:qtcraft:cobweb",
                 "block:qtcraft:composter",
+                "block:qtcraft:copper_bars",
+                "block:qtcraft:copper_chain",
+                "block:qtcraft:copper_door",
+                "block:qtcraft:copper_lantern",
+                "block:qtcraft:copper_ore",
+                "block:qtcraft:copper_trapdoor",
                 "block:qtcraft:cornflower",
                 "block:qtcraft:crafting_table",
                 "block:qtcraft:crying_obsidian",
@@ -363,6 +374,8 @@
                 "item:qtcraft:clay_ball",
                 "item:qtcraft:coal",
                 "item:qtcraft:coal_chunk",
+                "item:qtcraft:copper_ingot",
+                "item:qtcraft:copper_nugget",
                 "item:qtcraft:cyan_dye",
                 "item:qtcraft:diamond",
                 "item:qtcraft:egg",
@@ -402,6 +415,9 @@
                 "item:qtcraft:healing_potion",
                 "item:qtcraft:pumpkin_seeds",
                 "item:qtcraft:purple_dye",
+                "item:qtcraft:raw_copper",
+                "item:qtcraft:raw_gold",
+                "item:qtcraft:raw_iron",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:shears",
                 "item:qtcraft:slimeball",
@@ -552,6 +568,7 @@
                 "ore:qtcraft:clay_pocket",
                 "ore:qtcraft:coal",
                 "ore:qtcraft:cobweb",
+                "ore:qtcraft:copper",
                 "feature:qtcraft:cornflower",
                 "feature:qtcraft:dandelion",
                 "feature:qtcraft:dead_bush",
@@ -11514,6 +11531,179 @@
             "text": "An iron pot on short legs, as witches keep them in their huts. For now it only stands there.",
             "title": "Cauldron"
         },
+        "block:qtcraft:chain": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Chain",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chain"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:chain",
+                            "note": "",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "axis (y, x, z)"
+                }
+            ],
+            "icon": "qtcraft:chain",
+            "id": "block:qtcraft:chain",
+            "name": "qtcraft:chain",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_nugget",
+                                    "text": "Iron nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_nugget",
+                                    "text": "Iron nugget"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:chain",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:chain",
+                                "note": "",
+                                "target": "block:qtcraft:chain",
+                                "text": "Chain"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "An iron chain that runs along the face you place it on: upright, or lying east to west or north to south. It needs no support, and a lantern hangs from its lower end or stands on its upper end.",
+            "title": "Chain"
+        },
         "block:qtcraft:chest": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -13737,6 +13927,1300 @@
             ],
             "text": "A wooden bin at the fields of villages. It is the farmers' workstation.",
             "title": "Composter"
+        },
+        "block:qtcraft:copper_bars": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper bars",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_bars"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Connects to",
+                    "links": [
+                    ],
+                    "value": "panes, full solid blocks"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "east (false, true); north (false, true); south (false, true); west (false, true)"
+                }
+            ],
+            "icon": "qtcraft:copper_bars",
+            "id": "block:qtcraft:copper_bars",
+            "name": "qtcraft:copper_bars",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                }
+                            ],
+                            "count": 16,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_bars",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_bars",
+                                "note": "",
+                                "target": "block:qtcraft:copper_bars",
+                                "text": "Copper bars"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Copper bars that connect to their neighbours like glass panes and iron bars.",
+            "title": "Copper bars"
+        },
+        "block:qtcraft:copper_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of copper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.56 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_block",
+                            "note": "",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:copper_block",
+            "id": "block:qtcraft:copper_block",
+            "name": "qtcraft:copper_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_block",
+                                "note": "",
+                                "target": "block:qtcraft:copper_block",
+                                "text": "Block of copper"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_ingot",
+                            "note": "",
+                            "target": "item:qtcraft:copper_ingot",
+                            "text": "Copper ingot"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine copper ingots packed into a block; crafting it back gives all nine.",
+            "title": "Block of copper"
+        },
+        "block:qtcraft:copper_chain": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper chain",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_chain"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "axis (y, x, z)"
+                }
+            ],
+            "icon": "qtcraft:copper_chain",
+            "id": "block:qtcraft:copper_chain",
+            "name": "qtcraft:copper_chain",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_chain",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_chain",
+                                "note": "",
+                                "target": "block:qtcraft:copper_chain",
+                                "text": "Copper chain"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "A chain of copper; it runs, hangs and holds lanterns like the iron chain.",
+            "title": "Copper chain"
+        },
+        "block:qtcraft:copper_door": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper door",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_door"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.38 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Opens and closes when used",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Two blocks tall",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true)"
+                }
+            ],
+            "icon": "qtcraft:copper_door",
+            "id": "block:qtcraft:copper_door",
+            "name": "qtcraft:copper_door",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                }
+                            ],
+                            "count": 3,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_door",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_door",
+                                "note": "",
+                                "target": "block:qtcraft:copper_door",
+                                "text": "Copper door"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "A metal door that opens by hand like a wooden one and also with a signal: a lever, a button, a plate or Signal Dust next to it.",
+            "title": "Copper door"
+        },
+        "block:qtcraft:copper_lantern": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper lantern",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_lantern"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "2.25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.19 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light",
+                    "links": [
+                    ],
+                    "value": "15 of 15"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, ceiling, north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:copper_lantern",
+            "id": "block:qtcraft:copper_lantern",
+            "name": "qtcraft:copper_lantern",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:torch",
+                                    "note": "",
+                                    "target": "block:qtcraft:torch",
+                                    "text": "Torch"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_lantern",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_lantern",
+                                "note": "",
+                                "target": "block:qtcraft:copper_lantern",
+                                "text": "Copper lantern"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A copper lantern around a torch flame with a greenish glow; as bright as the iron lantern.",
+            "title": "Copper lantern"
+        },
+        "block:qtcraft:copper_ore": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper ore",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_ore"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.56 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_copper",
+                            "note": "2–5×",
+                            "target": "item:qtcraft:raw_copper",
+                            "text": "Raw copper"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:copper_ore",
+            "id": "block:qtcraft:copper_ore",
+            "name": "qtcraft:copper_ore",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "y 16–96",
+                            "target": "ore:qtcraft:copper",
+                            "text": "Copper ore veins"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Found in"
+                }
+            ],
+            "text": "Needs a pickaxe of level 2 or better and drops two to five pieces of raw copper. Common in the stone from deep below up into the mountains.",
+            "title": "Copper ore"
+        },
+        "block:qtcraft:copper_trapdoor": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Copper trapdoor",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_trapdoor"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.38 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Opens and closes when used",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); half (bottom, top); open (false, true)"
+                }
+            ],
+            "icon": "qtcraft:copper_trapdoor",
+            "id": "block:qtcraft:copper_trapdoor",
+            "name": "qtcraft:copper_trapdoor",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_trapdoor",
+                            "needsTable": false,
+                            "note": "Crafting grid",
+                            "result": {
+                                "icon": "qtcraft:copper_trapdoor",
+                                "note": "",
+                                "target": "block:qtcraft:copper_trapdoor",
+                                "text": "Copper trapdoor"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "A metal hatch that opens by hand and with a signal.",
+            "title": "Copper trapdoor"
         },
         "block:qtcraft:cornflower": {
             "category": "blocks",
@@ -18326,6 +19810,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:copper_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:unfired_lamp_shell",
                                     "note": "",
                                     "target": "item:qtcraft:unfired_lamp_shell",
@@ -18392,10 +19909,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:gold_ore",
+                                    "icon": "qtcraft:raw_gold",
                                     "note": "",
-                                    "target": "block:qtcraft:gold_ore",
-                                    "text": "Gold ore"
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
                                 }
                             ],
                             "count": 1,
@@ -18458,10 +19975,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:iron_ore",
+                                    "icon": "qtcraft:raw_iron",
                                     "note": "",
-                                    "target": "block:qtcraft:iron_ore",
-                                    "text": "Iron ore"
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
                                 }
                             ],
                             "count": 1,
@@ -18691,7 +20208,7 @@
                     "title": "Processes"
                 }
             ],
-            "text": "Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, result on the right.",
+            "text": "Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below, result on the right.",
             "title": "Furnace"
         },
         "block:qtcraft:glass": {
@@ -19282,10 +20799,10 @@
                     "label": "Drops",
                     "links": [
                         {
-                            "icon": "qtcraft:gold_ore",
+                            "icon": "qtcraft:raw_gold",
                             "note": "",
-                            "target": "block:qtcraft:gold_ore",
-                            "text": "Gold ore"
+                            "target": "item:qtcraft:raw_gold",
+                            "text": "Raw gold"
                         }
                     ],
                     "value": ""
@@ -19309,53 +20826,6 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "table:fuels",
-                            "text": "Fuels"
-                        }
-                    ],
-                    "recipes": [
-                        {
-                            "cells": [
-                                {
-                                    "icon": "qtcraft:gold_ore",
-                                    "note": "",
-                                    "target": "block:qtcraft:gold_ore",
-                                    "text": "Gold ore"
-                                }
-                            ],
-                            "count": 1,
-                            "height": 1,
-                            "kind": "machine",
-                            "machines": [
-                                {
-                                    "icon": "qtcraft:furnace",
-                                    "note": "",
-                                    "target": "block:qtcraft:furnace",
-                                    "text": "Furnace"
-                                }
-                            ],
-                            "name": "qtcraft:gold_ingot",
-                            "needsTable": false,
-                            "note": "Furnace: 10 s per item, needs fuel",
-                            "result": {
-                                "icon": "qtcraft:gold_ingot",
-                                "note": "",
-                                "target": "item:qtcraft:gold_ingot",
-                                "text": "Gold ingot"
-                            },
-                            "seconds": 10,
-                            "shapeless": false,
-                            "width": 1
-                        }
-                    ],
-                    "text": "",
-                    "title": "Smelts into"
-                },
                 {
                     "links": [
                         {
@@ -19391,7 +20861,7 @@
                     "title": "Found in"
                 }
             ],
-            "text": "Deep ore that needs a pickaxe of level 3 or better; smelts into gold ingots.",
+            "text": "Deep ore that needs a pickaxe of level 3 or better; drops raw gold, which smelts into gold ingots.",
             "title": "Gold ore"
         },
         "block:qtcraft:grass_block": {
@@ -23669,10 +25139,10 @@
                     "label": "Drops",
                     "links": [
                         {
-                            "icon": "qtcraft:iron_ore",
+                            "icon": "qtcraft:raw_iron",
                             "note": "",
-                            "target": "block:qtcraft:iron_ore",
-                            "text": "Iron ore"
+                            "target": "item:qtcraft:raw_iron",
+                            "text": "Raw iron"
                         }
                     ],
                     "value": ""
@@ -23696,53 +25166,6 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "table:fuels",
-                            "text": "Fuels"
-                        }
-                    ],
-                    "recipes": [
-                        {
-                            "cells": [
-                                {
-                                    "icon": "qtcraft:iron_ore",
-                                    "note": "",
-                                    "target": "block:qtcraft:iron_ore",
-                                    "text": "Iron ore"
-                                }
-                            ],
-                            "count": 1,
-                            "height": 1,
-                            "kind": "machine",
-                            "machines": [
-                                {
-                                    "icon": "qtcraft:furnace",
-                                    "note": "",
-                                    "target": "block:qtcraft:furnace",
-                                    "text": "Furnace"
-                                }
-                            ],
-                            "name": "qtcraft:iron_ingot",
-                            "needsTable": false,
-                            "note": "Furnace: 10 s per item, needs fuel",
-                            "result": {
-                                "icon": "qtcraft:iron_ingot",
-                                "note": "",
-                                "target": "item:qtcraft:iron_ingot",
-                                "text": "Iron ingot"
-                            },
-                            "seconds": 10,
-                            "shapeless": false,
-                            "width": 1
-                        }
-                    ],
-                    "text": "",
-                    "title": "Smelts into"
-                },
                 {
                     "links": [
                         {
@@ -23784,7 +25207,7 @@
                     "title": "Found in"
                 }
             ],
-            "text": "Needs a pickaxe of level 2 or better. Smelt it into iron for better tools, buckets and more.",
+            "text": "Needs a pickaxe of level 2 or better. Drops raw iron, which a furnace smelts into iron for better tools, buckets and more.",
             "title": "Iron ore"
         },
         "block:qtcraft:iron_trapdoor": {
@@ -40082,6 +41505,597 @@
             "text": "Track for minecarts. It needs a solid block below, joins the rails beside it and climbs one block towards a rail above.",
             "title": "Rail"
         },
+        "block:qtcraft:raw_copper_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of raw copper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_copper_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.94 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:raw_copper_block",
+            "id": "block:qtcraft:raw_copper_block",
+            "name": "qtcraft:raw_copper_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_copper_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:raw_copper_block",
+                                "note": "",
+                                "target": "block:qtcraft:raw_copper_block",
+                                "text": "Block of raw copper"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_copper",
+                            "note": "",
+                            "target": "item:qtcraft:raw_copper",
+                            "text": "Raw copper"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine pieces of raw copper packed into a block for storage; crafting it back gives all nine. It does not smelt.",
+            "title": "Block of raw copper"
+        },
+        "block:qtcraft:raw_gold_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of raw gold",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_gold_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 3 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.94 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_gold_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_gold_block",
+                            "text": "Block of raw gold"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:raw_gold_block",
+            "id": "block:qtcraft:raw_gold_block",
+            "name": "qtcraft:raw_gold_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_gold_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:raw_gold_block",
+                                "note": "",
+                                "target": "block:qtcraft:raw_gold_block",
+                                "text": "Block of raw gold"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_gold",
+                            "note": "",
+                            "target": "item:qtcraft:raw_gold",
+                            "text": "Raw gold"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine pieces of raw gold packed into a block for storage; crafting it back gives all nine. It does not smelt.",
+            "title": "Block of raw gold"
+        },
+        "block:qtcraft:raw_iron_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of raw iron",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_iron_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.94 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:raw_iron_block",
+            "id": "block:qtcraft:raw_iron_block",
+            "name": "qtcraft:raw_iron_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                },
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_iron_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:raw_iron_block",
+                                "note": "",
+                                "target": "block:qtcraft:raw_iron_block",
+                                "text": "Block of raw iron"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_iron",
+                            "note": "",
+                            "target": "item:qtcraft:raw_iron",
+                            "text": "Raw iron"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine pieces of raw iron packed into a block for storage; crafting it back gives all nine. It does not smelt.",
+            "title": "Block of raw iron"
+        },
         "block:qtcraft:red_concrete": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -51585,6 +53599,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
+                        },
+                        {
                             "icon": "qtcraft:lantern",
                             "note": "",
                             "target": "block:qtcraft:lantern",
@@ -54665,7 +56685,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt ores and stay alive: creatures come out at night and hunger grows while you work.",
+                    "text": "QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt metal and stay alive: creatures come out at night and hunger grows while you work.",
                     "title": "What to do"
                 },
                 {
@@ -55954,6 +57974,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Iron, gold and copper ore do not drop themselves but **raw metal**: raw iron, raw gold and two to five pieces of raw copper. A furnace smelts each piece into an ingot. Nine pieces of raw metal pack into a block of raw metal for storage, which crafts back into nine. Copper ore is common from deep below up into the mountains, iron lies below the middle heights, gold only deep down. Coal, diamonds, lapis lazuli, emeralds and Signal Dust drop their gems and dust directly.",
+                    "title": "Ores and raw metal"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:wooden_pickaxe",
                             "note": "",
@@ -55989,6 +58017,24 @@
                             "note": "",
                             "target": "block:qtcraft:diamond_ore",
                             "text": "Diamond ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron",
+                            "note": "",
+                            "target": "item:qtcraft:raw_iron",
+                            "text": "Raw iron"
+                        },
+                        {
+                            "icon": "qtcraft:raw_copper",
+                            "note": "",
+                            "target": "item:qtcraft:raw_copper",
+                            "text": "Raw copper"
                         }
                     ],
                     "recipes": [
@@ -56446,6 +58492,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine ingots make a storage block and one ingot makes nine nuggets; both craft back. Iron goes into tools, armour, buckets, rails, doors, bars and, with its nuggets, chains and lanterns; gold into golden tools and powered rails; copper into doors and trapdoors that open by hand and by signal, bars, chains and lanterns.",
+                    "title": "Metals"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:furnace",
                             "note": "",
@@ -56469,6 +58523,24 @@
                             "note": "",
                             "target": "item:qtcraft:iron_ingot",
                             "text": "Iron ingot"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron",
+                            "note": "",
+                            "target": "item:qtcraft:raw_iron",
+                            "text": "Raw iron"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ingot",
+                            "note": "",
+                            "target": "item:qtcraft:copper_ingot",
+                            "text": "Copper ingot"
+                        },
+                        {
+                            "icon": "qtcraft:chain",
+                            "note": "",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
                         }
                     ],
                     "recipes": [
@@ -62119,6 +64191,324 @@
             "text": "Cooked salmon, a good meal.",
             "title": "Cooked salmon"
         },
+        "item:qtcraft:copper_ingot": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Copper ingot",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_ingot"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:copper_ingot",
+            "id": "item:qtcraft:copper_ingot",
+            "name": "qtcraft:copper_ingot",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:copper_block",
+                                    "text": "Block of copper"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_ingot_from_copper_block",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                },
+                                {
+                                    "icon": "qtcraft:copper_nugget",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_nugget",
+                                    "text": "Copper nugget"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_ingot_from_nuggets",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:copper_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Made in a furnace"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_block",
+                            "note": "",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_nugget",
+                            "note": "",
+                            "target": "item:qtcraft:copper_nugget",
+                            "text": "Copper nugget"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                }
+            ],
+            "text": "Smelted copper for doors, bars, chains and lanterns.",
+            "title": "Copper ingot"
+        },
+        "item:qtcraft:copper_nugget": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Copper nugget",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper_nugget"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:copper_nugget",
+            "id": "item:qtcraft:copper_nugget",
+            "name": "qtcraft:copper_nugget",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:copper_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:copper_ingot",
+                                    "text": "Copper ingot"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:copper_nugget",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:copper_nugget",
+                                "note": "",
+                                "target": "item:qtcraft:copper_nugget",
+                                "text": "Copper nugget"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ingot",
+                            "note": "",
+                            "target": "item:qtcraft:copper_ingot",
+                            "text": "Copper ingot"
+                        },
+                        {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                }
+            ],
+            "text": "A ninth of a copper ingot, for copper chains and lanterns.",
+            "title": "Copper nugget"
+        },
         "item:qtcraft:cyan_dye": {
             "category": "items",
             "categoryTitle": "Items",
@@ -63274,6 +65664,12 @@
                             "text": "Block of coal"
                         },
                         {
+                            "icon": "qtcraft:copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        },
+                        {
                             "icon": "qtcraft:diamond_block",
                             "note": "level 3",
                             "target": "block:qtcraft:diamond_block",
@@ -63302,6 +65698,24 @@
                             "note": "level 2",
                             "target": "block:qtcraft:lapis_block",
                             "text": "Block of lapis lazuli"
+                        },
+                        {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        },
+                        {
+                            "icon": "qtcraft:raw_gold_block",
+                            "note": "level 3",
+                            "target": "block:qtcraft:raw_gold_block",
+                            "text": "Block of raw gold"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
                         },
                         {
                             "icon": "qtcraft:blue_concrete",
@@ -63358,6 +65772,12 @@
                             "text": "Carved sandstone"
                         },
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "level 2",
                             "target": "block:qtcraft:chunk_loader",
@@ -63392,6 +65812,36 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:crying_obsidian",
@@ -64936,10 +67386,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:gold_ore",
+                                    "icon": "qtcraft:raw_gold",
                                     "note": "",
-                                    "target": "block:qtcraft:gold_ore",
-                                    "text": "Gold ore"
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
                                 }
                             ],
                             "count": 1,
@@ -66096,6 +68546,12 @@
                             "text": "Carved sandstone"
                         },
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:coal_ore",
                             "note": "level 1",
                             "target": "block:qtcraft:coal_ore",
@@ -66124,6 +68580,30 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -67934,10 +70414,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:iron_ore",
+                                    "icon": "qtcraft:raw_iron",
                                     "note": "",
-                                    "target": "block:qtcraft:iron_ore",
-                                    "text": "Iron ore"
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
                                 }
                             ],
                             "count": 1,
@@ -67993,6 +70473,12 @@
                             "note": "",
                             "target": "block:qtcraft:cauldron",
                             "text": "Cauldron"
+                        },
+                        {
+                            "icon": "qtcraft:chain",
+                            "note": "",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
                         },
                         {
                             "icon": "qtcraft:detector_rail",
@@ -68331,6 +70817,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:iron_ingot",
                             "note": "",
                             "target": "item:qtcraft:iron_ingot",
@@ -68361,7 +70853,7 @@
                     "title": "Used in"
                 }
             ],
-            "text": "A ninth of an iron ingot, for small metal parts like lanterns.",
+            "text": "A ninth of an iron ingot, for small metal parts like lanterns and chains.",
             "title": "Iron nugget"
         },
         "item:qtcraft:iron_pickaxe": {
@@ -68502,6 +70994,12 @@
                             "text": "Block of coal"
                         },
                         {
+                            "icon": "qtcraft:copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        },
+                        {
                             "icon": "qtcraft:diamond_block",
                             "note": "level 3",
                             "target": "block:qtcraft:diamond_block",
@@ -68530,6 +71028,24 @@
                             "note": "level 2",
                             "target": "block:qtcraft:lapis_block",
                             "text": "Block of lapis lazuli"
+                        },
+                        {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        },
+                        {
+                            "icon": "qtcraft:raw_gold_block",
+                            "note": "level 3",
+                            "target": "block:qtcraft:raw_gold_block",
+                            "text": "Block of raw gold"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
                         },
                         {
                             "icon": "qtcraft:blue_concrete",
@@ -68586,6 +71102,12 @@
                             "text": "Carved sandstone"
                         },
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "level 2",
                             "target": "block:qtcraft:chunk_loader",
@@ -68620,6 +71142,36 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:crying_obsidian",
@@ -72032,6 +74584,420 @@
             "text": "A fish; tames cats and lets you get close to ocelots. Better cooked in a furnace.",
             "title": "Raw cod"
         },
+        "item:qtcraft:raw_copper": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Raw copper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_copper"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:raw_copper",
+            "id": "item:qtcraft:raw_copper",
+            "name": "qtcraft:raw_copper",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_copper_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:raw_copper_block",
+                                    "text": "Block of raw copper"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_copper",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:raw_copper",
+                                "note": "",
+                                "target": "item:qtcraft:raw_copper",
+                                "text": "Raw copper"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:copper_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Smelts into"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "2–5×",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "What copper ore drops; a furnace smelts it into a copper ingot.",
+            "title": "Raw copper"
+        },
+        "item:qtcraft:raw_gold": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Raw gold",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_gold"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:raw_gold",
+            "id": "item:qtcraft:raw_gold",
+            "name": "qtcraft:raw_gold",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_gold_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:raw_gold_block",
+                                    "text": "Block of raw gold"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_gold",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:raw_gold",
+                                "note": "",
+                                "target": "item:qtcraft:raw_gold",
+                                "text": "Raw gold"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_gold",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:gold_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:gold_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:gold_ingot",
+                                "text": "Gold ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Smelts into"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_gold_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_gold_block",
+                            "text": "Block of raw gold"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gold_ore",
+                            "note": "",
+                            "target": "block:qtcraft:gold_ore",
+                            "text": "Gold ore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "What gold ore drops; a furnace smelts it into a gold ingot.",
+            "title": "Raw gold"
+        },
+        "item:qtcraft:raw_iron": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Raw iron",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:raw_iron"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:raw_iron",
+            "id": "item:qtcraft:raw_iron",
+            "name": "qtcraft:raw_iron",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:raw_iron_block",
+                                    "text": "Block of raw iron"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:raw_iron",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:raw_iron",
+                                "note": "",
+                                "target": "item:qtcraft:raw_iron",
+                                "text": "Raw iron"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:raw_iron",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:iron_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:iron_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:iron_ingot",
+                                "text": "Iron ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Smelts into"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_ore",
+                            "note": "",
+                            "target": "block:qtcraft:iron_ore",
+                            "text": "Iron ore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "What iron ore drops; a furnace smelts it into an iron ingot.",
+            "title": "Raw iron"
+        },
         "item:qtcraft:raw_mutton": {
             "category": "food",
             "categoryTitle": "Food",
@@ -73671,6 +76637,12 @@
                             "text": "Block of coal"
                         },
                         {
+                            "icon": "qtcraft:copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        },
+                        {
                             "icon": "qtcraft:iron_block",
                             "note": "level 2",
                             "target": "block:qtcraft:iron_block",
@@ -73681,6 +76653,18 @@
                             "note": "level 2",
                             "target": "block:qtcraft:lapis_block",
                             "text": "Block of lapis lazuli"
+                        },
+                        {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
                         },
                         {
                             "icon": "qtcraft:blue_concrete",
@@ -73737,6 +76721,12 @@
                             "text": "Carved sandstone"
                         },
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "level 2",
                             "target": "block:qtcraft:chunk_loader",
@@ -73771,6 +76761,36 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -75573,6 +78593,12 @@
                             "text": "Carved sandstone"
                         },
                         {
+                            "icon": "qtcraft:chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
                             "icon": "qtcraft:coal_ore",
                             "note": "level 1",
                             "target": "block:qtcraft:coal_ore",
@@ -75601,6 +78627,30 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "level 1",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:cut_sandstone",
@@ -79609,6 +82659,64 @@
             "text": "",
             "title": "Cobweb veins"
         },
+        "ore:qtcraft:copper": {
+            "category": "worldgen",
+            "categoryTitle": "World generation",
+            "englishTitle": "Copper ore veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:copper"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Replaces",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Heights",
+                    "links": [
+                    ],
+                    "value": "y 16–96"
+                },
+                {
+                    "label": "Veins",
+                    "links": [
+                    ],
+                    "value": "10 per chunk, up to 9 blocks each"
+                }
+            ],
+            "icon": "qtcraft:copper_ore",
+            "id": "ore:qtcraft:copper",
+            "name": "qtcraft:copper",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Copper ore veins"
+        },
         "ore:qtcraft:diamond": {
             "category": "worldgen",
             "categoryTitle": "World generation",
@@ -80392,6 +83500,12 @@
                             "text": "Block of coal"
                         },
                         {
+                            "icon": "qtcraft:copper_block",
+                            "note": "6",
+                            "target": "block:qtcraft:copper_block",
+                            "text": "Block of copper"
+                        },
+                        {
                             "icon": "qtcraft:diamond_block",
                             "note": "6",
                             "target": "block:qtcraft:diamond_block",
@@ -80416,6 +83530,24 @@
                             "text": "Block of iron"
                         },
                         {
+                            "icon": "qtcraft:raw_copper_block",
+                            "note": "6",
+                            "target": "block:qtcraft:raw_copper_block",
+                            "text": "Block of raw copper"
+                        },
+                        {
+                            "icon": "qtcraft:raw_gold_block",
+                            "note": "6",
+                            "target": "block:qtcraft:raw_gold_block",
+                            "text": "Block of raw gold"
+                        },
+                        {
+                            "icon": "qtcraft:raw_iron_block",
+                            "note": "6",
+                            "target": "block:qtcraft:raw_iron_block",
+                            "text": "Block of raw iron"
+                        },
+                        {
                             "icon": "qtcraft:brick_slab",
                             "note": "6",
                             "target": "block:qtcraft:brick_slab",
@@ -80438,6 +83570,12 @@
                             "note": "6",
                             "target": "block:qtcraft:bricks",
                             "text": "Bricks"
+                        },
+                        {
+                            "icon": "qtcraft:chain",
+                            "note": "6",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
                         },
                         {
                             "icon": "qtcraft:chunk_loader",
@@ -80468,6 +83606,18 @@
                             "note": "6",
                             "target": "block:qtcraft:cobblestone_wall",
                             "text": "Cobblestone wall"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "6",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "6",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
                         },
                         {
                             "icon": "qtcraft:iron_bars",
@@ -80708,6 +83858,24 @@
                             "note": "3, from hardness",
                             "target": "block:qtcraft:coal_ore",
                             "text": "Coal ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:copper_ore",
+                            "text": "Copper ore"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "3, from hardness",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:diamond_ore",
@@ -81068,6 +84236,12 @@
                             "note": "1.5, from hardness",
                             "target": "block:qtcraft:bookshelf",
                             "text": "Bookshelf"
+                        },
+                        {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
                         },
                         {
                             "icon": "qtcraft:lantern",
@@ -82620,6 +85794,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "15 of 15",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
+                        },
+                        {
                             "icon": "",
                             "note": "15 of 15",
                             "target": "block:qtcraft:fire",
@@ -82820,6 +86000,18 @@
                             "note": "opens on rising and closes on falling power",
                             "target": "block:qtcraft:birch_trapdoor",
                             "text": "Birch trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "opens on rising and closes on falling power",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:iron_door",
@@ -83282,6 +86474,39 @@
                         {
                             "cells": [
                                 {
+                                    "icon": "qtcraft:raw_copper",
+                                    "note": "",
+                                    "target": "item:qtcraft:raw_copper",
+                                    "text": "Raw copper"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "machine",
+                            "machines": [
+                                {
+                                    "icon": "qtcraft:furnace",
+                                    "note": "",
+                                    "target": "block:qtcraft:furnace",
+                                    "text": "Furnace"
+                                }
+                            ],
+                            "name": "qtcraft:copper_ingot",
+                            "needsTable": false,
+                            "note": "Furnace: 10 s per item, needs fuel",
+                            "result": {
+                                "icon": "qtcraft:copper_ingot",
+                                "note": "",
+                                "target": "item:qtcraft:copper_ingot",
+                                "text": "Copper ingot"
+                            },
+                            "seconds": 10,
+                            "shapeless": false,
+                            "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
                                     "icon": "qtcraft:unfired_lamp_shell",
                                     "note": "",
                                     "target": "item:qtcraft:unfired_lamp_shell",
@@ -83348,10 +86573,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:gold_ore",
+                                    "icon": "qtcraft:raw_gold",
                                     "note": "",
-                                    "target": "block:qtcraft:gold_ore",
-                                    "text": "Gold ore"
+                                    "target": "item:qtcraft:raw_gold",
+                                    "text": "Raw gold"
                                 }
                             ],
                             "count": 1,
@@ -83414,10 +86639,10 @@
                         {
                             "cells": [
                                 {
-                                    "icon": "qtcraft:iron_ore",
+                                    "icon": "qtcraft:raw_iron",
                                     "note": "",
-                                    "target": "block:qtcraft:iron_ore",
-                                    "text": "Iron ore"
+                                    "target": "item:qtcraft:raw_iron",
+                                    "text": "Raw iron"
                                 }
                             ],
                             "count": 1,
@@ -83806,7 +87031,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Carved sandstone, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Carved sandstone, Chain, Coal ore, Cobblestone, Copper bars, Copper chain, Copper door, Copper trapdoor, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of copper, Block of iron, Block of lapis lazuli, Block of raw copper, Block of raw iron, Chunk Loader, Copper ore, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Block of raw gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {
@@ -83942,6 +87167,36 @@
                             "note": "light passes, creatures spawn on it",
                             "target": "block:qtcraft:cauldron",
                             "text": "Cauldron"
+                        },
+                        {
+                            "icon": "qtcraft:chain",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:chain",
+                            "text": "Chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_bars",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:copper_bars",
+                            "text": "Copper bars"
+                        },
+                        {
+                            "icon": "qtcraft:copper_chain",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:copper_chain",
+                            "text": "Copper chain"
+                        },
+                        {
+                            "icon": "qtcraft:copper_door",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:copper_door",
+                            "text": "Copper door"
+                        },
+                        {
+                            "icon": "qtcraft:copper_trapdoor",
+                            "note": "light passes, creatures spawn on it",
+                            "target": "block:qtcraft:copper_trapdoor",
+                            "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:cyan_stained_glass",
@@ -84292,6 +87547,12 @@
                             "note": "light passes, no creatures spawn on or in it",
                             "target": "block:qtcraft:cobweb",
                             "text": "Cobweb"
+                        },
+                        {
+                            "icon": "qtcraft:copper_lantern",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:copper_lantern",
+                            "text": "Copper lantern"
                         },
                         {
                             "icon": "qtcraft:cornflower",
@@ -85362,6 +88623,12 @@
                             "note": "y 10–50",
                             "target": "ore:qtcraft:cobweb",
                             "text": "Cobweb veins"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ore",
+                            "note": "y 16–96",
+                            "target": "ore:qtcraft:copper",
+                            "text": "Copper ore veins"
                         },
                         {
                             "icon": "qtcraft:diamond_ore",

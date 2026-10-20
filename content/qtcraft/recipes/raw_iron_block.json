@@ -1,0 +1,15 @@
+{
+    "name": "raw_iron_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "raw_iron"
+    },
+    "result": {
+        "item": "raw_iron_block"
+    }
+}

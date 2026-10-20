@@ -3,12 +3,16 @@
     "order": 60,
     "icon": "furnace",
     "sections": [
-        "furnace"
+        "furnace",
+        "metals"
     ],
     "related": [
         "furnace",
         "coal",
         "charcoal",
-        "iron_ingot"
+        "iron_ingot",
+        "raw_iron",
+        "copper_ingot",
+        "chain"
     ]
 }

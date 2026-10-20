@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Vines](#block-qtcraft-vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of copper](#block-qtcraft-copper_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of emerald](#block-qtcraft-emerald_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Block of raw copper](#block-qtcraft-raw_copper_block) · [Block of raw gold](#block-qtcraft-raw_gold_block) · [Block of raw iron](#block-qtcraft-raw_iron_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue ice](#block-qtcraft-blue_ice) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Carved pumpkin](#block-qtcraft-carved_pumpkin) · [Carved sandstone](#block-qtcraft-carved_sandstone) · [Cauldron](#block-qtcraft-cauldron) · [Chain](#block-qtcraft-chain) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Copper bars](#block-qtcraft-copper_bars) · [Copper chain](#block-qtcraft-copper_chain) · [Copper door](#block-qtcraft-copper_door) · [Copper lantern](#block-qtcraft-copper_lantern) · [Copper ore](#block-qtcraft-copper_ore) · [Copper trapdoor](#block-qtcraft-copper_trapdoor) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Crying obsidian](#block-qtcraft-crying_obsidian) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Emerald ore](#block-qtcraft-emerald_ore) · [Explosive](#block-qtcraft-explosive) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Flower pot](#block-qtcraft-flower_pot) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Infested cobblestone](#block-qtcraft-infested_cobblestone) · [Infested stone](#block-qtcraft-infested_stone) · [Infested stone bricks](#block-qtcraft-infested_stone_bricks) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Monster spawner](#block-qtcraft-spawner) · [Mossy cobblestone](#block-qtcraft-mossy_cobblestone) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Vines](#block-qtcraft-vines) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
 
@@ -573,6 +573,39 @@ Nine pieces of coal packed into a block; crafting it back gives all nine.
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
+### <a id="block-qtcraft-copper_block"></a>Block of copper
+
+Nine copper ingots packed into a block; crafting it back gives all nine.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_block` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 2 or better (needed for drops) |
+| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of copper](#block-qtcraft-copper_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Block of copper](#block-qtcraft-copper_block) |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+
+**Used in**
+
+[Copper ingot](items.md#item-qtcraft-copper_ingot)
+
+**Mined with**
+
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
 ### <a id="block-qtcraft-diamond_block"></a>Block of diamond
 
 Nine diamonds packed into a block; crafting it back gives all nine.
@@ -733,6 +766,105 @@ Nine pieces of lapis lazuli packed into a block; crafting it back gives all nine
 **Used in**
 
 [Lapis lazuli](items.md#item-qtcraft-lapis_lazuli)
+
+**Mined with**
+
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-raw_copper_block"></a>Block of raw copper
+
+Nine pieces of raw copper packed into a block for storage; crafting it back gives all nine. It does not smelt.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_copper_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 2 or better (needed for drops) |
+| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of raw copper](#block-qtcraft-raw_copper_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) | [Block of raw copper](#block-qtcraft-raw_copper_block) |
+| [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) |  |
+| [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) | [Raw copper](items.md#item-qtcraft-raw_copper) |  |
+
+**Used in**
+
+[Raw copper](items.md#item-qtcraft-raw_copper)
+
+**Mined with**
+
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-raw_gold_block"></a>Block of raw gold
+
+Nine pieces of raw gold packed into a block for storage; crafting it back gives all nine. It does not smelt.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_gold_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of raw gold](#block-qtcraft-raw_gold_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) | [Block of raw gold](#block-qtcraft-raw_gold_block) |
+| [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) |  |
+| [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) | [Raw gold](items.md#item-qtcraft-raw_gold) |  |
+
+**Used in**
+
+[Raw gold](items.md#item-qtcraft-raw_gold)
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-raw_iron_block"></a>Block of raw iron
+
+Nine pieces of raw iron packed into a block for storage; crafting it back gives all nine. It does not smelt.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_iron_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 2 or better (needed for drops) |
+| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of raw iron](#block-qtcraft-raw_iron_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) | [Block of raw iron](#block-qtcraft-raw_iron_block) |
+| [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) |  |
+| [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) | [Raw iron](items.md#item-qtcraft-raw_iron) |  |
+
+**Used in**
+
+[Raw iron](items.md#item-qtcraft-raw_iron)
 
 **Mined with**
 
@@ -1321,6 +1453,37 @@ An iron pot on short legs, as witches keep them in their huts. For now it only s
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
+### <a id="block-qtcraft-chain"></a>Chain
+
+An iron chain that runs along the face you place it on: upright, or lying east to west or north to south. It needs no support, and a lantern hangs from its lower end or stands on its upper end.
+
+| | |
+|---|---|
+| ID | `qtcraft:chain` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Chain](#block-qtcraft-chain) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Sound | stone |
+| States | axis (y, x, z) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Chain](#block-qtcraft-chain) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
 ### <a id="block-qtcraft-chest"></a>Chest
 
 Stores 27 stacks. Its contents drop when it is broken.
@@ -1546,6 +1709,188 @@ A wooden bin at the fields of villages. It is the farmers' workstation.
 **Faster with**
 
 [Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-copper_bars"></a>Copper bars
+
+Copper bars that connect to their neighbours like glass panes and iron bars.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_bars` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Copper bars](#block-qtcraft-copper_bars) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | stone |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | 16 × [Copper bars](#block-qtcraft-copper_bars) |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-copper_chain"></a>Copper chain
+
+A chain of copper; it runs, hangs and holds lanterns like the iron chain.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_chain` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Copper chain](#block-qtcraft-copper_chain) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Sound | stone |
+| States | axis (y, x, z) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper chain](#block-qtcraft-copper_chain) |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+| [Copper nugget](items.md#item-qtcraft-copper_nugget) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-copper_door"></a>Copper door
+
+A metal door that opens by hand like a wooden one and also with a signal: a lever, a button, a plate or Signal Dust next to it.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_door` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Copper door](#block-qtcraft-copper_door) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | 3 × [Copper door](#block-qtcraft-copper_door) |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-copper_lantern"></a>Copper lantern
+
+A copper lantern around a torch flame with a greenish glow; as bright as the iron lantern.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_lantern` |
+| Hardness | 1.5 |
+| Breaking by hand | 2.25 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Copper lantern](#block-qtcraft-copper_lantern) |
+| Light | 15 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | stone |
+| States | attach (floor, ceiling, north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper lantern](#block-qtcraft-copper_lantern) |
+| [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Torch](#block-qtcraft-torch) | [Copper nugget](items.md#item-qtcraft-copper_nugget) |  |
+| [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper nugget](items.md#item-qtcraft-copper_nugget) | [Copper nugget](items.md#item-qtcraft-copper_nugget) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-copper_ore"></a>Copper ore
+
+Needs a pickaxe of level 2 or better and drops two to five pieces of raw copper. Common in the stone from deep below up into the mountains.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_ore` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 2 or better (needed for drops) |
+| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Raw copper](items.md#item-qtcraft-raw_copper) (2–5×) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Copper ore veins](worldgen.md#ore-qtcraft-copper) (y 16–96)
+
+### <a id="block-qtcraft-copper_trapdoor"></a>Copper trapdoor
+
+A metal hatch that opens by hand and with a signal.
+
+| | |
+|---|---|
+| ID | `qtcraft:copper_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Copper trapdoor](#block-qtcraft-copper_trapdoor) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper trapdoor](#block-qtcraft-copper_trapdoor) |
+| [Copper ingot](items.md#item-qtcraft-copper_ingot) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-cornflower"></a>Cornflower
 
@@ -2131,7 +2476,7 @@ A small pot of fired clay. The pots of witch huts hold a mushroom or a fern; pla
 
 ### <a id="block-qtcraft-furnace"></a>Furnace
 
-Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, result on the right.
+Smelts raw metal, sand, clay and food while fuel burns: input on top, fuel below, result on the right.
 
 | | |
 |---|---|
@@ -2254,6 +2599,14 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
+| [Raw copper](items.md#item-qtcraft-raw_copper) | [Copper ingot](items.md#item-qtcraft-copper_ingot) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Unfired lamp shell](items.md#item-qtcraft-unfired_lamp_shell) | [Fired lamp shell](items.md#item-qtcraft-fired_lamp_shell) |
 
 [Furnace](#block-qtcraft-furnace)
@@ -2270,7 +2623,7 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
-| [Gold ore](#block-qtcraft-gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
+| [Raw gold](items.md#item-qtcraft-raw_gold) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -2286,7 +2639,7 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
-| [Iron ore](#block-qtcraft-iron_ore) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |
+| [Raw iron](items.md#item-qtcraft-raw_iron) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -2393,7 +2746,7 @@ A thin glass wall that connects to its neighbours.
 
 ### <a id="block-qtcraft-gold_ore"></a>Gold ore
 
-Deep ore that needs a pickaxe of level 3 or better; smelts into gold ingots.
+Deep ore that needs a pickaxe of level 3 or better; drops raw gold, which smelts into gold ingots.
 
 | | |
 |---|---|
@@ -2402,21 +2755,9 @@ Deep ore that needs a pickaxe of level 3 or better; smelts into gold ingots.
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 3 or better (needed for drops) |
 | Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
-| Drops | [Gold ore](#block-qtcraft-gold_ore) |
+| Drops | [Raw gold](items.md#item-qtcraft-raw_gold) |
 | Drops without the right tool | nothing |
 | Sound | stone |
-
-**Smelts into**
-
-*Furnace: 10 s per item, needs fuel*
-
-| 1 | → |
-|---|---|
-| [Gold ore](#block-qtcraft-gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
-
-[Furnace](#block-qtcraft-furnace)
-
-[Fuels](tables.md#table-fuels)
 
 **Mined with**
 
@@ -2994,7 +3335,7 @@ A heavy door that only a signal opens: a lever, a button, a plate or Signal Dust
 
 ### <a id="block-qtcraft-iron_ore"></a>Iron ore
 
-Needs a pickaxe of level 2 or better. Smelt it into iron for better tools, buckets and more.
+Needs a pickaxe of level 2 or better. Drops raw iron, which a furnace smelts into iron for better tools, buckets and more.
 
 | | |
 |---|---|
@@ -3003,21 +3344,9 @@ Needs a pickaxe of level 2 or better. Smelt it into iron for better tools, bucke
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 2 or better (needed for drops) |
 | Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
-| Drops | [Iron ore](#block-qtcraft-iron_ore) |
+| Drops | [Raw iron](items.md#item-qtcraft-raw_iron) |
 | Drops without the right tool | nothing |
 | Sound | stone |
-
-**Smelts into**
-
-*Furnace: 10 s per item, needs fuel*
-
-| 1 | → |
-|---|---|
-| [Iron ore](#block-qtcraft-iron_ore) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |
-
-[Furnace](#block-qtcraft-furnace)
-
-[Fuels](tables.md#table-fuels)
 
 **Mined with**
 
@@ -6452,7 +6781,7 @@ The simplest light. Stands on floors or hangs on walls; water washes it away.
 
 **Used in**
 
-[Lantern](#block-qtcraft-lantern)
+[Copper lantern](#block-qtcraft-copper_lantern), [Lantern](#block-qtcraft-lantern)
 
 ### <a id="block-qtcraft-vines"></a>Vines
 

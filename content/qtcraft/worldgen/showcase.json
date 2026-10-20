@@ -19,7 +19,7 @@
         { "name": "plants", "match": { "plant": true } },
         { "name": "functional", "match": { "functional": true } },
         { "name": "wood", "match": { "nameContains": ["log", "_wood", "planks", "leaves", "bookshelf"] } },
-        { "name": "ores", "match": { "nameContains": ["_ore", "coal_block", "iron_block", "gold_block", "diamond_block"] } },
+        { "name": "ores", "match": { "nameContains": ["_ore", "coal_block", "iron_block", "gold_block", "diamond_block", "copper_block", "raw_", "chain"] } },
         { "name": "colours", "match": { "nameContains": ["wool", "concrete", "terracotta", "stained"] } },
         { "name": "glass", "match": { "render": ["translucent", "cutout"] } },
         { "name": "earth", "match": { "tool": ["shovel"] } },

@@ -1,0 +1,11 @@
+{
+    "name": "copper_nugget",
+    "type": "shapeless",
+    "ingredients": [
+        "copper_ingot"
+    ],
+    "result": {
+        "item": "copper_nugget",
+        "count": 9
+    }
+}

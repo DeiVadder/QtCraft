@@ -1,0 +1,16 @@
+{
+    "name": "copper_lantern",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NtN",
+        "NNN"
+    ],
+    "key": {
+        "N": "copper_nugget",
+        "t": "torch"
+    },
+    "result": {
+        "item": "copper_lantern"
+    }
+}

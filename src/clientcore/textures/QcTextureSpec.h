@@ -117,6 +117,16 @@ struct QcTextureSpec
         // Tinted glass: a frame (secondary) around a clearly coloured pane (primary); keeps partial
         // transparency.
         StainedGlass,
+        // Raw metal (decision E-740): a lumpy chunk (primary, stony spots and rim secondary) on a
+        // transparent background, and the block of raw metal: rounded lumps with crevices
+        // (secondary) between them.
+        RawChunk,
+        RawBlock,
+        // Chain links (primary, highlights secondary) on a transparent background, running from top
+        // to bottom through the middle four columns; ChainAcross runs from left to right through the
+        // middle four rows (decision E-742).
+        Chain,
+        ChainAcross,
         // Patterns of QcTextureFarmPatterns (decision E-289): a hoe (tool head like the others) ...
         Hoe,
         // ... crop plants on a transparent background: stalks (primary) with ears (secondary),

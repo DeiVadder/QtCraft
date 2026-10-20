@@ -578,7 +578,7 @@ private slots:
         const int z = int(std::floor(feet.z));
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~2 ~ air"_s}});
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~3 ~ furnace"_s}});
-        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give iron_ore 2"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give raw_iron 2"_s}});
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give coal 1"_s}});
         m_furnace = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + 3}, {u"z"_s, z}};
         QCOMPARE(request(m_furnace).value(u"block"_s).toString(), u"qtcraft:furnace"_s);
@@ -587,14 +587,14 @@ private slots:
         const QJsonObject opened = request({{u"cmd"_s, u"openMachine"_s}, {u"x"_s, x}, {u"y"_s, y + 3}, {u"z"_s, z}});
         QVERIFY2(opened.value(u"open"_s).toBool(), QJsonDocument(opened).toJson(QJsonDocument::Compact).constData());
         QCOMPARE(opened.value(u"category"_s).toString(), u"smelting"_s);
-        request({{u"cmd"_s, u"fillMachine"_s}, {u"into"_s, u"input"_s}, {u"item"_s, u"qtcraft:iron_ore"_s}});
+        request({{u"cmd"_s, u"fillMachine"_s}, {u"into"_s, u"input"_s}, {u"item"_s, u"qtcraft:raw_iron"_s}});
         const QJsonObject filled = request({{u"cmd"_s, u"fillMachine"_s}, {u"into"_s, u"fuel"_s}, {u"item"_s, u"qtcraft:coal"_s}});
         QCOMPARE(filled.value(u"input"_s).toObject().value(u"count"_s).toInt(), 2);
         // The only coal is burning already.
         QVERIFY(filled.value(u"fuel"_s).isNull());
         QVERIFY(filled.value(u"burn"_s).toDouble() > 0.9);
         QCOMPARE(countOf(u"qtcraft:coal"_s), 0);
-        // Iron ore needs 10 s (200 server ticks) per ingot. The server runs in its own thread and can
+        // Raw iron needs 10 s (200 server ticks) per ingot. The server runs in its own thread and can
         // fall far behind the client's ticks in slow (sanitizer) builds, so poll the server's state
         // until the ingot is there, bounded by wall-clock time rather than by client ticks.
         request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 195}});

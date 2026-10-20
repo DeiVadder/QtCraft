@@ -1,0 +1,8 @@
+{
+    "name": "raw_copper",
+    "pattern": "raw_chunk",
+    "primary": "#d8784a",
+    "secondary": "#8e4a2a",
+    "variation": 0.08,
+    "seed": 6004
+}

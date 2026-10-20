@@ -11,8 +11,8 @@
 using namespace Qt::StringLiterals;
 
 // The village plans stay the same (decision E-419): the plans of 33 x 33 regions for three seeds,
-// every field of them hashed, match the hashes recorded before the planner was split into its road
-// network, piece placement and water parts. A change of the base content or of the planning rules
+// every field of them hashed (blocks by state name, so new blocks elsewhere in the content change
+// nothing), match the recorded hashes. A change of the planning rules or of the village content
 // changes them on purpose: then record the new hashes the failure prints.
 class TestVillagePlanHash : public QObject
 {
@@ -43,21 +43,27 @@ private:
         addInts(hash, {text.size()});
     }
 
-    static void addStructure(QCryptographicHash &hash, const QcStructure &structure)
+    // A block state by its name with every property, so new blocks (which shift the numeric ids)
+    // leave the hashes alone; "-" for a cell that keeps what is there.
+    void addBlock(QCryptographicHash &hash, std::optional<QcBlockId> block) const
+    {
+        addString(hash, block ? m_content->stateName(*block) : u"-"_s);
+    }
+
+    void addStructure(QCryptographicHash &hash, const QcStructure &structure) const
     {
         addString(hash, structure.name());
         addInts(hash, {structure.sizeX(), structure.sizeY(), structure.sizeZ()});
         for (int y = 0; y < structure.sizeY(); ++y) {
             for (int z = 0; z < structure.sizeZ(); ++z) {
                 for (int x = 0; x < structure.sizeX(); ++x) {
-                    const std::optional<QcBlockId> block = structure.block(x, y, z);
-                    addInts(hash, {block ? qint64(*block) : -1});
+                    addBlock(hash, structure.block(x, y, z));
                 }
             }
         }
     }
 
-    static void addPieces(QCryptographicHash &hash, const QcVillagePlan &plan)
+    void addPieces(QCryptographicHash &hash, const QcVillagePlan &plan) const
     {
         addInts(hash, {plan.pieces.size()});
         for (const QcStructurePlacement &piece : plan.pieces) {
@@ -67,7 +73,7 @@ private:
         }
     }
 
-    static void addCells(QCryptographicHash &hash, const QcVillagePlan &plan)
+    void addCells(QCryptographicHash &hash, const QcVillagePlan &plan) const
     {
         for (const QList<QcBlockPos> *cells : {&plan.roads, &plan.branchRoads, &plan.thresholds}) {
             addInts(hash, {cells->size()});
@@ -80,11 +86,12 @@ private:
         }
         for (const QcVillagePlan::Step &step : plan.steps) {
             addBlockPos(hash, step.at);
-            addInts(hash, {step.block});
+            addBlock(hash, step.block);
         }
         for (const QcVillagePlan::Deck &deck : plan.decks) {
             addBlockPos(hash, deck.at);
-            addInts(hash, {deck.block, deck.post});
+            addBlock(hash, deck.block);
+            addBlock(hash, deck.post);
         }
         for (const QList<QcVillagePlan::Area> *areas : {&plan.wetland.wet, &plan.wetland.dry}) {
             addInts(hash, {areas->size()});
@@ -114,7 +121,7 @@ private:
         }
     }
 
-    static void addPlan(QCryptographicHash &hash, const QcVillagePlan &plan)
+    void addPlan(QCryptographicHash &hash, const QcVillagePlan &plan) const
     {
         // The region packed as before the ids had a tag (QcVillagePlan::regionId), so the hashes
         // stay those of the same plans.
@@ -123,7 +130,10 @@ private:
         addString(hash, plan.style);
         addString(hash, plan.layout);
         addBlockPos(hash, plan.centre);
-        addInts(hash, {plan.pathBlock, plan.branchPathBlock, plan.foundation, plan.stiltPost, plan.stiltSpacing});
+        for (const QcBlockId block : {plan.pathBlock, plan.branchPathBlock, plan.foundation, plan.stiltPost}) {
+            addBlock(hash, block);
+        }
+        addInts(hash, {plan.stiltSpacing});
         addPieces(hash, plan);
         addCells(hash, plan);
         addLife(hash, plan);
@@ -160,9 +170,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64(42) << QByteArray("835510ba02f549c366cfa8a66bb90f778ddac8f11f5ef3c4c6dcfecaae4696a3") << 161;
-        QTest::newRow("seed 7") << qint64(7) << QByteArray("5e323b9d775c22df1fafc85af3b1afc76950571fdd5110bb039e3a6cda1f57b6") << 163;
-        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("f41109fb28a953b26d55b0ecb0788bd856fed5a2b81e4e0148f76a04c7ae4856") << 160;
+        QTest::newRow("seed 42") << qint64(42) << QByteArray("cc605e6fb556cf834bc442fccbc1b00290c3ba59af17b4a7fb5f51668afbf518") << 161;
+        QTest::newRow("seed 7") << qint64(7) << QByteArray("a400160273e6d85c5788de759bd1a4c4445e0869bb6e85a966b26e1921ddb7b0") << 163;
+        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("e779d41f13a3833fdc1187e3975cfaf1c743d264929a5cb1ad507e30154f1206") << 160;
     }
 
     void plansStayTheSame()

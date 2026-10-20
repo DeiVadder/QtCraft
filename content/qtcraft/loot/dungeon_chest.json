@@ -6,6 +6,7 @@
             "entries": [
                 { "item": "iron_ingot", "weight": 10, "count": [1, 4] },
                 { "item": "gold_ingot", "weight": 5, "count": [1, 4] },
+                { "item": "copper_ingot", "weight": 6, "count": [2, 5] },
                 { "item": "bread", "weight": 20 },
                 { "item": "wheat", "weight": 20, "count": [1, 4] },
                 { "item": "bucket", "weight": 10 },

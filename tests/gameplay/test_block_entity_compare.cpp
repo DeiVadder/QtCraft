@@ -189,7 +189,7 @@ private:
     {
         QCOMPARE(everywhere("qtcraft:diamond"), 5);
         QCOMPARE(everywhere("qtcraft:stick"), 7);
-        QCOMPARE(everywhere("qtcraft:iron_ore") + everywhere("qtcraft:iron_ingot"), 4);
+        QCOMPARE(everywhere("qtcraft:raw_iron") + everywhere("qtcraft:iron_ingot"), 4);
         QCOMPARE(everywhere("qtcraft:dirt"), 3);
         QCOMPARE(everywhere("qtcraft:water_bucket"), 1);
         QCOMPARE(everywhere("qtcraft:cobblestone"), 9);
@@ -216,7 +216,7 @@ private:
         put(7, 0, 6, u"signal_dispenser[facing=up]"_s);
         put(8, 0, 6, u"signal_dropper[facing=up]"_s);
         fill(4, 0, 6, {stack("qtcraft:diamond", 5), stack("qtcraft:stick", 7)});
-        fill(5, 0, 6, {stack("qtcraft:iron_ore", 4), stack("qtcraft:coal", 2)});
+        fill(5, 0, 6, {stack("qtcraft:raw_iron", 4), stack("qtcraft:coal", 2)});
         fill(6, 0, 6, {stack("qtcraft:dirt", 3)});
         fill(7, 0, 6, {stack("qtcraft:water_bucket", 1)});
         fill(8, 0, 6, {stack("qtcraft:cobblestone", 9)});
@@ -239,7 +239,7 @@ private:
         put(10, 0, 1, u"chest[facing=south]"_s);
 
         put(6, 1, 1, u"furnace[facing=south]"_s);
-        fill(6, 1, 1, {stack("qtcraft:iron_ore", 6), stack("qtcraft:coal", 2)});
+        fill(6, 1, 1, {stack("qtcraft:raw_iron", 6), stack("qtcraft:coal", 2)});
         put(6, 0, 1, u"signal_hopper[facing=east]"_s);
         put(7, 0, 1, u"chest[facing=south]"_s);
 

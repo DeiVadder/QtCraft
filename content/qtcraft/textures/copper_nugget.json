@@ -1,0 +1,8 @@
+{
+    "name": "copper_nugget",
+    "pattern": "nugget",
+    "primary": "#d8784a",
+    "secondary": "#f4ac80",
+    "variation": 0.08,
+    "seed": 6009
+}

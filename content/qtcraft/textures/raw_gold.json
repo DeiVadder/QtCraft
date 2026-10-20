@@ -1,0 +1,8 @@
+{
+    "name": "raw_gold",
+    "pattern": "raw_chunk",
+    "primary": "#f2d040",
+    "secondary": "#b08a1c",
+    "variation": 0.08,
+    "seed": 6003
+}

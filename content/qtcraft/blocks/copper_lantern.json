@@ -1,0 +1,30 @@
+{
+    "name": "copper_lantern",
+    "sound": "stone",
+    "shape": "mine_lamp",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 15,
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "support": "attached",
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "all": "copper_lantern",
+        "top": "copper_lantern_top",
+        "bottom": "copper_lantern_top",
+        "slots": {
+            "chain": "copper_lantern_chain"
+        }
+    }
+}

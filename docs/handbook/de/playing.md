@@ -10,7 +10,7 @@
 
 **Worum es geht**
 
-QtCraft ist eine Welt aus Blöcken. Sammle sie, baue damit, stelle Werkzeuge her, schmelze Erze und bleib am Leben: Nachts kommen Wesen heraus, und bei der Arbeit wächst der Hunger.
+QtCraft ist eine Welt aus Blöcken. Sammle sie, baue damit, stelle Werkzeuge her, schmelze Metall und bleib am Leben: Nachts kommen Wesen heraus, und bei der Arbeit wächst der Hunger.
 
 **Der erste Tag**
 
@@ -93,9 +93,13 @@ Halte die linke Maustaste auf einem Block in bis zu 5 m Entfernung. Jeder Härte
 
 Stein und Erze brauchen eine Spitzhacke einer bestimmten Stufe: Holz ist Stufe 1, Stein 2, Eisen 3, Diamant 4. Mit einem schwächeren oder keinem Werkzeug dauert der Abbau 5 s pro Härtepunkt, und nichts fällt heraus. Werkzeuge nutzen sich mit jedem Block ab.
 
+**Erze und Rohmetall**
+
+Eisen-, Gold- und Kupfererz lassen nicht sich selbst fallen, sondern **Rohmetall**: Roheisen, Rohgold und zwei bis fünf Stück Rohkupfer. Ein Ofen schmilzt jedes Stück zu einem Barren. Neun Stück Rohmetall ergeben einen Rohmetallblock zum Lagern, der sich wieder in neun zerlegen lässt. Kupfererz ist häufig, von tief unten bis hinauf in die Berge, Eisen liegt unterhalb der mittleren Höhen, Gold nur tief unten. Kohle, Diamanten, Lapislazuli, Smaragde und Signalstaub lassen ihre Steine und ihren Staub direkt fallen.
+
 **Siehe auch**
 
-[Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eisenerz](blocks.md#block-qtcraft-iron_ore), [Diamanterz](blocks.md#block-qtcraft-diamond_ore)
+[Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eisenerz](blocks.md#block-qtcraft-iron_ore), [Diamanterz](blocks.md#block-qtcraft-diamond_ore), [Kupfererz](blocks.md#block-qtcraft-copper_ore), [Roheisen](items.md#item-qtcraft-raw_iron), [Rohkupfer](items.md#item-qtcraft-raw_copper)
 
 ### <a id="chapter-qtcraft-building"></a>Bauen
 
@@ -135,9 +139,13 @@ Das Inventar listet, was du gerade herstellen kannst; ein Klick stellt es her. M
 
 Ein Ofen nimmt oben etwas zum Schmelzen und unten Brennstoff; rechts erscheint das Ergebnis. Er verbrennt ein Brennstoff-Item nach dem anderen, solange er Arbeit hat, und arbeitet weiter, während du fort bist, solange seine Gegend geladen ist. Beim Abbauen fällt sein Inhalt heraus.
 
+**Metalle**
+
+Jedes Metall geht denselben Weg: Erz → Rohmetall → Barren im Ofen. Neun Barren ergeben einen Speicherblock und ein Barren neun Nuggets; beides lässt sich zurück herstellen. Eisen wird zu Werkzeugen, Rüstung, Eimern, Schienen, Türen, Gittern und mit seinen Nuggets zu Ketten und Laternen; Gold zu Goldwerkzeugen und Antriebsschienen; Kupfer zu Türen und Falltüren, die sich von Hand und mit Signal öffnen, Gittern, Ketten und Laternen.
+
 **Siehe auch**
 
-[Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot)
+[Ofen](blocks.md#block-qtcraft-furnace), [Kohle](items.md#item-qtcraft-coal), [Holzkohle](items.md#item-qtcraft-charcoal), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Roheisen](items.md#item-qtcraft-raw_iron), [Kupferbarren](items.md#item-qtcraft-copper_ingot), [Kette](blocks.md#block-qtcraft-chain)
 
 ### <a id="chapter-qtcraft-hunger"></a>Nahrung und Hunger
 

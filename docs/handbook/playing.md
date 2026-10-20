@@ -10,7 +10,7 @@
 
 **What to do**
 
-QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt ores and stay alive: creatures come out at night and hunger grows while you work.
+QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt metal and stay alive: creatures come out at night and hunger grows while you work.
 
 **The first day**
 
@@ -93,9 +93,13 @@ Hold the left mouse button on a block within 5 m. Each hardness point takes 1.5 
 
 Stone and ores need a pickaxe of a certain level: wood is level 1, stone 2, iron 3, diamond 4. With a weaker tool or none, mining takes 5 s per hardness point and drops nothing. Tools wear out with every block.
 
+**Ores and raw metal**
+
+Iron, gold and copper ore do not drop themselves but **raw metal**: raw iron, raw gold and two to five pieces of raw copper. A furnace smelts each piece into an ingot. Nine pieces of raw metal pack into a block of raw metal for storage, which crafts back into nine. Copper ore is common from deep below up into the mountains, iron lies below the middle heights, gold only deep down. Coal, diamonds, lapis lazuli, emeralds and Signal Dust drop their gems and dust directly.
+
 **See also**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Iron ore](blocks.md#block-qtcraft-iron_ore), [Diamond ore](blocks.md#block-qtcraft-diamond_ore)
+[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Iron ore](blocks.md#block-qtcraft-iron_ore), [Diamond ore](blocks.md#block-qtcraft-diamond_ore), [Copper ore](blocks.md#block-qtcraft-copper_ore), [Raw iron](items.md#item-qtcraft-raw_iron), [Raw copper](items.md#item-qtcraft-raw_copper)
 
 ### <a id="chapter-qtcraft-building"></a>Building
 
@@ -135,9 +139,13 @@ The inventory lists what you can make right now; a click crafts it. Some recipes
 
 A furnace takes something to smelt on top and fuel below; the result appears on the right. It burns one fuel item at a time while it has work, and keeps working while you are away as long as its area is loaded. Breaking it drops what is inside.
 
+**Metals**
+
+Every metal goes the same way: ore → raw metal → ingot in the furnace. Nine ingots make a storage block and one ingot makes nine nuggets; both craft back. Iron goes into tools, armour, buckets, rails, doors, bars and, with its nuggets, chains and lanterns; gold into golden tools and powered rails; copper into doors and trapdoors that open by hand and by signal, bars, chains and lanterns.
+
 **See also**
 
-[Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot)
+[Furnace](blocks.md#block-qtcraft-furnace), [Coal](items.md#item-qtcraft-coal), [Charcoal](items.md#item-qtcraft-charcoal), [Iron ingot](items.md#item-qtcraft-iron_ingot), [Raw iron](items.md#item-qtcraft-raw_iron), [Copper ingot](items.md#item-qtcraft-copper_ingot), [Chain](blocks.md#block-qtcraft-chain)
 
 ### <a id="chapter-qtcraft-hunger"></a>Food and hunger
 

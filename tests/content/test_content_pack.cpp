@@ -86,7 +86,7 @@ private slots:
         }
 
         const QList<std::pair<const char *, const char *>> smelting{
-            {"qtcraft:iron_ore", "qtcraft:iron_ingot"}, {"qtcraft:gold_ore", "qtcraft:gold_ingot"},
+            {"qtcraft:raw_iron", "qtcraft:iron_ingot"}, {"qtcraft:raw_gold", "qtcraft:gold_ingot"},
             {"qtcraft:sand", "qtcraft:glass"},         {"qtcraft:clay_ball", "qtcraft:brick"},
             {"qtcraft:clay", "qtcraft:terracotta"},    {"qtcraft:cobblestone", "qtcraft:stone"},
             {"qtcraft:oak_log", "qtcraft:charcoal"},   {"qtcraft:raw_porkchop", "qtcraft:cooked_porkchop"},

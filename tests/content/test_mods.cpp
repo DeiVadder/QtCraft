@@ -707,9 +707,9 @@ private slots:
                   {{u"name"_s, u"dry_bush"_s}, {u"fuelSeconds"_s, 1.0}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:sand"_s}}}});
         writeJson(mill + u"/smelting/broken.json"_s, {{u"name"_s, u"broken"_s}, {u"input"_s, u"qtcraft:sand"_s}});
 
-        // Iron ore already smelts in the base game; a second recipe under another name is never used.
+        // Raw iron already smelts in the base game; a second recipe under another name is never used.
         writeJson(mill + u"/smelting/iron_flour.json"_s,
-                  {{u"name"_s, u"iron_flour"_s}, {u"input"_s, u"qtcraft:iron_ore"_s},
+                  {{u"name"_s, u"iron_flour"_s}, {u"input"_s, u"qtcraft:raw_iron"_s},
                    {u"result"_s, QJsonObject{{u"item"_s, u"flour"_s}}}});
         const QcModLoader::Loaded loaded = QcModLoader::load(dir.path());
         const QStringList warnings = loaded ? loaded->warnings : QStringList();
@@ -720,14 +720,14 @@ private slots:
         }));
 
         const std::shared_ptr<const QcContentRegistry> content = loaded->content;
-        QCOMPARE(content->smeltingRecipe(u"smelting"_s, u"qtcraft:iron_ore"_s)->resultItem, u"qtcraft:iron_ingot"_s);
+        QCOMPARE(content->smeltingRecipe(u"smelting"_s, u"qtcraft:raw_iron"_s)->resultItem, u"qtcraft:iron_ingot"_s);
         const QcBlockId millstone = *content->blockId(u"mill:millstone"_s);
         QCOMPARE(content->block(millstone).machine.category, u"milling"_s);
 
         // The base furnace does not mill, the millstone does not smelt.
         QVERIFY(!content->smeltingRecipe(u"smelting"_s, u"qtcraft:gravel"_s));
         QVERIFY(content->smeltingRecipe(u"milling"_s, u"qtcraft:gravel"_s));
-        QVERIFY(!content->smeltingRecipe(u"milling"_s, u"qtcraft:iron_ore"_s));
+        QVERIFY(!content->smeltingRecipe(u"milling"_s, u"qtcraft:raw_iron"_s));
 
         QcTestMachines machines(content);
         QcTestWorld world(*content);

@@ -77,7 +77,7 @@ private:
 
         QcBlockEntities::Machine furnace;
         furnace.pos = {-12, 64, 7};
-        furnace.stacks = {QcItemStack{*m_mod->itemId(u"qtcraft:iron_ore"_s), 9, 0}, QcItemStack{*m_mod->itemId(u"qtcraft:coal"_s), 2, 0},
+        furnace.stacks = {QcItemStack{*m_mod->itemId(u"qtcraft:raw_iron"_s), 9, 0}, QcItemStack{*m_mod->itemId(u"qtcraft:coal"_s), 2, 0},
                           QcItemStack{}};
         furnace.burnRemaining = 12.5;
         furnace.burnSeconds = 80.0;
