@@ -4,10 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-Stand 2026-10-20 11:45. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
+Stand 2026-10-20 14:45. Ältere Stände und der Verlauf stehen datiert in `docs/Log.md` (neueste zuerst); bei jeder Aktualisierung hier kürzen und dort einen datierten Abschnitt oben anfügen.
 
 - **In `dev`:** alle Etappen der Reihenfolge bis einschließlich 40, 47, 51, 56, 57, 59 und 60 erledigt (zuletzt 60 Rohmetall, Kupfer, Ketten `b95d167`; 59 Zuschauer und Abenteuer `7ae040f`; 47.1 Darstellung `1203c7a`).
-- **Läuft:** 61 kleine Signalfackel (`feature/61-small-signal-torch`; nach Rückfrage des Menschen: Bauteil direkt darüber wird versorgt, ein Block darüber nicht stark; Rezept aus neuem Signal-Dust-Brocken, 9 Brocken ↔ 1 Dust), 62.1 Bauvarianten (`feature/62-1-building-variants`). Geschuldet (Fenster): Benchmark 47, Rundgang-Screenshot Abenteuer-Station. Etappe 58 ausgesetzt. Keine GUI-Benchmarks, solange der Mensch am Rechner arbeitet.
+- **Läuft:** Etappe 62: 62.1 Bauvarianten in `dev` (`8a2ba52`, E-750–E-755, Protokoll 52); 62.2 in zwei Paketen: 62.2a Schild, Notenblock, Zielblock, Signal-Kontrollleuchte, Kompass, Uhr (`feature/62-2a-signal-signs`, E-765–E-769), 62.2b Räucherofen, Schmelzofen, Lagerfeuer, Kuchen, Seerose (`feature/62-2b-kitchen-blocks`, E-770–E-774). Größengrenzen zählen seit `eeb4885` nur Code-Zeilen (E-760). Voller Verify nur noch für komplette Etappen (62 nach 62.4). Geschuldet (Fenster): Benchmark 47, Rundgang-Screenshot Abenteuer-Station. Etappe 58 ausgesetzt. Keine GUI-Benchmarks, solange der Mensch am Rechner arbeitet.
 - **Danach:** 58 (Client-Speicher bei 16 Chunks), 59 (Spielmodi Zuschauer und Abenteuer), 60–66 und 68; Reihenfolge in der Tabelle „Etappen“.
 - **Fenster-Läufe** nur nach Freigabe des Menschen; headless und offscreen sind erlaubt.
 

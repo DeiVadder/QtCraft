@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 14:45
+
+Etappe 61 in `dev` (`3fe1f5b`; nach Rückfragen des Menschen: Bauteil direkt auf der kleinen Signalfackel wird versorgt, ein Block darüber nicht stark; Rezept aus Signalstaubstücken). Größengrenzen in Code-Zeilen (`eeb4885`, E-760; 28 Stellen nach Zuständigkeit geteilt, eigenes Prüfskript für Funktionen). 62.1 Bauvarianten in `dev` (`8a2ba52`; Review: Protokoll 52, Laub an entrindeten Stämmen, bemooste Blöcke aus Ranken). 62.2a und 62.2b gestartet. Plan ergänzt: 62.2 mit Signal-Kontrollleuchte (färbbar), Stück-Rezepten, Kompass und Uhr; 71 Karten nach 62.4; 72 API-Dokumentation vor dem Release; voller Verify nur für komplette Etappen.
+
 ## 2026-10-20 11:45
 
 Etappe 59 in `dev` (`7ae040f`; voller Verify grün bis auf `test_scenarios` unter ASan, allein fünfmal grün: Last-Effekt beim Aufsammeln). Etappe 60 in `dev` (`b95d167`; Review: Ofentext, Dorfplan-Prüfsumme jetzt nach Blocknamen statt IDs; voller Verify grün, Headless-Benchmark neutral). 61 in Nachbesserung nach Rückfrage des Menschen, 62.1 begonnen.
