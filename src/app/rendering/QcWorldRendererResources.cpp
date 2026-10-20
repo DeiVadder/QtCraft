@@ -3,6 +3,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcAtlasTexture.h"
 #include "app/rendering/QcRenderPipelines.h"
+#include "clientcore/textures/QcAtlasLayout.h"
 
 #include <array>
 #include <cstddef>
@@ -109,6 +110,16 @@ std::unique_ptr<QRhiGraphicsPipeline> BlockPipelines::build(const QShader &fragm
     return pipeline;
 }
 
+// Pixels per cell of the uploaded atlas texture of `grid`; 0 (no filtering) when the texture is not
+// made of whole cells of at least the last level's 10 pixels (the GPU refused every level and took
+// the placeholder).
+float atlasCellPixelsOf(QSize texture, QSize grid)
+{
+    const int cell = texture.width() / grid.width();
+    const bool whole = texture.width() % grid.width() == 0 && texture.height() == grid.height() * cell;
+    return whole && cell >= QcAtlasLayout::cellSize(QcAtlasLayout::minimumMipTile) ? float(cell) : 0.0f;
+}
+
 QRhiVertexInputLayout blockVertexLayout()
 {
     QRhiVertexInputLayout inputLayout;
@@ -145,8 +156,10 @@ QcWorldDeviceResources QcWorldDeviceResources::create(QRhi *rhi)
 void QcWorldDeviceResources::replaceAtlas(const QList<QImage> &levels, quint64 version, QRhiResourceUpdateBatch *updates)
 {
     atlasTried = true;
+    // The placeholder is drawn plainly: the block shader's filtering needs a real atlas.
+    const bool atlas = !levels.isEmpty() && !levels.front().isNull();
     QList<QImage> uploaded = levels;
-    if (uploaded.isEmpty() || uploaded.front().isNull()) {
+    if (!atlas) {
         QImage placeholder(16, 16, QImage::Format_RGBA8888);
         placeholder.fill(Qt::magenta);
         uploaded = {placeholder};
@@ -157,6 +170,12 @@ void QcWorldDeviceResources::replaceAtlas(const QList<QImage> &levels, quint64 v
     bindings.reset();
     atlasTexture = QcAtlasTexture::create(rhi, uploaded, updates);
     uploadedAtlasVersion = version;
+    atlasGrid = {1, 1};
+    atlasCellPixels = 0.0f;
+    if (atlas && atlasTexture) {
+        atlasGrid = QcAtlasLayout::gridOf(levels.back().size());
+        atlasCellPixels = atlasCellPixelsOf(atlasTexture->pixelSize(), atlasGrid);
+    }
 }
 
 QRhiShaderResourceBindings *QcWorldDeviceResources::atlasBindings()

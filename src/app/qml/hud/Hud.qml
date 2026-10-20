@@ -15,6 +15,8 @@ Item {
     // overlap a row of the list.
     readonly property list<Item> statusRows: [hotbar, experienceBar, experienceLevel, hearts, foodBar, armourBar]
     readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y)
+    // The status rows, the hotbar and the hint below it: world labels fade out before they reach it.
+    readonly property rect statusArea: Qt.rect(hotbar.x, statusTop, hotbar.width, height - statusTop)
 
     objectName: "hud"
 
@@ -62,6 +64,7 @@ Item {
         anchors.fill: parent
         visible: hud.game.settings.showLabels
         labels: hud.game.hud.labels
+        hudArea: hud.statusArea
     }
 
     // Light values around the target (debug options).
@@ -69,6 +72,7 @@ Item {
         anchors.fill: parent
         visible: hud.game.settings.debug.lightValues
         labels: hud.game.hud.debug.lightLabels
+        hudArea: hud.statusArea
     }
 
     DebugOverlay {

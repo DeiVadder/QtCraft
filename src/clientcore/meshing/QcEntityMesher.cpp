@@ -592,11 +592,14 @@ void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Hand
     const auto toWorld = [&](const QcVec3 &c) { return view.eye + right * c.x + up * c.y - forward * c.z; };
 
     // The shoulder sits low on the right, a little ahead of the eyes so the sleeve's cuff shows;
-    // the arm points forward, slightly up and inwards.
-    const QcVec3 shoulder = QcVec3{0.4, -0.36, -0.06} + hand.offset;
+    // the arm points forward, slightly up and inwards. An empty hand is drawn smaller and lower
+    // (decision E-722), so the bare arm does not fill the corner of the view.
+    const bool empty = !figure.held;
+    const QcVec3 shoulder = (empty ? emptyHandShoulder : heldItemShoulder) + hand.offset;
+    const double armScale = empty ? emptyHandScale : 1.0;
     const Rotate armRotate(108.0 + hand.pitch, 0.0);
     const Turn armTurn(-14.0 - hand.yaw);
-    const auto armCamera = [&](const QcVec3 &local) { return shoulder + armTurn(armRotate(local)); };
+    const auto armCamera = [&](const QcVec3 &local) { return shoulder + armTurn(armRotate(local * armScale)); };
     const auto armSpace = [&](const QcVec3 &local) { return toWorld(armCamera(local)); };
     const QcModelBone *arm = look.model ? boneWithRole(*look.model, QcBoneRole::RightArm) : nullptr;
     double length = 0.6;

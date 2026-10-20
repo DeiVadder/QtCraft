@@ -15,7 +15,9 @@
 #include <utility>
 
 using QcRenderPipelines::FrameUniforms;
+using QcRenderPipelines::anisotropicSamples;
 using QcRenderPipelines::minimumLight;
+using QcRenderPipelines::skyLightFloor;
 
 void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
 {
@@ -153,6 +155,11 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.extra[0] = m_device.rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
     uniforms.extra[1] = float(outputSize.width());
     uniforms.extra[2] = float(outputSize.height());
+    uniforms.extra[3] = skyLightFloor;
+    uniforms.atlas[0] = float(m_device.atlasGrid.width());
+    uniforms.atlas[1] = float(m_device.atlasGrid.height());
+    uniforms.atlas[2] = m_device.atlasCellPixels;
+    uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? anisotropicSamples : 1.0f;
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }

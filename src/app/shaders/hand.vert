@@ -18,14 +18,15 @@ layout(std140, binding = 0) uniform Frame {
     vec4 fogColor;
     // x: fog start, y: fog end, z: daylight factor, w: minimum light
     vec4 params;
-    // x: 1 when clip-space depth runs from 0 to 1
+    // x: 1 when clip-space depth runs from 0 to 1, w: floor light per unit of sky light
     vec4 extra;
 } frame;
 
 void main()
 {
     vTexCoord = texCoord;
-    float sky = max(skyLight * frame.params.z, frame.params.w);
+    // The floor rises with the sky light (decision E-723).
+    float sky = max(skyLight * frame.params.z, frame.params.w + skyLight * frame.extra.w);
     // Block light (torches) is warm and does not follow the time of day.
     vLight = shade * max(vec3(sky), blockLight * vec3(1.0, 0.86, 0.66));
     vTint = tint;

@@ -10,8 +10,7 @@
 // like the world: shader loading, the frame uniform block of the shaders and the entity pipeline.
 namespace QcRenderPipelines {
 
-// std140 layout of the Frame uniform block in the shaders (the block shaders read only the first
-// four members).
+// std140 layout of the Frame uniform block in the shaders.
 struct FrameUniforms
 {
     float viewProjection[16];
@@ -20,13 +19,23 @@ struct FrameUniforms
     // x: fog start, y: fog end, z: daylight factor, w: minimum light
     float params[4];
     // x: 1 when clip-space depth runs from 0 to 1 (else -1 to 1); y, z: size of the output in
-    // pixels (debug lines are drawn that many pixels wide, decision E-225).
+    // pixels (debug lines are drawn that many pixels wide, decision E-225); w: skyLightFloor.
     float extra[4];
+    // The atlas for the block shader's filtering (decision E-721): x, y: its grid of cells
+    // (QcAtlasLayout::grid), z: pixels per cell in the uploaded texture's largest level, w: most
+    // samples along a slanted footprint (1: plain mip mapping).
+    float atlas[4];
 };
-static_assert(sizeof(FrameUniforms) == 128);
+static_assert(sizeof(FrameUniforms) == 144);
 
-// Light the shaders never go below (deep caves, night).
+// Light the shaders never go below (caves without sky light).
 inline constexpr float minimumLight = 0.08f;
+// More floor light per unit of sky light (decision E-723): in the open at night the floor is
+// minimumLight + skyLightFloor, under trees a little less, in caves without sky light it stays at
+// minimumLight. In daylight the sky light itself is brighter than the floor.
+inline constexpr float skyLightFloor = 0.16f;
+// Most samples the block shader takes along a slanted footprint (decision E-721).
+inline constexpr float anisotropicSamples = 8.0f;
 
 // A shader baked by qt_add_shaders (":/shaders/<name>.qsb"); invalid and logged in `category`
 // (the renderer that needs it) when missing.

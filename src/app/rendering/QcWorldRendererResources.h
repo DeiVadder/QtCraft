@@ -65,6 +65,10 @@ struct QcWorldDeviceResources
     // The selection whose lines are in outlineVertices; unset before the first upload.
     std::optional<QList<QcAabb>> uploadedSelection;
     quint32 outlineVertexCount = 0;
+    // The atlas's grid of cells and the pixels per cell of atlasTexture's largest level (0 without
+    // a texture), for the block shader's filtering (decision E-721).
+    QSize atlasGrid{1, 1};
+    float atlasCellPixels = 0.0f;
     // The atlas version in atlasTexture, and whether that version was tried.
     quint64 uploadedAtlasVersion = 0;
     bool atlasTried = false;

@@ -88,6 +88,12 @@ struct Figure
 // Edge length of a dropped cube and of a sprite.
 inline constexpr double itemCubeSize = 0.25;
 inline constexpr double itemSpriteSize = 0.45;
+// Where the first-person shoulder sits in the camera's frame (x right, y up, z backwards, metres)
+// with an item in the hand and without one, and how large the empty arm is drawn (decision E-722).
+inline constexpr QcVec3 heldItemShoulder{0.4, -0.36, -0.06};
+inline constexpr QcVec3 emptyHandShoulder{0.4, -0.4, -0.08};
+inline constexpr double emptyHandScale = 0.8;
+
 // Scale of a sprite held in the first-person hand: about as large as a held block (0.15 m).
 inline constexpr double handSpriteScale = 0.36;
 // Height the humanoid models are built for.

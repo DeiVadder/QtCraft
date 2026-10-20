@@ -165,6 +165,7 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
     uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
     uniforms.extra[1] = float(size.width());
     uniforms.extra[2] = float(size.height());
+    uniforms.extra[3] = QcRenderPipelines::skyLightFloor;
     updates->updateDynamicBuffer(m_uniforms.get(), 0, sizeof(uniforms), &uniforms);
 }
 

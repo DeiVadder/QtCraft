@@ -21,11 +21,17 @@ public:
     // UV rectangle (0..1) of tile `index`, independent of the tile size.
     QRectF uv(qsizetype index) const;
 
+    // Tile size of the last mip level (levelCount()).
+    static constexpr int minimumMipTile = 8;
+
     static int gutter(int tileSize) { return tileSize / 8; }
     static int cellSize(int tileSize) { return tileSize + 2 * gutter(tileSize); }
     // Mip levels down to tiles of 8 pixels (16: 2, 32: 3, 64: 4, …, 256: 6), each with a gutter of
     // at least one pixel.
     static int levelCount(int tileSize);
+    // Columns and rows of the atlas whose last level (levelCount(), tiles of 8 pixels) is
+    // `lastLevel` pixels large; at least 1 x 1.
+    static QSize gridOf(QSize lastLevel);
     QSize extent(int tileSize) const { return {m_columns * cellSize(tileSize), m_rows * cellSize(tileSize)}; }
     // Bytes of all mip levels at `tileSize` (RGBA, 4 bytes per pixel).
     qint64 bytes(int tileSize) const;

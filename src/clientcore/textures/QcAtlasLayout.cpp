@@ -12,7 +12,6 @@ namespace {
 constexpr double cellUnits = 10.0;
 constexpr double gutterUnits = 1.0;
 constexpr double tileUnits = 8.0;
-constexpr int minimumMipTile = 8;
 
 } // namespace
 
@@ -34,6 +33,15 @@ QRectF QcAtlasLayout::uv(qsizetype index) const
 int QcAtlasLayout::levelCount(int tileSize)
 {
     return std::max(1, std::bit_width(unsigned(std::max(tileSize, minimumMipTile))) - std::bit_width(unsigned(minimumMipTile)) + 1);
+}
+
+QSize QcAtlasLayout::gridOf(QSize lastLevel)
+{
+    // Packs are powers of two from 16 (QcTexturePackManifest::isValidResolution), so the last level
+    // is made of whole cells of 10 pixels.
+    const int cell = cellSize(minimumMipTile);
+    Q_ASSERT(lastLevel.width() % cell == 0 && lastLevel.height() % cell == 0);
+    return {std::max(1, lastLevel.width() / cell), std::max(1, lastLevel.height() / cell)};
 }
 
 qint64 QcAtlasLayout::bytes(int tileSize) const

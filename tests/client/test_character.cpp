@@ -6,7 +6,9 @@
 
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -315,6 +317,24 @@ private slots:
         QcEntityMesh holding;
         QcEntityMesher::appendHand(holding, {modelLook, &block}, {}, {eye, 0.0, 0.0, 1.0f}, anyUv);
         QCOMPARE(holding.indices.size(), 2 * 6 * 6);
+
+        // An empty hand is drawn smaller and lower than one holding an item (decision E-722).
+        const auto armExtent = [](const QcEntityMesh &arm, qsizetype count) {
+            double top = -1e9;
+            double bottom = 1e9;
+            for (qsizetype i = 0; i < count; ++i) {
+                top = std::max(top, double(arm.vertices[i].y));
+                bottom = std::min(bottom, double(arm.vertices[i].y));
+            }
+            return std::pair{top, top - bottom};
+        };
+        // The same arm boxes either way; in `holding` they come first and the item follows.
+        const qsizetype armVertices = mesh.vertices.size();
+        QCOMPARE(holding.vertices.size(), armVertices + qsizetype(6 * 4));
+        const auto [emptyTop, emptyHeight] = armExtent(mesh, armVertices);
+        const auto [heldTop, heldHeight] = armExtent(holding, armVertices);
+        QVERIFY(emptyTop < heldTop - 0.05);
+        QVERIFY(emptyHeight < heldHeight * 0.9);
     }
 
     void glowingItemsAreNeverDarkerThanTheirOwnLight()

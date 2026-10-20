@@ -218,7 +218,10 @@ private slots:
             QCOMPARE(atlas.image().size(), QSize(3 * resolution * 5 / 4, 2 * resolution * 5 / 4));
             QCOMPARE(atlas.levels().size(), QcAtlasLayout::levelCount(resolution));
             QCOMPARE(atlas.levels().back().width() * (1 << (atlas.levels().size() - 1)), atlas.image().width());
+            // The block shader's filtering finds the grid from the last level (decision E-721).
+            QCOMPARE(QcAtlasLayout::gridOf(atlas.levels().back().size()), QSize(3, 2));
         }
+        QCOMPARE(QcAtlasLayout::gridOf(base.levels().back().size()), QSize(3, 2));
         QCOMPARE(QcAtlasLayout::levelCount(16), 2);
         QCOMPARE(QcAtlasLayout::levelCount(64), 4);
         QCOMPARE(QcAtlasLayout::levelCount(256), 6);
