@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/gameplay/QcItemStack.h"
+
 #include <QList>
 #include <QString>
 
@@ -17,5 +19,9 @@ void generate(QcContentRegistry &registry);
 
 // The indices of the stonecutting recipes that take `inputItem`, in the order of the registry.
 [[nodiscard]] QList<qsizetype> recipesFor(const QcContentRegistry &content, const QString &inputItem);
+
+// The stonecutter's output slot (decision E-785): what the recipe named `recipe` makes from one item
+// of `input`, or an empty stack when the input is empty, the recipe unknown or for another input.
+[[nodiscard]] QcItemStack output(const QcContentRegistry &content, QcItemStack input, const QString &recipe);
 
 } // namespace QcStonecutting

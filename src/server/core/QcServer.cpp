@@ -169,11 +169,13 @@ QcStatus QcServer::stop()
 {
     m_tickTimer->stop();
 
-    // Open crafting grids are emptied like on a disconnect, so overflow lands in the saved world.
+    // Open crafting grids and stonecutters are emptied like on a disconnect, so overflow lands in the
+    // saved world.
     for (const auto &client : m_state.clients()) {
         // Also clients that already disconnected: removeClosedClients() will not run any more.
         if (client->joined) {
             m_crafting.returnCraftingGrid(*client);
+            m_inventory.returnStonecutterInput(*client);
         }
     }
 
@@ -349,12 +351,14 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_inventory.send(client);
     } else if (const auto *move = std::get_if<QcMsg::MoveInventoryItem>(&message)) {
         client.mining.pos.reset();
-        m_inventory.moveItem(client, *move);
+        if (!m_stonecutter.takeOutput(client, *move)) {
+            m_inventory.moveItem(client, *move);
+        }
     } else if (const auto *quick = std::get_if<QcMsg::QuickMoveItem>(&message)) {
         client.mining.pos.reset();
         if (quick->slot == QcMsg::QuickMoveItem::craftingResultSlot) {
             m_crafting.craftAll(client);
-        } else {
+        } else if (!m_stonecutter.takeAllOutput(client, quick->slot)) {
             m_inventory.quickMove(client, *quick);
         }
     } else if (std::holds_alternative<QcMsg::TakeCraftingResult>(message)) {
@@ -371,8 +375,8 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_trading.trade(client, *trade);
     } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
         m_trading.close(client, false);
-    } else if (const auto *cut = std::get_if<QcMsg::CutStone>(&message)) {
-        m_stonecutter.cut(client, *cut);
+    } else if (const auto *select = std::get_if<QcMsg::SelectStonecutterRecipe>(&message)) {
+        m_stonecutter.select(client, *select);
     } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
         m_stonecutter.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {

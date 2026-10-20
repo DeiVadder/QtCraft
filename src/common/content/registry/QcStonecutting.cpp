@@ -18,13 +18,13 @@ struct Cut
 };
 
 // The name of the recipe cutting `input` into `part`: "<part>_from_<input path>" when both share a
-// namespace, else "<part>_from_<input namespace>_<input path>", so inputs of two packs never share a
-// name.
+// namespace, else "<part>_from_<input namespace>:<input path>". A path never holds the ':', so two
+// inputs of different packs never share a name (with '_' pack "a_b" path "c" met pack "a" path "b_c").
 QString recipeName(const QString &input, const QString &part)
 {
     const qsizetype colon = input.indexOf(u':');
     const bool samePack = colon >= 0 && part.startsWith(input.left(colon + 1));
-    const QString from = samePack ? input.mid(colon + 1) : QString(input).replace(u':', u'_');
+    const QString from = samePack ? input.mid(colon + 1) : input;
     return u"%1_from_%2"_s.arg(part, from);
 }
 
@@ -115,6 +115,21 @@ QList<qsizetype> recipesFor(const QcContentRegistry &content, const QString &inp
         }
     }
     return found;
+}
+
+QcItemStack output(const QcContentRegistry &content, QcItemStack input, const QString &recipe)
+{
+    const std::optional<qsizetype> index = recipe.isEmpty() ? std::nullopt : content.stonecuttingIndex(recipe);
+    if (input.isEmpty() || !index || !content.isValidItem(input.item)) {
+        return {};
+    }
+
+    const QcSmeltingRecipe &found = content.stonecuttingRecipes()[*index];
+    const std::optional<QcItemId> result = content.itemId(found.resultItem);
+    if (found.inputItem != content.item(input.item).name || !result) {
+        return {};
+    }
+    return {*result, found.resultCount, 0};
 }
 
 } // namespace QcStonecutting

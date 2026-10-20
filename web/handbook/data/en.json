@@ -77973,7 +77973,7 @@
                     "title": "Mined with"
                 }
             ],
-            "text": "Cuts stone blocks from your inventory into stairs, slabs, vertical slabs, walls and cut or chiseled variants, one block at a time and without loss: use it and pick a result.",
+            "text": "Cuts stone blocks into stairs, slabs, vertical slabs, walls and cut or chiseled variants, one block at a time and without loss: use it, put stone into the input slot, choose a result and take it from the output slot.",
             "title": "Stonecutter"
         },
         "block:qtcraft:stripped_birch_log": {
@@ -85572,7 +85572,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "A stonecutter cuts one stone block at a time into the shapes of its family without loss: two slabs or two vertical slabs, one stair or one wall per block, and the cut and chiseled variants (stone into stone bricks and chiseled stone bricks, sandstone into cut and carved sandstone, and on into their shapes). Use it, choose a stone from your inventory on the left and click a result to cut one block; shift-click cuts all of that stone. An iron ingot over three stone makes a stonecutter.",
+                    "text": "A stonecutter cuts one stone block at a time into the shapes of its family without loss: two slabs or two vertical slabs, one stair or one wall per block, and the cut and chiseled variants (stone into stone bricks and chiseled stone bricks, sandstone into cut and carved sandstone, and on into their shapes). Use it and put stone into the slot on the left; the middle shows what it becomes. Choose a result and take it from the slot on the right, which uses up one block; shift-click takes as many as the stone and the room in your inventory allow. Another stone in the slot clears the choice. Whatever is left in the slot comes back to you when you close the screen. An iron ingot over three stone makes a stonecutter.",
                     "title": "The stonecutter"
                 },
                 {

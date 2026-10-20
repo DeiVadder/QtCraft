@@ -147,7 +147,7 @@ Das Inventar listet, was du gerade herstellen kannst; ein Klick stellt es her. M
 
 **Der Steinschneider**
 
-Ein Steinschneider schneidet einen Steinblock nach dem anderen in die Formen seiner Familie, ohne dass etwas verloren geht: zwei Stufen oder zwei senkrechte Stufen, eine Treppe oder eine Mauer je Block und die geschnittenen und gemeißelten Varianten (Stein zu Steinziegeln und gemeißelten Steinziegeln, Sandstein zu geschnittenem und gemeißeltem Sandstein und weiter in deren Formen). Benutze ihn, wähle links einen Stein aus deinem Inventar und klicke ein Ergebnis an, um einen Block zu schneiden; mit gedrückter Umschalttaste schneidest du den ganzen Stein dieser Art. Ein Eisenbarren über drei Stein ergibt einen Steinschneider.
+Ein Steinschneider schneidet einen Steinblock nach dem anderen in die Formen seiner Familie, ohne dass etwas verloren geht: zwei Stufen oder zwei senkrechte Stufen, eine Treppe oder eine Mauer je Block und die geschnittenen und gemeißelten Varianten (Stein zu Steinziegeln und gemeißelten Steinziegeln, Sandstein zu geschnittenem und gemeißeltem Sandstein und weiter in deren Formen). Benutze ihn und lege Stein in den linken Platz; die Mitte zeigt, was daraus wird. Wähle ein Ergebnis und nimm es aus dem rechten Platz, das verbraucht einen Block; mit gedrückter Umschalttaste nimmst du so viele, wie Stein und Platz im Inventar reichen. Ein anderer Stein im Platz hebt die Wahl auf. Was beim Schließen noch im Platz liegt, kommt zu dir zurück. Ein Eisenbarren über drei Stein ergibt einen Steinschneider.
 
 **Siehe auch**
 

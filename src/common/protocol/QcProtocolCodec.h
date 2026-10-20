@@ -167,10 +167,12 @@ void encode(QDataStream &stream, QcMsg::CloseMachine m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &stream);
 void encode(QDataStream &stream, QcMsg::OpenStonecutter m);
-void encode(QDataStream &stream, const QcMsg::CutStone &m);
+void encode(QDataStream &stream, const QcMsg::StonecutterState &m);
+void encode(QDataStream &stream, const QcMsg::SelectStonecutterRecipe &m);
 void encode(QDataStream &stream, QcMsg::CloseStonecutter m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenStonecutter>, QDataStream &stream);
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CutStone>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::StonecutterState>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SelectStonecutterRecipe>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseStonecutter>, QDataStream &stream);
 
 // Debug display and statistics (QcDebugCodec.cpp)

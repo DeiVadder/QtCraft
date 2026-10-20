@@ -1,6 +1,7 @@
 #include "server/gameplay/QcServerInventory.h"
 
 #include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcStonecutting.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcQuickMove.h"
 #include "common/physics/QcPhysics.h"
@@ -21,10 +22,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Inventory, the usable part of the grid and the open machine or chest form one slot space;
-// other grid cells and block slots without an open block are invalid.
-bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities::Machine *machine,
-                  const std::optional<QcBlockScreens::OpenContainer> &container)
+// Inventory, the usable part of the grid and the `blockSlots` slots of the open block form one slot
+// space; other grid cells and block slots are invalid.
+bool isUsableSlot(const QcServerClient &client, int slot, int blockSlots)
 {
     if (slot < QcServerInventory::craftingGridSlot) {
         return QcInventory::isValidSlot(slot);
@@ -34,8 +34,7 @@ bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities:
     }
 
     if (slot >= QcServerInventory::machineSlot && slot < QcServerInventory::equipmentSlot) {
-        return (machine && slot < QcServerInventory::machineSlot + QcMachineRules::slotCount)
-               || (container && slot < QcServerInventory::machineSlot + container->stacks->size());
+        return slot < QcServerInventory::machineSlot + blockSlots;
     }
 
     const int cell = slot - QcServerInventory::craftingGridSlot;
@@ -63,17 +62,27 @@ void QcServerInventory::send(QcServerClient &client)
     state.craftingResult = QcServerCrafting::resultOf(m_state.content(), client).value_or(QcItemStack());
 
     client.connection->send(state);
+    if (client.screen.stonecutter) {
+        client.connection->send(QcMsg::StonecutterState{client.screen.stonecutter->input, client.screen.stonecutter->recipe});
+    }
 }
 
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
-    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), {}};
+    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), nullptr, 0, {}};
     open.combined.stacks = client.inventory.allSlots();
     open.combined.stacks.append(client.crafting.grid);
     if (open.machine) {
         open.combined.stacks.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
+        open.blockSlots = QcMachineRules::slotCount;
     } else if (open.container) {
         open.combined.stacks.append(*open.container->stacks);
+        open.blockSlots = int(open.container->stacks->size());
+    } else if (client.screen.stonecutter) {
+        // Only the input slot: the output is taken through QcServerStonecutter.
+        open.stonecutter = &*client.screen.stonecutter;
+        open.combined.stacks.append(open.stonecutter->input);
+        open.blockSlots = 1;
     }
     // The armour slots follow at their own numbers; the cells between them stay unusable.
     open.combined.stacks.resize(equipmentSlot);
@@ -118,6 +127,9 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     if (open.container) {
         *open.container->stacks = open.combined.stacks.mid(machineSlot, open.container->stacks->size());
     }
+    if (open.stonecutter) {
+        open.stonecutter->setInput(open.combined.stacks[machineSlot]);
+    }
     QcEquipment equipment;
     std::ranges::copy(open.combined.stacks.mid(equipmentSlot, QcEquipment::slotCount), equipment.stacks.begin());
     setEquipment(client, equipment);
@@ -138,8 +150,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
 void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move)
 {
     OpenSlots open = openSlots(client);
-    if (client.dead || !isUsableSlot(client, move.from, open.machine, open.container)
-        || !isUsableSlot(client, move.to, open.machine, open.container) || move.from == move.to
+    if (client.dead || !isUsableSlot(client, move.from, open.blockSlots) || !isUsableSlot(client, move.to, open.blockSlots) || move.from == move.to
         || (open.machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
         send(client);
         m_screens.send(client, true);
@@ -154,7 +165,7 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
 void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem move)
 {
     OpenSlots open = openSlots(client);
-    if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined.stacks[move.slot].isEmpty()) {
+    if (client.dead || !isUsableSlot(client, move.slot, open.blockSlots) || open.combined.stacks[move.slot].isEmpty()) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -162,8 +173,14 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
 
     QcQuickMove::Situation situation;
     situation.containerSlots = open.container ? int(open.container->stacks->size()) : 0;
-    situation.machineOpen = open.machine != nullptr;
+    situation.machineOpen = open.machine != nullptr || open.stonecutter != nullptr;
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined.stacks[move.slot]);
+    if (open.stonecutter) {
+        // Stone goes into the stonecutter's input like smeltable items into a furnace's.
+        const QcItemId item = open.combined.stacks[move.slot].item;
+        situation.smeltable = m_state.content().isValidItem(item)
+                              && !QcStonecutting::recipesFor(m_state.content(), m_state.content().item(item).name).isEmpty();
+    }
     if (open.machine) {
         const QcItemId item = open.combined.stacks[move.slot].item;
         const std::optional<QcBlockId> block = m_state.world().blockAt(open.machine->pos);
@@ -222,6 +239,10 @@ void QcServerInventory::dropAll(QcServerClient &client)
     const QcVec3 position = client.motion.position + QcVec3{0.0, 1.0, 0.0};
     QList<QcItemStack> stacks = client.inventory.allSlots();
     stacks.append(client.crafting.grid);
+    if (client.screen.stonecutter) {
+        stacks.append(client.screen.stonecutter->input);
+        client.screen.stonecutter->setInput({});
+    }
     stacks.append(QList<QcItemStack>(client.equipment.stacks.begin(), client.equipment.stacks.end()));
 
     for (const QcItemStack &stack : std::as_const(stacks)) {
@@ -238,6 +259,22 @@ void QcServerInventory::dropAll(QcServerClient &client)
     client.equipment = {};
     m_state.entities().markStale(client.id);
     send(client);
+}
+
+void QcServerInventory::returnStonecutterInput(QcServerClient &client)
+{
+    if (!client.screen.stonecutter || client.screen.stonecutter->input.isEmpty()) {
+        return;
+    }
+
+    const QcItemStack input = client.screen.stonecutter->input;
+    client.screen.stonecutter->setInput({});
+    // Catalogue items that do not fit go into the bin rather than into the world (decision E-283).
+    if (QcGameModes::rules(client.gameMode).itemCatalogue) {
+        client.inventory.add(input.item, input.count, m_state.content(), input.damage);
+    } else {
+        giveOrThrow(client, input);
+    }
 }
 
 void QcServerInventory::throwFromPlayer(const QcServerClient &client, QcItemStack stack)

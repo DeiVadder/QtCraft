@@ -41,7 +41,8 @@ struct SelectHotbarSlot
 
 // Slots 0..35 are the inventory, 36..44 the crafting grid (row-major, 3 per row; a 2 x 2 grid uses
 // the top-left four), 45..47 the open machine (input, fuel, output; the output only gives), or 45
-// onwards the slots of the open storage block, and 100..103 the armour slots (head, chest, legs,
+// onwards the slots of the open storage block, or 45 and 47 the open stonecutter (input and output,
+// decision E-785), and 100..103 the armour slots (head, chest, legs,
 // feet; only armour made for the slot goes in, decision E-234).
 // `count` 0 moves the whole stack.
 struct MoveInventoryItem

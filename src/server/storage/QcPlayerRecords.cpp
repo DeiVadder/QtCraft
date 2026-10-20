@@ -16,9 +16,13 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.pitch = client.pitch;
     player.inventory = client.inventory;
 
-    // Items in the crafting grid are stored in the inventory, as if the grid had been closed; the
-    // open grid itself is not saved.
-    for (const QcItemStack &cell : client.crafting.grid) {
+    // Items in the crafting grid and the stonecutter's input are stored in the inventory, as if the
+    // screen had been closed; the open screen itself is not saved.
+    QList<QcItemStack> held = client.crafting.grid;
+    if (client.screen.stonecutter) {
+        held.append(client.screen.stonecutter->input);
+    }
+    for (const QcItemStack &cell : std::as_const(held)) {
         if (!cell.isEmpty()) {
             record.lost += player.inventory.add(cell.item, cell.count, content, cell.damage);
         }

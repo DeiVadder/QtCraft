@@ -5,6 +5,7 @@
 #include "common/gameplay/QcSlotList.h"
 #include "common/protocol/QcMessages.h"
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/core/QcServerClient.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcMachineRules.h"
 
@@ -15,11 +16,10 @@
 
 class QcBlockScreens;
 class QcServerSounds;
-struct QcServerClient;
 class QcServerState;
 
 // Inventories of the players: moving items between the inventory, the crafting grid, armour slots and
-// an open machine or chest, throwing and dropping items, armour worn and taken off. Crafting itself is
+// an open machine or chest or the input slot of the open stonecutter (decision E-785), throwing and dropping items, armour worn and taken off. Crafting itself is
 // QcServerCrafting's.
 class QcServerInventory
 {
@@ -32,14 +32,20 @@ public:
 
     QcServerInventory(QcServerState &state, QcBlockScreens &screens, QcServerSounds &sounds);
 
+    // Sends the inventory, crafting grid and armour; with a stonecutter open also its slots.
     void send(QcServerClient &client);
 
     void moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move);
     // Shift-click: moves the whole stack to where it belongs (QcQuickMove).
     void quickMove(QcServerClient &client, QcMsg::QuickMoveItem move);
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
-    // Drops everything the player carries (death without keepInventory).
+    // Drops everything the player carries (death without keepInventory), the open stonecutter's
+    // input included.
     void dropAll(QcServerClient &client);
+    // Gives the open stonecutter's input back to the player like the crafting grid's items (what
+    // does not fit is thrown; catalogue items that do not fit are gone); the screen stays open and
+    // nothing is sent.
+    void returnStonecutterInput(QcServerClient &client);
     // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
     void giveOrThrow(QcServerClient &client, QcItemStack stack);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
@@ -59,11 +65,14 @@ public:
     void wearHeld(QcServerClient &client);
 
 private:
-    // Inventory, crafting grid and the open machine or chest as one slot list.
+    // Inventory, crafting grid and the open machine or chest (or the input slot of the open
+    // stonecutter) as one slot list; `blockSlots` of the block's slots from machineSlot on are usable.
     struct OpenSlots
     {
         QcBlockEntities::Machine *machine = nullptr;
         std::optional<QcBlockScreens::OpenContainer> container;
+        QcServerClient::Stonecutter *stonecutter = nullptr;
+        int blockSlots = 0;
         QcSlotList combined;
     };
 

@@ -9211,7 +9211,7 @@ Das häufigste Erz; ergibt Kohle, den besten frühen Brennstoff.
 
 ### <a id="block-qtcraft-stonecutter"></a>Steinschneider
 
-Schneidet Steinblöcke aus deinem Inventar in Treppen, Stufen, senkrechte Stufen, Mauern und geschnittene oder gemeißelte Varianten, einen Block nach dem anderen und ohne Verlust: benutze ihn und wähle ein Ergebnis.
+Schneidet Steinblöcke in Treppen, Stufen, senkrechte Stufen, Mauern und geschnittene oder gemeißelte Varianten, einen Block nach dem anderen und ohne Verlust: benutze ihn, lege Stein in den Eingabeplatz, wähle ein Ergebnis und nimm es aus dem Ausgabeplatz.
 
 | | |
 |---|---|

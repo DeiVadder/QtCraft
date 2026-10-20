@@ -8,8 +8,6 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcStonecutting.h"
 
-#include <algorithm>
-
 using namespace Qt::StringLiterals;
 
 QcStonecutterController::QcStonecutterController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent)
@@ -30,26 +28,13 @@ bool QcStonecutterController::isOpen() const
     return m_parts.session && m_parts.session->stonecutter().isOpen();
 }
 
-void QcStonecutterController::select(int index)
-{
-    if (index < 0 || index >= m_inputNames.size()) {
-        qCWarning(lcGame) << "Stonecutter: no input" << index << "of" << m_inputNames.size();
-        return;
-    }
-    // The same input again changes nothing.
-    if (index != m_selected) {
-        m_selected = index;
-        update();
-    }
-}
-
-void QcStonecutterController::cut(int index, bool repeat) const
+void QcStonecutterController::select(int index) const
 {
     if (!isOpen() || index < 0 || index >= m_recipes.size()) {
-        qCWarning(lcGame) << "Stonecutter: no result" << index << "to cut";
+        qCWarning(lcGame) << "Stonecutter: no result" << index << "of" << m_recipes.size();
         return;
     }
-    m_parts.session->stonecutter().cut(m_recipes[index], repeat);
+    m_parts.session->stonecutter().select(m_recipes[index]);
 }
 
 QVariantMap QcStonecutterController::stackMap(const QString &item, int count) const
@@ -66,25 +51,19 @@ QVariantMap QcStonecutterController::stackMap(const QString &item, int count) co
 
 void QcStonecutterController::update()
 {
-    const QString previous = m_inputNames.value(m_selected);
-    m_inputNames.clear();
     m_recipes.clear();
-    m_inputs.clear();
     m_results.clear();
+    m_selected = -1;
     const std::shared_ptr<const QcContentRegistry> content = isOpen() ? m_parts.session->content() : nullptr;
-    if (content) {
-        const QcInventory &inventory = m_parts.session->inventory();
-        m_inputNames = QcClientStonecutter::inputs(*content, inventory.allSlots());
-        for (const QString &name : std::as_const(m_inputNames)) {
-            m_inputs.append(stackMap(name, inventory.countOf(content->itemId(name).value_or(qcNoItem))));
-        }
-        m_selected = std::max(0, int(m_inputNames.indexOf(previous)));
-        const QList<qsizetype> recipes = m_inputNames.isEmpty() ? QList<qsizetype>() : QcStonecutting::recipesFor(*content, m_inputNames[m_selected]);
+    const QcItemStack input = content ? m_parts.session->stonecutter().input() : QcItemStack();
+    if (content && !input.isEmpty() && content->isValidItem(input.item)) {
+        const QList<qsizetype> recipes = QcStonecutting::recipesFor(*content, content->item(input.item).name);
         for (const qsizetype index : recipes) {
             const QcSmeltingRecipe &recipe = content->stonecuttingRecipes()[index];
             m_recipes.append(recipe.name);
             m_results.append(stackMap(recipe.resultItem, recipe.resultCount));
         }
+        m_selected = int(m_recipes.indexOf(m_parts.session->stonecutter().recipe()));
     }
     emit changed();
 }

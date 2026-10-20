@@ -245,8 +245,16 @@ void QcPlayerController::useContent()
 void QcPlayerController::updateInventory()
 {
     const QcClientSession &session = *m_parts.session;
-    m_inventory->setInventory(session.inventory(), session.inventoryMirror().craftingGrid(), session.inventoryMirror().craftingResult(),
-                              session.machine().isOpen() ? session.machine().stacks() : QList<QcItemStack>(), session.inventoryMirror().equipment());
+    // The open block's slots: a machine or chest, else the stonecutter's input and output in the
+    // machine's rows (decision E-785).
+    QList<QcItemStack> block;
+    if (session.machine().isOpen()) {
+        block = session.machine().stacks();
+    } else if (session.stonecutter().isOpen() && session.content()) {
+        block = session.stonecutter().slotStacks(*session.content());
+    }
+    m_inventory->setInventory(session.inventory(), session.inventoryMirror().craftingGrid(), session.inventoryMirror().craftingResult(), block,
+                              session.inventoryMirror().equipment());
     updateCraftableRecipes();
     emit craftingChanged();
 }

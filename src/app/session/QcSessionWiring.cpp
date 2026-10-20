@@ -94,7 +94,12 @@ void QcSessionWiring::connectStonecutter()
     connect(&session->stonecutter(), &QcClientStonecutter::closed, &m_targets.screens, &QcScreenState::stonecutterClosed);
     connect(&session->stonecutter(), &QcClientStonecutter::opened, stonecutter, &QcStonecutterController::update);
     connect(&session->stonecutter(), &QcClientStonecutter::closed, stonecutter, &QcStonecutterController::update);
-    connect(session, &QcClientSession::inventoryChanged, stonecutter, &QcStonecutterController::update);
+    connect(&session->stonecutter(), &QcClientStonecutter::changed, stonecutter, &QcStonecutterController::update);
+    // The input and output slots live in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(&session->stonecutter(), &QcClientStonecutter::opened, player, &QcPlayerController::updateInventory);
+    connect(&session->stonecutter(), &QcClientStonecutter::changed, player, &QcPlayerController::updateInventory);
+    connect(&session->stonecutter(), &QcClientStonecutter::closed, player, &QcPlayerController::updateInventory);
 }
 
 void QcSessionWiring::onSessionState(QcClientSession::State state)

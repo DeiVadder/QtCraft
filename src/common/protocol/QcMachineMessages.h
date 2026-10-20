@@ -43,21 +43,27 @@ struct CloseMachine
 {
 };
 
-// Server -> client: the player opened the stonecutter at `pos` (decision E-785). The screen lists
-// what the stonecutting recipes of the content make from the stone blocks in the inventory.
+// Server -> client: the player opened the stonecutter at `pos` (decision E-785); StonecutterState
+// follows. Its input and output slots are the slots machineInputSlot and machineOutputSlot of
+// MoveInventoryItem and QuickMoveItem while no machine or chest is open.
 struct OpenStonecutter
 {
     QcBlockPos pos;
 };
 
-// Client -> server: cut the input of the stonecutting recipe `recipe` once, or with `repeat` as often
-// as the inventory holds the input and has room (shift-click), at the open stonecutter.
-struct CutStone
+// Server -> client: the open stonecutter's input slot and the stonecutting recipe chosen for it
+// (empty: none). The output follows from both (QcStonecutting::output).
+struct StonecutterState
 {
-    static constexpr int maxRepeats = 64;
-
+    QcItemStack input;
     QString recipe;
-    bool repeat = false;
+};
+
+// Client -> server: choose the stonecutting recipe `recipe` for the input of the open stonecutter
+// (empty: none); the server answers with StonecutterState.
+struct SelectStonecutterRecipe
+{
+    QString recipe;
 };
 
 // Client -> server: the stonecutter screen closed. Server -> client: the stonecutter closed (broken,

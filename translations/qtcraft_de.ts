@@ -3447,17 +3447,17 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="188"/>
+        <location filename="../src/server/core/QcServer.cpp" line="190"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="407"/>
+        <location filename="../src/server/core/QcServer.cpp" line="411"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="437"/>
+        <location filename="../src/server/core/QcServer.cpp" line="441"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -3961,7 +3961,7 @@
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="223"/>
+        <location filename="../src/server/core/QcServer.cpp" line="225"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="79"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -4286,7 +4286,7 @@
         <translation>%1 %2 hat seinen eigenen Willen zurück</translation>
     </message>
     <message>
-        <location filename="../src/server/hanging/QcServerHanging.cpp" line="59"/>
+        <location filename="../src/server/hanging/QcServerHanging.cpp" line="61"/>
         <source>Too many item frames and paintings in the world (at most %1)</source>
         <translation>Zu viele Rahmen und Gemälde in der Welt (höchstens %1)</translation>
     </message>
@@ -4828,39 +4828,53 @@
 <context>
     <name>StonecutterScreen</name>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="22"/>
         <source>%1 × %2 from %3</source>
-        <translation>%1 × %2 aus %3</translation>
+        <translation type="vanished">%1 × %2 aus %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="36"/>
         <source>Stone</source>
-        <translation>Stein</translation>
+        <translation type="vanished">Stein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="47"/>
         <source>No stone to cut in the inventory.</source>
-        <translation>Kein Stein zum Schneiden im Inventar.</translation>
+        <translation type="vanished">Kein Stein zum Schneiden im Inventar.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="65"/>
         <source>Cut %1</source>
-        <translation>%1 schneiden</translation>
+        <translation type="vanished">%1 schneiden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="88"/>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="24"/>
+        <source>%1 × %2</source>
+        <translation>%1 × %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="34"/>
         <source>Stonecutter</source>
         <translation>Steinschneider</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="132"/>
-        <source>Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.</source>
-        <translation>Wähle links einen Stein. %1 auf einem Ergebnis schneidet einen Block, %2 alle. %3 schließt.</translation>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="73"/>
+        <source>Put stone into the slot on the left.</source>
+        <translation>Lege Stein in den linken Platz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="134"/>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="148"/>
+        <source>Put stone into the left slot and choose a result. %1: pick up and put down, also the output. %2: put down one. %3: move the stack across or take all outputs. %4 closes.</source>
+        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. %1: aufnehmen und ablegen, auch die Ausgabe. %2: eines ablegen. %3: Stapel hinüberschieben oder alle Ausgaben nehmen. %4 schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="150"/>
+        <source>Put stone into the left slot and choose a result. Left click: pick up and put down, also the output. Right click: put down one. Shift-click: move the stack across or take all outputs. %1 or Esc closes.</source>
+        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. Linksklick: aufnehmen und ablegen, auch die Ausgabe. Rechtsklick: eines ablegen. Umschalt-Klick: Stapel hinüberschieben oder alle Ausgaben nehmen. %1 oder Esc schließt.</translation>
+    </message>
+    <message>
+        <source>Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.</source>
+        <translation type="vanished">Wähle links einen Stein. %1 auf einem Ergebnis schneidet einen Block, %2 alle. %3 schließt.</translation>
+    </message>
+    <message>
         <source>Choose a stone on the left. Click a result to cut one block, shift-click to cut all of them. %1 or Esc closes.</source>
-        <translation>Wähle links einen Stein. Klicke ein Ergebnis an, um einen Block zu schneiden, mit Umschalt alle. %1 oder Esc schließt.</translation>
+        <translation type="vanished">Wähle links einen Stein. Klicke ein Ergebnis an, um einen Block zu schneiden, mit Umschalt alle. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>

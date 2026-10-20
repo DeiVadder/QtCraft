@@ -263,6 +263,7 @@ void QcServer::removeClosedClients()
             // Only a player who was on the list changes it; refused logins do not.
             m_state.notePlayerListChanged();
             m_crafting.returnCraftingGrid(*client);
+            m_stonecutter.close(*client, false);
             // A rider gets out first, so he is saved standing beside the cart.
             m_minecarts.leave(*client);
             m_commands.playerLeft(client->id);

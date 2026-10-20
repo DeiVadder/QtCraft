@@ -1,6 +1,5 @@
 #include "clientcore/session/QcClientStonecutter.h"
 
-#include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcStonecutting.h"
 
 bool QcClientStonecutter::handle(const QcMessage &message)
@@ -8,7 +7,18 @@ bool QcClientStonecutter::handle(const QcMessage &message)
     if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
         if (m_open) {
             m_open = false;
+            m_input = {};
+            m_recipe.clear();
             emit closed();
+        }
+        return true;
+    }
+
+    if (const auto *state = std::get_if<QcMsg::StonecutterState>(&message)) {
+        if (state->input != m_input || state->recipe != m_recipe) {
+            m_input = state->input;
+            m_recipe = state->recipe;
+            emit changed();
         }
         return true;
     }
@@ -23,12 +33,17 @@ bool QcClientStonecutter::handle(const QcMessage &message)
     return true;
 }
 
-bool QcClientStonecutter::cut(const QString &recipe, bool repeat)
+QList<QcItemStack> QcClientStonecutter::slotStacks(const QcContentRegistry &content) const
+{
+    return {m_input, {}, QcStonecutting::output(content, m_input, m_recipe)};
+}
+
+bool QcClientStonecutter::select(const QString &recipe)
 {
     if (!m_open || !m_send) {
         return false;
     }
-    m_send(QcMsg::CutStone{recipe, repeat});
+    m_send(QcMsg::SelectStonecutterRecipe{recipe});
     return true;
 }
 
@@ -38,23 +53,10 @@ void QcClientStonecutter::close()
         return;
     }
     m_open = false;
+    m_input = {};
+    m_recipe.clear();
     if (m_send) {
         m_send(QcMsg::CloseStonecutter{});
     }
     emit closed();
-}
-
-QStringList QcClientStonecutter::inputs(const QcContentRegistry &content, const QList<QcItemStack> &inventory)
-{
-    QStringList found;
-    for (const QcItemStack &stack : inventory) {
-        if (stack.isEmpty() || !content.isValidItem(stack.item)) {
-            continue;
-        }
-        const QString &name = content.item(stack.item).name;
-        if (!found.contains(name) && !QcStonecutting::recipesFor(content, name).isEmpty()) {
-            found.append(name);
-        }
-    }
-    return found;
 }

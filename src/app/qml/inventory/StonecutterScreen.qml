@@ -5,135 +5,150 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The stonecutter's screen (SlotScreen, decision E-785): the stone blocks of the inventory it cuts
-// on the left, what the chosen one becomes on the right, the inventory below. A click on a result
-// cuts one block, a shift-click as many as the inventory holds and has room for; the server decides
-// and sends the inventory back.
+// The stonecutter's screen (SlotScreen, decision E-785), laid out like the reference's: the input
+// slot on the left, what its stone becomes in the middle, the output slot on the right and the
+// inventory below. A click on a result chooses it; the output can only be taken (shift-click: as
+// often as the input and the inventory's room allow). The slots are the inventory model's machine
+// rows; the server decides and sends them back.
 SlotScreen {
     id: screen
 
     readonly property var stonecutter: game.stonecutter
+    readonly property int inputRow: 46
 
+    outputSlot: 48
     panelContent: content
 
-    // A result as a screen reader reads it (decision E-725): "2 × Stone Slab from 1 × Stone".
+    // A result as a screen reader reads it (decision E-725): "2 × Stone Slab".
     function resultText(result: var): string {
-        const input = stonecutter.inputs[stonecutter.selected];
-        return qsTr("%1 × %2 from %3").arg(result.count).arg(result.label).arg(input ? input.label : "");
+        return qsTr("%1 × %2").arg(result.count).arg(result.label);
     }
 
-    RowLayout {
+    ColumnLayout {
         id: content
 
         anchors.centerIn: parent
-        spacing: Ui.px(20)
+        spacing: Ui.px(12)
 
-        ColumnLayout {
-            Layout.alignment: Qt.AlignTop
-            spacing: Ui.px(6)
+        Label {
+            text: qsTr("Stonecutter")
+            color: Theme.text
+            font.pixelSize: Ui.px(24)
+            font.bold: true
+        }
 
-            Label {
-                text: qsTr("Stone")
-                color: Theme.heading
-                font.pixelSize: Ui.px(18)
-                font.bold: true
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: Ui.px(24)
+
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.inputRow
+                    count: 1
+                }
+
+                InventorySlot {
+                    objectName: "stonecutterInput"
+                    owner: screen
+                    Layout.alignment: Qt.AlignVCenter
+                }
             }
 
-            Label {
-                objectName: "noStone"
-                visible: screen.stonecutter.inputs.length === 0
-                Layout.maximumWidth: Ui.px(180)
-                wrapMode: Text.Wrap
-                text: qsTr("No stone to cut in the inventory.")
-                color: Theme.textSecondary
-            }
+            // The results of the input, four per row; empty without stone in the input.
+            Rectangle {
+                Layout.alignment: Qt.AlignVCenter
+                implicitWidth: Ui.px(4 * 54) + Ui.px(12)
+                implicitHeight: Ui.px(3 * 54) + Ui.px(12)
+                radius: Ui.px(4)
+                color: Theme.slotBorder
 
-            GridLayout {
-                objectName: "stonecutterInputs"
-                columns: 3
-                rowSpacing: Ui.px(4)
-                columnSpacing: Ui.px(4)
+                Label {
+                    objectName: "noResults"
+                    anchors.centerIn: parent
+                    width: parent.width - Ui.px(16)
+                    visible: screen.stonecutter.results.length === 0
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.Wrap
+                    text: qsTr("Put stone into the slot on the left.")
+                    color: Theme.textSecondary
+                }
 
-                Repeater {
-                    model: screen.stonecutter.inputs
+                ScrollView {
+                    anchors.fill: parent
+                    anchors.margins: Ui.px(6)
+                    contentWidth: availableWidth
+                    clip: true
 
-                    ItemSlot {
-                        required property var modelData
-                        required property int index
+                    GridLayout {
+                        objectName: "stonecutterResults"
+                        columns: 4
+                        rowSpacing: Ui.px(4)
+                        columnSpacing: Ui.px(4)
 
-                        objectName: "stoneInput" + index
-                        Accessible.name: qsTr("Cut %1").arg(modelData.label)
-                        Accessible.selected: screen.stonecutter.selected === index
-                        slotIcon: modelData.icon
-                        slotLabel: modelData.label
-                        slotCount: modelData.count
-                        highlighted: screen.stonecutter.selected === index || inputArea.containsMouse
+                        Repeater {
+                            model: screen.stonecutter.results
 
-                        MouseArea {
-                            id: inputArea
+                            ItemSlot {
+                                required property var modelData
+                                required property int index
 
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: screen.stonecutter.selected = parent.index
+                                objectName: "stoneResult" + index
+                                Accessible.name: screen.resultText(modelData)
+                                Accessible.selected: screen.stonecutter.selected === index
+                                slotIcon: modelData.icon
+                                slotLabel: modelData.label
+                                slotCount: modelData.count
+                                slotEmpty: false
+                                selected: screen.stonecutter.selected === index
+                                highlighted: screen.stonecutter.selected === index || resultArea.containsMouse
+
+                                MouseArea {
+                                    id: resultArea
+
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: screen.stonecutter.select(parent.index)
+                                }
+                            }
                         }
                     }
+                }
+            }
+
+            Label {
+                Layout.alignment: Qt.AlignVCenter
+                text: "▶"
+                color: screen.stonecutter.selected >= 0 ? Theme.text : Theme.textMuted
+                font.pixelSize: Ui.px(20)
+            }
+
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.outputSlot
+                    count: 1
+                }
+
+                InventorySlot {
+                    objectName: "stonecutterOutput"
+                    owner: screen
+                    Layout.alignment: Qt.AlignVCenter
                 }
             }
         }
 
-        ColumnLayout {
-            spacing: Ui.px(12)
+        PlayerSlots {
+            owner: screen
+        }
 
-            Label {
-                text: qsTr("Stonecutter")
-                color: Theme.text
-                font.pixelSize: Ui.px(24)
-                font.bold: true
-            }
-
-            GridLayout {
-                objectName: "stonecutterResults"
-                columns: 6
-                rowSpacing: Ui.px(4)
-                columnSpacing: Ui.px(4)
-
-                Repeater {
-                    model: screen.stonecutter.results
-
-                    ItemSlot {
-                        required property var modelData
-                        required property int index
-
-                        objectName: "stoneResult" + index
-                        Accessible.name: screen.resultText(modelData)
-                        slotIcon: modelData.icon
-                        slotLabel: modelData.label
-                        slotCount: modelData.count
-                        highlighted: resultArea.containsMouse
-
-                        MouseArea {
-                            id: resultArea
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: mouse => screen.stonecutter.cut(parent.index, (mouse.modifiers & Qt.ShiftModifier) !== 0)
-                        }
-                    }
-                }
-            }
-
-            PlayerSlots {
-                owner: screen
-            }
-
-            Label {
-                Layout.maximumWidth: Ui.px(9 * 54)
-                wrapMode: Text.Wrap
-                text: screen.game.gamepad.active ? qsTr("Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.")
-                      .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                      : qsTr("Choose a stone on the left. Click a result to cut one block, shift-click to cut all of them. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
-                color: Theme.textSecondary
-            }
+        Label {
+            Layout.maximumWidth: Ui.px(9 * 54)
+            wrapMode: Text.Wrap
+            text: screen.game.gamepad.active ? qsTr("Put stone into the left slot and choose a result. %1: pick up and put down, also the output. %2: put down one. %3: move the stack across or take all outputs. %4 closes.")
+                    .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
+                  : qsTr("Put stone into the left slot and choose a result. Left click: pick up and put down, also the output. Right click: put down one. Shift-click: move the stack across or take all outputs. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
+            color: Theme.textSecondary
         }
     }
 }

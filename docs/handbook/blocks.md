@@ -9479,7 +9479,7 @@ Gives a signal while a player or a creature stands on it.
 
 ### <a id="block-qtcraft-stonecutter"></a>Stonecutter
 
-Cuts stone blocks from your inventory into stairs, slabs, vertical slabs, walls and cut or chiseled variants, one block at a time and without loss: use it and pick a result.
+Cuts stone blocks into stairs, slabs, vertical slabs, walls and cut or chiseled variants, one block at a time and without loss: use it, put stone into the input slot, choose a result and take it from the output slot.
 
 | | |
 |---|---|

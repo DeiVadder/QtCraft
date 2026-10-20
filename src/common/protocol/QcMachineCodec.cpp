@@ -11,6 +11,13 @@ using namespace Qt::StringLiterals;
 
 namespace QcProtocolCodec {
 
+namespace {
+
+// The longest stonecutting recipe name a message carries.
+constexpr qsizetype maxRecipeName = 256;
+
+} // namespace
+
 void encode(QDataStream &stream, const QcMsg::OpenMachine &m)
 {
     writePos(stream, m.pos);
@@ -73,9 +80,15 @@ void encode(QDataStream &stream, QcMsg::OpenStonecutter m)
     writePos(stream, m.pos);
 }
 
-void encode(QDataStream &stream, const QcMsg::CutStone &m)
+void encode(QDataStream &stream, const QcMsg::StonecutterState &m)
 {
-    stream << m.recipe << m.repeat;
+    writeStack(stream, m.input);
+    stream << m.recipe;
+}
+
+void encode(QDataStream &stream, const QcMsg::SelectStonecutterRecipe &m)
+{
+    stream << m.recipe;
 }
 
 void encode(QDataStream &, QcMsg::CloseStonecutter) {}
@@ -87,11 +100,22 @@ void encode(QDataStream &, QcMsg::CloseStonecutter) {}
     return m;
 }
 
-[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CutStone>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::StonecutterState>, QDataStream &stream)
 {
-    QcMsg::CutStone m;
-    stream >> m.recipe >> m.repeat;
-    if (m.recipe.size() > 256) {
+    QcMsg::StonecutterState m;
+    m.input = readStack(stream);
+    stream >> m.recipe;
+    if (m.recipe.size() > maxRecipeName) {
+        return qcError(u"Invalid stonecutting recipe"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SelectStonecutterRecipe>, QDataStream &stream)
+{
+    QcMsg::SelectStonecutterRecipe m;
+    stream >> m.recipe;
+    if (m.recipe.size() > maxRecipeName) {
         return qcError(u"Invalid stonecutting recipe"_s);
     }
     return m;

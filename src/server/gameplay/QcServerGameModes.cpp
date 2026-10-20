@@ -28,8 +28,9 @@ QcGameMode QcServerGameModes::defaultMode() const
 void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
 {
     if (QcGameModes::inventorySet(client.gameMode) != QcGameModes::inventorySet(mode)) {
-        // The grid's items belong to the inventory that is put aside.
+        // The items of the grid and the stonecutter belong to the inventory that is put aside.
         m_crafting.returnCraftingGrid(client);
+        m_inventory.returnStonecutterInput(client);
         std::swap(client.inventory, client.keptInventory);
         const QcEquipment worn = client.keptEquipment;
         client.keptEquipment = client.equipment;
