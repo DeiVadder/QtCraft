@@ -1,0 +1,16 @@
+{
+    "name": "compass",
+    "type": "shaped",
+    "pattern": [
+        " c ",
+        "cIc",
+        " c "
+    ],
+    "key": {
+        "c": "signal_dust_chunk",
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "compass"
+    }
+}

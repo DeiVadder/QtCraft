@@ -3,5 +3,6 @@
     "texture": "magenta_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "magenta"
 }

@@ -1,0 +1,8 @@
+{
+    "name": "signal_indicator_frame",
+    "pattern": "metal_block",
+    "primary": "#4a4a50",
+    "secondary": "#6a6a72",
+    "variation": 0.08,
+    "seed": 3140
+}

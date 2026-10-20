@@ -3,6 +3,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcConnection.h"
+#include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
 
 #include <QTimer>
@@ -151,6 +152,8 @@ void QcServer::addClientSystems()
         }
     });
     m_tickSystems.add(ClientSync, When::Always, [this] {
+        // Sign texts written since the last tick, also in a frozen world (decision E-766).
+        QcServerSigns(m_state).announceChanges();
         const QcClientSyncPace::Due sync = m_syncPace.next(m_state.clock(), m_ticks.sprinting());
         for (const auto &client : m_state.clients()) {
             if (client->state == Client::State::Playing) {

@@ -35,6 +35,17 @@ QColor paint(const QcTextureSpec &spec, int x, int y, QColor color)
     return QcTexturePaint::scaled(color, (x + y) % 2 == 0 ? 1.0 : 0.95);
 }
 
+QColor paintIcon(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    if (y < spec.bitmap.size() && x < spec.bitmap[y].size()) {
+        const auto it = spec.palette.constFind(spec.bitmap[y][x]);
+        if (it != spec.palette.constEnd()) {
+            return *it;
+        }
+    }
+    return Qt::transparent;
+}
+
 QcResult<QcTextureSpec> read(const QJsonObject &json, QcTextureSpec spec)
 {
     const QJsonArray rows = json.value(u"bitmap"_s).toArray();

@@ -38,6 +38,9 @@ public:
     void useHeld(QcServerClient &client);
     // Adds a shot with a new id; false beyond the limit or for an unknown kind.
     bool launch(const QcProjectileManager::Launch &shot);
+    // What a projectile meeting a block does to it (a target block gives a signal; the server wires
+    // QcServerCircuits::hitTarget).
+    void setBlockHit(std::function<void(const QcProjectileManager::BlockHit &)> blockHit) { m_blockHit = std::move(blockHit); }
 
 private:
     QList<QcProjectileFlight::Body> bodies() const;
@@ -68,4 +71,5 @@ private:
     QcPlayerThrows m_throws;
     QcPlayerFishing m_fishing;
     QcHitEffects m_effects;
+    std::function<void(const QcProjectileManager::BlockHit &)> m_blockHit;
 };

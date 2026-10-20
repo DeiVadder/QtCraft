@@ -216,6 +216,8 @@ target_sources(qc_common PRIVATE
     protocol/QcProtocolCodec.h protocol/QcProtocolCodec.cpp
     protocol/QcSessionCodec.cpp
     protocol/QcSessionMessages.h
+    protocol/QcSignCodec.cpp
+    protocol/QcSignMessages.h
     protocol/QcStreamLimits.h
     protocol/QcTradeCodec.cpp
     protocol/QcTradeMessages.h
@@ -235,6 +237,7 @@ target_sources(qc_common PRIVATE
     world/QcMinecartBody.h
     world/QcPlacedChunkLoader.h
     world/QcPrecipitationTable.h world/QcPrecipitationTable.cpp
+    world/QcSignText.h world/QcSignText.cpp
     world/QcWeather.h world/QcWeather.cpp
     world/QcWorldInfo.h world/QcWorldInfo.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp

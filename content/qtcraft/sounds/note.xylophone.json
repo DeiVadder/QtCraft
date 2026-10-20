@@ -1,0 +1,25 @@
+{
+    "name": "note.xylophone",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "triangle",
+            "frequency": 1480,
+            "duration": 0.35,
+            "attack": 0.003,
+            "curve": 4,
+            "gain": 0.9
+        },
+        {
+            "wave": "sine",
+            "frequency": 4440,
+            "duration": 0.1,
+            "attack": 0.003,
+            "curve": 5,
+            "gain": 0.3
+        }
+    ]
+}

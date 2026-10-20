@@ -3,5 +3,6 @@
     "texture": "light_blue_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "light_blue"
 }

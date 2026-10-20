@@ -52,12 +52,29 @@ bool hasValues(const QcBlockDefinition &block, const QString &name, const QStrin
     return property != block.properties.cend() && std::ranges::all_of(values, [&](const QString &value) { return property->values.contains(value); });
 }
 
+// The texture slots a shape part may use: its slot, or for "$<property>" the slot of every value
+// of that property (decision E-765).
+QStringList partSlots(const QcBlockDefinition &block, const QcShapePart &part)
+{
+    if (!part.texture.startsWith(u'$')) {
+        return {part.texture};
+    }
+    const QcBlockProperty *property = block.property(part.texture.mid(1));
+    return property ? property->values : QStringList{part.texture};
+}
+
 void checkPartTextures(const QcBlockDefinition &block, QcJsonFieldReader &reader)
 {
+    if (block.renderLayer == QcRenderLayer::Invisible) {
+        return;
+    }
     for (const QcShapePart &part : std::as_const(block.shape.parts)) {
-        if (!part.texture.isEmpty() && block.slotTexture(part.texture).isEmpty() && block.renderLayer != QcRenderLayer::Invisible) {
-            reader.fail(u"shape part uses the unknown texture slot '%1'"_s.arg(part.texture));
-            break;
+        const QStringList named = partSlots(block, part);
+        for (const QString &slot : named) {
+            if (!slot.isEmpty() && block.slotTexture(slot).isEmpty()) {
+                reader.fail(u"shape part uses the unknown texture slot '%1'"_s.arg(slot));
+                return;
+            }
         }
     }
 }
@@ -511,6 +528,10 @@ void BlockReader::readFarming()
     m_block.flattensInto = m_reader.name(u"flattensInto"_s, m_namespace);
     m_block.coveredInto = m_reader.name(u"coveredInto"_s, m_namespace);
     m_block.strippedInto = m_reader.name(u"strippedInto"_s, m_namespace);
+    m_block.dyeProperty = m_reader.string(u"dyeProperty"_s);
+    if (!m_block.dyeProperty.isEmpty() && !m_block.property(m_block.dyeProperty)) {
+        m_reader.fail(u"'dyeProperty' names no state property of the block"_s);
+    }
     m_reader.nestedObject(u"carving"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_block.carvesInto = nested.name(u"into"_s, m_namespace);
         m_block.carveDrop = nested.name(u"drop"_s, m_namespace);
@@ -595,6 +616,10 @@ void BlockReader::readNamedObjects()
     m_reader.nestedObject(u"bites"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_block.bites = QcCookingParser::parseBites(m_block, nested); });
     m_reader.nestedObject(u"spawner"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readSpawner(nested); });
     m_reader.nestedObject(u"sapling"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) { readSapling(object, nested); });
+    m_reader.nestedObject(u"sign"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_block.sign.lines = nested.integer(u"lines"_s, QcSignDefinition::maxLines, 1, QcSignDefinition::maxLines);
+        m_block.sign.lineLength = nested.integer(u"lineLength"_s, 15, 1, QcSignDefinition::maxLineLength);
+    });
 }
 
 QcResult<QcBlockDefinition> BlockReader::read()

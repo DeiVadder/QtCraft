@@ -48,6 +48,7 @@
                 "block:qtcraft:birch_log",
                 "block:qtcraft:birch_planks",
                 "block:qtcraft:birch_sapling",
+                "block:qtcraft:birch_sign",
                 "block:qtcraft:birch_trapdoor",
                 "block:qtcraft:birch_wood",
                 "block:qtcraft:black_bed",
@@ -220,6 +221,7 @@
                 "block:qtcraft:mossy_stone_bricks",
                 "block:qtcraft:mud",
                 "block:qtcraft:mud_bricks",
+                "block:qtcraft:note_block",
                 "block:qtcraft:oak_button",
                 "block:qtcraft:oak_door",
                 "block:qtcraft:oak_leaves",
@@ -227,6 +229,7 @@
                 "block:qtcraft:oak_planks",
                 "block:qtcraft:oak_pressure_plate",
                 "block:qtcraft:oak_sapling",
+                "block:qtcraft:oak_sign",
                 "block:qtcraft:oak_trapdoor",
                 "block:qtcraft:oak_wood",
                 "block:qtcraft:obsidian",
@@ -279,6 +282,8 @@
                 "block:qtcraft:signal_dropper",
                 "block:qtcraft:signal_dust",
                 "block:qtcraft:signal_hopper",
+                "block:qtcraft:signal_indicator_light",
+                "block:qtcraft:signal_indicator_light_lit",
                 "block:qtcraft:signal_lamp",
                 "block:qtcraft:signal_lamp_lit",
                 "block:qtcraft:signal_observer",
@@ -302,6 +307,7 @@
                 "block:qtcraft:spruce_log",
                 "block:qtcraft:spruce_planks",
                 "block:qtcraft:spruce_sapling",
+                "block:qtcraft:spruce_sign",
                 "block:qtcraft:spruce_trapdoor",
                 "block:qtcraft:spruce_wood",
                 "block:qtcraft:sticky_signal_piston",
@@ -317,6 +323,7 @@
                 "block:qtcraft:stripped_spruce_wood",
                 "block:qtcraft:sugar_cane",
                 "block:qtcraft:tall_grass",
+                "block:qtcraft:target",
                 "block:qtcraft:terracotta",
                 "block:qtcraft:torch",
                 "block:qtcraft:unlit_campfire",
@@ -453,8 +460,10 @@
                 "item:qtcraft:salmon_bucket",
                 "item:qtcraft:charcoal",
                 "item:qtcraft:clay_ball",
+                "item:qtcraft:clock",
                 "item:qtcraft:coal",
                 "item:qtcraft:coal_chunk",
+                "item:qtcraft:compass",
                 "item:qtcraft:copper_ingot",
                 "item:qtcraft:copper_nugget",
                 "item:qtcraft:cyan_dye",
@@ -5272,6 +5281,12 @@
                             "text": "Birch pressure plate"
                         },
                         {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        },
+                        {
                             "icon": "qtcraft:birch_slab",
                             "note": "",
                             "target": "block:qtcraft:birch_slab",
@@ -5378,6 +5393,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:magenta_bed",
                             "text": "Magenta bed"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
                         },
                         {
                             "icon": "qtcraft:orange_bed",
@@ -5845,6 +5866,229 @@
             ],
             "text": "Plant it on grass or earth and it grows into a birch after a while.",
             "title": "Birch sapling"
+        },
+        "block:qtcraft:birch_sign": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Birch Sign",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:birch_sign"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.5 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.13 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 5, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "10 s"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
+                }
+            ],
+            "icon": "qtcraft:birch_sign",
+            "id": "block:qtcraft:birch_sign",
+            "name": "qtcraft:birch_sign",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                null
+                            ],
+                            "count": 3,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:birch_sign",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:birch_sign",
+                                "note": "",
+                                "target": "block:qtcraft:birch_sign",
+                                "text": "Birch Sign"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A sign of birch wood.",
+            "title": "Birch Sign"
         },
         "block:qtcraft:birch_slab": {
             "category": "parts",
@@ -27675,6 +27919,20 @@
                     ],
                     "text": "",
                     "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
                 }
             ],
             "text": "A thin glass wall that connects to its neighbours.",
@@ -32200,6 +32458,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:target",
+                            "note": "",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
+                        },
                         {
                             "icon": "qtcraft:wheat",
                             "note": "",
@@ -46232,6 +46496,221 @@
             "text": "Walls connect to each other and to full solid blocks; in straight runs they leave out the post. Nobody jumps over them.",
             "title": "Mud brick wall"
         },
+        "block:qtcraft:note_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Note Block",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:note_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.8"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.2 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.1 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 5, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "note (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24); powered (false, true)"
+                }
+            ],
+            "icon": "qtcraft:note_block",
+            "id": "block:qtcraft:note_block",
+            "name": "qtcraft:note_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:note_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:note_block",
+                                "note": "",
+                                "target": "block:qtcraft:note_block",
+                                "text": "Note Block"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "Plays a note when a signal reaches it or when you use it; every use raises the note by a semitone, 25 notes over two octaves. The block below chooses the instrument: wood a bass, stone a drum, sand and gravel a snare, glass a hi-hat, wool a guitar, a gold block a bell, clay a flute, packed ice a chime, a bone block a xylophone, an iron block an iron xylophone, anything else a harp. It only sounds with air above it. Made from eight planks around a Signal Dust chunk.",
+            "title": "Note Block"
+        },
         "block:qtcraft:oak_button": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -47771,6 +48250,12 @@
                             "text": "Magenta bed"
                         },
                         {
+                            "icon": "qtcraft:note_block",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        },
+                        {
                             "icon": "qtcraft:oak_button",
                             "note": "",
                             "target": "block:qtcraft:oak_button",
@@ -47799,6 +48284,12 @@
                             "note": "",
                             "target": "block:qtcraft:oak_pressure_plate",
                             "text": "Oak pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
                         },
                         {
                             "icon": "qtcraft:oak_slab",
@@ -48248,6 +48739,229 @@
             ],
             "text": "Plant it on grass or earth and it grows into an oak after a while.",
             "title": "Oak sapling"
+        },
+        "block:qtcraft:oak_sign": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Oak Sign",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:oak_sign"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.5 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.13 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 5, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "10 s"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
+                }
+            ],
+            "icon": "qtcraft:oak_sign",
+            "id": "block:qtcraft:oak_sign",
+            "name": "qtcraft:oak_sign",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                null
+                            ],
+                            "count": 3,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:oak_sign",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:oak_sign",
+                                "note": "",
+                                "target": "block:qtcraft:oak_sign",
+                                "text": "Oak Sign"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "Holds four lines of text that everyone can read. Placed on the floor it turns towards you, on a wall it hangs flat; use it to change the text.",
+            "title": "Oak Sign"
         },
         "block:qtcraft:oak_slab": {
             "category": "parts",
@@ -61955,6 +62669,243 @@
             "text": "Moves items: every eight ticks it passes one item into the container its spout points at and takes one from the container above it, or collects items lying in its bowl or on a block above it that does not fill its cell (a slab, a carpet, farmland). Any signal locks it.",
             "title": "Signal Hopper"
         },
+        "block:qtcraft:signal_indicator_light": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Signal Indicator Light",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:signal_indicator_light"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.45 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Washed away by liquids",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Colour changed with a dye",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "glass"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, ceiling, north, east, south, west); color (red, orange, yellow, lime, green, cyan, light_blue, blue, purple, magenta, pink, white, light_gray, gray, black, brown)"
+                }
+            ],
+            "icon": "qtcraft:signal_indicator_light",
+            "id": "block:qtcraft:signal_indicator_light",
+            "name": "qtcraft:signal_indicator_light",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:glass_pane",
+                                    "note": "",
+                                    "target": "block:qtcraft:glass_pane",
+                                    "text": "Glass pane"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:signal_indicator_light",
+                            "needsTable": false,
+                            "note": "Crafting grid",
+                            "result": {
+                                "icon": "qtcraft:signal_indicator_light",
+                                "note": "",
+                                "target": "block:qtcraft:signal_indicator_light",
+                                "text": "Signal Indicator Light"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light_lit",
+                            "text": "Signal Indicator Light (lit)"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "A small light the size of a button that sits on any face of a block and shows whether a signal arrives: it lights while the block it is on is powered or dust points at it, and goes dark a moment after. It glows only faintly. Use a dye on it to change its colour (16 colours); made from a glass pane under a Signal Dust chunk.",
+            "title": "Signal Indicator Light"
+        },
+        "block:qtcraft:signal_indicator_light_lit": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Signal Indicator Light (lit)",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:signal_indicator_light_lit"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.45 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light",
+                    "links": [
+                    ],
+                    "value": "3 of 15"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Washed away by liquids",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Colour changed with a dye",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "glass"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, ceiling, north, east, south, west); color (red, orange, yellow, lime, green, cyan, light_blue, blue, purple, magenta, pink, white, light_gray, gray, black, brown)"
+                }
+            ],
+            "icon": "",
+            "id": "block:qtcraft:signal_indicator_light_lit",
+            "name": "qtcraft:signal_indicator_light_lit",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A powered Signal Indicator Light.",
+            "title": "Signal Indicator Light (lit)"
+        },
         "block:qtcraft:signal_lamp": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -68236,6 +69187,12 @@
                             "text": "Magenta bed"
                         },
                         {
+                            "icon": "qtcraft:note_block",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        },
+                        {
                             "icon": "qtcraft:orange_bed",
                             "note": "Any planks",
                             "target": "block:qtcraft:orange_bed",
@@ -68288,6 +69245,12 @@
                             "note": "",
                             "target": "block:qtcraft:spruce_pressure_plate",
                             "text": "Spruce pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
                         },
                         {
                             "icon": "qtcraft:spruce_slab",
@@ -68755,6 +69718,229 @@
             ],
             "text": "Plant it on grass, earth or snow and it grows into a spruce after a while.",
             "title": "Spruce sapling"
+        },
+        "block:qtcraft:spruce_sign": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Spruce Sign",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spruce_sign"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.5 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.13 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid face it hangs on"
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 5, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "10 s"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "attach (floor, north, east, south, west); rotation (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
+                }
+            ],
+            "icon": "qtcraft:spruce_sign",
+            "id": "block:qtcraft:spruce_sign",
+            "name": "qtcraft:spruce_sign",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                null
+                            ],
+                            "count": 3,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:spruce_sign",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:spruce_sign",
+                                "note": "",
+                                "target": "block:qtcraft:spruce_sign",
+                                "text": "Spruce Sign"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A sign of spruce wood.",
+            "title": "Spruce Sign"
         },
         "block:qtcraft:spruce_slab": {
             "category": "parts",
@@ -74362,6 +75548,189 @@
             "text": "Covers meadows; you can build right into it.",
             "title": "Tall grass"
         },
+        "block:qtcraft:target": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Target",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:target"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.75 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Hoe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_hoe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_hoe",
+                            "text": "Golden hoe"
+                        }
+                    ],
+                    "value": "0.06 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:target",
+                            "note": "",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 60, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "grass and plants"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "power (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
+                }
+            ],
+            "icon": "qtcraft:target",
+            "id": "block:qtcraft:target",
+            "name": "qtcraft:target",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:hay_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:hay_block",
+                                    "text": "Hay bale"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:target",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:target",
+                                "note": "",
+                                "target": "block:qtcraft:target",
+                                "text": "Target"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_hoe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_hoe",
+                            "text": "Golden hoe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_hoe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_hoe",
+                            "text": "Wooden hoe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_hoe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_hoe",
+                            "text": "Stone hoe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_hoe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_hoe",
+                            "text": "Iron hoe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_hoe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_hoe",
+                            "text": "Diamond hoe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A target of hay: an arrow or another projectile hitting it gives a signal of strength 1 to 15 to dust and components around it, the stronger the closer to the middle of the face it hit. The signal lasts a second after an arrow and less after a snowball or an egg. Arrows stay in it. Made from a hay bale with four Signal Dust chunks around it.",
+            "title": "Target"
+        },
         "block:qtcraft:terracotta": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -79242,6 +80611,14 @@
                 },
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A sign stands on the floor, turned towards you in sixteen steps, or hangs on the side of a block. When you place it, a screen opens for its text: four lines of up to 15 characters each. Everyone near it can read the text; use the sign again to change it, and sneak to place a block against it instead. Six planks over a stick make three signs.",
+                    "title": "Signs"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:oak_stairs",
                             "note": "",
@@ -79295,6 +80672,12 @@
                             "note": "",
                             "target": "block:qtcraft:stripped_oak_log",
                             "text": "Stripped oak log"
+                        },
+                        {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
                         }
                     ],
                     "recipes": [
@@ -80927,6 +82310,24 @@
                             "text": "Signal Lamp"
                         },
                         {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        },
+                        {
+                            "icon": "qtcraft:target",
+                            "note": "",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
+                        },
+                        {
                             "icon": "qtcraft:signal_piston",
                             "note": "",
                             "target": "block:qtcraft:signal_piston",
@@ -81913,6 +83314,18 @@
                             "note": "",
                             "target": "block:qtcraft:stone_pressure_plate",
                             "text": "Stone pressure plate"
+                        },
+                        {
+                            "icon": "qtcraft:compass",
+                            "note": "",
+                            "target": "item:qtcraft:compass",
+                            "text": "Compass"
+                        },
+                        {
+                            "icon": "qtcraft:clock",
+                            "note": "",
+                            "target": "item:qtcraft:clock",
+                            "text": "Clock"
                         }
                     ],
                     "recipes": [
@@ -86245,6 +87658,97 @@
             "text": "Soft clay: four make a clay block, the furnace turns it into a brick.",
             "title": "Clay ball"
         },
+        "item:qtcraft:clock": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Clock",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:clock"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:clock",
+            "id": "item:qtcraft:clock",
+            "name": "qtcraft:clock",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:clock",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:clock",
+                                "note": "",
+                                "target": "item:qtcraft:clock",
+                                "text": "Clock"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Shows the time of day while you hold it: the day half of its face turns with the sun, and the time is written below it. Made from a gold ingot with four Signal Dust chunks around it.",
+            "title": "Clock"
+        },
         "item:qtcraft:coal": {
             "category": "items",
             "categoryTitle": "Items",
@@ -86625,6 +88129,97 @@
             ],
             "text": "A cod caught in a water bucket. Pouring it out places the water and lets the cod out; a released fish stays with the world.",
             "title": "Bucket of cod"
+        },
+        "item:qtcraft:compass": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Compass",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:compass"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:compass",
+            "id": "item:qtcraft:compass",
+            "name": "qtcraft:compass",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:signal_dust_chunk",
+                                    "note": "",
+                                    "target": "item:qtcraft:signal_dust_chunk",
+                                    "text": "Signal Dust chunk"
+                                },
+                                null
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:compass",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:compass",
+                                "note": "",
+                                "target": "item:qtcraft:compass",
+                                "text": "Compass"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Its needle points to the world's spawn while you hold it (shown beside the hotbar). Made from an iron ingot with four Signal Dust chunks around it.",
+            "title": "Compass"
         },
         "item:qtcraft:cooked_beef": {
             "category": "food",
@@ -90778,6 +92373,12 @@
                             "text": "Block of gold"
                         },
                         {
+                            "icon": "qtcraft:clock",
+                            "note": "",
+                            "target": "item:qtcraft:clock",
+                            "text": "Clock"
+                        },
+                        {
                             "icon": "qtcraft:gold_nugget",
                             "note": "",
                             "target": "item:qtcraft:gold_nugget",
@@ -94212,6 +95813,12 @@
                             "note": "",
                             "target": "block:qtcraft:chain",
                             "text": "Chain"
+                        },
+                        {
+                            "icon": "qtcraft:compass",
+                            "note": "",
+                            "target": "item:qtcraft:compass",
+                            "text": "Compass"
                         },
                         {
                             "icon": "qtcraft:detector_rail",
@@ -99887,16 +101494,46 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:clock",
+                            "note": "",
+                            "target": "item:qtcraft:clock",
+                            "text": "Clock"
+                        },
+                        {
+                            "icon": "qtcraft:compass",
+                            "note": "",
+                            "target": "item:qtcraft:compass",
+                            "text": "Compass"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        },
+                        {
                             "icon": "qtcraft:signal_dust",
                             "note": "",
                             "target": "block:qtcraft:signal_dust",
                             "text": "Signal Dust"
                         },
                         {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        },
+                        {
                             "icon": "qtcraft:small_signal_torch",
                             "note": "",
                             "target": "block:qtcraft:small_signal_torch",
                             "text": "Small Signal Torch"
+                        },
+                        {
+                            "icon": "qtcraft:target",
+                            "note": "",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
                         }
                     ],
                     "recipes": [
@@ -100237,6 +101874,12 @@
                             "text": "Birch fence gate"
                         },
                         {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        },
+                        {
                             "icon": "qtcraft:bow",
                             "note": "",
                             "target": "item:qtcraft:bow",
@@ -100369,6 +102012,12 @@
                             "text": "Oak fence gate"
                         },
                         {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
+                        },
+                        {
                             "icon": "qtcraft:powered_rail",
                             "note": "",
                             "target": "block:qtcraft:powered_rail",
@@ -100409,6 +102058,12 @@
                             "note": "",
                             "target": "block:qtcraft:spruce_fence_gate",
                             "text": "Spruce fence gate"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
                         },
                         {
                             "icon": "qtcraft:stone_axe",
@@ -109484,6 +111139,12 @@
                             "text": "Yellow glazed terracotta"
                         },
                         {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        },
+                        {
                             "icon": "qtcraft:carved_pumpkin",
                             "note": "1, from hardness",
                             "target": "block:qtcraft:carved_pumpkin",
@@ -109506,6 +111167,12 @@
                             "note": "1, from hardness",
                             "target": "block:qtcraft:melon",
                             "text": "Melon"
+                        },
+                        {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
                         },
                         {
                             "icon": "qtcraft:packed_mud",
@@ -109554,6 +111221,12 @@
                             "note": "1, from hardness",
                             "target": "block:qtcraft:smooth_sandstone_wall",
                             "text": "Smooth sandstone wall"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "1, from hardness",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
                         },
                         {
                             "icon": "qtcraft:black_wool_carpet",
@@ -109698,6 +111371,12 @@
                             "note": "0.8, from hardness",
                             "target": "block:qtcraft:magenta_wool",
                             "text": "Magenta wool"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
                         },
                         {
                             "icon": "qtcraft:orange_wool_carpet",
@@ -110078,6 +111757,12 @@
                             "text": "Stone pressure plate"
                         },
                         {
+                            "icon": "qtcraft:target",
+                            "note": "0.5, from hardness",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
+                        },
+                        {
                             "icon": "qtcraft:white_concrete_powder",
                             "note": "0.5, from hardness",
                             "target": "block:qtcraft:white_concrete_powder",
@@ -110286,6 +111971,12 @@
                             "note": "0.3, from hardness",
                             "target": "block:qtcraft:red_stained_glass_pane",
                             "text": "Red stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "0.3, from hardness",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
                         },
                         {
                             "icon": "qtcraft:white_stained_glass",
@@ -110750,6 +112441,12 @@
                             "text": "Crafting table"
                         },
                         {
+                            "icon": "qtcraft:note_block",
+                            "note": "15 s",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
+                        },
+                        {
                             "icon": "qtcraft:oak_fence",
                             "note": "15 s",
                             "target": "block:qtcraft:oak_fence",
@@ -110870,6 +112567,12 @@
                             "text": "Birch door"
                         },
                         {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "10 s",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        },
+                        {
                             "icon": "qtcraft:birch_trapdoor",
                             "note": "10 s",
                             "target": "block:qtcraft:birch_trapdoor",
@@ -110882,6 +112585,12 @@
                             "text": "Oak door"
                         },
                         {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "10 s",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
+                        },
+                        {
                             "icon": "qtcraft:oak_trapdoor",
                             "note": "10 s",
                             "target": "block:qtcraft:oak_trapdoor",
@@ -110892,6 +112601,12 @@
                             "note": "10 s",
                             "target": "block:qtcraft:spruce_door",
                             "text": "Spruce door"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "10 s",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
                         },
                         {
                             "icon": "qtcraft:spruce_trapdoor",
@@ -111380,6 +113095,12 @@
                             "note": "3 of 15",
                             "target": "block:qtcraft:magma_block",
                             "text": "Magma block"
+                        },
+                        {
+                            "icon": "",
+                            "note": "3 of 15",
+                            "target": "block:qtcraft:signal_indicator_light_lit",
+                            "text": "Signal Indicator Light (lit)"
                         }
                     ],
                     "recipes": [
@@ -111488,6 +113209,12 @@
                             "note": "gives 15 on every side, always; powers no block",
                             "target": "block:qtcraft:signal_dust_block",
                             "text": "Block of Signal Dust"
+                        },
+                        {
+                            "icon": "qtcraft:target",
+                            "note": "gives 1–15 by how close to the middle of a face a projectile hits it, for 20 ticks after an arrow and 8 after a thrown projectile; powers no block",
+                            "target": "block:qtcraft:target",
+                            "text": "Target"
                         }
                     ],
                     "recipes": [
@@ -111523,6 +113250,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "lights at once while powered, goes dark 2 ticks after losing power",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        },
                         {
                             "icon": "qtcraft:signal_lamp",
                             "note": "lights at once while powered, goes dark 4 ticks after losing power",
@@ -111654,6 +113387,12 @@
                             "note": "primes and explodes as soon as it gets power",
                             "target": "block:qtcraft:explosive",
                             "text": "Explosive"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "plays a note when its power rises or when used; using it raises the note by a semitone (25 notes, then the lowest again); the block below picks the instrument, a block on top silences it",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
                         }
                     ],
                     "recipes": [
@@ -114089,6 +115828,12 @@
                             "text": "Birch sapling"
                         },
                         {
+                            "icon": "qtcraft:birch_sign",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:birch_sign",
+                            "text": "Birch Sign"
+                        },
+                        {
                             "icon": "qtcraft:blue_orchid",
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:blue_orchid",
@@ -114203,6 +115948,12 @@
                             "text": "Oak sapling"
                         },
                         {
+                            "icon": "qtcraft:oak_sign",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:oak_sign",
+                            "text": "Oak Sign"
+                        },
+                        {
                             "icon": "qtcraft:poppy",
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:poppy",
@@ -114245,6 +115996,12 @@
                             "text": "Signal Dust"
                         },
                         {
+                            "icon": "qtcraft:signal_indicator_light",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:signal_indicator_light",
+                            "text": "Signal Indicator Light"
+                        },
+                        {
                             "icon": "qtcraft:signal_torch",
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:signal_torch",
@@ -114267,6 +116024,12 @@
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:spruce_sapling",
                             "text": "Spruce sapling"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_sign",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:spruce_sign",
+                            "text": "Spruce Sign"
                         },
                         {
                             "icon": "qtcraft:stone_button",
@@ -115243,6 +117006,12 @@
                             "note": "",
                             "target": "block:qtcraft:magenta_bed",
                             "text": "Magenta bed"
+                        },
+                        {
+                            "icon": "qtcraft:note_block",
+                            "note": "",
+                            "target": "block:qtcraft:note_block",
+                            "text": "Note Block"
                         },
                         {
                             "icon": "qtcraft:orange_bed",

@@ -3,6 +3,7 @@
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/texturepacks/QcTextureSources.h"
 #include "clientcore/textures/QcAlphaCoverage.h"
+#include "clientcore/textures/QcPixelFont.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <QThread>
@@ -118,7 +119,11 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
 {
     QcTextureAtlas atlas;
     const QList<QcTextureDefinition> &definitions = content.assets().textures();
-    const QcAtlasLayout layout(definitions.size() + 1);
+    // The placeholder, the content's textures and, for content with signs, the pages of the sign
+    // font (decision E-766).
+    const bool signs = std::ranges::any_of(content.blocks(), [](const QcBlockDefinition &block) { return block.sign.isSign(); });
+    const int glyphPages = signs ? QcPixelFont::pageCount() : 0;
+    const QcAtlasLayout layout(definitions.size() + 1 + glyphPages);
     atlas.m_requestedTileSize = QcTextureSources::resolutionOf(packs, QcTexturePackManifest::maxResolution);
     atlas.m_tileSize = atlas.tileSizeFor(layout, options);
 
@@ -141,6 +146,13 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         layout.place(level, index, resolved->image);
         atlas.m_uvs.insert(definition.name, layout.uv(index));
         ++atlas.m_sources[resolved->pack];
+        ++index;
+    }
+    for (int page = 0; page < glyphPages; ++page) {
+        QImage glyphs = QcPixelFont::page(page, atlas.m_tileSize);
+        QcAlphaCoverage::fillTransparentColour(glyphs);
+        layout.place(level, index, glyphs);
+        atlas.m_uvs.insert(QcPixelFont::pageName(page), layout.uv(index));
         ++index;
     }
 

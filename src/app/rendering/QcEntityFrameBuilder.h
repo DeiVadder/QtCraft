@@ -3,6 +3,7 @@
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/meshing/QcCapeTracker.h"
 #include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/meshing/QcSignTextCache.h"
 #include "clientcore/session/QcCampfireSmoke.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
@@ -31,8 +32,13 @@ class QcEntityFrameBuilder
 public:
     QcEntityFrameBuilder(const QcSessionParts &parts, const QcSettingsController &settings);
 
-    // Texture atlas of the running world's content; without one no entities are built.
-    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_atlas = std::move(atlas); }
+    // Texture atlas of the running world's content; without one no entities are built. A new atlas
+    // drops the sign texts cut from the old one.
+    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas)
+    {
+        m_atlas = std::move(atlas);
+        m_signTexts.clear();
+    }
     // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
@@ -66,6 +72,8 @@ private:
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
     // The small creature spinning in each monster spawner near the player (decision E-520).
     void appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The text on the signs near the player (decision E-766).
+    void appendSigns(QcEntityMesh &mesh, const EntityFrame &frame);
     // The items lying on the campfires near the player and the smoke rising from them (decision E-772).
     void appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame);
     // A falling or moving block or a lit explosive, drawn as its block.
@@ -99,6 +107,8 @@ private:
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
+    // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
+    QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;
     QElapsedTimer m_capeClock;
     // Vertex and index count of the last entity mesh.

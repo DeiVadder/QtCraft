@@ -7,6 +7,7 @@
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
 #include "common/world/QcDayCycle.h"
+#include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSetup.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -89,6 +90,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_ignition.setLight([this](QcBlockPos pos) { return m_kitchen.light(pos) || m_explosions.light(pos); });
     m_fire.setLight(light);
     m_circuits.setLight(light);
+    m_projectiles.setBlockHit([this](const QcProjectileManager::BlockHit &hit) {
+        m_circuits.hitTarget(hit.block, QcServerCircuits::targetStrength(hit.block, hit.face, hit.point), hit.stuck);
+    });
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 
     // What the weather does (decision E-396): rain puts out fires and burning bodies and wets soil,
@@ -322,6 +326,8 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
         m_commands.chat(client, chat->text.left(256));
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
         client.connection->close();
+    } else if (const auto *sign = std::get_if<QcMsg::EditSign>(&message)) {
+        QcServerSigns(m_state).edit(client, *sign);
     } else if (const auto *debug = std::get_if<QcMsg::DebugSubscribe>(&message)) {
         m_debug.subscribe(client, debug->flags);
     } else {

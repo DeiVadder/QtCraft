@@ -1,0 +1,33 @@
+{
+    "name": "note.chime",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "sine",
+            "frequency": 1480,
+            "duration": 2.0,
+            "attack": 0.003,
+            "curve": 2,
+            "gain": 0.7
+        },
+        {
+            "wave": "sine",
+            "frequency": 4440,
+            "duration": 1.2,
+            "attack": 0.003,
+            "curve": 2.5,
+            "gain": 0.3
+        },
+        {
+            "wave": "sine",
+            "frequency": 2220,
+            "duration": 1.5,
+            "attack": 0.003,
+            "curve": 2.2,
+            "gain": 0.2
+        }
+    ]
+}

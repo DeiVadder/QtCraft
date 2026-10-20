@@ -29,6 +29,8 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     }
     // A fishing rod (decision E-503): the client sends its use as ThrowItem; the rest is the server's.
     stream << item.fishing.has_value();
+    // The dial the client draws while the item is held (decision E-769).
+    stream << quint8(item.dial);
 }
 
 // The launcher of an item: an engaged optional holding the launcher, or holding std::nullopt for an
@@ -95,6 +97,13 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     if (fishing) {
         item.fishing.emplace();
     }
+    quint8 dial = 0;
+    stream >> dial;
+    if (dial >= quint8(qcItemDialCount)) {
+        stream.setStatus(QDataStream::ReadCorruptData);
+        return std::nullopt;
+    }
+    item.dial = QcItemDial(dial);
     return item;
 }
 

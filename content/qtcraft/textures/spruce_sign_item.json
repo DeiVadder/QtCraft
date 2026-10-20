@@ -1,0 +1,30 @@
+{
+    "name": "spruce_sign_item",
+    "pattern": "icon",
+    "primary": "#7a5a35",
+    "variation": 0.0,
+    "seed": 3173,
+    "palette": {
+        "B": "#7a5a35",
+        "D": "#55401f",
+        "T": "#3a2a1a"
+    },
+    "bitmap": [
+        "",
+        "",
+        " DDDDDDDDDDDDDD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTBTTBBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTTBTTBTTTBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTTBTBBD",
+        " DBBBBBBBBBBBBD",
+        " DDDDDDDDDDDDDD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD"
+    ]
+}

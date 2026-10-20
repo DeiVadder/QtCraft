@@ -247,6 +247,16 @@ SlabOutcome slabOutcome(const QcBlockAccess &world, QcBlockId state, const Aim &
     return oriented ? assigned(content, *oriented, u"axis"_s, axisName(face)) : oriented;
 }
 
+// `state` turned like a standing sign (decision E-766): its `rotation` (0..15) faces the player in
+// sixteenths of a turn from north; on a wall (`attach` other than floor) it stays 0.
+[[nodiscard]] std::optional<QcBlockId> rotatedState(const QcContentRegistry &content, QcBlockId state, float yaw)
+{
+    const QString attach = content.property(state, u"attach"_s);
+    const bool standing = attach.isEmpty() || attach == u"floor"_s;
+    const long steps = standing ? ((std::lround(double(yaw) / 22.5) % 16) + 16) % 16 : 0;
+    return assigned(content, state, u"rotation"_s, QString::number(steps));
+}
+
 // The lower half of a door at `target` with its hinge; std::nullopt without room for the upper half.
 [[nodiscard]] std::optional<QcBlockId> doorState(const QcBlockAccess &world, QcBlockId state, QcBlockPos target, const QcVec3 &hit,
                                    const QString &facing)
@@ -326,6 +336,9 @@ bool pairSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
 
     const QString facing = facingFor(definition, aim.yaw, aim.pitch, face);
     std::optional<QcBlockId> oriented = orientedState(content, state, facing, face, upper);
+    if (oriented) {
+        oriented = rotatedState(content, *oriented, aim.yaw);
+    }
     if (oriented && definition.door) {
         oriented = doorState(world, *oriented, target, aim.hit, facing);
     }

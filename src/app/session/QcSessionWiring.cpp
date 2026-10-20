@@ -78,6 +78,7 @@ void QcSessionWiring::connectPlayer()
     connect(&session->trading(), &QcClientTrading::changed, trade, &QcTradeController::update);
     connect(&session->trading(), &QcClientTrading::closed, this, &QcSessionWiring::onTradeClosed);
     connect(session, &QcClientSession::inventoryChanged, trade, &QcTradeController::update);
+    connect(&session->signEditor(), &QcClientSignEditor::opened, &m_targets.screens, &QcScreenState::signOpened);
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);

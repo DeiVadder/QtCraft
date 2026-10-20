@@ -1,0 +1,74 @@
+{
+    "name": "signal_indicator_light_lit",
+    "sound": "glass",
+    "shape": "indicator_light",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 3,
+    "hardness": 0.3,
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "color": [
+            "red",
+            "orange",
+            "yellow",
+            "lime",
+            "green",
+            "cyan",
+            "light_blue",
+            "blue",
+            "purple",
+            "magenta",
+            "pink",
+            "white",
+            "light_gray",
+            "gray",
+            "black",
+            "brown"
+        ]
+    },
+    "dyeProperty": "color",
+    "textures": {
+        "all": "signal_indicator_frame",
+        "slots": {
+            "red": "signal_indicator_lens_red_lit",
+            "orange": "signal_indicator_lens_orange_lit",
+            "yellow": "signal_indicator_lens_yellow_lit",
+            "lime": "signal_indicator_lens_lime_lit",
+            "green": "signal_indicator_lens_green_lit",
+            "cyan": "signal_indicator_lens_cyan_lit",
+            "light_blue": "signal_indicator_lens_light_blue_lit",
+            "blue": "signal_indicator_lens_blue_lit",
+            "purple": "signal_indicator_lens_purple_lit",
+            "magenta": "signal_indicator_lens_magenta_lit",
+            "pink": "signal_indicator_lens_pink_lit",
+            "white": "signal_indicator_lens_white_lit",
+            "light_gray": "signal_indicator_lens_light_gray_lit",
+            "gray": "signal_indicator_lens_gray_lit",
+            "black": "signal_indicator_lens_black_lit",
+            "brown": "signal_indicator_lens_brown_lit"
+        }
+    },
+    "drops": [
+        {
+            "item": "signal_indicator_light"
+        }
+    ],
+    "signal": {
+        "type": "lamp",
+        "active": true,
+        "counterpart": "signal_indicator_light",
+        "offDelayTicks": 2
+    },
+    "item": false
+}

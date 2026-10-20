@@ -1,5 +1,6 @@
 #include "server/storage/QcBlockEntityCodec.h"
 
+#include "common/core/QcNameText.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcRegionFile.h"
@@ -41,6 +42,9 @@ constexpr quint32 maxTicks = 1u << 20;
 constexpr quint64 maxOrder = quint64(1) << 62;
 // Characters of a content name at most (a spawner's kind).
 constexpr qsizetype maxNameLength = 256;
+// UTF-16 units of a saved line of sign text at most (cleaned to QcSignDefinition::maxLineLength
+// characters when read).
+constexpr qsizetype maxLineUnits = 256;
 
 void writePos(QDataStream &stream, QcBlockPos pos)
 {
@@ -137,6 +141,7 @@ public:
         const auto fires = entriesOf(Table::Fires, &RecordReader::fire);
         const auto spawners = entriesOf(Table::Spawners, &RecordReader::spawner);
         const auto campfires = entriesOf(Table::Campfires, &RecordReader::campfire);
+        const auto signs = entriesOf(Table::Signs, &RecordReader::sign);
         const auto furnished = [this](QDataStream &, quint16) {
             m_record.furnished = true;
             return true;
@@ -146,7 +151,8 @@ public:
             {known(Table::Containers, containers), known(Table::Machines, machines), known(Table::Saplings, saplings),
              known(Table::Memories, memories), known(Table::Scheduled, scheduled), known(Table::Wakes, wakes),
              known(Table::SignalWakes, signalWakes), known(Table::BlockUpdates, updates), known(Table::Fires, fires),
-             known(Table::Spawners, spawners), known(Table::Furnished, furnished), known(Table::Campfires, campfires)},
+             known(Table::Spawners, spawners), known(Table::Furnished, furnished), known(Table::Campfires, campfires),
+             known(Table::Signs, signs)},
             maxTableLength);
         if (!tables) {
             return std::nullopt;
@@ -371,6 +377,36 @@ private:
         return placed && m_stream.status() == QDataStream::Ok && m_campfires.add(entry.pos);
     }
 
+    // A sign's text (decision E-766): its lines, each cleaned like a player's edit (control
+    // characters gone, at most QcSignDefinition::maxLineLength characters; QcSignTexts::restore
+    // cleans them again to the block's own line count and length). Like a damaged spawner, a
+    // damaged sign (more than QcSignDefinition::maxLines lines, a line longer than maxLineUnits)
+    // fails the whole record: the chunk's block entities are reported damaged.
+    bool sign()
+    {
+        QcSignTexts::Entry entry;
+        const std::optional<QcBlockPos> placed = at();
+        entry.pos = placed.value_or(QcBlockPos());
+        quint8 count = 0;
+        m_stream >> count;
+        if (!placed || m_stream.status() != QDataStream::Ok || count > QcSignDefinition::maxLines) {
+            return false;
+        }
+
+        for (quint8 line = 0; line < count; ++line) {
+            // QDataStream reads a string in steps, so a damaged length fails at the end of the
+            // entry's frame without allocating it; the bound is checked before cleaning.
+            QString text;
+            m_stream >> text;
+            if (m_stream.status() != QDataStream::Ok || text.size() > maxLineUnits) {
+                return false;
+            }
+            entry.lines[line] = QcNameText::clean(text, QcSignDefinition::maxLineLength);
+        }
+        m_record.signs.append(entry);
+        return m_signs.add(entry.pos);
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -384,6 +420,7 @@ private:
     SeenPositions m_fires;
     SeenPositions m_spawners;
     SeenPositions m_campfires;
+    SeenPositions m_signs;
     quint32 m_tails = 0;
     int m_droppedTails = 0;
 };
@@ -490,6 +527,13 @@ public:
             for (const QcCampfires::Slot &slot : campfire.places) {
                 QcSaveFile::writeStack(m_stream, slot.stack, m_content);
                 m_stream << slot.cooked;
+            }
+        });
+        entries(Table::Signs, m_record.signs, [this](const QcSignTexts::Entry &sign) {
+            writePos(m_stream, sign.pos);
+            m_stream << quint8(sign.lines.size());
+            for (const QString &line : sign.lines) {
+                m_stream << line;
             }
         });
         if (m_record.furnished || hasTail(Table::Furnished)) {

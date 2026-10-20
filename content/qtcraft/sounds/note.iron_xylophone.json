@@ -1,0 +1,26 @@
+{
+    "name": "note.iron_xylophone",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "square",
+            "frequency": 370,
+            "duration": 0.6,
+            "attack": 0.003,
+            "curve": 3,
+            "gain": 0.6,
+            "lowpass": 3000
+        },
+        {
+            "wave": "sine",
+            "frequency": 1110,
+            "duration": 0.5,
+            "attack": 0.003,
+            "curve": 3,
+            "gain": 0.3
+        }
+    ]
+}

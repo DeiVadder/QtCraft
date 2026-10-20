@@ -103,6 +103,7 @@ private:
     void switchRepeater(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     bool repeaterLocked(QcBlockPos pos, QcSignalState state) const;
     void reactLamp(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    void reactNote(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactOpener(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan);
     void reactPiston(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactHead(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;

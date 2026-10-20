@@ -1,0 +1,8 @@
+{
+    "name": "signal_indicator_lens_light_blue_lit",
+    "pattern": "gem",
+    "primary": "#5ab4e8",
+    "secondary": "#a4d5f2",
+    "variation": 0.04,
+    "seed": 3126
+}

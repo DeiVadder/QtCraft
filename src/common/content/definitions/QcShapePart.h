@@ -18,6 +18,8 @@ struct QcShapePart
     bool customCollision = false;
     QList<QcAabb> collision;
     // Texture slot of the block used for all faces of these boxes; empty uses the face textures.
+    // "$<property>" takes the slot named by the state's value of that property (the lens colour of
+    // the signal indicator light, decision E-765).
     QString texture;
     // Each face shows the whole texture stretched over it (torches) instead of the part of the
     // texture where the face lies in the cell.

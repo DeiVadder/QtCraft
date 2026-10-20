@@ -74,6 +74,9 @@ QcBlockId turned(const QcContentRegistry &content, QcBlockId state, int turns)
         const QString name = turnedDirection(property.name, turns);
         if (property.name == u"axis"_s && turns % 2 == 1) {
             values.insert(name, value == u"x"_s ? u"z"_s : (value == u"z"_s ? u"x"_s : value));
+        } else if (property.name == u"rotation"_s && property.values.size() == 16) {
+            // A standing sign's sixteenths of a turn (decision E-766).
+            values.insert(name, QString::number((value.toInt() + 4 * turns) % 16));
         } else {
             values.insert(name, turnedDirection(value, turns));
         }

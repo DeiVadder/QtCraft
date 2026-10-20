@@ -44,7 +44,12 @@ std::shared_ptr<QcContentRegistry> makeContent()
     torch.lightOpacity = 0;
     torch.lightLevel = 14;
     torch.faceTextures.fill(torch.name);
-    if (!content->registerBlock(stone) || !content->registerBlock(torch)) {
+    // Ids 4 and 5: a block whose two states look alike (like a target's power).
+    QcBlockDefinition dial;
+    dial.name = u"t:dial"_s;
+    dial.properties = {{u"power"_s, {u"0"_s, u"1"_s}}};
+    dial.faceTextures.fill(dial.name);
+    if (!content->registerBlock(stone) || !content->registerBlock(torch) || !content->registerBlock(dial)) {
         // Builds content for a member initialiser, outside any test case; no case can run without it.
         qFatal("cannot register test blocks");
     }
@@ -235,6 +240,33 @@ private slots:
         QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
         QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 0)));
         QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 5)));
+    }
+
+    void changesBetweenStatesDrawnAlikeMeshNothing()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QSet<quint64> meshed;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshed](quint64 key, const std::shared_ptr<const QcChunkMesh> &) { meshed.insert(key); });
+        loadSquare(world, scheduler, 64);
+        const QcBlockId off = m_content->blockId(u"t:dial"_s).value_or(qcAirBlockId);
+        const QcBlockId on = m_content->withProperty(off, u"power"_s, u"1"_s);
+        QVERIFY(off != on);
+        QVERIFY(world.setBlock({8, 56, 8}, off));
+        scheduler.blockChanged(world, {8, 56, 8}, 1);
+        pumpUntilIdle(scheduler, world);
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
+
+        // The other state draws alike: nothing is marked or meshed.
+        meshed.clear();
+        QVERIFY(world.setBlock({8, 56, 8}, on));
+        scheduler.blockChanged(world, {8, 56, 8}, off);
+        QCOMPARE(scheduler.dirtyCount(), 0);
+        QCOMPARE(scheduler.lightJobsPending(), 0);
+        pumpUntilIdle(scheduler, world);
+        QVERIFY(meshed.isEmpty());
     }
 
     void blockChangesRemeshOnlyWhatTheyReach()

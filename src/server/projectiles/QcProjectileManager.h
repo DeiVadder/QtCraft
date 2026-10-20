@@ -55,13 +55,25 @@ public:
 
     // What the tick reports to the server: a hit (true when the body took it; otherwise the
     // projectile bounces, unless it breaks), a stuck projectile a player touches (true when he took
-    // it), a projectile that stuck this tick, one that broke at a hit (decision E-427).
+    // it), a projectile that stuck this tick, one that broke at a hit (decision E-427), and every
+    // block a projectile met (optional).
+    // A projectile met a block (a target reads where, decision E-768): `stuck` for one that sticks
+    // there (an arrow), else it breaks or goes.
+    struct BlockHit
+    {
+        QcBlockPos block;
+        QcBlockFace face = QcBlockFace::Up;
+        QcVec3 point;
+        bool stuck = false;
+    };
+
     struct Handlers
     {
         std::function<bool(const Hit &)> hit;
         std::function<bool(quint32 player, const QcProjectile &)> pickup;
         std::function<void(const QcProjectile &, const QcProjectileDefinition &)> stuck;
         std::function<void(const QcProjectile &, const QcProjectileDefinition &)> broken;
+        std::function<void(const BlockHit &)> blockHit;
     };
 
     struct PlayerView

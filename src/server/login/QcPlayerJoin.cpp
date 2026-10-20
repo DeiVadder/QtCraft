@@ -82,7 +82,8 @@ void QcPlayerJoin::sendWelcome(QcServerClient &client, bool rejoined)
 {
     client.connection->send(QcMsg::Welcome{QcProtocol::version, client.id, m_state.config().worldName, m_state.config().seed,
                                            rejoined ? client.yaw : 0.0f, rejoined ? client.pitch : 0.0f, rejoined,
-                                           std::clamp(client.view.distance, 0, QcMsg::Welcome::maxViewDistance)});
+                                           std::clamp(client.view.distance, 0, QcMsg::Welcome::maxViewDistance),
+                                           m_state.spawnPoint().column().x, m_state.spawnPoint().column().z});
     client.connection->send(QcMsg::ContentSync{m_state.contentPointer()});
     QcServerGameModes::send(client, m_state.info().adventure);
     m_parts.inventory.send(client);

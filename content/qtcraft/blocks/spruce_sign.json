@@ -1,0 +1,52 @@
+{
+    "name": "spruce_sign",
+    "sound": "wood",
+    "shape": "sign",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 1.0,
+    "tool": "axe",
+    "support": "attached",
+    "washable": false,
+    "flammable": {
+        "ignite": 5,
+        "burn": 20
+    },
+    "states": {
+        "attach": [
+            "floor",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "rotation": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ]
+    },
+    "itemTexture": "spruce_sign_item",
+    "textures": {
+        "all": "spruce_planks"
+    },
+    "sign": {
+        "lines": 4,
+        "lineLength": 15
+    },
+    "fuelSeconds": 10
+}

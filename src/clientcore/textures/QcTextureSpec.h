@@ -221,6 +221,9 @@ struct QcTextureSpec
         ChiseledBricks,
         SmoothStone,
         GlazedTerracotta,
+        // Pixel art like Emblem, but every pixel the palette does not colour is transparent: item
+        // icons from data (signs, compass and clock, decisions E-766, E-769).
+        Icon,
         // Patterns of QcTextureKitchenPatterns (decisions E-772 to E-774): the cake's frosted top
         // (primary) with berries, its side (frosting primary over sponge secondary, the upper half
         // clear) and its icon, the campfire's icon (logs primary, their ends secondary, a flame) and
@@ -232,7 +235,7 @@ struct QcTextureSpec
         LilyPad,
     };
 
-    // Emblem only: up to 16 rows of up to 16 characters, top row first.
+    // Emblem and Icon only: up to 16 rows of up to 16 characters, top row first.
     static constexpr int maxBitmapRows = 16;
     static constexpr int maxPaletteEntries = 16;
 

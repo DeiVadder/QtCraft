@@ -7,6 +7,7 @@
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/controllers/QcSignController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/hooks/QcStartupHooks.h"
@@ -68,6 +69,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcWorldLibraryController *library READ library CONSTANT FINAL)
     Q_PROPERTY(QcPlayerController *player READ player CONSTANT FINAL)
     Q_PROPERTY(QcTradeController *trade READ trade CONSTANT FINAL)
+    // The editor of a sign (decision E-766).
+    Q_PROPERTY(QcSignController *sign READ sign CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
@@ -108,6 +111,7 @@ public:
     QcWorldLibraryController *library() const { return m_library.get(); }
     QcPlayerController *player() const { return m_player.get(); }
     QcTradeController *trade() const { return m_trade.get(); }
+    QcSignController *sign() const { return m_sign.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
@@ -193,6 +197,7 @@ private:
     QcWorldStarter m_worlds;
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;
+    std::unique_ptr<QcSignController> m_sign;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;
     std::unique_ptr<QcHandbookController> m_handbook;

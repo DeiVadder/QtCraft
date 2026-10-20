@@ -11,7 +11,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 15> overlayNames{
+constexpr std::array<QStringView, 16> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -27,8 +27,9 @@ constexpr std::array<QStringView, 15> overlayNames{
     u"character",
     u"lan",
     u"chat",
+    u"sign",
 };
-static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Chat) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Sign) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -132,6 +133,11 @@ void QcScreenState::closeSessionScreens() const
     if (m_overlay != Overlay::Trade) {
         m_parts.session->trading().close();
     }
+    // A sign editor closed another way than by its Done button keeps the sign's text.
+    QcClientSignEditor &sign = m_parts.session->signEditor();
+    if (m_overlay != Overlay::Sign && sign.isOpen()) {
+        sign.write(sign.lines());
+    }
 }
 
 void QcScreenState::openChat(const QString &start)
@@ -183,6 +189,11 @@ void QcScreenState::tradeClosed()
     if (m_overlay == Overlay::Trade) {
         setOverlay(Overlay::None);
     }
+}
+
+void QcScreenState::signOpened()
+{
+    setOverlay(Overlay::Sign);
 }
 
 void QcScreenState::healthChanged(bool dead)

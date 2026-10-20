@@ -20,7 +20,7 @@ void encode(QDataStream &stream, const QcMsg::Hello &m)
 
 void encode(QDataStream &stream, const QcMsg::Welcome &m)
 {
-    stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView << m.viewDistance;
+    stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView << m.viewDistance << m.spawnX << m.spawnZ;
 }
 
 void encode(QDataStream &stream, const QcMsg::ContentSync &m)
@@ -81,7 +81,8 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
 {
     QcMsg::Welcome m;
-    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView >> m.viewDistance;
+    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch
+           >> m.restoredView >> m.viewDistance >> m.spawnX >> m.spawnZ;
     if (!std::isfinite(m.yaw) || !std::isfinite(m.pitch)) {
         return qcError(u"Non-finite view direction"_s);
     }

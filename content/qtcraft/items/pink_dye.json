@@ -3,5 +3,6 @@
     "texture": "pink_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "pink"
 }

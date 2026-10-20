@@ -32,8 +32,8 @@ public:
     // In-game screen on top of the world (GameController.Overlay in QML): none, the inventory, the
     // creative inventory, an open machine (furnace) or container (chest), a villager's trading
     // screen, the pause menu, the settings (at the general page, the key table, the controller
-    // page, the debug options or the texture packs), the character screen, open to LAN or the chat
-    // line.
+    // page, the debug options or the texture packs), the character screen, open to LAN, the chat
+    // line or the editor of a sign (decision E-766).
     enum class Overlay {
         None,
         Inventory,
@@ -50,6 +50,7 @@ public:
         Character,
         Lan,
         Chat,
+        Sign,
     };
     Q_ENUM(Overlay)
 
@@ -57,7 +58,7 @@ public:
 
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
-    // "texturepacks", "character", "lan" or "chat".
+    // "texturepacks", "character", "lan", "chat" or "sign".
     static QString overlayName(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
@@ -91,6 +92,8 @@ public:
     void machineClosed();
     void tradeOpened();
     void tradeClosed();
+    // The server opened the editor of a sign.
+    void signOpened();
     // The player died (screens close, held keys and buttons are forgotten, the mouse is freed for
     // the death screen) or respawned (the world takes the mouse back).
     void healthChanged(bool dead);

@@ -1,0 +1,8 @@
+{
+    "name": "signal_indicator_lens_red",
+    "pattern": "gem",
+    "primary": "#541011",
+    "secondary": "#781819",
+    "variation": 0.04,
+    "seed": 3100
+}

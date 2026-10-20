@@ -1,0 +1,16 @@
+{
+    "name": "target",
+    "type": "shaped",
+    "pattern": [
+        " c ",
+        "chc",
+        " c "
+    ],
+    "key": {
+        "c": "signal_dust_chunk",
+        "h": "hay_block"
+    },
+    "result": {
+        "item": "target"
+    }
+}

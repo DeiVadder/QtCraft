@@ -9,6 +9,7 @@
 #include "common/protocol/QcMachineMessages.h"
 #include "common/protocol/QcPlayerMessages.h"
 #include "common/protocol/QcSessionMessages.h"
+#include "common/protocol/QcSignMessages.h"
 #include "common/protocol/QcTradeMessages.h"
 #include "common/protocol/QcWorldMessages.h"
 
@@ -29,4 +30,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::PickBlock, QcMsg::Weather, QcMsg::Lightning,
                                QcMsg::PlayerExperience, QcMsg::TradeState, QcMsg::Trade, QcMsg::CloseTrade,
                                QcMsg::DrawLauncher, QcMsg::ThrowItem, QcMsg::SpawnerDisplay, QcMsg::BlockBatch,
-                               QcMsg::Explosion, QcMsg::CampfireDisplay>;
+                               QcMsg::Explosion, QcMsg::CampfireDisplay, QcMsg::SignText, QcMsg::OpenSignEditor, QcMsg::EditSign>;

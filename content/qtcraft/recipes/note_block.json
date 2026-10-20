@@ -1,0 +1,16 @@
+{
+    "name": "note_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#c#",
+        "###"
+    ],
+    "key": {
+        "#": "#planks",
+        "c": "signal_dust_chunk"
+    },
+    "result": {
+        "item": "note_block"
+    }
+}

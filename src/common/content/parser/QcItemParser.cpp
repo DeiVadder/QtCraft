@@ -49,6 +49,15 @@ void ItemReader::parseBlockUses()
     m_item.flattens = m_reader.boolean(u"flattens"_s, false);
     m_item.carves = m_reader.boolean(u"carves"_s, false);
     m_item.strips = m_reader.boolean(u"strips"_s, false);
+    m_item.dye = m_reader.string(u"dye"_s);
+    const QString dial = m_reader.string(u"dial"_s);
+    if (dial == u"compass"_s) {
+        m_item.dial = QcItemDial::Compass;
+    } else if (dial == u"clock"_s) {
+        m_item.dial = QcItemDial::Clock;
+    } else if (!dial.isEmpty()) {
+        m_reader.fail(u"'dial' must be \"compass\" or \"clock\""_s);
+    }
     m_item.ignites = m_reader.boolean(u"ignites"_s, false);
     if (m_item.ignites && (!m_item.placesBlock.isEmpty() || m_item.tills || m_item.flattens || m_item.scoops || m_item.bottles)) {
         m_reader.fail(u"an item that 'ignites' neither places, tills, flattens, scoops nor bottles"_s);

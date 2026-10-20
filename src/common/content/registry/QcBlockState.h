@@ -40,6 +40,9 @@ struct QcBlockState
     // cube: the top of a turned block (glazed terracotta) and the bark of a lying log run with the
     // block (decision E-751).
     std::array<quint8, qcBlockFaceCount> faceUvTurns{};
+    // Sixteenths of a turn (0..3, clockwise seen from above) the drawn faces turn beyond the quarter
+    // turns of the boxes: the 16 directions of a standing sign (QcShapeDefinition::spin).
+    quint8 fineTurns = 0;
 
     // Boxes that can be pointed at: the drawn boxes and the regions of crossed planes.
     QList<QcAabb> targetBoxes() const { return boxes + crosses; }

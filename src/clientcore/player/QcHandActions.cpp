@@ -55,12 +55,12 @@ bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entit
 }
 
 // Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,
-// doors, levers, buttons, repeaters and crafting tables, unless the player sneaks.
+// doors, levers, buttons, repeaters, crafting tables and signs, unless the player sneaks.
 bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
 {
     return block && !sneaking
            && (block->opensCrafting || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
-               || block->signal.isUsable());
+               || block->signal.isUsable() || block->sign.isSign());
 }
 
 // Whether `block` (none: no block aimed at) takes food used on it instead of the food being eaten:

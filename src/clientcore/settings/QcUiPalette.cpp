@@ -63,6 +63,14 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::GraphFrame, "graphFrame", 0xff8ee68e},
     {R::GraphTick, "graphTick", 0xff8ecaff},
     {R::GraphLimit, "graphLimit", 0xffffb060},
+    {R::DialFace, "dialFace", 0xffd8d4c8},
+    {R::DialRim, "dialRim", 0xff5c5c62},
+    {R::ClockNight, "clockNight", 0xff2a3550},
+    {R::ClockDay, "clockDay", 0xff6a9ae0},
+    {R::ClockRim, "clockRim", 0xffd8b850},
+    {R::ClockHand, "clockHand", 0xfff0e8a0},
+    {R::SignBoard, "signBoard", 0xffa8844e},
+    {R::SignBorder, "signBorder", 0xff55401f},
     {R::Clear, "clear", 0x00000000},
 }};
 

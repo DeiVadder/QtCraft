@@ -51,5 +51,13 @@
     --qc-graphFrame: rgba(142, 230, 142, 1.000);
     --qc-graphTick: rgba(142, 202, 255, 1.000);
     --qc-graphLimit: rgba(255, 176, 96, 1.000);
+    --qc-dialFace: rgba(216, 212, 200, 1.000);
+    --qc-dialRim: rgba(92, 92, 98, 1.000);
+    --qc-clockNight: rgba(42, 53, 80, 1.000);
+    --qc-clockDay: rgba(106, 154, 224, 1.000);
+    --qc-clockRim: rgba(216, 184, 80, 1.000);
+    --qc-clockHand: rgba(240, 232, 160, 1.000);
+    --qc-signBoard: rgba(168, 132, 78, 1.000);
+    --qc-signBorder: rgba(85, 64, 31, 1.000);
     --qc-clear: rgba(0, 0, 0, 0.000);
 }

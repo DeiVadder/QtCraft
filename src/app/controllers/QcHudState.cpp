@@ -3,9 +3,12 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcLabelProjector.h"
+#include "clientcore/player/QcDials.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
+
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -60,6 +63,37 @@ void QcHudState::updateTimeOfDay(double alpha)
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
         emit frameStateChanged();
+    }
+}
+
+void QcHudState::updateDial(double alpha)
+{
+    const QcClientSession &session = *m_parts.session;
+    const QcContentRegistry *content = session.content().get();
+    const QcItemStack held = session.inventory().slot(session.inventory().selectedHotbarSlot());
+    const QcItemDial kind = content && content->isValidItem(held.item) ? content->item(held.item).dial : QcItemDial::None;
+    const double time = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
+
+    Dial dial = Dial::None;
+    double angle = 0.0;
+    QString clock;
+    if (kind == QcItemDial::Compass) {
+        dial = Dial::Compass;
+        const QcMsg::Welcome &welcome = session.welcome();
+        angle = QcDials::compassAngle(session.playerMotion().position, session.intent().yaw, welcome.spawnX, welcome.spawnZ);
+    } else if (kind == QcItemDial::Clock) {
+        dial = Dial::Clock;
+        angle = QcDials::clockAngle(time);
+        const QcDials::ClockTime shown = QcDials::clockTime(time);
+        clock = u"%1:%2"_s.arg(shown.hours).arg(shown.minutes, 2, 10, QChar(u'0'));
+    }
+
+    // Small turns are not worth a repaint of the HUD.
+    if (dial != m_dial || std::abs(angle - m_dialAngle) >= 0.5 || clock != m_clockText) {
+        m_dial = dial;
+        m_dialAngle = angle;
+        m_clockText = clock;
+        emit dialChanged();
     }
 }
 

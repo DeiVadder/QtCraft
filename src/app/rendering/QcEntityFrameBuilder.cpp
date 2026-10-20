@@ -283,6 +283,27 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
     }
 }
 
+void QcEntityFrameBuilder::appendSigns(QcEntityMesh &mesh, const EntityFrame &frame)
+{
+    // Text farther away is too small to read; a world may hold many signs.
+    constexpr double drawDistance = 32.0;
+
+    const QcChunkExtras &extras = m_parts.session->worldMirror().extras();
+    m_signTexts.setSigns(extras.signs(), extras.signGeneration());
+    const QList<QcBlockPos> near = m_signTexts.signsNear(m_parts.session->playerMotion().position, drawDistance);
+    for (const QcBlockPos pos : near) {
+        const std::optional<QcBlockId> block = frame.world.blockAt(pos);
+        if (!block) {
+            continue;
+        }
+        // The text lies inside the sign's cell, so it has the light of the cell's middle.
+        const QcEntityLight light = entityLight(frame.world, {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
+        for (const QcSignTextMesher::Quad &quad : m_signTexts.quads(pos, *block, light, frame.content, frame.uv)) {
+            mesh.addQuad(quad);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     // Items lie on the logs, one on each side, turned towards the middle.
@@ -427,6 +448,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
         appendCreature(*mesh, entity, frame);
     }
     appendSpawners(*mesh, frame);
+    appendSigns(*mesh, frame);
     appendCampfires(*mesh, frame);
     appendExplosions(*mesh, frame, double(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).

@@ -221,11 +221,66 @@ bool coversSide(const QList<QcAabb> &boxes, QcBlockFace face)
     return true;
 }
 
-// Identifies the variant of a state: turns (bits 32-34), flip (bit 35) and the parts that apply
-// (bits 0-31). States of one block with the same key derive the same data.
-quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+// Sixteenths of a turn about the vertical axis that the shape's `spin` property asks for (0..15;
+// decision E-766).
+int spinSteps(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+{
+    return shape.spin.isEmpty() ? 0 : std::clamp(QcBlockStateTable::value(block, index, shape.spin).toInt(), 0, 15);
+}
+
+// The turns of a state: quarter turns from `rotate` plus the whole quarters of `spin` (only for the
+// horizontal turns 0..3; tilts and axes take no spin), and the sixteenths left over.
+struct Turns
+{
+    int quarters = 0;
+    int sixteenths = 0;
+};
+
+Turns turnsOf(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
 {
     const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(QcBlockStateTable::value(block, index, shape.rotate));
+    const int steps = spinSteps(block, shape, index);
+    if (turns >= turnUp || steps == 0) {
+        return {turns, 0};
+    }
+    return {(turns + steps / 4) % 4, steps % 4};
+}
+
+// The texture slot of a part in state `index`: "$<property>" names the slot by the state's value of
+// that property (decision E-765), anything else is the slot itself.
+QString partTexture(const QcBlockDefinition &block, const QcShapePart &part, quint32 index)
+{
+    return part.texture.startsWith(u'$') ? QcBlockStateTable::value(block, index, part.texture.mid(1)) : part.texture;
+}
+
+// The index of the value of `property` in state `index` (0 for a property the block lacks).
+quint64 valueIndex(const QcBlockDefinition &block, quint32 index, const QString &property)
+{
+    const QcBlockProperty *values = block.property(property);
+    return values ? quint64(std::max<qsizetype>(0, values->values.indexOf(QcBlockStateTable::value(block, index, property)))) : 0;
+}
+
+// The values of the properties that name texture slots ("$<property>"), 5 bits each from bit 38 on
+// (properties have at most 32 values; up to five such properties).
+quint64 textureKey(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+{
+    QStringList seen;
+    quint64 key = 0;
+    for (const QcShapePart &part : shape.parts) {
+        if (part.texture.startsWith(u'$') && !seen.contains(part.texture) && seen.size() < 5) {
+            key |= valueIndex(block, index, part.texture.mid(1)) << (38 + 5 * seen.size());
+            seen.append(part.texture);
+        }
+    }
+    return key;
+}
+
+// Identifies the variant of a state: turns (bits 32-34), flip (bit 35), sixteenths of spin (bits
+// 36-37), slots named by properties (bits 38-62) and the parts that apply (bits 0-31). States of one
+// block with the same key derive the same data.
+quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+{
+    const Turns turns = turnsOf(block, shape, index);
     const bool flip = !shape.flip.isEmpty() && QcBlockStateTable::value(block, index, shape.flip) == u"top"_s;
     quint32 mask = 0;
     for (qsizetype part = 0; part < shape.parts.size() && part < 32; ++part) {
@@ -237,7 +292,8 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
         }
     }
 
-    return quint64(mask) | (quint64(turns) << 32) | (quint64(flip ? 1 : 0) << 35);
+    return quint64(mask) | (quint64(turns.quarters) << 32) | (quint64(flip ? 1 : 0) << 35) | (quint64(turns.sixteenths) << 36)
+           | textureKey(block, shape, index);
 }
 
 // State `index` with the boxes of the parts that apply to it, turned and flipped as its properties say.
@@ -245,7 +301,9 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
 {
     QcBlockState state;
     state.index = index;
-    const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(QcBlockStateTable::value(block, index, shape.rotate));
+    const Turns spun = turnsOf(block, shape, index);
+    const int turns = spun.quarters;
+    state.fineTurns = quint8(spun.sixteenths);
     const bool flip = !shape.flip.isEmpty() && QcBlockStateTable::value(block, index, shape.flip) == u"top"_s;
     const auto place = [turns, flip](const QcAabb &box) { return turned(flip ? flipped(box) : box, turns); };
 
@@ -259,12 +317,12 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
 
         for (const QcAabb &box : part.boxes) {
             state.boxes.append(place(box));
-            state.boxTextures.append(part.texture);
+            state.boxTextures.append(partTexture(block, part, index));
             state.boxStretch.append(part.stretch);
         }
         for (const QcAabb &box : part.crosses) {
             state.crosses.append(place(box));
-            state.crossTextures.append(part.texture);
+            state.crossTextures.append(partTexture(block, part, index));
         }
         for (const QcAabb &box : part.customCollision ? part.collision : part.boxes) {
             state.collision.append(place(box));

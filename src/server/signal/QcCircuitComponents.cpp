@@ -92,6 +92,9 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Rail:
         reactRail(pos, *block, plan);
         break;
+    case QcSignalKind::Note:
+        reactNote(pos, *block, state, plan);
+        break;
     case QcSignalKind::Igniter:
         // An explosive lights as soon as it gets power (decision E-601).
         if (m_context.power.input(pos) > 0) {
@@ -127,6 +130,11 @@ void QcCircuitComponents::scheduled(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Button:
         if (state.on) {
             plan.write(pos, table().withFlag(*block, u"powered"_s, false));
+        }
+        break;
+    case QcSignalKind::Target:
+        if (state.on) {
+            plan.write(pos, table().content().withProperty(*block, u"power"_s, u"0"_s));
         }
         break;
     case QcSignalKind::Plate:
@@ -275,6 +283,19 @@ void QcCircuitComponents::reactLamp(QcBlockPos pos, QcBlockId block, QcSignalSta
         } else {
             plan.write(pos, table().counterpartOf(block));
         }
+    }
+}
+
+void QcCircuitComponents::reactNote(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
+{
+    // The state `powered` remembers the last power, so only a rise plays (as in the reference).
+    const bool powered = m_context.power.input(pos) > 0;
+    if (powered == state.on) {
+        return;
+    }
+    plan.write(pos, table().withFlag(block, u"powered"_s, powered));
+    if (powered) {
+        plan.playNote(pos);
     }
 }
 

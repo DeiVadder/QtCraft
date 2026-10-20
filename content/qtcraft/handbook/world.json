@@ -32,6 +32,8 @@
         "signal_dispenser",
         "crying_obsidian",
         "explosive",
-        "stone_pressure_plate"
+        "stone_pressure_plate",
+        "compass",
+        "clock"
     ]
 }

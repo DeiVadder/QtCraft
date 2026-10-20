@@ -785,5 +785,9 @@
     "Nothing to remove for %1": "Für %1 gibt es nichts zu entfernen",
     "Removed from the adventure allow-lists of %1": "Aus den Erlaubnislisten von %1 entfernt",
     "Cleared the adventure allow-lists": "Erlaubnislisten geleert",
-    "Unknown item: %1": "Unbekannter Gegenstand: %1"
+    "Unknown item: %1": "Unbekannter Gegenstand: %1",
+    "Edit sign": "Schild beschriften",
+    "Line %1 of the sign": "Zeile %1 des Schilds",
+    "%1 on the keyboard goes to the next line": "%1 auf der Tastatur springt zur nächsten Zeile",
+    "Enter goes to the next line, Esc is done": "Enter springt zur nächsten Zeile, Esc beendet"
 }

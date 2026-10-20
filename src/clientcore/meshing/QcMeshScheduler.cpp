@@ -211,6 +211,10 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
 {
     const qint64 now = m_clock.nsecsElapsed();
     const QcBlockId current = world.blockAt(pos).value_or(qcAirBlockId);
+    if (m_renderTable && m_renderTable->entry(previous) == m_renderTable->entry(current)) {
+        // Drawn and lit alike (QcBlockRenderTable::Entry): no section looks different.
+        return;
+    }
     QList<SectionAddress> dirty = faceSections(pos);
 
     bool lightChanges = true;

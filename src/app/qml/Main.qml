@@ -165,6 +165,17 @@ ApplicationWindow {
         anchors.fill: parent
         keepAliveMs: root.controller.screenKeepAliveMs
         logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Sign
+
+        screen: SignEditor {
+            game: root.controller
+        }
+    }
+
+    LazyScreen {
+        anchors.fill: parent
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
         shown: game.phase === GameController.Phase.Playing && game.player.dead
 
         screen: DeathScreen {

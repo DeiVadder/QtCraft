@@ -1,0 +1,31 @@
+{
+    "name": "target_side",
+    "pattern": "emblem",
+    "primary": "#d8c070",
+    "variation": 0.05,
+    "seed": 3161,
+    "palette": {
+        "R": "#c42a24",
+        "W": "#ece4d0",
+        "H": "#d8b850",
+        "h": "#a88c34"
+    },
+    "bitmap": [
+        "hHHhHHhHHhHHhHHh",
+        "HHhHHWWWWWWhHHhH",
+        "HhHWWWWRRWWWWhHH",
+        "hHWWWRRRRRRWWWHh",
+        "HHWWRRRWWRRRWWhH",
+        "HWWRRWWWWWWRRWWH",
+        "hWWRRWWRRWWRRWWh",
+        "HWRRWWRRRRWWRRWH",
+        "HWRRWWRRRRWWRRWH",
+        "hWWRRWWRRWWRRWWh",
+        "HWWRRWWWWWWRRWWH",
+        "HhWWRRRWWRRRWWHH",
+        "hHWWWRRRRRRWWWHh",
+        "HHhWWWWRRWWWWHhH",
+        "HhHHhWWWWWWHHhHH",
+        "hHHhHHhHHhHHhHHh"
+    ]
+}

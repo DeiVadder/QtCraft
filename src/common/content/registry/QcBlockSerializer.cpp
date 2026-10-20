@@ -45,7 +45,7 @@ void writeAabbs(QDataStream &stream, const QList<QcAabb> &boxes)
 
 void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 {
-    stream << shape.name << shape.rotate << shape.flip << quint32(shape.parts.size());
+    stream << shape.name << shape.rotate << shape.flip << shape.spin << quint32(shape.parts.size());
     for (const QcShapePart &part : shape.parts) {
         stream << quint32(part.when.size());
         for (const QcShapeCondition &condition : part.when) {
@@ -116,7 +116,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 [[nodiscard]] std::optional<QcShapeDefinition> readShape(QDataStream &stream)
 {
     QcShapeDefinition shape;
-    stream >> shape.name >> shape.rotate >> shape.flip;
+    stream >> shape.name >> shape.rotate >> shape.flip >> shape.spin;
     const std::optional<quint32> partCountRead = QcStreamLimits::readCount(stream, QcShapeDefinition::maxParts);
     if (!partCountRead) {
         return std::nullopt;
@@ -286,12 +286,17 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     stream >> containerSlots >> containerColumns >> flowDistance >> block.flow.movementFactor;
     quint8 signalKind = 0;
     stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> block.slipperiness >> signalKind >> block.fire.isFire;
+    quint8 signLines = 0;
+    quint8 signLength = 0;
     qint32 biteFood = 0;
     qint32 campfireSlots = 0;
+    stream >> signLines >> signLength;
     stream >> block.floats >> biteFood >> campfireSlots;
+    block.sign = {signLines, signLength};
     block.bites.food = biteFood;
     block.campfire.slotCount = campfireSlots;
-    if (signalKind >= quint8(qcSignalKindCount)) {
+    if (signalKind >= quint8(qcSignalKindCount) || signLines > QcSignDefinition::maxLines || signLength < 1
+        || signLength > QcSignDefinition::maxLineLength) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
@@ -380,6 +385,8 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << block.slipperiness << quint8(block.signal.kind);
     // Whether it is fire: the client shows the default fire around burning bodies.
     stream << block.fire.isFire;
+    // Signs: the client draws their text and offers the editor (decision E-766).
+    stream << quint8(block.sign.lines) << quint8(block.sign.lineLength);
     // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
     // take the use instead of food being eaten.
     stream << block.floats << qint32(block.bites.food) << qint32(block.campfire.slotCount);

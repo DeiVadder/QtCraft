@@ -88,6 +88,14 @@ struct QcStructureDefinition
         bool confined = false;
     };
 
+    // The text on the sign at `at` (decision E-766; up to four lines), written when the world is
+    // made (the showcase's stations).
+    struct Sign
+    {
+        QcBlockPos at;
+        QStringList lines;
+    };
+
     // A chest filled from a loot table when its chunk first arrives (decision E-521).
     struct Loot
     {
@@ -192,6 +200,7 @@ struct QcStructureDefinition
     QList<Cart> minecarts;
     QList<Spawner> spawners;
     QList<Loot> loot;
+    QList<Sign> signs;
     // Variation where villages and the terrain generator (surface) place the structure; elsewhere it
     // is placed as it is.
     QList<Choice> choices;

@@ -3,5 +3,6 @@
     "texture": "brown_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "brown"
 }

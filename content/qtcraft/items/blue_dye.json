@@ -2,5 +2,6 @@
     "name": "blue_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "blue"
 }

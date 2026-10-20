@@ -8,7 +8,8 @@
         "parts",
         "corners",
         "vertical",
-        "logs"
+        "logs",
+        "signs"
     ],
     "related": [
         "oak_stairs",
@@ -19,6 +20,7 @@
         "torch",
         "oak_vertical_slab",
         "oak_log",
-        "stripped_oak_log"
+        "stripped_oak_log",
+        "oak_sign"
     ]
 }

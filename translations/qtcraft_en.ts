@@ -4,7 +4,7 @@
 <context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="58"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="59"/>
         <source>%n player(s) online</source>
         <translation>
             <numerusform>%n player online</numerusform>
@@ -15,7 +15,7 @@
 <context>
     <name>SettingsScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="115"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="126"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>
@@ -26,7 +26,7 @@
 <context>
     <name>TexturePacksPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="147"/>
+        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="148"/>
         <source>%n file(s) skipped or changed:</source>
         <translation type="unfinished">
             <numerusform></numerusform>

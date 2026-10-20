@@ -54,6 +54,8 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
         m_extras.setLabels(*labels);
     } else if (const auto *spawner = std::get_if<QcMsg::SpawnerDisplay>(&message)) {
         m_extras.setSpawner(*spawner);
+    } else if (const auto *sign = std::get_if<QcMsg::SignText>(&message)) {
+        m_extras.setSign(*sign);
     } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
         m_extras.setCampfire(*campfire);
     } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {

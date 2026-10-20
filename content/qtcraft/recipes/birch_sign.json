@@ -1,0 +1,17 @@
+{
+    "name": "birch_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "birch_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "birch_sign",
+        "count": 3
+    }
+}

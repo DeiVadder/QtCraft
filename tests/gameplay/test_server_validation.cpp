@@ -464,9 +464,10 @@ private slots:
 
     void profileIsCheckedBeforeItIsTakenOver()
     {
-        // Names: no control or format characters, trimmed, at most 32 characters, never empty.
+        // Names: no control, format or line separator characters, trimmed, at most 32 characters, never empty.
         QCOMPARE(QcProfileValidation::playerName(u"  Ann\x07\n "_s), u"Ann"_s);
         QCOMPARE(QcProfileValidation::playerName(u"Bo\u200Bb"_s), u"Bob"_s);
+        QCOMPARE(QcProfileValidation::playerName(u"Ann\u2028Bo\u2029b"_s), u"AnnBob"_s);
         QCOMPARE(QcProfileValidation::playerName(QString(40, u'x')), QString(32, u'x'));
         QCOMPARE(QcProfileValidation::playerName(u" \t "_s), u"Player"_s);
         QCOMPARE(QcProfileValidation::playerName(u"Jörg Müller"_s), u"Jörg Müller"_s);

@@ -30,6 +30,15 @@ enum class QcDispenseAction : quint8 {
     Shoot,
 };
 
+// A dial the item shows while it is held (decision E-769): a compass needle pointing to the world
+// spawn, a clock face with the time of day.
+enum class QcItemDial : quint8 {
+    None,
+    Compass,
+    Clock,
+};
+inline constexpr int qcItemDialCount = 3;
+
 // Drunk with the use button like food is eaten (milk, decision E-500); it becomes `emptiesTo`.
 struct QcDrinkDefinition
 {
@@ -101,6 +110,10 @@ struct QcItemDefinition
     // Used on a block with `strippedInto` (a log), turns it into that block and wears by one (axes,
     // decision E-753). Server side only.
     bool strips = false;
+    // The colour a dye gives (`"dye": "red"`): used on a block with `dyeProperty` that has this
+    // value, sets it and takes one item (the signal indicator light, decision E-765); empty for
+    // none. Server side only.
+    QString dye;
     // Used on a block face, lights fire in the cell in front of it and wears by one (flint and
     // steel, decision E-393). Also reaches the client (the creative inventory files it under tools).
     bool ignites = false;
@@ -124,6 +137,9 @@ struct QcItemDefinition
     // Drunk with the use button (milk, decision E-500); reaches the client, which sends the use as
     // QcMsg::ConsumeItem.
     std::optional<QcDrinkDefinition> drink;
+    // The dial the client shows while the item is held (`"dial": "compass"` or `"clock"`, decision
+    // E-769); reaches the client.
+    QcItemDial dial = QcItemDial::None;
     // A creature that comes out where the item places its liquid (a fish bucket, decision E-501): kept
     // with the world like a bred animal. Server side only.
     QString releasesMob;

@@ -13,6 +13,7 @@
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
+#include "clientcore/session/QcClientSignEditor.h"
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientTrading.h"
 #include "clientcore/session/QcWorldMirror.h"
@@ -121,6 +122,9 @@ public:
     // The trading screen of a villager the server opened, and trading with it (decision E-414).
     QcClientTrading &trading() { return m_trading; }
     const QcClientTrading &trading() const { return m_trading; }
+    // The editor of a sign the server opened (decision E-766).
+    QcClientSignEditor &signEditor() { return m_signEditor; }
+    const QcClientSignEditor &signEditor() const { return m_signEditor; }
     void sendChat(const QString &text);
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
@@ -241,6 +245,7 @@ private:
     QcLocalAnimation m_animation;
     QcClientMachineScreen m_machine;
     QcClientTrading m_trading;
+    QcClientSignEditor m_signEditor;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

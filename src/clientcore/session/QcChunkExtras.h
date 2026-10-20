@@ -2,6 +2,7 @@
 
 #include "clientcore/session/QcExplosionEffects.h"
 #include "common/core/QcBlockPos.h"
+#include "common/protocol/QcSignMessages.h"
 #include "common/protocol/QcWorldMessages.h"
 #include "common/world/QcWorldLabel.h"
 
@@ -14,7 +15,8 @@
 // (decision E-222), the creature kinds spinning in their monster spawners (decision E-520) and the
 // items lying on their campfires (decision E-772). All go with their chunk's ChunkUnload; the
 // spawners and campfires also with a new ChunkData of their chunk (the server sends them right after
-// its blocks, so a chunk sent again, e.g. after /regenerate, keeps only those it still has). The explosions near the player (decision E-604)
+// its blocks, so a chunk sent again, e.g. after /regenerate, keeps only those it still has). The text
+// on signs (decision E-766) comes and goes the same way. The explosions near the player (decision E-604)
 // stay as puffs of flash and smoke until they are over.
 class QcChunkExtras
 {
@@ -38,6 +40,19 @@ public:
             m_spawners.insert(display.pos, display.mob);
         }
     }
+    // The lines on each sign with text of the loaded chunks.
+    const QHash<QcBlockPos, QcSignText::Lines> &signs() const { return m_signs; }
+    // Changes whenever a sign's text arrived or left.
+    quint64 signGeneration() const { return m_signGeneration; }
+    void setSign(const QcMsg::SignText &text)
+    {
+        if (QcSignText::isEmpty(text.lines)) {
+            m_signGeneration += m_signs.remove(text.pos) ? 1 : 0;
+            return;
+        }
+        m_signs.insert(text.pos, text.lines);
+        ++m_signGeneration;
+    }
     // The items (content ids, 0 for an empty slot) on each campfire of the loaded chunks that holds any.
     const QHash<QcBlockPos, QList<quint32>> &campfires() const { return m_campfires; }
     void setCampfire(const QcMsg::CampfireDisplay &display)
@@ -51,11 +66,16 @@ public:
     const QcExplosionEffects &explosions() const { return m_explosions; }
     void addExplosion(const QcMsg::Explosion &explosion, quint64 tick) { m_explosions.add(explosion, tick); }
     void pruneExplosions(quint64 tick) { m_explosions.prune(tick); }
-    void chunkArrived(QcChunkPos pos) { removeBlockDisplays(pos); }
+    void chunkArrived(QcChunkPos pos)
+    {
+        removeBlockDisplays(pos);
+        removeSigns(pos);
+    }
     void removeChunk(QcChunkPos pos)
     {
         m_labelGeneration += m_labels.remove(pos) ? 1 : 0;
         removeBlockDisplays(pos);
+        removeSigns(pos);
     }
 
 private:
@@ -64,10 +84,16 @@ private:
         m_spawners.removeIf([pos](const auto &spawner) { return spawner.key().chunk() == pos; });
         m_campfires.removeIf([pos](const auto &campfire) { return campfire.key().chunk() == pos; });
     }
+    void removeSigns(QcChunkPos pos)
+    {
+        m_signGeneration += m_signs.removeIf([pos](const auto &sign) { return sign.key().chunk() == pos; }) > 0 ? 1 : 0;
+    }
 
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     QHash<QcBlockPos, int> m_spawners;
+    QHash<QcBlockPos, QcSignText::Lines> m_signs;
+    quint64 m_signGeneration = 0;
     QHash<QcBlockPos, QList<quint32>> m_campfires;
     QcExplosionEffects m_explosions;
 };

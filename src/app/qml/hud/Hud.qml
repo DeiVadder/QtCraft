@@ -449,6 +449,14 @@ Item {
         }
     }
 
+    // A held compass or clock (decision E-769) right of the hotbar.
+    DialDisplay {
+        hudState: hud.game.hud
+        anchors.left: hotbar.right
+        anchors.bottom: hotbar.bottom
+        anchors.leftMargin: Ui.hudPx(12)
+    }
+
     HudLabel {
         id: hint
 

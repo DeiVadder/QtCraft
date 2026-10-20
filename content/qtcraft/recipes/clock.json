@@ -1,0 +1,16 @@
+{
+    "name": "clock",
+    "type": "shaped",
+    "pattern": [
+        " c ",
+        "cIc",
+        " c "
+    ],
+    "key": {
+        "c": "signal_dust_chunk",
+        "I": "gold_ingot"
+    },
+    "result": {
+        "item": "clock"
+    }
+}

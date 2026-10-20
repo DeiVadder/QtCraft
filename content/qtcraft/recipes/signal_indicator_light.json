@@ -1,0 +1,15 @@
+{
+    "name": "signal_indicator_light",
+    "type": "shaped",
+    "pattern": [
+        "c",
+        "p"
+    ],
+    "key": {
+        "c": "signal_dust_chunk",
+        "p": "glass_pane"
+    },
+    "result": {
+        "item": "signal_indicator_light"
+    }
+}

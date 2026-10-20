@@ -4,6 +4,8 @@
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
+#include <cmath>
+#include <numbers>
 
 using namespace Qt::StringLiterals;
 
@@ -168,6 +170,28 @@ struct Shape
     return shape;
 }
 
+// `shape` turned by `sixteenths` of a turn (clockwise seen from above) about the vertical axis
+// through the cell's centre (a standing sign, decision E-766). Its faces no longer lie on the cell's
+// sides: none is hidden by a neighbour, none hides one.
+void spin(Shape &shape, int sixteenths)
+{
+    const double angle = double(sixteenths) * std::numbers::pi / 8.0;
+    const auto c = float(std::cos(angle));
+    const auto s = float(std::sin(angle));
+    for (QcBlockRenderTable::Quad &quad : shape.quads) {
+        quad.boundary = false;
+        for (std::array<float, 3> &corner : quad.corners) {
+            const float x = corner[0] - 0.5f;
+            const float z = corner[2] - 0.5f;
+            corner[0] = 0.5f + x * c - z * s;
+            corner[2] = 0.5f + x * s + z * c;
+        }
+    }
+    for (QList<SideRect> &cover : shape.cover) {
+        cover.clear();
+    }
+}
+
 // Height of a liquid's surface: falls with the flow level; sources and falling liquid are nearly full.
 float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlockDefinition &block)
 {
@@ -222,6 +246,9 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
 
     if (!state.fullCube) {
         Shape shape = shapeOf(state, block, atlas, entry.faceUv);
+        if (state.fineTurns > 0) {
+            spin(shape, state.fineTurns);
+        }
         entry.quads = std::move(shape.quads);
         entry.crosses = std::move(shape.crosses);
         entry.cover = std::move(shape.cover);

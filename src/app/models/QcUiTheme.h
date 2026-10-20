@@ -64,6 +64,14 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor graphFrame MEMBER m_graphFrame CONSTANT FINAL)
     Q_PROPERTY(QColor graphTick MEMBER m_graphTick CONSTANT FINAL)
     Q_PROPERTY(QColor graphLimit MEMBER m_graphLimit CONSTANT FINAL)
+    Q_PROPERTY(QColor dialFace MEMBER m_dialFace CONSTANT FINAL)
+    Q_PROPERTY(QColor dialRim MEMBER m_dialRim CONSTANT FINAL)
+    Q_PROPERTY(QColor clockNight MEMBER m_clockNight CONSTANT FINAL)
+    Q_PROPERTY(QColor clockDay MEMBER m_clockDay CONSTANT FINAL)
+    Q_PROPERTY(QColor clockRim MEMBER m_clockRim CONSTANT FINAL)
+    Q_PROPERTY(QColor clockHand MEMBER m_clockHand CONSTANT FINAL)
+    Q_PROPERTY(QColor signBoard MEMBER m_signBoard CONSTANT FINAL)
+    Q_PROPERTY(QColor signBorder MEMBER m_signBorder CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -124,5 +132,13 @@ private:
     QColor m_graphFrame = QcUiPalette::color(QcUiPalette::Role::GraphFrame);
     QColor m_graphTick = QcUiPalette::color(QcUiPalette::Role::GraphTick);
     QColor m_graphLimit = QcUiPalette::color(QcUiPalette::Role::GraphLimit);
+    QColor m_dialFace = QcUiPalette::color(QcUiPalette::Role::DialFace);
+    QColor m_dialRim = QcUiPalette::color(QcUiPalette::Role::DialRim);
+    QColor m_clockNight = QcUiPalette::color(QcUiPalette::Role::ClockNight);
+    QColor m_clockDay = QcUiPalette::color(QcUiPalette::Role::ClockDay);
+    QColor m_clockRim = QcUiPalette::color(QcUiPalette::Role::ClockRim);
+    QColor m_clockHand = QcUiPalette::color(QcUiPalette::Role::ClockHand);
+    QColor m_signBoard = QcUiPalette::color(QcUiPalette::Role::SignBoard);
+    QColor m_signBorder = QcUiPalette::color(QcUiPalette::Role::SignBorder);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };

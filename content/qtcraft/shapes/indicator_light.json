@@ -1,0 +1,118 @@
+{
+    "name": "indicator_light",
+    "rotate": "attach",
+    "parts": [
+        {
+            "when": {
+                "attach": "floor"
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0,
+                    0.3125,
+                    0.6875,
+                    0.0625,
+                    0.6875
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": "floor"
+            },
+            "boxes": [
+                [
+                    0.375,
+                    0.0625,
+                    0.375,
+                    0.625,
+                    0.125,
+                    0.625
+                ]
+            ],
+            "collision": [],
+            "texture": "$color",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": "ceiling"
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.9375,
+                    0.3125,
+                    0.6875,
+                    1,
+                    0.6875
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": "ceiling"
+            },
+            "boxes": [
+                [
+                    0.375,
+                    0.875,
+                    0.375,
+                    0.625,
+                    0.9375,
+                    0.625
+                ]
+            ],
+            "collision": [],
+            "texture": "$color",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ]
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.3125,
+                    0,
+                    0.6875,
+                    0.6875,
+                    0.0625
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ]
+            },
+            "boxes": [
+                [
+                    0.375,
+                    0.375,
+                    0.0625,
+                    0.625,
+                    0.625,
+                    0.125
+                ]
+            ],
+            "collision": [],
+            "texture": "$color",
+            "uv": "box"
+        }
+    ]
+}

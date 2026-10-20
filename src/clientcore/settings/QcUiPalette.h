@@ -80,6 +80,17 @@ enum class Role {
     GraphFrame,
     GraphTick,
     GraphLimit,
+    // Dials of a held compass or clock (decision E-769): the compass face and rim, the clock's night
+    // and day halves, rim and hand.
+    DialFace,
+    DialRim,
+    ClockNight,
+    ClockDay,
+    ClockRim,
+    ClockHand,
+    // The wooden board of the sign editor (decision E-766).
+    SignBoard,
+    SignBorder,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

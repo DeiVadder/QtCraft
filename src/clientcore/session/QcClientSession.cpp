@@ -22,6 +22,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     m_gameMode.setWishListener([this](bool wanted) { m_link->command({QcSessionCommand::SetFlight{wanted}}); });
     m_debug.setSender(send);
     m_trading.setSender(send);
+    m_signEditor.setSender(send);
 }
 
 QcClientSession::~QcClientSession()
@@ -107,7 +108,8 @@ void QcClientSession::handleMessage(QcMessage &&message)
     }
 
     if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
-        && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)) {
+        && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
+        && !m_signEditor.handle(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }
 }

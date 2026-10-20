@@ -107,6 +107,7 @@ QcShapeDefinition parseShapeBody(const QJsonObject &json, QcJsonFieldReader &rea
     QcShapeDefinition shape;
     shape.rotate = reader.string(u"rotate"_s);
     shape.flip = reader.string(u"flip"_s);
+    shape.spin = reader.string(u"spin"_s);
 
     const QJsonValue parts = json.value(u"parts"_s);
     if (!parts.isUndefined()) {

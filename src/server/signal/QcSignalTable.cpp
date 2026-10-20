@@ -170,8 +170,10 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     const QcBlockState &shape = content.state(id);
     const QcSignalDefinition &signal = block.signal;
     state.kind = signal.kind;
-    // A constant source powers only components and dust, never the blocks around it (decision E-752).
-    state.conductor = signal.conducts && signal.kind != QcSignalKind::Constant && block.solid && shape.opaque && shape.fullCube;
+    // A constant source and a target power only components and dust, never the blocks around them
+    // (decisions E-752, E-768).
+    const bool source = signal.kind == QcSignalKind::Constant || signal.kind == QcSignalKind::Target;
+    state.conductor = signal.conducts && !source && block.solid && shape.opaque && shape.fullCube;
     state.mobility = mobilityOf(block);
 
     const bool flag = isFlag(content, id, u"powered"_s) || isFlag(content, id, u"extended"_s) || isFlag(content, id, u"open"_s)
@@ -183,8 +185,11 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
     state.strongPowersAbove = signal.strongPowersAbove;
 
-    if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator) {
+    if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator || signal.kind == QcSignalKind::Target) {
         state.power = quint8(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
+    }
+    if (signal.kind == QcSignalKind::Target) {
+        state.on = state.power > 0;
     }
     if (signal.kind == QcSignalKind::Dust) {
         for (std::size_t i = 0; i < horizontal.size(); ++i) {

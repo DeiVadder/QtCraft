@@ -1,0 +1,17 @@
+{
+    "name": "oak_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "oak_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "oak_sign",
+        "count": 3
+    }
+}

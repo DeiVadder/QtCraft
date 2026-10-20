@@ -1,0 +1,68 @@
+{
+    "name": "signal_indicator_light",
+    "sound": "glass",
+    "shape": "indicator_light",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.3,
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "color": [
+            "red",
+            "orange",
+            "yellow",
+            "lime",
+            "green",
+            "cyan",
+            "light_blue",
+            "blue",
+            "purple",
+            "magenta",
+            "pink",
+            "white",
+            "light_gray",
+            "gray",
+            "black",
+            "brown"
+        ]
+    },
+    "dyeProperty": "color",
+    "itemTexture": "signal_indicator_light_item",
+    "textures": {
+        "all": "signal_indicator_frame",
+        "slots": {
+            "red": "signal_indicator_lens_red",
+            "orange": "signal_indicator_lens_orange",
+            "yellow": "signal_indicator_lens_yellow",
+            "lime": "signal_indicator_lens_lime",
+            "green": "signal_indicator_lens_green",
+            "cyan": "signal_indicator_lens_cyan",
+            "light_blue": "signal_indicator_lens_light_blue",
+            "blue": "signal_indicator_lens_blue",
+            "purple": "signal_indicator_lens_purple",
+            "magenta": "signal_indicator_lens_magenta",
+            "pink": "signal_indicator_lens_pink",
+            "white": "signal_indicator_lens_white",
+            "light_gray": "signal_indicator_lens_light_gray",
+            "gray": "signal_indicator_lens_gray",
+            "black": "signal_indicator_lens_black",
+            "brown": "signal_indicator_lens_brown"
+        }
+    },
+    "signal": {
+        "type": "lamp",
+        "active": false,
+        "counterpart": "signal_indicator_light_lit",
+        "offDelayTicks": 2
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "name": "note_block",
+    "pattern": "emblem",
+    "primary": "#7a5232",
+    "variation": 0.05,
+    "seed": 3160,
+    "palette": {
+        "p": "#7a5232",
+        "s": "#664226",
+        "d": "#4e321c",
+        "k": "#1e140c"
+    },
+    "bitmap": [
+        "dddddddddddddddd",
+        "dppppppppppppppd",
+        "dpkppkppkppkpppd",
+        "dssssssssssssssd",
+        "dppppppppppppppd",
+        "dpkppkppkppkpppd",
+        "dppppppppppppppd",
+        "dssssssssssssssd",
+        "dpkppkppkppkpppd",
+        "dppppppppppppppd",
+        "dppppppppppppppd",
+        "dskssksskssksssd",
+        "dppppppppppppppd",
+        "dppppppppppppppd",
+        "dppppppppppppppd",
+        "dddddddddddddddd"
+    ]
+}

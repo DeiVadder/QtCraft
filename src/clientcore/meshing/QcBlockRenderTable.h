@@ -31,6 +31,8 @@ public:
         {
             return a0 <= other.a0 && a1 >= other.a1 && b0 <= other.b0 && b1 >= other.b1;
         }
+
+        bool operator==(const SideRect &) const = default;
     };
 
     // One face of a shape box, in block-local coordinates; corners are ordered like the full cube
@@ -43,12 +45,16 @@ public:
         SideRect rect;
         std::array<std::array<float, 3>, 4> corners{};
         std::array<std::array<float, 2>, 4> uvs{};
+
+        bool operator==(const Quad &) const = default;
     };
 
     struct Cross
     {
         std::array<float, 6> box{};
         QRectF uv;
+
+        bool operator==(const Cross &) const = default;
     };
 
     struct Entry
@@ -85,6 +91,10 @@ public:
         // Rectangles of the cell sides covered by box faces, per QcBlockFace; they hide the
         // matching faces of neighbours.
         std::array<QList<SideRect>, 6> cover;
+
+        // Equal entries draw and pass light alike: the mesher reads nothing else of a state, so a
+        // change between two such states (a target's power, a note block's note) changes no mesh.
+        bool operator==(const Entry &) const = default;
     };
 
     // How far the surface of a full liquid lies below the top of its cell.

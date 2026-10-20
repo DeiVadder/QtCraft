@@ -36,10 +36,12 @@ struct QcCircuitPlan
     QList<QcBlockPos> fires;
     // Explosives that got power: they are lit (decision E-601).
     QList<QcBlockPos> ignitions;
+    // Note blocks whose power rose: they play their note (decision E-767).
+    QList<QcBlockPos> notes;
     // Work done for the tick's budget.
     qsizetype work = 0;
 
-    bool isEmpty() const { return writes.isEmpty() && openings.isEmpty() && pistons.isEmpty() && schedules.isEmpty() && fires.isEmpty() && ignitions.isEmpty(); }
+    bool isEmpty() const { return writes.isEmpty() && openings.isEmpty() && pistons.isEmpty() && schedules.isEmpty() && fires.isEmpty() && ignitions.isEmpty() && notes.isEmpty(); }
 
     // What the components decide, in the words of the plan.
     void write(QcBlockPos pos, QcBlockId block) { writes.insert(pos, block); }
@@ -49,5 +51,6 @@ struct QcCircuitPlan
     void burnOut(QcBlockPos pos) { burntOut.append(pos); }
     void fire(QcBlockPos pos) { fires.append(pos); }
     void ignite(QcBlockPos pos) { ignitions.append(pos); }
+    void playNote(QcBlockPos pos) { notes.append(pos); }
     void addWork(qsizetype amount) { work += amount; }
 };

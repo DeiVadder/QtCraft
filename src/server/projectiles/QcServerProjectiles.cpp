@@ -93,7 +93,8 @@ void QcServerProjectiles::tick()
             if (const QcHitEffect *teleport = definition.effect(QcHitEffect::teleport)) {
                 teleportThrower(projectile, *teleport);
             }
-        }};
+        },
+        m_blockHit};
     const QList<QcProjectileFlight::Body> bodies = projectiles.anyFlying() ? this->bodies() : QList<QcProjectileFlight::Body>();
     projectiles.tick(m_state.world(), bodies, collectors(), QcPhysics::tickDuration, handlers);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/blockentities/QcSignTexts.h"
 #include "server/blocks/QcFireQueue.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/machines/QcCampfires.h"
@@ -65,6 +66,8 @@ struct QcBlockEntityRecord
         Furnished = 11,
         // The items on campfires (decision E-772) with their cooking time.
         Campfires = 12,
+        // The text on signs (decision E-766): the lines per sign with text.
+        Signs = 13,
     };
 
     // What a circuit component remembers; torches' recent switching is not saved.
@@ -107,6 +110,8 @@ struct QcBlockEntityRecord
     QList<QcSpawners::Entry> spawners;
     // The items cooking on campfires (decision E-772).
     QList<QcCampfires::Entry> campfires;
+    // Signs with text (decision E-766).
+    QList<QcSignTexts::Entry> signs;
     // The generator's chest loot and spawner kinds were put into the chunk (QcFurnishing); a chunk
     // without the mark gets them when it arrives.
     bool furnished = false;
@@ -117,7 +122,7 @@ struct QcBlockEntityRecord
     {
         return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty() && scheduled.isEmpty()
                && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty()
-               && fires.isEmpty() && spawners.isEmpty() && campfires.isEmpty() && !furnished && kept.isEmpty();
+               && fires.isEmpty() && spawners.isEmpty() && campfires.isEmpty() && signs.isEmpty() && !furnished && kept.isEmpty();
     }
 
     // Fills the record of a chunk that leaves the world (decision E-374), `chunk`, with everything

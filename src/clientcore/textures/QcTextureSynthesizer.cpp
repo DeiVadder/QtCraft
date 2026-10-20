@@ -497,7 +497,7 @@ QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
     return scaled(spec.primary, shade);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 45> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 46> painters = {{
     {Pattern::Noise, paintNoise},
     {Pattern::Speckle, paintSpeckle},
     {Pattern::Planks, paintPlanks},
@@ -543,6 +543,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 45> painters = {{
     {Pattern::Limb, paintLimb},
     {Pattern::Sleeve, paintSleeve},
     {Pattern::Emblem, QcTextureEmblem::paint},
+    {Pattern::Icon, QcTextureEmblem::paintIcon},
 }};
 
 Painter painterFor(Pattern pattern)

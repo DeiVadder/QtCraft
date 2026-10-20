@@ -1,0 +1,8 @@
+{
+    "name": "signal_indicator_light_item",
+    "pattern": "gem",
+    "primary": "#c8282a",
+    "secondary": "#ff8a7a",
+    "variation": 0.05,
+    "seed": 3141
+}

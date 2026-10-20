@@ -1,6 +1,7 @@
 #include "common/content/parser/QcSignalParser.h"
 
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <array>
 #include <utility>
@@ -27,6 +28,8 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Rail, "rail"},
     {QcSignalKind::Igniter, "igniter"},
     {QcSignalKind::Constant, "constant"},
+    {QcSignalKind::Note, "note"},
+    {QcSignalKind::Target, "target"},
 }};
 
 [[nodiscard]] std::optional<QcSignalKind> kindFromName(const QString &name)
@@ -67,6 +70,15 @@ QStringList powerValues()
     return values;
 }
 
+QStringList noteValues()
+{
+    QStringList values;
+    for (int note = 0; note < QcSignalDefinition::noteCount; ++note) {
+        values.append(QString::number(note));
+    }
+    return values;
+}
+
 // The state properties every block of a kind needs, as property name and the values it must allow.
 QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
 {
@@ -101,6 +113,10 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
         return {{u"facing"_s, allSides}, {u"triggered"_s, booleans}};
     case QcSignalKind::Rail:
         return {{u"powered"_s, booleans}};
+    case QcSignalKind::Note:
+        return {{u"powered"_s, booleans}, {u"note"_s, noteValues()}};
+    case QcSignalKind::Target:
+        return {{u"power"_s, powerValues()}};
     case QcSignalKind::Lamp:
     case QcSignalKind::Igniter:
     case QcSignalKind::Constant:
@@ -128,6 +144,7 @@ private:
     void readMobility();
     void readKindFields();
     void readReading();
+    void readInstruments(const QJsonObject &json, QcJsonFieldReader &reader);
     void checkKind() const;
 
     const QcBlockDefinition &m_block;
@@ -172,6 +189,30 @@ void SignalReader::readKindFields()
     m_signal.strongPowersAbove = m_reader.boolean(u"strongPowersAbove"_s, true);
     m_signal.head = m_reader.name(u"head"_s, m_namespace);
     m_signal.usesItems = m_reader.boolean(u"uses"_s, true);
+    m_signal.stuckHitTicks = m_reader.integer(u"stuckHitTicks"_s, 20, 1, QcSignalDefinition::maxPulseTicks);
+    m_signal.hitTicks = m_reader.integer(u"hitTicks"_s, 8, 1, QcSignalDefinition::maxPulseTicks);
+    m_reader.nestedObject(u"instruments"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) { readInstruments(object, nested); });
+}
+
+// "instruments": {"default": "note.harp", "blocks": {"gold_block": "note.bell"}, "sounds": {"wood": "note.bass"}}
+// (decision E-767); names and sounds without a namespace get the pack's.
+void SignalReader::readInstruments(const QJsonObject &json, QcJsonFieldReader &reader)
+{
+    m_signal.instruments.fallback = reader.name(u"default"_s, m_namespace);
+    const auto readMap = [this, &json, &reader](const QString &key) {
+        QHash<QString, QString> map;
+        const QJsonObject entries = json.value(key).toObject();
+        for (auto it = entries.begin(); it != entries.end(); ++it) {
+            if (!it.value().isString() || map.size() >= QcSignalDefinition::maxInstruments) {
+                reader.fail(u"'%1' maps names to sounds (at most %2)"_s.arg(key).arg(QcSignalDefinition::maxInstruments));
+                break;
+            }
+            map.insert(QcContentNames::qualify(it.key(), m_namespace), QcContentNames::qualify(it.value().toString(), m_namespace));
+        }
+        return map;
+    };
+    m_signal.instruments.byBlock = readMap(u"blocks"_s);
+    m_signal.instruments.bySound = readMap(u"sounds"_s);
 }
 
 // "comparator": "contents" or {"property": "<name>"} (decision E-343).

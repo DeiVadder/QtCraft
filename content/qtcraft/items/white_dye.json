@@ -3,5 +3,6 @@
     "texture": "white_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "white"
 }

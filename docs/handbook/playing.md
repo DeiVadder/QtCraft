@@ -127,9 +127,13 @@ Every material with slabs also has vertical slabs: three slabs on top of each ot
 
 Logs, wood, stripped logs and bone blocks lie along the face you click: on a top or bottom face they stand upright, on a side face they lie towards it, with the rings at their ends. Use an axe on a log or on wood to strip its bark; it keeps lying the way it did and nothing drops.
 
+**Signs**
+
+A sign stands on the floor, turned towards you in sixteen steps, or hangs on the side of a block. When you place it, a screen opens for its text: four lines of up to 15 characters each. Everyone near it can read the text; use the sign again to change it, and sneak to place a block against it instead. Six planks over a stick make three signs.
+
 **See also**
 
-[Oak stairs](parts.md#block-qtcraft-oak_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak door](blocks.md#block-qtcraft-oak_door), [Ladder](blocks.md#block-qtcraft-ladder), [Torch](blocks.md#block-qtcraft-torch), [Oak vertical slab](parts.md#block-qtcraft-oak_vertical_slab), [Oak log](blocks.md#block-qtcraft-oak_log), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log)
+[Oak stairs](parts.md#block-qtcraft-oak_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak door](blocks.md#block-qtcraft-oak_door), [Ladder](blocks.md#block-qtcraft-ladder), [Torch](blocks.md#block-qtcraft-torch), [Oak vertical slab](parts.md#block-qtcraft-oak_vertical_slab), [Oak log](blocks.md#block-qtcraft-oak_log), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Oak Sign](blocks.md#block-qtcraft-oak_sign)
 
 ### <a id="chapter-qtcraft-crafting"></a>Crafting
 
@@ -271,7 +275,7 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 
 **See also**
 
-[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Rails and Minecarts
 
@@ -645,7 +649,7 @@ Old stone towers stand on the coasts, on low land with the open sea close by. A 
 
 **See also**
 
-[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Carved sandstone](blocks.md#block-qtcraft-carved_sandstone), [Vines](blocks.md#block-qtcraft-vines), [Cauldron](blocks.md#block-qtcraft-cauldron), [Flower pot](blocks.md#block-qtcraft-flower_pot), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Explosive](blocks.md#block-qtcraft-explosive), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate)
+[Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Carved sandstone](blocks.md#block-qtcraft-carved_sandstone), [Vines](blocks.md#block-qtcraft-vines), [Cauldron](blocks.md#block-qtcraft-cauldron), [Flower pot](blocks.md#block-qtcraft-flower_pot), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Explosive](blocks.md#block-qtcraft-explosive), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate), [Compass](items.md#item-qtcraft-compass), [Clock](items.md#item-qtcraft-clock)
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 

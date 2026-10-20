@@ -104,6 +104,19 @@ void turnAlong(QcProjectile &projectile)
     projectile.pitch = float(qRadiansToDegrees(std::atan2(v.y, horizontal)));
 }
 
+namespace {
+
+// A step that ends the flight's motion this tick without a block hit: `outcome`, and the body hit.
+Step ended(Outcome outcome, quint32 body = 0)
+{
+    Step step;
+    step.outcome = outcome;
+    step.body = body;
+    return step;
+}
+
+} // namespace
+
 Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjectileDefinition &definition, const QList<Body> &bodies,
           double dt)
 {
@@ -113,7 +126,7 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
     motion.inWater = QcPhysics::isWaterAt(world, here);
     if (definition.floats && inLiquid) {
         // Water carries it; a hot liquid (lava) burns it up.
-        return motion.inWater ? floatStep(world, projectile, definition, dt) : Step{Outcome::Burnt, 0, {}};
+        return motion.inWater ? floatStep(world, projectile, definition, dt) : ended(Outcome::Burnt);
     }
     QcVec3 velocity = motion.velocity;
     velocity.y -= definition.gravity * dt;
@@ -124,7 +137,7 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
     const QcVec3 end = motion.position + delta;
     if (length > 0.0 && !world.blockAt(QcPhysics::blockContaining(end))) {
         // Waiting at an unloaded chunk keeps velocity and orientation as they were.
-        return {Outcome::Waiting, 0, {}};
+        return ended(Outcome::Waiting);
     }
 
     motion.velocity = velocity;
@@ -138,7 +151,7 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
     const double blockDistance = block ? block->distance : length;
     if (const auto body = firstBody(projectile, bodies, direction, blockDistance, definition.size * 0.5)) {
         motion.position = motion.position + direction * body->first;
-        return {Outcome::HitBody, body->second, {}};
+        return ended(Outcome::HitBody, body->second);
     }
 
     if (definition.floats) {
@@ -153,7 +166,7 @@ Step step(const QcBlockAccess &world, QcProjectile &projectile, const QcProjecti
         // The centre stops so far before the block that the tip reaches stickDepth into it.
         const double back = std::max(0.0, definition.size * 0.5 - stickDepth);
         motion.position = block->point - direction * back;
-        return {Outcome::HitBlock, 0, block->block};
+        return {Outcome::HitBlock, 0, block->block, block->face, block->point};
     }
 
     motion.position = end;

@@ -1,0 +1,25 @@
+{
+    "name": "note.hat",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 4,
+            "highpass": 7000,
+            "gain": 1.0
+        },
+        {
+            "wave": "crackle",
+            "density": 3000,
+            "duration": 0.05,
+            "curve": 3,
+            "highpass": 5000,
+            "gain": 0.4
+        }
+    ]
+}

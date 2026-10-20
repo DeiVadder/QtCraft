@@ -8,7 +8,8 @@
 struct QcBlockProperty
 {
     static constexpr int maxProperties = 8;
-    static constexpr int maxValues = 16;
+    // Enough for the 25 notes of the note block (decision E-767).
+    static constexpr int maxValues = 32;
 
     QString name;
     QStringList values;

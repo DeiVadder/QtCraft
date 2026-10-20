@@ -127,9 +127,13 @@ Jedes Material mit Stufen hat auch senkrechte Stufen: Drei übereinander gelegte
 
 Stämme, Holz, entrindete Stämme und Knochenblöcke liegen entlang der angeklickten Fläche: auf Ober- oder Unterseite stehen sie aufrecht, an einer Seitenfläche liegen sie auf sie zu, mit den Jahresringen an den Enden. Eine Axt auf einem Stamm oder Holz entfernt die Rinde; er liegt danach wie vorher, und es fällt nichts heraus.
 
+**Schilder**
+
+Ein Schild steht auf dem Boden, in sechzehn Stufen zu dir gedreht, oder hängt an der Seite eines Blocks. Beim Setzen öffnet sich ein Fenster für seinen Text: vier Zeilen mit je bis zu 15 Zeichen. Alle in der Nähe können ihn lesen; benutze das Schild noch einmal, um ihn zu ändern, und schleiche, um stattdessen einen Block daran zu setzen. Sechs Bretter über einem Stock ergeben drei Schilder.
+
 **Siehe auch**
 
-[Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichentür](blocks.md#block-qtcraft-oak_door), [Leiter](blocks.md#block-qtcraft-ladder), [Fackel](blocks.md#block-qtcraft-torch), [Eichenstufe (senkrecht)](parts.md#block-qtcraft-oak_vertical_slab), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log)
+[Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichentür](blocks.md#block-qtcraft-oak_door), [Leiter](blocks.md#block-qtcraft-ladder), [Fackel](blocks.md#block-qtcraft-torch), [Eichenstufe (senkrecht)](parts.md#block-qtcraft-oak_vertical_slab), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Eichenschild](blocks.md#block-qtcraft-oak_sign)
 
 ### <a id="chapter-qtcraft-crafting"></a>Herstellen
 
@@ -271,7 +275,7 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 
 **Siehe auch**
 
-[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Schienen und Loren
 
@@ -645,7 +649,7 @@ Alte Steintürme stehen an den Küsten, auf niedrigem Land nahe am offenen Meer.
 
 **Siehe auch**
 
-[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Gemeißelter Sandstein](blocks.md#block-qtcraft-carved_sandstone), [Ranken](blocks.md#block-qtcraft-vines), [Kessel](blocks.md#block-qtcraft-cauldron), [Blumentopf](blocks.md#block-qtcraft-flower_pot), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Sprengstoff](blocks.md#block-qtcraft-explosive), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate)
+[Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Gemeißelter Sandstein](blocks.md#block-qtcraft-carved_sandstone), [Ranken](blocks.md#block-qtcraft-vines), [Kessel](blocks.md#block-qtcraft-cauldron), [Blumentopf](blocks.md#block-qtcraft-flower_pot), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Sprengstoff](blocks.md#block-qtcraft-explosive), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate), [Kompass](items.md#item-qtcraft-compass), [Uhr](items.md#item-qtcraft-clock)
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 

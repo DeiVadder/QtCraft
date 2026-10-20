@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -139,12 +140,68 @@ bool QcServerCircuits::use(QcBlockPos pos)
     case QcSignalKind::Comparator:
         m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"mode"_s, state.subtract ? u"compare"_s : u"subtract"_s));
         break;
+    case QcSignalKind::Note: {
+        const int note = (m_table.content().property(*block, u"note"_s).toInt() + 1) % QcSignalDefinition::noteCount;
+        m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"note"_s, QString::number(note)));
+        playNote(pos);
+        return true;
+    }
     default:
         return false;
     }
 
     m_sounds.play(QString::fromLatin1(QcSoundKeys::signalClick), centreOf(pos));
     return true;
+}
+
+bool QcServerCircuits::hitTarget(QcBlockPos pos, int power, bool stuck)
+{
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!block || m_table.at(*block).kind != QcSignalKind::Target) {
+        return false;
+    }
+
+    const QcSignalDefinition &definition = m_table.content().block(*block).signal;
+    const int strength = std::clamp(power, 1, QcSignalDefinition::maxPower);
+    m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"power"_s, QString::number(strength)));
+    QcSignalSchedule &schedule = m_state.blockEntities().schedule();
+    schedule.remove(pos);
+    schedule.add(pos, m_state.clock().tick() + quint64(stuck ? definition.stuckHitTicks : definition.hitTicks), QcSignalSchedule::Priority::Release);
+    return true;
+}
+
+int QcServerCircuits::targetStrength(QcBlockPos pos, QcBlockFace face, const QcVec3 &point)
+{
+    const std::array<double, 3> local{point.x - pos.x, point.y - pos.y, point.z - pos.z};
+    const int normal = face == QcBlockFace::East || face == QcBlockFace::West ? 0 : (face == QcBlockFace::Up || face == QcBlockFace::Down ? 1 : 2);
+    double distance = 0.0;
+    for (int axis = 0; axis < 3; ++axis) {
+        if (axis != normal) {
+            distance = std::max(distance, std::abs(std::clamp(local[std::size_t(axis)], 0.0, 1.0) - 0.5));
+        }
+    }
+    const double share = std::clamp((0.5 - distance) / 0.5, 0.0, 1.0);
+    return std::max(1, int(std::ceil(QcSignalDefinition::maxPower * share - 1e-9)));
+}
+
+void QcServerCircuits::playNote(QcBlockPos pos)
+{
+    const QcServerWorld &world = m_state.world();
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    if (!block || world.blockAt(pos.offset(0, 1, 0)).value_or(qcAirBlockId) != qcAirBlockId) {
+        return;
+    }
+    if (!m_notes.allow(pos, m_state.clock().tick())) {
+        return;
+    }
+
+    const QcContentRegistry &content = m_table.content();
+    const QcBlockId below = world.blockAt(pos.offset(0, -1, 0)).value_or(qcAirBlockId);
+    const QcBlockDefinition &ground = content.block(below);
+    const QString sound = content.block(*block).signal.instruments.of(ground.name, ground.soundMaterial);
+    // Semitones around the middle note: 0.5 (F#3) to 2 (F#5) times the instrument's own pitch.
+    const int note = std::clamp(content.property(*block, u"note"_s).toInt(), 0, QcSignalDefinition::noteCount - 1);
+    m_sounds.play(sound, centreOf(pos), 1.0f, float(std::exp2(double(note - 12) / 12.0)));
 }
 
 void QcServerCircuits::pressPlates()
@@ -433,6 +490,9 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
         }
     }
 
+    for (const QcBlockPos &pos : std::as_const(plan.notes)) {
+        playNote(pos);
+    }
     for (const QcBlockPos &pos : std::as_const(plan.burntOut)) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::torchFizz), centreOf(pos));
     }

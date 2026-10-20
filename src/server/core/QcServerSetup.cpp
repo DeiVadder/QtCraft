@@ -70,6 +70,22 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
     state.noteContents(contents.at);
 }
 
+// The text of a sign of a structure, cleaned like a player's.
+void write(QcServerState &state, const QcWorldSetup::Sign &sign)
+{
+    const QcBlockId block = blockAt(state, sign.at);
+    if (!state.world().signs().isSign(block)) {
+        qCWarning(lcServer) << "World setup: no sign for text at" << sign.at.x << sign.at.y << sign.at.z;
+        return;
+    }
+    QcSignText::Lines lines;
+    for (qsizetype line = 0; line < sign.lines.size() && line < QcSignText::maxLines; ++line) {
+        lines[std::size_t(line)] = sign.lines[line];
+    }
+    const QcSignDefinition &definition = state.content().block(block).sign;
+    state.world().signs().set(sign.at, QcSignText::cleaned(lines, definition.lines, definition.lineLength));
+}
+
 // An armour stand of a structure; properties that do not apply are reported and left out.
 void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
 {
@@ -182,6 +198,9 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     }
     for (const QcBlockPos &pos : setup.growing) {
         state.plants().saplingPlaced(state.blockEntities(), pos, blockAt(state, pos));
+    }
+    for (const QcWorldSetup::Sign &sign : setup.signs) {
+        write(state, sign);
     }
 
     updates.setCommandMode(true);

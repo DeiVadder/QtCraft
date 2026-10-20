@@ -5,6 +5,7 @@
 #include "server/signal/QcCircuitPlan.h"
 #include "server/signal/QcCircuitState.h"
 #include "server/signal/QcDispenserActions.h"
+#include "server/signal/QcNoteBudget.h"
 #include "server/signal/QcPistonMover.h"
 #include "server/signal/QcServerHoppers.h"
 #include "server/signal/QcSignalTable.h"
@@ -40,8 +41,20 @@ public:
 
     void tick();
     // A player uses the block at `pos`: a lever switches, a button is pressed, a repeater takes its
-    // next delay. False when it is no such block.
+    // next delay, a note block its next note (and plays it). False when it is no such block.
     bool use(QcBlockPos pos);
+    // A projectile hit the target block at `pos` with `power` (1..15, decision E-768); `stuck` for
+    // projectiles that stick (arrows), which hold it longer. A new hit replaces the strength and
+    // starts the time again. False when it is no target.
+    bool hitTarget(QcBlockPos pos, int power, bool stuck);
+    // The strength of a hit at `point` (world space) on the face `face` of the block at `pos`: 15 in
+    // the middle, falling evenly to 1 at the edges (the larger distance along the face's two axes,
+    // as in the reference).
+    static int targetStrength(QcBlockPos pos, QcBlockFace face, const QcVec3 &point);
+    // Plays the note of the note block at `pos` (decision E-767): its instrument comes from the block
+    // below, its pitch from the state `note`; nothing sounds while a block lies on top or while the
+    // note budget (QcNoteBudget) holds the block back.
+    void playNote(QcBlockPos pos);
     // Makes the circuits around `pos` look at it in the next step, as if it had just been placed
     // (world setup, chunks generated again).
     void noteBlock(QcBlockPos pos);
@@ -110,6 +123,7 @@ private:
     // Pistons that extended (bit 1) or retracted (bit 2) in this tick: each does both at most once.
     QHash<QcBlockPos, quint8> m_pistonActs;
     QcCircuitComponents::Plates m_plates;
+    QcNoteBudget m_notes;
     // The container cart with the lowest id in each plate cell in the latest tick (what a comparator reads).
     QHash<QcBlockPos, quint32> m_cartReadings;
     QcRails::Table m_rails;

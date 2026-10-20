@@ -103,6 +103,7 @@ void QcFrameDriver::onFrame()
     m_targets.render.updateSky(alpha);
     m_targets.render.updateWeather(eye, frameSeconds);
     m_targets.hud.updateTimeOfDay(alpha);
+    m_targets.hud.updateDial(alpha);
     m_targets.render.updateSelection();
     m_targets.hud.updateTarget();
     m_targets.hud.updateLabels();

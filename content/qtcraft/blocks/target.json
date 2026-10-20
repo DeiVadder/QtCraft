@@ -1,0 +1,40 @@
+{
+    "name": "target",
+    "sound": "grass",
+    "hardness": 0.5,
+    "tool": "hoe",
+    "flammable": {
+        "ignite": 60,
+        "burn": 20
+    },
+    "states": {
+        "power": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ]
+    },
+    "textures": {
+        "top": "target_top",
+        "bottom": "target_top",
+        "side": "target_side"
+    },
+    "signal": {
+        "type": "target",
+        "stuckHitTicks": 20,
+        "hitTicks": 8
+    }
+}

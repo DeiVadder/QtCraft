@@ -260,6 +260,7 @@ QMap<QString, double> values(const QcContentRegistry &content)
         {u"farming.seedCheckSeconds"_s, QcServerPlants::seedCheckTicks * QcPhysics::tickDuration},
         {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
         {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
+        {u"sign.lineLength"_s, QcSignDefinition{}.lineLength},
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
         {u"signal.hopperItemsPerSecond"_s, 1.0 / (double(QcServerLimits{}.hopperCooldownTicks) * QcPhysics::tickDuration)},
         {u"void.depth"_s, -QcWorld::voidLimitY},

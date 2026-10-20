@@ -1,0 +1,17 @@
+{
+    "name": "spruce_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "spruce_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "spruce_sign",
+        "count": 3
+    }
+}

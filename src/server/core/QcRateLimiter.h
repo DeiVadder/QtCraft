@@ -34,8 +34,11 @@ public:
         // Levers, buttons and repeaters switched by hand (paid inside a Use, decision E-339): every
         // switch starts work in the circuits, so spamming a lever is bounded separately.
         Switch,
+        // Lines written on a sign (decision E-766); each change goes to every player who has the
+        // sign's chunk.
+        Sign,
     };
-    static constexpr int kindCount = 8;
+    static constexpr int kindCount = 9;
 
     struct Limit
     {
@@ -51,6 +54,7 @@ public:
         {40.0, 80.0},
         {2.0, 10.0},
         {5.0, 10.0},
+        {1.0, 4.0},
     }};
     // Drops are logged at most this often per player and kind (the first one at once).
     static constexpr qint64 reportIntervalNs = 1'000'000'000;

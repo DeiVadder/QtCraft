@@ -1,0 +1,26 @@
+{
+    "name": "note.bass",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "saw",
+            "frequency": 92.5,
+            "duration": 0.7,
+            "attack": 0.003,
+            "curve": 3,
+            "gain": 0.9,
+            "lowpass": 600
+        },
+        {
+            "wave": "sine",
+            "frequency": 185,
+            "duration": 0.4,
+            "attack": 0.003,
+            "curve": 4,
+            "gain": 0.4
+        }
+    ]
+}

@@ -14,6 +14,8 @@ namespace QcTextureEmblem {
 
 // Colour of the pixel (x, y): the palette's colour for the bitmap's character there, else cloth.
 QColor paint(const QcTextureSpec &spec, int x, int y, QColor color);
+// The pattern "icon": the palette's colour for the bitmap's character at (x, y), else transparent.
+QColor paintIcon(const QcTextureSpec &spec, int x, int y, QColor color);
 
 // `spec` with "bitmap" (an array of strings) and "palette" (character -> "#rrggbb") of a texture
 // definition; the problem when they are malformed.

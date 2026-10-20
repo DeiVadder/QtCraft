@@ -80,6 +80,8 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
+    meshing/QcSignTextCache.h meshing/QcSignTextCache.cpp
+    meshing/QcSignTextMesher.h meshing/QcSignTextMesher.cpp
 )
 target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp
@@ -89,6 +91,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcClientInventory.h player/QcClientInventory.cpp
     player/QcClientRiding.h player/QcClientRiding.cpp
     player/QcClientVitals.h player/QcClientVitals.cpp
+    player/QcDials.h player/QcDials.cpp
     player/QcFlightLatch.h player/QcFlightLatch.cpp
     player/QcHandActions.h player/QcHandActions.cpp
     player/QcHandTimers.h
@@ -114,6 +117,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientLogin.h session/QcClientLogin.cpp
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
     session/QcClientSession.h session/QcClientSession.cpp
+    session/QcClientSignEditor.h session/QcClientSignEditor.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
@@ -160,6 +164,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
     textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
     textures/QcGpuLimits.h textures/QcGpuLimits.cpp
+    textures/QcPixelFont.h textures/QcPixelFont.cpp
     textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp

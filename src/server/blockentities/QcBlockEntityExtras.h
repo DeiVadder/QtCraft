@@ -10,6 +10,7 @@
 class QcBlockEntities;
 class QcCampfires;
 class QcFireQueue;
+class QcSignTexts;
 class QcSpawners;
 
 // What the loaded chunks keep about their block entities besides the entities themselves (part of
@@ -32,10 +33,18 @@ public:
     [[nodiscard]] QcBlockEntityKept takeParts(QcChunkPos pos) { return m_parts.take(pos); }
     // Whether any chunk keeps parts (a block set needs no check otherwise).
     bool hasKeptParts() const { return !m_parts.isEmpty(); }
+    // Every table of block entities of the world, whose entries kept tails belong to.
+    struct Tables
+    {
+        const QcBlockEntities &entities;
+        const QcFireQueue &fires;
+        const QcSpawners &spawners;
+        const QcSignTexts &signs;
+        const QcCampfires &campfires;
+    };
     // Drops the kept tails of the entries at `pos` that the block just set there ended: those whose
-    // container, machine, sapling, memory, fire, spawner or campfire is gone.
-    void dropOrphanTails(QcBlockPos pos, const QcBlockEntities &entities, const QcFireQueue &fires, const QcSpawners &spawners,
-                         const QcCampfires &campfires);
+    // container, machine, sapling, memory, fire, spawner, campfire or sign text is gone.
+    void dropOrphanTails(QcBlockPos pos, const Tables &tables);
 
     // Forgets a chunk that left the world or is generated again.
     void forgetChunk(QcChunkPos pos);

@@ -1,0 +1,33 @@
+{
+    "name": "note.bell",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "sine",
+            "frequency": 1480,
+            "duration": 1.6,
+            "attack": 0.003,
+            "curve": 2.5,
+            "gain": 0.8
+        },
+        {
+            "wave": "sine",
+            "frequency": 2960,
+            "duration": 1.0,
+            "attack": 0.003,
+            "curve": 3,
+            "gain": 0.35
+        },
+        {
+            "wave": "sine",
+            "frequency": 4440,
+            "duration": 0.5,
+            "attack": 0.003,
+            "curve": 4,
+            "gain": 0.15
+        }
+    ]
+}

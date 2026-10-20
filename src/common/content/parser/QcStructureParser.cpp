@@ -5,6 +5,7 @@
 #include "common/content/parser/QcStructureSiteParser.h"
 #include "common/content/parser/QcStructureVariationParser.h"
 #include "common/content/registry/QcContentNames.h"
+#include "common/world/QcSignText.h"
 
 #include <QJsonArray>
 #include <QHash>
@@ -104,6 +105,7 @@ private:
     void parseLabels();
     void parseCarts();
     void parseSpawnersAndLoot();
+    void parseSigns();
     void parseAdventure();
     void parseExtras();
 
@@ -339,6 +341,30 @@ void StructureReader::parseSpawnersAndLoot()
     }
 }
 
+// "signs": {"at": [x, y, z], "lines": ["...", ...]}: the text of a sign (decision E-766), at most
+// four lines of 32 characters (cleaned like a player's when the world is made).
+void StructureReader::parseSigns()
+{
+    const QJsonArray signs = extraArray(m_json, u"signs"_s, m_reader);
+    for (const auto &entry : signs) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
+        const QJsonArray lines = object.value(u"lines"_s).toArray();
+        const bool fits = lines.size() <= QcSignText::maxLines && std::ranges::all_of(lines, [](const QJsonValue &line) {
+                              return line.isString() && line.toString().size() <= QcSignText::maxLineLength;
+                          });
+        if (!cell || !fits) {
+            m_reader.fail(u"'signs' entries need 'at' inside the structure and 'lines': at most 4 strings of 32 characters"_s);
+            return;
+        }
+        QStringList text;
+        for (const auto &line : lines) {
+            text.append(line.toString());
+        }
+        m_structure.signs.append({*cell, text});
+    }
+}
+
 // "adventure": the allow-list entries of adventure mode (decision E-735), names qualified like the
 // palette's; "*" stays the wildcard. Only the showcase brings them into a world, so a structure
 // without "showcase" may not have them; the names are checked against the content when it is
@@ -388,6 +414,7 @@ void StructureReader::parseExtras()
     m_structure.growing += parseCells(m_json, u"growing"_s, m_structure, m_reader);
     parseCarts();
     parseSpawnersAndLoot();
+    parseSigns();
     m_structure.choices = QcStructureVariationParser::parseChoices(m_json, m_reader, m_namespace);
     if (m_reader.ok()) {
         m_structure.parts = QcStructureVariationParser::parseParts(m_json, m_keys, m_structure, m_reader);

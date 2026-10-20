@@ -9,6 +9,7 @@
 #include "common/world/QcChunk.h"
 #include "server/blockentities/QcBlockEntities.h"
 #include "server/blockentities/QcBlockEntityExtras.h"
+#include "server/blockentities/QcSignTexts.h"
 #include "server/blocks/QcFireQueue.h"
 #include "server/chunks/QcBlockIndex.h"
 #include "server/chunks/QcChunkLinks.h"
@@ -82,6 +83,9 @@ public:
     // spawners.
     QcCampfires &campfires() { return m_campfires; }
     const QcCampfires &campfires() const { return m_campfires; }
+    // The text on the signs of the loaded chunks (decision E-766), kept in step like the spawners.
+    QcSignTexts &signs() { return m_signs; }
+    const QcSignTexts &signs() const { return m_signs; }
     // Which loaded chunks were furnished and the parts of their saved block entities this version
     // does not read (decisions E-520, E-440); kept in step with every block set here.
     QcBlockEntityExtras &blockEntityExtras() { return m_blockEntityExtras; }
@@ -187,6 +191,7 @@ private:
     QcFireQueue m_fires;
     QcSpawners m_spawners;
     QcCampfires m_campfires;
+    QcSignTexts m_signs;
     QcBlockEntityExtras m_blockEntityExtras;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).

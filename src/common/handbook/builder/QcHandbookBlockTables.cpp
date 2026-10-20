@@ -70,6 +70,10 @@ QString signalNote(const QcHandbookContext &context, const QcSignalDefinition &s
         return ruleLabel(context, u"value.signal.igniter"_s);
     case QcSignalKind::Constant:
         return ruleLabel(context, u"value.signal.constant"_s).arg(power);
+    case QcSignalKind::Note:
+        return ruleLabel(context, u"value.signal.note"_s).arg(QcSignalDefinition::noteCount);
+    case QcSignalKind::Target:
+        return ruleLabel(context, u"value.signal.target"_s).arg(signal.stuckHitTicks).arg(signal.hitTicks);
     case QcSignalKind::None:
     case QcSignalKind::PistonHead:
         break;
@@ -87,6 +91,7 @@ int signalRole(QcSignalKind kind)
     case QcSignalKind::Torch:
     case QcSignalKind::Observer:
     case QcSignalKind::Constant:
+    case QcSignalKind::Target:
         return 0;
     case QcSignalKind::Dust:
     case QcSignalKind::Repeater:

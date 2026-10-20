@@ -1,0 +1,26 @@
+{
+    "name": "note.snare",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.001,
+            "curve": 3,
+            "highpass": 1500,
+            "lowpass": 8000,
+            "gain": 0.9
+        },
+        {
+            "wave": "triangle",
+            "frequency": 185,
+            "duration": 0.12,
+            "attack": 0.003,
+            "curve": 4,
+            "gain": 0.4
+        }
+    ]
+}

@@ -32,6 +32,9 @@ std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &messag
     if (std::holds_alternative<QcMsg::SetAppearance>(message)) {
         return Kind::Appearance;
     }
+    if (std::holds_alternative<QcMsg::EditSign>(message)) {
+        return Kind::Sign;
+    }
 
     const bool inventory = std::holds_alternative<QcMsg::SelectHotbarSlot>(message)
                            || std::holds_alternative<QcMsg::MoveInventoryItem>(message)
@@ -58,7 +61,7 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
 
 const char *QcRateLimiter::name(Kind kind)
 {
-    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch"};
+    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch", "sign"};
     return names[size_t(kind)];
 }
 

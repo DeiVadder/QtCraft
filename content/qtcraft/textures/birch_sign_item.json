@@ -1,0 +1,30 @@
+{
+    "name": "birch_sign_item",
+    "pattern": "icon",
+    "primary": "#d2bd88",
+    "variation": 0.0,
+    "seed": 3172,
+    "palette": {
+        "B": "#d2bd88",
+        "D": "#a99366",
+        "T": "#3a2a1a"
+    },
+    "bitmap": [
+        "",
+        "",
+        " DDDDDDDDDDDDDD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTBTTBBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTTBTTBTTTBD",
+        " DBBBBBBBBBBBBD",
+        " DBTTBTTTTBTBBD",
+        " DBBBBBBBBBBBBD",
+        " DDDDDDDDDDDDDD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD",
+        "       DD"
+    ]
+}

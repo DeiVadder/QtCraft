@@ -39,6 +39,9 @@ struct Welcome
     bool restoredView = false;
     // Chunks the server streams around this player (at most its limit).
     qint32 viewDistance = 0;
+    // The world's spawn column (x, z), where compasses point (decision E-769).
+    qint32 spawnX = 0;
+    qint32 spawnZ = 0;
 };
 
 // Server -> client: all content definitions; runtime block ids are the indices in this registry.

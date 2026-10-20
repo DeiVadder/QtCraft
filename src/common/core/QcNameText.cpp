@@ -9,8 +9,9 @@ namespace {
 bool isAllowed(char32_t codePoint)
 {
     const QChar::Category category = QChar::category(codePoint);
+    // Line and paragraph separators (U+2028, U+2029) would break a name or line like a newline.
     return !QChar::isNonCharacter(codePoint) && category != QChar::Other_Control && category != QChar::Other_Format
-           && category != QChar::Other_Surrogate;
+           && category != QChar::Other_Surrogate && category != QChar::Separator_Line && category != QChar::Separator_Paragraph;
 }
 
 } // namespace

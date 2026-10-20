@@ -65,7 +65,8 @@ public:
     void chunkUnloaded(QcChunkPos pos);
     // The block at `pos` changed from `previous` to what the world holds now. Light changes of the
     // block changes of one pass of the event loop go to the light engine together, as one job
-    // (an explosion's hundreds of blocks, decision E-604).
+    // (an explosion's hundreds of blocks, decision E-604). A change between two states drawn alike
+    // (equal render table entries) meshes nothing.
     void blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous);
     void clear();
     // Marks every section of the loaded chunks dirty, so each is meshed and delivered again (the

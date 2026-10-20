@@ -4,6 +4,8 @@
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
+#include "server/blockentities/QcServerSigns.h"
+#include "server/blocks/QcBlockDyeing.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFireIgnition.h"
 #include "server/blocks/QcOpeners.h"
@@ -129,7 +131,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.flatten(client, message.target, message.face, held)
                           || m_parts.plants.fertilize(client, message.target, held)
                           || m_parts.plants.carve(client, message.target, message.face, held)
-                          || m_parts.plants.strip(client, message.target, held);
+                          || m_parts.plants.strip(client, message.target, held)
+                          || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
     if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)) {
         return;
     }
@@ -168,6 +171,11 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 
     if (clickedBlock && m_state.content().block(*clickedBlock).toggles && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         QcOpeners(m_state, m_parts.sounds, m_parts.blocks).toggle(target, *clickedBlock);
+        return true;
+    }
+
+    // A sign opens its editor (decision E-766).
+    if (clickedBlock && !client.sneaking && QcServerSigns(m_state).openEditor(client, target)) {
         return true;
     }
 
@@ -281,6 +289,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     // loader belongs to the player who placed it.
     m_state.world().loaders().setOwner(target, client.name);
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
+    // A placed sign asks for its text (decision E-766).
+    QcServerSigns(m_state).openEditor(client, target);
     // A golem's head on its body brings it to life (decision E-471).
     m_parts.golems.build(target);
     // A fish bucket lets its fish out into the water it pours, kept with the world (decision E-501).

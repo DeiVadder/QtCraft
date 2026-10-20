@@ -2,7 +2,7 @@
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
-// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp and QcLoginCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp, QcLoginCodec.cpp and QcSignCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "common/core/QcResult.h"
 #include "common/protocol/QcMessages.h"
@@ -84,6 +84,14 @@ void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockBatch>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Explosion>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CampfireDisplay>, QDataStream &stream);
+
+// Signs (QcSignCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::SignText &m);
+void encode(QDataStream &stream, const QcMsg::OpenSignEditor &m);
+void encode(QDataStream &stream, const QcMsg::EditSign &m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SignText>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenSignEditor>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EditSign>, QDataStream &stream);
 
 // Player, inventory and crafting (QcPlayerCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m);

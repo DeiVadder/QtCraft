@@ -272,6 +272,7 @@ void BlockPage::addFarmingFacts()
     if (!m_block.strippedInto.isEmpty()) {
         addFact(u"strippedInto"_s, {}, {m_links.blockLink(m_block.strippedInto)});
     }
+    addFlag(!m_block.dyeProperty.isEmpty(), u"dyeable"_s);
 }
 
 void BlockPage::addSoilFacts()

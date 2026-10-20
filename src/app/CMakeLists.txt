@@ -16,6 +16,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
+    controllers/QcSignController.h controllers/QcSignController.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
@@ -158,10 +159,12 @@ qt_add_qml_module(qc_app_core
         qml/handbook/HandbookScreen.qml
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
+        qml/hud/DialDisplay.qml
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
         qml/hud/PhotoNotice.qml
         qml/hud/PlayerListOverlay.qml
+        qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml

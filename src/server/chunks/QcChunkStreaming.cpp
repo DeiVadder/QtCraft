@@ -1,5 +1,6 @@
 #include "server/chunks/QcChunkStreaming.h"
 
+#include "server/blockentities/QcServerSigns.h"
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
@@ -73,6 +74,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
                 client.connection->send(QcMsg::ChunkData{chunk});
                 sendLabels(client, pos);
                 sendSpawners(client, pos);
+                QcServerSigns(m_state).sendChunk(client, pos);
                 client.view.sentChunks.insert(pos);
                 ++client.view.sentChanges;
                 ++sent;

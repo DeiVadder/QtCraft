@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QHash>
 #include <QString>
 
 // What a block does in Signal Dust circuits (decision E-333). The kind selects the behaviour the
@@ -46,9 +47,30 @@ enum class QcSignalKind : quint8 {
     // `power` to the dust and components on all six sides, but never powers or conducts through
     // the blocks next to it.
     Constant,
+    // A slot that plays a note when its power rises (decision E-767); using it raises
+    // the pitch by a semitone. Its instrument comes from the block below (QcNoteInstruments).
+    Note,
+    // A source with the strength of its state `power`, set by a projectile hitting it (the closer to
+    // the centre of the face, the stronger) and released after a short time (decision E-768). Like
+    // `constant` it powers dust and components on all sides, but no block.
+    Target,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Constant) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Target) + 1;
+
+// The instruments of a note block (decision E-767): the sound it plays for the block below it, by
+// that block's name, else by its sound material, else `fallback`. Names and sounds are qualified.
+struct QcNoteInstruments
+{
+    QString fallback;
+    QHash<QString, QString> byBlock;
+    QHash<QString, QString> bySound;
+
+    QString of(const QString &block, const QString &soundMaterial) const
+    {
+        return byBlock.value(block, bySound.value(soundMaterial, fallback));
+    }
+};
 
 // What a Signal Comparator reads from a block behind it (decision E-343).
 enum class QcComparatorReading : quint8 {
@@ -83,6 +105,9 @@ struct QcSignalDefinition
     static constexpr int maxPulseTicks = 1200;
     static constexpr int maxPushLimit = 64;
     static constexpr int maxRailReach = 64;
+    // Note blocks: semitones from the lowest note (F#3, 0) to the highest (F#5, 24); instruments.
+    static constexpr int noteCount = 25;
+    static constexpr int maxInstruments = 64;
 
     QcSignalKind kind = QcSignalKind::None;
     // Strength a source emits (levers, buttons, plates, torches, repeaters).
@@ -122,6 +147,11 @@ struct QcSignalDefinition
     // it reads for QcComparatorReading::Property.
     QcComparatorReading reading = QcComparatorReading::None;
     QString readProperty;
+    // Note blocks: their instruments.
+    QcNoteInstruments instruments;
+    // Targets: ticks a hit keeps its strength, for projectiles that stick (arrows) and others.
+    int stuckHitTicks = 20;
+    int hitTicks = 8;
 
     bool isComponent() const { return kind != QcSignalKind::None; }
     // A block that exists for circuits (all but openers, which are doors and gates first).
@@ -130,6 +160,7 @@ struct QcSignalDefinition
     // Comparators switch between comparing and subtracting.
     bool isUsable() const
     {
-        return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator;
+        return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator
+               || kind == QcSignalKind::Note;
     }
 };

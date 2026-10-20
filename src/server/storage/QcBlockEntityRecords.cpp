@@ -192,6 +192,7 @@ void QcBlockEntityRecord::pruneKept()
     note(Table::Fires, fires);
     note(Table::Spawners, spawners);
     note(Table::Campfires, campfires);
+    note(Table::Signs, signs);
 
     for (auto it = entries.begin(); it != entries.end();) {
         const QcBlockPos pos = it.key();

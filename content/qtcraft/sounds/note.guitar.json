@@ -1,0 +1,27 @@
+{
+    "name": "note.guitar",
+    "volume": 0.8,
+    "variants": 1,
+    "pitchVariation": 0.0,
+    "range": 48,
+    "layers": [
+        {
+            "wave": "saw",
+            "frequency": 185,
+            "duration": 0.8,
+            "attack": 0.003,
+            "curve": 3,
+            "gain": 0.8,
+            "lowpass": 2000
+        },
+        {
+            "wave": "square",
+            "frequency": 370,
+            "duration": 0.3,
+            "attack": 0.003,
+            "curve": 5,
+            "gain": 0.2,
+            "lowpass": 1500
+        }
+    ]
+}

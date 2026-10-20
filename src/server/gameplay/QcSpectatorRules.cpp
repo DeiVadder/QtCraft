@@ -23,7 +23,7 @@ bool acts(const QcMessage &message)
            || std::holds_alternative<QcMsg::QuickMoveItem>(message) || std::holds_alternative<QcMsg::TakeCraftingResult>(message)
            || std::holds_alternative<QcMsg::CraftRecipe>(message) || std::holds_alternative<QcMsg::Trade>(message)
            || std::holds_alternative<QcMsg::DropItem>(message) || std::holds_alternative<QcMsg::CreativeItem>(message)
-           || std::holds_alternative<QcMsg::PickBlock>(message);
+           || std::holds_alternative<QcMsg::PickBlock>(message) || std::holds_alternative<QcMsg::EditSign>(message);
 }
 
 } // namespace

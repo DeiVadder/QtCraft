@@ -8,7 +8,9 @@
 // Block geometry from data. A shape without parts is the full cube. Parts are authored for a block
 // facing north and standing on the floor: `rotate` names a property whose value north, east, south
 // or west turns the shape about the vertical axis, `flip` a property whose value "top" mirrors it
-// upside down.
+// upside down. `spin` names a property with the values 0..15 that turns the shape in steps of 22.5°
+// about the vertical axis (standing signs, decision E-766): the boxes (collision, targeting) turn by
+// whole quarters, the drawn faces by the rest as well (QcBlockState::fineTurns).
 struct QcShapeDefinition
 {
     static constexpr int maxParts = 32;
@@ -23,6 +25,7 @@ struct QcShapeDefinition
     QList<QcShapePart> parts;
     QString rotate;
     QString flip;
+    QString spin;
 
     bool isEmpty() const { return parts.isEmpty(); }
     int boxCount() const

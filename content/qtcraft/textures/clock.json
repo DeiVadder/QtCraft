@@ -1,0 +1,31 @@
+{
+    "name": "clock",
+    "pattern": "icon",
+    "primary": "#d8b850",
+    "variation": 0.0,
+    "seed": 3175,
+    "palette": {
+        "G": "#a88c34",
+        "g": "#e8cc60",
+        "D": "#5a8ad8",
+        "L": "#f0e8a0",
+        "K": "#2a2a34",
+        "n": "#3a3a46"
+    },
+    "bitmap": [
+        "",
+        "     GGGGGG",
+        "   GGggggggGG",
+        "  GggDDDDDDggG",
+        "  GgDDLDDDDDgG",
+        " GgDDDDDDDDDDgG",
+        " GgDDDDKDDDDDgG",
+        " GgnnnnKDDDDDgG",
+        " GgnnnnnnnnnngG",
+        " GgnnnnnnnnnngG",
+        "  Ggnnnnnnnnng",
+        "  GggnnnnnnggG",
+        "   GGggggggGG",
+        "     GGGGGG"
+    ]
+}

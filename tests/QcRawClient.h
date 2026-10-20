@@ -66,6 +66,7 @@ public:
             viewDistanceGranted = welcome->viewDistance;
         } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
             sounds.append(sound->key);
+            soundPitches.append(sound->pitch);
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
             chatKeys.append(*chat);
@@ -125,7 +126,7 @@ public:
         return true;
     }
 
-    // Changed blocks and explosions; false for another message.
+    // Changed blocks, explosions and signs; false for another message.
     bool receivedBlocks(const QcMessage &message)
     {
         if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
@@ -135,6 +136,10 @@ public:
             ++blockBatches;
         } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
             explosions.append(*explosion);
+        } else if (const auto *sign = std::get_if<QcMsg::SignText>(&message)) {
+            signTexts.append(*sign);
+        } else if (const auto *editor = std::get_if<QcMsg::OpenSignEditor>(&message)) {
+            signEditors.append(*editor);
         } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
             campfires.insert(campfire->pos, campfire->items);
         } else {
@@ -165,6 +170,8 @@ public:
     int messageCount = 0;
     // Keys of all sounds heard, oldest first.
     QStringList sounds;
+    // Their pitches (playback speeds), parallel to `sounds`.
+    QList<float> soundPitches;
     QList<QcItemStack> stacks;
     qint32 selected = 0;
     QList<QcItemStack> craftingGrid;
@@ -178,6 +185,9 @@ public:
     // What lies on each campfire, as the server last said (decision E-772).
     QHash<QcBlockPos, QList<quint32>> campfires;
     QList<QcMsg::Explosion> explosions;
+    // Sign texts and sign editors the server sent (decision E-766), oldest first.
+    QList<QcMsg::SignText> signTexts;
+    QList<QcMsg::OpenSignEditor> signEditors;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;

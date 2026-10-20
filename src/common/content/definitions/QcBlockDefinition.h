@@ -12,6 +12,7 @@
 #include "common/content/definitions/QcSignalDefinition.h"
 #include "common/content/definitions/QcSpawnerDefinition.h"
 #include "common/core/QcBlockFace.h"
+#include "common/world/QcSignText.h"
 
 #include <QList>
 #include <QString>
@@ -87,6 +88,19 @@ struct QcItemDrop
 
     // The most items this drop gives.
     int mostCount() const { return std::max(count, maxCount); }
+};
+
+// A sign (decision E-766): `lines` lines of at most `lineLength` characters that players write and
+// everyone sees (QcSignTexts on the server, QcMsg::SignText); 0 lines: no sign. Reaches the client.
+struct QcSignDefinition
+{
+    static constexpr int maxLines = QcSignText::maxLines;
+    static constexpr int maxLineLength = QcSignText::maxLineLength;
+
+    int lines = 0;
+    int lineLength = 15;
+
+    bool isSign() const { return lines > 0; }
 };
 
 struct QcBlockDefinition
@@ -243,12 +257,16 @@ struct QcBlockDefinition
     // Block it turns into, keeping the state properties both have, when an item that `strips` (an
     // axe) is used on it (a log losing its bark, decision E-753); empty for none. Server side only.
     QString strippedInto;
+    // State property a dye sets to its colour when used on the block (QcItemDefinition::dye; the
+    // signal indicator light's `color`, decision E-765); empty for none. Server side only.
+    QString dyeProperty;
     // Block it turns into at its next block update while an opaque full block lies on it (a dirt path
     // becoming dirt, decision E-406), empty for none. Server side only.
     QString coveredInto;
     // Part in Signal Dust circuits (decision E-333); the kind reaches the client (usable blocks), the
     // rest is server side only.
     QcSignalDefinition signal;
+    QcSignDefinition sign;
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;

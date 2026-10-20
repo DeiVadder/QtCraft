@@ -114,6 +114,8 @@ struct QcServerClient : QcEntity
         // the screen as last sent.
         quint32 trading = 0;
         std::optional<QcMsg::TradeState> sentTrade;
+        // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
+        std::optional<QcBlockPos> sign;
     };
 
     // The block being mined, since which tick and players' time (QcServerClock::playerTimeNs).

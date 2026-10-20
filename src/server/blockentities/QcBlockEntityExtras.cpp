@@ -1,6 +1,7 @@
 #include "server/blockentities/QcBlockEntityExtras.h"
 
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/blockentities/QcSignTexts.h"
 #include "server/blocks/QcFireQueue.h"
 #include "server/machines/QcCampfires.h"
 #include "server/spawners/QcSpawners.h"
@@ -14,9 +15,9 @@ void QcBlockEntityExtras::keepParts(QcChunkPos pos, QcBlockEntityKept parts)
     }
 }
 
-void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const QcBlockEntities &entities, const QcFireQueue &fires, const QcSpawners &spawners,
-                                          const QcCampfires &campfires)
+void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const Tables &tables)
 {
+    const QcBlockEntities &entities = tables.entities;
     const auto parts = m_parts.find(pos.chunk());
     if (parts == m_parts.end() || parts->entries.isEmpty()) {
         return;
@@ -40,11 +41,13 @@ void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const QcBlockEntities 
         case Table::Memories:
             return entities.memory(pos) == nullptr;
         case Table::Fires:
-            return !fires.contains(pos);
+            return !tables.fires.contains(pos);
         case Table::Spawners:
-            return !spawners.contains(pos);
+            return !tables.spawners.contains(pos);
+        case Table::Signs:
+            return !tables.signs.contains(pos);
         case Table::Campfires:
-            return campfires.at(pos) == nullptr;
+            return tables.campfires.at(pos) == nullptr;
         default:
             return false;
         }

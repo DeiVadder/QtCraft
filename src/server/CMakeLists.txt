@@ -5,8 +5,11 @@ target_sources(qc_server PRIVATE
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     blockentities/QcBlockEntityExtras.h blockentities/QcBlockEntityExtras.cpp
+    blockentities/QcServerSigns.h blockentities/QcServerSigns.cpp
+    blockentities/QcSignTexts.h blockentities/QcSignTexts.cpp
 )
 target_sources(qc_server PRIVATE
+    blocks/QcBlockDyeing.h blocks/QcBlockDyeing.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
@@ -230,6 +233,7 @@ target_sources(qc_server PRIVATE
     signal/QcDustNetwork.h signal/QcDustNetwork.cpp
     signal/QcHopperQueue.h signal/QcHopperQueue.cpp
     signal/QcMovingBlocks.h signal/QcMovingBlocks.cpp
+    signal/QcNoteBudget.h signal/QcNoteBudget.cpp
     signal/QcPistonMover.h signal/QcPistonMover.cpp
     signal/QcPistonPlanner.h signal/QcPistonPlanner.cpp
     signal/QcServerCircuits.h signal/QcServerCircuits.cpp

@@ -12,6 +12,12 @@
 
 namespace {
 
+// A stuck projectile stays in a new state of its block with the same boxes.
+bool holdsTheSame(const QcContentRegistry &content, QcBlockId now, QcBlockId before)
+{
+    return content.isSameBlock(now, before) && content.state(now).boxes == content.state(before).boxes;
+}
+
 // The chunk a projectile belongs to (QcEntities::chunkOf).
 QcChunkPos chunkOf(const QcProjectile &projectile)
 {
@@ -94,9 +100,11 @@ bool QcProjectileManager::update(QcProjectile &projectile, const QcProjectileDef
 {
     projectile.age += pass.dt;
     if (projectile.stuck) {
-        // Its block changed (mined, burnt, moved): it falls again from where it is.
+        // Its block changed (mined, burnt, moved, opened): it falls again from where it is. Another
+        // state of the same block with the same boxes (a target giving its signal and releasing it,
+        // decision E-768) holds it.
         const std::optional<QcBlockId> state = pass.world.blockAt(projectile.stuckIn);
-        if (state && *state != projectile.stuckState) {
+        if (state && *state != projectile.stuckState && !holdsTheSame(pass.world.content(), *state, projectile.stuckState)) {
             projectile.stuck = false;
             projectile.age = 0.0;
             projectile.motion.velocity = {};
@@ -136,6 +144,10 @@ bool QcProjectileManager::fly(QcProjectile &projectile, const QcProjectileDefini
         return false;
     case QcProjectileFlight::Outcome::HitBlock:
         break;
+    }
+
+    if (pass.handlers.blockHit) {
+        pass.handlers.blockHit({step.block, step.face, step.point, definition.sticks && !definition.breaks()});
     }
 
     if (definition.breaks()) {

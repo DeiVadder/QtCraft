@@ -3,5 +3,6 @@
     "texture": "lime_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "lime"
 }

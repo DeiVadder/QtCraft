@@ -1,0 +1,31 @@
+{
+    "name": "compass",
+    "pattern": "icon",
+    "primary": "#9a9a9a",
+    "variation": 0.0,
+    "seed": 3174,
+    "palette": {
+        "R": "#5c5c62",
+        "r": "#8e8e96",
+        "F": "#d8d4c8",
+        "N": "#c42a24",
+        "S": "#30303a",
+        "c": "#ececec"
+    },
+    "bitmap": [
+        "",
+        "     RRRRRR",
+        "   RRrrrrrrRR",
+        "  RrrFFFFFFrrR",
+        "  RrFFFFNFFFrR",
+        " RrFFFFFNFFFFrR",
+        " RrFFFFFNFFFFrR",
+        " RrFFFFFcFFFFrR",
+        " RrFFFFFSFFFFrR",
+        " RrFFFFFSFFFFrR",
+        "  RrFFFFSFFFrR",
+        "  RrrFFFFFFrrR",
+        "   RRrrrrrrRR",
+        "     RRRRRR"
+    ]
+}

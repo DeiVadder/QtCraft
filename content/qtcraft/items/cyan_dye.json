@@ -3,5 +3,6 @@
     "texture": "cyan_dye",
     "tags": [
         "dyes"
-    ]
+    ],
+    "dye": "cyan"
 }

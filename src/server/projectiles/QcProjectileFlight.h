@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcProjectileDefinition.h"
 #include "common/core/QcAabb.h"
+#include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"
 #include "server/entities/QcProjectile.h"
 
@@ -53,6 +54,9 @@ struct Step
     Outcome outcome = Outcome::Flying;
     quint32 body = 0;
     QcBlockPos block;
+    // A hit block: the face it was met through and the point on it (world space).
+    QcBlockFace face = QcBlockFace::Up;
+    QcVec3 point;
 };
 
 // The direction (unit vector) of a yaw and pitch in degrees, as players look (yaw 0: north, -z;
