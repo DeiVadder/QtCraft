@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 06:20 (Pause)
+
+Pause auf Wunsch des Menschen. Seit 05:30: Etappe 59 begonnen. 59a Zuschauer fertig mit Review-Fixes (Schwung beim Verlassen, Spawner, Blitze, Angel, Lore; Operator-Befehle bleiben erlaubt). 59b Abenteuer fertig, Review gefunden: die erlaubte Höchstgröße der Listen überschreitet die Rahmengrenze des Protokolls; Fixes begonnen und als WIP-Commit gesichert (ungeprüft). Offene Schritte stehen in `docs/FORTSCHRITT.md` („Pausiert“).
+
 ## 2026-10-20 05:30
 
 Etappe 47: 47.2 UI-Skalierung (75–200 %, Auto nach logischer Fenstergröße, Faktor auf 1024 × 640 bzw. 640 × 360 begrenzt) und Zugänglichkeitsrollen in `dev` (`1709682`); im Review gefunden: die Fensterschrift kehrte nach 200 % nicht auf 100 % zurück. 47.1 (Beschriftungen, anisotrope Filterung im Shader, Arm, Grundhelligkeit nach Himmelslicht, Laub) fertig, Review behoben (Blockkanten, Zweierpotenz-Pakete, Grenzen der Beschriftungen), `dev` eingemergt, Beschriftungen folgen der HUD-Skalierung; wartet auf die Freigabe des Aussehens. Etappe 58 bleibt ausgesetzt; 59 beginnt.
