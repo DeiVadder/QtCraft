@@ -3,7 +3,12 @@
 #import <AppKit/AppKit.h>
 #include <ApplicationServices/ApplicationServices.h>
 
+#include <QByteArray>
+#include <QString>
+
 #include <array>
+
+using namespace Qt::StringLiterals;
 
 QList<QRect> QcScriptedRun::builtInDisplays()
 {
@@ -21,6 +26,19 @@ QList<QRect> QcScriptedRun::builtInDisplays()
         }
     }
     return result;
+}
+
+void QcScriptedRun::keepOutOfForeground(int argc, char *argv[])
+{
+    bool background = qEnvironmentVariable("QTCRAFT_OFFSCREEN") == u"1"_s || qEnvironmentVariable("QTCRAFT_BACKGROUND") == u"1"_s;
+    for (int i = 1; i < argc && !background; ++i) {
+        background = qstrcmp(argv[i], "--background") == 0;
+    }
+
+    // Read by the Cocoa platform plugin when the application object is created.
+    if (background) {
+        qputenv("QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM", "1");
+    }
 }
 
 void QcScriptedRun::stayInBackground()

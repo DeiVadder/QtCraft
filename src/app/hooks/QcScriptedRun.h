@@ -10,6 +10,11 @@ class QcScriptedRun
 public:
     // Global geometries (points) of displays built into the computer; empty where unknown.
     static QList<QRect> builtInDisplays();
+    // Before the application object exists: a scripted run (QTCRAFT_OFFSCREEN=1, QTCRAFT_BACKGROUND=1
+    // or --background) keeps Qt from turning the process into a foreground application, which
+    // would take the focus from the user's window for a moment at every start (macOS); a no-op
+    // elsewhere and for normal starts.
+    static void keepOutOfForeground(int argc, char *argv[]);
     // Makes the application an accessory that does not activate itself or show in the Dock
     // (macOS); a no-op elsewhere. Call before the first window is shown.
     static void stayInBackground();

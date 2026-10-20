@@ -1,6 +1,7 @@
 #include "app/controllers/QcGameController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
+#include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcItemIconProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "app/startup/QcAppLanguage.h"
@@ -26,6 +27,7 @@ using namespace Qt::StringLiterals;
 // engine and its main window, then settings, language switching and the game (decision E-530).
 int main(int argc, char *argv[])
 {
+    QcScriptedRun::keepOutOfForeground(argc, argv);
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName(u"QtCraft"_s);
     QGuiApplication::setOrganizationName(u"QtCraft"_s);

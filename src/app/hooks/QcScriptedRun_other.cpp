@@ -5,6 +5,10 @@ QList<QRect> QcScriptedRun::builtInDisplays()
     return {};
 }
 
+void QcScriptedRun::keepOutOfForeground(int, char *[])
+{
+}
+
 void QcScriptedRun::stayInBackground()
 {
 }

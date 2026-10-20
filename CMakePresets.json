@@ -45,10 +45,16 @@
         { "name": "ci-deploy", "configurePreset": "ci-deploy" }
     ],
     "testPresets": [
-        { "name": "qc-test", "hidden": true, "output": { "outputOnFailure": true } },
+        {
+            "name": "qc-test", "hidden": true, "output": { "outputOnFailure": true },
+            "environment": { "QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM": "1" }
+        },
         {
             "name": "qc-tsan-test", "hidden": true, "inherits": "qc-test",
-            "environment": { "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1" }
+            "environment": {
+                "QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM": "1",
+                "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1"
+            }
         },
         { "name": "ci-debug", "configurePreset": "ci-debug", "output": { "outputOnFailure": true } }
     ]
