@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-20 22:00
+
+62.2b in `dev` (`d912a80`, Protokoll 53; Zeittests einmal nur unter Last gescheitert, allein grün), 62.2a nach Review-Fixes in `dev` (`8c3316d`, Protokoll 54; Text-Cache je Schild, Notenbudget). Fenster-Benchmark 47.1 zeigte +28–42 % GPU durch die Filterung; Ursache (Fable-Agent auf Wunsch des Menschen): `discard` im Shader aller Blöcke schaltete das Verwerfen verdeckter Fragmente ab. 47.1b trennt Vollblöcke und ausgeschnittene Flächen (E-756), Review fand einen Culling-Fehler (Sections nur mit Pflanzen), behoben und neu gemessen: GPU stand −20 %, sprint −14 %, light −7 %, glass +1 % gegenüber vor 47.1; in `dev` (`ba38ecd`). Werkzeug T1 Slot-Broker (`d4e1f41`, E-781) nach drei Review-Runden: Builds, Verify und Benchmarks laufen über `scripts/qc-slot.py run`, Benchmarks exklusiv bei Last < 4; eine Panne beim Wechsel (alter Daemon verstand neue Clients nicht) machte eine Messreihe ungültig. Plan: Etappe 73 Monster-Spawn-Parität nach 66 (kein Creeper, kein Phantom; eigenes Eltern-Kind-Monster „Kjut“ mit Funkengel und Schwarzpulver). 62.3 fertig und im Review-Fix (Steinschneider mit Feldern wie im Vorbild), 62.4 begonnen.
+
 ## 2026-10-20 15:15 (Pause)
 
 Pause auf Wunsch des Menschen. 62.2a und 62.2b mitten in der Arbeit angehalten, Stand je als WIP-Commit gesichert (ungeprüft). Aufträge: 62.2a Schild (Texteingabe, Text im Bild, Server-Prüfung), Notenblock (Bretter + Signalstaubstück, Instrument nach Block darunter), Zielblock (Heu + 4 Stücke, Stärke nach Trefferabstand), Signal-Kontrollleuchte (Glasscheibe + Stück, färbbar), Kompass und Uhr (Eisen bzw. Gold + 4 Stücke); 62.2b Räucherofen und Schmelzofen (Schmelz-Kategorien), Lagerfeuer (4 Kochplätze, Schaden, löschen und anzünden), Kuchen (7 Bissen), Seerose (Sumpf und Feuchtgebiet).
