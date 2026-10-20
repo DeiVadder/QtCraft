@@ -29,18 +29,41 @@ struct ModeKeys
 {
     const char *survival;
     const char *creative;
+    const char *adventure;
+    const char *spectator;
 
-    const char *operator()(QcGameMode mode) const { return mode == QcGameMode::Creative ? creative : survival; }
+    const char *operator()(QcGameMode mode) const
+    {
+        switch (mode) {
+        case QcGameMode::Creative:
+            return creative;
+        case QcGameMode::Adventure:
+            return adventure;
+        case QcGameMode::Spectator:
+            return spectator;
+        case QcGameMode::Survival:
+            break;
+        }
+        return survival;
+    }
 };
 
 constexpr ModeKeys modeOfPlayer{QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: survival"),
-                                QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: creative")};
+                                QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: creative"),
+                                QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: adventure"),
+                                QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: spectator")};
 constexpr ModeKeys modeSet{QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to survival"),
-                           QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to creative")};
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to creative"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to adventure"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to spectator")};
 constexpr ModeKeys modeNow{QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now survival"),
-                           QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now creative")};
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now creative"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now adventure"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now spectator")};
 constexpr ModeKeys newPlayersStart{QT_TRANSLATE_NOOP("QcServerMessages", "New players start in survival"),
-                                   QT_TRANSLATE_NOOP("QcServerMessages", "New players start in creative")};
+                                   QT_TRANSLATE_NOOP("QcServerMessages", "New players start in creative"),
+                                   QT_TRANSLATE_NOOP("QcServerMessages", "New players start in adventure"),
+                                   QT_TRANSLATE_NOOP("QcServerMessages", "New players start in spectator")};
 
 // The usage of /gamerule, also the reply to an unknown rule or a wrong value.
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
@@ -132,11 +155,11 @@ void QcCheatCommands::addPlayerCommands(QcCommandRegistry &registry)
                          .run = [this](const QcCommandContext &context) { feed(context); }});
     // Everyone may ask for their own mode; changing it checks for an operator.
     registry.addBuiltIn({.name = u"gamemode"_s, .permission = QcPermission::Player,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative] [player]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative|adventure|spectator] [player]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows your game mode or sets it for you or another player."),
                          .run = [this](const QcCommandContext &context) { gamemode(context); }});
     registry.addBuiltIn({.name = u"defaultgamemode"_s,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /defaultgamemode [survival|creative]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /defaultgamemode [survival|creative|adventure|spectator]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or sets the game mode of players who join for the first time."),
                          .run = [this](const QcCommandContext &context) { defaultGamemode(context); }});
 }
@@ -442,7 +465,7 @@ void QcCheatCommands::gamemode(const QcCommandContext &context)
     QcServerClient *self = context.source.player();
     if (args.isEmpty()) {
         if (!self) {
-            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative] [player]"));
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative|adventure|spectator] [player]"));
             return;
         }
         context.reply(modeOfPlayer(self->gameMode), {self->name});
@@ -456,7 +479,7 @@ void QcCheatCommands::gamemode(const QcCommandContext &context)
 
     const std::optional<QcGameMode> mode = QcGameModes::parse(args[0]);
     if (!mode) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival or creative"), {args[0]});
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival, creative, adventure or spectator"), {args[0]});
         return;
     }
 
@@ -497,7 +520,7 @@ void QcCheatCommands::defaultGamemode(const QcCommandContext &context)
 
     const std::optional<QcGameMode> mode = QcGameModes::parse(context.args[0]);
     if (!mode) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival or creative"), {context.args[0]});
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival, creative, adventure or spectator"), {context.args[0]});
         return;
     }
 

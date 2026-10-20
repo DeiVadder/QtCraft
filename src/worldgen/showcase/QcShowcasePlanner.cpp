@@ -265,6 +265,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     for (const QcBlockPos &pos : structure.growing) {
         m_plan.setup.growing.append(placement.toWorld(pos));
     }
+    m_plan.setup.adventure.merge(structure.adventure);
     for (const QcStructureDefinition::Spawner &spawner : structure.spawners) {
         const QcBlockPos at = placement.toWorld(spawner.at);
         m_plan.furnishingByChunk[at.chunk()].spawners.append({at, spawner.mob, spawner.confined});

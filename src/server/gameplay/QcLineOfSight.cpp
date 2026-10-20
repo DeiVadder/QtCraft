@@ -110,10 +110,7 @@ bool seenFromEyes(const QcBlockAccess &world, const QcServerClient &player, cons
 
 bool isWithinReach(const QcServerClient &player, QcBlockPos pos)
 {
-    constexpr double tolerance = 1.0;
-    const QcVec3 eye = player.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
-    return (centre - eye).length() <= QcRaycast::playerReach + tolerance;
+    return QcRaycast::isWithinReach(player.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, pos);
 }
 
 bool canSee(const QcBlockAccess &world, const QcServerClient &player, QcBlockPos pos)

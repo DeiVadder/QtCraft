@@ -183,7 +183,8 @@ QList<QcVec3> QcSpawnerRules::playerPositions() const
 {
     QList<QcVec3> positions;
     for (const auto &client : m_state.clients()) {
-        if (client->state == QcServerClient::State::Playing && !client->dead) {
+        // Spectators wake no spawner (decision E-730).
+        if (client->hasBody()) {
             positions.append(client->motion.position);
         }
     }

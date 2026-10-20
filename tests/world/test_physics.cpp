@@ -13,7 +13,7 @@ constexpr double dt = QcPhysics::tickDuration;
 void run(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, int ticks)
 {
     for (int i = 0; i < ticks; ++i) {
-        motion.stepPlayer(input, world, dt, false);
+        motion.stepPlayer(input, world, dt, QcMovement::Walk);
     }
 }
 
@@ -68,7 +68,7 @@ private slots:
         QcPlayerInput up;
         up.flying = true;
         up.jump = true;
-        motion.stepPlayer(up, world, dt, true);
+        motion.stepPlayer(up, world, dt, QcMovement::MayFly);
         QVERIFY(motion.position.y > QcWorld::voidFloorY);
     }
 
@@ -85,10 +85,10 @@ private slots:
         QcPlayerInput jump;
         jump.jump = true;
         double apex = 0.0;
-        motion.stepPlayer(jump, world, dt, false);
+        motion.stepPlayer(jump, world, dt, QcMovement::Walk);
         for (int i = 0; i < 30; ++i) {
             apex = std::max(apex, motion.position.y - 64.0);
-            motion.stepPlayer({}, world, dt, false);
+            motion.stepPlayer({}, world, dt, QcMovement::Walk);
         }
 
         // v0 = 9.0, g = 28: per-tick speeds 7.6, 6.2, 4.8, 3.4, 2.0, 0.6 -> 23.6... * 0.05 = 1.23 m.

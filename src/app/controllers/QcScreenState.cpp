@@ -145,10 +145,18 @@ void QcScreenState::craftingOpened()
     setOverlay(Overlay::Inventory);
 }
 
-void QcScreenState::gameModeChanged(bool creative)
+void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
 {
+    // A spectator uses no screen of items (decision E-730): it closes, which tells the server.
+    const bool itemScreen = m_overlay == Overlay::Inventory || m_overlay == Overlay::Creative || m_overlay == Overlay::Furnace
+                            || m_overlay == Overlay::Chest || m_overlay == Overlay::Trade;
+    if (itemScreen && !rules.interacts) {
+        setOverlay(Overlay::None);
+        return;
+    }
+
     // An operator changed the mode while the creative inventory was open: the usual one instead.
-    if (m_overlay == Overlay::Creative && !creative) {
+    if (m_overlay == Overlay::Creative && !rules.itemCatalogue) {
         setOverlay(Overlay::Inventory);
     }
 }

@@ -336,6 +336,40 @@ struct ResolvedArms
     return result;
 }
 
+
+// Names of one item's adventure allow-list in a structure that the content does not have (decision
+// E-735): a typo would quietly allow nothing.
+QStringList unknownAdventureNames(const QcContentRegistry &content, const QcStructureDefinition &structure, QcAdventureRules::Action action,
+                                  const QString &item)
+{
+    QStringList warnings;
+    if (item != QLatin1StringView(QcAdventureRules::anyItem) && !content.itemId(item)) {
+        warnings.append(u"structure '%1': adventure allow-list names no item '%2'"_s.arg(structure.name, item));
+    }
+
+    const QStringList blocks = structure.adventure.blocks(action, item);
+    for (const QString &block : blocks) {
+        if (!content.blockId(block)) {
+            warnings.append(u"structure '%1': adventure allow-list names no block '%2'"_s.arg(structure.name, block));
+        }
+    }
+    return warnings;
+}
+
+QStringList checkStructureAdventure(const QcContentRegistry &content)
+{
+    QStringList warnings;
+    for (const QcStructureDefinition &structure : content.worldgen().structures()) {
+        for (const QcAdventureRules::Action action : {QcAdventureRules::Action::Break, QcAdventureRules::Action::PlaceOn}) {
+            const QStringList items = structure.adventure.items(action);
+            for (const QString &item : items) {
+                warnings.append(unknownAdventureNames(content, structure, action, item));
+            }
+        }
+    }
+    return warnings;
+}
+
 } // namespace
 
 void QcContentRegistry::registerPartFamily(QcPartFamily family)
@@ -393,6 +427,7 @@ QStringList QcContentRegistry::finish()
         warnings.append(traits.warnings);
     });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
+    warnings.append(checkStructureAdventure(*this));
     warnings.append(QcSpawnerContent::resolve(*this));
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));

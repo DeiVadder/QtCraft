@@ -1,0 +1,98 @@
+{
+    "name": "adventure_station",
+    "showcase": {
+        "order": 81
+    },
+    "palette": {
+        "P": "polished_stone",
+        "M": "mossy_cobblestone",
+        "L": "lime_concrete",
+        "C": "chest",
+        "S": "stone_bricks"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "MMMMMMM",
+            "       ",
+            " L L L ",
+            "       ",
+            "       ",
+            "C     S"
+        ],
+        [
+            "MMMMMMM",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                0,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "stone_pickaxe",
+                    "count": 1
+                },
+                {
+                    "item": "lime_wool",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "adventure": {
+        "canBreak": {
+            "stone_pickaxe": [
+                "mossy_cobblestone"
+            ]
+        },
+        "canPlaceOn": {
+            "lime_wool": [
+                "lime_concrete"
+            ]
+        }
+    },
+    "labels": [
+        {
+            "at": [
+                3.5,
+                3.5,
+                2.5
+            ],
+            "text": "structure.qtcraft.adventure_station",
+            "detail": ""
+        },
+        {
+            "at": [
+                3.5,
+                2.6,
+                4.5
+            ],
+            "text": "structure.qtcraft.adventure_station.allowed",
+            "detail": ""
+        }
+    ]
+}

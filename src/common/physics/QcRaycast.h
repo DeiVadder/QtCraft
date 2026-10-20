@@ -33,6 +33,16 @@ enum class Targets : quint8 {
 };
 
 inline constexpr double playerReach = 5.0;
+// Slack of the server's reach check beyond playerReach (network jitter, a turn while clicking).
+inline constexpr double reachTolerance = 1.0;
+
+// Whether a block may be used from the eye: its centre within playerReach plus reachTolerance. The
+// server checks every use with it, the client asks it before it counts a block as reacting to a use.
+[[nodiscard]] inline bool isWithinReach(const QcVec3 &eye, QcBlockPos pos)
+{
+    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+    return (centre - eye).length() <= playerReach + reachTolerance;
+}
 
 // Distance along a normalised ray to a box, or std::nullopt when it misses within maxDistance.
 [[nodiscard]] std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance);

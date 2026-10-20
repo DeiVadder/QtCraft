@@ -25,7 +25,7 @@ public:
     bool place(QcServerClient &client, const QcMsg::UseItem &message);
     // Right click on a stand; false when `id` is no stand.
     bool use(QcServerClient &client, quint32 id);
-    // A hit on a stand; false when `id` is no stand.
+    // A hit on a stand (none in adventure mode); false when `id` is no stand.
     bool hit(QcServerClient &client, quint32 id);
     // The stands' hit timers in a simulated tick (and stands in the void go).
     void tick();

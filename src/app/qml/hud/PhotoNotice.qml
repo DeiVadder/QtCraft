@@ -3,7 +3,8 @@ import QtQuick.Controls
 import QtCraft
 
 // A short notice at the top after the screenshot key saved a picture or failed to (decision E-692),
-// shown for shownMs; show() starts it again. It is hidden while the picture is taken.
+// also when adventure mode refuses an action (decision E-735), shown for shownMs; show() starts it
+// again. It is hidden while the picture is taken.
 Rectangle {
     id: notice
 
@@ -11,6 +12,8 @@ Rectangle {
     // Read by the column of notices in Main.qml (the effective `visible` would loop through it).
     readonly property bool showing: timer.running
     property string message
+    // The label's objectName, which tests and the control interface look for.
+    property string labelName: "photoNotice"
 
     // Shows `text` for shownMs.
     function show(text: string) {
@@ -27,7 +30,7 @@ Rectangle {
     Label {
         id: label
 
-        objectName: "photoNotice"
+        objectName: notice.labelName
         anchors.centerIn: parent
         text: notice.message
         color: Theme.text

@@ -26,7 +26,7 @@ const QString breakSound = u"qtcraft:block.stone.break"_s;
 
 bool isPresent(const QcServerClient &client)
 {
-    return client.state == QcServerClient::State::Playing && !client.dead;
+    return client.hasBody();
 }
 
 // Whether a player standing with the feet at the bottom of `cell` fits there.

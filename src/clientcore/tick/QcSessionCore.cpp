@@ -100,7 +100,7 @@ bool QcSessionCore::tick()
 
     QcSessionEvent::Ticked ticked;
     if (!m_vitals.isDead()) {
-        const QcPlayerInput input = m_prediction.predict(*m_world, m_gameMode.flightWanted(), m_gameMode.rules().mayFly);
+        const QcPlayerInput input = m_prediction.predict(*m_world, m_gameMode.flightWanted(), m_gameMode.rules().movement());
         if (!m_prediction.riding().isRiding()) {
             // A landing or a mode without flight ended the flight: the wish follows the state.
             m_gameMode.stepped(m_prediction.motion().flying);
@@ -172,7 +172,7 @@ void QcSessionCore::applyWorld(const QcMessage &message)
 void QcSessionCore::reconcile(const QcMsg::PlayerState &state)
 {
     // A player saved while flying flies on after joining (decision E-284).
-    if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().mayFly) == QcPrediction::Reconciled::Placed) {
+    if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().movement()) == QcPrediction::Reconciled::Placed) {
         m_gameMode.setFlightWanted(state.motion.flying);
     }
     if (m_world) {

@@ -69,12 +69,21 @@ QcPlayerList::Changes QcPlayerList::compare(const QList<Entry> &before, const QL
 QVariantList QcPlayerList::players() const
 {
     QList<Entry> sorted = m_entries;
-    std::ranges::sort(sorted, [](const Entry &a, const Entry &b) { return a.name.compare(b.name, Qt::CaseInsensitive) < 0; });
+    // Spectators come last, as in the reference (decision E-730).
+    std::ranges::sort(sorted, [](const Entry &a, const Entry &b) {
+        if (a.spectator != b.spectator) {
+            return b.spectator;
+        }
+        return a.name.compare(b.name, Qt::CaseInsensitive) < 0;
+    });
 
     const quint32 own = m_session ? m_session->welcome().playerEntityId : 0;
     QVariantList rows;
     for (const Entry &entry : std::as_const(sorted)) {
-        rows.append(QVariantMap{{u"name"_s, entry.name}, {u"operator"_s, entry.operatorRights}, {u"self"_s, own != 0 && entry.entityId == own}});
+        rows.append(QVariantMap{{u"name"_s, entry.name},
+                                {u"operator"_s, entry.operatorRights},
+                                {u"self"_s, own != 0 && entry.entityId == own},
+                                {u"spectator"_s, entry.spectator}});
     }
     return rows;
 }

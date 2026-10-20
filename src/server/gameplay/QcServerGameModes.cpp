@@ -6,15 +6,17 @@
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerCrafting.h"
 #include "server/gameplay/QcServerInventory.h"
-
+#include "server/gameplay/QcSpectatorRules.h"
+#include "server/minecarts/QcServerMinecarts.h"
 
 #include <algorithm>
 #include <utility>
 
-QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting)
+QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting, QcServerMinecarts &minecarts)
     : m_state(state)
     , m_inventory(inventory)
     , m_crafting(crafting)
+    , m_minecarts(minecarts)
 {
 }
 
@@ -34,13 +36,40 @@ void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
         m_inventory.setEquipment(client, worn);
     }
 
+    const bool leavesBlocks = client.rules().noClip && !QcGameModes::rules(mode).noClip;
     client.gameMode = mode;
     applyRules(client);
-    // The new rules may end a flight; the client hears it with the next state.
+    if (leavesBlocks) {
+        comeOutOfBlocks(client);
+    }
+    if (!client.rules().tangible) {
+        // A spectator rides nothing (decision E-730).
+        m_minecarts.leave(client);
+    }
+    // The new rules may end a flight; the client hears it with the next state. The others see a
+    // spectator vanish or come back with the next sync, and the list marks him (decision E-730).
     client.stateDirty = true;
     client.mining.pos.reset();
-    send(client);
+    m_state.notePlayerListChanged();
+    send(client, m_state.info().adventure);
     m_inventory.send(client);
+}
+
+void QcServerGameModes::comeOutOfBlocks(QcServerClient &client) const
+{
+    // The flight's momentum ends with the mode, wherever the body is.
+    client.motion.velocity = {};
+    client.fallPeak = client.motion.position.y;
+
+    const std::optional<QcVec3> free = QcSpectatorRules::freePlaceAbove(m_state.world(), client.motion.position);
+    if (!free || *free == client.motion.position) {
+        return;
+    }
+
+    qCDebug(lcGameModes) << "Moved" << client.name << "out of the blocks to" << free->y;
+    client.motion.position = *free;
+    client.previousPosition.reset();
+    client.fallPeak = free->y;
 }
 
 void QcServerGameModes::applyRules(QcServerClient &client)
@@ -50,11 +79,25 @@ void QcServerGameModes::applyRules(QcServerClient &client)
     if (!rules.mayFly) {
         client.motion.flying = false;
     }
+    if (!rules.interacts) {
+        // A spectator draws no launcher (decision E-730).
+        client.drawing = false;
+    }
 }
 
-void QcServerGameModes::send(QcServerClient &client)
+void QcServerGameModes::send(QcServerClient &client, const QcAdventureRules &adventure)
 {
-    client.connection->send(QcMsg::GameMode{client.gameMode});
+    const bool listed = QcGameModes::rules(client.gameMode).buildByAllowList;
+    client.connection->send(QcMsg::GameMode{client.gameMode, listed ? adventure : QcAdventureRules{}});
+}
+
+void QcServerGameModes::sendAdventureRules() const
+{
+    for (const auto &client : m_state.clients()) {
+        if (client->state == QcServerClient::State::Playing && QcGameModes::rules(client->gameMode).buildByAllowList) {
+            send(*client, m_state.info().adventure);
+        }
+    }
 }
 
 QcItemStack QcServerGameModes::validStack(QcItemStack stack) const

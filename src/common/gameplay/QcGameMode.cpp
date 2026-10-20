@@ -16,6 +16,15 @@ Rules rules(QcGameMode mode)
                 .invulnerable = true,
                 .hungerFrozen = true,
                 .itemCatalogue = true};
+    case QcGameMode::Adventure:
+        return {.buildByAllowList = true};
+    case QcGameMode::Spectator:
+        return {.mayFly = true,
+                .invulnerable = true,
+                .hungerFrozen = true,
+                .noClip = true,
+                .interacts = false,
+                .tangible = false};
     case QcGameMode::Survival:
         break;
     }
@@ -29,7 +38,17 @@ int inventorySet(QcGameMode mode)
 
 QLatin1StringView name(QcGameMode mode)
 {
-    return mode == QcGameMode::Creative ? "creative"_L1 : "survival"_L1;
+    switch (mode) {
+    case QcGameMode::Creative:
+        return "creative"_L1;
+    case QcGameMode::Adventure:
+        return "adventure"_L1;
+    case QcGameMode::Spectator:
+        return "spectator"_L1;
+    case QcGameMode::Survival:
+        break;
+    }
+    return "survival"_L1;
 }
 
 [[nodiscard]] std::optional<QcGameMode> parse(QStringView text)
@@ -41,15 +60,25 @@ QLatin1StringView name(QcGameMode mode)
     if (lower == "creative"_L1 || lower == "c"_L1 || lower == "1"_L1) {
         return QcGameMode::Creative;
     }
+    if (lower == "adventure"_L1 || lower == "a"_L1 || lower == "2"_L1) {
+        return QcGameMode::Adventure;
+    }
+    if (lower == "spectator"_L1 || lower == "sp"_L1 || lower == "3"_L1) {
+        return QcGameMode::Spectator;
+    }
     return std::nullopt;
 }
 
 [[nodiscard]] std::optional<QcGameMode> fromValue(quint8 value)
 {
-    if (value >= quint8(count)) {
-        return std::nullopt;
+    switch (QcGameMode(value)) {
+    case QcGameMode::Survival:
+    case QcGameMode::Creative:
+    case QcGameMode::Adventure:
+    case QcGameMode::Spectator:
+        return QcGameMode(value);
     }
-    return QcGameMode(value);
+    return std::nullopt;
 }
 
 } // namespace QcGameModes

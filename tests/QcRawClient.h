@@ -87,6 +87,7 @@ public:
             this->experience = *experience;
         } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
             gameMode = mode->mode;
+            adventure = mode->adventure;
         } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
             openMachine = machine->pos;
             openMachineEntity = machine->entity;
@@ -216,6 +217,8 @@ public:
     std::optional<QcMsg::PlayerExperience> experience;
     // The game mode the server reported last (decision E-282); empty before the first.
     std::optional<QcGameMode> gameMode;
+    // The adventure allow-lists that came with it (decision E-735).
+    QcAdventureRules adventure;
     std::optional<QcBlockPos> openMachine;
     // The open trading screen (decision E-414) and whether the server closed one.
     std::optional<QcMsg::TradeState> trade;

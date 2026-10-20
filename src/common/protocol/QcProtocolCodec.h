@@ -101,7 +101,7 @@ void encode(QDataStream &stream, const QcMsg::SetAppearance &m);
 void encode(QDataStream &stream, QcMsg::DropItem m);
 void encode(QDataStream &stream, QcMsg::PlayerFood m);
 void encode(QDataStream &stream, QcMsg::PlayerExperience m);
-void encode(QDataStream &stream, QcMsg::GameMode m);
+void encode(QDataStream &stream, const QcMsg::GameMode &m);
 void encode(QDataStream &stream, QcMsg::CreativeItem m);
 void encode(QDataStream &stream, QcMsg::PickBlock m);
 void encode(QDataStream &stream, QcMsg::DrawLauncher m);

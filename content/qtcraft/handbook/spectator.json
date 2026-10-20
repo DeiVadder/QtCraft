@@ -1,0 +1,10 @@
+{
+    "name": "spectator",
+    "order": 116,
+    "icon": "glass",
+    "sections": [
+        "flying",
+        "unseen",
+        "switching"
+    ]
+}

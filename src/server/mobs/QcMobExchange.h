@@ -60,6 +60,8 @@ struct PlayerView
 {
     quint32 entityId = 0;
     QcVec3 position;
+    // A living body in the world: creatures notice only these (a spectator has none, decision E-730),
+    // the others count only for despawning.
     bool alive = true;
     // Creatures leave invulnerable players (creative mode) alone.
     bool targetable = true;

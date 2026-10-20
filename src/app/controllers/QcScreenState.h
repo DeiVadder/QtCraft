@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/gameplay/QcGameMode.h"
+
 #include <QObject>
 #include <QString>
 #include <QtQmlIntegration/qqmlintegration.h>
@@ -80,9 +82,9 @@ public:
 
     // The session opened a crafting table: the inventory screen shows its grid.
     void craftingOpened();
-    // The session's game mode changed; an open creative inventory becomes the usual one when the
-    // player is no longer `creative`.
-    void gameModeChanged(bool creative);
+    // The session's game mode changed to one with these `rules`: an open creative inventory becomes
+    // the usual one without the catalogue, and a spectator's screens of items close.
+    void gameModeChanged(QcGameModes::Rules rules);
     // The session opened a machine: the chest screen for a container, else the furnace screen.
     void machineOpened(bool container);
     // The session closed the machine (or the server did): its screen closes.

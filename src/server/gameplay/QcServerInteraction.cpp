@@ -40,7 +40,8 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     client.mining.pos.reset();
 
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
-    if (!sameTarget || !block || *block == qcAirBlockId || !QcLineOfSight::isWithinReach(client, pos) || !QcLineOfSight::canSee(m_state.world(), client, pos)) {
+    if (!sameTarget || !block || *block == qcAirBlockId || !QcLineOfSight::isWithinReach(client, pos) || !QcLineOfSight::canSee(m_state.world(), client, pos)
+        || !permits(client, QcAdventureRules::Action::Break, pos)) {
         // Resend the true block so a client that predicted the break shows it again.
         if (block) {
             client.connection->send(QcMsg::BlockUpdate{pos, *block});
@@ -100,6 +101,19 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     }
 
     const QcItemDefinition *held = m_state.heldItem(client);
+    // Adventure mode (decision E-735): the held item acts on the block only where the world's
+    // allow-lists permit it; food that would plant is eaten instead.
+    if (!permits(client, QcAdventureRules::Action::PlaceOn, message.target)) {
+        if (const std::optional<QcBlockId> clicked = m_state.world().blockAt(message.target)) {
+            client.connection->send(QcMsg::BlockUpdate{message.target, *clicked});
+        }
+        rejectPlacement(client, qcNeighbour(message.target, message.face));
+        if (held && held->food > 0) {
+            m_parts.health.consume(client);
+        }
+        return;
+    }
+
     if (held && (held->scoops || held->bottles)) {
         if (!(held->bottles ? fillBottle(client, message.target) : scoopLiquid(client, message.target))) {
             if (const std::optional<QcBlockId> block = m_state.world().blockAt(message.target)) {
@@ -118,6 +132,19 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
     placeHeld(client, message, held);
+}
+
+bool QcServerInteraction::permits(const QcServerClient &client, QcAdventureRules::Action action, QcBlockPos pos) const
+{
+    if (!client.rules().buildByAllowList) {
+        return true;
+    }
+
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!block || !m_state.content().isValidBlock(*block)) {
+        return false;
+    }
+    return m_state.info().adventure.permits(client.gameMode, action, m_state.heldItem(client), m_state.content().block(*block));
 }
 
 bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos target)

@@ -28,7 +28,8 @@ constexpr int timeoutMs = 30'000;
 // The client side of the creative mode (decisions E-282 to E-284): the double tap that toggles
 // flight, the pace of instant breaking, and a client session that flies, breaks and takes items
 // from the catalogue over a link with latency without any correction by the server; a saved
-// flight goes on after rejoining.
+// flight goes on after rejoining. A spectator (decision E-730) flies through the ground at the
+// speed of the wheel without a correction and targets nothing.
 class TestCreativeClient : public QObject
 {
     Q_OBJECT
@@ -251,6 +252,37 @@ private slots:
         takeOff();
         QVERIFY(!m_session->playerMotion().flying);
         QVERIFY(m_session->prediction().largestCorrection() < 1e-9);
+    }
+
+    void spectatorFliesThroughTheGroundWithoutCorrection()
+    {
+        start(QcGameMode::Survival, 50, 25);
+        m_session->sendChat(u"/gamemode spectator"_s);
+        QTRY_COMPARE_WITH_TIMEOUT(m_session->gameMode().mode(), QcGameMode::Spectator, timeoutMs);
+        QTest::qWait(400);
+        m_session->resetCorrections();
+        const double ground = m_session->playerMotion().position.y;
+
+        // Down into the ground and fast along under it, looking down at the blocks.
+        drive(30, [](int) {
+            QcPlayerInput down;
+            down.sneak = true;
+            down.pitch = -90.0f;
+            return down;
+        });
+        QVERIFY(m_session->playerMotion().position.y < ground - 3.0);
+        QVERIFY(!m_session->hand().target().has_value());
+        drive(30, [](int tick) {
+            QcPlayerInput fast;
+            fast.forward = 1.0f;
+            fast.sprint = true;
+            fast.flySpeed = 25;
+            fast.yaw = float(tick * 2);
+            return fast;
+        });
+        QVERIFY(m_session->playerMotion().flying);
+        QTest::qWait(400);
+        QVERIFY2(m_session->prediction().largestCorrection() < 1e-9, qPrintable(QString::number(m_session->prediction().largestCorrection())));
     }
 
     void creativeBreaksWithoutWaiting()

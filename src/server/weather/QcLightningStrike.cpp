@@ -40,7 +40,7 @@ void QcLightningStrike::hitPlayers(QcBlockPos pos)
 {
     const QcWeatherDefinition::Lightning &lightning = m_state.content().weather().lightning;
     for (const auto &client : m_state.clients()) {
-        if (client->state != QcServerClient::State::Playing || client->dead || client->rules().invulnerable
+        if (!client->hasBody() || client->rules().invulnerable
             || !withinReach(pos, client->motion.position)) {
             continue;
         }

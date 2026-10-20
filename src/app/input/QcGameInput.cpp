@@ -259,18 +259,30 @@ void QcGameInput::handleMouseButton(Qt::MouseButton button, bool pressed) const
     }
 }
 
-bool QcGameInput::handleWheel(const QWheelEvent &wheel) const
+bool QcGameInput::handleWheel(const QWheelEvent &wheel)
 {
     if (!m_capture.captured()) {
         return false;
     }
 
     const int steps = wheel.angleDelta().y() / 120;
-    if (steps != 0) {
+    // A spectator has no hotbar: the wheel sets the flight speed (decision E-730).
+    if (steps != 0 && m_parts.session->gameMode().rules().noClip) {
+        QcPlayerInput intent = m_parts.session->intent();
+        intent.flySpeed = QcClientGameMode::steppedFlySpeed(intent.flySpeed, steps);
+        m_parts.session->setIntent(intent);
+        emit flySpeedChanged();
+    } else if (steps != 0) {
         const int slot = (m_parts.session->inventory().selectedHotbarSlot() - steps) % QcInventory::hotbarSize;
         m_parts.session->selectHotbarSlot(slot < 0 ? slot + QcInventory::hotbarSize : slot);
     }
     return true;
+}
+
+double QcGameInput::flySpeed() const
+{
+    const quint8 speed = m_parts.session ? m_parts.session->intent().flySpeed : QcPlayerInput::normalFlySpeed;
+    return double(speed) / double(QcPlayerInput::normalFlySpeed);
 }
 
 void QcGameInput::turn(QPointF delta)
@@ -377,8 +389,12 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
         m_screens.state.setOverlay(QcScreenState::Overlay::Pause);
         return true;
     case A::Inventory:
-        // Creative mode opens the item catalogue; its tab leads on to crafting and armour.
-        m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? QcScreenState::Overlay::Creative : QcScreenState::Overlay::Inventory);
+        // Creative mode opens the item catalogue; its tab leads on to crafting and armour. A
+        // spectator has no inventory to open (decision E-730).
+        if (m_parts.session->gameMode().rules().interacts) {
+            m_screens.state.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? QcScreenState::Overlay::Creative
+                                                                                          : QcScreenState::Overlay::Inventory);
+        }
         return true;
     case A::Chat:
         m_screens.state.setOverlay(QcScreenState::Overlay::Chat);

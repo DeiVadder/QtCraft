@@ -153,7 +153,7 @@ QList<QcVec3> QcGuardians::livingPlayers() const
 {
     QList<QcVec3> positions;
     for (const auto &client : m_state.clients()) {
-        if (client->state == QcServerClient::State::Playing && !client->dead) {
+        if (client->hasBody()) {
             positions.append(client->motion.position);
         }
     }

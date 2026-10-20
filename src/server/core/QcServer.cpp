@@ -10,6 +10,7 @@
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSetup.h"
 #include "server/gameplay/QcLineOfSight.h"
+#include "server/gameplay/QcSpectatorRules.h"
 
 #include <QTimer>
 
@@ -37,9 +38,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
-    , m_gameModes(m_state, m_inventory, m_crafting)
-    , m_stands(m_state, m_sounds, m_inventory)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
+    , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)
+    , m_stands(m_state, m_sounds, m_inventory)
     , m_animals(m_state, m_sounds, m_inventory)
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
@@ -228,6 +229,14 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         return;
     }
 
+    // A spectator only looks (decision E-730): what would touch the world or the inventory is
+    // dropped, and the client gets its true inventory back.
+    if (!QcSpectatorRules::allows(client, message)) {
+        client.mining.pos.reset();
+        m_inventory.send(client);
+        return;
+    }
+
     if (!handlePlayerMessage(client, message) && !handleInventoryMessage(client, message)) {
         qCWarning(lcServer) << "Ignoring unexpected message type" << message.index() << "from" << client.name;
     }
@@ -388,7 +397,7 @@ void QcServer::sendPlayerList()
     QcMsg::PlayerList list;
     for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
-            list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator});
+            list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator, client->gameMode == QcGameMode::Spectator});
         }
     }
 
@@ -453,7 +462,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
     client.previousPosition = previous;
-    client.motion.stepPlayer(input, m_state.world(), QcPhysics::tickDuration, client.rules().mayFly);
+    client.motion.stepPlayer(input, m_state.world(), QcPhysics::tickDuration, client.rules().movement());
     m_health.afterMove(client, wasOnGround, wasInWater, previous.y);
 
     client.yaw = input.yaw;

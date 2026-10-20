@@ -56,7 +56,7 @@ struct Options
                                         u"Options of --generator: the layers of a flat world ('bedrock,3*dirt,grass_block') or the platform of a void world ('platform=glass,radius=4,y=40')."_s,
                                         u"options"_s};
     QCommandLineOption gameMode{u"game-mode"_s,
-                                u"Game mode of players who join for the first time: survival or creative (with --server it overrides "
+                                u"Game mode of players who join for the first time: survival, creative, adventure or spectator (with --server it overrides "
                                 u"server.json and is the default of a world it creates)."_s,
                                 u"mode"_s};
     QCommandLineOption tour{u"showcase-tour"_s,

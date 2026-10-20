@@ -233,7 +233,8 @@ bool QcServerStands::hit(QcServerClient &client, quint32 id)
         return false;
     }
     // Like hits on creatures: nothing during the attack cooldown, out of reach or through walls.
-    if (client.attackCooldown > 0.0 || !canReach(client, *stand)) {
+    // Adventure players leave stands standing like blocks (decision E-735).
+    if (client.attackCooldown > 0.0 || !canReach(client, *stand) || client.rules().buildByAllowList) {
         return true;
     }
 

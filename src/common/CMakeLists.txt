@@ -132,6 +132,7 @@ target_sources(qc_common PRIVATE
     core/QcWorldConstants.h
 )
 target_sources(qc_common PRIVATE
+    gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp

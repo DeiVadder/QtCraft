@@ -44,10 +44,14 @@ void preselectWorldType(const QQuickWindow &window)
         choice->setProperty("currentIndex", int(index));
     }
 
-    // QTCRAFT_MENU_GAME_MODE=creative preselects the game mode the same way.
+    // QTCRAFT_MENU_GAME_MODE=creative (or another mode) preselects the game mode the same way.
     QObject *mode = window.findChild<QObject *>(u"gameModeChoice"_s);
-    if (mode && QcGameModes::parse(qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE")) == QcGameMode::Creative) {
-        mode->setProperty("currentIndex", 1);
+    const std::optional<QcGameMode> wanted = QcGameModes::parse(qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
+    int modeIndex = -1;
+    if (mode && wanted
+        && QMetaObject::invokeMethod(mode, "indexOfValue", Q_RETURN_ARG(int, modeIndex), Q_ARG(QVariant, QString(QcGameModes::name(*wanted))))
+        && modeIndex >= 0) {
+        mode->setProperty("currentIndex", modeIndex);
     }
 }
 

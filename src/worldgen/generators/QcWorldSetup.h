@@ -39,6 +39,8 @@ struct QcWorldSetup
     QList<QcBlockPos> growing;
     // Minecarts on rails (decisions E-382, E-386).
     QList<Cart> minecarts;
+    // The adventure allow-lists the world starts with (decision E-735; the showcase's station).
+    QcAdventureRules adventure;
 
     // Only the rules of a world type (flat, void).
     static QcWorldSetup fromRules(const QcWorldTypeRules &rules)

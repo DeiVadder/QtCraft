@@ -274,6 +274,28 @@ ApplicationWindow {
 
             sourceComponent: PhotoNotice {}
         }
+
+        // Adventure mode refused a mining or use (decision E-735); made for the first one.
+        Loader {
+            id: refusalNotice
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            active: false
+            visible: ((item as PhotoNotice)?.showing ?? false) && !game.photo.hudHidden
+
+            sourceComponent: PhotoNotice {
+                labelName: "refusalNotice"
+            }
+        }
+    }
+
+    Connections {
+        target: game.player
+
+        function onActionRefused() {
+            refusalNotice.active = true;
+            (refusalNotice.item as PhotoNotice).show(qsTr("Adventure mode: not allowed here"));
+        }
     }
 
     Connections {

@@ -410,8 +410,8 @@ private slots:
         chat(u"/gamemode"_s);
         QCOMPARE(lastLine(), u"Game mode of Raw: creative"_s);
         QCOMPARE(m_client->chatKeys.constLast().key, u"Game mode of %1: creative"_s);
-        chat(u"/gamemode adventure"_s);
-        QCOMPARE(lastLine(), u"Unknown game mode adventure; use survival or creative"_s);
+        chat(u"/gamemode puzzle"_s);
+        QCOMPARE(lastLine(), u"Unknown game mode puzzle; use survival, creative, adventure or spectator"_s);
         chat(u"/gamemode survival Nobody"_s);
         QCOMPARE(lastLine(), u"No player named Nobody is online"_s);
         chat(u"/time"_s);

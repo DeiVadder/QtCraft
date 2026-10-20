@@ -72,6 +72,8 @@ struct PlayerList
         quint32 entityId = 0;
         QString name;
         bool operatorRights = false;
+        // In spectator mode (decision E-730): listed, but shown apart.
+        bool spectator = false;
 
         friend bool operator==(const Entry &, const Entry &) = default;
     };

@@ -43,6 +43,7 @@ QString substitute(const QString &line, const QStringList &args)
 
 QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     : m_state(state)
+    , m_adventure(state, parts.cheats.gameModes)
     , m_cheats(state, std::move(parts.cheats))
     , m_blocks(state, parts.blocks, parts.updates, m_pending)
     , m_players(state, m_pending)
@@ -67,6 +68,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_experience.addTo(m_registry);
     m_effects.addTo(m_registry);
     m_mobs.addTo(m_registry);
+    m_adventure.addTo(m_registry);
 }
 
 void QcServerCommands::addBuiltIns()

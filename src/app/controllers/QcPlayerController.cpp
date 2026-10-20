@@ -33,6 +33,11 @@ bool QcPlayerController::creative() const
     return m_parts.session && m_parts.session->gameMode().rules().itemCatalogue;
 }
 
+bool QcPlayerController::spectator() const
+{
+    return m_parts.session && m_parts.session->gameMode().mode() == QcGameMode::Spectator;
+}
+
 void QcPlayerController::putCreativeItem(int row, const QString &itemName, int count) const
 {
     const auto content = m_parts.session ? m_parts.session->content() : nullptr;

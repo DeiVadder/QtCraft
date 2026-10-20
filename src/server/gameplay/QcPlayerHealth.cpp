@@ -74,7 +74,8 @@ void QcPlayerHealth::tickPlayer(QcServerClient &client, double dt)
 
 void QcPlayerHealth::applyVoidDamage(QcServerClient &client)
 {
-    if (client.dead || !QcWorld::isInVoid(client.motion.position.y)) {
+    // A spectator flies through the void unhurt (decision E-730).
+    if (client.dead || !client.rules().tangible || !QcWorld::isInVoid(client.motion.position.y)) {
         client.voidTicks = 0;
         return;
     }
@@ -94,6 +95,11 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
         return QcHurtWindow::Take::Ignored;
     }
     if (client.rules().invulnerable && kind != DamageKind::Command && !fromVoid) {
+        return QcHurtWindow::Take::Ignored;
+    }
+    // Nothing reaches a spectator, not even /kill: he would drop his survival inventory unseen
+    // (decision E-730).
+    if (!client.rules().tangible) {
         return QcHurtWindow::Take::Ignored;
     }
 

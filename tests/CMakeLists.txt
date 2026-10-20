@@ -26,7 +26,7 @@ set(qc_concurrency_tests
     test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
-    test_creative_client test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_creative_client test_adventure_client test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
@@ -71,7 +71,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # CPU time is under a quarter of their wall time, and TSan slows them 1.2-3.5 x instead of 7-10 x.
 # The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
 # with a smaller factor. A new test that mostly waits belongs here.
-set_property(TEST test_interpolation test_latency test_creative_client test_void_client test_ice_client
+set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation

@@ -142,7 +142,7 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
     if (const QString mode = json.value(u"defaultGameMode"_s).toString(); !mode.isEmpty()) {
         settings.defaultGameMode = QcGameModes::parse(mode);
         if (!settings.defaultGameMode) {
-            return qcError(u"server.json: \"defaultGameMode\" must be survival, creative or empty"_s);
+            return qcError(u"server.json: \"defaultGameMode\" must be survival, creative, adventure, spectator or empty"_s);
         }
     } else if (json.contains(u"defaultGameMode"_s) && !json.value(u"defaultGameMode"_s).isString()) {
         return qcError(invalid(u"defaultGameMode"_s));

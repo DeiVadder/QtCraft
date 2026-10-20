@@ -412,7 +412,7 @@ private slots:
         east.yaw = 90.0f;
         east.forward = 1.0f;
         for (int tick = 0; tick < 40; ++tick) {
-            player.stepPlayer(east, *world, QcPhysics::tickDuration, false);
+            player.stepPlayer(east, *world, QcPhysics::tickDuration, QcMovement::Walk);
             QVERIFY(player.position.y < 1.2);
         }
         QVERIFY(player.position.x > 1.5);

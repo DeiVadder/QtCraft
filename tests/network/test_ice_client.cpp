@@ -172,8 +172,8 @@ private slots:
         double released = 0.0;
         double slid = 0.0;
         for (int tick = 0; tick < skatingTicks; ++tick) {
-            onServer.stepPlayer(skating(tick), server, QcPhysics::tickDuration, false);
-            onClient.stepPlayer(skating(tick), client, QcPhysics::tickDuration, false);
+            onServer.stepPlayer(skating(tick), server, QcPhysics::tickDuration, QcMovement::Walk);
+            onClient.stepPlayer(skating(tick), client, QcPhysics::tickDuration, QcMovement::Walk);
             QCOMPARE(onClient.position, onServer.position);
             QCOMPARE(onClient.velocity, onServer.velocity);
             QCOMPARE(onClient.onGround, onServer.onGround);

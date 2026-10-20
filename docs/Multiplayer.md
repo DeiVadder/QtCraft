@@ -33,7 +33,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `loginTimeoutSeconds` | – | 10 | A login must be done within this time |
 | `connectionsPerSecond`, `connectionBurst`, `maxConnectionsPerAddress` | – | 1, 8, 8 | Limits for new connections per address |
 | `operators` | – | empty | Operators by name (bound to their identity at their login) |
-| `defaultGameMode` | `--game-mode` | empty (the world's own default) | `survival` or `creative`: the mode of players who join for the first time; a new world is created with it as its default (E-282) |
+| `defaultGameMode` | `--game-mode` | empty (the world's own default) | `survival`, `creative` or `adventure`: the mode of players who join for the first time; a new world is created with it as its default (E-282, E-735) |
 | `limits` | – | the defaults below | Budgets of the simulation (E-349), an object with the keys below |
 
 **Limits** (`limits` in `server.json`; in a single-player world the object `limits` in its `world.json`, which a dedicated server ignores). A value out of its range is clamped and an unknown key ignored, each with a warning in the log; `/limits` (operators) shows the active values and where they come from.
@@ -277,12 +277,25 @@ against a determined attacker.
   300 ms walking, jumping and turning needed no correction in the tests (E-257). Mining shows the
   break once the server confirms it (one round trip), placing likewise.
 - Game modes are per player and kept in the player file (E-282). Everyone can ask for their own
-  with `/gamemode`; operators change them with `/gamemode <survival|creative> [player]`; the server checks every creative action itself: it
+  with `/gamemode`; operators change them with `/gamemode <survival|creative|adventure|spectator> [player]`; the server checks every creative action itself: it
   accepts flight only for players in creative mode (the shared physics runs with the mode's rules,
   so a client that sends the wish to fly in survival just jumps), refuses catalogue items outside
   creative mode and breaks instantly only for creative players. Flying, instant breaking and the
   catalogue were tested over a lagging link (round trips of 50 to 300 ms) without any correction
   (`test_creative_client`), the refusals over TCP (`test_network_game`, `test_creative_bots`).
+- Adventure mode (E-735) is survival without breaking and placing except where the world's
+  allow-lists permit it (`/adventure`, saved in `world.json`). The server sends the lists with the
+  mode to adventure players and refuses every mining and every use of an item on a block they do
+  not allow; the client applies the same rule from common code (`QcAdventureRules::permits`), so it
+  neither shows cracks nor sends a refused request, and nothing has to be corrected
+  (`test_adventure_mode`).
+- Spectators (`/gamemode spectator`, E-730) fly through blocks: the shared physics runs without
+  collision for them on both sides, so the server never pushes a spectator out of a wall and the
+  prediction needs no correction (`test_creative_client`). The server sends a spectator to nobody
+  (other players do not see him, also not other spectators), creatures ignore him, and he presses
+  no plate, picks up nothing and is hit by nothing; every request that would touch the world or
+  the inventory is dropped (`test_spectator_mode`). The player list still names him, marked and
+  greyed at its end (`PlayerList` carries the mark); chunks load around him as around any player.
 - Server and client treat a chunk that is not there yet as a wall. A player flying faster than the
   server generates stops at the edge on both sides without a correction; only a chunk the server
   has but the client has not received yet makes the server correct the prediction once it arrives

@@ -5,6 +5,7 @@
 qc_add_test(test_protocol SOURCES gameplay/test_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_entity_protocol SOURCES gameplay/test_entity_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_game_mode_protocol SOURCES gameplay/test_game_mode_protocol.cpp LIBRARIES qc_common)
+qc_add_test(test_adventure_rules SOURCES gameplay/test_adventure_rules.cpp LIBRARIES qc_common)
 qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 750)
 # A virtual gamepad steering the player through the control interface (decision E-541); the client
@@ -41,7 +42,9 @@ qc_add_test(test_survival_scenario SOURCES gameplay/test_survival_scenario.cpp L
 qc_add_test(test_items SOURCES gameplay/test_items.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
+qc_add_test(test_adventure_mode SOURCES gameplay/test_adventure_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_creative_mode SOURCES gameplay/test_creative_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
+qc_add_test(test_spectator_mode SOURCES gameplay/test_spectator_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_void_zone SOURCES gameplay/test_void_zone.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_farming_server SOURCES gameplay/test_farming_server.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_dirt_paths SOURCES gameplay/test_dirt_paths.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)

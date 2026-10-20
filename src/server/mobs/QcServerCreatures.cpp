@@ -38,7 +38,7 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
             const QcVec3 velocity = client->motion.velocity;
             players.append({.entityId = client->id,
                             .position = client->motion.position,
-                            .alive = !client->dead,
+                            .alive = client->hasBody(),
                             .targetable = !client->rules().invulnerable,
                             .look = QcProjectileFlight::direction(client->yaw, client->pitch),
                             .name = client->name,

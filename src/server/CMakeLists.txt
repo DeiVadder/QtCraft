@@ -34,6 +34,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     commands/QcAccessList.h commands/QcAccessList.cpp
+    commands/QcAdventureCommands.h commands/QcAdventureCommands.cpp
     commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
@@ -115,6 +116,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
     gameplay/QcServerStands.h gameplay/QcServerStands.cpp
+    gameplay/QcSpectatorRules.h gameplay/QcSpectatorRules.cpp
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
 )
 target_sources(qc_server PRIVATE

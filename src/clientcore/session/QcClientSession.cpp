@@ -208,6 +208,7 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
         onVitalsChanged(change);
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
+        m_gameMode.setAdventure(mode->adventure);
         emit gameModeChanged();
     } else {
         return false;
@@ -397,6 +398,12 @@ bool QcClientSession::apply(QcHandActions::HandEffect effect)
     case HandEffect::Use:
         m_animation.use();
         break;
+    case HandEffect::Refused:
+        if (m_tickCount >= m_nextRefusalReport) {
+            m_nextRefusalReport = m_tickCount + refusalReportTicks;
+            emit actionRefused();
+        }
+        return false;
     }
     return true;
 }

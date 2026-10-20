@@ -68,6 +68,9 @@ bool isSolidAt(const QcBlockAccess &world, QcBlockPos pos);
 // World-space collision boxes of the block at `pos` (a unit box where data is missing, none below
 // the world).
 QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos);
+// Whether a box overlaps the collision boxes of any block (a unit box where data is missing): a
+// body there is stuck inside blocks.
+[[nodiscard]] bool overlapsBlocks(const QcBlockAccess &world, const QcAabb &box);
 // Whether a box overlaps a climbable block.
 bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box);
 // How far around its box a wall climber (a spider, decision E-451) feels for a wall, sideways (a

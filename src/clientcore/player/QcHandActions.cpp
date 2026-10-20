@@ -75,6 +75,14 @@ QcHandActions::QcHandActions(const View &view, QcClientGameMode &gameMode, Sende
 
 void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentRegistry &content)
 {
+    // A spectator only looks (decision E-730): no block or entity is targeted, so nothing is
+    // outlined, mined, used or attacked.
+    if (!m_gameMode.rules().interacts) {
+        m_target.reset();
+        m_targetEntity.reset();
+        return;
+    }
+
     const QcPlayerInput &intent = m_view.prediction.intent();
     const double yaw = qDegreesToRadians(double(intent.yaw));
     const double pitch = qDegreesToRadians(double(intent.pitch));
@@ -108,7 +116,10 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
 {
     refreshTarget(world, content);
 
-    const std::optional<QcBlockPos> aimed = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    const std::optional<QcBlockPos> wished = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    // Adventure mode (decision E-735): a block the allow-lists do not name is not mined at all.
+    const bool refused = wished && !permitted(world, content, QcAdventureRules::Action::Break, *wished);
+    const std::optional<QcBlockPos> aimed = refused ? std::nullopt : wished;
     // Creative mode: strikes break at once, a held button again every few ticks (decision E-282);
     // a survival mining that still runs is cancelled below.
     const bool instant = m_gameMode.rules().instantBreak;
@@ -133,7 +144,7 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
     }
 
     if (!m_miningPos) {
-        return effect;
+        return refused ? HandEffect::Refused : effect;
     }
 
     const QcBlockPos mining = *m_miningPos;
@@ -168,6 +179,17 @@ void QcHandActions::tickLauncher(const QcContentRegistry &content, double server
     m_launcher.tick(m_view.inventory.heldDefinition(content), m_view.inventory.inventory().selectedHotbarSlot(), serverTicks);
 }
 
+bool QcHandActions::permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const
+{
+    if (!m_gameMode.rules().buildByAllowList) {
+        return true;
+    }
+
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    return block && content.isValidBlock(*block)
+           && m_gameMode.adventure().permits(m_gameMode.mode(), action, m_view.inventory.heldDefinition(content), content.block(*block));
+}
+
 QcHandActions::HandEffect QcHandActions::useOnEntity(const QcContentRegistry &content, const QcItemDefinition *item)
 {
     if (!m_targetEntity) {
@@ -195,13 +217,19 @@ QcHandActions::HandEffect QcHandActions::useOnEntity(const QcContentRegistry &co
 
 QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const QcContentRegistry &content)
 {
+    if (!m_gameMode.rules().interacts) {
+        return HandEffect::None;
+    }
+
     const QcItemDefinition *item = m_view.inventory.heldDefinition(content);
 
     // Machines, chests, doors, levers, buttons, repeaters and crafting tables react when used (unless sneaking);
     // otherwise food without a block to place is eaten and everything else acts on the targeted block.
     const std::optional<QcBlockId> targetBlock = m_target ? world.blockAt(m_target->block) : std::nullopt;
     const QcBlockDefinition *targetDefinition = targetBlock ? &content.block(*targetBlock) : nullptr;
-    const bool opensScreen = reactsToUse(targetDefinition, m_view.prediction.intent().sneak);
+    // Out of the server's reach (QcRaycast::isWithinReach) a block does not react, as on the server.
+    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const bool opensScreen = m_target && reactsToUse(targetDefinition, m_view.prediction.intent().sneak) && QcRaycast::isWithinReach(eye, m_target->block);
     if (const HandEffect onEntity = useOnEntity(content, item); onEntity != HandEffect::None) {
         return onEntity;
     }
@@ -230,6 +258,17 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
 
     if (!m_target) {
         return HandEffect::None;
+    }
+
+    // Adventure mode (decision E-735): the held item acts on the block only where the allow-lists
+    // permit it; food is eaten instead (the server decides the same). An empty hand would do
+    // nothing anyway: no request and no notice.
+    if (!opensScreen && !permitted(world, content, QcAdventureRules::Action::PlaceOn, m_target->block)) {
+        if (item && item->food > 0) {
+            m_send(QcMsg::ConsumeItem{});
+            return HandEffect::Use;
+        }
+        return item ? HandEffect::Refused : HandEffect::None;
     }
 
     const QcVec3 hit = m_target->point - QcVec3{double(m_target->block.x), double(m_target->block.y), double(m_target->block.z)};

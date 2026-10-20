@@ -3,6 +3,7 @@
 #include "clientcore/session/QcClientLauncher.h"
 #include "clientcore/sound/QcSoundCue.h"
 #include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcAdventureRules.h"
 #include "common/physics/QcRaycast.h"
 #include "common/protocol/QcMessages.h"
 
@@ -47,6 +48,9 @@ public:
         UsedBlock,
         // Use motion; the player used an entity, so a machine or trading screen it opens shows again.
         UsedEntity,
+        // Nothing was done because the mode forbids it (adventure allow-lists, decision E-735); the
+        // HUD says so.
+        Refused,
     };
 
     // What the hand reads of the session: the predicted player, its items and the entity mirror.
@@ -76,7 +80,8 @@ public:
     // Whether a block is being mined (survival) right now.
     bool isMining() const { return m_miningPos.has_value(); }
     // Once per tick after the prediction: aims again and advances or changes the mining; Swing when
-    // a block broke at once (creative mode).
+    // a block broke at once (creative mode), Refused while the mode forbids mining the aimed block
+    // (adventure mode: no mining at all, no cracks or sounds).
     HandEffect updateMining(const QcClientWorld &world, const QcContentRegistry &content);
 
     // Once per tick: the launcher's draw and the cooldowns of throwing (`serverTicks` per tick).
@@ -84,7 +89,8 @@ public:
     // Progress of the drawn launcher within the tick, negative when none is drawn.
     double drawProgress(double alpha) const { return m_launcher.progress(alpha); }
 
-    // Uses the held item on the targeted entity, the block face or itself; None when nothing was used.
+    // Uses the held item on the targeted entity, the block face or itself; None when nothing was used,
+    // Refused when the mode forbids the item to act on the block (food is eaten instead).
     HandEffect use(const QcClientWorld &world, const QcContentRegistry &content);
     // The use button released or cancelled: a drawn launcher shoots or lets go (decision E-425);
     // the server hears of it only while `send` (the session plays).
@@ -93,6 +99,9 @@ public:
     HandEffect attack();
 
 private:
+    // Whether the mode lets the held item do `action` to the block at `pos` (the same rule as the
+    // server's, QcAdventureRules::permits); false where no block is loaded.
+    bool permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const;
     // Uses the held item on the targeted entity; None when the entity does not take it.
     HandEffect useOnEntity(const QcContentRegistry &content, const QcItemDefinition *item);
 

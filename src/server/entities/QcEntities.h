@@ -132,7 +132,8 @@ public:
     void forgetDeaths() { m_died.clear(); }
 
 private:
-    static bool isPresent(const QcServerClient &client) { return client.state == QcServerClient::State::Playing && !client.dead; }
+    // Spectators have no body (decision E-730): no kind of the register sees, meets or syncs them.
+    static bool isPresent(const QcServerClient &client) { return client.hasBody(); }
 
     template<typename Self, typename Visit>
     static void visitAll(Self &self, Visit &&visit)

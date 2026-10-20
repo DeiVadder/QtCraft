@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QHash>
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
 
@@ -103,6 +104,7 @@ private:
     void parseLabels();
     void parseCarts();
     void parseSpawnersAndLoot();
+    void parseAdventure();
     void parseExtras();
 
     const QJsonObject &m_json;
@@ -337,9 +339,47 @@ void StructureReader::parseSpawnersAndLoot()
     }
 }
 
+// "adventure": the allow-list entries of adventure mode (decision E-735), names qualified like the
+// palette's; "*" stays the wildcard. Only the showcase brings them into a world, so a structure
+// without "showcase" may not have them; the names are checked against the content when it is
+// finished (QcContentRegistry).
+void StructureReader::parseAdventure()
+{
+    const QJsonValue value = m_json.value(u"adventure"_s);
+    if (value.isUndefined()) {
+        return;
+    }
+    if (!value.isObject() || !m_structure.showcase) {
+        m_reader.fail(u"'adventure' must be an object, and only showcase structures may have it"_s);
+        return;
+    }
+
+    const QcAdventureRules::Read written = QcAdventureRules::fromJson(value.toObject());
+    if (!written.problems.isEmpty()) {
+        m_reader.fail(u"'adventure': "_s + written.problems.constFirst());
+        return;
+    }
+
+    const auto qualify = [this](const QString &name) {
+        return name == QLatin1StringView(QcAdventureRules::anyItem) ? name : QcContentNames::qualify(name, m_namespace);
+    };
+    for (const QcAdventureRules::Action action : {QcAdventureRules::Action::Break, QcAdventureRules::Action::PlaceOn}) {
+        const QStringList items = written.rules.items(action);
+        for (const QString &item : items) {
+            QStringList blocks = written.rules.blocks(action, item);
+            std::ranges::transform(blocks, blocks.begin(), qualify);
+            if (!m_structure.adventure.allow(action, qualify(item), blocks)) {
+                m_reader.fail(u"'adventure' lists are too long"_s);
+                return;
+            }
+        }
+    }
+}
+
 // The creatures, stands, contents, labels, cells, carts, spawners, variation and site, all within the size.
 void StructureReader::parseExtras()
 {
+    parseAdventure();
     parseMobs();
     parseStands();
     parseContents();

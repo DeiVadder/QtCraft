@@ -5,6 +5,7 @@
 
 #include "common/content/definitions/QcAppearance.h"
 #include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/gameplay/QcItemStack.h"
@@ -158,10 +159,13 @@ struct PlayerExperience
 };
 
 // Server -> client: the receiving player's game mode (decision E-282), after the welcome and with
-// every change. The client derives the rules from it (QcGameModes::rules).
+// every change. The client derives the rules from it (QcGameModes::rules). In adventure mode it
+// carries the world's allow-lists (decision E-735), sent again when /adventure changes them; in
+// other modes they are empty.
 struct GameMode
 {
     QcGameMode mode = QcGameMode::Survival;
+    QcAdventureRules adventure;
 };
 
 // Client -> server, creative mode only (decision E-283): puts `stack` into the inventory slot `slot`

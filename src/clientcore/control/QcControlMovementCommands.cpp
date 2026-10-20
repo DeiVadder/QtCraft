@@ -4,6 +4,7 @@
 #include "clientcore/control/QcControlArguments.h"
 #include "clientcore/control/QcControlCommandTable.h"
 #include "clientcore/control/QcControlContext.h"
+#include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/session/QcClientSession.h"
 
 #include <algorithm>
@@ -98,6 +99,16 @@ void QcControlMovementCommands::move(const QJsonObject &request, bool isJump)
     intent.jump = isJump || request.value(u"jump"_s).toBool(false);
     intent.sneak = request.value(u"sneak"_s).toBool(false);
     intent.sprint = request.value(u"sprint"_s).toBool(false);
+    // A spectator's flight speed in tenths (decision E-730); it stays after the move like the wheel's.
+    if (request.contains(u"flySpeed"_s)) {
+        const int speed = request.value(u"flySpeed"_s).toInt(QcPlayerInput::normalFlySpeed);
+        const int clamped = std::clamp(speed, int(QcPlayerInput::minFlySpeed), int(QcPlayerInput::maxFlySpeed));
+        if (clamped != speed) {
+            qCWarning(lcSession) << "Control: flySpeed" << speed << "is outside" << QcPlayerInput::minFlySpeed << "to"
+                                 << QcPlayerInput::maxFlySpeed << "- using" << clamped;
+        }
+        intent.flySpeed = quint8(clamped);
+    }
     session().setIntent(intent);
 
     const int ticks = QcControlArguments::ticks(request, isJump ? 2 : 20);
@@ -148,6 +159,8 @@ bool QcControlMovementCommands::isReady() const
         }
     }
 
-    // Settled: the player stands on something or floats in water.
-    return session().playerMotion().onGround || session().playerMotion().inWater;
+    // Settled: the player stands on something or floats in water; a spectator floats anywhere
+    // (decision E-730) once the server placed him.
+    const QcEntityMotion &motion = session().playerMotion();
+    return motion.onGround || motion.inWater || (session().gameMode().rules().noClip && session().prediction().hasServerState());
 }

@@ -268,7 +268,7 @@ bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
     quint32 lowest = std::numeric_limits<quint32>::max();
     for (const auto &client : m_state.clients()) {
         const QcAabb body = QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
-        if (client->state == QcServerClient::State::Playing && !client->dead && body.intersects(cell)
+        if (client->hasBody() && body.intersects(cell)
             && client->equipment.at(armour->slot).isEmpty() && client->id < lowest) {
             lowest = client->id;
             player = client.get();

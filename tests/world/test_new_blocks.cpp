@@ -74,7 +74,7 @@ private:
         motion.position = {0.5, 65.0, 0.5};
         motion.onGround = true;
         for (int tick = 0; tick < ticks; ++tick) {
-            motion.stepPlayer(walking(), world, QcPhysics::tickDuration, false);
+            motion.stepPlayer(walking(), world, QcPhysics::tickDuration, QcMovement::Walk);
         }
         return std::abs(motion.position.z - 0.5);
     }
@@ -88,7 +88,7 @@ private:
         input.jump = true;
         double peak = 65.0;
         for (int tick = 0; tick < 30; ++tick) {
-            motion.stepPlayer(input, world, QcPhysics::tickDuration, false);
+            motion.stepPlayer(input, world, QcPhysics::tickDuration, QcMovement::Walk);
             input.jump = false;
             peak = std::max(peak, motion.position.y);
         }
@@ -167,7 +167,7 @@ private slots:
         QcEntityMotion motion;
         motion.position = {0.5, 59.0, 0.5};
         for (int tick = 0; tick < 20; ++tick) {
-            motion.stepPlayer({}, shaft, QcPhysics::tickDuration, false);
+            motion.stepPlayer({}, shaft, QcPhysics::tickDuration, QcMovement::Walk);
         }
         QVERIFY(motion.slowed);
         QVERIFY2(motion.velocity.y > -1.0, qPrintable(QString::number(motion.velocity.y)));

@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
+#include "common/gameplay/QcAdventureRules.h"
 #include "common/protocol/QcMessages.h"
 
 class QcBlockScreens;
@@ -59,6 +60,9 @@ public:
     void swingWhileMining();
 
 private:
+    // Whether the player's mode lets the held item do `action` to the block at `pos` (adventure
+    // allow-lists, decision E-735); false where no block is loaded.
+    bool permits(const QcServerClient &client, QcAdventureRules::Action action, QcBlockPos pos) const;
     // Opens a machine, chest or crafting table, toggles a door or switches a lever, button or repeater
     // at `target`; false when the click is not such a use.
     bool useClickedBlock(QcServerClient &client, QcBlockPos target);

@@ -35,6 +35,9 @@ class QcGameInput : public QObject
     // The hotbar's radial menu held open by its key, chosen with the mouse (decision E-614).
     Q_PROPERTY(bool radialOpen READ radialOpen NOTIFY radialChanged FINAL)
     Q_PROPERTY(int radialSlot READ radialSlot NOTIFY radialChanged FINAL)
+    // A spectator's flight speed as a factor of the normal one (1.0), set with the wheel (decision
+    // E-730).
+    Q_PROPERTY(double flySpeed READ flySpeed NOTIFY flySpeedChanged FINAL)
 
 public:
     static constexpr float keyboardLookSpeed = 120.0f;
@@ -51,6 +54,7 @@ public:
     ~QcGameInput() override;
 
     bool mouseCaptured() const { return m_capture.captured(); }
+    double flySpeed() const;
     // Frees the mouse (window lost the focus, world closed); a click or the next step back from a
     // screen into the world captures it again.
     void releaseMouse();
@@ -91,6 +95,7 @@ signals:
     void mouseCapturedChanged();
     void playerListHeldChanged();
     void radialChanged();
+    void flySpeedChanged();
     // The handbook key was pressed in the world: the handbook opens at what the crosshair points
     // at, else at the page shown last (the game knows the target from the HUD).
     void handbookRequested();
@@ -113,7 +118,7 @@ private:
     QcMouseCapture::Situation situation() const;
     // Hides the cursor and starts relative motion, or the opposite.
     void applyCapture(QcMouseCapture::Change change);
-    bool handleWheel(const QWheelEvent &wheel) const;
+    bool handleWheel(const QWheelEvent &wheel);
     bool handleMouseMove(const QMouseEvent &mouse);
     // Mouse motion of the world: turns the view, or points into the open radial menu.
     void turn(QPointF delta);

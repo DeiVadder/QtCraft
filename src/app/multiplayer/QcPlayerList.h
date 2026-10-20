@@ -18,7 +18,7 @@ class QcPlayerList : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
-    // [{name, operator, self}] sorted by name without case.
+    // [{name, operator, self, spectator}] sorted by name without case, spectators last.
     Q_PROPERTY(QVariantList players READ players NOTIFY changed FINAL)
     Q_PROPERTY(int count READ count NOTIFY changed FINAL)
     // The server's name; the world's name for a single-player world (also when open to the LAN).

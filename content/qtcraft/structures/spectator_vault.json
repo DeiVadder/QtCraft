@@ -1,0 +1,79 @@
+{
+    "name": "spectator_vault",
+    "showcase": {
+        "order": 105
+    },
+    "palette": {
+        "P": "polished_stone",
+        "S": "stone_bricks",
+        "L": "yellow_wool",
+        "A": "air"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "       ",
+            " SSSSS ",
+            " SAAAS ",
+            " SALAS ",
+            " SAAAS ",
+            " SSSSS ",
+            "       "
+        ],
+        [
+            "       ",
+            " SSSSS ",
+            " SAAAS ",
+            " SAAAS ",
+            " SAAAS ",
+            " SSSSS ",
+            "       "
+        ],
+        [
+            "       ",
+            " SSSSS ",
+            " SAAAS ",
+            " SAAAS ",
+            " SAAAS ",
+            " SSSSS ",
+            "       "
+        ],
+        [
+            "       ",
+            " SSSSS ",
+            " SSSSS ",
+            " SSSSS ",
+            " SSSSS ",
+            " SSSSS ",
+            "       "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                6.0,
+                3.5
+            ],
+            "text": "structure.qtcraft.spectator_vault",
+            "detail": ""
+        },
+        {
+            "at": [
+                3.5,
+                3.2,
+                3.5
+            ],
+            "text": "structure.qtcraft.spectator_vault.inside",
+            "detail": ""
+        }
+    ]
+}

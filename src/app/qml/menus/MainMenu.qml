@@ -303,7 +303,9 @@ Rectangle {
                             valueRole: "value"
                             model: [
                                 { value: "survival", text: qsTr("Survival") },
-                                { value: "creative", text: qsTr("Creative") }
+                                { value: "creative", text: qsTr("Creative") },
+                                { value: "adventure", text: qsTr("Adventure") },
+                                { value: "spectator", text: qsTr("Spectator") }
                             ]
                         }
 
@@ -313,6 +315,10 @@ Rectangle {
                             color: Theme.textSecondary
                             text: gameMode.currentValue === "creative"
                                   ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
+                                  : gameMode.currentValue === "adventure"
+                                  ? qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.")
+                                  : gameMode.currentValue === "spectator"
+                                  ? qsTr("Fly through blocks and look around, unseen; nothing can be touched.")
                                   : qsTr("Gather, craft and survive: health, hunger and creatures count.")
                         }
 

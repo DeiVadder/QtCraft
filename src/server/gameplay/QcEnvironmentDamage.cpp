@@ -43,7 +43,7 @@ void QcEnvironmentDamage::applyContactDamage()
     }
 
     for (const auto &client : m_state.clients()) {
-        if (client->state != QcServerClient::State::Playing || client->dead || !contactDue(*client)) {
+        if (!client->hasBody() || !contactDue(*client)) {
             continue;
         }
 
@@ -117,7 +117,7 @@ void QcEnvironmentDamage::applySuffocation()
 
     for (const auto &client : m_state.clients()) {
         const QcVec3 eyes = client->motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-        if (client->state == QcServerClient::State::Playing && !client->dead && eyesInsideBlock(m_state, eyes)) {
+        if (client->hasBody() && eyesInsideBlock(m_state, eyes)) {
             m_health.damage(*client, suffocationDamage, {}, QcPlayerHealth::DamageKind::Unblockable);
         }
     }

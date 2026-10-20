@@ -56,6 +56,7 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"riding"_s, m_session.prediction().riding().isRiding() ? QJsonValue(qint64(m_session.prediction().riding().vehicle())) : QJsonValue());
     status.insert(u"largestCorrection"_s, m_session.prediction().largestCorrection());
     status.insert(u"gameMode"_s, QString(QcGameModes::name(m_session.gameMode().mode())));
+    status.insert(u"flySpeed"_s, int(m_session.intent().flySpeed));
     status.insert(u"yaw"_s, m_session.intent().yaw);
     status.insert(u"pitch"_s, m_session.intent().pitch);
     status.insert(u"loadedChunks"_s, m_session.world() ? qint64(m_session.world()->chunkCount()) : 0);

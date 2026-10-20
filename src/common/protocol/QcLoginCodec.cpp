@@ -62,7 +62,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 {
     stream << quint32(m.players.size());
     for (const QcMsg::PlayerList::Entry &entry : m.players) {
-        stream << entry.entityId << entry.name << entry.operatorRights;
+        stream << entry.entityId << entry.name << entry.operatorRights << entry.spectator;
     }
 }
 
@@ -117,7 +117,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 
     for (quint32 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
         QcMsg::PlayerList::Entry entry;
-        stream >> entry.entityId >> entry.name >> entry.operatorRights;
+        stream >> entry.entityId >> entry.name >> entry.operatorRights >> entry.spectator;
         if (entry.name.size() > QcMsg::Hello::maxNameLength) {
             return qcError(u"Player name too long"_s);
         }

@@ -77,6 +77,8 @@ public:
     // (decision E-590).
     QList<QcStructureDefinition::Guardian> guardians;
     int groundLayer = 0;
+    // Allow-list entries of adventure mode the showcase adds to the world (decision E-735).
+    QcAdventureRules adventure;
 
 private:
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(m_sizeX) * (z + qsizetype(m_sizeZ) * y); }

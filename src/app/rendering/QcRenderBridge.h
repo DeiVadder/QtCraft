@@ -35,7 +35,7 @@ public:
     void placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds);
     // Creatures, dropped items, falling blocks and, seen from outside, the player.
     void updateEntities(double alpha, QcCameraMode mode);
-    // The first-person arm with the held item; hidden in the other camera modes.
+    // The first-person arm with the held item; hidden in the other camera modes and for a spectator.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
     // After placeCamera: the sky of the time of day under the weather and a lightning flash; below
     // the world it darkens with the camera height.

@@ -51,7 +51,9 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
 
 void QcRenderBridge::updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode)
 {
-    m_parts.view->setHandMesh(mode == QcCameraMode::FirstPerson && !m_handHidden ? m_entities.buildHand(alpha, eye) : nullptr);
+    // A spectator has no hand (decision E-730).
+    const bool shown = mode == QcCameraMode::FirstPerson && !m_handHidden && m_parts.session->gameMode().rules().tangible;
+    m_parts.view->setHandMesh(shown ? m_entities.buildHand(alpha, eye) : nullptr);
 }
 
 void QcRenderBridge::updateSky(double alpha)

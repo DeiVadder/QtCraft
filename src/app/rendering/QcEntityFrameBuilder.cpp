@@ -387,8 +387,8 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     }
     appendSpawners(*mesh, frame);
     appendExplosions(*mesh, frame, double(session.tickCount()) + alpha);
-    // In third person the player sees their own character.
-    if (mode != QcCameraMode::FirstPerson && !session.isDead()) {
+    // In third person the player sees their own character; a spectator has none (decision E-730).
+    if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {
         appendLocalPlayer(*mesh, frame);
     }
     m_capes.endFrame();

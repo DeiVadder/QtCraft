@@ -17,7 +17,7 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 {
     const QcPlayerInput &in = m.input;
-    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.yaw << in.pitch;
+    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch;
 }
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
@@ -97,9 +97,10 @@ void encode(QDataStream &stream, QcMsg::PlayerExperience m)
     stream << m.level << m.points << m.pointsForNext;
 }
 
-void encode(QDataStream &stream, QcMsg::GameMode m)
+void encode(QDataStream &stream, const QcMsg::GameMode &m)
 {
     stream << quint8(m.mode);
+    m.adventure.write(stream);
 }
 
 void encode(QDataStream &stream, QcMsg::CreativeItem m)
@@ -121,9 +122,12 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
-    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.yaw >> in.pitch;
+    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch;
     if (!std::isfinite(in.forward) || !std::isfinite(in.strafe) || !std::isfinite(in.yaw) || !std::isfinite(in.pitch)) {
         return qcError(u"Non-finite player input"_s);
+    }
+    if (in.flySpeed < QcPlayerInput::minFlySpeed || in.flySpeed > QcPlayerInput::maxFlySpeed) {
+        return qcError(u"Flight speed %1 out of range"_s.arg(in.flySpeed));
     }
     return QcMsg::PlayerInput{in};
 }
@@ -285,7 +289,11 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     if (!mode) {
         return qcError(u"Unknown game mode %1"_s.arg(value));
     }
-    return QcMsg::GameMode{*mode};
+    std::optional<QcAdventureRules> adventure = QcAdventureRules::read(stream);
+    if (!adventure) {
+        return qcError(u"Invalid adventure allow-lists"_s);
+    }
+    return QcMsg::GameMode{*mode, std::move(*adventure)};
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream)

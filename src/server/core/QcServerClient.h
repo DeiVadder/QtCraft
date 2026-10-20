@@ -165,6 +165,9 @@ struct QcServerClient : QcEntity
     QcInventory keptInventory;
     QcEquipment keptEquipment;
     QcGameModes::Rules rules() const { return QcGameModes::rules(gameMode); }
+    // Whether the player's body is in the world: playing, alive and no spectator (decision E-730).
+    // Only such a body is seen by others, noticed by creatures, hit, pushed and pressing plates.
+    [[nodiscard]] bool hasBody() const { return state == State::Playing && !dead && rules().tangible; }
 
     // Health and food (QcPlayerHealth).
     double health = maxHealth;

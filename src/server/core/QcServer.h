@@ -260,9 +260,10 @@ private:
     QcFireIgnition m_ignition;
     QcPlayerHealth m_health;
     QcServerExplosions m_explosions;
+    // Before the game modes, which take a spectator out of his cart.
+    QcServerMinecarts m_minecarts;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
-    QcServerMinecarts m_minecarts;
     QcServerAnimals m_animals;
     QcServerPlants m_plants;
     QcServerGolems m_golems;

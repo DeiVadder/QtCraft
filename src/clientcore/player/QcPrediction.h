@@ -32,7 +32,7 @@ public:
     static constexpr qsizetype maxPendingInputs = 100;
 
     // Movement intent applied on every tick until changed. Non-finite values are replaced, ranges
-    // clamped and yaw wrapped into [0, 360).
+    // (also the flight speed) clamped and yaw wrapped into [0, 360).
     void setIntent(const QcPlayerInput &intent);
     const QcPlayerInput &intent() const { return m_intent; }
 
@@ -48,11 +48,11 @@ public:
     // The minecart the player rides.
     const QcClientRiding &riding() const { return m_riding; }
 
-    // Predicts one tick from the intent: on foot (or flying, with `flying` as the wish sent and
-    // `mayFly` from the game mode) through the shared physics; riding the motion stays (followCart
+    // Predicts one tick from the intent: on foot or flying (with `flying` as the wish sent and
+    // `movement` from the game mode) through the shared physics; riding the motion stays (followCart
     // moves it). Returns the input to send; it carries the next sequence number and is kept until
     // acknowledged.
-    QcPlayerInput predict(const QcBlockAccess &world, bool flying, bool mayFly);
+    QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement);
     // While riding, after predict(): the player moves onto the seat of the cart as the entity
     // mirror shows it this tick.
     void followCart(const QcClientEntities &entities);
@@ -63,7 +63,7 @@ public:
     void mirror(const QcPrediction &core, bool current);
     // Applies the server's state of the player and replays the pending inputs on top of it (with
     // the world once it exists).
-    Reconciled reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, bool mayFly);
+    Reconciled reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, QcMovement movement);
 
 private:
     QcPlayerInput m_intent;

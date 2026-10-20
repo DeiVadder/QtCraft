@@ -12,18 +12,19 @@ void QcPrediction::setIntent(const QcPlayerInput &intent)
     m_intent.forward = std::clamp(finiteOr(intent.forward, 0.0f), -1.0f, 1.0f);
     m_intent.strafe = std::clamp(finiteOr(intent.strafe, 0.0f), -1.0f, 1.0f);
     m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
+    m_intent.flySpeed = std::clamp(intent.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed);
     const float yaw = std::fmod(finiteOr(intent.yaw, 0.0f), 360.0f);
     m_intent.yaw = yaw < 0.0f ? yaw + 360.0f : yaw;
 }
 
-QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, bool mayFly)
+QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcMovement movement)
 {
     QcPlayerInput input = m_intent;
     input.sequence = m_nextSequence++;
     input.flying = flying;
     m_previousMotion = m_motion;
     if (!m_riding.isRiding()) {
-        m_motion.stepPlayer(input, world, QcPhysics::tickDuration, mayFly);
+        m_motion.stepPlayer(input, world, QcPhysics::tickDuration, movement);
     }
 
     if (m_pendingInputs.size() >= maxPendingInputs) {
@@ -33,7 +34,7 @@ QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, boo
     return input;
 }
 
-QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, bool mayFly)
+QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, QcMovement movement)
 {
     // A state older than one already applied would roll the prediction back; ignore it.
     if (m_hasServerState && state.lastInputSequence < m_lastAcknowledged) {
@@ -57,7 +58,7 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
     QcEntityMotion replayed = state.motion;
     if (world) {
         for (const QcPlayerInput &input : std::as_const(m_pendingInputs)) {
-            replayed.stepPlayer(input, *world, QcPhysics::tickDuration, mayFly);
+            replayed.stepPlayer(input, *world, QcPhysics::tickDuration, movement);
         }
     }
     m_lastCorrection = gotInOrOut || placed ? 0.0 : (replayed.position - m_motion.position).length();

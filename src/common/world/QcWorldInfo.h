@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcPackReference.h"
 #include "common/core/QcChunkPos.h"
+#include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/world/QcPlacedChunkLoader.h"
 #include "common/world/QcWeather.h"
@@ -63,6 +64,9 @@ struct QcWorldInfo
     // A mode name this version does not know (from a newer game): the world plays as survival but
     // keeps the name when saved, until /defaultgamemode sets another mode.
     QString unknownGameMode;
+    // What players in adventure mode may break and act on (decision E-735, world.json "adventure";
+    // a world without the key allows nothing).
+    QcAdventureRules adventure;
     // The world's simulation limits (decision E-349) as written in world.json ("limits"), only the
     // keys an operator set; a single-player world plays with them, a dedicated server ignores them.
     QJsonObject limits;

@@ -1,14 +1,17 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/protocol/QcMessages.h"
 
 #include <functional>
 #include <optional>
+#include <utility>
 
-// The local player's game mode as the server reported it (decision E-282) and what the client does
-// with it: the wish to fly that goes with every input (decision E-284), the pace of instant breaking
+// The local player's game mode as the server reported it (decision E-282), with the world's
+// adventure allow-lists in adventure mode (decision E-735), and what the client does with it: the
+// wish to fly that goes with every input (decision E-284), the pace of instant breaking
 // in creative mode, and the requests for catalogue items (E-283) and picked blocks (E-285).
 class QcClientGameMode
 {
@@ -27,6 +30,9 @@ public:
     QcGameMode mode() const { return m_mode; }
     QcGameModes::Rules rules() const { return QcGameModes::rules(m_mode); }
     void setMode(QcGameMode mode);
+    // The allow-lists that came with the mode (empty outside adventure mode).
+    const QcAdventureRules &adventure() const { return m_adventure; }
+    void setAdventure(QcAdventureRules adventure) { m_adventure = std::move(adventure); }
 
     // Double tap of jump: starts or ends a flight where the mode allows flying.
     void toggleFlight();
@@ -45,6 +51,10 @@ public:
     // instantBreakTicks.
     std::optional<QcBlockPos> nextInstantBreak(std::optional<QcBlockPos> mined);
 
+    // A spectator's flight speed (QcPlayerInput::flySpeed) after `steps` notches of the mouse wheel
+    // (up is faster), within its range (decision E-730).
+    [[nodiscard]] static quint8 steppedFlySpeed(quint8 speed, int steps);
+
     // The creative catalogue: puts `stack` into `slot` (QcMsg::CreativeItem); the server refuses it
     // outside creative mode.
     void creativeItem(int slot, QcItemStack stack) const;
@@ -55,6 +65,7 @@ private:
     Sender m_send;
     WishListener m_wishListener;
     QcGameMode m_mode = QcGameMode::Survival;
+    QcAdventureRules m_adventure;
     bool m_flightWanted = false;
     int m_breakCooldown = 0;
 };

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -644,6 +644,35 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 [Crafting table](blocks.md#block-qtcraft-crafting_table)
 
+### <a id="chapter-qtcraft-spectator"></a>Spectator mode
+
+**Flying through everything**
+
+In **spectator** mode you look around without taking part: you always fly and pass through blocks, water and lava. **Space** rises, **Shift** sinks and **Ctrl** flies faster, like creative flight (10.9 m/s). The mouse wheel sets the flight speed from a tenth to four times the normal one; the hint at the bottom of the screen shows it. Nothing hurts you, not even the void below the world, and you never get hungry.
+
+**Unseen and untouchable**
+
+Other players do not see you, and creatures neither attack you nor run from you. You cannot break, place or use blocks, attack, trade, open chests or your inventory, and you pick nothing up; pressure plates, projectiles and minecarts pass you by. There is no hotbar, health or food on the screen and no hand in the view, only the crosshair. The player list still names you, greyed at the end of the list. The world loads around you as around any player.
+
+**Changing to and from spectator**
+
+Operators change the mode with `/gamemode spectator` (short `sp`, also for another player: `/gamemode spectator Alice`) and back with `/gamemode survival`, `/gamemode creative` or `/gamemode adventure`; a new world can start in it (**Game mode** in the main menu). Spectator keeps your survival inventory and armour as they are. If you leave spectator mode inside blocks, you come out on top of them, at the nearest free place straight above you.
+
+### <a id="chapter-qtcraft-adventure"></a>Adventure mode
+
+**Playing a prepared world**
+
+**Adventure** is survival for worlds that someone built for you to play: health, hunger, creatures, crafting, eating and fighting work as in survival, and you still open doors, chests, furnaces and crafting tables, switch levers and buttons and trade with villagers. What you cannot do is change the world: blocks do not break when you mine them, and items do nothing to blocks (no placing, tilling, pouring, lighting fire, armour stands or minecarts) unless the world allows it. Armour stands withstand your hits. A short notice says when something is not allowed. Operators switch with `/gamemode adventure` (or `a`), and a new world can start in adventure (**Game mode** in the main menu). Adventure shares its inventory with survival.
+
+**Where breaking and placing are allowed**
+
+The world keeps two allow-lists, which operators change with `/adventure`:
+- `/adventure canBreak <item> <block> …`: that item may break those blocks, e.g. `/adventure canBreak iron_pickaxe gold_ore`. Mining then takes as long as in survival and drops what it drops.
+- `/adventure canPlaceOn <item> <block> …`: that item may be placed on (or used on) those blocks, e.g. `/adventure canPlaceOn oak_planks stone_bricks`.
+- `*` instead of an item stands for every item and the empty hand: `/adventure canBreak * glass`.
+- `/adventure` lists the allow-lists, `/adventure remove canBreak <item> [block …]` takes entries away, `/adventure clear` empties both.
+The lists belong to the world and apply to every player in adventure mode. Explosions, pistons, liquids, creatures and commands still change blocks as usual; only the players are held back. A glass bottle fills everywhere, since it changes no block.
+
 ### <a id="chapter-qtcraft-rules"></a>Game rules
 
 **Game rules**
@@ -686,7 +715,8 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
 - `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never); `/gamerule playerInvulnerabilityTicks [0-200]` and `/gamerule mobInvulnerabilityTicks [0-200]`: the game ticks without damage after a hit (0 none)
 - `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
-- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
+- `/gamemode [survival|creative|adventure|spectator] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
+- `/adventure`: shows or changes what players in adventure mode may break and place on (see Adventure mode)
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs
 - `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)

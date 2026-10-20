@@ -4,6 +4,7 @@
 #include "QcRawClient.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServer.h"
+#include "server/storage/QcWorldStorage.h"
 #include "world/QcShowcaseTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
@@ -13,8 +14,8 @@
 
 using namespace Qt::StringLiterals;
 
-// The stations and pens of the showcase world as the server runs them: the dungeon, desert temple,
-// jungle temple and witch hut stations and the creature pens of stage 52.
+// The stations and pens of the showcase world as the server runs them: the adventure, dungeon,
+// desert temple, jungle temple and witch hut stations and the creature pens of stage 52.
 class TestShowcaseStations : public QObject
 {
     Q_OBJECT
@@ -90,6 +91,27 @@ private:
     }
 
 private slots:
+    // The adventure station (decision E-735) brings its allow-list entries into the showcase world,
+    // which keeps them in world.json.
+    void theAdventureStationAllowsItsBlocks()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = QcShowcaseTestUtil::makeServer(m_content, directory.path(), u"showcase"_s, 0);
+        QVERIFY(server->openWorld());
+        QVERIFY(server->stop());
+
+        const QcResult<QcWorldInfo> info = QcWorldStorage(directory.path(), nullptr).readInfo();
+        QVERIFY(info);
+        using Action = QcAdventureRules::Action;
+        QCOMPARE(info->adventure.blocks(Action::Break, u"qtcraft:stone_pickaxe"_s), QStringList{u"qtcraft:mossy_cobblestone"_s});
+        QCOMPARE(info->adventure.blocks(Action::PlaceOn, u"qtcraft:lime_wool"_s), QStringList{u"qtcraft:lime_concrete"_s});
+
+        const QcShowcaseGenerator generator(m_content);
+        QVERIFY(std::ranges::any_of(generator.plan().placements, [](const QcStructurePlacement &placement) {
+            return placement.structure().name() == u"qtcraft:adventure_station"_s;
+        }));
+    }
+
     // The dungeon station (decision E-520): its spawner brings forth confined zombies, its chest
     // holds loot from the dungeon table, and the torch of its corridor stub lies outside the light
     // reach of the spawn area.

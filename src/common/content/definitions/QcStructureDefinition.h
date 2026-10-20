@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/gameplay/QcAdventureRules.h"
+
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 
@@ -209,6 +211,10 @@ struct QcStructureDefinition
     // places it (villages, mine shafts, the showcase).
     std::optional<Surface> surface;
     QList<Guardian> guardians;
+    // Allow-list entries of adventure mode (decision E-735) the showcase adds to the world when it
+    // places the structure (`"adventure": {"canBreak": {item: [blocks]}, "canPlaceOn": {…}}`); like
+    // every allow-list they hold in the whole world.
+    QcAdventureRules adventure;
 
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(sizeX) * (z + qsizetype(sizeZ) * y); }
 };

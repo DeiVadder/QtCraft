@@ -114,6 +114,12 @@ QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos)
     return boxes;
 }
 
+bool overlapsBlocks(const QcBlockAccess &world, const QcAabb &box)
+{
+    const ObstacleList boxes = solidBoxesIn(box, world);
+    return std::ranges::any_of(boxes, [&box](const QcAabb &solid) { return solid.intersects(box); });
+}
+
 namespace {
 
 // Whether a cell from `start` to z = `lastZ` holds a climbable block.
@@ -452,10 +458,35 @@ void QcEntityMotion::stepFlying(const QcPlayerInput &input, const QcVec3 &wish, 
     }
 }
 
-void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly)
+// One tick of a spectator's flight (decision E-730): the velocity eases towards the wished one as
+// in creative flight, scaled by the chosen speed, and the body moves through every block. Nothing
+// around it counts: no ground, liquid, ladder or cobweb. Only the floor of the void holds.
+void QcEntityMotion::stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, double dt)
 {
-    inWater = isLiquidAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0}));
+    flying = true;
+    onGround = false;
+    inWater = false;
+    climbing = false;
+    slowed = false;
 
+    const double factor = double(std::clamp(input.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed))
+                          / double(QcPlayerInput::normalFlySpeed);
+    const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
+    const double vertical = double(int(input.jump) - int(input.sneak)) * flyVerticalSpeed * factor;
+    const double blend = std::min(1.0, flyAcceleration * dt);
+    velocity.x += (wish.x * speed - velocity.x) * blend;
+    velocity.z += (wish.z * speed - velocity.z) * blend;
+    velocity.y += (vertical - velocity.y) * blend;
+
+    position += velocity * dt;
+    if (position.y < QcWorld::voidFloorY) {
+        position.y = QcWorld::voidFloorY;
+        velocity.y = std::max(0.0, velocity.y);
+    }
+}
+
+void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, QcMovement movement)
+{
     const double yaw = qDegreesToRadians(double(input.yaw));
     const QcVec3 forward{std::sin(yaw), 0.0, -std::cos(yaw)};
     const QcVec3 right{std::cos(yaw), 0.0, std::sin(yaw)};
@@ -464,7 +495,13 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
         wish = wish.normalized();
     }
 
-    flying = input.flying && mayFly;
+    if (movement == QcMovement::NoClip) {
+        stepNoClip(input, wish, dt);
+        return;
+    }
+
+    inWater = isLiquidAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0}));
+    flying = input.flying && movement == QcMovement::MayFly;
     if (flying) {
         stepFlying(input, wish, world, dt);
         return;

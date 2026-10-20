@@ -72,13 +72,13 @@ private:
         east.yaw = 90.0f;
         east.forward = 1.0f;
         for (int tick = 0; tick < ticks; ++tick) {
-            motion.stepPlayer(east, world, dt, false);
+            motion.stepPlayer(east, world, dt, QcMovement::Walk);
         }
 
         Walk walk{motion.velocity.x, 0.0};
         const double released = motion.position.x;
         for (int tick = 0; tick < 200 && motion.velocity.length() > 1e-6; ++tick) {
-            motion.stepPlayer({}, world, dt, false);
+            motion.stepPlayer({}, world, dt, QcMovement::Walk);
         }
         walk.slide = motion.position.x - released;
         return walk;

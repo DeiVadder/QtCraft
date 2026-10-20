@@ -1,6 +1,7 @@
 #include "server/storage/QcWorldStorage.h"
 
 #include "common/protocol/QcStreamLimits.h"
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
@@ -74,6 +75,26 @@ int QcWorldStorage::storedFormatVersion() const
     return document.isObject() ? document.object().value(u"formatVersion"_s).toInt() : 0;
 }
 
+namespace {
+
+// The adventure allow-lists of world.json.
+QcAdventureRules adventureOf(const QJsonValue &value, const QString &path)
+{
+    // A damaged entry is left out with a warning; the rest of the world still opens (decision E-735).
+    if (!value.isUndefined() && !value.isObject()) {
+        qCWarning(lcServer, "%s: \"adventure\" is no object; the world allows nothing in adventure mode", qPrintable(path));
+        return {};
+    }
+
+    QcAdventureRules::Read read = QcAdventureRules::fromJson(value.toObject());
+    for (const QString &problem : std::as_const(read.problems)) {
+        qCWarning(lcServer, "%s: adventure allow-list %s", qPrintable(path), qPrintable(problem));
+    }
+    return std::move(read.rules);
+}
+
+} // namespace
+
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
 {
     const QString path = QDir(m_directory).filePath(u"world.json"_s);
@@ -113,6 +134,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
     info.defaultGameMode = knownMode.value_or(QcGameMode::Survival);
     info.unknownGameMode = knownMode || gameMode.isEmpty() ? QString() : gameMode.left(64);
+    info.adventure = adventureOf(json.value(u"adventure"_s), path);
     info.limits = json.value(u"limits"_s).toObject();
     bool idOk = false;
     info.nextCreatureId = json.value(u"nextCreatureId"_s).toString().toULongLong(&idOk);
@@ -168,6 +190,9 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
     json.insert(u"weather"_s, QcWeatherCycle::toJson(info.weather));
     if (!info.limits.isEmpty()) {
         json.insert(u"limits"_s, info.limits);
+    }
+    if (!info.adventure.isEmpty()) {
+        json.insert(u"adventure"_s, info.adventure.toJson());
     }
     if (!info.chunkLoaders.isEmpty()) {
         QJsonArray loaders;

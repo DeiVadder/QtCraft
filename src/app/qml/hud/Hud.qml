@@ -167,7 +167,7 @@ Item {
         anchors.bottom: hearts.top
         anchors.bottomMargin: Ui.hudPx(2)
         spacing: Ui.hudPx(2)
-        visible: hud.game.player.armour > 0 && !hud.game.player.creative
+        visible: hud.game.player.armour > 0 && !hud.game.player.creative && !hud.game.player.spectator
 
         Repeater {
             model: Math.ceil(hud.game.player.maxArmour / 2)
@@ -217,7 +217,7 @@ Item {
         anchors.bottom: hotbar.top
         anchors.bottomMargin: Ui.hudPx(4)
         height: Ui.hudPx(7)
-        visible: !hud.game.player.creative
+        visible: !hud.game.player.creative && !hud.game.player.spectator
         color: Theme.slotBorder
         border.color: Theme.textOutline
         border.width: 1
@@ -260,7 +260,7 @@ Item {
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
         spacing: Ui.hudPx(2)
-        visible: !hud.game.player.creative
+        visible: !hud.game.player.creative && !hud.game.player.spectator
 
         Repeater {
             model: Math.ceil(hud.game.player.maxHealth / 2)
@@ -312,7 +312,7 @@ Item {
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
         spacing: Ui.hudPx(2)
-        visible: !hud.game.player.creative
+        visible: !hud.game.player.creative && !hud.game.player.spectator
         layoutDirection: Qt.RightToLeft
 
         Repeater {
@@ -418,6 +418,8 @@ Item {
         anchors.bottom: hint.top
         anchors.bottomMargin: Ui.hudPx(8)
         spacing: Ui.hudPx(2)
+        // A spectator holds nothing (decision E-730).
+        visible: !hud.game.player.spectator
 
         // The first nine inventory rows are the hotbar.
         Repeater {
@@ -464,7 +466,10 @@ Item {
         visible: !hud.game.gamepad.focusShown
         opacity: hud.game.gamepad.active ? 0 : 1
         font.pixelSize: Ui.hudPx(13)
-        text: hud.game.input.mouseCaptured
+        text: hud.game.input.mouseCaptured && hud.game.player.spectator
+              ? qsTr("Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu")
+                    .arg(hint.keys.jump).arg(hint.keys.sneak).arg(hud.game.input.flySpeed.toLocaleString(Qt.locale(), "f", 1)).arg(hint.keys.chat)
+              : hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
                     .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
               : qsTr("Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.")

@@ -24,9 +24,10 @@ int ticksOf(double seconds)
     return std::max(1, int(std::lround(seconds / QcPhysics::tickDuration)));
 }
 
+// A spectator has no body to fish with (decision E-730): a cast bobber goes.
 bool isPresent(const QcServerClient &client)
 {
-    return client.state == QcServerClient::State::Playing && !client.dead;
+    return client.hasBody();
 }
 
 } // namespace

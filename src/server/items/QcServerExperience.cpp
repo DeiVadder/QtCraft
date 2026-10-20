@@ -21,8 +21,9 @@ void QcServerExperience::tick()
     if (!orbs.orbs().isEmpty()) {
         QList<QcExperienceOrbManager::PlayerView> players;
         for (const auto &client : m_state.clients()) {
-            if (client->state == QcServerClient::State::Playing) {
-                players.append({client->id, client->motion.position, !client->dead});
+            // Spectators collect nothing (decision E-730).
+            if (client->hasBody()) {
+                players.append({client->id, client->motion.position, true});
             }
         }
 

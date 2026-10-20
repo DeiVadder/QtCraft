@@ -51,6 +51,8 @@ class QcPlayerController : public QObject
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
     // The creative mode (decision E-282) and its item catalogue (decision E-286).
     Q_PROPERTY(bool creative READ creative NOTIFY gameModeChanged FINAL)
+    // The spectator mode (decision E-730): no hotbar, health, food or hand.
+    Q_PROPERTY(bool spectator READ spectator NOTIFY gameModeChanged FINAL)
     Q_PROPERTY(QcCreativeItemModel *creativeItems READ creativeItems CONSTANT FINAL)
 
 public:
@@ -82,6 +84,7 @@ public:
     int craftingSize() const;
     QVariantList craftableRecipes() const { return m_craftableRecipes; }
     bool creative() const;
+    bool spectator() const;
     QcCreativeItemModel *creativeItems() const { return m_creativeItems; }
 
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
@@ -116,6 +119,9 @@ signals:
     void machineChanged();
     void craftingChanged();
     void gameModeChanged();
+    // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
+    // every QcClientSession::refusalReportTicks; the HUD shows a short notice.
+    void actionRefused();
 
 private:
     void updateCraftableRecipes();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "server/commands/QcAdventureCommands.h"
 #include "server/commands/QcBlockCommands.h"
 #include "server/commands/QcCheatCommands.h"
 #include "server/commands/QcChunkCommands.h"
@@ -75,6 +76,8 @@ private:
     QcServerState &m_state;
     QcCommandRegistry m_registry;
     QcPendingCommands m_pending;
+    // Before the cheats, which take the parts it reads.
+    QcAdventureCommands m_adventure;
     QcCheatCommands m_cheats;
     QcBlockCommands m_blocks;
     QcPlayerCommands m_players;

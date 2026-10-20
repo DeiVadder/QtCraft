@@ -18,8 +18,9 @@ QList<QcItemEntity> QcServerItems::tick()
     const double dt = QcPhysics::tickDuration;
     QList<QcItemEntityManager::PlayerView> players;
     for (const auto &client : m_state.clients()) {
-        if (client->state == QcServerClient::State::Playing) {
-            players.append({client->id, client->motion.position, !client->dead});
+        // Spectators pick up nothing (decision E-730).
+        if (client->hasBody()) {
+            players.append({client->id, client->motion.position, true});
         }
     }
 

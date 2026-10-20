@@ -53,6 +53,9 @@ public:
 
     using TickMode = QcSessionTickMode;
 
+    // A refused action (adventure mode, decision E-735) is reported at most once in this many ticks.
+    static constexpr quint64 refusalReportTicks = 40;
+
     // Sends Hello and starts ticking on the tick thread, by a timer in this thread or by hand.
     void start(TickMode mode = TickMode::Threaded);
     void disconnectFromServer();
@@ -175,6 +178,9 @@ signals:
     void chatReceived(const QString &text);
     void playersChanged();
     void gameModeChanged();
+    // The mode refused a mining or use of the player (adventure allow-lists); at most once every
+    // refusalReportTicks.
+    void actionRefused();
     // A sound to play now (see QcSoundCue).
     void soundCue(const QcSoundCue &cue);
 
@@ -223,6 +229,8 @@ private:
     QcMsg::Welcome m_welcome;
     QcWorldMirror m_worldMirror;
     quint64 m_tickCount = 0;
+    // The first tick at which the next refusal is reported (actionRefused).
+    quint64 m_nextRefusalReport = 0;
 
     // Parts in dependency order: the hand reads the parts declared before it; what its actions mean
     // for the animation, the machine screen and the trading the session applies (apply()).

@@ -578,7 +578,7 @@ private slots:
         QVERIFY(file.open(QIODevice::ReadOnly));
         QJsonObject json = QJsonDocument::fromJson(file.readAll()).object();
         file.close();
-        json.insert(u"defaultGameMode"_s, u"adventure"_s);
+        json.insert(u"defaultGameMode"_s, u"puzzle"_s);
         QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
         file.write(QJsonDocument(json).toJson());
         file.close();
@@ -592,9 +592,9 @@ private slots:
         QVERIFY(QFile::remove(QDir(directory.filePath(u"players"_s)).filePath(QcWorldStorage::playerFileName(u"Raw"_s))));
         join(savedIn(directory));
         QCOMPARE(m_client->gameMode, QcGameMode::Survival);
-        QVERIFY(std::ranges::any_of(m_server->openWarnings(), [](const QString &warning) { return warning.contains(u"adventure"_s); }));
+        QVERIFY(std::ranges::any_of(m_server->openWarnings(), [](const QString &warning) { return warning.contains(u"puzzle"_s); }));
         leave();
-        QCOMPARE(savedMode(), u"adventure"_s);
+        QCOMPARE(savedMode(), u"puzzle"_s);
 
         // Until an operator sets a mode of this version.
         join(savedIn(directory));

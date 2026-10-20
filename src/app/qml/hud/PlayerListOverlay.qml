@@ -6,7 +6,8 @@ import QtQuick.Layouts
 import QtCraft
 
 // The players on the server while the player list key is held (decision E-259): the server's name
-// and message of the day, then every player with an operator mark; the own entry is highlighted.
+// and message of the day, then every player with an operator mark; the own entry is highlighted,
+// spectators come last and greyed (decision E-730).
 // It takes no input, the world keeps moving.
 Item {
     id: overlay
@@ -89,9 +90,18 @@ Item {
                             Layout.fillWidth: true
                             textFormat: Text.PlainText
                             text: playerRow.modelData.self ? qsTr("%1 (you)").arg(playerRow.modelData.name) : playerRow.modelData.name
-                            color: Theme.text
+                            // Spectators are greyed and slanted (decision E-730).
+                            color: playerRow.modelData.spectator ? Theme.textSecondary : Theme.text
                             font.bold: playerRow.modelData.self
+                            font.italic: playerRow.modelData.spectator
                             elide: Text.ElideRight
+                        }
+
+                        Label {
+                            visible: playerRow.modelData.spectator
+                            text: qsTr("Spectator")
+                            color: Theme.textSecondary
+                            font.pixelSize: Ui.hudPx(12)
                         }
 
                         Label {

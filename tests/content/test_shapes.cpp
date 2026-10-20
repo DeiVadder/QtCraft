@@ -320,7 +320,7 @@ private slots:
         QcPlayerInput input;
         input.forward = 1.0f;
         for (int i = 0; i < 40; ++i) {
-            player.stepPlayer(input, world, dt, false);
+            player.stepPlayer(input, world, dt, QcMovement::Walk);
         }
         QCOMPARE(player.position.y, 65.0);
     }

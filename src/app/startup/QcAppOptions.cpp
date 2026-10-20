@@ -18,7 +18,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"world-type"_s, u"World type for --play: terrain (default), flat, void or showcase (implies --play)."_s, u"type"_s},
         {u"flat-layers"_s, u"Layers of a flat world for --play, bottom up, e.g. 'bedrock,59*stone,3*dirt,grass_block' (with --world-type flat)."_s,
          u"layers"_s},
-        {u"game-mode"_s, u"Game mode for --play: survival (default) or creative."_s, u"mode"_s, u"survival"_s},
+        {u"game-mode"_s, u"Game mode for --play: survival (default), creative or adventure."_s, u"mode"_s, u"survival"_s},
         {u"showcase"_s, u"Start an unsaved showcase world immediately: every block, creature and item on show (same as --world-type showcase)."_s},
         {u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s},
         {u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s},
@@ -126,7 +126,7 @@ QcAppOptions QcAppOptions::parse(const QGuiApplication &app)
     }
     options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
     if (options.error.isEmpty() && !QcGameModes::parse(options.gameMode)) {
-        options.error = u"Unknown game mode '%1' (survival or creative)"_s.arg(options.gameMode);
+        options.error = u"Unknown game mode '%1' (survival, creative, adventure or spectator)"_s.arg(options.gameMode);
     }
     if (options.error.isEmpty()) {
         options.error = debugOptionsError(options);

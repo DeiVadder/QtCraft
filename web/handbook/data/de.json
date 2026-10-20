@@ -25,6 +25,8 @@
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
                 "chapter:qtcraft:creative",
+                "chapter:qtcraft:spectator",
+                "chapter:qtcraft:adventure",
                 "chapter:qtcraft:rules",
                 "chapter:qtcraft:commands",
                 "chapter:qtcraft:multiplayer",
@@ -54522,6 +54524,38 @@
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Gelber Teppich"
         },
+        "chapter:qtcraft:adventure": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Adventure mode",
+            "facts": [
+            ],
+            "icon": "qtcraft:iron_pickaxe",
+            "id": "chapter:qtcraft:adventure",
+            "name": "qtcraft:adventure",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "**Abenteuer** ist Überleben für Welten, die jemand zum Spielen gebaut hat: Gesundheit, Hunger, Wesen, Herstellen, Essen und Kämpfen sind wie im Überleben, und du öffnest weiter Türen, Truhen, Öfen und Werkbänke, legst Hebel und Knöpfe um und handelst mit Dorfbewohnern. Nur die Welt veränderst du nicht: Blöcke brechen beim Abbauen nicht, und Gegenstände wirken nicht auf Blöcke (kein Setzen, Pflügen, Ausgießen, Feuermachen, keine Rüstungsständer oder Loren), außer die Welt erlaubt es. Rüstungsständer halten deinen Schlägen stand. Ein kurzer Hinweis sagt, wenn etwas nicht erlaubt ist. Operatoren wechseln mit `/gamemode adventure` (oder `a`), und eine neue Welt kann im Abenteuer beginnen (**Spielmodus** im Hauptmenü). Abenteuer teilt sein Inventar mit dem Überleben.",
+                    "title": "Eine vorbereitete Welt spielen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Die Welt führt zwei Erlaubnislisten, die Operatoren mit `/adventure` ändern:\n- `/adventure canBreak <Gegenstand> <Block> …`: Dieser Gegenstand darf diese Blöcke abbauen, z. B. `/adventure canBreak iron_pickaxe gold_ore`. Das Abbauen dauert dann so lange wie im Überleben und lässt fallen, was es fallen lässt.\n- `/adventure canPlaceOn <Gegenstand> <Block> …`: Dieser Gegenstand darf auf diese Blöcke gesetzt (oder an ihnen benutzt) werden, z. B. `/adventure canPlaceOn oak_planks stone_bricks`.\n- `*` statt eines Gegenstands steht für jeden Gegenstand und die leere Hand: `/adventure canBreak * glass`.\n- `/adventure` zeigt die Listen, `/adventure remove canBreak <Gegenstand> [Block …]` nimmt Einträge heraus, `/adventure clear` leert beide.\nDie Listen gehören zur Welt und gelten für jeden Spieler im Abenteuermodus. Explosionen, Kolben, Flüssigkeiten, Wesen und Befehle verändern Blöcke wie gewohnt; nur die Spieler werden zurückgehalten. Eine Glasflasche füllt sich überall, weil sie keinen Block verändert.",
+                    "title": "Wo Abbauen und Setzen erlaubt sind"
+                }
+            ],
+            "text": "",
+            "title": "Abenteuermodus"
+        },
         "chapter:qtcraft:archery": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -54819,7 +54853,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)\n- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde\n- `/gamemode [survival|creative|adventure|spectator] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/adventure`: zeigt oder ändert, was Spieler im Abenteuermodus abbauen und worauf sie setzen dürfen (siehe Abenteuermodus)\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -56445,6 +56479,46 @@
             ],
             "text": "",
             "title": "Ofen und Brennstoff"
+        },
+        "chapter:qtcraft:spectator": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Spectator mode",
+            "facts": [
+            ],
+            "icon": "qtcraft:glass",
+            "id": "chapter:qtcraft:spectator",
+            "name": "qtcraft:spectator",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Im **Zuschauermodus** siehst du dich um, ohne mitzuspielen: Du fliegst immer und gleitest durch Blöcke, Wasser und Lava. **Leertaste** steigt, **Umschalt** sinkt und **Strg** fliegt schneller, wie beim Fliegen im Kreativmodus (10,9 m/s). Das Mausrad stellt die Fluggeschwindigkeit zwischen einem Zehntel und dem Vierfachen der normalen ein; der Hinweis unten im Bild zeigt sie an. Nichts verletzt dich, nicht einmal die Leere unter der Welt, und du wirst nie hungrig.",
+                    "title": "Durch alles hindurchfliegen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Andere Spieler sehen dich nicht, und Wesen greifen dich weder an noch fliehen sie vor dir. Du kannst keine Blöcke abbauen, setzen oder benutzen, nicht angreifen, nicht handeln, weder Truhen noch dein Inventar öffnen und hebst nichts auf; Druckplatten, Geschosse und Loren gehen an dir vorbei. Im Bild gibt es keine Schnellleiste, keine Gesundheit und keine Nahrung und keine Hand, nur das Fadenkreuz. Die Spielerliste nennt dich weiterhin, ausgegraut am Ende der Liste. Die Welt lädt um dich herum wie um jeden Spieler.",
+                    "title": "Unsichtbar und unberührbar"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Operatoren wechseln den Modus mit `/gamemode spectator` (kurz `sp`, auch für einen anderen Spieler: `/gamemode spectator Alice`) und zurück mit `/gamemode survival`, `/gamemode creative` oder `/gamemode adventure`; eine neue Welt kann darin beginnen (**Spielmodus** im Hauptmenü). Der Zuschauermodus lässt dein Überlebensinventar und deine Rüstung, wie sie sind. Verlässt du den Zuschauermodus in Blöcken, kommst du oben aus ihnen heraus, am nächsten freien Platz genau über dir.",
+                    "title": "In den Zuschauermodus und zurück"
+                }
+            ],
+            "text": "",
+            "title": "Zuschauermodus"
         },
         "chapter:qtcraft:texture_packs": {
             "category": "playing",

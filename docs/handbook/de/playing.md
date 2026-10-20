@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -644,6 +644,35 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 [Werkbank](blocks.md#block-qtcraft-crafting_table)
 
+### <a id="chapter-qtcraft-spectator"></a>Zuschauermodus
+
+**Durch alles hindurchfliegen**
+
+Im **Zuschauermodus** siehst du dich um, ohne mitzuspielen: Du fliegst immer und gleitest durch Blöcke, Wasser und Lava. **Leertaste** steigt, **Umschalt** sinkt und **Strg** fliegt schneller, wie beim Fliegen im Kreativmodus (10,9 m/s). Das Mausrad stellt die Fluggeschwindigkeit zwischen einem Zehntel und dem Vierfachen der normalen ein; der Hinweis unten im Bild zeigt sie an. Nichts verletzt dich, nicht einmal die Leere unter der Welt, und du wirst nie hungrig.
+
+**Unsichtbar und unberührbar**
+
+Andere Spieler sehen dich nicht, und Wesen greifen dich weder an noch fliehen sie vor dir. Du kannst keine Blöcke abbauen, setzen oder benutzen, nicht angreifen, nicht handeln, weder Truhen noch dein Inventar öffnen und hebst nichts auf; Druckplatten, Geschosse und Loren gehen an dir vorbei. Im Bild gibt es keine Schnellleiste, keine Gesundheit und keine Nahrung und keine Hand, nur das Fadenkreuz. Die Spielerliste nennt dich weiterhin, ausgegraut am Ende der Liste. Die Welt lädt um dich herum wie um jeden Spieler.
+
+**In den Zuschauermodus und zurück**
+
+Operatoren wechseln den Modus mit `/gamemode spectator` (kurz `sp`, auch für einen anderen Spieler: `/gamemode spectator Alice`) und zurück mit `/gamemode survival`, `/gamemode creative` oder `/gamemode adventure`; eine neue Welt kann darin beginnen (**Spielmodus** im Hauptmenü). Der Zuschauermodus lässt dein Überlebensinventar und deine Rüstung, wie sie sind. Verlässt du den Zuschauermodus in Blöcken, kommst du oben aus ihnen heraus, am nächsten freien Platz genau über dir.
+
+### <a id="chapter-qtcraft-adventure"></a>Abenteuermodus
+
+**Eine vorbereitete Welt spielen**
+
+**Abenteuer** ist Überleben für Welten, die jemand zum Spielen gebaut hat: Gesundheit, Hunger, Wesen, Herstellen, Essen und Kämpfen sind wie im Überleben, und du öffnest weiter Türen, Truhen, Öfen und Werkbänke, legst Hebel und Knöpfe um und handelst mit Dorfbewohnern. Nur die Welt veränderst du nicht: Blöcke brechen beim Abbauen nicht, und Gegenstände wirken nicht auf Blöcke (kein Setzen, Pflügen, Ausgießen, Feuermachen, keine Rüstungsständer oder Loren), außer die Welt erlaubt es. Rüstungsständer halten deinen Schlägen stand. Ein kurzer Hinweis sagt, wenn etwas nicht erlaubt ist. Operatoren wechseln mit `/gamemode adventure` (oder `a`), und eine neue Welt kann im Abenteuer beginnen (**Spielmodus** im Hauptmenü). Abenteuer teilt sein Inventar mit dem Überleben.
+
+**Wo Abbauen und Setzen erlaubt sind**
+
+Die Welt führt zwei Erlaubnislisten, die Operatoren mit `/adventure` ändern:
+- `/adventure canBreak <Gegenstand> <Block> …`: Dieser Gegenstand darf diese Blöcke abbauen, z. B. `/adventure canBreak iron_pickaxe gold_ore`. Das Abbauen dauert dann so lange wie im Überleben und lässt fallen, was es fallen lässt.
+- `/adventure canPlaceOn <Gegenstand> <Block> …`: Dieser Gegenstand darf auf diese Blöcke gesetzt (oder an ihnen benutzt) werden, z. B. `/adventure canPlaceOn oak_planks stone_bricks`.
+- `*` statt eines Gegenstands steht für jeden Gegenstand und die leere Hand: `/adventure canBreak * glass`.
+- `/adventure` zeigt die Listen, `/adventure remove canBreak <Gegenstand> [Block …]` nimmt Einträge heraus, `/adventure clear` leert beide.
+Die Listen gehören zur Welt und gelten für jeden Spieler im Abenteuermodus. Explosionen, Kolben, Flüssigkeiten, Wesen und Befehle verändern Blöcke wie gewohnt; nur die Spieler werden zurückgehalten. Eine Glasflasche füllt sich überall, weil sie keinen Block verändert.
+
 ### <a id="chapter-qtcraft-rules"></a>Spielregeln
 
 **Spielregeln**
@@ -686,7 +715,8 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
 - `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie); `/gamerule playerInvulnerabilityTicks [0-200]` und `/gamerule mobInvulnerabilityTicks [0-200]`: die Spiel-Ticks ohne Schaden nach einem Treffer (0 keine)
 - `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
-- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
+- `/gamemode [survival|creative|adventure|spectator] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
+- `/adventure`: zeigt oder ändert, was Spieler im Abenteuermodus abbauen und worauf sie setzen dürfen (siehe Abenteuermodus)
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft
 - `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)

@@ -18,7 +18,7 @@ namespace {
 
 bool isPresent(const QcServerClient &client)
 {
-    return client.state == QcServerClient::State::Playing && !client.dead;
+    return client.hasBody();
 }
 
 // The share of a splash at `at` with `radius` that reaches a body (decision E-624): 1 at the body,

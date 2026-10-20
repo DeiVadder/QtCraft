@@ -111,7 +111,9 @@ void QcServerWeather::strikeNearPlayers()
 
     QList<QcBlockPos> places;
     for (const auto &client : m_state.clients()) {
-        if (client->state != QcServerClient::State::Playing || draws.bounded(m_meanStrikeTicks) != 0) {
+        // Lightning strikes around bodies only, not around spectators (decision E-730). The draw
+        // comes first so the strikes around the others stay the same.
+        if (client->state != QcServerClient::State::Playing || draws.bounded(m_meanStrikeTicks) != 0 || !client->rules().tangible) {
             continue;
         }
 
