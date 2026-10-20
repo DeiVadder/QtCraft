@@ -1,6 +1,6 @@
 #pragma once
 
-// Protocol messages of machines (furnaces) and storage blocks (chests).
+// Protocol messages of machines (furnaces), storage blocks (chests) and the stonecutter.
 // Part of the QcMessage variant (QcMessages.h).
 
 #include "common/core/QcBlockPos.h"
@@ -40,6 +40,29 @@ struct MachineState
 // Client -> server: the machine screen closed. Server -> client: the machine closed (out of reach,
 // broken).
 struct CloseMachine
+{
+};
+
+// Server -> client: the player opened the stonecutter at `pos` (decision E-785). The screen lists
+// what the stonecutting recipes of the content make from the stone blocks in the inventory.
+struct OpenStonecutter
+{
+    QcBlockPos pos;
+};
+
+// Client -> server: cut the input of the stonecutting recipe `recipe` once, or with `repeat` as often
+// as the inventory holds the input and has room (shift-click), at the open stonecutter.
+struct CutStone
+{
+    static constexpr int maxRepeats = 64;
+
+    QString recipe;
+    bool repeat = false;
+};
+
+// Client -> server: the stonecutter screen closed. Server -> client: the stonecutter closed (broken,
+// out of reach).
+struct CloseStonecutter
 {
 };
 

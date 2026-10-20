@@ -1,0 +1,101 @@
+{
+    "name": "traps_and_cutting",
+    "showcase": {
+        "order": 55
+    },
+    "palette": {
+        "P": "polished_stone",
+        "S": "stone",
+        "h": "tripwire_hook[attach=west,attached=true]",
+        "H": "tripwire_hook[attach=east,attached=true]",
+        "w": "tripwire[attached=true,east=true,west=true]",
+        "L": "signal_lamp",
+        "T": "trapped_chest[facing=south]",
+        "C": "stonecutter[facing=south]",
+        "c": "chest[facing=south]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP"
+        ],
+        [
+            "           ",
+            " ShwwwwwwHS",
+            "           ",
+            " TL    Cc  ",
+            "           "
+        ],
+        [
+            "           ",
+            " L        L",
+            "           ",
+            "           ",
+            "           "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                8,
+                1,
+                3
+            ],
+            "items": [
+                {
+                    "item": "stone",
+                    "count": 64
+                },
+                {
+                    "item": "stone_bricks",
+                    "count": 32
+                },
+                {
+                    "item": "sandstone",
+                    "count": 32
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 32
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                2.4,
+                1.5
+            ],
+            "text": "block.qtcraft.tripwire"
+        },
+        {
+            "at": [
+                2.5,
+                2.8,
+                1.5
+            ],
+            "text": "block.qtcraft.tripwire_hook"
+        },
+        {
+            "at": [
+                1.5,
+                2.8,
+                3.5
+            ],
+            "text": "block.qtcraft.trapped_chest"
+        },
+        {
+            "at": [
+                7.5,
+                2.4,
+                3.5
+            ],
+            "text": "block.qtcraft.stonecutter"
+        }
+    ]
+}

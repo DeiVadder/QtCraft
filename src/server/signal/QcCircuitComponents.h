@@ -47,12 +47,13 @@ public:
     static constexpr int dispenserDelayTicks = 4;
 
     // Plates something lies on in this tick, those a player or creature stands on and those a
-    // minecart stands on.
+    // minecart stands on; tripwire something touches (decision E-782).
     struct Plates
     {
         QSet<QcBlockPos> anything;
         QSet<QcBlockPos> living;
         QSet<QcBlockPos> carts;
+        QSet<QcBlockPos> wires;
 
         // The plates of this tick that a plate with `signal` counts as pressed
         // (QcSignalDefinition::detectsItems, detectsCarts).
@@ -94,6 +95,9 @@ public:
     bool poweredOrQuasi(QcBlockPos pos, quint8 ignoredFaces) const;
     // An observer at `pos` saw the block in front of it change.
     void observed(QcBlockPos pos, QcCircuitPlan &plan) const;
+    // The block `before` at `pos` became `after`: a tripwire hook or wire that is gone tells its
+    // lines (decision E-782).
+    void replaced(QcBlockPos pos, QcBlockId before, QcBlockId after, QcCircuitPlan &plan) const;
 
 private:
     void reactTorch(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;

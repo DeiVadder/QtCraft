@@ -28,6 +28,10 @@ struct QcPartFamily
     // optional "result" ("@slab": a vertical slab back into a slab); at most maxMoreRecipes.
     QJsonArray moreRecipes;
     static constexpr int maxMoreRecipes = 4;
+    // The stonecutter turns one base block of a material of these kinds into this many parts
+    // (decision E-784); 0: it does not cut this family.
+    int stonecutterCount = 0;
+    QStringList stonecutterKinds;
     // Display name format per language; %1 is the material's name in that language.
     QList<std::pair<QString, QString>> translations;
 };

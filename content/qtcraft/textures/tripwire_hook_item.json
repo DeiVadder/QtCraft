@@ -1,0 +1,30 @@
+{
+    "name": "tripwire_hook_item",
+    "pattern": "icon",
+    "primary": "#9a9a9a",
+    "variation": 0.0,
+    "seed": 7828,
+    "palette": {
+        "P": "#a8844e",
+        "p": "#7a5c32",
+        "I": "#d8d8de",
+        "i": "#8e8e96"
+    },
+    "bitmap": [
+        "",
+        "      II",
+        "     I  I",
+        "     I  I",
+        "      II",
+        "       i",
+        "       i",
+        "      pPp",
+        "      pPp",
+        "      pPp",
+        "      pPp",
+        "      pPp",
+        "      pPp",
+        "      pPp",
+        "      ppp"
+    ]
+}

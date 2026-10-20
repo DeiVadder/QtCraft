@@ -10,7 +10,8 @@ bool isSource(QcSignalKind kind)
 {
     return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Plate || kind == QcSignalKind::Torch
            || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator || kind == QcSignalKind::Observer
-           || kind == QcSignalKind::Constant || kind == QcSignalKind::Target;
+           || kind == QcSignalKind::Constant || kind == QcSignalKind::Target
+           || kind == QcSignalKind::Hook || kind == QcSignalKind::Viewers;
 }
 
 // Whether dust points at the horizontal side `towards`: a line or arm on that side, or a lone dot,
@@ -47,6 +48,8 @@ int QcSignalPower::directPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Plate:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Hook:
+    case QcSignalKind::Viewers:
         return state.power;
     case QcSignalKind::Torch:
         return state.on && state.facing != towards ? state.power : 0;
@@ -70,12 +73,14 @@ int QcSignalPower::strongPower(QcSignalState state, QcBlockFace towards)
     switch (state.kind) {
     case QcSignalKind::Lever:
     case QcSignalKind::Button:
+    case QcSignalKind::Hook:
     case QcSignalKind::Repeater:
     case QcSignalKind::Comparator:
         return state.facing == towards ? state.power : 0;
     case QcSignalKind::Observer:
         return state.facing && QcBlockRules::opposite(*state.facing) == towards ? state.power : 0;
     case QcSignalKind::Plate:
+    case QcSignalKind::Viewers:
         return towards == QcBlockFace::Down ? state.power : 0;
     case QcSignalKind::Torch:
         return state.on && state.strongPowersAbove && towards == QcBlockFace::Up ? state.power : 0;
@@ -167,6 +172,7 @@ QcSignalPower::Positions QcSignalPower::targets(QcBlockPos pos, QcSignalState st
     switch (state.kind) {
     case QcSignalKind::Lever:
     case QcSignalKind::Button:
+    case QcSignalKind::Hook:
     case QcSignalKind::Repeater:
     case QcSignalKind::Comparator:
         if (state.facing) {
@@ -179,6 +185,7 @@ QcSignalPower::Positions QcSignalPower::targets(QcBlockPos pos, QcSignalState st
         }
         break;
     case QcSignalKind::Plate:
+    case QcSignalKind::Viewers:
         cells.append(qcNeighbour(pos, QcBlockFace::Down));
         break;
     case QcSignalKind::Torch:

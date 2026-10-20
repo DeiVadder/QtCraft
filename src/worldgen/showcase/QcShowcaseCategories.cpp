@@ -30,7 +30,7 @@ bool isPlant(const QcBlockDefinition &block)
 
 bool isFunctional(const QcBlockDefinition &block)
 {
-    return block.opensCrafting || block.machine.isMachine() || block.containerSlots > 0 || block.toggles || block.door;
+    return block.opensCrafting || block.opensStonecutter || block.machine.isMachine() || block.containerSlots > 0 || block.toggles || block.door;
 }
 
 // An unset condition holds; a set one must equal the block's property.

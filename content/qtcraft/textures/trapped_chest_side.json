@@ -1,0 +1,8 @@
+{
+    "name": "trapped_chest_side",
+    "pattern": "chest_side",
+    "primary": "#a8844e",
+    "secondary": "#b84c3c",
+    "variation": 0.08,
+    "seed": 7822
+}

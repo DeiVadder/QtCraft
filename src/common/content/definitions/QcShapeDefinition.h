@@ -32,7 +32,7 @@ struct QcShapeDefinition
     {
         qsizetype count = 0;
         for (const QcShapePart &part : parts) {
-            count += part.boxes.size() + part.crosses.size() + part.collision.size();
+            count += part.boxes.size() + part.crosses.size() + part.collision.size() + part.target.size();
         }
         return int(count);
     }

@@ -327,6 +327,9 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
         for (const QcAabb &box : part.customCollision ? part.collision : part.boxes) {
             state.collision.append(place(box));
         }
+        for (const QcAabb &box : part.target) {
+            state.targets.append(place(box));
+        }
     }
 
     for (const QcBlockFace face : qcAllBlockFaces) {
@@ -408,7 +411,7 @@ qsizetype QcBlockStateTable::derivedBoxes(const QcBlockDefinition &block, const 
         for (qsizetype part = 0; part < shape.parts.size(); ++part) {
             if (mask & (quint32(1) << part)) {
                 const QcShapePart &applied = shape.parts[part];
-                boxes += applied.boxes.size() + applied.crosses.size() + (applied.customCollision ? applied.collision.size() : applied.boxes.size());
+                boxes += applied.boxes.size() + applied.crosses.size() + applied.target.size() + (applied.customCollision ? applied.collision.size() : applied.boxes.size());
             }
         }
     }

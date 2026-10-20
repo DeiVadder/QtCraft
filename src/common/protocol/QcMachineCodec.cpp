@@ -1,4 +1,4 @@
-// Payloads of the machine messages (QcMachineMessages.h): furnace and chest screens.
+// Payloads of the machine messages (QcMachineMessages.h): furnace, chest and stonecutter screens.
 
 #include "common/protocol/QcProtocolCodec.h"
 
@@ -66,6 +66,40 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &)
 {
     return QcMsg::CloseMachine{};
+}
+
+void encode(QDataStream &stream, QcMsg::OpenStonecutter m)
+{
+    writePos(stream, m.pos);
+}
+
+void encode(QDataStream &stream, const QcMsg::CutStone &m)
+{
+    stream << m.recipe << m.repeat;
+}
+
+void encode(QDataStream &, QcMsg::CloseStonecutter) {}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenStonecutter>, QDataStream &stream)
+{
+    QcMsg::OpenStonecutter m;
+    m.pos = readPos(stream);
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CutStone>, QDataStream &stream)
+{
+    QcMsg::CutStone m;
+    stream >> m.recipe >> m.repeat;
+    if (m.recipe.size() > 256) {
+        return qcError(u"Invalid stonecutting recipe"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseStonecutter>, QDataStream &)
+{
+    return QcMsg::CloseStonecutter{};
 }
 
 } // namespace QcProtocolCodec

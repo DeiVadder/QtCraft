@@ -1,0 +1,21 @@
+{
+    "name": "stonecutter_saw",
+    "pattern": "icon",
+    "primary": "#b8b8be",
+    "variation": 0.0,
+    "seed": 7827,
+    "palette": {
+        "S": "#d4d4da",
+        "s": "#9a9aa2",
+        "c": "#5c5c64"
+    },
+    "bitmap": [
+        " s s s s s s s  ",
+        "sSSSSSSSSSSSSSs ",
+        "SSSSSSSSSSSSSSSS",
+        "SSSSSSScSSSSSSSS",
+        "SSSSSSccSSSSSSSS",
+        "SSSSSSScSSSSSSSS",
+        "SSSSSSSSSSSSSSSS"
+    ]
+}

@@ -2,10 +2,12 @@
 
 #include <QString>
 
-// Turns one input item into a result inside a machine of the same category (furnace: "smelting").
+// Turns one input item into a result inside a machine of the same category (furnace: "smelting");
+// the stonecutter's recipes (decision E-784) have the category "stonecutting" and their own list.
 struct QcSmeltingRecipe
 {
     static constexpr auto defaultCategory = "smelting";
+    static constexpr auto stonecuttingCategory = "stonecutting";
     static constexpr double minSeconds = 0.05;
     static constexpr double maxSeconds = 3600.0;
 

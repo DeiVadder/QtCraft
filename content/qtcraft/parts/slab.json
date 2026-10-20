@@ -7,5 +7,6 @@
         "states": { "type": ["bottom", "top", "double"] }
     },
     "recipe": { "pattern": ["###"], "key": { "#": "@" }, "count": 6 },
+    "stonecutter": { "count": 2, "kinds": ["stone"] },
     "translations": { "en": "%1 slab", "de": "%1stufe" }
 }

@@ -1,0 +1,8 @@
+{
+    "name": "stonecutter_bottom",
+    "pattern": "smooth_stone",
+    "primary": "#7a7a7a",
+    "secondary": "#606060",
+    "variation": 0.03,
+    "seed": 7825
+}

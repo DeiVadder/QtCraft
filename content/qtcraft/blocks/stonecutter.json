@@ -1,0 +1,30 @@
+{
+    "name": "stonecutter",
+    "sound": "stone",
+    "shape": "stonecutter",
+    "facing": "toward",
+    "render": "cutout",
+    "solid": true,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 3.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "stonecutter": true,
+    "textures": {
+        "all": "stonecutter_side",
+        "top": "stonecutter_top",
+        "bottom": "stonecutter_bottom",
+        "slots": {
+            "saw": "stonecutter_saw"
+        }
+    }
+}

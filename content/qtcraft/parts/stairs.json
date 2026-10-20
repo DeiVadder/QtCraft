@@ -8,5 +8,6 @@
                     "shape": ["straight", "inner_left", "inner_right", "outer_left", "outer_right"] }
     },
     "recipe": { "pattern": ["#  ", "## ", "###"], "key": { "#": "@" }, "count": 4 },
+    "stonecutter": { "count": 1, "kinds": ["stone"] },
     "translations": { "en": "%1 stairs", "de": "%1treppe" }
 }

@@ -1,0 +1,15 @@
+{
+    "name": "stonecutter",
+    "type": "shaped",
+    "pattern": [
+        " I ",
+        "SSS"
+    ],
+    "key": {
+        "I": "iron_ingot",
+        "S": "stone"
+    },
+    "result": {
+        "item": "stonecutter"
+    }
+}

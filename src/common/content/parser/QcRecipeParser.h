@@ -11,5 +11,8 @@ namespace QcRecipeParser {
 
 [[nodiscard]] QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace);
 [[nodiscard]] QcResult<QcSmeltingRecipe> parseSmeltingRecipe(const QJsonObject &json, const QString &packNamespace);
+// A stonecutting recipe (decision E-784): the fields of a smelting recipe, always of the category
+// "stonecutting"; seconds and experience mean nothing to it.
+[[nodiscard]] QcResult<QcSmeltingRecipe> parseStonecuttingRecipe(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcRecipeParser

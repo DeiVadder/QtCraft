@@ -240,6 +240,7 @@ void BlockReader::readPlacementFields()
 void BlockReader::readConnects(const QJsonObject &connectJson, QcJsonFieldReader &connectReader)
 {
     m_block.connectGroup = connectReader.string(u"group"_s);
+    m_block.connectsToSolids = connectReader.boolean(u"solids"_s, true);
 
     const QJsonArray targets = connectJson.value(u"to"_s).toArray();
     for (const auto &target : targets) {
@@ -250,7 +251,9 @@ void BlockReader::readConnects(const QJsonObject &connectJson, QcJsonFieldReader
         m_block.connectsTo.append(target.toString());
     }
 
-    if (m_block.connectsTo.isEmpty() && !m_block.connectGroup.isEmpty()) {
+    // Without `to` a block connects to its own group; `"to": []` makes it a member only (the
+    // tripwire hook, which tripwire connects to).
+    if (!connectJson.contains(u"to"_s) && !m_block.connectGroup.isEmpty()) {
         m_block.connectsTo.append(m_block.connectGroup);
     }
     if (m_block.connectGroup.size() > 64) {
@@ -274,6 +277,7 @@ void BlockReader::readMiningFields()
     m_block.tool = m_reader.string(u"tool"_s);
     m_block.toolLevel = m_reader.integer(u"toolLevel"_s, 0, 0, 100);
     m_block.opensCrafting = m_reader.boolean(u"crafting"_s, false);
+    m_block.opensStonecutter = m_reader.boolean(u"stonecutter"_s, false);
     m_block.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }
 

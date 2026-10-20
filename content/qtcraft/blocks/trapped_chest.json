@@ -1,0 +1,49 @@
+{
+    "name": "trapped_chest",
+    "sound": "wood",
+    "shape": "chest",
+    "facing": "toward",
+    "lightOpacity": 0,
+    "hardness": 2.5,
+    "tool": "axe",
+    "container": {
+        "slots": 27
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "power": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ]
+    },
+    "textures": {
+        "side": "trapped_chest_side",
+        "north": "trapped_chest_front",
+        "top": "trapped_chest_top",
+        "bottom": "trapped_chest_top"
+    },
+    "fuelSeconds": 15,
+    "signal": {
+        "type": "viewers",
+        "comparator": "contents"
+    }
+}

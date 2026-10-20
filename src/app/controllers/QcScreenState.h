@@ -33,7 +33,7 @@ public:
     // creative inventory, an open machine (furnace) or container (chest), a villager's trading
     // screen, the pause menu, the settings (at the general page, the key table, the controller
     // page, the debug options or the texture packs), the character screen, open to LAN, the chat
-    // line or the editor of a sign (decision E-766).
+    // line, the editor of a sign (decision E-766) or the stonecutter (decision E-785).
     enum class Overlay {
         None,
         Inventory,
@@ -51,6 +51,7 @@ public:
         Lan,
         Chat,
         Sign,
+        Stonecutter,
     };
     Q_ENUM(Overlay)
 
@@ -58,7 +59,7 @@ public:
 
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
-    // "texturepacks", "character", "lan", "chat" or "sign".
+    // "texturepacks", "character", "lan", "chat", "sign" or "stonecutter".
     static QString overlayName(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
@@ -94,6 +95,9 @@ public:
     void tradeClosed();
     // The server opened the editor of a sign.
     void signOpened();
+    // The server opened or closed the stonecutter.
+    void stonecutterOpened();
+    void stonecutterClosed();
     // The player died (screens close, held keys and buttons are forgotten, the mouse is freed for
     // the death screen) or respawned (the world takes the mouse back).
     void healthChanged(bool dead);

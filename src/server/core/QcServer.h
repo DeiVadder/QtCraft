@@ -34,6 +34,7 @@
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcServerKitchen.h"
 #include "server/machines/QcServerMachines.h"
+#include "server/machines/QcServerStonecutter.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
 #include "server/mobs/QcServerCreatures.h"
@@ -261,6 +262,7 @@ private:
     QcFireIgnition m_ignition;
     QcPlayerHealth m_health;
     QcServerKitchen m_kitchen;
+    QcServerStonecutter m_stonecutter;
     QcServerExplosions m_explosions;
     // Before the game modes, which take a spectator out of his cart.
     QcServerMinecarts m_minecarts;

@@ -72,6 +72,8 @@ public:
 private:
     void finishMoves();
     void pressPlates();
+    // The plates and tripwire something pressed in this tick that were not pressed yet.
+    [[nodiscard]] QcCircuitPlan pressedPlan() const;
     // Comparators behind detector rails read again where the container cart they read changed
     // (QcComparatorReading::Carts): another cart arrived or left while the rail stayed pressed.
     void noteCartReadings(QHash<QcBlockPos, quint32> readings);

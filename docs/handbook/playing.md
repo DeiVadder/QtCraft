@@ -145,9 +145,13 @@ The inventory has a 2 × 2 grid; a crafting table within 5 m opens 3 × 3. Lay o
 
 The inventory lists what you can make right now; a click crafts it. Some recipes ask for a group such as any planks or coal or charcoal: every item of the group fits.
 
+**The stonecutter**
+
+A stonecutter cuts one stone block at a time into the shapes of its family without loss: two slabs or two vertical slabs, one stair or one wall per block, and the cut and chiseled variants (stone into stone bricks and chiseled stone bricks, sandstone into cut and carved sandstone, and on into their shapes). Use it, choose a stone from your inventory on the left and click a result to cut one block; shift-click cuts all of that stone. An iron ingot over three stone makes a stonecutter.
+
 **See also**
 
-[Crafting table](blocks.md#block-qtcraft-crafting_table), [Stick](items.md#item-qtcraft-stick), [Oak planks](blocks.md#block-qtcraft-oak_planks)
+[Crafting table](blocks.md#block-qtcraft-crafting_table), [Stick](items.md#item-qtcraft-stick), [Oak planks](blocks.md#block-qtcraft-oak_planks), [Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 ### <a id="chapter-qtcraft-smelting"></a>Furnace and fuel
 
@@ -237,6 +241,14 @@ Full solid blocks like stone carry power on. A lever or button powers the block 
 
 A lever stays on or off. A stone button gives a signal for one second, a wooden one for one and a half. A wooden pressure plate is pressed by anything lying or standing on it, a stone one only by players and creatures; it springs back about a second after it is free. A Signal Torch is on unless its block is powered, two ticks after the change: an inverter. Switched on and off more than eight times within three seconds it burns out for eight seconds. A Small Signal Torch does the same with strength 7 and does not power a block above it, only a component sitting right on it. A Signal Repeater passes a signal from back to front after one to four steps of two ticks (use it to change the delay); a short pulse comes out as long as its delay, and a powered repeater pointing at its side locks it.
 
+**Tripwire**
+
+Hang a tripwire hook on the side of a block and a second one facing it up to 40 blocks away at the same height, then lay string between them on the ground: the string becomes tripwire and the hooks click into place. Whatever touches the wire (a player, a creature, an arrow, an item) sets both hooks off: they give strength 15 to the dust and components next to them and strongly into the block they hang on, until about half a second after the wire is free again. Tearing an armed wire off by hand sets the hooks off once; cut it with shears to take it away quietly. An iron ingot over a stick over planks makes two hooks, an iron nugget one.
+
+**Trapped chest**
+
+A trapped chest holds as much as a chest and gives as much signal as players are looking into it (at most 15), to the dust and components next to it and strongly into the block below. A comparator reads its contents like a chest's. Craft it from a chest and a tripwire hook.
+
 **Slots**
 
 What reacts to a signal is called a slot. A Signal Lamp lights at once and goes dark a moment after it loses power. Doors, trapdoors and fence gates open when their power comes and close when it goes; in between players still open and close them by hand. Iron doors and iron trapdoors open only by signal, not by hand.
@@ -275,7 +287,7 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 
 **See also**
 
-[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal Dust chunk](items.md#item-qtcraft-signal_dust_chunk), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Small Signal Torch](blocks.md#block-qtcraft-small_signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Indicator Light](blocks.md#block-qtcraft-signal_indicator_light), [Note Block](blocks.md#block-qtcraft-note_block), [Target](blocks.md#block-qtcraft-target), [Tripwire hook](blocks.md#block-qtcraft-tripwire_hook), [Trapped chest](blocks.md#block-qtcraft-trapped_chest), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Rails and Minecarts
 

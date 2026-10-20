@@ -1,0 +1,17 @@
+{
+    "name": "tripwire_hook_from_nugget",
+    "type": "shaped",
+    "pattern": [
+        "N",
+        "S",
+        "P"
+    ],
+    "key": {
+        "N": "iron_nugget",
+        "S": "stick",
+        "P": "#planks"
+    },
+    "result": {
+        "item": "tripwire_hook"
+    }
+}

@@ -11,5 +11,6 @@
     "recipes": [
         { "name": "to_slab", "pattern": ["#"], "key": { "#": "@vertical_slab" }, "result": "@slab", "count": 1 }
     ],
+    "stonecutter": { "count": 2, "kinds": ["stone"] },
     "translations": { "en": "%1 vertical slab", "de": "%1stufe (senkrecht)" }
 }

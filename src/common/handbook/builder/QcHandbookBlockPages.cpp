@@ -387,6 +387,9 @@ void BlockPage::addUseFacts()
     if (block.opensCrafting) {
         addFact(u"crafting"_s, label(u"value.craftingGrid"_s));
     }
+    if (block.opensStonecutter) {
+        addFact(u"stonecutter"_s, label(u"value.stonecutterScreen"_s));
+    }
     if (block.containerSlots > 0) {
         addFact(u"storage"_s, label(u"unit.slots"_s).arg(block.containerSlots));
     }
@@ -488,7 +491,8 @@ void BlockPage::addPartFacts()
         addFact(u"family"_s, familyTitle.isEmpty() ? QcHandbookLinks::humanized(family) : familyTitle);
     }
 
-    if (!block.connectGroup.isEmpty() || !block.connectsTo.isEmpty()) {
+    // A block that is only a member of a group (`"to": []`: fence gate, tripwire hook) connects to nothing.
+    if (!block.connectsTo.isEmpty()) {
         QStringList groups;
         for (const QString &group : block.connectsTo) {
             const QString title = m_text.lookup(u"handbook.group."_s + QcHandbookLinks::localPart(group));

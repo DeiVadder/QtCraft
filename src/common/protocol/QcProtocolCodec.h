@@ -166,6 +166,12 @@ void encode(QDataStream &stream, QcMsg::CloseMachine m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::OpenStonecutter m);
+void encode(QDataStream &stream, const QcMsg::CutStone &m);
+void encode(QDataStream &stream, QcMsg::CloseStonecutter m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenStonecutter>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CutStone>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseStonecutter>, QDataStream &stream);
 
 // Debug display and statistics (QcDebugCodec.cpp)
 void encode(QDataStream &stream, QcMsg::DebugSubscribe m);

@@ -791,5 +791,12 @@
     "%1 on the keyboard goes to the next line": "%1 auf der Tastatur springt zur nächsten Zeile",
     "Enter goes to the next line, Esc is done": "Enter springt zur nächsten Zeile, Esc beendet",
     "Texture filtering": "Texturfilterung",
-    "%1×": "%1×"
+    "%1×": "%1×",
+    "%1 × %2 from %3": "%1 × %2 aus %3",
+    "Stone": "Stein",
+    "No stone to cut in the inventory.": "Kein Stein zum Schneiden im Inventar.",
+    "Cut %1": "%1 schneiden",
+    "Stonecutter": "Steinschneider",
+    "Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.": "Wähle links einen Stein. %1 auf einem Ergebnis schneidet einen Block, %2 alle. %3 schließt.",
+    "Choose a stone on the left. Click a result to cut one block, shift-click to cut all of them. %1 or Esc closes.": "Wähle links einen Stein. Klicke ein Ergebnis an, um einen Block zu schneiden, mit Umschalt alle. %1 oder Esc schließt."
 }

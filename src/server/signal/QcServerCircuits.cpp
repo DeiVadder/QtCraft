@@ -221,6 +221,11 @@ void QcServerCircuits::pressPlates()
             return;
         }
         const std::optional<QcBlockId> block = m_state.world().blockAt(cell);
+        // Anything touching tripwire sets it off (decision E-782).
+        if (block && m_table.at(*block).kind == QcSignalKind::Tripwire) {
+            m_plates.wires.insert(cell);
+            return;
+        }
         if (block && m_table.at(*block).kind == QcSignalKind::Plate) {
             m_plates.anything.insert(cell);
             if (body.kind == QcEntityKind::Player || body.kind == QcEntityKind::Creature) {
@@ -245,7 +250,12 @@ void QcServerCircuits::pressPlates()
     });
 
     noteCartReadings(std::move(readings));
+    QcCircuitPlan plan = pressedPlan();
+    apply(plan);
+}
 
+QcCircuitPlan QcServerCircuits::pressedPlan() const
+{
     QcCircuitPlan plan;
     for (const QcBlockPos &cell : std::as_const(m_plates.anything)) {
         const QcBlockId block = m_state.world().blockAt(cell).value_or(qcAirBlockId);
@@ -254,7 +264,14 @@ void QcServerCircuits::pressPlates()
             plan.schedule(cell, QcCircuitComponents::plateCheckTicks, QcSignalSchedule::Priority::Release);
         }
     }
-    apply(plan);
+    for (const QcBlockPos &cell : std::as_const(m_plates.wires)) {
+        const QcBlockId block = m_state.world().blockAt(cell).value_or(qcAirBlockId);
+        if (!m_table.at(block).on) {
+            plan.write(cell, m_table.withFlag(block, u"powered"_s, true));
+            plan.schedule(cell, m_table.content().block(block).signal.pulseTicks, QcSignalSchedule::Priority::Release);
+        }
+    }
+    return plan;
 }
 
 void QcServerCircuits::noteCartReadings(QHash<QcBlockPos, quint32> readings)
@@ -423,6 +440,9 @@ void QcServerCircuits::runWave(qsizetype limit)
             continue;
         }
         reactions.react(pos, plan);
+    }
+    for (const QcCircuitState::Change &change : changes) {
+        reactions.replaced(change.pos, change.before, change.after, plan);
     }
     reactReadersAndObservers(collected, reactions, plan);
     apply(plan);

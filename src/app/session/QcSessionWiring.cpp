@@ -3,6 +3,7 @@
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
+#include "app/controllers/QcStonecutterController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/hooks/QcStartupHooks.h"
@@ -79,9 +80,21 @@ void QcSessionWiring::connectPlayer()
     connect(&session->trading(), &QcClientTrading::closed, this, &QcSessionWiring::onTradeClosed);
     connect(session, &QcClientSession::inventoryChanged, trade, &QcTradeController::update);
     connect(&session->signEditor(), &QcClientSignEditor::opened, &m_targets.screens, &QcScreenState::signOpened);
+    connectStonecutter();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
+}
+
+void QcSessionWiring::connectStonecutter()
+{
+    const QcClientSession *session = m_parts.session.get();
+    const QcStonecutterController *stonecutter = &m_targets.stonecutter;
+    connect(&session->stonecutter(), &QcClientStonecutter::opened, &m_targets.screens, &QcScreenState::stonecutterOpened);
+    connect(&session->stonecutter(), &QcClientStonecutter::closed, &m_targets.screens, &QcScreenState::stonecutterClosed);
+    connect(&session->stonecutter(), &QcClientStonecutter::opened, stonecutter, &QcStonecutterController::update);
+    connect(&session->stonecutter(), &QcClientStonecutter::closed, stonecutter, &QcStonecutterController::update);
+    connect(session, &QcClientSession::inventoryChanged, stonecutter, &QcStonecutterController::update);
 }
 
 void QcSessionWiring::onSessionState(QcClientSession::State state)

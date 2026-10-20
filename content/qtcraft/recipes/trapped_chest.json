@@ -1,0 +1,11 @@
+{
+    "name": "trapped_chest",
+    "type": "shapeless",
+    "ingredients": [
+        "chest",
+        "tripwire_hook"
+    ],
+    "result": {
+        "item": "trapped_chest"
+    }
+}

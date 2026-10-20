@@ -1,0 +1,7 @@
+{
+    "name": "tripwire",
+    "pattern": "noise",
+    "primary": "#dedcd4",
+    "variation": 0.05,
+    "seed": 7820
+}

@@ -57,6 +57,7 @@ QcShapePart parseShapePart(const QJsonObject &json, QcJsonFieldReader &reader)
     part.crosses = parseShapeBoxes(json.value(u"crosses"_s), 1.0, u"crosses"_s, partReader);
     part.customCollision = json.contains(u"collision"_s);
     part.collision = parseShapeBoxes(json.value(u"collision"_s), QcShapeDefinition::maxCollisionHeight, u"collision"_s, partReader);
+    part.target = parseShapeBoxes(json.value(u"target"_s), 1.0, u"target"_s, partReader);
     part.texture = partReader.string(u"texture"_s);
     part.stretch = partReader.string(u"uv"_s, u"cell"_s) == u"box"_s;
 

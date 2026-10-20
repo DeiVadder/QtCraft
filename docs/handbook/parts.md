@@ -93,7 +93,6 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
 | Kind of part | Fence gate |
-| Connects to | fences and gates, full solid blocks |
 | Sound | wood |
 | States | facing (north, east, south, west); open (false, true) |
 
@@ -343,6 +342,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Brick vertical slab](#block-qtcraft-brick_vertical_slab) | [Brick slab](#block-qtcraft-brick_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Bricks](blocks.md#block-qtcraft-bricks) | 2 × [Brick slab](#block-qtcraft-brick_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Brick vertical slab](#block-qtcraft-brick_vertical_slab)
@@ -380,6 +389,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) | · |  |
 | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Bricks](blocks.md#block-qtcraft-bricks) | [Brick stairs](#block-qtcraft-brick_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -412,6 +431,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Brick slab](#block-qtcraft-brick_slab) | 3 × [Brick vertical slab](#block-qtcraft-brick_vertical_slab) |
 | [Brick slab](#block-qtcraft-brick_slab) |  |
 | [Brick slab](#block-qtcraft-brick_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Bricks](blocks.md#block-qtcraft-bricks) | 2 × [Brick vertical slab](#block-qtcraft-brick_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -449,6 +478,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 |---|---|---|---|
 | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) | 6 × [Brick wall](#block-qtcraft-brick_wall) |
 | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) | [Bricks](blocks.md#block-qtcraft-bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Bricks](blocks.md#block-qtcraft-bricks) | [Brick wall](#block-qtcraft-brick_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Mined with**
 
@@ -513,6 +552,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) | [Cobblestone slab](#block-qtcraft-cobblestone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | 2 × [Cobblestone slab](#block-qtcraft-cobblestone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab)
@@ -550,6 +599,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | · |  |
 | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone stairs](#block-qtcraft-cobblestone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -582,6 +641,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Cobblestone slab](#block-qtcraft-cobblestone_slab) | 3 × [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) |
 | [Cobblestone slab](#block-qtcraft-cobblestone_slab) |  |
 | [Cobblestone slab](#block-qtcraft-cobblestone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | 2 × [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -620,6 +689,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | 6 × [Cobblestone wall](#block-qtcraft-cobblestone_wall) |
 | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone wall](#block-qtcraft-cobblestone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -657,6 +736,24 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) | [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cut sandstone](blocks.md#block-qtcraft-cut_sandstone) | 2 × [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | 2 × [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab)
@@ -693,6 +790,24 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) | 3 × [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) |
 | [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) |  |
 | [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Cut sandstone](blocks.md#block-qtcraft-cut_sandstone) | 2 × [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | 2 × [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -917,6 +1032,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) | [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | 2 × [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab)
@@ -954,6 +1079,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | · |  |
 | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone stairs](#block-qtcraft-mossy_cobblestone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -986,6 +1121,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) | 3 × [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) |
 | [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) |  |
 | [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | 2 × [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1024,6 +1169,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | 6 × [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) |
 | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy cobblestone](blocks.md#block-qtcraft-mossy_cobblestone) | [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1060,6 +1215,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | 1 | → |
 |---|---|
 | [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) | [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | 2 × [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1098,6 +1263,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | · |  |
 | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone brick stairs](#block-qtcraft-mossy_stone_bricks_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1130,6 +1305,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) | 3 × [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) |
 | [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) |  |
 | [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | 2 × [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1168,6 +1353,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | 6 × [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) |
 | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mossy stone bricks](blocks.md#block-qtcraft-mossy_stone_bricks) | [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1204,6 +1399,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | 1 | → |
 |---|---|
 | [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) | [Mud brick slab](#block-qtcraft-mud_bricks_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | 2 × [Mud brick slab](#block-qtcraft-mud_bricks_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1242,6 +1447,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | · |  |
 | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud brick stairs](#block-qtcraft-mud_bricks_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1274,6 +1489,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Mud brick slab](#block-qtcraft-mud_bricks_slab) | 3 × [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) |
 | [Mud brick slab](#block-qtcraft-mud_bricks_slab) |  |
 | [Mud brick slab](#block-qtcraft-mud_bricks_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | 2 × [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1311,6 +1536,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 |---|---|---|---|
 | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | 6 × [Mud brick wall](#block-qtcraft-mud_bricks_wall) |
 | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud bricks](blocks.md#block-qtcraft-mud_bricks) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Mud bricks](blocks.md#block-qtcraft-mud_bricks) | [Mud brick wall](#block-qtcraft-mud_bricks_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Mined with**
 
@@ -1368,7 +1603,6 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
 | Kind of part | Fence gate |
-| Connects to | fences and gates, full solid blocks |
 | Sound | wood |
 | States | facing (north, east, south, west); open (false, true) |
 
@@ -1584,6 +1818,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) | [Polished stone slab](#block-qtcraft-polished_stone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished stone](blocks.md#block-qtcraft-polished_stone) | 2 × [Polished stone slab](#block-qtcraft-polished_stone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Armour stand](items.md#item-qtcraft-armor_stand), [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab)
@@ -1621,6 +1865,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) | · |  |
 | [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone stairs](#block-qtcraft-polished_stone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1653,6 +1907,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Polished stone slab](#block-qtcraft-polished_stone_slab) | 3 × [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) |
 | [Polished stone slab](#block-qtcraft-polished_stone_slab) |  |
 | [Polished stone slab](#block-qtcraft-polished_stone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Polished stone](blocks.md#block-qtcraft-polished_stone) | 2 × [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1747,6 +2011,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) | [Sandstone slab](#block-qtcraft-sandstone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | 2 × [Sandstone slab](#block-qtcraft-sandstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab)
@@ -1784,6 +2058,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) | · |  |
 | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone stairs](#block-qtcraft-sandstone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1816,6 +2100,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Sandstone slab](#block-qtcraft-sandstone_slab) | 3 × [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) |
 | [Sandstone slab](#block-qtcraft-sandstone_slab) |  |
 | [Sandstone slab](#block-qtcraft-sandstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | 2 × [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1854,6 +2148,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) | 6 × [Sandstone wall](#block-qtcraft-sandstone_wall) |
 | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone](blocks.md#block-qtcraft-sandstone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](blocks.md#block-qtcraft-sandstone) | [Sandstone wall](#block-qtcraft-sandstone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1890,6 +2194,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | 1 | → |
 |---|---|
 | [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) | [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | 2 × [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1928,6 +2242,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | · |  |
 | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone stairs](#block-qtcraft-smooth_sandstone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -1960,6 +2284,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) | 3 × [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) |
 | [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) |  |
 | [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | 2 × [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -1998,6 +2332,16 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | 6 × [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) |
 | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth sandstone](blocks.md#block-qtcraft-smooth_sandstone) | [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -2035,6 +2379,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) | [Smooth stone slab](#block-qtcraft-smooth_stone_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth stone](blocks.md#block-qtcraft-smooth_stone) | 2 × [Smooth stone slab](#block-qtcraft-smooth_stone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab)
@@ -2071,6 +2425,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Smooth stone slab](#block-qtcraft-smooth_stone_slab) | 3 × [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) |
 | [Smooth stone slab](#block-qtcraft-smooth_stone_slab) |  |
 | [Smooth stone slab](#block-qtcraft-smooth_stone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Smooth stone](blocks.md#block-qtcraft-smooth_stone) | 2 × [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -2167,7 +2531,6 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
 | Kind of part | Fence gate |
-| Connects to | fences and gates, full solid blocks |
 | Sound | wood |
 | States | facing (north, east, south, west); open (false, true) |
 
@@ -2365,6 +2728,24 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|
 | [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) | [Stone brick slab](#block-qtcraft-stone_bricks_slab) |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | 2 × [Stone brick slab](#block-qtcraft-stone_bricks_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | 2 × [Stone brick slab](#block-qtcraft-stone_bricks_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Used in**
 
 [Chiseled stone bricks](blocks.md#block-qtcraft-chiseled_stone_bricks), [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab)
@@ -2402,6 +2783,24 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | · |  |
 | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -2434,6 +2833,24 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Stone brick slab](#block-qtcraft-stone_bricks_slab) | 3 × [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) |
 | [Stone brick slab](#block-qtcraft-stone_bricks_slab) |  |
 | [Stone brick slab](#block-qtcraft-stone_bricks_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | 2 × [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | 2 × [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -2472,6 +2889,24 @@ Walls connect to each other and to full solid blocks; in straight runs they leav
 | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | 6 × [Stone brick wall](#block-qtcraft-stone_bricks_wall) |
 | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone bricks](blocks.md#block-qtcraft-stone_bricks) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone bricks](blocks.md#block-qtcraft-stone_bricks) | [Stone brick wall](#block-qtcraft-stone_bricks_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | [Stone brick wall](#block-qtcraft-stone_bricks_wall) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -2508,6 +2943,16 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | 1 | → |
 |---|---|
 | [Stone vertical slab](#block-qtcraft-stone_vertical_slab) | [Stone slab](#block-qtcraft-stone_slab) |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | 2 × [Stone slab](#block-qtcraft-stone_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 
@@ -2546,6 +2991,16 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | [Stone](blocks.md#block-qtcraft-stone) | [Stone](blocks.md#block-qtcraft-stone) | · |  |
 | [Stone](blocks.md#block-qtcraft-stone) | [Stone](blocks.md#block-qtcraft-stone) | [Stone](blocks.md#block-qtcraft-stone) |  |
 
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | [Stone stairs](#block-qtcraft-stone_stairs) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
@@ -2578,6 +3033,16 @@ Half a block standing upright against one side of its cell: it leans against the
 | [Stone slab](#block-qtcraft-stone_slab) | 3 × [Stone vertical slab](#block-qtcraft-stone_vertical_slab) |
 | [Stone slab](#block-qtcraft-stone_slab) |  |
 | [Stone slab](#block-qtcraft-stone_slab) |  |
+
+**Cut in the stonecutter from**
+
+*Stonecutter: one block at a time, no fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | 2 × [Stone vertical slab](#block-qtcraft-stone_vertical_slab) |
+
+[Stonecutter](blocks.md#block-qtcraft-stonecutter)
 
 **Used in**
 

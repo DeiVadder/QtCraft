@@ -137,6 +137,7 @@ void QcServer::addSimulationSystems()
         m_kitchen.tick();
         m_screens.update();
         m_trading.update();
+        m_stonecutter.update();
     });
 }
 

@@ -24,6 +24,8 @@ struct QcBlockState
     // Texture slot per cross (parallel to `crosses`); empty means the north face texture.
     QList<QString> crossTextures;
     QList<QcAabb> collision;
+    // Boxes pointed at instead of the drawn ones (QcShapePart::target); empty when no part has any.
+    QList<QcAabb> targets;
     // The shape is exactly the unit cube.
     bool fullCube = true;
     // Full cube of an opaque block: hides neighbour faces completely.
@@ -44,6 +46,7 @@ struct QcBlockState
     // turns of the boxes: the 16 directions of a standing sign (QcShapeDefinition::spin).
     quint8 fineTurns = 0;
 
-    // Boxes that can be pointed at: the drawn boxes and the regions of crossed planes.
-    QList<QcAabb> targetBoxes() const { return boxes + crosses; }
+    // Boxes that can be pointed at: the drawn boxes and the regions of crossed planes, or the shape's
+    // own target boxes.
+    QList<QcAabb> targetBoxes() const { return targets.isEmpty() ? boxes + crosses : targets; }
 };

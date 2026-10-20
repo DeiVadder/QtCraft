@@ -123,6 +123,11 @@ public:
     const QList<QcSmeltingRecipe> &smeltingRecipes() const { return m_smeltingRecipes.items(); }
     // The first recipe of `category` that takes `inputItem`, or null.
     const QcSmeltingRecipe *smeltingRecipe(const QString &category, const QString &inputItem) const;
+    // Stonecutting recipes (decision E-784), from data and generated for building parts
+    // (QcStonecutting), replaced by name.
+    void registerStonecuttingRecipe(QcSmeltingRecipe recipe);
+    const QList<QcSmeltingRecipe> &stonecuttingRecipes() const { return m_stonecuttingRecipes.items(); }
+    [[nodiscard]] std::optional<qsizetype> stonecuttingIndex(const QString &name) const;
 
     // Handbook chapters about playing, replaced by name (server side only, not synchronised).
     void registerHandbookChapter(QcHandbookChapter chapter);
@@ -196,6 +201,7 @@ private:
     QcNamedList<QcMobDefinition> m_mobs;
     QcNamedList<QcRecipeDefinition> m_recipes;
     QcNamedList<QcSmeltingRecipe> m_smeltingRecipes;
+    QcNamedList<QcSmeltingRecipe> m_stonecuttingRecipes;
     QcNamedList<QcCommandMacroDefinition> m_commandMacros;
     QcWeatherDefinition m_weather;
     QcWorldgenCatalog m_worldgen;

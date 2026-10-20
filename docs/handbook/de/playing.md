@@ -145,9 +145,13 @@ Das Inventar hat ein 2 × 2 Raster; eine Werkbank in bis zu 5 m öffnet 3 × 3. 
 
 Das Inventar listet, was du gerade herstellen kannst; ein Klick stellt es her. Manche Rezepte verlangen eine Gruppe wie beliebige Bretter oder Kohle oder Holzkohle: Jedes Item der Gruppe passt.
 
+**Der Steinschneider**
+
+Ein Steinschneider schneidet einen Steinblock nach dem anderen in die Formen seiner Familie, ohne dass etwas verloren geht: zwei Stufen oder zwei senkrechte Stufen, eine Treppe oder eine Mauer je Block und die geschnittenen und gemeißelten Varianten (Stein zu Steinziegeln und gemeißelten Steinziegeln, Sandstein zu geschnittenem und gemeißeltem Sandstein und weiter in deren Formen). Benutze ihn, wähle links einen Stein aus deinem Inventar und klicke ein Ergebnis an, um einen Block zu schneiden; mit gedrückter Umschalttaste schneidest du den ganzen Stein dieser Art. Ein Eisenbarren über drei Stein ergibt einen Steinschneider.
+
 **Siehe auch**
 
-[Werkbank](blocks.md#block-qtcraft-crafting_table), [Stock](items.md#item-qtcraft-stick), [Eichenbretter](blocks.md#block-qtcraft-oak_planks)
+[Werkbank](blocks.md#block-qtcraft-crafting_table), [Stock](items.md#item-qtcraft-stick), [Eichenbretter](blocks.md#block-qtcraft-oak_planks), [Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 ### <a id="chapter-qtcraft-smelting"></a>Ofen und Brennstoff
 
@@ -237,6 +241,14 @@ Volle feste Blöcke wie Stein geben Signal weiter. Ein Hebel oder Knopf versorgt
 
 Ein Hebel bleibt an oder aus. Ein Steinknopf gibt eine Sekunde lang Signal, einer aus Holz anderthalb. Eine Holzdruckplatte wird von allem gedrückt, was darauf liegt oder steht, eine aus Stein nur von Spielern und Wesen; sie springt etwa eine Sekunde, nachdem sie frei ist, zurück. Eine Signalfackel leuchtet, solange ihr Block nicht versorgt ist, zwei Ticks nach der Änderung: ein Inverter. Öfter als achtmal in drei Sekunden an- und ausgeschaltet, brennt sie für acht Sekunden aus. Eine kleine Signalfackel macht dasselbe mit Stärke 7 und versorgt keinen Block über sich, nur ein Bauteil direkt auf ihr. Ein Signal-Repeater gibt ein Signal von hinten nach vorn weiter, nach einer bis vier Stufen zu zwei Ticks (Benutzen ändert die Verzögerung); ein kurzer Puls kommt so lang heraus wie seine Verzögerung, und ein versorgter Repeater, der auf seine Seite zeigt, sperrt ihn.
 
+**Stolperdraht**
+
+Hänge einen Stolperdrahthaken an die Seite eines Blocks und einen zweiten, der ihm gegenüber zeigt, bis zu 40 Blöcke entfernt auf derselben Höhe, und lege Fäden zwischen sie auf den Boden: Die Fäden werden zum Stolperdraht und die Haken rasten ein. Was den Draht berührt (ein Spieler, ein Wesen, ein Pfeil, ein Gegenstand), löst beide Haken aus: Sie geben allem neben sich Stärke 15 und stark in den Block, an dem sie hängen, bis etwa eine halbe Sekunde, nachdem nichts mehr den Draht berührt. Wer einen gespannten Draht mit der Hand abreißt, löst die Haken einmal aus; mit der Schere geschnitten verschwindet er leise. Ein Eisenbarren über einem Stock über Brettern ergibt zwei Haken, ein Eisennugget einen.
+
+**Fallentruhe**
+
+Eine Fallentruhe fasst so viel wie eine Truhe und gibt so viel Signal, wie Spieler hineinschauen (höchstens 15), an alles neben ihr und stark in den Block darunter. Ein Komparator liest ihren Inhalt wie den einer Truhe. Hergestellt wird sie aus einer Truhe und einem Stolperdrahthaken.
+
 **Slots**
 
 Was auf ein Signal reagiert, heißt Slot. Eine Signallampe leuchtet sofort und erlischt einen Moment, nachdem sie das Signal verliert. Türen, Falltüren und Zauntore öffnen sich, wenn ihr Signal kommt, und schließen sich, wenn es geht; dazwischen öffnen und schließen Spieler sie weiter von Hand. Eisentüren und Eisenfalltüren öffnen sich nur durch ein Signal, nicht von Hand.
@@ -275,7 +287,7 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 
 **Siehe auch**
 
-[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signal-Kontrollleuchte](blocks.md#block-qtcraft-signal_indicator_light), [Notenblock](blocks.md#block-qtcraft-note_block), [Zielscheibe](blocks.md#block-qtcraft-target), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook), [Fallentruhe](blocks.md#block-qtcraft-trapped_chest), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-rails"></a>Schienen und Loren
 

@@ -1,0 +1,29 @@
+{
+    "name": "stonecutter_top",
+    "pattern": "emblem",
+    "primary": "#9a9a9a",
+    "variation": 0.04,
+    "seed": 7826,
+    "palette": {
+        "d": "#3a3a3a",
+        "r": "#6a6a6a"
+    },
+    "bitmap": [
+        "rrrrrrrrrrrrrrrr",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r.dddddddddddd.r",
+        "r.dddddddddddd.r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "r..............r",
+        "rrrrrrrrrrrrrrrr"
+    ]
+}

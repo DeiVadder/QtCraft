@@ -23,6 +23,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     m_debug.setSender(send);
     m_trading.setSender(send);
     m_signEditor.setSender(send);
+    m_stonecutter.setSender(send);
 }
 
 QcClientSession::~QcClientSession()
@@ -109,7 +110,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
 
     if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
         && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
-        && !m_signEditor.handle(message)) {
+        && !m_signEditor.handle(message) && !m_stonecutter.handle(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }
 }

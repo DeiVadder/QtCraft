@@ -10,6 +10,7 @@ class QcHudState;
 class QcPlayerController;
 class QcScreenState;
 class QcStartupHooks;
+class QcStonecutterController;
 class QcTradeController;
 class QcWorldAtlas;
 struct QcSessionParts;
@@ -32,6 +33,7 @@ public:
         QcHudState &hud;
         QcPlayerController &player;
         QcTradeController &trade;
+        QcStonecutterController &stonecutter;
         QcScreenState &screens;
         QcStartupHooks &startup;
         QcWorldAtlas &atlas;
@@ -53,6 +55,8 @@ signals:
 private:
     void connectWorld();
     void connectPlayer();
+    // The stonecutter screen (decision E-785).
+    void connectStonecutter();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
     void onMachineOpened();

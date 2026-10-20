@@ -114,6 +114,8 @@ struct QcServerClient : QcEntity
         // the screen as last sent.
         quint32 trading = 0;
         std::optional<QcMsg::TradeState> sentTrade;
+        // The stonecutter whose screen is open (QcServerStonecutter, decision E-785).
+        std::optional<QcBlockPos> stonecutter;
         // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
         std::optional<QcBlockPos> sign;
     };

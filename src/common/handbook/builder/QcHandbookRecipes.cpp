@@ -168,6 +168,46 @@ QList<Section> QcHandbookRecipes::madeSections(const QString &item) const
         smeltsInto.links.append(m_links.tableLink(u"fuels"_s));
         sections.append(std::move(smeltsInto));
     }
+    sections.append(stonecuttingSections(item));
+    return sections;
+}
+
+QcHandbookRecipes::Recipe QcHandbookRecipes::stonecuttingRecipe(const QcSmeltingRecipe &recipe) const
+{
+    Recipe result;
+    result.kind = Recipe::Kind::Machine;
+    result.name = recipe.name;
+    result.cells = {m_links.itemLink(recipe.inputItem)};
+    result.result = m_links.itemLink(recipe.resultItem);
+    result.resultCount = recipe.resultCount;
+    for (const QcBlockDefinition &block : m_content.blocks()) {
+        if (block.opensStonecutter) {
+            result.machines.append(m_links.blockLink(block.name));
+        }
+    }
+    result.note = m_text.label(u"recipe.stonecutter"_s);
+    return result;
+}
+
+QList<Section> QcHandbookRecipes::stonecuttingSections(const QString &item) const
+{
+    Section cutFrom{m_text.label(u"section.stonecutting"_s), {}, {}, {}};
+    Section cutInto{m_text.label(u"section.cutsInto"_s), {}, {}, {}};
+    for (const QcSmeltingRecipe &recipe : m_content.stonecuttingRecipes()) {
+        if (recipe.resultItem == item) {
+            cutFrom.recipes.append(stonecuttingRecipe(recipe));
+        }
+        if (recipe.inputItem == item) {
+            cutInto.recipes.append(stonecuttingRecipe(recipe));
+        }
+    }
+
+    QList<Section> sections;
+    for (Section *section : {&cutFrom, &cutInto}) {
+        if (!section->recipes.isEmpty()) {
+            sections.append(std::move(*section));
+        }
+    }
     return sections;
 }
 

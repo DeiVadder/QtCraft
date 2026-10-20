@@ -4,11 +4,13 @@
     "icon": "crafting_table",
     "sections": [
         "grid",
-        "book"
+        "book",
+        "stonecutter"
     ],
     "related": [
         "crafting_table",
         "stick",
-        "oak_planks"
+        "oak_planks",
+        "stonecutter"
     ]
 }

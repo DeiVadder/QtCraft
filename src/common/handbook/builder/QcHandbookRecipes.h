@@ -33,6 +33,9 @@ private:
     [[nodiscard]] Recipe shapelessGrid(const QcRecipeDefinition &recipe) const;
     [[nodiscard]] QList<QcHandbookEntry::Section> madeSections(const QString &item) const;
     [[nodiscard]] QList<QcHandbookEntry::Section> usageSections(const QString &item) const;
+    // What the stonecutter cuts `item` from and into (decision E-784).
+    [[nodiscard]] QList<QcHandbookEntry::Section> stonecuttingSections(const QString &item) const;
+    [[nodiscard]] Recipe stonecuttingRecipe(const QcSmeltingRecipe &recipe) const;
 
     const QcContentRegistry &m_content;
     const QcHandbookText &m_text;

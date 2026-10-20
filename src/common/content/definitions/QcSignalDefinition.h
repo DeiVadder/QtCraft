@@ -54,9 +54,22 @@ enum class QcSignalKind : quint8 {
     // the centre of the face, the stronger) and released after a short time (decision E-768). Like
     // `constant` it powers dust and components on all sides, but no block.
     Target,
+    // Stage 62.3 (decision E-782). A tripwire hook on the side of a block: a source like a button
+    // while `powered` (strongly into the block it hangs on). It is `attached` while a hook facing it
+    // waits at most `wireReach` cells of tripwire away; then both are powered while something
+    // touches the wire between them.
+    Hook,
+    // The wire between two hooks: `powered` while an entity touches it (released when nothing has
+    // for `pulseTicks`), `attached` while it belongs to a line of two hooks, `disarmed` once shears
+    // cut it (it then breaks without setting the hooks off).
+    Tripwire,
+    // A source with the strength of its state `power`, the number of players looking into the
+    // container (the trapped chest, decision E-783): it powers dust and components on all sides and
+    // the block below it strongly.
+    Viewers,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Target) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Viewers) + 1;
 
 // The instruments of a note block (decision E-767): the sound it plays for the block below it, by
 // that block's name, else by its sound material, else `fallback`. Names and sounds are qualified.
@@ -105,6 +118,7 @@ struct QcSignalDefinition
     static constexpr int maxPulseTicks = 1200;
     static constexpr int maxPushLimit = 64;
     static constexpr int maxRailReach = 64;
+    static constexpr int maxWireReach = 64;
     // Note blocks: semitones from the lowest note (F#3, 0) to the highest (F#5, 24); instruments.
     static constexpr int noteCount = 25;
     static constexpr int maxInstruments = 64;
@@ -122,6 +136,8 @@ struct QcSignalDefinition
     bool detectsCarts = false;
     // Rail slots: how many rails of the same block along the line pass power on.
     int railReach = 8;
+    // Hooks: how many cells of tripwire may lie between two hooks of one line.
+    int wireReach = 39;
     // Pistons.
     bool sticky = false;
     int pushLimit = 12;

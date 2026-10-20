@@ -87,7 +87,7 @@ bool connectsTo(const QcBlockAccess &world, const QcBlockDefinition &self, QcBlo
         return true;
     }
 
-    return other.solid && content.state(*neighbour).fullCube && other.renderLayer != QcRenderLayer::Invisible;
+    return self.connectsToSolids && other.solid && content.state(*neighbour).fullCube && other.renderLayer != QcRenderLayer::Invisible;
 }
 
 } // namespace

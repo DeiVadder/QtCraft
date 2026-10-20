@@ -15,6 +15,7 @@
 #include "clientcore/session/QcClientMachineScreen.h"
 #include "clientcore/session/QcClientSignEditor.h"
 #include "clientcore/session/QcClientSounds.h"
+#include "clientcore/session/QcClientStonecutter.h"
 #include "clientcore/session/QcClientTrading.h"
 #include "clientcore/session/QcWorldMirror.h"
 #include "clientcore/tick/QcSessionEvent.h"
@@ -125,6 +126,9 @@ public:
     // The editor of a sign the server opened (decision E-766).
     QcClientSignEditor &signEditor() { return m_signEditor; }
     const QcClientSignEditor &signEditor() const { return m_signEditor; }
+    // The stonecutter screen the server opened (decision E-785).
+    QcClientStonecutter &stonecutter() { return m_stonecutter; }
+    const QcClientStonecutter &stonecutter() const { return m_stonecutter; }
     void sendChat(const QString &text);
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
@@ -246,6 +250,7 @@ private:
     QcClientMachineScreen m_machine;
     QcClientTrading m_trading;
     QcClientSignEditor m_signEditor;
+    QcClientStonecutter m_stonecutter;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

@@ -3,12 +3,15 @@
 #include "common/core/QcBlockPos.h"
 #include "server/blockentities/QcBlockEntities.h"
 
+class QcServerBlocks;
 struct QcMinecart;
 struct QcServerClient;
 class QcServerState;
 
 // The screens of containers and machines the players have open (chests, hoppers, dispensers,
-// furnaces, container minecarts): opening, closing, sending their state.
+// furnaces, container minecarts): opening, closing, sending their state. A container whose signal
+// counts its viewers (the trapped chest, decision E-783) shows in its state `power` how many players
+// look into it, at most 15.
 class QcBlockScreens
 {
 public:
@@ -20,7 +23,7 @@ public:
         quint32 cart = 0;
     };
 
-    explicit QcBlockScreens(QcServerState &state);
+    QcBlockScreens(QcServerState &state, QcServerBlocks &blocks);
 
     // Opens the machine or chest screen of the block at `pos` for the player.
     void open(QcServerClient &client, QcBlockPos pos);
@@ -42,8 +45,11 @@ public:
     // Sends the state to every player looking into the machine or chest at `pos`.
     void sendToViewers(QcBlockPos pos);
     // Once per tick: sends what changed, closes screens whose block is gone, whose chunk unloaded or
-    // whose player died or walked away.
+    // whose player died or walked away; containers that count their viewers take the new count.
     void update();
+    // Nobody looks into the containers of a chunk that just arrived: those that count their viewers
+    // start at 0 whatever was saved.
+    static void releaseViewers(QcServerState &state, QcChunkPos chunk);
 
 private:
     void sendContainer(QcServerClient &client, const OpenContainer &container, bool force);
@@ -51,6 +57,11 @@ private:
     bool canReach(const QcServerClient &client) const;
     // A block's or cart's screen opening closes the player's trading screen (one screen at a time).
     void endTrade(QcServerClient &client);
+    // Sets the viewer counts of the containers that count them (QcSignalKind::Viewers).
+    void updateViewers();
 
     QcServerState &m_state;
+    QcServerBlocks &m_blocks;
+    // The containers counting their viewers that had any at the latest update.
+    QHash<QcBlockPos, int> m_viewers;
 };

@@ -1,0 +1,61 @@
+{
+    "name": "tripwire",
+    "sound": "wool",
+    "shape": "tripwire",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "washable": true,
+    "item": false,
+    "connects": {
+        "group": "tripwire",
+        "to": [
+            "tripwire",
+            "tripwire_hook"
+        ],
+        "solids": false
+    },
+    "states": {
+        "north": [
+            false,
+            true
+        ],
+        "east": [
+            false,
+            true
+        ],
+        "south": [
+            false,
+            true
+        ],
+        "west": [
+            false,
+            true
+        ],
+        "attached": [
+            false,
+            true
+        ],
+        "powered": [
+            false,
+            true
+        ],
+        "disarmed": [
+            false,
+            true
+        ]
+    },
+    "drops": [
+        {
+            "item": "string"
+        }
+    ],
+    "textures": {
+        "all": "tripwire"
+    },
+    "signal": {
+        "type": "tripwire",
+        "pulseTicks": 10
+    }
+}

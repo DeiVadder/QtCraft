@@ -35,6 +35,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | 6 × [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) |
 | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -71,6 +81,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) | [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | 2 × [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -109,6 +129,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) |  |
 | [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | 2 × [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab)
@@ -146,6 +176,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | · |  |
 | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](blocks.md#block-qtcraft-mossy_cobblestone) | [Bemooste Bruchsteintreppe](#block-qtcraft-mossy_cobblestone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -178,6 +218,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 |---|---|---|---|
 | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | 6 × [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) |
 | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -216,6 +266,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) | [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | 2 × [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab)
@@ -253,6 +313,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) |  |
 | [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | 2 × [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab)
@@ -289,6 +359,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | · | · | 4 × [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) |
 | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | · |  |
 | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](blocks.md#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -529,7 +609,6 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
 | Art des Bauteils | Zauntor |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); open (false, true) |
 
@@ -627,6 +706,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | 6 × [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) |
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -663,6 +752,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) | [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](blocks.md#block-qtcraft-cobblestone) | 2 × [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -701,6 +800,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) |  |
 | [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](blocks.md#block-qtcraft-cobblestone) | 2 × [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bruchsteinstufe](#block-qtcraft-cobblestone_slab)
@@ -737,6 +846,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | · | · | 4 × [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) |
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | · |  |
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -908,7 +1027,6 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
 | Art des Bauteils | Zauntor |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); open (false, true) |
 
@@ -1160,7 +1278,6 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
 | Art des Bauteils | Zauntor |
-| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); open (false, true) |
 
@@ -1236,6 +1353,24 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) | [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) | 2 × [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | 2 × [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab)
@@ -1272,6 +1407,24 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) | 3 × [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) |
 | [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) |  |
 | [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) | 2 × [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | 2 × [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -1314,6 +1467,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) | [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Stein](blocks.md#block-qtcraft-smooth_stone) | 2 × [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab)
@@ -1350,6 +1513,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) | 3 × [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) |
 | [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) |  |
 | [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Stein](blocks.md#block-qtcraft-smooth_stone) | 2 × [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -1388,6 +1561,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | 6 × [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) |
 | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -1424,6 +1607,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) | [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | 2 × [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -1462,6 +1655,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) |  |
 | [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | 2 × [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab)
@@ -1498,6 +1701,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | · | · | 4 × [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) |
 | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | · |  |
 | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) | [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -1536,6 +1749,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) | [Glattsteinstufe](#block-qtcraft-polished_stone_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](blocks.md#block-qtcraft-polished_stone) | 2 × [Glattsteinstufe](#block-qtcraft-polished_stone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab), [Rüstungsständer](items.md#item-qtcraft-armor_stand)
@@ -1573,6 +1796,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Glattsteinstufe](#block-qtcraft-polished_stone_slab) |  |
 | [Glattsteinstufe](#block-qtcraft-polished_stone_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](blocks.md#block-qtcraft-polished_stone) | 2 × [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Glattsteinstufe](#block-qtcraft-polished_stone_slab)
@@ -1609,6 +1842,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Glattstein](blocks.md#block-qtcraft-polished_stone) | · | · | 4 × [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) |
 | [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattstein](blocks.md#block-qtcraft-polished_stone) | · |  |
 | [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattstein](blocks.md#block-qtcraft-polished_stone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -1773,6 +2016,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | 6 × [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) |
 | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -1809,6 +2062,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) | [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | 2 × [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -1847,6 +2110,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) |  |
 | [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | 2 × [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab)
@@ -1883,6 +2156,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | · | · | 4 × [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) |
 | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | · |  |
 | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) | [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -2021,6 +2304,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) | 6 × [Sandsteinmauer](#block-qtcraft-sandstone_wall) |
 | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandsteinmauer](#block-qtcraft-sandstone_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2057,6 +2350,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) | [Sandsteinstufe](#block-qtcraft-sandstone_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | 2 × [Sandsteinstufe](#block-qtcraft-sandstone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -2095,6 +2398,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Sandsteinstufe](#block-qtcraft-sandstone_slab) |  |
 | [Sandsteinstufe](#block-qtcraft-sandstone_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | 2 × [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Sandsteinstufe](#block-qtcraft-sandstone_slab)
@@ -2131,6 +2444,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Sandstein](blocks.md#block-qtcraft-sandstone) | · | · | 4 × [Sandsteintreppe](#block-qtcraft-sandstone_stairs) |
 | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) | · |  |
 | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandstein](blocks.md#block-qtcraft-sandstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](blocks.md#block-qtcraft-sandstone) | [Sandsteintreppe](#block-qtcraft-sandstone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -2195,6 +2518,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) | [Steinstufe](#block-qtcraft-stone_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | 2 × [Steinstufe](#block-qtcraft-stone_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab)
@@ -2231,6 +2564,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Steinstufe](#block-qtcraft-stone_slab) | 3 × [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) |
 | [Steinstufe](#block-qtcraft-stone_slab) |  |
 | [Steinstufe](#block-qtcraft-stone_slab) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | 2 × [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -2269,6 +2612,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Stein](blocks.md#block-qtcraft-stone) | [Stein](blocks.md#block-qtcraft-stone) | · |  |
 | [Stein](blocks.md#block-qtcraft-stone) | [Stein](blocks.md#block-qtcraft-stone) | [Stein](blocks.md#block-qtcraft-stone) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | [Steintreppe](#block-qtcraft-stone_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2301,6 +2654,24 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 |---|---|---|---|
 | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | 6 × [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) |
 | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -2339,6 +2710,24 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|
 | [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) | [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | 2 × [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | 2 × [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Gemeißelte Steinziegel](blocks.md#block-qtcraft-chiseled_stone_bricks), [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab)
@@ -2376,6 +2765,24 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) |  |
 | [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | 2 × [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | 2 × [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Steinziegelstufe](#block-qtcraft-stone_bricks_slab)
@@ -2412,6 +2819,24 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | · | · | 4 × [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) |
 | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | · |  |
 | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegel](blocks.md#block-qtcraft-stone_bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](blocks.md#block-qtcraft-stone_bricks) | [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](blocks.md#block-qtcraft-stone) | [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -2524,6 +2949,16 @@ Mauern verbinden sich miteinander und mit vollen festen Blöcken; in geraden Rei
 | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) | 6 × [Ziegelmauer](#block-qtcraft-brick_wall) |
 | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegelmauer](#block-qtcraft-brick_wall) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2560,6 +2995,16 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | 1 | → |
 |---|---|
 | [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) | [Ziegelstufe](#block-qtcraft-brick_slab) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](blocks.md#block-qtcraft-bricks) | 2 × [Ziegelstufe](#block-qtcraft-brick_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -2598,6 +3043,16 @@ Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklic
 | [Ziegelstufe](#block-qtcraft-brick_slab) |  |
 | [Ziegelstufe](#block-qtcraft-brick_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](blocks.md#block-qtcraft-bricks) | 2 × [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Ziegelstufe](#block-qtcraft-brick_slab)
@@ -2634,6 +3089,16 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | [Ziegel](blocks.md#block-qtcraft-bricks) | · | · | 4 × [Ziegeltreppe](#block-qtcraft-brick_stairs) |
 | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) | · |  |
 | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegel](blocks.md#block-qtcraft-bricks) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](blocks.md#block-qtcraft-bricks) | [Ziegeltreppe](#block-qtcraft-brick_stairs) |
+
+[Steinschneider](blocks.md#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 

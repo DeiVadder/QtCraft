@@ -20,6 +20,8 @@ bool connectsSideways(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Comparator:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Hook:
+    case QcSignalKind::Viewers:
         return true;
     case QcSignalKind::Repeater:
         return state.facing == towards || state.facing == QcBlockRules::opposite(towards);

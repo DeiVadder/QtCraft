@@ -120,6 +120,11 @@ public:
         } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
             trade.reset();
             tradeClosed = true;
+        } else if (const auto *cutter = std::get_if<QcMsg::OpenStonecutter>(&message)) {
+            stonecutter = cutter->pos;
+        } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
+            stonecutter.reset();
+            stonecutterClosed = true;
         } else {
             return false;
         }
@@ -219,4 +224,7 @@ public:
     float machineBurn = 0.0f;
     // The server closed the machine screen.
     bool machineClosed = false;
+    // The open stonecutter (decision E-785) and whether the server closed one.
+    std::optional<QcBlockPos> stonecutter;
+    bool stonecutterClosed = false;
 };

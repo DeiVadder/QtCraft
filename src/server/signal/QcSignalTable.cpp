@@ -83,6 +83,7 @@ bool emitsWhileOn(QcSignalKind kind)
     case QcSignalKind::Repeater:
     case QcSignalKind::Observer:
     case QcSignalKind::Constant:
+    case QcSignalKind::Hook:
         return true;
     default:
         return false;
@@ -185,10 +186,11 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
     state.strongPowersAbove = signal.strongPowersAbove;
 
-    if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator || signal.kind == QcSignalKind::Target) {
+    const bool counted = signal.kind == QcSignalKind::Target || signal.kind == QcSignalKind::Viewers;
+    if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator || counted) {
         state.power = quint8(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
     }
-    if (signal.kind == QcSignalKind::Target) {
+    if (counted) {
         state.on = state.power > 0;
     }
     if (signal.kind == QcSignalKind::Dust) {

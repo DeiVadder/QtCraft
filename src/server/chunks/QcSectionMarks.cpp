@@ -19,7 +19,7 @@ QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
     if (block.signal.isComponent() && block.signal.kind != QcSignalKind::Hopper) {
         traits |= bit(QcBlockTrait::Circuit);
     }
-    if (block.signal.kind == QcSignalKind::Plate) {
+    if (block.signal.kind == QcSignalKind::Plate || block.signal.kind == QcSignalKind::Tripwire) {
         traits |= bit(QcBlockTrait::Plate);
     }
     if (block.containerSlots > 0 || block.machine.isMachine()) {

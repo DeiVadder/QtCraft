@@ -45,6 +45,7 @@ using QcRecipeParser::parseRecipe;
 using QcItemParser::parseItem;
 using QcProjectileParser::parseProjectile;
 using QcRecipeParser::parseSmeltingRecipe;
+using QcRecipeParser::parseStonecuttingRecipe;
 using QcShowcaseParser::parseShowcase;
 using QcSoundParser::parseSound;
 using QcStructureParser::parseStructure;

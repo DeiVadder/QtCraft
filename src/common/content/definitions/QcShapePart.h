@@ -17,6 +17,10 @@ struct QcShapePart
     // Collision boxes instead of `boxes` (fences reach 1.5 m, an open gate has none).
     bool customCollision = false;
     QList<QcAabb> collision;
+    // Boxes pointed at (aimed, outlined), neither drawn nor collided with: a wire too thin to hit gets
+    // a flat box over the whole cell (tripwire). Once a part of a state has them, only these boxes of
+    // all its parts are pointed at.
+    QList<QcAabb> target;
     // Texture slot of the block used for all faces of these boxes; empty uses the face textures.
     // "$<property>" takes the slot named by the state's value of that property (the lens colour of
     // the signal indicator light, decision E-765).

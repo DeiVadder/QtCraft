@@ -2,13 +2,25 @@
 
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
+#include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 
 using namespace Qt::StringLiterals;
 
-QcBlockScreens::QcBlockScreens(QcServerState &state)
+namespace {
+
+// Whether `block` is a container that counts its viewers.
+bool countsViewers(const QcServerState &state, QcBlockId block)
+{
+    return state.content().isValidBlock(block) && state.content().block(block).signal.kind == QcSignalKind::Viewers;
+}
+
+} // namespace
+
+QcBlockScreens::QcBlockScreens(QcServerState &state, QcServerBlocks &blocks)
     : m_state(state)
+    , m_blocks(blocks)
 {
 }
 
@@ -218,6 +230,51 @@ void QcBlockScreens::update()
             close(*client, true);
         } else {
             send(*client);
+        }
+    }
+    updateViewers();
+}
+
+void QcBlockScreens::updateViewers()
+{
+    QHash<QcBlockPos, int> viewers;
+    for (const auto &client : m_state.clients()) {
+        const std::optional<QcBlockPos> open = client->screen.cart == 0 ? client->screen.open : std::nullopt;
+        if (!open || client->state != QcServerClient::State::Playing || client->dead) {
+            continue;
+        }
+        if (countsViewers(m_state, m_state.world().blockAt(*open).value_or(qcAirBlockId))) {
+            ++viewers[*open];
+        }
+    }
+
+    // Those looked into now and those nobody looks into any more.
+    QHash<QcBlockPos, int> changed = m_viewers;
+    changed.insert(viewers);
+    for (auto it = changed.cbegin(); it != changed.cend(); ++it) {
+        const std::optional<QcBlockId> block = m_state.world().blockAt(it.key());
+        const QString power = QString::number(std::min(viewers.value(it.key()), QcSignalDefinition::maxPower));
+        if (block && countsViewers(m_state, *block) && m_state.content().property(*block, u"power"_s) != power) {
+            m_blocks.setAndBroadcast(it.key(), m_state.content().withProperty(*block, u"power"_s, power));
+        }
+    }
+    m_viewers = std::move(viewers);
+}
+
+void QcBlockScreens::releaseViewers(QcServerState &state, QcChunkPos chunk)
+{
+    const QcBlockEntities::ChunkIndex *index = state.blockEntities().chunkIndex(chunk);
+    if (!index) {
+        return;
+    }
+    // A copy: the index may change with the blocks.
+    const QList<QcBlockPos> containers = index->containers;
+    for (const QcBlockPos &pos : containers) {
+        const QcBlockId block = state.world().blockAt(pos).value_or(qcAirBlockId);
+        if (countsViewers(state, block) && state.content().property(block, u"power"_s) != u"0"_s) {
+            const QcBlockId released = state.content().withProperty(block, u"power"_s, u"0"_s);
+            state.world().setBlock(pos, released);
+            state.circuits().noteChange(state.world(), pos, block, released);
         }
     }
 }

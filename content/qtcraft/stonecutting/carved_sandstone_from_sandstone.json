@@ -1,0 +1,8 @@
+{
+    "name": "carved_sandstone_from_sandstone",
+    "input": "sandstone",
+    "result": {
+        "item": "carved_sandstone",
+        "count": 1
+    }
+}

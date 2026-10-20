@@ -1,0 +1,44 @@
+{
+    "name": "tripwire_hook",
+    "sound": "wood",
+    "shape": "tripwire_hook",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "attached",
+    "washable": true,
+    "connects": {
+        "group": "tripwire_hook",
+        "to": []
+    },
+    "states": {
+        "attach": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "attached": [
+            false,
+            true
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "tripwire_hook_item",
+    "textures": {
+        "all": "oak_planks",
+        "slots": {
+            "plank": "oak_planks",
+            "ring": "iron_block"
+        }
+    },
+    "fuelSeconds": 0,
+    "signal": {
+        "type": "hook",
+        "pulseTicks": 10
+    }
+}

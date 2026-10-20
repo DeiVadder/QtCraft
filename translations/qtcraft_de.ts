@@ -967,17 +967,17 @@
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="209"/>
+        <location filename="../src/app/qml/Main.qml" line="220"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="209"/>
+        <location filename="../src/app/qml/Main.qml" line="220"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="308"/>
+        <location filename="../src/app/qml/Main.qml" line="319"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -986,12 +986,12 @@
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="326"/>
+        <location filename="../src/app/qml/Main.qml" line="337"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="331"/>
+        <location filename="../src/app/qml/Main.qml" line="342"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -1428,43 +1428,43 @@
         <translation type="vanished">A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="33"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="34"/>
         <source>take/put down</source>
         <translation>nehmen/ablegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="34"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="35"/>
         <source>one item</source>
         <translation>ein Item</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="35"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="36"/>
         <source>quick move</source>
         <translation>schnell verschieben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="36"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="37"/>
         <source>close</source>
         <translation>schließen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="37"/>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="43"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="38"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="44"/>
         <source>scroll</source>
         <translation>scrollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="39"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="40"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="40"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="41"/>
         <source>back</source>
         <translation>zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="42"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="43"/>
         <source>tabs</source>
         <translation>Reiter</translation>
     </message>
@@ -1967,14 +1967,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="231"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="256"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="232"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="257"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="251"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="260"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="252"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="261"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -1983,22 +1983,22 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="279"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="279"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="305"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="330"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -2043,12 +2043,12 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="315"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="316"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="436"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -3447,22 +3447,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="186"/>
+        <location filename="../src/server/core/QcServer.cpp" line="187"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="399"/>
+        <location filename="../src/server/core/QcServer.cpp" line="404"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="429"/>
+        <location filename="../src/server/core/QcServer.cpp" line="434"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="187"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="188"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -3487,7 +3487,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="202"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="203"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3507,19 +3507,19 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="243"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="98"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="259"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="110"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="251"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="267"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="257"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="117"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="273"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="129"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
@@ -3961,7 +3961,7 @@
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="221"/>
+        <location filename="../src/server/core/QcServer.cpp" line="222"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="79"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -4818,6 +4818,44 @@
         <location filename="../src/app/qml/hud/SignEditor.qml" line="111"/>
         <source>Done</source>
         <translation>Fertig</translation>
+    </message>
+</context>
+<context>
+    <name>StonecutterScreen</name>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="22"/>
+        <source>%1 × %2 from %3</source>
+        <translation>%1 × %2 aus %3</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="36"/>
+        <source>Stone</source>
+        <translation>Stein</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="47"/>
+        <source>No stone to cut in the inventory.</source>
+        <translation>Kein Stein zum Schneiden im Inventar.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="65"/>
+        <source>Cut %1</source>
+        <translation>%1 schneiden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="88"/>
+        <source>Stonecutter</source>
+        <translation>Steinschneider</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="132"/>
+        <source>Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.</source>
+        <translation>Wähle links einen Stein. %1 auf einem Ergebnis schneidet einen Block, %2 alle. %3 schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="134"/>
+        <source>Choose a stone on the left. Click a result to cut one block, shift-click to cut all of them. %1 or Esc closes.</source>
+        <translation>Wähle links einen Stein. Klicke ein Ergebnis an, um einen Block zu schneiden, mit Umschalt alle. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkenschild](#block-qtcraft-birch_sign) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Bett](#block-qtcraft-blue_bed) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Bett](#block-qtcraft-brown_bed) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichenschild](#block-qtcraft-oak_sign) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) · [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) · [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) · [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) · [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) · [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) · [Erde](#block-qtcraft-dirt) · [Erloschenes Lagerfeuer](#block-qtcraft-unlit_campfire) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtenschild](#block-qtcraft-spruce_sign) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Bett](#block-qtcraft-yellow_bed) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glatter Stein](#block-qtcraft-smooth_stone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Bett](#block-qtcraft-gray_bed) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grobe Erde](#block-qtcraft-coarse_dirt) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Bett](#block-qtcraft-green_bed) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Bett](#block-qtcraft-light_blue_bed) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Bett](#block-qtcraft-light_gray_bed) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Bett](#block-qtcraft-lime_bed) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Knochenblock](#block-qtcraft-bone_block) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kuchen](#block-qtcraft-cake) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbislaterne](#block-qtcraft-jack_o_lantern) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lagerfeuer](#block-qtcraft-campfire) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Bett](#block-qtcraft-magenta_bed) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Notenblock](#block-qtcraft-note_block) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Bett](#block-qtcraft-orange_bed) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Ranken](#block-qtcraft-vines) · [Räucherofen](#block-qtcraft-smoker) · [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Bett](#block-qtcraft-pink_bed) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schmelzofen](#block-qtcraft-blast_furnace) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Bett](#block-qtcraft-black_bed) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Seerose](#block-qtcraft-lily_pad) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Kontrollleuchte](#block-qtcraft-signal_indicator_light) · [Signal-Kontrollleuchte (an)](#block-qtcraft-signal_indicator_light_lit) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signalstaubblock](#block-qtcraft-signal_dust_block) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Bett](#block-qtcraft-cyan_bed) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Bett](#block-qtcraft-purple_bed) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Bett](#block-qtcraft-white_bed) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zielscheibe](#block-qtcraft-target) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkenschild](#block-qtcraft-birch_sign) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Bett](#block-qtcraft-blue_bed) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Bett](#block-qtcraft-brown_bed) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichenschild](#block-qtcraft-oak_sign) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) · [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) · [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) · [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) · [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) · [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) · [Erde](#block-qtcraft-dirt) · [Erloschenes Lagerfeuer](#block-qtcraft-unlit_campfire) · [Fackel](#block-qtcraft-torch) · [Fallentruhe](#block-qtcraft-trapped_chest) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtenschild](#block-qtcraft-spruce_sign) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Bett](#block-qtcraft-yellow_bed) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glatter Stein](#block-qtcraft-smooth_stone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Bett](#block-qtcraft-gray_bed) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grobe Erde](#block-qtcraft-coarse_dirt) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Bett](#block-qtcraft-green_bed) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Bett](#block-qtcraft-light_blue_bed) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Bett](#block-qtcraft-light_gray_bed) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Bett](#block-qtcraft-lime_bed) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Knochenblock](#block-qtcraft-bone_block) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kuchen](#block-qtcraft-cake) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbislaterne](#block-qtcraft-jack_o_lantern) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lagerfeuer](#block-qtcraft-campfire) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Bett](#block-qtcraft-magenta_bed) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Notenblock](#block-qtcraft-note_block) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Bett](#block-qtcraft-orange_bed) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Ranken](#block-qtcraft-vines) · [Räucherofen](#block-qtcraft-smoker) · [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Bett](#block-qtcraft-pink_bed) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schmelzofen](#block-qtcraft-blast_furnace) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Bett](#block-qtcraft-black_bed) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Seerose](#block-qtcraft-lily_pad) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Kontrollleuchte](#block-qtcraft-signal_indicator_light) · [Signal-Kontrollleuchte (an)](#block-qtcraft-signal_indicator_light_lit) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signalstaubblock](#block-qtcraft-signal_dust_block) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinschneider](#block-qtcraft-stonecutter) · [Steinziegel](#block-qtcraft-stone_bricks) · [Stolperdraht](#block-qtcraft-tripwire) · [Stolperdrahthaken](#block-qtcraft-tripwire_hook) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Bett](#block-qtcraft-cyan_bed) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Bett](#block-qtcraft-purple_bed) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Bett](#block-qtcraft-white_bed) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zielscheibe](#block-qtcraft-target) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -182,6 +182,40 @@ Steinziegel, auf denen Moos wächst: Steinziegel und Ranken im Handwerksraster. 
 |---|---|---|
 | [Steinziegel](#block-qtcraft-stone_bricks) | [Ranken](#block-qtcraft-vines) | [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) |
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) | 2 × [Bemooste Steinziegelstufe](parts.md#block-qtcraft-mossy_stone_bricks_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegeltreppe](parts.md#block-qtcraft-mossy_stone_bricks_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) | [Bemooste Steinziegelmauer](parts.md#block-qtcraft-mossy_stone_bricks_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) | 2 × [Bemooste Steinziegelstufe (senkrecht)](parts.md#block-qtcraft-mossy_stone_bricks_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooste Steinziegelmauer](parts.md#block-qtcraft-mossy_stone_bricks_wall), [Bemooste Steinziegelstufe](parts.md#block-qtcraft-mossy_stone_bricks_slab), [Bemooste Steinziegeltreppe](parts.md#block-qtcraft-mossy_stone_bricks_stairs)
@@ -216,6 +250,40 @@ Bruchstein, auf dem Moos wächst. Verliese und ihre Gänge sind aus ihm und aus 
 | 1 | 2 | → |
 |---|---|---|
 | [Bruchstein](#block-qtcraft-cobblestone) | [Ranken](#block-qtcraft-vines) | [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) |
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) | 2 × [Bemooste Bruchsteinstufe](parts.md#block-qtcraft-mossy_cobblestone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) | [Bemooste Bruchsteintreppe](parts.md#block-qtcraft-mossy_cobblestone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) | [Bemooste Bruchsteinmauer](parts.md#block-qtcraft-mossy_cobblestone_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) | 2 × [Bemooste Bruchsteinstufe (senkrecht)](parts.md#block-qtcraft-mossy_cobblestone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -309,7 +377,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenschild](#block-qtcraft-birch_sign), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenschild](#block-qtcraft-birch_sign), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1162,6 +1230,40 @@ Daraus wird Stein beim Abbauen. Material für Steinwerkzeuge und den Ofen.
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](#block-qtcraft-cobblestone) | 2 × [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](#block-qtcraft-cobblestone) | [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](#block-qtcraft-cobblestone) | [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Bruchstein](#block-qtcraft-cobblestone) | 2 × [Bruchsteinstufe (senkrecht)](parts.md#block-qtcraft-cobblestone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs), [Hebel](#block-qtcraft-lever), [Ofen](#block-qtcraft-furnace), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalkolben](#block-qtcraft-signal_piston), [Signalspender](#block-qtcraft-signal_dispenser), [Signalwerfer](#block-qtcraft-signal_dropper), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
@@ -1334,7 +1436,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenschild](#block-qtcraft-oak_sign), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenschild](#block-qtcraft-oak_sign), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -2138,6 +2240,36 @@ Das einfachste Licht. Steht auf Böden oder hängt an Wänden; Wasser spült sie
 
 [Kupferlaterne](#block-qtcraft-copper_lantern), [Kürbislaterne](#block-qtcraft-jack_o_lantern), [Laterne](#block-qtcraft-lantern)
 
+### <a id="block-qtcraft-trapped_chest"></a>Fallentruhe
+
+Eine Truhe, die ein Signal gibt, solange Spieler hineinschauen, eine Stufe je Spieler.
+
+| | |
+|---|---|
+| ID | `qtcraft:trapped_chest` |
+| Härte | 2,5 |
+| Abbauen mit der Hand | 3,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,31 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Fallentruhe](#block-qtcraft-trapped_chest) |
+| Lichtdämpfung | 0 von 15 |
+| Lager | 27 Felder |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); power (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Truhe](#block-qtcraft-chest) | [Stolperdrahthaken](#block-qtcraft-tripwire_hook) | [Fallentruhe](#block-qtcraft-trapped_chest) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-fern"></a>Farn
 
 Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöcken ersetzt.
@@ -2253,7 +2385,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenschild](#block-qtcraft-spruce_sign), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenschild](#block-qtcraft-spruce_sign), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Notenblock](#block-qtcraft-note_block) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Stolperdrahthaken](#block-qtcraft-tripwire_hook) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -2749,6 +2881,24 @@ Ein verzierter Steinziegelblock aus zwei übereinander gelegten Steinziegelstufe
 | [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
 | [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) |  |
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2768,6 +2918,16 @@ Sandstein mit Gesicht: der Kopf, den ein Sandgolem zurücklässt, wenn er im Was
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 | Zustände | facing (north, east, south, west) |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Abbaubar mit**
 
@@ -2800,6 +2960,34 @@ In große, ebene Platten geschnittener Sandstein.
 |---|---|---|
 | [Sandstein](#block-qtcraft-sandstone) | [Sandstein](#block-qtcraft-sandstone) | 4 × [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) |
 | [Sandstein](#block-qtcraft-sandstone) | [Sandstein](#block-qtcraft-sandstone) |  |
+
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) | 2 × [Geschnittene Sandsteinstufe](parts.md#block-qtcraft-cut_sandstone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) | 2 × [Geschnittene Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -2954,6 +3142,40 @@ Im Ofen glatt gebrannter Sandstein.
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](#block-qtcraft-smooth_sandstone) | 2 × [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](#block-qtcraft-smooth_sandstone) | [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](#block-qtcraft-smooth_sandstone) | [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Sandstein](#block-qtcraft-smooth_sandstone) | 2 × [Glatter Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-smooth_sandstone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs)
@@ -2992,6 +3214,24 @@ Noch einmal geschmolzener Glattstein: eine glatte Fläche in einem dünnen Rahme
 [Ofen](#block-qtcraft-furnace)
 
 [Brennstoffe](tables.md#table-fuels)
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Stein](#block-qtcraft-smooth_stone) | 2 × [Glatte Steinstufe](parts.md#block-qtcraft-smooth_stone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glatter Stein](#block-qtcraft-smooth_stone) | 2 × [Glatte Steinstufe (senkrecht)](parts.md#block-qtcraft-smooth_stone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -3043,6 +3283,32 @@ Im Ofen geglätteter Stein.
 [Ofen](#block-qtcraft-furnace)
 
 [Brennstoffe](tables.md#table-fuels)
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | 2 × [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | 2 × [Glattsteinstufe (senkrecht)](parts.md#block-qtcraft-polished_stone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 
@@ -5483,6 +5749,40 @@ Ziegel aus gestampftem Schlamm; ein warmer, erdiger Baustein.
 | [Gestampfter Schlamm](#block-qtcraft-packed_mud) | [Gestampfter Schlamm](#block-qtcraft-packed_mud) | 4 × [Lehmziegel](#block-qtcraft-mud_bricks) |
 | [Gestampfter Schlamm](#block-qtcraft-packed_mud) | [Gestampfter Schlamm](#block-qtcraft-packed_mud) |  |
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](#block-qtcraft-mud_bricks) | 2 × [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](#block-qtcraft-mud_bricks) | [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](#block-qtcraft-mud_bricks) | [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Lehmziegel](#block-qtcraft-mud_bricks) | 2 × [Lehmziegelstufe (senkrecht)](parts.md#block-qtcraft-mud_bricks_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs)
@@ -7527,6 +7827,72 @@ Gepresster Sand, liegt unter Wüsten.
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | 2 × [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | 2 × [Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-sandstone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | 2 × [Geschnittene Sandsteinstufe](parts.md#block-qtcraft-cut_sandstone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Sandstein](#block-qtcraft-sandstone) | 2 × [Geschnittene Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-cut_sandstone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Geschnittener Sandstein](#block-qtcraft-cut_sandstone), [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs)
@@ -8665,9 +9031,83 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Steinziegel](#block-qtcraft-stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | 2 × [Steinstufe](parts.md#block-qtcraft-stone_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Steintreppe](parts.md#block-qtcraft-stone_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | 2 × [Steinstufe (senkrecht)](parts.md#block-qtcraft-stone_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | 2 × [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | 2 × [Steinziegelstufe (senkrecht)](parts.md#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
-[Signal-Repeater](#block-qtcraft-signal_repeater), [Signalkomparator](#block-qtcraft-signal_comparator), [Steindruckplatte](#block-qtcraft-stone_pressure_plate), [Steinknopf](#block-qtcraft-stone_button), [Steinstufe](parts.md#block-qtcraft-stone_slab), [Steintreppe](parts.md#block-qtcraft-stone_stairs), [Steinziegel](#block-qtcraft-stone_bricks)
+[Signal-Repeater](#block-qtcraft-signal_repeater), [Signalkomparator](#block-qtcraft-signal_comparator), [Steindruckplatte](#block-qtcraft-stone_pressure_plate), [Steinknopf](#block-qtcraft-stone_button), [Steinschneider](#block-qtcraft-stonecutter), [Steinstufe](parts.md#block-qtcraft-stone_slab), [Steintreppe](parts.md#block-qtcraft-stone_stairs), [Steinziegel](#block-qtcraft-stone_bricks)
 
 **Abbaubar mit**
 
@@ -8769,6 +9209,37 @@ Das häufigste Erz; ergibt Kohle, den besten frühen Brennstoff.
 
 [Steinkohle-Vorkommen](worldgen.md#ore-qtcraft-coal) (y 5–110)
 
+### <a id="block-qtcraft-stonecutter"></a>Steinschneider
+
+Schneidet Steinblöcke aus deinem Inventar in Treppen, Stufen, senkrechte Stufen, Mauern und geschnittene oder gemeißelte Varianten, einen Block nach dem anderen und ohne Verlust: benutze ihn und wähle ein Ergebnis.
+
+| | |
+|---|---|
+| ID | `qtcraft:stonecutter` |
+| Härte | 3,5 |
+| Abbauen mit der Hand | 17,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,44 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Steinschneider](#block-qtcraft-stonecutter) |
+| Beute ohne passendes Werkzeug | nichts |
+| Lichtdämpfung | 0 von 15 |
+| Steinschneider | öffnet den Steinschneider: ein Steinblock wird zu Treppe, Stufen, Mauer oder einer geschnittenen Variante |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Steinschneider](#block-qtcraft-stonecutter) |
+| [Stein](#block-qtcraft-stone) | [Stein](#block-qtcraft-stone) | [Stein](#block-qtcraft-stone) |  |
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-stone_bricks"></a>Steinziegel
 
 Sauber geschnittener Stein.
@@ -8809,6 +9280,58 @@ Sauber geschnittener Stein.
 
 [Brennstoffe](tables.md#table-fuels)
 
+**Im Steinschneider geschnitten aus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Stein](#block-qtcraft-stone) | [Steinziegel](#block-qtcraft-stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | 2 × [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | 2 × [Steinziegelstufe (senkrecht)](parts.md#block-qtcraft-stone_bricks_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
 **Wird verwendet für**
 
 [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs)
@@ -8816,6 +9339,62 @@ Sauber geschnittener Stein.
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
+### <a id="block-qtcraft-tripwire"></a>Stolperdraht
+
+Faden zwischen zwei Stolperdrahthaken. Was hindurchläuft oder darin liegt, löst die Haken aus; mit der Schere geschnitten verschwindet er leise.
+
+| | |
+|---|---|
+| ID | `qtcraft:tripwire` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Faden](items.md#item-qtcraft-string) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Wird von Flüssigkeiten weggespült | ja |
+| Verbindet sich mit | Tripwire, Tripwire hook, volle feste Blöcke |
+| Klang | Wolle |
+| Zustände | attached (false, true); disarmed (false, true); east (false, true); north (false, true); powered (false, true); south (false, true); west (false, true) |
+
+### <a id="block-qtcraft-tripwire_hook"></a>Stolperdrahthaken
+
+Hängt an der Seite eines Blocks. Zwei Haken, die sich ansehen, mit Stolperdraht dazwischen bilden eine Linie, die beide Haken versorgt, solange etwas den Draht berührt.
+
+| | |
+|---|---|
+| ID | `qtcraft:tripwire_hook` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Stolperdrahthaken](#block-qtcraft-tripwire_hook) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | eine feste Fläche, an der es hängt |
+| Wird von Flüssigkeiten weggespült | ja |
+| Klang | Holz |
+| Zustände | attach (north, east, south, west); attached (false, true); powered (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | 2 × [Stolperdrahthaken](#block-qtcraft-tripwire_hook) |
+| [Stock](items.md#item-qtcraft-stick) |  |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Eisennugget](items.md#item-qtcraft-iron_nugget) | [Stolperdrahthaken](#block-qtcraft-tripwire_hook) |
+| [Stock](items.md#item-qtcraft-stick) |  |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+**Wird verwendet für**
+
+[Fallentruhe](#block-qtcraft-trapped_chest)
 
 ### <a id="block-qtcraft-hay_block"></a>Strohballen
 
@@ -9003,7 +9582,7 @@ Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.
 
 **Wird verwendet für**
 
-[Signaltrichter](#block-qtcraft-signal_hopper), [Truhenlore](items.md#item-qtcraft-chest_minecart)
+[Fallentruhe](#block-qtcraft-trapped_chest), [Signaltrichter](#block-qtcraft-signal_hopper), [Truhenlore](items.md#item-qtcraft-chest_minecart)
 
 **Schneller mit**
 
@@ -9883,6 +10462,40 @@ Gebrannter Ton, ein fester Baustein.
 |---|---|---|
 | [Ziegelstein](items.md#item-qtcraft-brick) | [Ziegelstein](items.md#item-qtcraft-brick) | [Ziegel](#block-qtcraft-bricks) |
 | [Ziegelstein](items.md#item-qtcraft-brick) | [Ziegelstein](items.md#item-qtcraft-brick) |  |
+
+**Der Steinschneider schneidet daraus**
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](#block-qtcraft-bricks) | 2 × [Ziegelstufe](parts.md#block-qtcraft-brick_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](#block-qtcraft-bricks) | [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](#block-qtcraft-bricks) | [Ziegelmauer](parts.md#block-qtcraft-brick_wall) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
+
+*Steinschneider: ein Block nach dem anderen, ohne Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Ziegel](#block-qtcraft-bricks) | 2 × [Ziegelstufe (senkrecht)](parts.md#block-qtcraft-brick_vertical_slab) |
+
+[Steinschneider](#block-qtcraft-stonecutter)
 
 **Wird verwendet für**
 

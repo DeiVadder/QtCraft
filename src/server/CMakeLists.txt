@@ -155,6 +155,7 @@ target_sources(qc_server PRIVATE
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
+    machines/QcServerStonecutter.h machines/QcServerStonecutter.cpp
 )
 target_sources(qc_server PRIVATE
     minecarts/QcMinecartCollisions.h minecarts/QcMinecartCollisions.cpp
@@ -241,6 +242,7 @@ target_sources(qc_server PRIVATE
     signal/QcSignalPower.h signal/QcSignalPower.cpp
     signal/QcSignalSchedule.h signal/QcSignalSchedule.cpp
     signal/QcSignalTable.h signal/QcSignalTable.cpp
+    signal/QcTripwires.h signal/QcTripwires.cpp
 )
 target_sources(qc_server PRIVATE
     spawners/QcFurnishing.h spawners/QcFurnishing.cpp

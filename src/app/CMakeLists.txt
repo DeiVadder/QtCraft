@@ -17,6 +17,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcSignController.h controllers/QcSignController.cpp
+    controllers/QcStonecutterController.h controllers/QcStonecutterController.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
@@ -173,6 +174,7 @@ qt_add_qml_module(qc_app_core
         qml/inventory/InventorySlot.qml
         qml/inventory/PlayerSlots.qml
         qml/inventory/SlotScreen.qml
+        qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
         qml/menus/DeathScreen.qml
         qml/menus/DisconnectScreen.qml

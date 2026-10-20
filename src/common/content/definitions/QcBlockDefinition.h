@@ -142,6 +142,8 @@ struct QcBlockDefinition
     QString infestsMob;
     // Using the block opens the 3 x 3 crafting grid instead of placing against it.
     bool opensCrafting = false;
+    // Using the block opens the stonecutter's screen (decision E-785).
+    bool opensStonecutter = false;
     // Using the block opens its machine screen (furnace).
     QcMachineDefinition machine;
     // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.
@@ -184,6 +186,9 @@ struct QcBlockDefinition
     // set its north, east, south and west properties (fences, walls, panes).
     QString connectGroup;
     QStringList connectsTo;
+    // Whether full solid blocks count as connections (`"solids": false`: only the groups, tripwire,
+    // decision E-782). Server side only.
+    bool connectsToSolids = true;
     // Item slots of a storage block (chest); 0 for blocks without storage.
     int containerSlots = 0;
     // Slots per row of its screen (a dispenser's 3 x 3, a hopper's row of 5).

@@ -8,5 +8,6 @@
         "states": { "north": [false, true], "east": [false, true], "south": [false, true], "west": [false, true], "up": [true, false] }
     },
     "recipe": { "pattern": ["###", "###"], "key": { "#": "@" }, "count": 6 },
+    "stonecutter": { "count": 1, "kinds": ["stone"] },
     "translations": { "en": "%1 wall", "de": "%1mauer" }
 }

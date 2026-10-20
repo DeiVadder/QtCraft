@@ -19,7 +19,7 @@ enum class QcBlockTrait : quint8 {
     // A Signal Dust component other than a hopper (decision E-335; hoppers react only to power,
     // which comes from components that are marked themselves, decision E-344).
     Circuit,
-    // A pressure plate: only bodies in its sections are checked for pressing one.
+    // A pressure plate or tripwire: only bodies in its sections are checked for pressing one.
     Plate,
     // Holds a block entity created with the block: a container or a machine (decision E-357).
     BlockEntity,

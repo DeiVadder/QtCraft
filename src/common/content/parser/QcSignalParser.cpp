@@ -30,6 +30,9 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Constant, "constant"},
     {QcSignalKind::Note, "note"},
     {QcSignalKind::Target, "target"},
+    {QcSignalKind::Hook, "hook"},
+    {QcSignalKind::Tripwire, "tripwire"},
+    {QcSignalKind::Viewers, "viewers"},
 }};
 
 [[nodiscard]] std::optional<QcSignalKind> kindFromName(const QString &name)
@@ -116,7 +119,12 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
     case QcSignalKind::Note:
         return {{u"powered"_s, booleans}, {u"note"_s, noteValues()}};
     case QcSignalKind::Target:
+    case QcSignalKind::Viewers:
         return {{u"power"_s, powerValues()}};
+    case QcSignalKind::Hook:
+        return {{u"attach"_s, horizontal}, {u"attached"_s, booleans}, {u"powered"_s, booleans}};
+    case QcSignalKind::Tripwire:
+        return {{u"attached"_s, booleans}, {u"powered"_s, booleans}, {u"disarmed"_s, booleans}};
     case QcSignalKind::Lamp:
     case QcSignalKind::Igniter:
     case QcSignalKind::Constant:
@@ -180,6 +188,7 @@ void SignalReader::readKindFields()
     m_signal.detectsItems = detects == u"all"_s;
     m_signal.detectsCarts = detects == u"carts"_s;
     m_signal.railReach = m_reader.integer(u"reach"_s, 8, 0, QcSignalDefinition::maxRailReach);
+    m_signal.wireReach = m_reader.integer(u"wireReach"_s, 39, 1, QcSignalDefinition::maxWireReach);
 
     m_signal.sticky = m_reader.boolean(u"sticky"_s, false);
     m_signal.pushLimit = m_reader.integer(u"pushLimit"_s, 12, 1, QcSignalDefinition::maxPushLimit);

@@ -1,0 +1,281 @@
+{
+    "name": "tripwire",
+    "parts": [
+        {
+            "when": {
+                "attached": true,
+                "north": true
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.0625,
+                    0,
+                    0.53125,
+                    0.09375,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": true,
+                "south": true
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.0625,
+                    0,
+                    0.53125,
+                    0.09375,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": true,
+                "east": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.0625,
+                    0.46875,
+                    1,
+                    0.09375,
+                    0.53125
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": true,
+                "west": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.0625,
+                    0.46875,
+                    1,
+                    0.09375,
+                    0.53125
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": true,
+                "north": false,
+                "south": false,
+                "east": false,
+                "west": false
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.0625,
+                    0,
+                    0.53125,
+                    0.09375,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": false,
+                "north": true
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.09375,
+                    0,
+                    0.53125,
+                    0.125,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": false,
+                "south": true
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.09375,
+                    0,
+                    0.53125,
+                    0.125,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": false,
+                "east": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.09375,
+                    0.46875,
+                    1,
+                    0.125,
+                    0.53125
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": false,
+                "west": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.09375,
+                    0.46875,
+                    1,
+                    0.125,
+                    0.53125
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "attached": false,
+                "north": false,
+                "south": false,
+                "east": false,
+                "west": false
+            },
+            "boxes": [
+                [
+                    0.46875,
+                    0.09375,
+                    0,
+                    0.53125,
+                    0.125,
+                    1
+                ]
+            ],
+            "collision": [],
+            "target": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.15625,
+                    1
+                ]
+            ]
+        }
+    ]
+}

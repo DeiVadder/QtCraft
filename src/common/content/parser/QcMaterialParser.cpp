@@ -195,6 +195,11 @@ namespace QcMaterialParser {
     }
     family.moreRecipes = parseMoreRecipes(json, reader);
     family.translations = parseFamilyTranslations(json, reader);
+    // "stonecutter": {"count": 2, "kinds": ["stone"]} (decision E-784).
+    reader.nestedObject(u"stonecutter"_s, [&family](const QJsonObject &object, QcJsonFieldReader &nested) {
+        family.stonecutterCount = nested.integer(u"count"_s, 1, 1, 64);
+        family.stonecutterKinds = parseFamilyKinds(object, nested);
+    });
 
     if (!reader.ok()) {
         return qcError(reader.error);

@@ -554,7 +554,12 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         if (!definition) {
             return false;
         }
-        registry.registerSmeltingRecipe(std::move(*definition));
+        // The stonecutter's recipes travel with the smelting recipes (decision E-784).
+        if (definition->category == QLatin1StringView(QcSmeltingRecipe::stonecuttingCategory)) {
+            registry.registerStonecuttingRecipe(std::move(*definition));
+        } else {
+            registry.registerSmeltingRecipe(std::move(*definition));
+        }
         return true;
     });
 }
@@ -612,7 +617,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     });
     writeList(stream, content.assets().models(), writeModel);
     writeList(stream, content.assets().appearances(), writeAppearance);
-    writeList(stream, content.smeltingRecipes(), [](QDataStream &out, const QcSmeltingRecipe &recipe) {
+    writeList(stream, content.smeltingRecipes() + content.stonecuttingRecipes(), [](QDataStream &out, const QcSmeltingRecipe &recipe) {
         out << recipe.name << recipe.category << recipe.kind << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
             << recipe.seconds;
     });

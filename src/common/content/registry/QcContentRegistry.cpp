@@ -9,6 +9,7 @@
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/content/registry/QcPartGenerator.h"
 #include "common/content/registry/QcSignalLinks.h"
+#include "common/content/registry/QcStonecutting.h"
 
 #include <algorithm>
 
@@ -397,6 +398,8 @@ QStringList QcContentRegistry::finish()
         warnings.append(u"block '%1': %2; it takes no part in circuits"_s.arg(name, problem));
     }
     createBlockItems();
+    // After the items: generated recipes need the items of the parts.
+    QcStonecutting::generate(*this);
     warnings.append(QcVillageContent::resolveSpecies(*this));
     // A creature naming villager settings no pack has is no villager (decision E-421); the others
     // keep the index of theirs. It keeps its abilities except opening doors, which only the villager
@@ -511,6 +514,16 @@ const QcSmeltingRecipe *QcContentRegistry::smeltingRecipe(const QString &categor
         return recipe.inputItem == inputItem && recipe.category == category;
     });
     return it == m_smeltingRecipes.items().end() ? nullptr : &*it;
+}
+
+void QcContentRegistry::registerStonecuttingRecipe(QcSmeltingRecipe recipe)
+{
+    m_stonecuttingRecipes.set(std::move(recipe));
+}
+
+std::optional<qsizetype> QcContentRegistry::stonecuttingIndex(const QString &name) const
+{
+    return m_stonecuttingRecipes.indexOf(name);
 }
 
 void QcContentRegistry::registerHandbookChapter(QcHandbookChapter chapter)

@@ -3,6 +3,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/signal/QcMovingBlocks.h"
+#include "server/signal/QcTripwires.h"
 
 #include <algorithm>
 #include <utility>
@@ -37,6 +38,7 @@ void QcCircuitComponents::Plates::clear()
     anything.clear();
     living.clear();
     carts.clear();
+    wires.clear();
 }
 
 QcCircuitComponents::QcCircuitComponents(const Context &context)
@@ -92,6 +94,12 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Rail:
         reactRail(pos, *block, plan);
         break;
+    case QcSignalKind::Hook:
+        QcTripwires(m_context.power, m_context.plates.wires, m_context.entities.schedule()).reactHook(pos, plan);
+        break;
+    case QcSignalKind::Tripwire:
+        QcTripwires(m_context.power, m_context.plates.wires, m_context.entities.schedule()).reactWire(pos, plan);
+        break;
     case QcSignalKind::Note:
         reactNote(pos, *block, state, plan);
         break;
@@ -140,6 +148,12 @@ void QcCircuitComponents::scheduled(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Plate:
         releasePlate(pos, *block, state, plan);
         break;
+    case QcSignalKind::Hook:
+        QcTripwires(m_context.power, m_context.plates.wires, m_context.entities.schedule()).reactHook(pos, plan);
+        break;
+    case QcSignalKind::Tripwire:
+        QcTripwires(m_context.power, m_context.plates.wires, m_context.entities.schedule()).scheduledWire(pos, *block, plan);
+        break;
     case QcSignalKind::Piston:
         reactPiston(pos, *block, state, plan);
         break;
@@ -166,6 +180,14 @@ void QcCircuitComponents::scheduledMachine(QcBlockPos pos, QcBlockId block, QcSi
         break;
     default:
         break;
+    }
+}
+
+void QcCircuitComponents::replaced(QcBlockPos pos, QcBlockId before, QcBlockId after, QcCircuitPlan &plan) const
+{
+    const QcSignalKind was = table().at(before).kind;
+    if ((was == QcSignalKind::Hook || was == QcSignalKind::Tripwire) && table().at(after).kind != was) {
+        QcTripwires(m_context.power, m_context.plates.wires, m_context.entities.schedule()).removed(pos, before, plan);
     }
 }
 

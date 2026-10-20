@@ -74,6 +74,12 @@ QString signalNote(const QcHandbookContext &context, const QcSignalDefinition &s
         return ruleLabel(context, u"value.signal.note"_s).arg(QcSignalDefinition::noteCount);
     case QcSignalKind::Target:
         return ruleLabel(context, u"value.signal.target"_s).arg(signal.stuckHitTicks).arg(signal.hitTicks);
+    case QcSignalKind::Hook:
+        return ruleLabel(context, u"value.signal.hook"_s).arg(power).arg(signal.wireReach);
+    case QcSignalKind::Tripwire:
+        return ruleLabel(context, u"value.signal.tripwire"_s).arg(signal.pulseTicks);
+    case QcSignalKind::Viewers:
+        return ruleLabel(context, u"value.signal.viewers"_s).arg(QcSignalDefinition::maxPower);
     case QcSignalKind::None:
     case QcSignalKind::PistonHead:
         break;
@@ -92,6 +98,9 @@ int signalRole(QcSignalKind kind)
     case QcSignalKind::Observer:
     case QcSignalKind::Constant:
     case QcSignalKind::Target:
+    case QcSignalKind::Hook:
+    case QcSignalKind::Tripwire:
+    case QcSignalKind::Viewers:
         return 0;
     case QcSignalKind::Dust:
     case QcSignalKind::Repeater:

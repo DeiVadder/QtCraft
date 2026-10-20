@@ -179,6 +179,10 @@ namespace QcRecipeParser {
     if (reader.ok() && !QcContentFields::isValidCategory(recipe.category)) {
         reader.fail(QcContentFields::invalidCategoryMessage());
     }
+    // The stonecutter's recipes have their own folder and list (decision E-784).
+    if (reader.ok() && recipe.category == QLatin1StringView(QcSmeltingRecipe::stonecuttingCategory)) {
+        reader.fail(u"the category 'stonecutting' belongs to recipes in stonecutting/"_s);
+    }
     recipe.kind = reader.string(u"kind"_s);
     if (reader.ok() && !recipe.kind.isEmpty() && !QcContentFields::isValidCategory(recipe.kind)) {
         reader.fail(u"'kind' must be a name like a category"_s);
@@ -201,6 +205,17 @@ namespace QcRecipeParser {
 
     if (!reader.ok()) {
         return qcError(reader.error);
+    }
+    return recipe;
+}
+
+[[nodiscard]] QcResult<QcSmeltingRecipe> parseStonecuttingRecipe(const QJsonObject &json, const QString &packNamespace)
+{
+    QJsonObject smelting = json;
+    smelting.remove(u"category"_s);
+    QcResult<QcSmeltingRecipe> recipe = parseSmeltingRecipe(smelting, packNamespace);
+    if (recipe) {
+        recipe->category = QString::fromLatin1(QcSmeltingRecipe::stonecuttingCategory);
     }
     return recipe;
 }

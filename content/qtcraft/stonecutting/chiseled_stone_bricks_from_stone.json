@@ -1,0 +1,8 @@
+{
+    "name": "chiseled_stone_bricks_from_stone",
+    "input": "stone",
+    "result": {
+        "item": "chiseled_stone_bricks",
+        "count": 1
+    }
+}

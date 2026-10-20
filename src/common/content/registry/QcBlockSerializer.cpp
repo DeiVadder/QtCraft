@@ -59,6 +59,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
         writeAabbs(stream, part.crosses);
         stream << part.customCollision;
         writeAabbs(stream, part.collision);
+        writeAabbs(stream, part.target);
         stream << part.texture << part.stretch;
     }
 }
@@ -102,13 +103,15 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     }
     stream >> part.customCollision;
     std::optional<QList<QcAabb>> collision = readAabbs(stream, QcShapeDefinition::maxCollisionHeight);
-    if (!collision) {
+    std::optional<QList<QcAabb>> target = collision ? readAabbs(stream, 1.0) : std::nullopt;
+    if (!target) {
         return std::nullopt;
     }
 
     part.boxes = std::move(*boxes);
     part.crosses = std::move(*crosses);
     part.collision = std::move(*collision);
+    part.target = std::move(*target);
     stream >> part.texture >> part.stretch;
     return part;
 }
@@ -144,7 +147,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 lightOpacity = 0;
     qint32 toolLevel = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
-        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting
+        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> block.opensStonecutter
         >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.machine.kinds
         >> block.soundMaterial;
     for (QString &key : block.soundKeys) {
@@ -340,7 +343,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
 {
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel) << block.opensCrafting << block.machine.category
+           << qint32(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.machine.category
            << block.machine.speed << block.fuelSeconds << block.machine.sound << block.machine.kinds << block.soundMaterial;
     for (const QString &key : block.soundKeys) {
         stream << key;

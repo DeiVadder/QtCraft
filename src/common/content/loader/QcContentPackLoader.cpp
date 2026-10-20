@@ -154,7 +154,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "loot"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "loot"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -422,6 +422,8 @@ void PackReader::loadLaterDefinitions()
                     [this](QcRecipeDefinition recipe) { m_registry.registerRecipe(std::move(recipe)); });
     loadDefinitions(u"smelting"_s, QcContentParser::parseSmeltingRecipe,
                     [this](QcSmeltingRecipe recipe) { m_registry.registerSmeltingRecipe(std::move(recipe)); });
+    loadDefinitions(u"stonecutting"_s, QcContentParser::parseStonecuttingRecipe,
+                    [this](QcSmeltingRecipe recipe) { m_registry.registerStonecuttingRecipe(std::move(recipe)); });
     loadDefinitions(u"parts"_s, QcContentParser::parsePartFamily,
                     [this](QcPartFamily family) { m_registry.registerPartFamily(std::move(family)); });
     loadDefinitions(u"materials"_s, QcContentParser::parseMaterial,

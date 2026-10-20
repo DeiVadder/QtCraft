@@ -5,6 +5,7 @@
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/machines/QcBlockScreens.h"
 #include "server/spawners/QcFurnishing.h"
 #include "server/storage/QcBlockEntityRecords.h"
 #include "server/storage/QcEntityRecords.h"
@@ -201,6 +202,7 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
     // What was kept is fitted to the blocks (a mod took a block away); spills drop in the next tick.
     if (const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(pos)) {
         m_state.blockEntities().reconcile(*chunk);
+        QcBlockScreens::releaseViewers(m_state, pos);
         // Burning fires go on with their steps (decision E-392); fire blocks left without one are
         // adopted as new sparks in the next fire step.
         m_state.world().fires().restore(arrival.blockEntities.fires, upcomingTick(), *chunk);

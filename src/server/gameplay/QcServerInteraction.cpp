@@ -21,6 +21,7 @@
 #include "server/golems/QcServerGolems.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcServerKitchen.h"
+#include "server/machines/QcServerStonecutter.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
 #include "server/plants/QcServerPlants.h"
@@ -52,14 +53,23 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
+    const QcBlockDefinition &definition = m_state.content().block(*block);
+    const QcItemDefinition *held = m_state.heldItem(client);
+    // Shears (the item that carves) cut a tripwire without setting its hooks off (decision E-782);
+    // only a break that happens disarms it.
+    const auto disarmCutWire = [&] {
+        if (held && held->carves && definition.signal.kind == QcSignalKind::Tripwire) {
+            m_state.world().setBlock(pos, m_state.content().withProperty(*block, u"disarmed"_s, u"true"_s));
+        }
+    };
+
     if (client.rules().instantBreak) {
         // Creative mode: every block breaks at once, without drops or wear (decision E-282).
+        disarmCutWire();
         m_parts.blocks.breakBlock(pos, false);
         return;
     }
 
-    const QcBlockDefinition &definition = m_state.content().block(*block);
-    const QcItemDefinition *held = m_state.heldItem(client);
     const double seconds = QcMining::breakSeconds(definition, held);
     // In the players' time, so the mining takes as long at every tick rate.
     constexpr qint64 tickNs = qint64(QcPhysics::tickDuration * 1e9);
@@ -71,6 +81,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     }
 
     // Drops fall into the world as items (decision E-028).
+    disarmCutWire();
     m_parts.blocks.breakBlock(pos, QcMining::canHarvest(definition, held));
     client.hunger.exhaust(QcHunger::mineBlock);
 
@@ -166,6 +177,11 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 
     if (clickedBlock && m_state.content().block(*clickedBlock).opensCrafting && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         m_parts.crafting.openCraftingTable(client, target);
+        return true;
+    }
+
+    // The stonecutter (decision E-785).
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.stonecutter.open(client, target)) {
         return true;
     }
 
