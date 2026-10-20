@@ -1,0 +1,9 @@
+{
+    "name": "black_glazed_terracotta",
+    "input": "black_terracotta",
+    "result": {
+        "item": "black_glazed_terracotta"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

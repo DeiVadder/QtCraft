@@ -267,6 +267,9 @@ void BlockPage::addFarmingFacts()
     if (!m_block.carvesInto.isEmpty()) {
         addFact(u"carvesInto"_s, {}, {m_links.blockLink(m_block.carvesInto)});
     }
+    if (!m_block.strippedInto.isEmpty()) {
+        addFact(u"strippedInto"_s, {}, {m_links.blockLink(m_block.strippedInto)});
+    }
 }
 
 void BlockPage::addSoilFacts()

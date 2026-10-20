@@ -1,0 +1,9 @@
+{
+    "name": "cracked_stone_bricks",
+    "input": "stone_bricks",
+    "result": {
+        "item": "cracked_stone_bricks"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

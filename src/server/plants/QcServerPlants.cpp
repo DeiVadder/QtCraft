@@ -213,6 +213,33 @@ bool QcServerPlants::carve(QcServerClient &client, QcBlockPos target, QcBlockFac
     return true;
 }
 
+bool QcServerPlants::strip(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(target);
+    if (!held || !held->strips || !clicked || !content.isValidBlock(*clicked) || content.block(*clicked).strippedInto.isEmpty()
+        || !QcLineOfSight::isWithinReach(client, target)) {
+        return false;
+    }
+
+    const std::optional<QcBlockId> stripped = content.blockId(content.block(*clicked).strippedInto);
+    if (!stripped) {
+        return false;
+    }
+
+    QcBlockId state = *stripped;
+    for (const QcBlockProperty &property : content.block(*stripped).properties) {
+        const QString value = content.property(*clicked, property.name);
+        if (property.values.contains(value)) {
+            state = content.withProperty(state, property.name, value);
+        }
+    }
+    m_blocks.setAndBroadcast(target, state);
+    m_sounds.playBlock(content.block(state), QcBlockSoundAction::Place, target);
+    m_inventory.wearHeld(client);
+    return true;
+}
+
 bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held)
 {
     const QcContentRegistry &content = m_state.content();

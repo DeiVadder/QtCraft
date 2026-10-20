@@ -1,0 +1,9 @@
+{
+    "name": "charcoal_from_stripped_oak_log",
+    "input": "stripped_oak_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10,
+    "experience": 0.15
+}

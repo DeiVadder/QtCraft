@@ -38,6 +38,10 @@ QString lookDirection(float yaw);
 // Direction name of a face ("up" and "down" for the vertical ones).
 QString faceName(QcBlockFace face);
 QcBlockFace opposite(QcBlockFace face);
+// The face a direction name ("north" … "down", "floor", "ceiling") stands for.
+[[nodiscard]] std::optional<QcBlockFace> faceFromName(const QString &name);
+// The direction to the right of someone looking towards `face` (clockwise seen from above).
+[[nodiscard]] QcBlockFace rightOf(QcBlockFace face);
 
 // Where and in which state `block` (any state of it) is placed when the player clicks with `aim`. A slab
 // clicked on its open half becomes a double slab in place; a clicked replaceable block (tall grass)
@@ -46,8 +50,9 @@ QcBlockFace opposite(QcBlockFace face);
 [[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
 
 // `id` with its connection properties recomputed from the neighbours (unchanged for blocks that do
-// not connect); rails take their track from the rails around them (QcRails::shapedState). Sides
-// towards unloaded chunks keep their current value.
+// not connect); rails take their track from the rails around them (QcRails::shapedState), stairs
+// their corner from the stairs around them (QcStairShapes::shapedState). Sides towards unloaded
+// chunks keep their current value.
 QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
 // Whether the block at `pos` (in state `id`) still has its support.

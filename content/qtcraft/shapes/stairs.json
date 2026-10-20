@@ -2,8 +2,12 @@
     "name": "stairs",
     "rotate": "facing",
     "flip": "half",
-    "boxes": [
-        [0, 0, 0, 1, 0.5, 1],
-        [0, 0.5, 0, 1, 1, 0.5]
+    "parts": [
+        { "boxes": [[0, 0, 0, 1, 0.5, 1]] },
+        { "when": { "shape": ["straight", "inner_left", "inner_right"] }, "boxes": [[0, 0.5, 0, 1, 1, 0.5]] },
+        { "when": { "shape": "inner_left" }, "boxes": [[0, 0.5, 0.5, 0.5, 1, 1]] },
+        { "when": { "shape": "inner_right" }, "boxes": [[0.5, 0.5, 0.5, 1, 1, 1]] },
+        { "when": { "shape": "outer_left" }, "boxes": [[0, 0.5, 0, 0.5, 1, 0.5]] },
+        { "when": { "shape": "outer_right" }, "boxes": [[0.5, 0.5, 0, 1, 1, 0.5]] }
     ]
 }

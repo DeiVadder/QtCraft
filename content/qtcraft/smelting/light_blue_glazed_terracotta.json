@@ -1,0 +1,9 @@
+{
+    "name": "light_blue_glazed_terracotta",
+    "input": "light_blue_terracotta",
+    "result": {
+        "item": "light_blue_glazed_terracotta"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

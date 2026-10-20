@@ -1,11 +1,14 @@
 #include "common/content/registry/QcPartGenerator.h"
 
 #include "common/content/parser/QcContentParser.h"
+#include "common/content/parser/QcMaterialParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QJsonArray>
 
 #include <QSet>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -115,18 +118,40 @@ void addPartTranslations(QcContentRegistry &registry, const PartSource &source, 
         return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, id.error()));
     }
 
-    const QcResult<QcRecipeDefinition> recipe =
-        QcContentParser::parseRecipe(QcContentParser::partRecipeJson(family, material.block, name), materialNamespace);
-    if (recipe && !registry.recipeIndex(recipe->name)) {
-        // A recipe a pack defines under the part's name wins over the generated one.
-        registry.registerRecipe(*recipe);
-    }
-
     addPartTranslations(registry, source, translationKey);
-    if (!recipe) {
-        return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, recipe.error()));
+    QList<QJsonObject> recipes{QcContentParser::partRecipeJson(family, material.block, name)};
+    recipes.append(QcMaterialParser::morePartRecipesJson(family, material.block, name));
+    for (const QJsonObject &json : recipes) {
+        const QcResult<QcRecipeDefinition> recipe = QcContentParser::parseRecipe(json, materialNamespace);
+        if (!recipe) {
+            return qcError(u"material %1, part %2: %3"_s.arg(material.name, family.name, recipe.error()));
+        }
+        // A recipe a pack defines under the same name wins over the generated one.
+        if (!registry.recipeIndex(recipe->name)) {
+            registry.registerRecipe(*recipe);
+        }
     }
     return {};
+}
+
+// Whether the material has the other parts the family's recipes name (a vertical slab needs the
+// slab, decision E-755).
+bool hasSiblings(const QcContentRegistry &registry, const QcMaterialDefinition &material, const QcPartFamily &family)
+{
+    const QString prefix = u"%1:%2_"_s.arg(namespaceOf(material.name), localPart(material.name));
+    const QStringList suffixes = QcMaterialParser::siblingSuffixes(family);
+    return std::ranges::all_of(suffixes, [&](const QString &suffix) { return registry.blockId(prefix + suffix).has_value(); });
+}
+
+// The families in load order, those naming other parts after the ones they name.
+QList<QcPartFamily> orderedFamilies(const QcContentRegistry &registry)
+{
+    QList<QcPartFamily> families;
+    QList<QcPartFamily> later;
+    for (const QcPartFamily &family : registry.partFamilies()) {
+        (QcMaterialParser::siblingSuffixes(family).isEmpty() ? families : later).append(family);
+    }
+    return families + later;
 }
 
 } // namespace
@@ -166,7 +191,7 @@ QStringList generate(QcContentRegistry &registry)
     const QSet<QString> excluded = excludedBlocks(registry);
     // Copies: registering blocks and recipes below must not invalidate what is iterated.
     const QList<QcMaterialDefinition> materials = registry.materials();
-    const QList<QcPartFamily> families = registry.partFamilies();
+    const QList<QcPartFamily> families = orderedFamilies(registry);
 
     for (const QcMaterialDefinition &material : materials) {
         if (material.excluded || excluded.contains(material.block)) {
@@ -184,7 +209,7 @@ QStringList generate(QcContentRegistry &registry)
 
         const QcBlockDefinition base = registry.block(*baseId);
         for (const QcPartFamily &family : families) {
-            if (!family.kinds.contains(material.kind) || material.exclude.contains(family.name)) {
+            if (!family.kinds.contains(material.kind) || material.exclude.contains(family.name) || !hasSiblings(registry, material, family)) {
                 continue;
             }
             if (const QcStatus part = generatePart(registry, {material, family, base}); !part) {

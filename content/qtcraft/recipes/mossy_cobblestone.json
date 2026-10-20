@@ -1,0 +1,11 @@
+{
+    "name": "mossy_cobblestone",
+    "type": "shapeless",
+    "ingredients": [
+        "cobblestone",
+        "vines"
+    ],
+    "result": {
+        "item": "mossy_cobblestone"
+    }
+}

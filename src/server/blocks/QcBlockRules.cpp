@@ -2,6 +2,8 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "server/blocks/QcRails.h"
+#include "server/blocks/QcSlabRules.h"
+#include "server/blocks/QcStairShapes.h"
 
 #include <algorithm>
 #include <cmath>
@@ -13,30 +15,6 @@ namespace QcBlockRules {
 namespace {
 
 constexpr std::array<QcBlockFace, 4> horizontal = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
-
-[[nodiscard]] std::optional<QcBlockFace> faceFromName(const QString &name)
-{
-    for (const QcBlockFace face : qcAllBlockFaces) {
-        if (faceName(face) == name) {
-            return face;
-        }
-    }
-
-    if (name == u"floor"_s) {
-        return QcBlockFace::Down;
-    }
-    if (name == u"ceiling"_s) {
-        return QcBlockFace::Up;
-    }
-    return std::nullopt;
-}
-
-// The direction to the right of someone looking towards `face` (clockwise seen from above).
-QcBlockFace rightOf(QcBlockFace face)
-{
-    const auto it = std::ranges::find(horizontal, face);
-    return it == horizontal.end() ? face : horizontal[std::size_t((it - horizontal.begin() + 1) % std::ssize(horizontal))];
-}
 
 bool hasProperty(const QcContentRegistry &content, QcBlockId id, const QString &property)
 {
@@ -114,6 +92,29 @@ bool connectsTo(const QcBlockAccess &world, const QcBlockDefinition &self, QcBlo
 
 } // namespace
 
+[[nodiscard]] std::optional<QcBlockFace> faceFromName(const QString &name)
+{
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        if (faceName(face) == name) {
+            return face;
+        }
+    }
+
+    if (name == u"floor"_s) {
+        return QcBlockFace::Down;
+    }
+    if (name == u"ceiling"_s) {
+        return QcBlockFace::Up;
+    }
+    return std::nullopt;
+}
+
+QcBlockFace rightOf(QcBlockFace face)
+{
+    const auto it = std::ranges::find(horizontal, face);
+    return it == horizontal.end() ? face : horizontal[std::size_t((it - horizontal.begin() + 1) % std::ssize(horizontal))];
+}
+
 QString lookDirection(float yaw)
 {
     const int quarter = int(std::lround(double(yaw) / 90.0)) % 4;
@@ -165,6 +166,11 @@ namespace {
 QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, QcBlockFace face)
 {
     const QcBlockProperty *facing = definition.property(u"facing"_s);
+    if (definition.facingRule == QcFacingRule::Against) {
+        // Against the clicked block on a side face, else where the player looks (decision E-755).
+        const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
+        return side ? faceName(opposite(face)) : lookDirection(yaw);
+    }
     if (definition.facingRule == QcFacingRule::Into) {
         // Into the clicked block; where that is not allowed (a hopper under a ceiling), down.
         const QString into = faceName(opposite(face));
@@ -182,29 +188,35 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
     return definition.facingRule == QcFacingRule::Toward ? faceName(opposite(lookFace)) : look;
 }
 
-// A slab clicked on its open side, or placed into a slab of the other half, doubles up.
-[[nodiscard]] std::optional<Placement> doubledSlab(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
-                                     bool upper)
+// What placing a slab or a vertical slab does before the other rules: it doubles one up, a slab of
+// the same half is in the way, or neither.
+struct SlabOutcome
+{
+    std::optional<Placement> doubled;
+    bool blocked = false;
+};
+
+// `aim` with the clicked block and face as the placement uses them (below tall grass: its ground).
+SlabOutcome slabOutcome(const QcBlockAccess &world, QcBlockId state, const Aim &aim)
 {
     const QcContentRegistry &content = world.content();
-    const std::optional<QcBlockId> slabBelow = world.blockAt(clicked);
-    if (slabBelow && content.isSameBlock(*slabBelow, state)) {
-        const QString type = content.property(*slabBelow, u"type"_s);
-        if ((type == u"bottom"_s && face == QcBlockFace::Up) || (type == u"top"_s && face == QcBlockFace::Down)) {
-            return Placement{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
-        }
+    const QcBlockDefinition &definition = content.block(state);
+    if (QcSlabRules::isVertical(definition)) {
+        const QString facing = facingFor(definition, aim.yaw, aim.pitch, aim.face);
+        return {QcSlabRules::doubledVertical(world, state, aim.clicked, aim.face, facing)};
     }
 
-    const QcBlockPos target = qcNeighbour(clicked, face);
-    const std::optional<QcBlockId> existing = world.blockAt(target);
-    if (existing && content.isSameBlock(*existing, state)) {
-        const QString type = content.property(*existing, u"type"_s);
-        if ((type == u"bottom"_s && upper) || (type == u"top"_s && !upper)) {
-            return Placement{target, content.withProperty(state, u"type"_s, u"double"_s)};
-        }
+    const QcBlockProperty *slabType = definition.property(u"type"_s);
+    if (!slabType || !slabType->values.contains(u"double"_s)) {
+        return {};
     }
-
-    return std::nullopt;
+    const bool upper = aim.face == QcBlockFace::Down || (aim.face != QcBlockFace::Up && aim.hit.y > 0.5);
+    if (const std::optional<Placement> doubled = QcSlabRules::doubled(world, state, aim.clicked, aim.face, upper)) {
+        return {doubled};
+    }
+    // A slab of the same half is already there.
+    const std::optional<QcBlockId> existing = world.blockAt(qcNeighbour(aim.clicked, aim.face));
+    return {std::nullopt, existing && content.isSameBlock(*existing, state)};
 }
 
 // `state` with facing, slab type, half and attach set from the view and the clicked face;
@@ -302,16 +314,9 @@ bool pairSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     // Upper or lower half from the clicked face, or from the height of the hit on a side face.
     const bool upper = face == QcBlockFace::Down || (face != QcBlockFace::Up && aim.hit.y > 0.5);
 
-    const QcBlockProperty *slabType = definition.property(u"type"_s);
-    if (slabType && slabType->values.contains(u"double"_s)) {
-        if (std::optional<Placement> doubled = doubledSlab(world, state, clicked, face, upper)) {
-            return doubled;
-        }
-        // A slab of the same half is already there.
-        const std::optional<QcBlockId> existing = world.blockAt(qcNeighbour(clicked, face));
-        if (existing && content.isSameBlock(*existing, state)) {
-            return std::nullopt;
-        }
+    const SlabOutcome slab = slabOutcome(world, state, {clicked, face, aim.hit, aim.yaw, aim.pitch});
+    if (slab.doubled || slab.blocked) {
+        return slab.doubled;
     }
 
     const QcBlockPos target = qcNeighbour(clicked, face);
@@ -355,6 +360,9 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
     const QcBlockDefinition &definition = content.block(id);
     if (definition.rail) {
         return QcRails::shapedState(world, pos, id, std::nullopt);
+    }
+    if (definition.stairs) {
+        return QcStairShapes::shapedState(world, pos, id);
     }
     if (definition.connectsTo.isEmpty()) {
         return id;

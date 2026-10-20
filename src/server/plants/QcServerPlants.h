@@ -48,6 +48,10 @@ public:
     // player), its `carveDrop` falls out of the clicked face and the shears wear by one. False when
     // the click is no carving.
     bool carve(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
+    // Strips the clicked block when the held item `strips` (an axe) and the block has `strippedInto`
+    // (a log, decision E-753): the new block keeps the state properties both have (the axis), drops
+    // nothing, and the axe wears by one. False when the click is no stripping.
+    bool strip(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
     // Bone meal (an item that `fertilizes`, decision E-426) on the clicked block within reach: a crop
     // that is not ripe grows fertilizeStagesMin..Max stages at once, a sapling grows into its tree on
     // the next tick with QcItemDefinition::fertilizeSaplingChance; either takes one item (not in

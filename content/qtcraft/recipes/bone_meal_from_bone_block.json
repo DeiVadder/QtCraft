@@ -1,0 +1,11 @@
+{
+    "name": "bone_meal_from_bone_block",
+    "type": "shapeless",
+    "ingredients": [
+        "bone_block"
+    ],
+    "result": {
+        "item": "bone_meal",
+        "count": 9
+    }
+}

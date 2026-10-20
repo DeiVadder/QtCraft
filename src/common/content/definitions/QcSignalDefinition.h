@@ -42,9 +42,13 @@ enum class QcSignalKind : quint8 {
     // Stage 51.2 (decision E-601). A slot that primes the explosive it is (QcBlastDefinition) as soon
     // as it gets power.
     Igniter,
+    // A source that is always on (a block of Signal Dust, decision E-752): it gives
+    // `power` to the dust and components on all six sides, but never powers or conducts through
+    // the blocks next to it.
+    Constant,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Igniter) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Constant) + 1;
 
 // What a Signal Comparator reads from a block behind it (decision E-343).
 enum class QcComparatorReading : quint8 {

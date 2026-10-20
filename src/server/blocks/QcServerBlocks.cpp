@@ -82,8 +82,8 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
 
     const QcContentRegistry &content = m_state.content();
     const QcBlockDefinition &definition = content.block(*previous);
-    // A slab broken out of a double slab drops both halves.
-    const bool doubleSlab = content.property(*previous, u"type"_s) == u"double"_s;
+    // A slab broken out of a double slab drops both halves, a vertical one too (decision E-755).
+    const bool doubleSlab = content.property(*previous, u"type"_s) == u"double"_s || content.property(*previous, u"double"_s) == u"true"_s;
     const bool paired = (definition.door || definition.bed) && QcBlockRules::hasPartner(m_state.world(), pos, *previous);
 
     setAndBroadcast(pos, qcAirBlockId);

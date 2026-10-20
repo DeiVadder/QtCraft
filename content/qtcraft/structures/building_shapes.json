@@ -1,0 +1,37 @@
+{
+    "name": "building_shapes",
+    "showcase": { "order": 54 },
+    "palette": {
+        "P": "polished_stone",
+        "O": "oak_planks",
+        "h": "oak_slab",
+        "s": "oak_stairs[facing=south]",
+        "n": "oak_stairs[facing=north]",
+        "e": "oak_stairs[facing=east]",
+        "w": "oak_stairs[facing=west]",
+        "N": "cobblestone_stairs[facing=north]",
+        "W": "cobblestone_stairs[facing=west]",
+        "B": "stone_bricks",
+        "v": "stone_bricks_vertical_slab[facing=west]",
+        "u": "oak_vertical_slab[facing=north]",
+        "U": "oak_vertical_slab[facing=east]",
+        "D": "birch_vertical_slab[facing=north,double=true]",
+        "X": "oak_log[axis=x]",
+        "S": "stripped_oak_log[axis=x]",
+        "Z": "spruce_log[axis=z]",
+        "K": "bone_block[axis=z]"
+    },
+    "layers": [
+        ["PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP"],
+        ["             ", " sssss NNN Bv", " eOOOw W     ", " eOOOw W Z uU", " eOOOw   Z   ", " nnnnn XXX DD", "             "],
+        ["             ", "           K ", "  sss        ", "  eOw        ", "  nnn        ", "        S    ", "             "],
+        ["             ", "             ", "             ", "   h         ", "             ", "             ", "             "]
+    ],
+    "updates": [[1, 1, 1], [1, 1, 5], [2, 1, 1], [2, 1, 5], [3, 1, 1], [3, 1, 5], [4, 1, 1], [4, 1, 5], [5, 1, 1], [5, 1, 5], [1, 1, 2], [5, 1, 2], [1, 1, 3], [5, 1, 3], [1, 1, 4], [5, 1, 4], [2, 2, 2], [2, 2, 4], [3, 2, 2], [3, 2, 4], [4, 2, 2], [4, 2, 4], [2, 2, 3], [4, 2, 3], [7, 1, 1], [8, 1, 1], [9, 1, 1], [7, 1, 2], [7, 1, 3]],
+    "labels": [
+        { "at": [3.5, 5.0, 3.5], "text": "structure.qtcraft.building_shapes.hip" },
+        { "at": [8.0, 3.5, 2.0], "text": "structure.qtcraft.building_shapes.inner" },
+        { "at": [11.5, 3.5, 3.0], "text": "structure.qtcraft.building_shapes.vertical" },
+        { "at": [8.0, 4.0, 5.5], "text": "structure.qtcraft.building_shapes.logs" }
+    ]
+}

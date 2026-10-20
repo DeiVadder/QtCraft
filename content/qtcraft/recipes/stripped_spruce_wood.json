@@ -1,0 +1,15 @@
+{
+    "name": "stripped_spruce_wood",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "stripped_spruce_log"
+    },
+    "result": {
+        "item": "stripped_spruce_wood",
+        "count": 3
+    }
+}

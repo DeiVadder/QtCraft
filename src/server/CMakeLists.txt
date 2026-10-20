@@ -20,6 +20,8 @@ target_sources(qc_server PRIVATE
     blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
     blocks/QcServerFallingBlocks.h blocks/QcServerFallingBlocks.cpp
     blocks/QcServerFire.h blocks/QcServerFire.cpp
+    blocks/QcSlabRules.h blocks/QcSlabRules.cpp
+    blocks/QcStairShapes.h blocks/QcStairShapes.cpp
 )
 target_sources(qc_server PRIVATE
     chunks/QcBlockIndex.h chunks/QcBlockIndex.cpp

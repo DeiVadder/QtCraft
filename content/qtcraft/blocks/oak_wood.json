@@ -3,6 +3,14 @@
     "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
     "flammable": {
         "ignite": 5,
         "burn": 5
@@ -10,5 +18,6 @@
     "textures": {
         "all": "oak_log"
     },
-    "fuelSeconds": 15
+    "fuelSeconds": 15,
+    "strippedInto": "stripped_oak_wood"
 }

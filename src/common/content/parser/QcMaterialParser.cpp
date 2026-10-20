@@ -8,6 +8,8 @@
 
 #include <QJsonArray>
 
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -56,9 +58,13 @@ namespace {
         return qcError(context + u" block: "_s + block.error());
     }
 
-    const QJsonObject recipeJson = QcMaterialParser::partRecipeJson(family, u"qtcraft:sample"_s, u"qtcraft:sample_part"_s);
-    if (const auto recipe = QcRecipeParser::parseRecipe(recipeJson, packNamespace); !recipe) {
-        return qcError(context + u" recipe: "_s + recipe.error());
+    const QString sampleName = u"qtcraft:sample_"_s + family.suffix;
+    QList<QJsonObject> recipes{QcMaterialParser::partRecipeJson(family, u"qtcraft:sample"_s, sampleName)};
+    recipes.append(QcMaterialParser::morePartRecipesJson(family, u"qtcraft:sample"_s, sampleName));
+    for (const QJsonObject &recipeJson : recipes) {
+        if (const auto recipe = QcRecipeParser::parseRecipe(recipeJson, packNamespace); !recipe) {
+            return qcError(context + u" recipe: "_s + recipe.error());
+        }
     }
     return {};
 }
@@ -99,6 +105,67 @@ namespace {
     return result;
 }
 
+// One part a family's recipes are resolved for.
+struct PartNames
+{
+    const QcPartFamily &family;
+    const QString &baseBlock;
+    const QString &partName;
+};
+
+// "@" is the base block, "@<suffix>" the material's part of that suffix; anything else stays.
+QJsonValue resolved(const QJsonValue &value, const PartNames &part)
+{
+    const QString text = value.toString();
+    if (text == u"@"_s) {
+        return part.baseBlock;
+    }
+    if (text.size() > 1 && text.startsWith(u'@')) {
+        const QString material = part.partName.chopped(part.family.suffix.size() + 1);
+        return QString(material + u'_' + text.mid(1));
+    }
+    return value;
+}
+
+// A shaped recipe file named `name` from a family's recipe template; its result is the part unless
+// the template names a "result".
+QJsonObject recipeFrom(const QJsonObject &recipe, const PartNames &part, const QString &name)
+{
+    QJsonObject keys;
+    const QJsonObject familyKeys = recipe.value(u"key"_s).toObject();
+    for (auto it = familyKeys.constBegin(); it != familyKeys.constEnd(); ++it) {
+        keys.insert(it.key(), resolved(it.value(), part));
+    }
+
+    const QJsonValue result = recipe.contains(u"result"_s) ? resolved(recipe.value(u"result"_s), part) : QJsonValue(part.partName);
+    return QJsonObject{{u"name"_s, name},
+                       {u"type"_s, u"shaped"_s},
+                       {u"pattern"_s, recipe.value(u"pattern"_s)},
+                       {u"key"_s, keys},
+                       {u"result"_s, QJsonObject{{u"item"_s, result}, {u"count"_s, recipe.value(u"count"_s).toInt(1)}}}};
+}
+
+// The further recipes of a family ("recipes"): objects with a plain "name".
+[[nodiscard]] QJsonArray parseMoreRecipes(const QJsonObject &json, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = json.value(u"recipes"_s);
+    if (value.isUndefined()) {
+        return {};
+    }
+
+    QJsonArray recipes = value.toArray();
+    bool valid = value.isArray() && recipes.size() <= QcPartFamily::maxMoreRecipes;
+    for (const auto &entry : std::as_const(recipes)) {
+        const QString name = entry.toObject().value(u"name"_s).toString();
+        valid = valid && entry.isObject() && QcContentNames::isValidPart(name) && !name.contains(u'/') && name.size() <= 32;
+    }
+    if (!valid) {
+        reader.fail(u"'recipes' must list at most %1 recipes, each with a plain 'name'"_s.arg(QcPartFamily::maxMoreRecipes));
+        return {};
+    }
+    return recipes;
+}
+
 } // namespace
 
 namespace QcMaterialParser {
@@ -126,6 +193,7 @@ namespace QcMaterialParser {
     if (!json.value(u"block"_s).isObject() || !json.value(u"recipe"_s).isObject()) {
         reader.fail(u"'block' and 'recipe' objects are required"_s);
     }
+    family.moreRecipes = parseMoreRecipes(json, reader);
     family.translations = parseFamilyTranslations(json, reader);
 
     if (!reader.ok()) {
@@ -169,17 +237,41 @@ namespace QcMaterialParser {
 
 QJsonObject partRecipeJson(const QcPartFamily &family, const QString &baseBlock, const QString &partName)
 {
-    QJsonObject keys;
-    const QJsonObject familyKeys = family.recipe.value(u"key"_s).toObject();
-    for (auto it = familyKeys.constBegin(); it != familyKeys.constEnd(); ++it) {
-        keys.insert(it.key(), it.value().toString() == u"@"_s ? QJsonValue(baseBlock) : it.value());
-    }
+    return recipeFrom(family.recipe, {family, baseBlock, partName}, partName);
+}
 
-    return QJsonObject{{u"name"_s, partName},
-                       {u"type"_s, u"shaped"_s},
-                       {u"pattern"_s, family.recipe.value(u"pattern"_s)},
-                       {u"key"_s, keys},
-                       {u"result"_s, QJsonObject{{u"item"_s, partName}, {u"count"_s, family.recipe.value(u"count"_s).toInt(1)}}}};
+QList<QJsonObject> morePartRecipesJson(const QcPartFamily &family, const QString &baseBlock, const QString &partName)
+{
+    QList<QJsonObject> recipes;
+    for (const auto &entry : family.moreRecipes) {
+        const QJsonObject recipe = entry.toObject();
+        recipes.append(recipeFrom(recipe, {family, baseBlock, partName}, partName + u'_' + recipe.value(u"name"_s).toString()));
+    }
+    return recipes;
+}
+
+QStringList siblingSuffixes(const QcPartFamily &family)
+{
+    QStringList suffixes;
+    const auto collect = [&](const QJsonValue &value) {
+        const QString text = value.toString();
+        if (text.size() > 1 && text.startsWith(u'@') && text.mid(1) != family.suffix && !suffixes.contains(text.mid(1))) {
+            suffixes.append(text.mid(1));
+        }
+    };
+
+    QList<QJsonObject> recipes{family.recipe};
+    for (const auto &entry : family.moreRecipes) {
+        recipes.append(entry.toObject());
+    }
+    for (const QJsonObject &recipe : recipes) {
+        const QJsonObject keys = recipe.value(u"key"_s).toObject();
+        for (auto it = keys.constBegin(); it != keys.constEnd(); ++it) {
+            collect(it.value());
+        }
+        collect(recipe.value(u"result"_s));
+    }
+    return suffixes;
 }
 
 } // namespace QcMaterialParser

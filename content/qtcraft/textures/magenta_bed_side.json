@@ -1,0 +1,8 @@
+{
+    "name": "magenta_bed_side",
+    "pattern": "planks",
+    "primary": "#bd44b3",
+    "secondary": "#6a4424",
+    "variation": 0.06,
+    "seed": 7565
+}

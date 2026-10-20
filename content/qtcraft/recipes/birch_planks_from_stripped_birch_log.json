@@ -1,0 +1,11 @@
+{
+    "name": "birch_planks_from_stripped_birch_log",
+    "type": "shapeless",
+    "ingredients": [
+        "stripped_birch_log"
+    ],
+    "result": {
+        "item": "birch_planks",
+        "count": 4
+    }
+}

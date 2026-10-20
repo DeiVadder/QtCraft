@@ -28,7 +28,11 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
 
         features.insert(feature.name, params);
         if (feature.type == QcFeatureDefinition::Type::Tree && params.leaves != qcAirBlockId) {
-            m_trunks.insert(params.trunk);
+            // The trunk keeps its leaves also lying or stripped (decisions E-751, E-753).
+            addTrunk(params.trunk);
+            if (const std::optional<QcBlockId> stripped = m_content->blockId(m_content->block(params.trunk).strippedInto)) {
+                addTrunk(*stripped);
+            }
             m_leaves.insert(params.leaves);
         }
     }
@@ -57,6 +61,16 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
         }
 
         m_trees.insert(block, *feature);
+    }
+}
+
+void QcPlantManager::addTrunk(QcBlockId block)
+{
+    // Every state of the block counts: logs lie along any axis.
+    const QcBlockId first = m_content->stateTable().firstState(m_content->state(block).type);
+    const qsizetype states = QcBlockStateTable::stateCountOf(m_content->block(block));
+    for (qsizetype state = 0; state < states; ++state) {
+        m_trunks.insert(first + QcBlockId(state));
     }
 }
 

@@ -127,7 +127,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     const bool reshaped = m_parts.plants.till(client, message.target, message.face, held)
                           || m_parts.plants.flatten(client, message.target, message.face, held)
                           || m_parts.plants.fertilize(client, message.target, held)
-                          || m_parts.plants.carve(client, message.target, message.face, held);
+                          || m_parts.plants.carve(client, message.target, message.face, held)
+                          || m_parts.plants.strip(client, message.target, held);
     if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)) {
         return;
     }

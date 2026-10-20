@@ -540,6 +540,59 @@ private slots:
         QCOMPARE(plants.pendingCheckCount(), 0);
     }
 
+    void strippedTrunksHoldTheirLeaves()
+    {
+        QcTestWorld world(*m_content);
+        QcTreeShape::Params oak;
+        oak.trunk = block("qtcraft:oak_log");
+        oak.leaves = block("qtcraft:oak_leaves");
+        oak.minHeight = oak.maxHeight = 5;
+        QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, [&world](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
+            if (!onlyIntoAir || world.blockAt(pos) == qcAirBlockId) {
+                world.set(pos, id);
+            }
+        });
+
+        // The trunk stripped and lying (decisions E-751, E-753).
+        const QcBlockId stripped = m_content->withProperty(block("qtcraft:stripped_oak_log"), u"axis"_s, u"x"_s);
+        for (int y = 64; y < 69; ++y) {
+            world.set({0, y, 0}, stripped);
+        }
+
+        QcPlantManager plants(m_content, 1);
+        QcBlockEntities entities(m_content);
+        int broken = 0;
+        const auto breakBlock = [&world, &broken](QcBlockPos pos) {
+            ++broken;
+            world.set(pos, qcAirBlockId);
+        };
+        const auto setBlock = [&world](QcBlockPos pos, QcBlockId id) {
+            world.set(pos, id);
+            return true;
+        };
+        const auto loaded = [](QcBlockPos) { return true; };
+        const auto run = [&](double seconds) {
+            for (int i = 0; i < ticksFor(seconds); ++i) {
+                plants.tick(world, entities, dt, {loaded, setBlock, breakBlock});
+            }
+        };
+
+        // One stripped log removed: checked like a trunk, and the rest holds the crown.
+        world.set({0, 64, 0}, qcAirBlockId);
+        plants.blockRemoved({0, 64, 0}, stripped, world);
+        QVERIFY(plants.pendingCheckCount() > 0);
+        run(QcPlantManager::maxDecayDelay + 0.2);
+        QCOMPARE(broken, 0);
+
+        // All of it gone: the crown decays.
+        for (int y = 65; y < 69; ++y) {
+            world.set({0, y, 0}, qcAirBlockId);
+            plants.blockRemoved({0, y, 0}, stripped, world);
+        }
+        run(30.0);
+        QVERIFY(broken > 20);
+    }
+
     void leavesNextToUnloadedChunksWaitForThem()
     {
         QcTestWorld world(*m_content);

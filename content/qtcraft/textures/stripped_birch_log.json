@@ -1,0 +1,8 @@
+{
+    "name": "stripped_birch_log",
+    "pattern": "log_side",
+    "primary": "#d4c08c",
+    "secondary": "#bca874",
+    "variation": 0.05,
+    "seed": 7552
+}

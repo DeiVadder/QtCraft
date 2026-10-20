@@ -1,0 +1,8 @@
+{
+    "name": "bone_block_top",
+    "pattern": "log_top",
+    "primary": "#e8e6da",
+    "secondary": "#d2cebc",
+    "variation": 0.05,
+    "seed": 7542
+}

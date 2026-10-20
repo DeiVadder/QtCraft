@@ -1,0 +1,9 @@
+{
+    "name": "charcoal_from_stripped_birch_log",
+    "input": "stripped_birch_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10,
+    "experience": 0.15
+}

@@ -1,0 +1,11 @@
+{
+    "name": "coarse_dirt",
+    "sound": "gravel",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "textures": {
+        "all": "coarse_dirt"
+    },
+    "tillsInto": "dirt",
+    "flattensInto": "dirt_path"
+}

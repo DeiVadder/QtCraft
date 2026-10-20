@@ -1,0 +1,16 @@
+{
+    "name": "coarse_dirt",
+    "type": "shaped",
+    "pattern": [
+        "DG",
+        "GD"
+    ],
+    "key": {
+        "D": "dirt",
+        "G": "gravel"
+    },
+    "result": {
+        "item": "coarse_dirt",
+        "count": 4
+    }
+}

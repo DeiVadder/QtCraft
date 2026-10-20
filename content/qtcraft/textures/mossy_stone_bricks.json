@@ -1,0 +1,8 @@
+{
+    "name": "mossy_stone_bricks",
+    "pattern": "mossy_bricks",
+    "primary": "#8a8a8a",
+    "secondary": "#5a7a3a",
+    "variation": 0.08,
+    "seed": 7501
+}

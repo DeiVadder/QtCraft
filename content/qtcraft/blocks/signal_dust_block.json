@@ -1,0 +1,14 @@
+{
+    "name": "signal_dust_block",
+    "sound": "stone",
+    "hardness": 5.0,
+    "blastResistance": 6.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "signal_dust_block"
+    },
+    "signal": {
+        "type": "constant"
+    }
+}

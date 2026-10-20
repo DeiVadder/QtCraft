@@ -1,0 +1,15 @@
+{
+    "name": "vertical_slab",
+    "kinds": ["wood", "stone"],
+    "fuel": 0.5,
+    "block": {
+        "shape": "vertical_slab",
+        "facing": "against",
+        "states": { "facing": ["north", "east", "south", "west"], "double": [false, true] }
+    },
+    "recipe": { "pattern": ["#", "#", "#"], "key": { "#": "@slab" }, "count": 3 },
+    "recipes": [
+        { "name": "to_slab", "pattern": ["#"], "key": { "#": "@vertical_slab" }, "result": "@slab", "count": 1 }
+    ],
+    "translations": { "en": "%1 vertical slab", "de": "%1stufe (senkrecht)" }
+}

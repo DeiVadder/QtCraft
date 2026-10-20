@@ -1,0 +1,15 @@
+{
+    "name": "bone_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "bone_meal"
+    },
+    "result": {
+        "item": "bone_block"
+    }
+}

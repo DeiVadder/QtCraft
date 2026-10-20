@@ -9,7 +9,8 @@ namespace {
 bool isSource(QcSignalKind kind)
 {
     return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Plate || kind == QcSignalKind::Torch
-           || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator || kind == QcSignalKind::Observer;
+           || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator || kind == QcSignalKind::Observer
+           || kind == QcSignalKind::Constant;
 }
 
 // Whether dust points at the horizontal side `towards`: a line or arm on that side, or a lone dot,
@@ -44,6 +45,7 @@ int QcSignalPower::directPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Lever:
     case QcSignalKind::Button:
     case QcSignalKind::Plate:
+    case QcSignalKind::Constant:
         return state.power;
     case QcSignalKind::Torch:
         return state.on && state.facing != towards ? state.power : 0;

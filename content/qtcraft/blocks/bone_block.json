@@ -1,0 +1,20 @@
+{
+    "name": "bone_block",
+    "sound": "stone",
+    "hardness": 2.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "bone_block_top",
+        "bottom": "bone_block_top",
+        "side": "bone_block_side"
+    }
+}

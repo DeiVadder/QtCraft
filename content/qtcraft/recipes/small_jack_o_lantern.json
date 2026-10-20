@@ -1,0 +1,15 @@
+{
+    "name": "small_jack_o_lantern",
+    "type": "shaped",
+    "pattern": [
+        "P",
+        "T"
+    ],
+    "key": {
+        "P": "carved_pumpkin",
+        "T": "small_torch"
+    },
+    "result": {
+        "item": "small_jack_o_lantern"
+    }
+}

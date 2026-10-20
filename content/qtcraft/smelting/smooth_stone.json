@@ -1,0 +1,9 @@
+{
+    "name": "smooth_stone",
+    "input": "polished_stone",
+    "result": {
+        "item": "smooth_stone"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

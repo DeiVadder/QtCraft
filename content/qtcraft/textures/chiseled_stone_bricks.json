@@ -1,0 +1,8 @@
+{
+    "name": "chiseled_stone_bricks",
+    "pattern": "chiseled_bricks",
+    "primary": "#8a8a8a",
+    "secondary": "#5e5e5e",
+    "variation": 0.06,
+    "seed": 7503
+}

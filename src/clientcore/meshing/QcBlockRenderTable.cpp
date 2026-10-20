@@ -218,6 +218,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     for (const QcBlockFace face : qcAllBlockFaces) {
         entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));
     }
+    entry.faceUvTurns = state.faceUvTurns;
 
     if (!state.fullCube) {
         Shape shape = shapeOf(state, block, atlas, entry.faceUv);

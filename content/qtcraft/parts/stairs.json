@@ -4,7 +4,8 @@
     "fuel": 0.75,
     "block": {
         "shape": "stairs",
-        "states": { "facing": ["north", "east", "south", "west"], "half": ["bottom", "top"] }
+        "states": { "facing": ["north", "east", "south", "west"], "half": ["bottom", "top"],
+                    "shape": ["straight", "inner_left", "inner_right", "outer_left", "outer_right"] }
     },
     "recipe": { "pattern": ["#  ", "## ", "###"], "key": { "#": "@" }, "count": 4 },
     "translations": { "en": "%1 stairs", "de": "%1treppe" }

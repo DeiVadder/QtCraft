@@ -1,0 +1,11 @@
+{
+    "name": "light_blue_bed_from_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "#beds",
+        "light_blue_dye"
+    ],
+    "result": {
+        "item": "light_blue_bed"
+    }
+}

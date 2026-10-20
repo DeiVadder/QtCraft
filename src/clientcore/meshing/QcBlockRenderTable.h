@@ -78,6 +78,8 @@ public:
             return lightOpacity != other.lightOpacity || lightBlockedFaces != other.lightBlockedFaces;
         }
         std::array<QRectF, 6> faceUv;
+        // Quarter turns of the full cube's face textures (QcBlockState::faceUvTurns).
+        std::array<quint8, 6> faceUvTurns{};
         QList<Quad> quads;
         QList<Cross> crosses;
         // Rectangles of the cell sides covered by box faces, per QcBlockFace; they hide the

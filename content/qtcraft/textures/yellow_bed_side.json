@@ -1,0 +1,8 @@
+{
+    "name": "yellow_bed_side",
+    "pattern": "planks",
+    "primary": "#e6c628",
+    "secondary": "#6a4424",
+    "variation": 0.06,
+    "seed": 7569
+}

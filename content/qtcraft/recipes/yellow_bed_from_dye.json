@@ -1,0 +1,11 @@
+{
+    "name": "yellow_bed_from_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "#beds",
+        "yellow_dye"
+    ],
+    "result": {
+        "item": "yellow_bed"
+    }
+}

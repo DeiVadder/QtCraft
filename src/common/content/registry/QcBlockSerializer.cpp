@@ -299,7 +299,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 
     block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
-        || facingRule > quint8(QcFacingRule::Into) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
+        || facingRule > quint8(QcFacingRule::Against) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
         || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || !QcBlockStateTable::problem(block).isEmpty()) {
         stream.setStatus(QDataStream::ReadCorruptData);

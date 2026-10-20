@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcExperienceDrop.h"
 
+#include <QList>
 #include <QString>
 #include <QStringList>
 
@@ -73,4 +74,31 @@ struct QcLayingDefinition
     QString sound;
 
     bool lays() const { return !item.isEmpty(); }
+};
+
+// A block that grows into a tree feature after a random time (saplings).
+struct QcSaplingDefinition
+{
+    // Name of a tree or column feature; empty for blocks that are not saplings.
+    QString feature;
+    double minSeconds = 120.0;
+    double maxSeconds = 300.0;
+    // Blocks it may be planted on; empty allows any solid block.
+    QList<QString> plantOn;
+    // Chance that a despawning item of this block plants itself instead of vanishing.
+    double plantChance = 0.0;
+
+    bool isSapling() const { return !feature.isEmpty(); }
+};
+
+// A plant that grows upwards by itself (sugar cane): random ticks of its top block add a block of the
+// same kind above until the column is `maxHeight` tall. Server side only.
+struct QcGrowthDefinition
+{
+    // Tallest column it grows to; 0 for blocks that do not grow.
+    int maxHeight = 0;
+    // Average seconds between two growth steps of one column.
+    double averageSeconds = 600.0;
+
+    bool grows() const { return maxHeight > 0; }
 };

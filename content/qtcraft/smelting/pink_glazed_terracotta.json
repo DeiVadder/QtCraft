@@ -1,0 +1,9 @@
+{
+    "name": "pink_glazed_terracotta",
+    "input": "pink_terracotta",
+    "result": {
+        "item": "pink_glazed_terracotta"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

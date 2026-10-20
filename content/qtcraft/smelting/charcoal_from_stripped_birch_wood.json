@@ -1,0 +1,9 @@
+{
+    "name": "charcoal_from_stripped_birch_wood",
+    "input": "stripped_birch_wood",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10,
+    "experience": 0.15
+}

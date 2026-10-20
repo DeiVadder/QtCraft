@@ -71,6 +71,8 @@ public:
     void setLeafLimits(qint64 decays, qint64 checks, qint64 pending);
 
 private:
+    // Counts every state of `block` as a trunk that keeps leaves.
+    void addTrunk(QcBlockId block);
     struct PendingCheck
     {
         QcBlockPos pos;

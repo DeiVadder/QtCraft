@@ -1,0 +1,11 @@
+{
+    "name": "signal_dust_from_block",
+    "type": "shapeless",
+    "ingredients": [
+        "signal_dust_block"
+    ],
+    "result": {
+        "item": "signal_dust",
+        "count": 9
+    }
+}

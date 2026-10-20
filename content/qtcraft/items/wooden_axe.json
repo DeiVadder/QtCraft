@@ -7,5 +7,6 @@
     "tool": "axe",
     "toolLevel": 1,
     "toolSpeed": 2.0,
-    "fuelSeconds": 10
+    "fuelSeconds": 10,
+    "strips": true
 }

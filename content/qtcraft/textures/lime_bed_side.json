@@ -1,0 +1,8 @@
+{
+    "name": "lime_bed_side",
+    "pattern": "planks",
+    "primary": "#70b919",
+    "secondary": "#6a4424",
+    "variation": 0.06,
+    "seed": 7571
+}

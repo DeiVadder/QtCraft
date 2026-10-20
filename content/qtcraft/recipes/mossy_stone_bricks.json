@@ -1,0 +1,11 @@
+{
+    "name": "mossy_stone_bricks",
+    "type": "shapeless",
+    "ingredients": [
+        "stone_bricks",
+        "vines"
+    ],
+    "result": {
+        "item": "mossy_stone_bricks"
+    }
+}

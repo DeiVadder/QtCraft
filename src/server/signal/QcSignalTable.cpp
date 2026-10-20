@@ -82,6 +82,7 @@ bool emitsWhileOn(QcSignalKind kind)
     case QcSignalKind::Torch:
     case QcSignalKind::Repeater:
     case QcSignalKind::Observer:
+    case QcSignalKind::Constant:
         return true;
     default:
         return false;
@@ -169,12 +170,13 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     const QcBlockState &shape = content.state(id);
     const QcSignalDefinition &signal = block.signal;
     state.kind = signal.kind;
-    state.conductor = signal.conducts && block.solid && shape.opaque && shape.fullCube;
+    // A constant source powers only components and dust, never the blocks around it (decision E-752).
+    state.conductor = signal.conducts && signal.kind != QcSignalKind::Constant && block.solid && shape.opaque && shape.fullCube;
     state.mobility = mobilityOf(block);
 
     const bool flag = isFlag(content, id, u"powered"_s) || isFlag(content, id, u"extended"_s) || isFlag(content, id, u"open"_s)
                       || isFlag(content, id, u"sticky"_s) || isFlag(content, id, u"triggered"_s);
-    state.on = signal.kind == QcSignalKind::Torch || signal.kind == QcSignalKind::Lamp ? signal.active : flag;
+    state.on = signal.kind == QcSignalKind::Torch || signal.kind == QcSignalKind::Lamp ? signal.active : (flag || signal.kind == QcSignalKind::Constant);
     state.facing = faceNamed(content.property(id, block.property(u"attach"_s) ? u"attach"_s : u"facing"_s));
     state.delay = quint8(std::clamp(content.property(id, u"delay"_s).toInt(), 1, 4));
     state.locked = isFlag(content, id, u"locked"_s) || content.property(id, u"enabled"_s) == u"false"_s;

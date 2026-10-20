@@ -1,0 +1,38 @@
+{
+    "name": "pressure_plate",
+    "kinds": [
+        "wood"
+    ],
+    "hardness": 0.25,
+    "fuel": 0.5,
+    "block": {
+        "shape": "pressure_plate",
+        "render": "cutout",
+        "solid": false,
+        "lightOpacity": 0,
+        "support": "below",
+        "states": {
+            "powered": [
+                false,
+                true
+            ]
+        },
+        "signal": {
+            "type": "plate",
+            "detects": "all"
+        }
+    },
+    "recipe": {
+        "pattern": [
+            "##"
+        ],
+        "key": {
+            "#": "@"
+        },
+        "count": 1
+    },
+    "translations": {
+        "en": "%1 pressure plate",
+        "de": "%1holzdruckplatte"
+    }
+}

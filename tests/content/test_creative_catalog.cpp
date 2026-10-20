@@ -64,7 +64,11 @@ private slots:
         QCOMPARE(categoryOf("qtcraft:lever"), C::Signal);
         QCOMPARE(categoryOf("qtcraft:oak_door"), C::Blocks);
 
-        const auto part = std::ranges::find_if(m_content->blocks(), [](const QcBlockDefinition &block) { return !block.partOf.isEmpty(); });
+        // Building parts go to their tab; wooden buttons and plates made as parts are circuit parts.
+        QCOMPARE(categoryOf("qtcraft:birch_button"), C::Signal);
+        const auto part = std::ranges::find_if(m_content->blocks(), [](const QcBlockDefinition &block) {
+            return !block.partOf.isEmpty() && !block.signal.isCircuitPart();
+        });
         QVERIFY(part != m_content->blocks().end());
         QCOMPARE(QcCreativeCatalog::categoryOf(*m_content, m_content->item(*m_content->itemId(part->name))), C::Parts);
 

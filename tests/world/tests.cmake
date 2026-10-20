@@ -54,4 +54,6 @@ target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAK
 qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_ores_metals SOURCES world/test_ores_metals.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_building_shapes SOURCES world/test_building_shapes.cpp QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_building_variants SOURCES world/test_building_variants.cpp QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_showcase_griefing SOURCES world/test_showcase_griefing.cpp LIBRARIES qc_server TIMEOUT 300)

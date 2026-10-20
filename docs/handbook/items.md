@@ -69,7 +69,7 @@ Made from coal; colours wool black.
 
 **Used in**
 
-[Black concrete powder](blocks.md#block-qtcraft-black_concrete_powder), [Black stained glass](blocks.md#block-qtcraft-black_stained_glass), [Black terracotta](blocks.md#block-qtcraft-black_terracotta), [Black wool](blocks.md#block-qtcraft-black_wool), [Gray dye](#item-qtcraft-gray_dye)
+[Black bed](blocks.md#block-qtcraft-black_bed), [Black concrete powder](blocks.md#block-qtcraft-black_concrete_powder), [Black stained glass](blocks.md#block-qtcraft-black_stained_glass), [Black terracotta](blocks.md#block-qtcraft-black_terracotta), [Black wool](blocks.md#block-qtcraft-black_wool), [Gray dye](#item-qtcraft-gray_dye)
 
 ### <a id="item-qtcraft-blue_dye"></a>Blue dye
 
@@ -97,7 +97,7 @@ Made from cornflowers.
 
 **Used in**
 
-[Blue concrete powder](blocks.md#block-qtcraft-blue_concrete_powder), [Blue stained glass](blocks.md#block-qtcraft-blue_stained_glass), [Blue terracotta](blocks.md#block-qtcraft-blue_terracotta), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Cyan dye](#item-qtcraft-cyan_dye), [Purple dye](#item-qtcraft-purple_dye)
+[Blue bed](blocks.md#block-qtcraft-blue_bed), [Blue concrete powder](blocks.md#block-qtcraft-blue_concrete_powder), [Blue stained glass](blocks.md#block-qtcraft-blue_stained_glass), [Blue terracotta](blocks.md#block-qtcraft-blue_terracotta), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Cyan dye](#item-qtcraft-cyan_dye), [Purple dye](#item-qtcraft-purple_dye)
 
 ### <a id="item-qtcraft-bone"></a>Bone
 
@@ -132,6 +132,16 @@ Use it on a crop to make it grow 2–5 stages at once, or on a sapling for a 45 
 | 1 | → |
 |---|---|
 | [Bone](#item-qtcraft-bone) | 3 × [Bone meal](#item-qtcraft-bone_meal) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Bone block](blocks.md#block-qtcraft-bone_block) | 9 × [Bone meal](#item-qtcraft-bone_meal) |
+
+**Used in**
+
+[Bone block](blocks.md#block-qtcraft-bone_block)
 
 **Dropped by**
 
@@ -251,7 +261,7 @@ Colours wool, glass, terracotta and concrete brown.
 
 **Used in**
 
-[Brown concrete powder](blocks.md#block-qtcraft-brown_concrete_powder), [Brown stained glass](blocks.md#block-qtcraft-brown_stained_glass), [Brown terracotta](blocks.md#block-qtcraft-brown_terracotta), [Brown wool](blocks.md#block-qtcraft-brown_wool)
+[Brown bed](blocks.md#block-qtcraft-brown_bed), [Brown concrete powder](blocks.md#block-qtcraft-brown_concrete_powder), [Brown stained glass](blocks.md#block-qtcraft-brown_stained_glass), [Brown terracotta](blocks.md#block-qtcraft-brown_terracotta), [Brown wool](blocks.md#block-qtcraft-brown_wool)
 
 ### <a id="item-qtcraft-bucket"></a>Bucket
 
@@ -336,6 +346,54 @@ Burnt wood: fuel as good as coal and part of torches.
 | 1 | → |
 |---|---|
 | [Spruce log](blocks.md#block-qtcraft-spruce_log) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log) | [Charcoal](#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood) | [Charcoal](#item-qtcraft-charcoal) |
 
 [Furnace](blocks.md#block-qtcraft-furnace)
 
@@ -513,7 +571,7 @@ Colours wool, glass, terracotta and concrete cyan.
 
 **Used in**
 
-[Cyan concrete powder](blocks.md#block-qtcraft-cyan_concrete_powder), [Cyan stained glass](blocks.md#block-qtcraft-cyan_stained_glass), [Cyan terracotta](blocks.md#block-qtcraft-cyan_terracotta), [Cyan wool](blocks.md#block-qtcraft-cyan_wool)
+[Cyan bed](blocks.md#block-qtcraft-cyan_bed), [Cyan concrete powder](blocks.md#block-qtcraft-cyan_concrete_powder), [Cyan stained glass](blocks.md#block-qtcraft-cyan_stained_glass), [Cyan terracotta](blocks.md#block-qtcraft-cyan_terracotta), [Cyan wool](blocks.md#block-qtcraft-cyan_wool)
 
 ### <a id="item-qtcraft-diamond"></a>Diamond
 
@@ -824,7 +882,7 @@ Colours wool, glass, terracotta and concrete gray.
 
 **Used in**
 
-[Gray concrete powder](blocks.md#block-qtcraft-gray_concrete_powder), [Gray stained glass](blocks.md#block-qtcraft-gray_stained_glass), [Gray terracotta](blocks.md#block-qtcraft-gray_terracotta), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Light gray dye](#item-qtcraft-light_gray_dye)
+[Gray bed](blocks.md#block-qtcraft-gray_bed), [Gray concrete powder](blocks.md#block-qtcraft-gray_concrete_powder), [Gray stained glass](blocks.md#block-qtcraft-gray_stained_glass), [Gray terracotta](blocks.md#block-qtcraft-gray_terracotta), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Light gray dye](#item-qtcraft-light_gray_dye)
 
 ### <a id="item-qtcraft-green_dye"></a>Green dye
 
@@ -850,7 +908,7 @@ Made from cactus in the furnace.
 
 **Used in**
 
-[Cyan dye](#item-qtcraft-cyan_dye), [Green concrete powder](blocks.md#block-qtcraft-green_concrete_powder), [Green stained glass](blocks.md#block-qtcraft-green_stained_glass), [Green terracotta](blocks.md#block-qtcraft-green_terracotta), [Green wool](blocks.md#block-qtcraft-green_wool), [Lime dye](#item-qtcraft-lime_dye)
+[Cyan dye](#item-qtcraft-cyan_dye), [Green bed](blocks.md#block-qtcraft-green_bed), [Green concrete powder](blocks.md#block-qtcraft-green_concrete_powder), [Green stained glass](blocks.md#block-qtcraft-green_stained_glass), [Green terracotta](blocks.md#block-qtcraft-green_terracotta), [Green wool](blocks.md#block-qtcraft-green_wool), [Lime dye](#item-qtcraft-lime_dye)
 
 ### <a id="item-qtcraft-gunpowder"></a>Gunpowder
 
@@ -1048,7 +1106,7 @@ Colours wool, glass, terracotta and concrete light blue.
 
 **Used in**
 
-[Light blue concrete powder](blocks.md#block-qtcraft-light_blue_concrete_powder), [Light blue stained glass](blocks.md#block-qtcraft-light_blue_stained_glass), [Light blue terracotta](blocks.md#block-qtcraft-light_blue_terracotta), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool)
+[Light blue bed](blocks.md#block-qtcraft-light_blue_bed), [Light blue concrete powder](blocks.md#block-qtcraft-light_blue_concrete_powder), [Light blue stained glass](blocks.md#block-qtcraft-light_blue_stained_glass), [Light blue terracotta](blocks.md#block-qtcraft-light_blue_terracotta), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool)
 
 ### <a id="item-qtcraft-light_gray_dye"></a>Light gray dye
 
@@ -1070,7 +1128,7 @@ Colours wool, glass, terracotta and concrete light gray.
 
 **Used in**
 
-[Light gray concrete powder](blocks.md#block-qtcraft-light_gray_concrete_powder), [Light gray stained glass](blocks.md#block-qtcraft-light_gray_stained_glass), [Light gray terracotta](blocks.md#block-qtcraft-light_gray_terracotta), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool)
+[Light gray bed](blocks.md#block-qtcraft-light_gray_bed), [Light gray concrete powder](blocks.md#block-qtcraft-light_gray_concrete_powder), [Light gray stained glass](blocks.md#block-qtcraft-light_gray_stained_glass), [Light gray terracotta](blocks.md#block-qtcraft-light_gray_terracotta), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool)
 
 ### <a id="item-qtcraft-lime_dye"></a>Lime dye
 
@@ -1092,7 +1150,7 @@ Colours wool, glass, terracotta and concrete lime.
 
 **Used in**
 
-[Lime concrete powder](blocks.md#block-qtcraft-lime_concrete_powder), [Lime stained glass](blocks.md#block-qtcraft-lime_stained_glass), [Lime terracotta](blocks.md#block-qtcraft-lime_terracotta), [Lime wool](blocks.md#block-qtcraft-lime_wool)
+[Lime bed](blocks.md#block-qtcraft-lime_bed), [Lime concrete powder](blocks.md#block-qtcraft-lime_concrete_powder), [Lime stained glass](blocks.md#block-qtcraft-lime_stained_glass), [Lime terracotta](blocks.md#block-qtcraft-lime_terracotta), [Lime wool](blocks.md#block-qtcraft-lime_wool)
 
 ### <a id="item-qtcraft-magenta_dye"></a>Magenta dye
 
@@ -1114,7 +1172,7 @@ Colours wool, glass, terracotta and concrete magenta.
 
 **Used in**
 
-[Magenta concrete powder](blocks.md#block-qtcraft-magenta_concrete_powder), [Magenta stained glass](blocks.md#block-qtcraft-magenta_stained_glass), [Magenta terracotta](blocks.md#block-qtcraft-magenta_terracotta), [Magenta wool](blocks.md#block-qtcraft-magenta_wool)
+[Magenta bed](blocks.md#block-qtcraft-magenta_bed), [Magenta concrete powder](blocks.md#block-qtcraft-magenta_concrete_powder), [Magenta stained glass](blocks.md#block-qtcraft-magenta_stained_glass), [Magenta terracotta](blocks.md#block-qtcraft-magenta_terracotta), [Magenta wool](blocks.md#block-qtcraft-magenta_wool)
 
 ### <a id="item-qtcraft-melon_seeds"></a>Melon seeds
 
@@ -1224,7 +1282,7 @@ Mixed from red and yellow dye.
 
 **Used in**
 
-[Orange concrete powder](blocks.md#block-qtcraft-orange_concrete_powder), [Orange stained glass](blocks.md#block-qtcraft-orange_stained_glass), [Orange terracotta](blocks.md#block-qtcraft-orange_terracotta), [Orange wool](blocks.md#block-qtcraft-orange_wool)
+[Orange bed](blocks.md#block-qtcraft-orange_bed), [Orange concrete powder](blocks.md#block-qtcraft-orange_concrete_powder), [Orange stained glass](blocks.md#block-qtcraft-orange_stained_glass), [Orange terracotta](blocks.md#block-qtcraft-orange_terracotta), [Orange wool](blocks.md#block-qtcraft-orange_wool)
 
 ### <a id="item-qtcraft-paper"></a>Paper
 
@@ -1267,7 +1325,7 @@ Colours wool, glass, terracotta and concrete pink.
 
 **Used in**
 
-[Pink concrete powder](blocks.md#block-qtcraft-pink_concrete_powder), [Pink stained glass](blocks.md#block-qtcraft-pink_stained_glass), [Pink terracotta](blocks.md#block-qtcraft-pink_terracotta), [Pink wool](blocks.md#block-qtcraft-pink_wool)
+[Pink bed](blocks.md#block-qtcraft-pink_bed), [Pink concrete powder](blocks.md#block-qtcraft-pink_concrete_powder), [Pink stained glass](blocks.md#block-qtcraft-pink_stained_glass), [Pink terracotta](blocks.md#block-qtcraft-pink_terracotta), [Pink wool](blocks.md#block-qtcraft-pink_wool)
 
 ### <a id="item-qtcraft-healing_potion"></a>Potion of healing
 
@@ -1320,7 +1378,7 @@ Mixed from red and blue dye.
 
 **Used in**
 
-[Purple concrete powder](blocks.md#block-qtcraft-purple_concrete_powder), [Purple stained glass](blocks.md#block-qtcraft-purple_stained_glass), [Purple terracotta](blocks.md#block-qtcraft-purple_terracotta), [Purple wool](blocks.md#block-qtcraft-purple_wool)
+[Purple bed](blocks.md#block-qtcraft-purple_bed), [Purple concrete powder](blocks.md#block-qtcraft-purple_concrete_powder), [Purple stained glass](blocks.md#block-qtcraft-purple_stained_glass), [Purple terracotta](blocks.md#block-qtcraft-purple_terracotta), [Purple wool](blocks.md#block-qtcraft-purple_wool)
 
 ### <a id="item-qtcraft-raw_copper"></a>Raw copper
 
@@ -1453,7 +1511,7 @@ Made from poppies.
 
 **Used in**
 
-[Orange dye](#item-qtcraft-orange_dye), [Pink dye](#item-qtcraft-pink_dye), [Purple dye](#item-qtcraft-purple_dye), [Red concrete powder](blocks.md#block-qtcraft-red_concrete_powder), [Red stained glass](blocks.md#block-qtcraft-red_stained_glass), [Red terracotta](blocks.md#block-qtcraft-red_terracotta), [Red wool](blocks.md#block-qtcraft-red_wool)
+[Bed](blocks.md#block-qtcraft-bed), [Orange dye](#item-qtcraft-orange_dye), [Pink dye](#item-qtcraft-pink_dye), [Purple dye](#item-qtcraft-purple_dye), [Red concrete powder](blocks.md#block-qtcraft-red_concrete_powder), [Red stained glass](blocks.md#block-qtcraft-red_stained_glass), [Red terracotta](blocks.md#block-qtcraft-red_terracotta), [Red wool](blocks.md#block-qtcraft-red_wool)
 
 ### <a id="item-qtcraft-shears"></a>Shears
 
@@ -1756,7 +1814,7 @@ Colours wool, glass, terracotta and concrete white.
 
 **Used in**
 
-[Gray dye](#item-qtcraft-gray_dye), [Light gray dye](#item-qtcraft-light_gray_dye), [Lime dye](#item-qtcraft-lime_dye), [Pink dye](#item-qtcraft-pink_dye), [White concrete powder](blocks.md#block-qtcraft-white_concrete_powder), [White stained glass](blocks.md#block-qtcraft-white_stained_glass), [White terracotta](blocks.md#block-qtcraft-white_terracotta)
+[Gray dye](#item-qtcraft-gray_dye), [Light gray dye](#item-qtcraft-light_gray_dye), [Lime dye](#item-qtcraft-lime_dye), [Pink dye](#item-qtcraft-pink_dye), [White bed](blocks.md#block-qtcraft-white_bed), [White concrete powder](blocks.md#block-qtcraft-white_concrete_powder), [White stained glass](blocks.md#block-qtcraft-white_stained_glass), [White terracotta](blocks.md#block-qtcraft-white_terracotta)
 
 ### <a id="item-qtcraft-yellow_dye"></a>Yellow dye
 
@@ -1778,4 +1836,4 @@ Made from dandelions.
 
 **Used in**
 
-[Orange dye](#item-qtcraft-orange_dye), [Yellow concrete powder](blocks.md#block-qtcraft-yellow_concrete_powder), [Yellow stained glass](blocks.md#block-qtcraft-yellow_stained_glass), [Yellow terracotta](blocks.md#block-qtcraft-yellow_terracotta), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
+[Orange dye](#item-qtcraft-orange_dye), [Yellow bed](blocks.md#block-qtcraft-yellow_bed), [Yellow concrete powder](blocks.md#block-qtcraft-yellow_concrete_powder), [Yellow stained glass](blocks.md#block-qtcraft-yellow_stained_glass), [Yellow terracotta](blocks.md#block-qtcraft-yellow_terracotta), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)

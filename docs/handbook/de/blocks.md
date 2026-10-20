@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Ranken](#block-qtcraft-vines) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Befallene Steinziegel](#block-qtcraft-infested_stone_bricks) · [Befallener Bruchstein](#block-qtcraft-infested_cobblestone) · [Befallener Stein](#block-qtcraft-infested_stone) · [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) · [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Bett](#block-qtcraft-blue_bed) · [Blaues Eis](#block-qtcraft-blue_ice) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Blumentopf](#block-qtcraft-flower_pot) · [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Bett](#block-qtcraft-brown_bed) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) · [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) · [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) · [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) · [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) · [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Bett](#block-qtcraft-yellow_bed) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) · [Gemeißelter Sandstein](#block-qtcraft-carved_sandstone) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glatter Stein](#block-qtcraft-smooth_stone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Bett](#block-qtcraft-gray_bed) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grobe Erde](#block-qtcraft-coarse_dirt) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Bett](#block-qtcraft-green_bed) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Bett](#block-qtcraft-light_blue_bed) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Bett](#block-qtcraft-light_gray_bed) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Bett](#block-qtcraft-lime_bed) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kessel](#block-qtcraft-cauldron) · [Kette](#block-qtcraft-chain) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) · [Kleine Signalfackel](#block-qtcraft-small_signal_torch) · [Kleine Signalfackel (aus)](#block-qtcraft-small_signal_torch_off) · [Knochenblock](#block-qtcraft-bone_block) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kupferblock](#block-qtcraft-copper_block) · [Kupfererz](#block-qtcraft-copper_ore) · [Kupferfalltür](#block-qtcraft-copper_trapdoor) · [Kupfergitter](#block-qtcraft-copper_bars) · [Kupferkette](#block-qtcraft-copper_chain) · [Kupferlaterne](#block-qtcraft-copper_lantern) · [Kupfertür](#block-qtcraft-copper_door) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbislaterne](#block-qtcraft-jack_o_lantern) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Bett](#block-qtcraft-magenta_bed) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Monster-Spawner](#block-qtcraft-spawner) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Bett](#block-qtcraft-orange_bed) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Ranken](#block-qtcraft-vines) · [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) · [Roheisenblock](#block-qtcraft-raw_iron_block) · [Rohgoldblock](#block-qtcraft-raw_gold_block) · [Rohkupferblock](#block-qtcraft-raw_copper_block) · [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Bett](#block-qtcraft-pink_bed) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Bett](#block-qtcraft-black_bed) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signalstaubblock](#block-qtcraft-signal_dust_block) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Smaragdblock](#block-qtcraft-emerald_block) · [Smaragderz](#block-qtcraft-emerald_ore) · [Spinnennetz](#block-qtcraft-cobweb) · [Sprengstoff](#block-qtcraft-explosive) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Bett](#block-qtcraft-cyan_bed) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Bett](#block-qtcraft-purple_bed) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weinender Obsidian](#block-qtcraft-crying_obsidian) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Bett](#block-qtcraft-white_bed) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -155,6 +155,41 @@ Sieht aus wie Stein, doch darin lebt ein Silberfischchen. Der Block bricht schne
 
 [Befallener Stein-Vorkommen](worldgen.md#ore-qtcraft-infested_stone) (y 40–160)
 
+### <a id="block-qtcraft-mossy_stone_bricks"></a>Bemooste Steinziegel
+
+Steinziegel, auf denen Moos wächst: Steinziegel und Ranken im Handwerksraster. Es gibt sie auch als Treppe, Stufe und Mauer.
+
+| | |
+|---|---|
+| ID | `qtcraft:mossy_stone_bricks` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+
+**Bauteile**
+
+[Bemooste Steinziegelmauer](parts.md#block-qtcraft-mossy_stone_bricks_wall), [Bemooste Steinziegelstufe](parts.md#block-qtcraft-mossy_stone_bricks_slab), [Bemooste Steinziegelstufe (senkrecht)](parts.md#block-qtcraft-mossy_stone_bricks_vertical_slab), [Bemooste Steinziegeltreppe](parts.md#block-qtcraft-mossy_stone_bricks_stairs)
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Ranken](#block-qtcraft-vines) | [Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks) |
+
+**Wird verwendet für**
+
+[Bemooste Steinziegelmauer](parts.md#block-qtcraft-mossy_stone_bricks_wall), [Bemooste Steinziegelstufe](parts.md#block-qtcraft-mossy_stone_bricks_slab), [Bemooste Steinziegeltreppe](parts.md#block-qtcraft-mossy_stone_bricks_stairs)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-mossy_cobblestone"></a>Bemooster Bruchstein
 
 Bruchstein, auf dem Moos wächst. Verliese und ihre Gänge sind aus ihm und aus einfachem Bruchstein gebaut.
@@ -169,6 +204,22 @@ Bruchstein, auf dem Moos wächst. Verliese und ihre Gänge sind aus ihm und aus 
 | Beute | [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) |
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
+
+**Bauteile**
+
+[Bemooste Bruchsteinmauer](parts.md#block-qtcraft-mossy_cobblestone_wall), [Bemooste Bruchsteinstufe](parts.md#block-qtcraft-mossy_cobblestone_slab), [Bemooste Bruchsteinstufe (senkrecht)](parts.md#block-qtcraft-mossy_cobblestone_vertical_slab), [Bemooste Bruchsteintreppe](parts.md#block-qtcraft-mossy_cobblestone_stairs)
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Bruchstein](#block-qtcraft-cobblestone) | [Ranken](#block-qtcraft-vines) | [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone) |
+
+**Wird verwendet für**
+
+[Bemooste Bruchsteinmauer](parts.md#block-qtcraft-mossy_cobblestone_wall), [Bemooste Bruchsteinstufe](parts.md#block-qtcraft-mossy_cobblestone_slab), [Bemooste Bruchsteintreppe](parts.md#block-qtcraft-mossy_cobblestone_stairs)
 
 **Abbaubar mit**
 
@@ -190,6 +241,7 @@ Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block wei
 | Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
 
 **Herstellung**
 
@@ -197,8 +249,18 @@ Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block wei
 
 | 1 | 2 | 3 | → |
 |---|---|---|---|
-| [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Bett](#block-qtcraft-bed) |
+| [Rote Wolle](#block-qtcraft-red_wool) | [Rote Wolle](#block-qtcraft-red_wool) | [Rote Wolle](#block-qtcraft-red_wool) | [Bett](#block-qtcraft-bed) |
 | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Roter Farbstoff](items.md#item-qtcraft-red_dye) | [Bett](#block-qtcraft-bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
 
 **Schneller mit**
 
@@ -223,7 +285,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Bauteile**
 
-[Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate)
+[Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkenstufe (senkrecht)](parts.md#block-qtcraft-birch_vertical_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate)
 
 **Herstellung**
 
@@ -233,9 +295,21 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 |---|---|
 | [Birkenstamm](#block-qtcraft-birch_log) | 4 × [Birkenbretter](#block-qtcraft-birch_planks) |
 
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | 4 × [Birkenbretter](#block-qtcraft-birch_planks) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) | 4 × [Birkenbretter](#block-qtcraft-birch_planks) |
+
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenholzdruckplatte](parts.md#block-qtcraft-birch_pressure_plate), [Birkenholzknopf](parts.md#block-qtcraft-birch_button), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -286,7 +360,9 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Beute | [Birkenholz](#block-qtcraft-birch_wood) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Herstellung**
 
@@ -357,7 +433,9 @@ Holz der Birke. Ergibt je vier Bretter; wird im Ofen zu Holzkohle.
 | Beute | [Birkenstamm](#block-qtcraft-birch_log) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Wird im Ofen zu**
 
@@ -415,6 +493,39 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.
 **Schneller mit**
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-blue_glazed_terracotta"></a>Blaue glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Blaue Terrakotta](#block-qtcraft-blue_terracotta) | [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-blue_stained_glass_pane"></a>Blaue Glasscheibe
 
@@ -491,6 +602,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Blauer Farbstoff](items.md#item-qtcraft-blue_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Blaue Terrakotta](#block-qtcraft-blue_terracotta) | [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -524,7 +647,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Blauer Teppich](parts.md#block-qtcraft-blue_wool_carpet), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Blauer Teppich](parts.md#block-qtcraft-blue_wool_carpet), [Blaues Bett](#block-qtcraft-blue_bed), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-blue_concrete"></a>Blauer Beton
 
@@ -574,6 +697,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-blue_bed"></a>Blaues Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Blaues Bett](#block-qtcraft-blue_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Blaue Wolle](#block-qtcraft-blue_wool) | [Blaue Wolle](#block-qtcraft-blue_wool) | [Blaue Wolle](#block-qtcraft-blue_wool) | [Blaues Bett](#block-qtcraft-blue_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Blauer Farbstoff](items.md#item-qtcraft-blue_dye) | [Blaues Bett](#block-qtcraft-blue_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-blue_ice"></a>Blaues Eis
 
@@ -656,6 +820,39 @@ Ein kleiner Topf aus gebranntem Ton. Die Töpfe der Hexenhütten tragen einen Pi
 | [Ziegelstein](items.md#item-qtcraft-brick) | · | [Ziegelstein](items.md#item-qtcraft-brick) | [Blumentopf](#block-qtcraft-flower_pot) |
 | · | [Ziegelstein](items.md#item-qtcraft-brick) | · |  |
 
+### <a id="block-qtcraft-brown_glazed_terracotta"></a>Braune glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Braune Terrakotta](#block-qtcraft-brown_terracotta) | [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-brown_stained_glass_pane"></a>Braune Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -706,6 +903,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Brauner Farbstoff](items.md#item-qtcraft-brown_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Braune Terrakotta](#block-qtcraft-brown_terracotta) | [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -739,7 +948,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Brauner Teppich](parts.md#block-qtcraft-brown_wool_carpet), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Brauner Teppich](parts.md#block-qtcraft-brown_wool_carpet), [Braunes Bett](#block-qtcraft-brown_bed), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-brown_concrete"></a>Brauner Beton
 
@@ -814,6 +1023,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-brown_bed"></a>Braunes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Braunes Bett](#block-qtcraft-brown_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Braune Wolle](#block-qtcraft-brown_wool) | [Braune Wolle](#block-qtcraft-brown_wool) | [Braune Wolle](#block-qtcraft-brown_wool) | [Braunes Bett](#block-qtcraft-brown_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Brauner Farbstoff](items.md#item-qtcraft-brown_dye) | [Braunes Bett](#block-qtcraft-brown_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-brown_stained_glass"></a>Braunes Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -858,7 +1108,7 @@ Daraus wird Stein beim Abbauen. Material für Steinwerkzeuge und den Ofen.
 
 **Bauteile**
 
-[Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs)
+[Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteinstufe (senkrecht)](parts.md#block-qtcraft-cobblestone_vertical_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs)
 
 **Wird im Ofen zu**
 
@@ -874,7 +1124,7 @@ Daraus wird Stein beim Abbauen. Material für Steinwerkzeuge und den Ofen.
 
 **Wird verwendet für**
 
-[Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs), [Hebel](#block-qtcraft-lever), [Ofen](#block-qtcraft-furnace), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalkolben](#block-qtcraft-signal_piston), [Signalspender](#block-qtcraft-signal_dispenser), [Signalwerfer](#block-qtcraft-signal_dropper), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+[Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs), [Hebel](#block-qtcraft-lever), [Ofen](#block-qtcraft-furnace), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalkolben](#block-qtcraft-signal_piston), [Signalspender](#block-qtcraft-signal_dispenser), [Signalwerfer](#block-qtcraft-signal_dropper), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
 
 **Droppt aus**
 
@@ -1020,7 +1270,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Bauteile**
 
-[Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate)
+[Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichenstufe (senkrecht)](parts.md#block-qtcraft-oak_vertical_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate)
 
 **Herstellung**
 
@@ -1030,9 +1280,21 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 |---|---|
 | [Eichenstamm](#block-qtcraft-oak_log) | 4 × [Eichenbretter](#block-qtcraft-oak_planks) |
 
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | 4 × [Eichenbretter](#block-qtcraft-oak_planks) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) | 4 × [Eichenbretter](#block-qtcraft-oak_planks) |
+
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1083,7 +1345,9 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Beute | [Eichenholz](#block-qtcraft-oak_wood) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Herstellung**
 
@@ -1215,7 +1479,9 @@ Holz der Eiche: das Erste, was man sammelt. Ergibt je vier Bretter.
 | Beute | [Eichenstamm](#block-qtcraft-oak_log) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Wird im Ofen zu**
 
@@ -1451,6 +1717,255 @@ Eine schwere Tür, die nur ein Signal öffnet: ein Hebel, ein Knopf, eine Druckp
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-stripped_birch_log"></a>Entrindeter Birkenstamm
+
+Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der angeklickten Fläche und gibt Bretter wie der Stamm.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_birch_log` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Birkenbretter](#block-qtcraft-birch_planks), [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-stripped_oak_log"></a>Entrindeter Eichenstamm
+
+Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der angeklickten Fläche und gibt Bretter wie der Stamm.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_oak_log` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Eichenbretter](#block-qtcraft-oak_planks), [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-stripped_spruce_log"></a>Entrindeter Fichtenstamm
+
+Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der angeklickten Fläche und gibt Bretter wie der Stamm.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_spruce_log` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood), [Fichtenbretter](#block-qtcraft-spruce_planks)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-stripped_birch_wood"></a>Entrindetes Birkenholz
+
+Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusammenlegen.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_birch_wood` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | 3 × [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) |
+| [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) |  |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Birkenbretter](#block-qtcraft-birch_planks)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-stripped_oak_wood"></a>Entrindetes Eichenholz
+
+Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusammenlegen.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_oak_wood` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | 3 × [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) |
+| [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) |  |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Eichenbretter](#block-qtcraft-oak_planks)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-stripped_spruce_wood"></a>Entrindetes Fichtenholz
+
+Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusammenlegen.
+
+| | |
+|---|---|
+| ID | `qtcraft:stripped_spruce_wood` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+| Zustände | axis (y, x, z) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | 3 × [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) |
+| [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) |  |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Fichtenbretter](#block-qtcraft-spruce_planks)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-dirt"></a>Erde
 
 Einfache Erde unter dem Gras.
@@ -1469,7 +1984,7 @@ Einfache Erde unter dem Gras.
 
 **Wird verwendet für**
 
-[Schlamm](#block-qtcraft-mud)
+[Grobe Erde](#block-qtcraft-coarse_dirt), [Schlamm](#block-qtcraft-mud)
 
 **Droppt aus**
 
@@ -1516,7 +2031,7 @@ Das einfachste Licht. Steht auf Böden oder hängt an Wänden; Wasser spült sie
 
 **Wird verwendet für**
 
-[Kupferlaterne](#block-qtcraft-copper_lantern), [Laterne](#block-qtcraft-lantern)
+[Kupferlaterne](#block-qtcraft-copper_lantern), [Kürbislaterne](#block-qtcraft-jack_o_lantern), [Laterne](#block-qtcraft-lantern)
 
 ### <a id="block-qtcraft-fern"></a>Farn
 
@@ -1609,7 +2124,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Bauteile**
 
-[Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate)
+[Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtenstufe (senkrecht)](parts.md#block-qtcraft-spruce_vertical_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate)
 
 **Herstellung**
 
@@ -1619,9 +2134,21 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 |---|---|
 | [Fichtenstamm](#block-qtcraft-spruce_log) | 4 × [Fichtenbretter](#block-qtcraft-spruce_planks) |
 
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | 4 × [Fichtenbretter](#block-qtcraft-spruce_planks) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) | 4 × [Fichtenbretter](#block-qtcraft-spruce_planks) |
+
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Blaues Bett](#block-qtcraft-blue_bed) (Beliebige Bretter), [Braunes Bett](#block-qtcraft-brown_bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenholzdruckplatte](parts.md#block-qtcraft-spruce_pressure_plate), [Fichtenholzknopf](parts.md#block-qtcraft-spruce_button), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gelbes Bett](#block-qtcraft-yellow_bed) (Beliebige Bretter), [Graues Bett](#block-qtcraft-gray_bed) (Beliebige Bretter), [Grünes Bett](#block-qtcraft-green_bed) (Beliebige Bretter), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (Beliebige Bretter), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (Beliebige Bretter), [Hellgrünes Bett](#block-qtcraft-lime_bed) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (Beliebige Bretter), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (Beliebige Bretter), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Schwarzes Bett](#block-qtcraft-black_bed) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Türkises Bett](#block-qtcraft-cyan_bed) (Beliebige Bretter), [Violettes Bett](#block-qtcraft-purple_bed) (Beliebige Bretter), [Weißes Bett](#block-qtcraft-white_bed) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1672,7 +2199,9 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Beute | [Fichtenholz](#block-qtcraft-spruce_wood) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Herstellung**
 
@@ -1743,7 +2272,9 @@ Holz der Fichte. Ergibt je vier Bretter.
 | Beute | [Fichtenstamm](#block-qtcraft-spruce_log) |
 | Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Axt macht daraus | [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) |
 | Klang | Holz |
+| Zustände | axis (y, x, z) |
 
 **Wird im Ofen zu**
 
@@ -1802,6 +2333,39 @@ Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
+### <a id="block-qtcraft-yellow_glazed_terracotta"></a>Gelbe glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) | [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-yellow_stained_glass_pane"></a>Gelbe Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -1852,6 +2416,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) | [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -1885,7 +2461,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Gelber Teppich](parts.md#block-qtcraft-yellow_wool_carpet), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Gelber Teppich](parts.md#block-qtcraft-yellow_wool_carpet), [Gelbes Bett](#block-qtcraft-yellow_bed), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-yellow_concrete"></a>Gelber Beton
 
@@ -1936,6 +2512,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-yellow_bed"></a>Gelbes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Gelbes Bett](#block-qtcraft-yellow_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gelbe Wolle](#block-qtcraft-yellow_wool) | [Gelbe Wolle](#block-qtcraft-yellow_wool) | [Gelbe Wolle](#block-qtcraft-yellow_wool) | [Gelbes Bett](#block-qtcraft-yellow_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye) | [Gelbes Bett](#block-qtcraft-yellow_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-yellow_stained_glass"></a>Gelbes Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -1962,6 +2579,34 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 **Wird verwendet für**
 
 [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane)
+
+### <a id="block-qtcraft-chiseled_stone_bricks"></a>Gemeißelte Steinziegel
+
+Ein verzierter Steinziegelblock aus zwei übereinander gelegten Steinziegelstufen.
+
+| | |
+|---|---|
+| ID | `qtcraft:chiseled_stone_bricks` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) | [Gemeißelte Steinziegel](#block-qtcraft-chiseled_stone_bricks) |
+| [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) |  |
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-carved_sandstone"></a>Gemeißelter Sandstein
 
@@ -1998,6 +2643,10 @@ In große, ebene Platten geschnittener Sandstein.
 | Beute ohne passendes Werkzeug | nichts |
 | Klang | Stein |
 
+**Bauteile**
+
+[Geschnittene Sandsteinstufe](parts.md#block-qtcraft-cut_sandstone_slab), [Geschnittene Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-cut_sandstone_vertical_slab)
+
 **Herstellung**
 
 *Handwerksraster*
@@ -2006,6 +2655,10 @@ In große, ebene Platten geschnittener Sandstein.
 |---|---|---|
 | [Sandstein](#block-qtcraft-sandstone) | [Sandstein](#block-qtcraft-sandstone) | 4 × [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) |
 | [Sandstein](#block-qtcraft-sandstone) | [Sandstein](#block-qtcraft-sandstone) |  |
+
+**Wird verwendet für**
+
+[Geschnittene Sandsteinstufe](parts.md#block-qtcraft-cut_sandstone_slab)
 
 **Abbaubar mit**
 
@@ -2025,6 +2678,10 @@ Ein Kürbis mit Gesicht, mit einer Schere geschnitzt. Auf vier Eisenblöcke in T
 | Beute | [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) |
 | Klang | Holz |
 | Zustände | facing (north, east, south, west) |
+
+**Wird verwendet für**
+
+[Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern), [Kürbislaterne](#block-qtcraft-jack_o_lantern)
 
 **Schneller mit**
 
@@ -2134,7 +2791,7 @@ Im Ofen glatt gebrannter Sandstein.
 
 **Bauteile**
 
-[Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs)
+[Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab), [Glatter Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-smooth_sandstone_vertical_slab), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs)
 
 **Im Ofen hergestellt**
 
@@ -2151,6 +2808,45 @@ Im Ofen glatt gebrannter Sandstein.
 **Wird verwendet für**
 
 [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
+### <a id="block-qtcraft-smooth_stone"></a>Glatter Stein
+
+Noch einmal geschmolzener Glattstein: eine glatte Fläche in einem dünnen Rahmen. Seine Stufen sind die klassische Bodenstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_stone` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Glatter Stein](#block-qtcraft-smooth_stone) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+
+**Bauteile**
+
+[Glatte Steinstufe](parts.md#block-qtcraft-smooth_stone_slab), [Glatte Steinstufe (senkrecht)](parts.md#block-qtcraft-smooth_stone_vertical_slab)
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | [Glatter Stein](#block-qtcraft-smooth_stone) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird verwendet für**
+
+[Glatte Steinstufe](parts.md#block-qtcraft-smooth_stone_slab)
 
 **Abbaubar mit**
 
@@ -2173,7 +2869,7 @@ Im Ofen geglätteter Stein.
 
 **Bauteile**
 
-[Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs)
+[Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab), [Glattsteinstufe (senkrecht)](parts.md#block-qtcraft-polished_stone_vertical_slab), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs)
 
 **Im Ofen hergestellt**
 
@@ -2182,6 +2878,18 @@ Im Ofen geglätteter Stein.
 | 1 | → |
 |---|---|
 | [Stein](#block-qtcraft-stone) | [Glattstein](#block-qtcraft-polished_stone) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | [Glatter Stein](#block-qtcraft-smooth_stone) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -2333,6 +3041,39 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="block-qtcraft-gray_glazed_terracotta"></a>Graue glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Graue Terrakotta](#block-qtcraft-gray_terracotta) | [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-gray_stained_glass_pane"></a>Graue Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -2383,6 +3124,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Grauer Farbstoff](items.md#item-qtcraft-gray_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Graue Terrakotta](#block-qtcraft-gray_terracotta) | [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2416,7 +3169,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grauer Teppich](parts.md#block-qtcraft-gray_wool_carpet), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grauer Teppich](parts.md#block-qtcraft-gray_wool_carpet), [Graues Bett](#block-qtcraft-gray_bed), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-gray_concrete"></a>Grauer Beton
 
@@ -2467,6 +3220,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-gray_bed"></a>Graues Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Graues Bett](#block-qtcraft-gray_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Graue Wolle](#block-qtcraft-gray_wool) | [Graue Wolle](#block-qtcraft-gray_wool) | [Graue Wolle](#block-qtcraft-gray_wool) | [Graues Bett](#block-qtcraft-gray_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Grauer Farbstoff](items.md#item-qtcraft-gray_dye) | [Graues Bett](#block-qtcraft-gray_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-gray_stained_glass"></a>Graues Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -2494,6 +3288,35 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane)
 
+### <a id="block-qtcraft-coarse_dirt"></a>Grobe Erde
+
+Erde mit Kies vermischt: zwei Erde und zwei Kies ergeben vier. Gras wächst nie darauf; eine Hacke macht daraus gewöhnliche Erde.
+
+| | |
+|---|---|
+| ID | `qtcraft:coarse_dirt` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Schaufel (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
+| Beute | [Grobe Erde](#block-qtcraft-coarse_dirt) |
+| Hacke macht daraus | [Erde](#block-qtcraft-dirt) |
+| Schaufel macht daraus | [Trampelpfad](#block-qtcraft-dirt_path) |
+| Klang | Kies |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Erde](#block-qtcraft-dirt) | [Kies](#block-qtcraft-gravel) | 4 × [Grobe Erde](#block-qtcraft-coarse_dirt) |
+| [Kies](#block-qtcraft-gravel) | [Erde](#block-qtcraft-dirt) |  |
+
+**Schneller mit**
+
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
 ### <a id="block-qtcraft-bedrock"></a>Grundgestein
 
 Der unzerstörbare Boden der Welt.
@@ -2503,6 +3326,39 @@ Der unzerstörbare Boden der Welt.
 | ID | `qtcraft:bedrock` |
 | Härte | unzerstörbar |
 | Klang | Stein |
+
+### <a id="block-qtcraft-green_glazed_terracotta"></a>Grüne glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Grüne Terrakotta](#block-qtcraft-green_terracotta) | [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-green_stained_glass_pane"></a>Grüne Glasscheibe
 
@@ -2554,6 +3410,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Grüner Farbstoff](items.md#item-qtcraft-green_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Grüne Terrakotta](#block-qtcraft-green_terracotta) | [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2587,7 +3455,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Grüner Teppich](parts.md#block-qtcraft-green_wool_carpet), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Grüner Teppich](parts.md#block-qtcraft-green_wool_carpet), [Grünes Bett](#block-qtcraft-green_bed), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-green_concrete"></a>Grüner Beton
 
@@ -2637,6 +3505,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-green_bed"></a>Grünes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Grünes Bett](#block-qtcraft-green_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Grüne Wolle](#block-qtcraft-green_wool) | [Grüne Wolle](#block-qtcraft-green_wool) | [Grüne Wolle](#block-qtcraft-green_wool) | [Grünes Bett](#block-qtcraft-green_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Grüner Farbstoff](items.md#item-qtcraft-green_dye) | [Grünes Bett](#block-qtcraft-green_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-green_stained_glass"></a>Grünes Glas
 
@@ -2691,6 +3600,39 @@ Schaltet ein Signal der Stärke 15 ein und aus. Er versorgt seine Nachbarn und d
 | [Stock](items.md#item-qtcraft-stick) | [Hebel](#block-qtcraft-lever) |
 | [Bruchstein](#block-qtcraft-cobblestone) |  |
 
+### <a id="block-qtcraft-light_blue_glazed_terracotta"></a>Hellblaue glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) | [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-light_blue_stained_glass_pane"></a>Hellblaue Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -2741,6 +3683,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) | [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2774,7 +3728,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellblauer Teppich](parts.md#block-qtcraft-light_blue_wool_carpet), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellblauer Teppich](parts.md#block-qtcraft-light_blue_wool_carpet), [Hellblaues Bett](#block-qtcraft-light_blue_bed), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-light_blue_concrete"></a>Hellblauer Beton
 
@@ -2825,6 +3779,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-light_blue_bed"></a>Hellblaues Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Hellblaues Bett](#block-qtcraft-light_blue_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Hellblaue Wolle](#block-qtcraft-light_blue_wool) | [Hellblaue Wolle](#block-qtcraft-light_blue_wool) | [Hellblaue Wolle](#block-qtcraft-light_blue_wool) | [Hellblaues Bett](#block-qtcraft-light_blue_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye) | [Hellblaues Bett](#block-qtcraft-light_blue_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-light_blue_stained_glass"></a>Hellblaues Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -2851,6 +3846,39 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 **Wird verwendet für**
 
 [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane)
+
+### <a id="block-qtcraft-light_gray_glazed_terracotta"></a>Hellgraue glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) | [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-light_gray_stained_glass_pane"></a>Hellgraue Glasscheibe
 
@@ -2902,6 +3930,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) | [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -2935,7 +3975,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrauer Teppich](parts.md#block-qtcraft-light_gray_wool_carpet), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrauer Teppich](parts.md#block-qtcraft-light_gray_wool_carpet), [Hellgraues Bett](#block-qtcraft-light_gray_bed), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-light_gray_concrete"></a>Hellgrauer Beton
 
@@ -2986,6 +4026,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-light_gray_bed"></a>Hellgraues Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Hellgraues Bett](#block-qtcraft-light_gray_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Hellgraue Wolle](#block-qtcraft-light_gray_wool) | [Hellgraue Wolle](#block-qtcraft-light_gray_wool) | [Hellgraue Wolle](#block-qtcraft-light_gray_wool) | [Hellgraues Bett](#block-qtcraft-light_gray_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye) | [Hellgraues Bett](#block-qtcraft-light_gray_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-light_gray_stained_glass"></a>Hellgraues Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -3012,6 +4093,39 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 **Wird verwendet für**
 
 [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane)
+
+### <a id="block-qtcraft-lime_glazed_terracotta"></a>Hellgrüne glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) | [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-lime_stained_glass_pane"></a>Hellgrüne Glasscheibe
 
@@ -3063,6 +4177,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) | [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -3096,7 +4222,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Hellgrüner Teppich](parts.md#block-qtcraft-lime_wool_carpet), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Hellgrüner Teppich](parts.md#block-qtcraft-lime_wool_carpet), [Hellgrünes Bett](#block-qtcraft-lime_bed), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-lime_concrete"></a>Hellgrüner Beton
 
@@ -3146,6 +4272,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-lime_bed"></a>Hellgrünes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Hellgrünes Bett](#block-qtcraft-lime_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Hellgrüne Wolle](#block-qtcraft-lime_wool) | [Hellgrüne Wolle](#block-qtcraft-lime_wool) | [Hellgrüne Wolle](#block-qtcraft-lime_wool) | [Hellgrünes Bett](#block-qtcraft-lime_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye) | [Hellgrünes Bett](#block-qtcraft-lime_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-lime_stained_glass"></a>Hellgrünes Glas
 
@@ -3342,7 +4509,7 @@ Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein 
 
 **Wird verwendet für**
 
-[Blaues Betonpulver](#block-qtcraft-blue_concrete_powder), [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder), [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder), [Graues Betonpulver](#block-qtcraft-gray_concrete_powder), [Grünes Betonpulver](#block-qtcraft-green_concrete_powder), [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder), [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder), [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder), [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder), [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder), [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder), [Rotes Betonpulver](#block-qtcraft-red_concrete_powder), [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder), [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder), [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder), [Weißes Betonpulver](#block-qtcraft-white_concrete_powder)
+[Blaues Betonpulver](#block-qtcraft-blue_concrete_powder), [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder), [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder), [Graues Betonpulver](#block-qtcraft-gray_concrete_powder), [Grobe Erde](#block-qtcraft-coarse_dirt), [Grünes Betonpulver](#block-qtcraft-green_concrete_powder), [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder), [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder), [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder), [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder), [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder), [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder), [Rotes Betonpulver](#block-qtcraft-red_concrete_powder), [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder), [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder), [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder), [Weißes Betonpulver](#block-qtcraft-white_concrete_powder)
 
 **Schneller mit**
 
@@ -3412,6 +4579,39 @@ Ein Fackelstummel aus einem Kohlestück: schwächeres Licht als eine Fackel, daf
 | [Kohlestück](items.md#item-qtcraft-coal_chunk) | [Kleine Fackel](#block-qtcraft-small_torch) |
 | [Stock](items.md#item-qtcraft-stick) |  |
 
+**Wird verwendet für**
+
+[Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern)
+
+### <a id="block-qtcraft-small_jack_o_lantern"></a>Kleine Kürbislaterne
+
+Ein geschnitzter Kürbis mit einer kleinen Fackel darin: ein sanfteres Leuchten mit etwa halbem Licht, 8.
+
+| | |
+|---|---|
+| ID | `qtcraft:small_jack_o_lantern` |
+| Härte | 1 |
+| Abbauen mit der Hand | 1,5 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,13 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) |
+| Licht | 8 von 15 |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) | [Kleine Kürbislaterne](#block-qtcraft-small_jack_o_lantern) |
+| [Kleine Fackel](#block-qtcraft-small_torch) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-small_signal_torch"></a>Kleine Signalfackel
 
 Eine halbe Signalfackel: ein Inverter wie die große, aber sie gibt nur Stärke 7, ihr Signal reicht also sieben Staub weit, und sie versorgt keinen festen Block über sich, also bekommt auch nichts auf diesem Block über sie Strom. Eine Lampe oder ein Kolben direkt auf ihr wird trotzdem versorgt. Sie glimmt schwach; sie entsteht aus einem Signalstaubstück über einem Stock, neun aus einem Staub.
@@ -3459,6 +4659,40 @@ Eine kleine Signalfackel, deren Block versorgt ist, oder eine ausgebrannte.
 | Wird von Flüssigkeiten weggespült | ja |
 | Klang | Holz |
 | Zustände | attach (floor, north, east, south, west) |
+
+### <a id="block-qtcraft-bone_block"></a>Knochenblock
+
+Neun Knochenmehl zu einem Block gepresst, und wieder zurück zu neun. Wie ein Stamm liegt er entlang der angeklickten Fläche.
+
+| | |
+|---|---|
+| ID | `qtcraft:bone_block` |
+| Härte | 2 |
+| Abbauen mit der Hand | 10 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Knochenblock](#block-qtcraft-bone_block) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | axis (y, x, z) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenblock](#block-qtcraft-bone_block) |
+| [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) |  |
+| [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) | [Knochenmehl](items.md#item-qtcraft-bone_meal) |  |
+
+**Wird verwendet für**
+
+[Knochenmehl](items.md#item-qtcraft-bone_meal)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-coal_block"></a>Kohleblock
 
@@ -3812,6 +5046,35 @@ Wächst neben einem Kürbisstängel und wild in Ebenen und Taiga. Gibt Kürbiske
 
 [Ebene](biomes.md#biome-qtcraft-plains) (Kürbisse), [Taiga](biomes.md#biome-qtcraft-taiga) (Kürbisse)
 
+### <a id="block-qtcraft-jack_o_lantern"></a>Kürbislaterne
+
+Ein geschnitzter Kürbis mit einer Fackel darin (Kürbis über der Fackel): Er leuchtet so hell wie eine Laterne, Licht 15.
+
+| | |
+|---|---|
+| ID | `qtcraft:jack_o_lantern` |
+| Härte | 1 |
+| Abbauen mit der Hand | 1,5 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,13 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Kürbislaterne](#block-qtcraft-jack_o_lantern) |
+| Licht | 15 von 15 |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Geschnitzter Kürbis](#block-qtcraft-carved_pumpkin) | [Kürbislaterne](#block-qtcraft-jack_o_lantern) |
+| [Fackel](#block-qtcraft-torch) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-pumpkin_stem"></a>Kürbisstängel
 
 Wächst aus Kürbiskernen auf Ackerboden. Reif legt er einen Kürbis auf einen freien Nachbarblock aus Ackerboden, Erde oder Gras, immer einen zur Zeit.
@@ -3944,7 +5207,7 @@ Ziegel aus gestampftem Schlamm; ein warmer, erdiger Baustein.
 
 **Bauteile**
 
-[Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs)
+[Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab), [Lehmziegelstufe (senkrecht)](parts.md#block-qtcraft-mud_bricks_vertical_slab), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs)
 
 **Herstellung**
 
@@ -4021,6 +5284,39 @@ Eine gelbe Blume; ergibt gelben Farbstoff.
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Löwenzahn), [Ebene](biomes.md#biome-qtcraft-plains) (Löwenzahn), [Wald](biomes.md#biome-qtcraft-forest) (Löwenzahn)
 
+### <a id="block-qtcraft-magenta_glazed_terracotta"></a>Magentafarbene glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) | [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-magenta_stained_glass_pane"></a>Magentafarbene Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -4071,6 +5367,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) | [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -4104,7 +5412,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Magentafarbener Teppich](parts.md#block-qtcraft-magenta_wool_carpet), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Magentafarbener Teppich](parts.md#block-qtcraft-magenta_wool_carpet), [Magentafarbenes Bett](#block-qtcraft-magenta_bed), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-magenta_concrete"></a>Magentafarbener Beton
 
@@ -4154,6 +5462,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-magenta_bed"></a>Magentafarbenes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Magentafarbenes Bett](#block-qtcraft-magenta_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Magentafarbene Wolle](#block-qtcraft-magenta_wool) | [Magentafarbene Wolle](#block-qtcraft-magenta_wool) | [Magentafarbene Wolle](#block-qtcraft-magenta_wool) | [Magentafarbenes Bett](#block-qtcraft-magenta_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye) | [Magentafarbenes Bett](#block-qtcraft-magenta_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-magenta_stained_glass"></a>Magentafarbenes Glas
 
@@ -4428,7 +5777,31 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 | 1 | → |
 |---|---|
+| [Schwarze Terrakotta](#block-qtcraft-black_terracotta) | [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Blaue Terrakotta](#block-qtcraft-blue_terracotta) | [Blaue glasierte Terrakotta](#block-qtcraft-blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Tonklumpen](items.md#item-qtcraft-clay_ball) | [Ziegelstein](items.md#item-qtcraft-brick) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Braune Terrakotta](#block-qtcraft-brown_terracotta) | [Braune glasierte Terrakotta](#block-qtcraft-brown_glazed_terracotta) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4453,6 +5826,54 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 | 1 | → |
 |---|---|
 | [Fichtenstamm](#block-qtcraft-spruce_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Birkenstamm](#block-qtcraft-stripped_birch_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Birkenholz](#block-qtcraft-stripped_birch_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Eichenstamm](#block-qtcraft-stripped_oak_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Eichenholz](#block-qtcraft-stripped_oak_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Fichtenstamm](#block-qtcraft-stripped_spruce_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Fichtenholz](#block-qtcraft-stripped_spruce_wood) | [Holzkohle](items.md#item-qtcraft-charcoal) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4516,6 +5937,22 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 | 1 | → |
 |---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) | [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Ungebranntes Lampengehäuse](items.md#item-qtcraft-unfired_lamp_shell) | [Gebranntes Lampengehäuse](items.md#item-qtcraft-fired_lamp_shell) |
 
 [Ofen](#block-qtcraft-furnace)
@@ -4540,7 +5977,23 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 | 1 | → |
 |---|---|
+| [Graue Terrakotta](#block-qtcraft-gray_terracotta) | [Graue glasierte Terrakotta](#block-qtcraft-gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Kaktus](#block-qtcraft-cactus) | [Grüner Farbstoff](items.md#item-qtcraft-green_dye) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Grüne Terrakotta](#block-qtcraft-green_terracotta) | [Grüne glasierte Terrakotta](#block-qtcraft-green_glazed_terracotta) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4564,7 +6017,55 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 | 1 | → |
 |---|---|
+| [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) | [Hellblaue glasierte Terrakotta](#block-qtcraft-light_blue_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) | [Hellgraue glasierte Terrakotta](#block-qtcraft-light_gray_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) | [Hellgrüne glasierte Terrakotta](#block-qtcraft-lime_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) | [Magentafarbene glasierte Terrakotta](#block-qtcraft-magenta_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) | [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Schlamm](#block-qtcraft-mud) | [Gestampfter Schlamm](#block-qtcraft-packed_mud) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) | [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4580,7 +6081,31 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 
 | 1 | → |
 |---|---|
+| [Violette Terrakotta](#block-qtcraft-purple_terracotta) | [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Terrakotta](#block-qtcraft-red_terracotta) | [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Sandstein](#block-qtcraft-sandstone) | [Glatter Sandstein](#block-qtcraft-smooth_sandstone) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Glattstein](#block-qtcraft-polished_stone) | [Glatter Stein](#block-qtcraft-smooth_stone) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4599,6 +6124,55 @@ Schmilzt Rohmetall, Sand, Ton und Essen, solange Brennstoff brennt: oben das Mat
 | [Ton](#block-qtcraft-clay) | [Terrakotta](#block-qtcraft-terracotta) |
 
 [Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Weiße Terrakotta](#block-qtcraft-white_terracotta) | [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) | [Gelbe glasierte Terrakotta](#block-qtcraft-yellow_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+### <a id="block-qtcraft-orange_glazed_terracotta"></a>Orangefarbene glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) | [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-orange_stained_glass_pane"></a>Orangefarbene Glasscheibe
 
@@ -4650,6 +6224,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) | [Orangefarbene glasierte Terrakotta](#block-qtcraft-orange_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -4683,7 +6269,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Orangefarbener Teppich](parts.md#block-qtcraft-orange_wool_carpet), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Orangefarbener Teppich](parts.md#block-qtcraft-orange_wool_carpet), [Orangefarbenes Bett](#block-qtcraft-orange_bed), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-orange_concrete"></a>Orangefarbener Beton
 
@@ -4733,6 +6319,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-orange_bed"></a>Orangefarbenes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Orangefarbenes Bett](#block-qtcraft-orange_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Orangefarbene Wolle](#block-qtcraft-orange_wool) | [Orangefarbene Wolle](#block-qtcraft-orange_wool) | [Orangefarbene Wolle](#block-qtcraft-orange_wool) | [Orangefarbenes Bett](#block-qtcraft-orange_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye) | [Orangefarbenes Bett](#block-qtcraft-orange_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-orange_stained_glass"></a>Orangefarbenes Glas
 
@@ -4811,6 +6438,41 @@ Hängt an Wänden, der Bewuchs der Dschungeltempel. Du kletterst daran wie an ei
 | Kletterbar | ja |
 | Klang | Gras und Pflanzen |
 | Zustände | attach (north, east, south, west) |
+
+**Wird verwendet für**
+
+[Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks), [Bemooster Bruchstein](#block-qtcraft-mossy_cobblestone)
+
+### <a id="block-qtcraft-cracked_stone_bricks"></a>Rissige Steinziegel
+
+Steinziegel, im Ofen gebrannt, bis sie reißen.
+
+| | |
+|---|---|
+| ID | `qtcraft:cracked_stone_bricks` |
+| Härte | 1,5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,19 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-raw_iron_block"></a>Roheisenblock
 
@@ -4911,6 +6573,39 @@ Neun Stück Rohkupfer als Block zum Lagern; zurück ergibt er alle neun. Er läs
 
 [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-pink_glazed_terracotta"></a>Rosafarbene glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) | [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-pink_stained_glass_pane"></a>Rosafarbene Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -4961,6 +6656,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) | [Rosafarbene glasierte Terrakotta](#block-qtcraft-pink_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -4994,7 +6701,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rosafarbener Teppich](parts.md#block-qtcraft-pink_wool_carpet), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rosafarbener Teppich](parts.md#block-qtcraft-pink_wool_carpet), [Rosafarbenes Bett](#block-qtcraft-pink_bed), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-pink_concrete"></a>Rosafarbener Beton
 
@@ -5045,6 +6752,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-pink_bed"></a>Rosafarbenes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Rosafarbenes Bett](#block-qtcraft-pink_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Rosafarbene Wolle](#block-qtcraft-pink_wool) | [Rosafarbene Wolle](#block-qtcraft-pink_wool) | [Rosafarbene Wolle](#block-qtcraft-pink_wool) | [Rosafarbenes Bett](#block-qtcraft-pink_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye) | [Rosafarbenes Bett](#block-qtcraft-pink_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-pink_stained_glass"></a>Rosafarbenes Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -5071,6 +6819,39 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 **Wird verwendet für**
 
 [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane)
+
+### <a id="block-qtcraft-red_glazed_terracotta"></a>Rote glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Terrakotta](#block-qtcraft-red_terracotta) | [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-red_stained_glass_pane"></a>Rote Glasscheibe
 
@@ -5122,6 +6903,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Roter Farbstoff](items.md#item-qtcraft-red_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rote Terrakotta](#block-qtcraft-red_terracotta) | [Rote glasierte Terrakotta](#block-qtcraft-red_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -5155,7 +6948,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Roter Teppich](parts.md#block-qtcraft-red_wool_carpet), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Roter Teppich](parts.md#block-qtcraft-red_wool_carpet), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-red_concrete"></a>Roter Beton
 
@@ -5321,7 +7114,7 @@ Gepresster Sand, liegt unter Wüsten.
 
 **Bauteile**
 
-[Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs)
+[Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab), [Sandsteinstufe (senkrecht)](parts.md#block-qtcraft-sandstone_vertical_slab), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs)
 
 **Herstellung**
 
@@ -5533,6 +7326,39 @@ Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von sel
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (Schneedecke)
 
+### <a id="block-qtcraft-black_glazed_terracotta"></a>Schwarze glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarze Terrakotta](#block-qtcraft-black_terracotta) | [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-black_stained_glass_pane"></a>Schwarze Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -5583,6 +7409,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Schwarze Terrakotta](#block-qtcraft-black_terracotta) | [Schwarze glasierte Terrakotta](#block-qtcraft-black_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -5616,7 +7454,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Schwarzer Teppich](parts.md#block-qtcraft-black_wool_carpet), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Schwarzer Teppich](parts.md#block-qtcraft-black_wool_carpet), [Schwarzes Bett](#block-qtcraft-black_bed), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-black_concrete"></a>Schwarzer Beton
 
@@ -5666,6 +7504,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-black_bed"></a>Schwarzes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Schwarzes Bett](#block-qtcraft-black_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Schwarze Wolle](#block-qtcraft-black_wool) | [Schwarze Wolle](#block-qtcraft-black_wool) | [Schwarze Wolle](#block-qtcraft-black_wool) | [Schwarzes Bett](#block-qtcraft-black_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye) | [Schwarzes Bett](#block-qtcraft-black_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-black_stained_glass"></a>Schwarzes Glas
 
@@ -6007,6 +7886,12 @@ Die Leitung jeder Schaltung. Sie trägt ein Signal der Stärke 15 von einer Quel
 
 **Herstellung**
 
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Signalstaubblock](#block-qtcraft-signal_dust_block) | 9 × [Signalstaub](#block-qtcraft-signal_dust) |
+
 *Werkbank (3 × 3)*
 
 | 1 | 2 | 3 | → |
@@ -6017,11 +7902,44 @@ Die Leitung jeder Schaltung. Sie trägt ein Signal der Stärke 15 von einer Quel
 
 **Wird verwendet für**
 
-[Antriebsschiene](#block-qtcraft-powered_rail), [Chunk-Lader](#block-qtcraft-chunk_loader), [Sensorschiene](#block-qtcraft-detector_rail), [Signal-Repeater](#block-qtcraft-signal_repeater), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalfackel](#block-qtcraft-signal_torch), [Signalkolben](#block-qtcraft-signal_piston), [Signallampe](#block-qtcraft-signal_lamp), [Signalspender](#block-qtcraft-signal_dispenser), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalwerfer](#block-qtcraft-signal_dropper)
+[Antriebsschiene](#block-qtcraft-powered_rail), [Chunk-Lader](#block-qtcraft-chunk_loader), [Sensorschiene](#block-qtcraft-detector_rail), [Signal-Repeater](#block-qtcraft-signal_repeater), [Signalbeobachter](#block-qtcraft-signal_observer), [Signalfackel](#block-qtcraft-signal_torch), [Signalkolben](#block-qtcraft-signal_piston), [Signallampe](#block-qtcraft-signal_lamp), [Signalspender](#block-qtcraft-signal_dispenser), [Signalstaubblock](#block-qtcraft-signal_dust_block), [Signalstaubstück](items.md#item-qtcraft-signal_dust_chunk), [Signalwerfer](#block-qtcraft-signal_dropper)
 
 **Droppt aus**
 
 [Hexe](creatures.md#mob-qtcraft-witch) (30 %), [Signalerz](#block-qtcraft-signal_ore) (4×, 50 %)
+
+### <a id="block-qtcraft-signal_dust_block"></a>Signalstaubblock
+
+Neun Signalstaub in einem Block, und wieder zurück zu neun. Er ist eine Quelle, die immer an ist: Er versorgt Staub, Lampen, Kolben und andere Bauteile daneben mit Stärke 15, leitet aber selbst keinen Strom weiter. Kolben können ihn schieben.
+
+| | |
+|---|---|
+| ID | `qtcraft:signal_dust_block` |
+| Härte | 5 |
+| Abbauen mit der Hand | 25 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,63 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Signalstaubblock](#block-qtcraft-signal_dust_block) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaubblock](#block-qtcraft-signal_dust_block) |
+| [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) |  |
+| [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) | [Signalstaub](#block-qtcraft-signal_dust) |  |
+
+**Wird verwendet für**
+
+[Signalstaub](#block-qtcraft-signal_dust)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-signal_hopper"></a>Signaltrichter
 
@@ -6204,7 +8122,7 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 **Bauteile**
 
-[Steinstufe](parts.md#block-qtcraft-stone_slab), [Steintreppe](parts.md#block-qtcraft-stone_stairs)
+[Steinstufe](parts.md#block-qtcraft-stone_slab), [Steinstufe (senkrecht)](parts.md#block-qtcraft-stone_vertical_slab), [Steintreppe](parts.md#block-qtcraft-stone_stairs)
 
 **Im Ofen hergestellt**
 
@@ -6351,7 +8269,7 @@ Sauber geschnittener Stein.
 
 **Bauteile**
 
-[Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs)
+[Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab), [Steinziegelstufe (senkrecht)](parts.md#block-qtcraft-stone_bricks_vertical_slab), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs)
 
 **Herstellung**
 
@@ -6362,9 +8280,21 @@ Sauber geschnittener Stein.
 | [Stein](#block-qtcraft-stone) | [Stein](#block-qtcraft-stone) | 4 × [Steinziegel](#block-qtcraft-stone_bricks) |
 | [Stein](#block-qtcraft-stone) | [Stein](#block-qtcraft-stone) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Steinziegel](#block-qtcraft-stone_bricks) | [Rissige Steinziegel](#block-qtcraft-cracked_stone_bricks) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Wird verwendet für**
 
-[Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs)
+[Bemooste Steinziegel](#block-qtcraft-mossy_stone_bricks), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs)
 
 **Abbaubar mit**
 
@@ -6562,6 +8492,39 @@ Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
+### <a id="block-qtcraft-cyan_glazed_terracotta"></a>Türkise glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) | [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-cyan_stained_glass_pane"></a>Türkise Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -6612,6 +8575,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) | [Türkise glasierte Terrakotta](#block-qtcraft-cyan_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -6645,7 +8620,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Türkiser Teppich](parts.md#block-qtcraft-cyan_wool_carpet), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Türkiser Teppich](parts.md#block-qtcraft-cyan_wool_carpet), [Türkises Bett](#block-qtcraft-cyan_bed), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-cyan_concrete"></a>Türkiser Beton
 
@@ -6696,6 +8671,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
+### <a id="block-qtcraft-cyan_bed"></a>Türkises Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Türkises Bett](#block-qtcraft-cyan_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Türkise Wolle](#block-qtcraft-cyan_wool) | [Türkise Wolle](#block-qtcraft-cyan_wool) | [Türkise Wolle](#block-qtcraft-cyan_wool) | [Türkises Bett](#block-qtcraft-cyan_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye) | [Türkises Bett](#block-qtcraft-cyan_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-cyan_stained_glass"></a>Türkises Glas
 
 Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
@@ -6722,6 +8738,39 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 **Wird verwendet für**
 
 [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane)
+
+### <a id="block-qtcraft-purple_glazed_terracotta"></a>Violette glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Violette Terrakotta](#block-qtcraft-purple_terracotta) | [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
 ### <a id="block-qtcraft-purple_stained_glass_pane"></a>Violette Glasscheibe
 
@@ -6773,6 +8822,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Violetter Farbstoff](items.md#item-qtcraft-purple_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Violette Terrakotta](#block-qtcraft-purple_terracotta) | [Violette glasierte Terrakotta](#block-qtcraft-purple_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -6806,7 +8867,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Violetter Teppich](parts.md#block-qtcraft-purple_wool_carpet)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Violetter Teppich](parts.md#block-qtcraft-purple_wool_carpet), [Violettes Bett](#block-qtcraft-purple_bed)
 
 ### <a id="block-qtcraft-purple_concrete"></a>Violetter Beton
 
@@ -6856,6 +8917,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-purple_bed"></a>Violettes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Violettes Bett](#block-qtcraft-purple_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Violette Wolle](#block-qtcraft-purple_wool) | [Violette Wolle](#block-qtcraft-purple_wool) | [Violette Wolle](#block-qtcraft-purple_wool) | [Violettes Bett](#block-qtcraft-purple_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Violetter Farbstoff](items.md#item-qtcraft-purple_dye) | [Violettes Bett](#block-qtcraft-purple_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-purple_stained_glass"></a>Violettes Glas
 
@@ -6924,6 +9026,39 @@ Wächst aus Weizenkörnern auf Ackerboden in acht Stufen. Reifer Weizen gibt Wei
 | Klang | Gras und Pflanzen |
 | Zustände | age (0, 1, 2, 3, 4, 5, 6, 7) |
 
+### <a id="block-qtcraft-white_glazed_terracotta"></a>Weiße glasierte Terrakotta
+
+Gefärbte Terrakotta, im Ofen zu einem glasierten Ornament geschmolzen. Sie dreht sich beim Setzen zu dir, so ergeben vier verschieden gedrehte Blöcke ein größeres Muster.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_glazed_terracotta` |
+| Härte | 1,4 |
+| Abbauen mit der Hand | 7 s |
+| Werkzeug | Spitzhacke, Stufe 1 oder besser (nötig für Beute) |
+| Abbauen mit dem besten Werkzeug | 0,17 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) |
+| Beute ohne passendes Werkzeug | nichts |
+| Klang | Stein |
+| Zustände | facing (north, east, south, west) |
+| Gruppen | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Weiße Terrakotta](#block-qtcraft-white_terracotta) | [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Abbaubar mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-white_stained_glass_pane"></a>Weiße Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -6974,6 +9109,18 @@ Gefärbte Terrakotta in erdigen Tönen.
 | [Terrakotta](#block-qtcraft-terracotta) | [Weißer Farbstoff](items.md#item-qtcraft-white_dye) | [Terrakotta](#block-qtcraft-terracotta) |  |
 | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) | [Terrakotta](#block-qtcraft-terracotta) |  |
 
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Weiße Terrakotta](#block-qtcraft-white_terracotta) | [Weiße glasierte Terrakotta](#block-qtcraft-white_glazed_terracotta) |
+
+[Ofen](#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
@@ -7008,7 +9155,7 @@ Weicher Block vom Schaf; jede Wolle lässt sich mit einem Farbstoff färben.
 
 **Wird verwendet für**
 
-[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Weißer Teppich](parts.md#block-qtcraft-white_wool_carpet)
+[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Weißer Teppich](parts.md#block-qtcraft-white_wool_carpet), [Weißes Bett](#block-qtcraft-white_bed)
 
 **Droppt aus**
 
@@ -7062,6 +9209,47 @@ Fällt wie Sand. Berührt es an einer Seite Wasser, härtet es zu Beton.
 **Schneller mit**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
+### <a id="block-qtcraft-white_bed"></a>Weißes Bett
+
+Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Weißes Bett](#block-qtcraft-white_bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+| Gruppen | [#beds](tags.md#tag-qtcraft-beds) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Weiße Wolle](#block-qtcraft-white_wool) | [Weiße Wolle](#block-qtcraft-white_wool) | [Weiße Wolle](#block-qtcraft-white_wool) | [Weißes Bett](#block-qtcraft-white_bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [#beds](tags.md#tag-qtcraft-beds) | [Weißer Farbstoff](items.md#item-qtcraft-white_dye) | [Weißes Bett](#block-qtcraft-white_bed) |
+
+**Wird verwendet für**
+
+[Bett](#block-qtcraft-bed) (#beds), [Blaues Bett](#block-qtcraft-blue_bed) (#beds), [Braunes Bett](#block-qtcraft-brown_bed) (#beds), [Gelbes Bett](#block-qtcraft-yellow_bed) (#beds), [Graues Bett](#block-qtcraft-gray_bed) (#beds), [Grünes Bett](#block-qtcraft-green_bed) (#beds), [Hellblaues Bett](#block-qtcraft-light_blue_bed) (#beds), [Hellgraues Bett](#block-qtcraft-light_gray_bed) (#beds), [Hellgrünes Bett](#block-qtcraft-lime_bed) (#beds), [Magentafarbenes Bett](#block-qtcraft-magenta_bed) (#beds), [Orangefarbenes Bett](#block-qtcraft-orange_bed) (#beds), [Rosafarbenes Bett](#block-qtcraft-pink_bed) (#beds), [Schwarzes Bett](#block-qtcraft-black_bed) (#beds), [Türkises Bett](#block-qtcraft-cyan_bed) (#beds), [Violettes Bett](#block-qtcraft-purple_bed) (#beds), [Weißes Bett](#block-qtcraft-white_bed) (#beds)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-white_stained_glass"></a>Weißes Glas
 
@@ -7168,7 +9356,7 @@ Gebrannter Ton, ein fester Baustein.
 
 **Bauteile**
 
-[Ziegelmauer](parts.md#block-qtcraft-brick_wall), [Ziegelstufe](parts.md#block-qtcraft-brick_slab), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs)
+[Ziegelmauer](parts.md#block-qtcraft-brick_wall), [Ziegelstufe](parts.md#block-qtcraft-brick_slab), [Ziegelstufe (senkrecht)](parts.md#block-qtcraft-brick_vertical_slab), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs)
 
 **Herstellung**
 

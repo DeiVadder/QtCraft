@@ -212,6 +212,15 @@ struct QcTextureSpec
         // A fishing rod (decision E-503): the rod (primary) on the diagonal, its line (secondary)
         // hanging from the tip with a hook.
         FishingRod,
+        // Patterns of QcTextureBuildingPatterns (decision E-750): bricks (primary) with moss
+        // (secondary) in patches and in the mortar, bricks with mortar (secondary) and two cracks,
+        // a chiseled face of nested frames, a smooth face in a thin frame (secondary) and a glazed
+        // ornament (secondary on primary) without symmetry, so turned blocks show their facing.
+        MossyBricks,
+        CrackedBricks,
+        ChiseledBricks,
+        SmoothStone,
+        GlazedTerracotta,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

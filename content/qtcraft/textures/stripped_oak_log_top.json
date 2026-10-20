@@ -1,0 +1,8 @@
+{
+    "name": "stripped_oak_log_top",
+    "pattern": "log_top",
+    "primary": "#b89462",
+    "secondary": "#b08a56",
+    "variation": 0.06,
+    "seed": 7551
+}

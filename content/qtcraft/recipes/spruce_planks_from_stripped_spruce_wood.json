@@ -1,0 +1,11 @@
+{
+    "name": "spruce_planks_from_stripped_spruce_wood",
+    "type": "shapeless",
+    "ingredients": [
+        "stripped_spruce_wood"
+    ],
+    "result": {
+        "item": "spruce_planks",
+        "count": 4
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "stripped_spruce_log",
+    "pattern": "log_side",
+    "primary": "#86643c",
+    "secondary": "#6e5230",
+    "variation": 0.05,
+    "seed": 7554
+}

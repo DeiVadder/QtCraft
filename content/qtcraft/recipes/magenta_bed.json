@@ -1,0 +1,15 @@
+{
+    "name": "magenta_bed",
+    "type": "shaped",
+    "pattern": [
+        "WWW",
+        "PPP"
+    ],
+    "key": {
+        "W": "magenta_wool",
+        "P": "#planks"
+    },
+    "result": {
+        "item": "magenta_bed"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "name": "purple_glazed_terracotta",
+    "sound": "stone",
+    "hardness": 1.4,
+    "blastResistance": 1.4,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "tags": [
+        "glazed_terracotta"
+    ],
+    "textures": {
+        "all": "purple_glazed_terracotta"
+    }
+}

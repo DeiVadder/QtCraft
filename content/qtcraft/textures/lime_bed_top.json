@@ -1,0 +1,8 @@
+{
+    "name": "lime_bed_top",
+    "pattern": "speckle",
+    "primary": "#70b919",
+    "secondary": "#70b919",
+    "variation": 0.06,
+    "seed": 7570
+}

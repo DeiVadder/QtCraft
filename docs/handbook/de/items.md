@@ -52,7 +52,7 @@ Aus Kornblumen.
 
 **Wird verwendet für**
 
-[Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta), [Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Blaues Betonpulver](blocks.md#block-qtcraft-blue_concrete_powder), [Blaues Glas](blocks.md#block-qtcraft-blue_stained_glass), [Türkiser Farbstoff](#item-qtcraft-cyan_dye), [Violetter Farbstoff](#item-qtcraft-purple_dye)
+[Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta), [Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Blaues Betonpulver](blocks.md#block-qtcraft-blue_concrete_powder), [Blaues Bett](blocks.md#block-qtcraft-blue_bed), [Blaues Glas](blocks.md#block-qtcraft-blue_stained_glass), [Türkiser Farbstoff](#item-qtcraft-cyan_dye), [Violetter Farbstoff](#item-qtcraft-purple_dye)
 
 ### <a id="item-qtcraft-bow"></a>Bogen
 
@@ -94,7 +94,7 @@ Färbt Wolle, Glas, Terrakotta und Beton braun.
 
 **Wird verwendet für**
 
-[Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Braunes Betonpulver](blocks.md#block-qtcraft-brown_concrete_powder), [Braunes Glas](blocks.md#block-qtcraft-brown_stained_glass)
+[Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Braunes Betonpulver](blocks.md#block-qtcraft-brown_concrete_powder), [Braunes Bett](blocks.md#block-qtcraft-brown_bed), [Braunes Glas](blocks.md#block-qtcraft-brown_stained_glass)
 
 ### <a id="item-qtcraft-book"></a>Buch
 
@@ -369,7 +369,7 @@ Aus Löwenzahn.
 
 **Wird verwendet für**
 
-[Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Gelbes Betonpulver](blocks.md#block-qtcraft-yellow_concrete_powder), [Gelbes Glas](blocks.md#block-qtcraft-yellow_stained_glass), [Orangefarbener Farbstoff](#item-qtcraft-orange_dye)
+[Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Gelbes Betonpulver](blocks.md#block-qtcraft-yellow_concrete_powder), [Gelbes Bett](blocks.md#block-qtcraft-yellow_bed), [Gelbes Glas](blocks.md#block-qtcraft-yellow_stained_glass), [Orangefarbener Farbstoff](#item-qtcraft-orange_dye)
 
 ### <a id="item-qtcraft-glass_bottle"></a>Glasflasche
 
@@ -501,7 +501,7 @@ Färbt Wolle, Glas, Terrakotta und Beton grau.
 
 **Wird verwendet für**
 
-[Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Graues Betonpulver](blocks.md#block-qtcraft-gray_concrete_powder), [Graues Glas](blocks.md#block-qtcraft-gray_stained_glass), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye)
+[Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Graues Betonpulver](blocks.md#block-qtcraft-gray_concrete_powder), [Graues Bett](blocks.md#block-qtcraft-gray_bed), [Graues Glas](blocks.md#block-qtcraft-gray_stained_glass), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye)
 
 ### <a id="item-qtcraft-green_dye"></a>Grüner Farbstoff
 
@@ -527,7 +527,7 @@ Aus Kaktus im Ofen.
 
 **Wird verwendet für**
 
-[Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Grünes Betonpulver](blocks.md#block-qtcraft-green_concrete_powder), [Grünes Glas](blocks.md#block-qtcraft-green_stained_glass), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Türkiser Farbstoff](#item-qtcraft-cyan_dye)
+[Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Grünes Betonpulver](blocks.md#block-qtcraft-green_concrete_powder), [Grünes Bett](blocks.md#block-qtcraft-green_bed), [Grünes Glas](blocks.md#block-qtcraft-green_stained_glass), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Türkiser Farbstoff](#item-qtcraft-cyan_dye)
 
 ### <a id="item-qtcraft-healing_potion"></a>Heiltrank
 
@@ -558,7 +558,7 @@ Färbt Wolle, Glas, Terrakotta und Beton hellblau.
 
 **Wird verwendet für**
 
-[Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellblaues Betonpulver](blocks.md#block-qtcraft-light_blue_concrete_powder), [Hellblaues Glas](blocks.md#block-qtcraft-light_blue_stained_glass)
+[Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellblaues Betonpulver](blocks.md#block-qtcraft-light_blue_concrete_powder), [Hellblaues Bett](blocks.md#block-qtcraft-light_blue_bed), [Hellblaues Glas](blocks.md#block-qtcraft-light_blue_stained_glass)
 
 ### <a id="item-qtcraft-light_gray_dye"></a>Hellgrauer Farbstoff
 
@@ -580,7 +580,7 @@ Färbt Wolle, Glas, Terrakotta und Beton hellgrau.
 
 **Wird verwendet für**
 
-[Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgraues Betonpulver](blocks.md#block-qtcraft-light_gray_concrete_powder), [Hellgraues Glas](blocks.md#block-qtcraft-light_gray_stained_glass)
+[Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgraues Betonpulver](blocks.md#block-qtcraft-light_gray_concrete_powder), [Hellgraues Bett](blocks.md#block-qtcraft-light_gray_bed), [Hellgraues Glas](blocks.md#block-qtcraft-light_gray_stained_glass)
 
 ### <a id="item-qtcraft-lime_dye"></a>Hellgrüner Farbstoff
 
@@ -602,7 +602,7 @@ Färbt Wolle, Glas, Terrakotta und Beton hellgrün.
 
 **Wird verwendet für**
 
-[Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Hellgrünes Betonpulver](blocks.md#block-qtcraft-lime_concrete_powder), [Hellgrünes Glas](blocks.md#block-qtcraft-lime_stained_glass)
+[Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Hellgrünes Betonpulver](blocks.md#block-qtcraft-lime_concrete_powder), [Hellgrünes Bett](blocks.md#block-qtcraft-lime_bed), [Hellgrünes Glas](blocks.md#block-qtcraft-lime_stained_glass)
 
 ### <a id="item-qtcraft-charcoal"></a>Holzkohle
 
@@ -638,6 +638,54 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 | 1 | → |
 |---|---|
 | [Fichtenstamm](blocks.md#block-qtcraft-spruce_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood) | [Holzkohle](#item-qtcraft-charcoal) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -695,6 +743,16 @@ Auf eine Pflanze angewandt, wächst sie 2–5 Stufen auf einmal; ein Setzling wi
 | 1 | → |
 |---|---|
 | [Knochen](#item-qtcraft-bone) | 3 × [Knochenmehl](#item-qtcraft-bone_meal) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Knochenblock](blocks.md#block-qtcraft-bone_block) | 9 × [Knochenmehl](#item-qtcraft-bone_meal) |
+
+**Wird verwendet für**
+
+[Knochenblock](blocks.md#block-qtcraft-bone_block)
 
 **Droppt aus**
 
@@ -987,7 +1045,7 @@ Färbt Wolle, Glas, Terrakotta und Beton magentafarben.
 
 **Wird verwendet für**
 
-[Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Magentafarbenes Betonpulver](blocks.md#block-qtcraft-magenta_concrete_powder), [Magentafarbenes Glas](blocks.md#block-qtcraft-magenta_stained_glass)
+[Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Magentafarbenes Betonpulver](blocks.md#block-qtcraft-magenta_concrete_powder), [Magentafarbenes Bett](blocks.md#block-qtcraft-magenta_bed), [Magentafarbenes Glas](blocks.md#block-qtcraft-magenta_stained_glass)
 
 ### <a id="item-qtcraft-melon_seeds"></a>Melonenkerne
 
@@ -1041,7 +1099,7 @@ Aus rotem und gelbem Farbstoff gemischt.
 
 **Wird verwendet für**
 
-[Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Orangefarbenes Betonpulver](blocks.md#block-qtcraft-orange_concrete_powder), [Orangefarbenes Glas](blocks.md#block-qtcraft-orange_stained_glass)
+[Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Orangefarbenes Betonpulver](blocks.md#block-qtcraft-orange_concrete_powder), [Orangefarbenes Bett](blocks.md#block-qtcraft-orange_bed), [Orangefarbenes Glas](blocks.md#block-qtcraft-orange_stained_glass)
 
 ### <a id="item-qtcraft-paper"></a>Papier
 
@@ -1219,7 +1277,7 @@ Färbt Wolle, Glas, Terrakotta und Beton rosafarben.
 
 **Wird verwendet für**
 
-[Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rosafarbenes Betonpulver](blocks.md#block-qtcraft-pink_concrete_powder), [Rosafarbenes Glas](blocks.md#block-qtcraft-pink_stained_glass)
+[Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rosafarbenes Betonpulver](blocks.md#block-qtcraft-pink_concrete_powder), [Rosafarbenes Bett](blocks.md#block-qtcraft-pink_bed), [Rosafarbenes Glas](blocks.md#block-qtcraft-pink_stained_glass)
 
 ### <a id="item-qtcraft-red_dye"></a>Roter Farbstoff
 
@@ -1241,7 +1299,7 @@ Aus Mohn.
 
 **Wird verwendet für**
 
-[Orangefarbener Farbstoff](#item-qtcraft-orange_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Rotes Betonpulver](blocks.md#block-qtcraft-red_concrete_powder), [Rotes Glas](blocks.md#block-qtcraft-red_stained_glass), [Violetter Farbstoff](#item-qtcraft-purple_dye)
+[Bett](blocks.md#block-qtcraft-bed), [Orangefarbener Farbstoff](#item-qtcraft-orange_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Rotes Betonpulver](blocks.md#block-qtcraft-red_concrete_powder), [Rotes Glas](blocks.md#block-qtcraft-red_stained_glass), [Violetter Farbstoff](#item-qtcraft-purple_dye)
 
 ### <a id="item-qtcraft-armor_stand"></a>Rüstungsständer
 
@@ -1367,7 +1425,7 @@ Aus Kohle; färbt Wolle schwarz.
 
 **Wird verwendet für**
 
-[Grauer Farbstoff](#item-qtcraft-gray_dye), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Schwarzes Betonpulver](blocks.md#block-qtcraft-black_concrete_powder), [Schwarzes Glas](blocks.md#block-qtcraft-black_stained_glass)
+[Grauer Farbstoff](#item-qtcraft-gray_dye), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Schwarzes Betonpulver](blocks.md#block-qtcraft-black_concrete_powder), [Schwarzes Bett](blocks.md#block-qtcraft-black_bed), [Schwarzes Glas](blocks.md#block-qtcraft-black_stained_glass)
 
 ### <a id="item-qtcraft-gunpowder"></a>Schwarzpulver
 
@@ -1568,7 +1626,7 @@ Färbt Wolle, Glas, Terrakotta und Beton türkis.
 
 **Wird verwendet für**
 
-[Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Türkises Betonpulver](blocks.md#block-qtcraft-cyan_concrete_powder), [Türkises Glas](blocks.md#block-qtcraft-cyan_stained_glass)
+[Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Türkises Betonpulver](blocks.md#block-qtcraft-cyan_concrete_powder), [Türkises Bett](blocks.md#block-qtcraft-cyan_bed), [Türkises Glas](blocks.md#block-qtcraft-cyan_stained_glass)
 
 ### <a id="item-qtcraft-unfired_lamp_shell"></a>Ungebranntes Lampengehäuse
 
@@ -1621,7 +1679,7 @@ Aus rotem und blauem Farbstoff gemischt.
 
 **Wird verwendet für**
 
-[Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta), [Violette Wolle](blocks.md#block-qtcraft-purple_wool), [Violettes Betonpulver](blocks.md#block-qtcraft-purple_concrete_powder), [Violettes Glas](blocks.md#block-qtcraft-purple_stained_glass)
+[Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta), [Violette Wolle](blocks.md#block-qtcraft-purple_wool), [Violettes Betonpulver](blocks.md#block-qtcraft-purple_concrete_powder), [Violettes Bett](blocks.md#block-qtcraft-purple_bed), [Violettes Glas](blocks.md#block-qtcraft-purple_stained_glass)
 
 ### <a id="item-qtcraft-water_bucket"></a>Wassereimer
 
@@ -1710,7 +1768,7 @@ Färbt Wolle, Glas, Terrakotta und Beton weiß.
 
 **Wird verwendet für**
 
-[Grauer Farbstoff](#item-qtcraft-gray_dye), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta), [Weißes Betonpulver](blocks.md#block-qtcraft-white_concrete_powder), [Weißes Glas](blocks.md#block-qtcraft-white_stained_glass)
+[Grauer Farbstoff](#item-qtcraft-gray_dye), [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](#item-qtcraft-lime_dye), [Rosafarbener Farbstoff](#item-qtcraft-pink_dye), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta), [Weißes Betonpulver](blocks.md#block-qtcraft-white_concrete_powder), [Weißes Bett](blocks.md#block-qtcraft-white_bed), [Weißes Glas](blocks.md#block-qtcraft-white_stained_glass)
 
 ### <a id="item-qtcraft-poison_splash_potion"></a>Wurftrank der Vergiftung
 

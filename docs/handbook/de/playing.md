@@ -115,9 +115,21 @@ Fackeln, Leitern, Lampen, Türen und Pflanzen brauchen etwas zum Stehen oder Hä
 
 Viele Materialien gibt es als Treppe, Stufe, Mauer, Zaun und Tor. Zäune, Mauern und Scheiben verbinden sich mit ihren Nachbarn. Türen, Falltüren und Tore öffnen und schließen sich beim Benutzen; schleiche, um stattdessen einen Block dagegen zu setzen.
 
+**Treppenecken**
+
+Treppen neben Treppen bilden von selbst Ecken, wie Dächer sie brauchen: Eine quer gestellte Treppe vor einer anderen (auf der Seite, zu der sie hinaufführt) macht diese zur Außenecke mit einer Viertelstufe, eine quer gestellte dahinter zur Innenecke mit drei Vierteln. Treppen in einer geraden Reihe bleiben gerade, und nur Treppen derselben Hälfte (beide aufrecht oder beide kopfüber) verbinden sich. Jede Ecke passt sich weiter ihren Nachbarn an.
+
+**Senkrechte Stufen**
+
+Jedes Material mit Stufen hat auch senkrechte Stufen: Drei übereinander gelegte Stufen im Handwerksraster ergeben drei, eine senkrechte Stufe ergibt wieder eine Stufe. Eine senkrechte Stufe lehnt an der angeklickten Fläche; auf Boden oder Decke gesetzt steht sie auf der Seite der Zelle, in die du schaust. Eine zweite in die Gegenrichtung oder eine auf der offenen Seite füllt die Zelle; abgebaut gibt sie beide zurück.
+
+**Liegende Stämme und entrindetes Holz**
+
+Stämme, Holz, entrindete Stämme und Knochenblöcke liegen entlang der angeklickten Fläche: auf Ober- oder Unterseite stehen sie aufrecht, an einer Seitenfläche liegen sie auf sie zu, mit den Jahresringen an den Enden. Eine Axt auf einem Stamm oder Holz entfernt die Rinde; er liegt danach wie vorher, und es fällt nichts heraus.
+
 **Siehe auch**
 
-[Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichentür](blocks.md#block-qtcraft-oak_door), [Leiter](blocks.md#block-qtcraft-ladder), [Fackel](blocks.md#block-qtcraft-torch)
+[Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichentür](blocks.md#block-qtcraft-oak_door), [Leiter](blocks.md#block-qtcraft-ladder), [Fackel](blocks.md#block-qtcraft-torch), [Eichenstufe (senkrecht)](parts.md#block-qtcraft-oak_vertical_slab), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log)
 
 ### <a id="chapter-qtcraft-crafting"></a>Herstellen
 

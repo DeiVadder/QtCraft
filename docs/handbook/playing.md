@@ -115,9 +115,21 @@ Torches, ladders, lamps, doors and plants need something to stand or hang on. Wh
 
 Many materials come as stairs, slabs, walls, fences and gates. Fences, walls and panes connect to their neighbours. Doors, trapdoors and gates open and close when used; sneak to place a block against them instead.
 
+**Stair corners**
+
+Stairs next to stairs form corners by themselves, as roofs need them: a stair turned across in front of another (on the side it climbs to) makes that one an outer corner with a quarter step, a stair turned across behind it an inner corner with three quarters. Stairs in a straight row stay straight, and only stairs of the same half (both upright or both upside down) join. Every corner keeps changing with its neighbours.
+
+**Vertical slabs**
+
+Every material with slabs also has vertical slabs: three slabs on top of each other in the crafting grid give three, one vertical slab gives a slab back. A vertical slab leans against the face you click; placed on a floor or ceiling it stands on the far side of the cell as you look. A second vertical slab facing the other way, or one placed on the open side, fills the cell; broken, it drops both.
+
+**Lying logs and stripped wood**
+
+Logs, wood, stripped logs and bone blocks lie along the face you click: on a top or bottom face they stand upright, on a side face they lie towards it, with the rings at their ends. Use an axe on a log or on wood to strip its bark; it keeps lying the way it did and nothing drops.
+
 **See also**
 
-[Oak stairs](parts.md#block-qtcraft-oak_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak door](blocks.md#block-qtcraft-oak_door), [Ladder](blocks.md#block-qtcraft-ladder), [Torch](blocks.md#block-qtcraft-torch)
+[Oak stairs](parts.md#block-qtcraft-oak_stairs), [Cobblestone wall](parts.md#block-qtcraft-cobblestone_wall), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak door](blocks.md#block-qtcraft-oak_door), [Ladder](blocks.md#block-qtcraft-ladder), [Torch](blocks.md#block-qtcraft-torch), [Oak vertical slab](parts.md#block-qtcraft-oak_vertical_slab), [Oak log](blocks.md#block-qtcraft-oak_log), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log)
 
 ### <a id="chapter-qtcraft-crafting"></a>Crafting
 

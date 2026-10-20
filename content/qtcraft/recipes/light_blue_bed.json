@@ -1,0 +1,15 @@
+{
+    "name": "light_blue_bed",
+    "type": "shaped",
+    "pattern": [
+        "WWW",
+        "PPP"
+    ],
+    "key": {
+        "W": "light_blue_wool",
+        "P": "#planks"
+    },
+    "result": {
+        "item": "light_blue_bed"
+    }
+}

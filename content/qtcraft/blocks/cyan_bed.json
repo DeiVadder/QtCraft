@@ -1,0 +1,38 @@
+{
+    "name": "cyan_bed",
+    "sound": "wood",
+    "shape": "bed",
+    "render": "cutout",
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.2,
+    "tool": "axe",
+    "bed": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "part": [
+            "foot",
+            "head"
+        ]
+    },
+    "textures": {
+        "all": "cyan_bed_side",
+        "top": "cyan_bed_top",
+        "bottom": "oak_planks",
+        "slots": {
+            "pillow": "bed_pillow"
+        }
+    },
+    "flammable": {
+        "ignite": 20,
+        "burn": 30
+    },
+    "tags": [
+        "beds"
+    ]
+}

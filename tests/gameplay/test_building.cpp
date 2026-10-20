@@ -167,24 +167,32 @@ private slots:
 
     void baseMaterialsGetTheirParts()
     {
-        // Woods get stairs, slabs, fences and gates; stone kinds stairs, slabs and walls, except
-        // that plain and polished stone leave walls out.
+        // Woods get stairs, slabs, vertical slabs, fences and gates, buttons and pressure plates (oak
+        // has its own); stone kinds stairs, slabs, vertical slabs and walls, except that plain and
+        // polished stone leave walls out and smooth stone and cut sandstone have only slabs.
         QStringList expected;
         for (const QString &wood : {u"oak"_s, u"birch"_s, u"spruce"_s}) {
-            for (const QString &part : {u"stairs"_s, u"slab"_s, u"fence"_s, u"fence_gate"_s}) {
+            for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s, u"fence"_s, u"fence_gate"_s}) {
                 expected.append(u"qtcraft:%1_%2"_s.arg(wood, part));
             }
         }
-        for (const QString &stone : {u"cobblestone"_s, u"brick"_s, u"sandstone"_s}) {
-            for (const QString &part : {u"stairs"_s, u"slab"_s, u"wall"_s}) {
+        for (const QString &wood : {u"birch"_s, u"spruce"_s}) {
+            expected.append({u"qtcraft:%1_button"_s.arg(wood), u"qtcraft:%1_pressure_plate"_s.arg(wood)});
+        }
+        for (const QString &stone : {u"cobblestone"_s, u"brick"_s, u"sandstone"_s, u"mud_bricks"_s, u"smooth_sandstone"_s, u"stone_bricks"_s,
+                                     u"mossy_stone_bricks"_s, u"mossy_cobblestone"_s}) {
+            for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s, u"wall"_s}) {
                 expected.append(u"qtcraft:%1_%2"_s.arg(stone, part));
             }
         }
-        expected.append({u"qtcraft:stone_stairs"_s, u"qtcraft:stone_slab"_s});
-        expected.append({u"qtcraft:mud_bricks_stairs"_s, u"qtcraft:mud_bricks_slab"_s, u"qtcraft:mud_bricks_wall"_s});
-        expected.append({u"qtcraft:smooth_sandstone_stairs"_s, u"qtcraft:smooth_sandstone_slab"_s, u"qtcraft:smooth_sandstone_wall"_s});
-        expected.append({u"qtcraft:stone_bricks_stairs"_s, u"qtcraft:stone_bricks_slab"_s, u"qtcraft:stone_bricks_wall"_s,
-                         u"qtcraft:polished_stone_stairs"_s, u"qtcraft:polished_stone_slab"_s});
+        for (const QString &stone : {u"stone"_s, u"polished_stone"_s}) {
+            for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s}) {
+                expected.append(u"qtcraft:%1_%2"_s.arg(stone, part));
+            }
+        }
+        for (const QString &stone : {u"smooth_stone"_s, u"cut_sandstone"_s}) {
+            expected.append({u"qtcraft:%1_slab"_s.arg(stone), u"qtcraft:%1_vertical_slab"_s.arg(stone)});
+        }
 
         // Wool of every colour gets carpets only.
         for (const QString &colour : {u"white"_s, u"red"_s, u"yellow"_s, u"blue"_s, u"green"_s, u"black"_s, u"orange"_s, u"purple"_s,
@@ -429,11 +437,11 @@ private slots:
         face(90.0f);
         hold("oak_stairs", 4);
         use(floor, QcBlockFace::Up);
-        QCOMPARE(nameAt(floor.offset(0, 1, 0)), u"qtcraft:oak_stairs[facing=east,half=bottom]"_s);
+        QCOMPARE(nameAt(floor.offset(0, 1, 0)), u"qtcraft:oak_stairs[facing=east,half=bottom,shape=straight]"_s);
 
         // Against the upper half of a side face: upside down.
         use(floor.offset(0, 1, 0), QcBlockFace::South, {0.5, 0.8, 1.0});
-        QCOMPARE(nameAt(floor.offset(0, 1, 1)), u"qtcraft:oak_stairs[facing=east,half=top]"_s);
+        QCOMPARE(nameAt(floor.offset(0, 1, 1)), u"qtcraft:oak_stairs[facing=east,half=top,shape=straight]"_s);
         hold("furnace");
         use(floor.offset(0, 0, -1), QcBlockFace::Up);
         QCOMPARE(nameAt(floor.offset(0, 1, -1)), u"qtcraft:furnace[facing=west]"_s);

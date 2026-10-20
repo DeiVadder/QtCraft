@@ -98,6 +98,9 @@ struct QcItemDefinition
     // Used on a block with `carvesInto` (a pumpkin), carves it facing the clicked side and wears by one
     // (shears, decision E-472). Server side only.
     bool carves = false;
+    // Used on a block with `strippedInto` (a log), turns it into that block and wears by one (axes,
+    // decision E-753). Server side only.
+    bool strips = false;
     // Used on a block face, lights fire in the cell in front of it and wears by one (flint and
     // steel, decision E-393). Also reaches the client (the creative inventory files it under tools).
     bool ignites = false;

@@ -50,6 +50,9 @@ enum class QcFacingRule : quint8 {
     Toward,
     // Facing into the clicked block (a hopper's spout); placed on top, down (decision E-342).
     Into,
+    // Towards the clicked block on a side face, where the player looks on the top or bottom (a
+    // vertical slab lying against the clicked block, decision E-755).
+    Against,
 };
 
 // What a rail does to the minecarts on it (decision E-384): a powered rail speeds them up while it
@@ -83,33 +86,6 @@ struct QcItemDrop
 
     // The most items this drop gives.
     int mostCount() const { return std::max(count, maxCount); }
-};
-
-// A block that grows into a tree feature after a random time (saplings).
-struct QcSaplingDefinition
-{
-    // Name of a tree or column feature; empty for blocks that are not saplings.
-    QString feature;
-    double minSeconds = 120.0;
-    double maxSeconds = 300.0;
-    // Blocks it may be planted on; empty allows any solid block.
-    QList<QString> plantOn;
-    // Chance that a despawning item of this block plants itself instead of vanishing.
-    double plantChance = 0.0;
-
-    bool isSapling() const { return !feature.isEmpty(); }
-};
-
-// A plant that grows upwards by itself (sugar cane): random ticks of its top block add a block of the
-// same kind above until the column is `maxHeight` tall. Server side only.
-struct QcGrowthDefinition
-{
-    // Tallest column it grows to; 0 for blocks that do not grow.
-    int maxHeight = 0;
-    // Average seconds between two growth steps of one column.
-    double averageSeconds = 600.0;
-
-    bool grows() const { return maxHeight > 0; }
 };
 
 struct QcBlockDefinition
@@ -183,6 +159,10 @@ struct QcBlockDefinition
     // `part` tells foot from head. Villages count them (QcVillages). Server side only (not
     // synchronised).
     bool bed = false;
+    // Stairs with corners (decision E-754): the states `facing`, `half` and `shape` (straight,
+    // inner_left, inner_right, outer_left, outer_right); the server sets `shape` from the stairs
+    // around it (QcStairShapes). Derived from the states, server side only.
+    bool stairs = false;
     QcFacingRule facingRule = QcFacingRule::Away;
     QcBlockSupport support = QcBlockSupport::None;
     // Connection group this block belongs to and the groups whose members (and full solid blocks)
@@ -250,6 +230,9 @@ struct QcBlockDefinition
     QString carvesInto;
     QString carveDrop;
     int carveDropCount = 0;
+    // Block it turns into, keeping the state properties both have, when an item that `strips` (an
+    // axe) is used on it (a log losing its bark, decision E-753); empty for none. Server side only.
+    QString strippedInto;
     // Block it turns into at its next block update while an opaque full block lies on it (a dirt path
     // becoming dirt, decision E-406), empty for none. Server side only.
     QString coveredInto;

@@ -1,0 +1,8 @@
+{
+    "name": "magenta_bed_top",
+    "pattern": "speckle",
+    "primary": "#bd44b3",
+    "secondary": "#bd44b3",
+    "variation": 0.06,
+    "seed": 7564
+}

@@ -1,0 +1,9 @@
+{
+    "name": "smooth_stone",
+    "block": "smooth_stone",
+    "kind": "stone",
+    "exclude": [
+        "stairs",
+        "wall"
+    ]
+}

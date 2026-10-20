@@ -19,6 +19,10 @@ constexpr QcAabb unitBox{{0.0, 0.0, 0.0}, {1.0, 1.0, 1.0}};
 // pistons (decision E-334).
 constexpr int turnUp = 4;
 constexpr int turnDown = 5;
+// Turns for the state `axis` (decision E-751): a block authored along y lies along x (a roll that
+// takes up to east) or along z (the tilt of turnUp).
+constexpr int turnAxisX = 6;
+constexpr int turnAxisZ = 7;
 
 int quarterTurns(const QString &value)
 {
@@ -37,12 +41,22 @@ int quarterTurns(const QString &value)
     if (value == u"down"_s) {
         return turnDown;
     }
+    if (value == u"x"_s) {
+        return turnAxisX;
+    }
+    if (value == u"z"_s) {
+        return turnAxisZ;
+    }
     return 0;
 }
 
 QcAabb turned(const QcAabb &box, int turns)
 {
-    if (turns == turnUp) {
+    if (turns == turnAxisX) {
+        // (x, y) -> (y, 1 - x): up (+y) becomes east (+x).
+        return {{box.min.y, 1.0 - box.max.x, box.min.z}, {box.max.y, 1.0 - box.min.x, box.max.z}};
+    }
+    if (turns == turnUp || turns == turnAxisZ) {
         // (y, z) -> (1 - z, y): north (-z) becomes up (+y).
         return {{box.min.x, 1.0 - box.max.z, box.min.y}, {box.max.x, 1.0 - box.min.z, box.max.y}};
     }
@@ -66,7 +80,13 @@ QcAabb flipped(const QcAabb &box)
 
 QcBlockFace turnedFace(QcBlockFace face, int turns)
 {
-    if (turns == turnUp || turns == turnDown) {
+    if (turns == turnAxisX) {
+        // Rolling about the z axis: up, east, down and west follow each other.
+        constexpr std::array<QcBlockFace, 4> roll = {QcBlockFace::Up, QcBlockFace::East, QcBlockFace::Down, QcBlockFace::West};
+        const auto it = std::ranges::find(roll, face);
+        return it == roll.end() ? face : roll[(std::size_t(it - roll.begin()) + 1) % roll.size()];
+    }
+    if (turns == turnUp || turns == turnDown || turns == turnAxisZ) {
         // Tilting about the x axis: north, up, south and down follow each other.
         constexpr std::array<QcBlockFace, 4> tilt = {QcBlockFace::North, QcBlockFace::Up, QcBlockFace::South, QcBlockFace::Down};
         const auto it = std::ranges::find(tilt, face);
@@ -81,6 +101,34 @@ QcBlockFace turnedFace(QcBlockFace face, int turns)
         }
     }
     return face;
+}
+
+// Quarter turns of the texture on the world face `face` of a state turned by `turns`. Horizontal turns
+// take the top and bottom textures with them. A lying block (turnAxisX, turnAxisZ) turns the
+// textures of the faces along its axis whose upward texture direction (y on the sides, z on the top
+// and bottom) crosses the axis, so stripes run along the block. Tilted facings keep their textures.
+quint8 uvTurns(QcBlockFace face, int turns)
+{
+    const bool vertical = face == QcBlockFace::Up || face == QcBlockFace::Down;
+    if (turns >= 1 && turns <= 3) {
+        if (!vertical) {
+            return 0;
+        }
+        return quint8(face == QcBlockFace::Up ? turns : (4 - turns) % 4);
+    }
+    if (turns != turnAxisX && turns != turnAxisZ) {
+        return 0;
+    }
+
+    const QcFaceOffset normal = qcFaceOffset(face);
+    const bool alongX = turns == turnAxisX;
+    if ((alongX && normal.dx != 0) || (!alongX && normal.dz != 0)) {
+        // An end of the block.
+        return 0;
+    }
+    // The texture's upward direction: z on the top and bottom, which crosses an x axis; y on the
+    // sides, which crosses both.
+    return vertical ? (alongX ? 1 : 0) : 1;
 }
 
 double low(const QcAabb &box, int axis)
@@ -225,6 +273,7 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
 
     for (const QcBlockFace face : qcAllBlockFaces) {
         state.faceSource[std::size_t(turnedFace(face, turns))] = face;
+        state.faceUvTurns[std::size_t(face)] = uvTurns(face, turns);
     }
     return state;
 }

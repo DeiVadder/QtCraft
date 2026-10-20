@@ -95,6 +95,9 @@ Fact blocksTurnedBy(const QcHandbookContext &context, const QString &label, QStr
     if (item.carves) {
         facts.append(blocksTurnedBy(context, u"fact.carves"_s, &QcBlockDefinition::carvesInto));
     }
+    if (item.strips) {
+        facts.append(blocksTurnedBy(context, u"fact.strips"_s, &QcBlockDefinition::strippedInto));
+    }
 
     if (item.scoops) {
         Fact scoops{text.label(u"fact.scoops"_s), {}, {}};

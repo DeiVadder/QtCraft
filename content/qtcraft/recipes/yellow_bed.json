@@ -1,0 +1,15 @@
+{
+    "name": "yellow_bed",
+    "type": "shaped",
+    "pattern": [
+        "WWW",
+        "PPP"
+    ],
+    "key": {
+        "W": "yellow_wool",
+        "P": "#planks"
+    },
+    "result": {
+        "item": "yellow_bed"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "jack_o_lantern",
+    "sound": "wood",
+    "hardness": 1.0,
+    "tool": "axe",
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "top": "pumpkin_top",
+        "bottom": "pumpkin_top",
+        "side": "pumpkin_side",
+        "north": "jack_o_lantern_face"
+    },
+    "light": 15
+}

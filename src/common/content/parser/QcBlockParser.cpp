@@ -16,6 +16,7 @@
 #include <QJsonArray>
 
 #include <algorithm>
+#include <array>
 
 using namespace Qt::StringLiterals;
 
@@ -201,9 +202,16 @@ void BlockReader::readPlacementFields()
         m_block.facingRule = QcFacingRule::Toward;
     } else if (facing == u"into"_s) {
         m_block.facingRule = QcFacingRule::Into;
+    } else if (facing == u"against"_s) {
+        m_block.facingRule = QcFacingRule::Against;
     } else if (facing != u"away"_s) {
-        m_reader.fail(u"'facing' must be away, toward or into"_s);
+        m_reader.fail(u"'facing' must be away, toward, into or against"_s);
     }
+
+    static constexpr std::array<QStringView, 5> stairShapes{u"straight", u"inner_left", u"inner_right", u"outer_left", u"outer_right"};
+    const bool stairShape = std::ranges::all_of(stairShapes, [this](QStringView shape) { return hasValues(m_block, u"shape"_s, {shape.toString()}); });
+    m_block.stairs = stairShape && hasValues(m_block, u"half"_s, {u"bottom"_s, u"top"_s})
+                     && hasValues(m_block, u"facing"_s, {u"north"_s, u"east"_s, u"south"_s, u"west"_s});
 
     const QString support = m_reader.string(u"support"_s, isCross(m_block) ? u"below"_s : u"none"_s);
     if (support == u"below"_s) {
@@ -509,6 +517,7 @@ void BlockReader::readFarming()
     m_block.tillsInto = m_reader.name(u"tillsInto"_s, m_namespace);
     m_block.flattensInto = m_reader.name(u"flattensInto"_s, m_namespace);
     m_block.coveredInto = m_reader.name(u"coveredInto"_s, m_namespace);
+    m_block.strippedInto = m_reader.name(u"strippedInto"_s, m_namespace);
     m_reader.nestedObject(u"carving"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_block.carvesInto = nested.name(u"into"_s, m_namespace);
         m_block.carveDrop = nested.name(u"drop"_s, m_namespace);

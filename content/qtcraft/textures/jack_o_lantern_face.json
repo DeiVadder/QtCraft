@@ -1,0 +1,8 @@
+{
+    "name": "jack_o_lantern_face",
+    "pattern": "carved_pumpkin",
+    "primary": "#e08a20",
+    "secondary": "#ffd23a",
+    "variation": 0.1,
+    "seed": 7560
+}

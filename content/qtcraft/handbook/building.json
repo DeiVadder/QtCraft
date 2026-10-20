@@ -5,7 +5,10 @@
     "sections": [
         "placing",
         "support",
-        "parts"
+        "parts",
+        "corners",
+        "vertical",
+        "logs"
     ],
     "related": [
         "oak_stairs",
@@ -13,6 +16,9 @@
         "oak_fence",
         "oak_door",
         "ladder",
-        "torch"
+        "torch",
+        "oak_vertical_slab",
+        "oak_log",
+        "stripped_oak_log"
     ]
 }

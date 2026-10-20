@@ -1,0 +1,24 @@
+{
+    "name": "stripped_spruce_log",
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "flammable": {
+        "ignite": 5,
+        "burn": 5
+    },
+    "fuelSeconds": 15,
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "stripped_spruce_log_top",
+        "bottom": "stripped_spruce_log_top",
+        "side": "stripped_spruce_log"
+    }
+}

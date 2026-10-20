@@ -1,0 +1,9 @@
+{
+    "name": "lime_glazed_terracotta",
+    "input": "lime_terracotta",
+    "result": {
+        "item": "lime_glazed_terracotta"
+    },
+    "seconds": 10,
+    "experience": 0.1
+}

@@ -1,0 +1,8 @@
+{
+    "name": "signal_dust_block",
+    "pattern": "raw_block",
+    "primary": "#c81e14",
+    "secondary": "#7a0e0a",
+    "variation": 0.1,
+    "seed": 7543
+}

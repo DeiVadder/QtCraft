@@ -1,0 +1,9 @@
+{
+    "name": "cut_sandstone",
+    "block": "cut_sandstone",
+    "kind": "stone",
+    "exclude": [
+        "stairs",
+        "wall"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "coarse_dirt",
+    "pattern": "ore",
+    "primary": "#7a5638",
+    "secondary": "#77716c",
+    "variation": 0.14,
+    "seed": 7540
+}

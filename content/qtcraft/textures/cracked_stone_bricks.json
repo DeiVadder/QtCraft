@@ -1,0 +1,8 @@
+{
+    "name": "cracked_stone_bricks",
+    "pattern": "cracked_bricks",
+    "primary": "#868686",
+    "secondary": "#5e5e5e",
+    "variation": 0.09,
+    "seed": 7502
+}

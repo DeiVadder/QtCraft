@@ -31,5 +31,8 @@
     "flammable": {
         "ignite": 20,
         "burn": 30
-    }
+    },
+    "tags": [
+        "beds"
+    ]
 }

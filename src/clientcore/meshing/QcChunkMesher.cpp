@@ -633,12 +633,15 @@ private:
 
         const auto faceIndex = std::size_t(face);
         const QRectF &uv = block.entry.faceUv[faceIndex];
+        const std::size_t uvTurns = block.entry.faceUvTurns[faceIndex];
         const FaceCorners values = cornersOf(open, face);
         std::array<QcBlockVertex, 4> corners{};
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const auto &c = faceCorners[faceIndex][corner];
-            const bool bottomEdge = corner < 2;
-            const bool leftEdge = corner == 0 || corner == 3;
+            // A turned texture gives each corner the texture corner `uvTurns` further round.
+            const std::size_t uvCorner = (corner + uvTurns) % 4;
+            const bool bottomEdge = uvCorner < 2;
+            const bool leftEdge = uvCorner == 0 || uvCorner == 3;
             QcBlockVertex &vertex = corners[corner];
             vertex.x = float(block.world.x + c[0]);
             vertex.y = float(block.cell.y) + (c[1] == 1 ? surface : *base);

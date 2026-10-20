@@ -1,0 +1,15 @@
+{
+    "name": "signal_dust_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "signal_dust"
+    },
+    "result": {
+        "item": "signal_dust_block"
+    }
+}

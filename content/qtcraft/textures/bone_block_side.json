@@ -1,0 +1,8 @@
+{
+    "name": "bone_block_side",
+    "pattern": "log_side",
+    "primary": "#e2dfd0",
+    "secondary": "#c8c3ae",
+    "variation": 0.05,
+    "seed": 7541
+}

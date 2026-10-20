@@ -12,7 +12,7 @@
 
 namespace {
 
-// Only blocks whose state depends on the horizontal neighbour: connections, rails, wall mounts,
+// Only blocks whose state depends on the horizontal neighbour: connections, rails, stairs, wall mounts,
 // flowing liquids and blocks that harden next to another one.
 bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
 {
@@ -21,7 +21,7 @@ bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
     }
 
     const QcBlockDefinition &definition = content.block(id);
-    return !definition.connectsTo.isEmpty() || definition.rail || definition.support == QcBlockSupport::Attached
+    return !definition.connectsTo.isEmpty() || definition.rail || definition.stairs || definition.support == QcBlockSupport::Attached
            || (definition.liquid && definition.flow.flows()) || !definition.hardensWith.isEmpty();
 }
 

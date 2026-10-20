@@ -1,0 +1,47 @@
+{
+    "name": "button",
+    "kinds": [
+        "wood"
+    ],
+    "hardness": 0.25,
+    "fuel": 0.25,
+    "block": {
+        "shape": "button",
+        "render": "cutout",
+        "solid": false,
+        "lightOpacity": 0,
+        "support": "attached",
+        "washable": true,
+        "states": {
+            "attach": [
+                "floor",
+                "ceiling",
+                "north",
+                "east",
+                "south",
+                "west"
+            ],
+            "powered": [
+                false,
+                true
+            ]
+        },
+        "signal": {
+            "type": "button",
+            "pulseTicks": 30
+        }
+    },
+    "recipe": {
+        "pattern": [
+            "#"
+        ],
+        "key": {
+            "#": "@"
+        },
+        "count": 1
+    },
+    "translations": {
+        "en": "%1 button",
+        "de": "%1holzknopf"
+    }
+}
