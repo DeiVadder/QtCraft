@@ -19,8 +19,8 @@ class QcServerSounds;
 class QcServerState;
 
 // Inventories of the players: moving items between the inventory, the crafting grid, armour slots and
-// an open machine or chest or the input slot of the open stonecutter (decision E-785), throwing and dropping items, armour worn and taken off. Crafting itself is
-// QcServerCrafting's.
+// an open machine or chest or the input slot of the open stonecutter (decision E-785), throwing and
+// dropping items, armour worn and taken off. Crafting itself is QcServerCrafting's.
 class QcServerInventory
 {
 public:

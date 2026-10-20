@@ -1,4 +1,5 @@
 #include "clientcore/session/QcClientStonecutter.h"
+#include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/content/registry/QcStonecutting.h"
 #include "common/protocol/QcProtocol.h"
@@ -6,6 +7,8 @@
 #include "QcTestUtil.h"
 #include "server/storage/QcPlayerRecords.h"
 
+#include <QJsonObject>
+#include <QRegularExpression>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -80,6 +83,16 @@ private:
 
     // All stone there is: in the inventory, in the input slot and lying in the world.
     int allStone() const { return countOf(baseItem(u"stone"_s)) + stoneInInput() + droppedCount(baseItem(u"stone"_s)); }
+
+    // A block with a screen (furnace, chest) two blocks west of the player, opened through the protocol.
+    QcBlockPos openBlockScreen(const char *block)
+    {
+        const QcBlockPos pos = m_feet.offset(-2, 0, 0);
+        putAt(pos, id(block));
+        send(QcMsg::UseItem{pos, QcBlockFace::East});
+        ticks(1);
+        return pos;
+    }
 
     // Rejoins as the same player after the connection ended.
     void rejoin()
@@ -190,6 +203,9 @@ private slots:
         QVERIFY(!cutter.isOpen());
         QVERIFY(cutter.input().isEmpty());
         QCOMPARE(sent.value(1), u"close"_s);
+        // A state still on its way after the own close is ignored.
+        QVERIFY(cutter.handle(QcMsg::StonecutterState{{item("qtcraft:stone"), 3, 0}, slab()}));
+        QVERIFY(cutter.input().isEmpty());
     }
 
     void putInSelectAndTake()
@@ -442,6 +458,156 @@ private slots:
         QCOMPARE(countOf(baseItem(u"stone"_s)), 4);
         QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 0);
         QCOMPARE(allStone(), 4);
+    }
+
+    void longCrossPackNamesAreSkipped()
+    {
+        // Pack recipes cutting blocks of another pack one to one into stone: the stone's parts are
+        // cut from them too, under "<part>_from_<namespace>:<path>", unless that name is too long.
+        QcContentRegistry content = *m_content;
+        const QString shortInput = u"otherpack:rock"_s;
+        const QString longInput = u"otherpack:"_s + QString(240, u'a');
+        for (const QString &input : {shortInput, longInput}) {
+            const QString recipeName = input == shortInput ? u"otherpack:rock_to_stone"_s : u"otherpack:long_to_stone"_s;
+            QcItemDefinition definition;
+            definition.name = input;
+            QVERIFY(content.registerItem(definition).has_value());
+            QcSmeltingRecipe recipe;
+            recipe.name = recipeName;
+            recipe.category = QString::fromLatin1(QcSmeltingRecipe::stonecuttingCategory);
+            recipe.inputItem = input;
+            recipe.resultItem = u"qtcraft:stone"_s;
+            content.registerStonecuttingRecipe(recipe);
+        }
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Stonecutting recipe .*otherpack:a+.* skipped"_s));
+        QcStonecutting::generate(content);
+
+        const bool shortCut = content.stonecuttingIndex(u"qtcraft:stone_slab_from_otherpack:rock"_s).has_value();
+        QVERIFY(shortCut);
+        const QList<qsizetype> longCuts = QcStonecutting::recipesFor(content, longInput);
+        QCOMPARE(longCuts.size(), 1);
+        const QList<QcSmeltingRecipe> &recipes = content.stonecuttingRecipes();
+        const bool allFit = std::ranges::all_of(recipes, [](const QcSmeltingRecipe &recipe) {
+            return recipe.name.size() <= QcStonecutting::maxRecipeName;
+        });
+        QVERIFY(allFit);
+
+        // A pack's own recipe with so long a name is refused when it is read.
+        const QJsonObject json{{u"name"_s, QString(QcStonecutting::maxRecipeName, u'b')}, {u"input"_s, u"stone"_s},
+                               {u"result"_s, QJsonObject{{u"item"_s, u"stone_slab"_s}, {u"count"_s, 2}}}};
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Stonecutting recipe .*b+.* skipped"_s));
+        const bool parsed = QcContentParser::parseStonecuttingRecipe(json, u"qtcraft"_s).has_value();
+        QVERIFY(!parsed);
+        QJsonObject fitting = json;
+        fitting.insert(u"name"_s, u"short_cut"_s);
+        const bool fittingParsed = QcContentParser::parseStonecuttingRecipe(fitting, u"qtcraft"_s).has_value();
+        QVERIFY(fittingParsed);
+    }
+
+    void aBlockScreenClosesTheStonecutter()
+    {
+        join();
+        hold(u"stone"_s, 5);
+        openStonecutter();
+        putStoneIn(3);
+        select(slab());
+
+        // The furnace's screen takes over: the stonecutter closes and gives its input back, and the
+        // slots 45 to 47 are the furnace's.
+        const QcBlockPos furnace = openBlockScreen("qtcraft:furnace");
+        const bool cutterOpen = player().screen.stonecutter.has_value();
+        QVERIFY(!cutterOpen);
+        QVERIFY(m_client->stonecutterClosed);
+        QCOMPARE(m_client->openMachine, std::optional(furnace));
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 5);
+        send(QcMsg::MoveInventoryItem{slotOf(baseItem(u"stone"_s)), inputSlot, 2});
+        const QcItemStack smelting = m_server->blockEntities().machine(furnace)->stacks[0];
+        QCOMPARE(smelting.count, 2);
+        send(QcMsg::QuickMoveItem{outputSlot});
+        QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 0);
+
+        // And back: the stonecutter closes the furnace, whose slots stay as they are.
+        openStonecutter();
+        QVERIFY(m_client->machineClosed);
+        QVERIFY(!m_client->openMachine.has_value());
+        putStoneIn(1);
+        QCOMPARE(stoneInInput(), 1);
+        const QcItemStack stillSmelting = m_server->blockEntities().machine(furnace)->stacks[0];
+        QCOMPARE(stillSmelting.count, 2);
+    }
+
+    void aChestClosesTheStonecutterAndBack()
+    {
+        join();
+        hold(u"stone"_s, 5);
+        const QcBlockPos chest = openBlockScreen("qtcraft:chest");
+        send(QcMsg::MoveInventoryItem{slotOf(baseItem(u"stone"_s)), inputSlot, 1});
+        const QcItemStack stored = m_server->blockEntities().container(chest)->stacks[0];
+        QCOMPARE(stored.count, 1);
+
+        // The stonecutter closes the chest; 45 is its input now.
+        openStonecutter();
+        QVERIFY(m_client->machineClosed);
+        const bool chestOpen = player().screen.open.has_value();
+        QVERIFY(!chestOpen);
+        putStoneIn(3);
+        QCOMPARE(stoneInInput(), 3);
+        const QcItemStack stillStored = m_server->blockEntities().container(chest)->stacks[0];
+        QCOMPARE(stillStored.count, 1);
+
+        // The chest again: the input held comes back.
+        openBlockScreen("qtcraft:chest");
+        QVERIFY(m_client->stonecutterClosed);
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 4);
+        QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
+    }
+
+    void reopeningKeepsTheInput()
+    {
+        join();
+        hold(u"stone"_s, 5);
+        openStonecutter();
+        putStoneIn(3);
+        select(slab());
+        openStonecutter();
+        QCOMPARE(stoneInInput(), 3);
+        QCOMPARE(m_client->stonecutterState.recipe, slab());
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 2);
+    }
+
+    void creativeCloseWithAFullInventoryDropsNothing()
+    {
+        join();
+        chat(u"/gamemode creative"_s);
+        ticks(1);
+        hold(u"stone"_s, 2);
+        openStonecutter();
+        putStoneIn(0);
+        fillInventory();
+        // Catalogue items without room are gone rather than thrown into the world (decision E-283).
+        send(QcMsg::CloseStonecutter{});
+        const bool cutterOpen = player().screen.stonecutter.has_value();
+        QVERIFY(!cutterOpen);
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 0);
+        QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
+    }
+
+    void switchingToCreativeReturnsTheInput()
+    {
+        join();
+        hold(u"stone"_s, 5);
+        openStonecutter();
+        putStoneIn(3);
+        chat(u"/gamemode creative"_s);
+        ticks(1);
+        // The input went into the survival inventory, which is put aside.
+        const bool emptyInput = !player().screen.stonecutter || player().screen.stonecutter->input.isEmpty();
+        QVERIFY(emptyInput);
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 0);
+        chat(u"/gamemode survival"_s);
+        ticks(1);
+        QCOMPARE(countOf(baseItem(u"stone"_s)), 5);
+        QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
     }
 };
 

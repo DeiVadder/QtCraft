@@ -3,6 +3,7 @@
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcMessages.h"
 
+class QcBlockScreens;
 class QcServerInventory;
 class QcServerSounds;
 struct QcServerClient;
@@ -17,15 +18,18 @@ class QcServerState;
 class QcServerStonecutter
 {
 public:
-    QcServerStonecutter(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
+    QcServerStonecutter(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcBlockScreens &screens);
+    // The closer registered with QcBlockScreens refers to this object.
+    QcServerStonecutter(const QcServerStonecutter &) = delete;
+    QcServerStonecutter &operator=(const QcServerStonecutter &) = delete;
 
     // Opens the screen of the stonecutter at `pos` for the player; false when it is no stonecutter.
-    // The input of a screen open elsewhere goes back first.
+    // The input of a screen open elsewhere goes back first; an open machine, chest, cart or trade closes.
     bool open(QcServerClient &client, QcBlockPos pos);
     void select(QcServerClient &client, const QcMsg::SelectStonecutterRecipe &request);
     // A move out of the output slot of the open stonecutter: takes the output into the inventory
-    // slot `move.to` (whole, or nothing). False when the move is no such move (another slot, or a
-    // machine or chest open), which is then the inventory's.
+    // slot `move.to` (whole, or nothing). False when the move is no such move (another slot, or no
+    // stonecutter open), which is then the inventory's.
     bool takeOutput(QcServerClient &client, QcMsg::MoveInventoryItem move);
     // A shift-click on the output slot: takes the output into the inventory as long as the input
     // lasts and each whole output finds room. False when `slot` is not that slot.
@@ -39,7 +43,8 @@ public:
 private:
     // Whether the player's stonecutter still stands within reach and the player lives and acts.
     bool canStayOpen(const QcServerClient &client) const;
-    // Whether `slot` is the open stonecutter's output slot (no machine or chest open).
+    // Whether `slot` is the open stonecutter's output slot (at most one screen is open, so no
+    // machine or chest is).
     static bool isOutputSlot(const QcServerClient &client, int slot);
     // Takes the output once into the inventory as a whole, on a copy; false when there is no output
     // or no room for all of it.
@@ -50,4 +55,5 @@ private:
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcServerInventory &m_inventory;
+    QcBlockScreens &m_screens;
 };

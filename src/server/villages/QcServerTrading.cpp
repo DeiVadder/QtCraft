@@ -89,7 +89,9 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
     }
 
     close(client, false);
+    // One screen at a time: an open machine, chest, cart or stonecutter closes.
     m_screens.close(client, true);
+    m_screens.closeStonecutter(client);
     villager->villager->trader = client.id;
     villager->villager->traderAt = client.motion.position;
     client.screen.trading = id;

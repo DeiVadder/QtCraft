@@ -12,8 +12,12 @@ class QcContentRegistry;
 // the base block of every material of its `stonecutter` kinds into that many parts (stone into two
 // stone slabs), and a block cut one to one into the base block of a material is cut into that
 // material's parts too (stone into stone brick stairs). A recipe a pack defines under the same name
-// wins over the generated one.
+// wins over the generated one; a generated name longer than maxRecipeName is skipped with a warning.
 namespace QcStonecutting {
+
+// The longest stonecutting recipe name the protocol carries (StonecutterState,
+// SelectStonecutterRecipe); generate() skips a recipe whose name would be longer.
+constexpr qsizetype maxRecipeName = 256;
 
 void generate(QcContentRegistry &registry);
 

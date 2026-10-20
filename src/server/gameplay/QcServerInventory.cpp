@@ -79,7 +79,8 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
         open.combined.stacks.append(*open.container->stacks);
         open.blockSlots = int(open.container->stacks->size());
     } else if (client.screen.stonecutter) {
-        // Only the input slot: the output is taken through QcServerStonecutter.
+        // Never open together with a machine or chest (QcServerClient::Screen). Only the input
+        // slot: the output is taken through QcServerStonecutter.
         open.stonecutter = &*client.screen.stonecutter;
         open.combined.stacks.append(open.stonecutter->input);
         open.blockSlots = 1;

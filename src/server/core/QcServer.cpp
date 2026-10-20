@@ -40,7 +40,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
-    , m_stonecutter(m_state, m_sounds, m_inventory)
+    , m_stonecutter(m_state, m_sounds, m_inventory, m_screens)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)

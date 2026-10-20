@@ -134,8 +134,9 @@ struct QcServerClient : QcEntity
         // the screen as last sent.
         quint32 trading = 0;
         std::optional<QcMsg::TradeState> sentTrade;
-        // The stonecutter whose screen is open; its input slot counts only while no machine or
-        // chest is open (`open` and `cart` unset).
+        // The stonecutter whose screen is open. It, a machine, chest or cart (`open`, `cart`) and a
+        // trade (`trading`) are never open at once: opening one closes the others
+        // (QcServerStonecutter::open, QcBlockScreens::open/openCart, QcServerTrading::open).
         std::optional<Stonecutter> stonecutter;
         // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
         std::optional<QcBlockPos> sign;

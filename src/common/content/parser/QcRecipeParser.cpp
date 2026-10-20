@@ -2,6 +2,8 @@
 
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcStonecutting.h"
+#include "common/core/QcLogging.h"
 
 #include <QJsonArray>
 
@@ -214,6 +216,12 @@ namespace QcRecipeParser {
     QJsonObject smelting = json;
     smelting.remove(u"category"_s);
     QcResult<QcSmeltingRecipe> recipe = parseSmeltingRecipe(smelting, packNamespace);
+    // A longer name would not fit into the protocol's stonecutter messages.
+    if (recipe && recipe->name.size() > QcStonecutting::maxRecipeName) {
+        qCWarning(lcRegistry) << "Stonecutting recipe" << recipe->name << "skipped: its name is longer than" << QcStonecutting::maxRecipeName
+                              << "characters";
+        return qcError(u"the name is longer than %1 characters"_s.arg(QcStonecutting::maxRecipeName));
+    }
     if (recipe) {
         recipe->category = QString::fromLatin1(QcSmeltingRecipe::stonecuttingCategory);
     }

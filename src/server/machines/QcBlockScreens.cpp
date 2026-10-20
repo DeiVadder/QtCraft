@@ -62,7 +62,7 @@ void QcBlockScreens::openCart(QcServerClient &client, const QcMinecart &cart)
     if (cart.stacks.isEmpty()) {
         return;
     }
-    endTrade(client);
+    closeOtherScreens(client);
     client.screen.open.reset();
     client.screen.cart = cart.id;
     client.screen.sent.reset();
@@ -112,7 +112,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
             return;
         }
 
-        endTrade(client);
+        closeOtherScreens(client);
         client.screen.open = pos;
         client.screen.sent.reset();
         client.connection->send(QcMsg::OpenMachine{pos, {}});
@@ -131,11 +131,30 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
-    endTrade(client);
+    closeOtherScreens(client);
     client.screen.open = pos;
     client.screen.sent.reset();
     client.connection->send(QcMsg::OpenMachine{pos, definition->category});
     send(client, true);
+}
+
+void QcBlockScreens::setStonecutterCloser(std::function<void(QcServerClient &)> closer)
+{
+    m_closeStonecutter = std::move(closer);
+}
+
+void QcBlockScreens::closeOtherScreens(QcServerClient &client)
+{
+    closeStonecutter(client);
+    endTrade(client);
+}
+
+void QcBlockScreens::closeStonecutter(QcServerClient &client)
+{
+    // The stonecutter's input goes back to the player (QcServerStonecutter::close).
+    if (client.screen.stonecutter && m_closeStonecutter) {
+        m_closeStonecutter(client);
+    }
 }
 
 void QcBlockScreens::endTrade(QcServerClient &client)

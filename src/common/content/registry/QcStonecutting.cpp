@@ -1,6 +1,7 @@
 #include "common/content/registry/QcStonecutting.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcLogging.h"
 
 #include <QHash>
 
@@ -33,6 +34,12 @@ void addRecipe(QcContentRegistry &registry, const QString &input, const Cut &cut
 {
     const QString name = recipeName(input, cut.part);
     if (registry.stonecuttingIndex(name) || !registry.itemId(input) || !registry.itemId(cut.part)) {
+        return;
+    }
+    // Long names of two packs together would not fit into the protocol's messages.
+    if (name.size() > QcStonecutting::maxRecipeName) {
+        qCWarning(lcRegistry) << "Stonecutting recipe" << name << "skipped: its name is longer than" << QcStonecutting::maxRecipeName
+                              << "characters";
         return;
     }
 

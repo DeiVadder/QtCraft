@@ -276,7 +276,8 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
         player.motion.onGround = false;
     }
     if (record.lost > 0) {
-        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << record.lost << "items from the crafting grid were not saved";
+        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << record.lost
+                            << "items from the crafting grid and the stonecutter input were not saved";
     }
     return {QcPlayerStorage::relativePath(client.name), storage.playerBytes(player)};
 }

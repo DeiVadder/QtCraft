@@ -3,6 +3,8 @@
 #include "common/core/QcBlockPos.h"
 #include "server/blockentities/QcBlockEntities.h"
 
+#include <functional>
+
 class QcServerBlocks;
 struct QcMinecart;
 struct QcServerClient;
@@ -44,6 +46,16 @@ public:
     void send(QcServerClient &client, bool force = false);
     // Sends the state to every player looking into the machine or chest at `pos`.
     void sendToViewers(QcBlockPos pos);
+    // Closes the player's open stonecutter (with notice; its input goes back), if any.
+    void closeStonecutter(QcServerClient &client);
+    // Ends the player's trading screen (with notice), if any; QcServerTrading::update releases the
+    // villager.
+    void endTrade(QcServerClient &client);
+
+    // How an open stonecutter is closed (QcServerStonecutter::close with notice, which gives its
+    // input back) when a block's, cart's or villager's screen opens; set by QcServerStonecutter.
+    void setStonecutterCloser(std::function<void(QcServerClient &)> closer);
+
     // Once per tick: sends what changed, closes screens whose block is gone, whose chunk unloaded or
     // whose player died or walked away; containers that count their viewers take the new count.
     void update();
@@ -55,8 +67,9 @@ private:
     void sendContainer(QcServerClient &client, const OpenContainer &container, bool force);
     // Whether the player can still reach what the screen shows.
     bool canReach(const QcServerClient &client) const;
-    // A block's or cart's screen opening closes the player's trading screen (one screen at a time).
-    void endTrade(QcServerClient &client);
+    // A block's or cart's screen opening closes the player's trading screen and stonecutter (one
+    // screen at a time).
+    void closeOtherScreens(QcServerClient &client);
     // Sets the viewer counts of the containers that count them (QcSignalKind::Viewers).
     void updateViewers();
 
@@ -64,4 +77,5 @@ private:
     QcServerBlocks &m_blocks;
     // The containers counting their viewers that had any at the latest update.
     QHash<QcBlockPos, int> m_viewers;
+    std::function<void(QcServerClient &)> m_closeStonecutter;
 };

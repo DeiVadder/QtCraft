@@ -6,13 +6,17 @@
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/machines/QcBlockScreens.h"
 
 
-QcServerStonecutter::QcServerStonecutter(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
+QcServerStonecutter::QcServerStonecutter(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcBlockScreens &screens)
     : m_state(state)
     , m_sounds(sounds)
     , m_inventory(inventory)
+    , m_screens(screens)
 {
+    // One screen at a time: a block's, cart's or villager's screen opening closes the stonecutter.
+    m_screens.setStonecutterCloser([this](QcServerClient &client) { close(client, true); });
 }
 
 bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
@@ -22,7 +26,10 @@ bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
         return false;
     }
 
-    // The same stonecutter again keeps its slots; another one starts empty.
+    // One screen at a time: an open machine, chest, cart or trade closes (decision E-785). The
+    // same stonecutter again keeps its slots; another one starts empty.
+    m_screens.close(client, true);
+    m_screens.endTrade(client);
     if (client.screen.stonecutter && client.screen.stonecutter->pos != pos) {
         m_inventory.returnStonecutterInput(client);
     }
@@ -88,8 +95,7 @@ void QcServerStonecutter::select(QcServerClient &client, const QcMsg::SelectSton
 
 bool QcServerStonecutter::isOutputSlot(const QcServerClient &client, int slot)
 {
-    return slot == QcMsg::MoveInventoryItem::machineOutputSlot && client.screen.stonecutter && !client.screen.open
-           && client.screen.cart == 0;
+    return slot == QcMsg::MoveInventoryItem::machineOutputSlot && client.screen.stonecutter;
 }
 
 bool QcServerStonecutter::takeOutput(QcServerClient &client, QcMsg::MoveInventoryItem move)

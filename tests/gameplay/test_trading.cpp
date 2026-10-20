@@ -458,6 +458,31 @@ private slots:
         QCOMPARE(villager(farmer)->villager->trader, 0u);
     }
 
+    void aStonecutterAndATradeCloseEachOther()
+    {
+        const quint32 farmer = startWithWheatFarmer(meetPhase);
+        QVERIFY(openWithWheat(farmer, 0) >= 0);
+        const QcBlockPos cutter = m_feet.offset(-1, 0, 0);
+        m_server->world().setBlock(cutter, id("qtcraft:stonecutter"));
+        send(QcMsg::UseItem{cutter, QcBlockFace::East, {1.0, 0.5, 0.5}});
+        QVERIFY(m_client->stonecutter.has_value());
+        QVERIFY(m_client->tradeClosed);
+        ticks(1);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
+
+        // The trade again: the stonecutter closes and its input comes back.
+        chat(u"/give stone 3"_s);
+        const QcItemId stone = item("qtcraft:stone");
+        send(QcMsg::MoveInventoryItem{slotOf(stone), QcMsg::MoveInventoryItem::machineInputSlot, 0});
+        const QcItemStack input = m_client->stonecutterState.input;
+        QCOMPARE(input.count, 3);
+        holdNear(farmer);
+        send(QcMsg::UseEntity{farmer});
+        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->trade.has_value());
+        QCOMPARE(countOf("qtcraft:stone"), 3);
+    }
+
     void theScreenClosesWhenTheVillagerDiesOrIsUnloaded()
     {
         const quint32 farmer = startWithWheatFarmer(meetPhase);

@@ -15,7 +15,9 @@ bool QcClientStonecutter::handle(const QcMessage &message)
     }
 
     if (const auto *state = std::get_if<QcMsg::StonecutterState>(&message)) {
-        if (state->input != m_input || state->recipe != m_recipe) {
+        // A state still on its way after the player's own close belongs to no open screen (the
+        // server sends OpenStonecutter before the first state).
+        if (m_open && (state->input != m_input || state->recipe != m_recipe)) {
             m_input = state->input;
             m_recipe = state->recipe;
             emit changed();

@@ -2,6 +2,7 @@
 
 #include "common/protocol/QcProtocolCodec.h"
 
+#include "common/content/registry/QcStonecutting.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <algorithm>
@@ -10,13 +11,6 @@
 using namespace Qt::StringLiterals;
 
 namespace QcProtocolCodec {
-
-namespace {
-
-// The longest stonecutting recipe name a message carries.
-constexpr qsizetype maxRecipeName = 256;
-
-} // namespace
 
 void encode(QDataStream &stream, const QcMsg::OpenMachine &m)
 {
@@ -105,7 +99,7 @@ void encode(QDataStream &, QcMsg::CloseStonecutter) {}
     QcMsg::StonecutterState m;
     m.input = readStack(stream);
     stream >> m.recipe;
-    if (m.recipe.size() > maxRecipeName) {
+    if (m.recipe.size() > QcStonecutting::maxRecipeName) {
         return qcError(u"Invalid stonecutting recipe"_s);
     }
     return m;
@@ -115,7 +109,7 @@ void encode(QDataStream &, QcMsg::CloseStonecutter) {}
 {
     QcMsg::SelectStonecutterRecipe m;
     stream >> m.recipe;
-    if (m.recipe.size() > maxRecipeName) {
+    if (m.recipe.size() > QcStonecutting::maxRecipeName) {
         return qcError(u"Invalid stonecutting recipe"_s);
     }
     return m;
