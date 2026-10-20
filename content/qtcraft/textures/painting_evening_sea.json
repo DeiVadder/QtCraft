@@ -1,0 +1,12 @@
+{
+    "name": "painting_evening_sea",
+    "pattern": "painting_sunset",
+    "primary": "#f09a40",
+    "secondary": "#6a3a86",
+    "variation": 0.1,
+    "seed": 8191,
+    "tiles": [
+        4,
+        2
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "name": "painting_starfield",
+    "pattern": "painting_night",
+    "primary": "#141e44",
+    "secondary": "#f4eecc",
+    "variation": 0.1,
+    "seed": 8198,
+    "tiles": [
+        4,
+        3
+    ]
+}

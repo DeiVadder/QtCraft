@@ -26,11 +26,13 @@ enum class QcEntityKind : quint8 {
     Projectile,
     // A lit explosive counting down to its explosion (decision E-601), drawn as its block.
     PrimedExplosive,
+    // An item frame or a painting on a block face (decision E-790).
+    Hanging,
 };
 
 namespace QcEntityKinds {
 
-inline constexpr int count = 10;
+inline constexpr int count = 11;
 
 // The kind with this protocol value; nothing for values no kind has.
 [[nodiscard]] std::optional<QcEntityKind> fromValue(quint8 value);

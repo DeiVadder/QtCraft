@@ -5,6 +5,7 @@
 #include "common/protocol/QcConnection.h"
 #include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
+#include "server/hanging/QcServerHanging.h"
 
 #include <QTimer>
 
@@ -111,6 +112,7 @@ void QcServer::addSimulationSystems()
         m_health.tick();
         m_interaction.swingWhileMining();
         m_stands.tick();
+        QcServerHanging(m_state, m_sounds, m_inventory).tick();
         m_creatures.tick();
         m_environment.applyContactDamage();
         m_burning.tick();

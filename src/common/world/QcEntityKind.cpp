@@ -33,6 +33,8 @@ QLatin1StringView name(QcEntityKind kind)
         return QLatin1StringView("projectile");
     case QcEntityKind::PrimedExplosive:
         return QLatin1StringView("primed explosive");
+    case QcEntityKind::Hanging:
+        return QLatin1StringView("hanging");
     }
     return QLatin1StringView("unknown");
 }

@@ -424,9 +424,15 @@ int QcCircuitComponents::backInput(QcBlockPos pos, QcBlockFace back) const
     }
 
     // Through one conductor, as in the reference: only when it does not already get full power.
+    // There a frame counts that hangs on the far side of that conductor, facing away (decision
+    // E-792; as in the reference, never a frame without a block between); the higher of
+    // the frame and the block beyond wins, and an empty frame reads 0.
     if (power < QcSignalDefinition::maxPower && m_context.power.at(behind).conductor) {
-        if (const std::optional<int> reading = m_context.readings.at(qcNeighbour(behind, back))) {
-            return *reading;
+        const QcBlockPos beyond = qcNeighbour(behind, back);
+        const std::optional<int> block = m_context.readings.at(beyond);
+        const std::optional<int> frame = m_context.readings.frameAt(beyond, back);
+        if (block || frame) {
+            return std::max(block.value_or(0), frame.value_or(0));
         }
     }
     return power;

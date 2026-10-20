@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/core/QcBlockFace.h"
 #include "common/gameplay/QcItemStack.h"
 #include "common/world/QcBlockAccess.h"
 
@@ -8,6 +9,7 @@
 #include <optional>
 
 class QcBlockEntities;
+class QcHangingManager;
 class QcMinecartManager;
 
 // What a Signal Comparator reads from a block (decision E-343): the fullness of a container or
@@ -16,7 +18,8 @@ class QcMinecartManager;
 class QcComparatorReadings
 {
 public:
-    QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities, const QcMinecartManager &carts);
+    QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities, const QcMinecartManager &carts,
+                         const QcHangingManager &hangings);
 
     // The reference formula: 0 when every slot is empty, else 1 + 14 times the mean fullness of the
     // slots (each stack's count over its item's maxStack), rounded down.
@@ -24,6 +27,9 @@ public:
 
     // The reading of the block at `pos`, or nothing when the block is not readable.
     [[nodiscard]] std::optional<int> at(QcBlockPos pos) const;
+    // The reading of the item frame in `cell` on `face` (decision E-792): the turn of its item, 1
+    // to 8, or 0 while it is empty; nothing without such a frame.
+    [[nodiscard]] std::optional<int> frameAt(QcBlockPos cell, QcBlockFace face) const;
 
 private:
     int contentsAt(QcBlockPos pos) const;
@@ -31,4 +37,5 @@ private:
     const QcBlockAccess &m_world;
     const QcBlockEntities &m_entities;
     const QcMinecartManager &m_carts;
+    const QcHangingManager &m_hangings;
 };

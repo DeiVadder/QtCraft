@@ -91,6 +91,7 @@ target_sources(qc_server PRIVATE
     entities/QcEntityComponent.h
     entities/QcExperienceOrb.h
     entities/QcFallingBlock.h
+    entities/QcHangingEntity.h
     entities/QcHurtWindow.h entities/QcHurtWindow.cpp
     entities/QcItemEntity.h
     entities/QcMinecart.h
@@ -136,6 +137,11 @@ target_sources(qc_server PRIVATE
     guardians/QcGuardianBrain.h guardians/QcGuardianBrain.cpp
     guardians/QcGuardians.h guardians/QcGuardians.cpp
     guardians/QcGuardPost.h
+)
+target_sources(qc_server PRIVATE
+    hanging/QcHangingManager.h hanging/QcHangingManager.cpp
+    hanging/QcHangingRules.h hanging/QcHangingRules.cpp
+    hanging/QcServerHanging.h hanging/QcServerHanging.cpp
 )
 target_sources(qc_server PRIVATE
     items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
@@ -261,6 +267,7 @@ target_sources(qc_server PRIVATE
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
+    storage/QcHangingCodec.h storage/QcHangingCodec.cpp
     storage/QcLoadWarnings.h
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp

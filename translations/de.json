@@ -265,6 +265,7 @@
     "Frame interval, 0–%1 ms, limit off scale": "Frame-Abstand, 0–%1 ms, Grenze außerhalb",
     "Server tick, 0–%1 ms, limit off scale": "Server-Tick, 0–%1 ms, Grenze außerhalb",
     "Too many armour stands in the world (at most %1)": "Zu viele Rüstungsständer in der Welt (höchstens %1)",
+    "Too many item frames and paintings in the world (at most %1)": "Zu viele Rahmen und Gemälde in der Welt (höchstens %1)",
     "Too many minecarts in the world (at most %1)": "Zu viele Loren in der Welt (höchstens %1)",
     "Usage: /armorstand <nearest|looking|id> <pose <part> <x> <y> <z>|rotation <degrees>|arms <true|false>|plate <true|false>|small <true|false>|showname <true|false>|name [text]|equip <item|set>|cape <cape|none>|clear|reset|info>": "Aufruf: /armorstand <nearest|looking|Id> <pose <Teil> <x> <y> <z>|rotation <Grad>|arms <true|false>|plate <true|false>|small <true|false>|showname <true|false>|name [Text]|equip <Item|Satz>|cape <Umhang|none>|clear|reset|info>",
     "No armour stand found: %1": "Kein Rüstungsständer gefunden: %1",

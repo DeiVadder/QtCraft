@@ -1,0 +1,12 @@
+{
+    "name": "painting_pond",
+    "pattern": "painting_rings",
+    "primary": "#2e6a5a",
+    "secondary": "#c8dcc0",
+    "variation": 0.1,
+    "seed": 8212,
+    "tiles": [
+        4,
+        4
+    ]
+}

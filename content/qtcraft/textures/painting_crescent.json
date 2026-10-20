@@ -1,0 +1,8 @@
+{
+    "name": "painting_crescent",
+    "pattern": "painting_night",
+    "primary": "#1c2c5a",
+    "secondary": "#f0e6b0",
+    "variation": 0.1,
+    "seed": 8121
+}

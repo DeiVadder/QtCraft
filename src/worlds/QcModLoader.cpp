@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcHangingParser.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "server/core/QcServerLogging.h"
@@ -224,6 +225,9 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
         }
         if (!definition.placesBlock.isEmpty() && !content.blockId(definition.placesBlock)) {
             warnings.append(u"item %1: places unknown block '%2'"_s.arg(definition.name, definition.placesBlock));
+        }
+        if (definition.hangs) {
+            warnings.append(QcHangingParser::checkTextures(definition.name, *definition.hangs, content.assets()));
         }
     }
     return warnings;

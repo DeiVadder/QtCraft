@@ -33,6 +33,53 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     stream << quint8(item.dial);
 }
 
+// What the item hangs on a block face (decision E-790): the client targets and draws frames and
+// paintings by it.
+void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> &hangs)
+{
+    stream << hangs.has_value();
+    if (!hangs) {
+        return;
+    }
+    stream << quint8(hangs->type) << hangs->back << quint32(hangs->motifs.size());
+    for (const QcPaintingMotif &motif : hangs->motifs) {
+        stream << motif.name << motif.texture << qint32(motif.width) << qint32(motif.height);
+    }
+}
+
+// An engaged optional holding the hanging definition or std::nullopt; std::nullopt for corrupt data.
+[[nodiscard]] std::optional<std::optional<QcHangingDefinition>> readHanging(QDataStream &stream)
+{
+    bool hangs = false;
+    stream >> hangs;
+    if (!hangs) {
+        return std::optional<QcHangingDefinition>();
+    }
+
+    QcHangingDefinition read;
+    quint8 type = 0;
+    stream >> type >> read.back;
+    const std::optional<quint32> count = QcStreamLimits::readCount(stream, QcHangingDefinition::maxMotifs);
+    if (type >= qcHangingTypeCount || !count) {
+        return std::nullopt;
+    }
+    read.type = QcHangingType(type);
+    for (quint32 i = 0; i < *count; ++i) {
+        QcPaintingMotif motif;
+        qint32 width = 0;
+        qint32 height = 0;
+        stream >> motif.name >> motif.texture >> width >> height;
+        if (width < 1 || height < 1 || width > QcPaintingMotif::maxSide || height > QcPaintingMotif::maxSide) {
+            return std::nullopt;
+        }
+        motif.width = width;
+        motif.height = height;
+        motif.nameTiles();
+        read.motifs.append(motif);
+    }
+    return std::optional<QcHangingDefinition>(read);
+}
+
 // The launcher of an item: an engaged optional holding the launcher, or holding std::nullopt for an
 // item without one; std::nullopt when the values are out of the parser's limits.
 [[nodiscard]] std::optional<std::optional<QcLauncherDefinition>> readLauncher(QDataStream &stream)
@@ -122,6 +169,7 @@ void write(QDataStream &stream, const QcItemDefinition &item)
     stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand << item.cartBlock << item.ignites;
     QcArmourSerializer::write(stream, item.armour);
     writeUses(stream, item);
+    writeHanging(stream, item.hangs);
 }
 
 std::optional<QcItemDefinition> read(QDataStream &stream)
@@ -157,6 +205,13 @@ std::optional<QcItemDefinition> read(QDataStream &stream)
     item.food = food;
 
     std::optional<QcItemDefinition> used = withUses(stream, std::move(item));
+    std::optional<std::optional<QcHangingDefinition>> hangs = readHanging(stream);
+    if (!hangs) {
+        return std::nullopt;
+    }
+    if (used) {
+        used->hangs = std::move(*hangs);
+    }
     if (!used || stream.status() != QDataStream::Ok || food < 0 || food > QcItemDefinition::maxFood
         || !QcBlockSerializer::plausibleFuel(used->fuelSeconds)) {
         return std::nullopt;

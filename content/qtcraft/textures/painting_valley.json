@@ -1,0 +1,12 @@
+{
+    "name": "painting_valley",
+    "pattern": "painting_landscape",
+    "primary": "#4e8a34",
+    "secondary": "#9ccbe8",
+    "variation": 0.1,
+    "seed": 8163,
+    "tiles": [
+        2,
+        2
+    ]
+}

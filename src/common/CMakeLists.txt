@@ -21,6 +21,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcExperienceDrop.h
     content/definitions/QcFarmingDefinitions.h
     content/definitions/QcFireDefinition.h
+    content/definitions/QcHangingDefinition.h
     content/definitions/QcHitEffect.h
     content/definitions/QcItemDefinition.h content/definitions/QcItemDefinition.cpp
     content/definitions/QcLiquidDefinition.h
@@ -68,6 +69,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcCookingParser.h content/parser/QcCookingParser.cpp
     content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
+    content/parser/QcHangingParser.h content/parser/QcHangingParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
     content/parser/QcLiquidParser.h content/parser/QcLiquidParser.cpp
@@ -145,6 +147,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp
     gameplay/QcExperience.h gameplay/QcExperience.cpp
     gameplay/QcGameMode.h gameplay/QcGameMode.cpp
+    gameplay/QcHanging.h gameplay/QcHanging.cpp
     gameplay/QcInventory.h gameplay/QcInventory.cpp
     gameplay/QcItemStack.h
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp

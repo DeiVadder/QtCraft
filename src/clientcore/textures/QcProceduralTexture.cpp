@@ -4,6 +4,8 @@
 #include "clientcore/textures/QcTextureEmblem.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
+#include <QJsonArray>
+
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -54,6 +56,16 @@ namespace QcProceduralTexture {
     spec.secondary = *secondary;
     spec.variation = std::clamp(definition.value(u"variation"_s).toDouble(0.1), 0.0, 1.0);
     spec.seed = quint32(definition.value(u"seed"_s).toInteger(0));
+    // Checked by the content parser (QcContentParser::textureTiles); a texture pack's spec is clamped.
+    const QJsonArray tiles = definition.value(u"tiles"_s).toArray();
+    if (tiles.size() == 2) {
+        spec.tilesWide = std::clamp(tiles[0].toInt(1), 1, 4);
+        spec.tilesHigh = std::clamp(tiles[1].toInt(1), 1, 4);
+    }
+    const QJsonArray tile = definition.value(u"tile"_s).toArray();
+    if (tile.size() == 2) {
+        spec.tile = std::pair{std::clamp(tile[0].toInt(0), 0, spec.tilesWide - 1), std::clamp(tile[1].toInt(0), 0, spec.tilesHigh - 1)};
+    }
     if (spec.pattern == QcTextureSpec::Pattern::Emblem || spec.pattern == QcTextureSpec::Pattern::Icon) {
         return QcTextureEmblem::read(definition, std::move(spec));
     }

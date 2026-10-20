@@ -3557,3 +3557,48 @@ Die unabhängige Prüfung von 37.1 (Wegfindung E-400, Gedränge E-401) fand zehn
 - **Protokoll 55** (62.2a hatte 54): drei neue Nachrichten, Blockfeld `opensStonecutter`, Steinschneide-Rezepte in der Inhaltssynchronisierung.
 - **Verworfen:** Eingabe- und Ausgabeplatz wie im Vorbild (bräuchte einen dritten Satz Spieler-Plätze durch Protokoll, Speicher und Schnellverschieben, ohne dem Spieler mehr zu geben als die Liste).
 - **Showcase:** Station `traps_and_cutting` (Reihenfolge 55): eine gespannte Stolperdraht-Linie zwischen zwei Steinen mit Lampen darauf, eine Fallentruhe mit Lampe daneben, ein Steinschneider mit einer Truhe voller Stein, Steinziegel, Sandstein und Bruchstein.
+
+## E-790 Rahmen und Gemälde als eine Entity-Art (Paket 62.4)
+
+- **Was:** Neue Entity-Art `QcEntityKind::Hanging` (Protokollwert 10) für Rahmen und Gemälde; der Unterschied steht in `QcHanging::type` (`QcHangingType::ItemFrame`/`Painting`). Gemeinsame Daten und Geometrie in `common/gameplay/QcHanging` (Fläche, Zelle, Größe, Drehung, Motiv; `cells()`, `supportOf()`, `box()`, `centre()`, `rightOf()`), für Server (Platzieren, Halt, Speichern) und Client (Zielen, Zeichnen). Eine Art statt zwei, weil beide gleich hängen, gleich abfallen und gleich übertragen werden; jede Fallunterscheidung über Arten bekommt so nur einen Fall.
+- **Item-Feld `hangs`** (`QcHangingDefinition`, Parser `QcHangingParser`): `{"type": "item_frame"}` oder `{"type": "painting", "back": <Textur>, "motifs": [{"name", "texture", "width", "height"}]}` (1–4 Blöcke je Seite, höchstens 64 Motive). Erreicht den Client (`QcItemSerializer`).
+- **Server:** `QcHangingManager` (Tabelle in `QcEntities`, Grenze `maxHangings` 4096, `/limits`), `QcHangingRules` (wo etwas hängen darf: Zellen ohne Kollision und Flüssigkeit, alle Blöcke dahinter `solid`, keine andere Entity auf derselben Fläche derselben Zelle), `QcServerHanging` (zustandslos, wird bei Bedarf erzeugt: Platzieren aus `QcServerInteraction::useItem`, `use`/`hit` aus `QcServer`, `tick` in der Phase Mobs). Keine Körper (`QcEntities::boxOf` liefert nichts): Kolben schieben sie nicht, sie fallen ab, wenn ihr Halt fehlt. Gesendet wird wie bei Rüstungsständern nur ein Spawn bei Änderung (`markStale`).
+- **Rahmen:** an jeder Fläche (auch Boden/Decke); Rechtsklick legt ein Item hinein (Drehung 0), jeder weitere dreht um 45° (8 Stufen); Schlag nimmt erst das Item heraus, dann den Rahmen ab (Abklingzeit wie bei Ständern, nicht im Abenteuermodus, im Kreativmodus ohne Drops). Das gehaltene Item ist ein beliebiger Stack mit Anzahl 1, damit Karten (Etappe 71) später ohne Formatänderung hineinpassen.
+- **Eine Art für beide** (Koordinator 2026-10-20 bestätigt).
+- **Halt-Prüfung ohne Abfragen je Tick** (Koordinator 2026-10-20): `QcHangingManager` führt einen Index Block → Ids über die Zellen und die tragenden Blöcke jeder Entity. Jede Blockänderung des Servers (`QcServerBlocks::setQuietly`) meldet `noteBlockChange(pos)` (ein Hash-Zugriff, fern jeder Entity kostenlos); die betroffenen prüfen im nächsten Tick. Als Rückfall für Änderungen am Server vorbei (Weltaufbau, Tests) prüft eine Runde jeden Tick den nächsten Anteil, sodass jede Entity spätestens alle `supportCheckTicks` (100) Ticks dran ist, wie im Vorbild. Die Kosten je Tick sind damit Anzahl/100 plus die Nachbarn geänderter Blöcke, statt alle 4096 je Tick. Ruhende Entities werden übersprungen; ein nicht geladener Block zählt als hält (kein Abfallen an Chunk-Grenzen). Entfernt wird nur über den Manager (`remove`, `removeIf` beim Entladen), damit der Index stimmt; ein zweiter Index Id → Platz in der Tabelle macht `find`, `at` und die Prüfung je Tick unabhängig von der Anzahl.
+- **Reichweite** für Rechtsklick und Schlag: vom Auge bis zum nächsten Punkt der Box (bei großen Gemälden zählt der Rand, nicht die Mitte).
+- **Weltaufbau** (`QcServerSetup::placeHanging`): unbekanntes Item, gehaltenes Item oder Motiv, fehlende Wand oder freie Zelle und Überdeckung werden mit `qCWarning` gemeldet und ausgelassen; erzeugt wird über `QcServerHanging::spawn` wie beim Platzieren.
+
+## E-791 Gemäldemotive und Texturen über mehrere Blöcke (Paket 62.4)
+
+- **Motive:** 17 eigene, prozedurale Motive im Item `painting` (1×1 bis 4×4), gezeichnet von sechs Mustern in `QcTexturePaintingPatterns` (Landschaft, See, Abstrakt, Nacht, Sonnenuntergang, Ringe) mit Farben und Seed je Motiv; kein Bild des Vorbilds.
+- **Texturen über mehrere Blöcke:** Eine prozedurale Textur mit `"tiles": [b, h]` wird beim Laden zusätzlich als `<name>_<spalte>_<zeile>` je Block registriert (`QcContentParser::textureTiles`, mit `"tile": [s, z]`); der Maler bekommt die Lage auf der ganzen Leinwand (`QcTextureSpec::tile`, `tilesWide`, `tilesHigh`). Ohne `tile` zeichnet dieselbe Textur die ganze Leinwand verkleinert (Icon, Handbuch). Texturpakete können jede Kachel einzeln ersetzen. Der Atlas bleibt bei einheitlichen Kacheln.
+- **Prüfung der Texturen** (`QcHangingParser::checkTextures`, nach dem Laden aller Pakete in `QcModLoader`): ein Motiv aus einem Block braucht seine Textur, ein größeres eine prozedurale Textur mit genau `"tiles": [Breite, Höhe]`; sonst eine Warnung je Motiv mit der nötigen Angabe. Die Kachelnamen stehen einmal im Motiv (`QcPaintingMotif::tiles`, von Parser und Item-Serializer gefüllt), das Zeichnen baut keine Namen.
+- **Motivnamen ohne Übersetzung** (Koordinator 2026-10-20): es wird kein Titel angezeigt, die Namen dienen nur dem Speichern.
+- **Wahl beim Platzieren** (Koordinator 2026-10-20 bestätigt): wie im Vorbild zufällig unter den größten passenden Motiven, um den angeklickten Block zentriert (gerade Breite/Höhe reicht einen Block weiter nach rechts/oben). Nur an Seitenflächen.
+
+## E-792 Komparator liest Rahmen (Paket 62.4)
+
+- `QcComparatorReadings::frameAt(zelle, fläche)` liest den Rahmen in einer Zelle auf einer Fläche: Drehung + 1 (1–8), leer 0. `QcCircuitComponents::backInput` (Koordinator 2026-10-20, Review): wie im Vorbild (Java) liest ein Komparator Rahmen nur durch einen Leiter, nie einen Rahmen direkt hinter sich (Koordinator nach dem Review: der direkte Fall ist gestrichen). Durch den Leiter (nur unter voller Stärke) zählt nur der Rahmen, der auf der Rückseite genau dieses Leiters hängt und vom Komparator weg zeigt, und der höhere Wert von Rahmen und Block dahinter gilt – ein leerer Rahmen liefert dort 0 statt der Stärke des Leiters. Rahmen auf anderen Flächen derselben Zelle zählen nicht. Jede Änderung (Item, Drehung, Platzieren, Abfallen) meldet `QcServerState::noteContents(zelle)`.
+
+## E-793 Speichern von Rahmen und Gemälden (Paket 62.4)
+
+- **Ort:** im Entity-Blob des Chunks nach dem Byte `populated` (`QcHangingCodec`): Blobs ohne sie bleiben byte-gleich, ältere Blobs lesen sich unverändert; ältere Versionen lehnen neue Blobs mit Rahmen als beschädigt ab (keine Migration vor dem Release; vom Koordinator 2026-10-20 so angenommen).
+- **Eintrag:** Item-Name, Reihenfolge, Komponenten (`Component::Hanging` = 18, Version 1: Art, Fläche, Zelle, Motiv **per Name**, Drehung, Stack); unbekannte Komponenten bleiben erhalten (E-420). Unbekanntes Item oder Motiv: Eintrag mit Warnung verworfen. Liegt die Mitte nach der aktuellen Motivgröße außerhalb des Chunks (eine Mod hat das Motiv vergrößert), wird nur dieser Eintrag mit Warnung verworfen, nie der ganze Chunk (sonst gingen alle Wesen, Ständer und Loren darin verloren).
+
+## E-794 Protokoll 56 (Paket 62.4)
+
+- `EntitySpawn` bekommt `hanging` (nur für die Art `Hanging`: Art, Fläche, Zelle, Größe, Drehung, Motiv); `held` ist das eigene Item (der Client findet dort die Motive), `item` der Stack im Rahmen. Item-Definitionen tragen `hangs`. Version 56 (55 ist Paket 62.3).
+
+## E-795 Zeichnen (Paket 62.4)
+
+- `QcHangingMesher` (clientcore): Rahmen als dünnes Brett mit der Item-Textur, Item davor um die Flächennormale gedreht (Blöcke als kleiner Würfel, sonst flach, über `QcEntityMesher::appendPlacedItem`); Gemälde als Kanten in der Rückseiten-Textur bis zur vollen Tiefe und einer Kachel je Block vorn (keine verdeckte Vorderseite). Das Mesh entsteht jedes Bild neu wie bei anderen Entities, ohne Namensaufbau (Kachelnamen im Motiv); ein Zwischenspeicher je Entity lohnt erst bei sehr vielen Gemälden im Blick. Entity-Mesh, keine Chunk-Meshes (daher unabhängig von den Render-Schichten aus E-756). Zielen über `QcHanging::box()` (`QcHandActions`); Rechtsklick auf sie ist immer `UseEntity`.
+
+## E-796 Rezepte (Paket 62.4)
+
+- Rahmen: 8 Stöcke um Leder; Gemälde: 8 Stöcke um Wolle beliebiger Farbe (`#wool`).
+
+## E-797 Showcase-Station und Strukturfeld `hangings` (Paket 62.4)
+
+- Strukturen kennen `"hangings": [{"at", "face", "item", "held", "rotation", "motif"}]` (`QcStructureDefinition::Hanging` → `QcWorldSetup` → `QcServerSetup::placeHanging`); der Showcase-Planer dreht die Fläche mit der Struktur, bei Rahmen auf Boden und Decke stattdessen das Item (zwei Achtel je Vierteldrehung, an der Decke andersherum). Nur Showcase-Strukturen dürfen `hangings` haben (wie `adventure`), weil nur der Showcase sie aufhängt.
+- Station `frames_paintings` (Reihenfolge 106): Holzwand mit Rahmen (Apfel, Kompass, Stein als Würfel, Schwert gedreht, Uhr auf dem Boden), Komparator mit Lampe hinter dem Apfel-Rahmen, Gemälde 1×1, 2×1, 1×2, 2×2, 4×2 und 4×4.

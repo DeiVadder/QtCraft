@@ -1,0 +1,12 @@
+{
+    "name": "painting_column",
+    "pattern": "painting_abstract",
+    "primary": "#e0b030",
+    "secondary": "#3a6ab8",
+    "variation": 0.1,
+    "seed": 8149,
+    "tiles": [
+        1,
+        2
+    ]
+}

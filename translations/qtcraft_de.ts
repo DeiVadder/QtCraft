@@ -3447,22 +3447,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="187"/>
+        <location filename="../src/server/core/QcServer.cpp" line="188"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="404"/>
+        <location filename="../src/server/core/QcServer.cpp" line="407"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="434"/>
+        <location filename="../src/server/core/QcServer.cpp" line="437"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="188"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="190"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -3487,7 +3487,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="203"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="205"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3507,18 +3507,18 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="259"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="261"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="110"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="267"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="269"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="273"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="275"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="129"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -3961,7 +3961,7 @@
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="222"/>
+        <location filename="../src/server/core/QcServer.cpp" line="223"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="79"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -4284,6 +4284,11 @@
         <location filename="../src/server/commands/QcMobCommands.cpp" line="65"/>
         <source>%1 %2 has its mind back</source>
         <translation>%1 %2 hat seinen eigenen Willen zurück</translation>
+    </message>
+    <message>
+        <location filename="../src/server/hanging/QcServerHanging.cpp" line="59"/>
+        <source>Too many item frames and paintings in the world (at most %1)</source>
+        <translation>Zu viele Rahmen und Gemälde in der Welt (höchstens %1)</translation>
     </message>
 </context>
 <context>

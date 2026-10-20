@@ -6,6 +6,7 @@
 #include "server/core/QcServerClient.h"
 #include "server/explosions/QcPrimedExplosives.h"
 #include "server/gameplay/QcArmourStandManager.h"
+#include "server/hanging/QcHangingManager.h"
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/minecarts/QcMinecartManager.h"
@@ -53,6 +54,8 @@ public:
     const QcArmourStandManager &stands() const { return m_stands; }
     QcMovingBlocks &movingBlocks() { return m_moving; }
     const QcMovingBlocks &movingBlocks() const { return m_moving; }
+    QcHangingManager &hangings() { return m_hangings; }
+    const QcHangingManager &hangings() const { return m_hangings; }
     QcMinecartManager &minecarts() { return m_carts; }
     const QcMinecartManager &minecarts() const { return m_carts; }
     QcExperienceOrbManager &orbs() { return m_orbs; }
@@ -65,7 +68,7 @@ public:
     const Clients &clients() const { return m_clients; }
 
     // Every entity in a fixed order: creatures, players (those playing and alive), falling blocks,
-    // sliding blocks, items, armour stands, minecarts, experience orbs, projectiles, lit explosives; each kind in the order of its table. `visit` takes a
+    // sliding blocks, items, armour stands, minecarts, experience orbs, projectiles, lit explosives, frames and paintings; each kind in the order of its table. `visit` takes a
     // QcEntity and must not add or remove entities.
     template<typename Visit>
     void forEach(Visit &&visit)
@@ -167,6 +170,7 @@ private:
             each(self.m_orbs.orbs());
             each(self.m_projectiles.all());
             each(self.m_explosives.all());
+            each(self.m_hangings.all());
         } else {
             each(self.m_falling.editableAll());
             each(self.m_moving.editableAll());
@@ -176,6 +180,7 @@ private:
             each(self.m_orbs.editableOrbs());
             each(self.m_projectiles.editableAll());
             each(self.m_explosives.editableAll());
+            each(self.m_hangings.editableAll());
         }
     }
 
@@ -191,6 +196,7 @@ private:
     QcExperienceOrbManager m_orbs;
     QcProjectileManager m_projectiles;
     QcPrimedExplosives m_explosives;
+    QcHangingManager m_hangings;
     QSet<quint32> m_died;
     // The loadedEpoch of the last settle; none before the first.
     std::optional<quint64> m_settledEpoch;

@@ -1,0 +1,227 @@
+{
+    "name": "frames_paintings",
+    "showcase": {
+        "order": 106
+    },
+    "palette": {
+        "P": "polished_stone",
+        "O": "oak_planks",
+        "c": "signal_comparator[facing=south]",
+        "l": "signal_lamp"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "                  ",
+            "                  ",
+            "                  ",
+            "OOOOOOOOOOOOOOOOOO",
+            " c                ",
+            " l                "
+        ],
+        [
+            "                  ",
+            "                  ",
+            "                  ",
+            "OOOOOOOOOOOOOOOOOO",
+            "                  ",
+            "                  "
+        ],
+        [
+            "                  ",
+            "                  ",
+            "                  ",
+            "OOOOOOOOOOOOOOOOOO",
+            "                  ",
+            "                  "
+        ],
+        [
+            "                  ",
+            "                  ",
+            "                  ",
+            "OOOOOOOOOOOOOOOOOO",
+            "                  ",
+            "                  "
+        ]
+    ],
+    "updates": [
+        [
+            1,
+            1,
+            4
+        ],
+        [
+            1,
+            1,
+            5
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                2.0,
+                3.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.frames_paintings.frames"
+        },
+        {
+            "at": [
+                1.5,
+                2.0,
+                5.5
+            ],
+            "text": "structure.qtcraft.frames_paintings.comparator"
+        },
+        {
+            "at": [
+                11.0,
+                5.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.frames_paintings.paintings"
+        }
+    ],
+    "hangings": [
+        {
+            "at": [
+                1,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "item_frame",
+            "held": "apple",
+            "rotation": 3
+        },
+        {
+            "at": [
+                2,
+                2,
+                2
+            ],
+            "face": "north",
+            "item": "item_frame",
+            "held": "compass"
+        },
+        {
+            "at": [
+                3,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "item_frame",
+            "held": "stone",
+            "rotation": 1
+        },
+        {
+            "at": [
+                4,
+                3,
+                2
+            ],
+            "face": "north",
+            "item": "item_frame",
+            "held": "iron_sword",
+            "rotation": 7
+        },
+        {
+            "at": [
+                3,
+                1,
+                0
+            ],
+            "face": "up",
+            "item": "item_frame",
+            "held": "clock"
+        },
+        {
+            "at": [
+                5,
+                2,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "meadow"
+        },
+        {
+            "at": [
+                7,
+                3,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "dusk"
+        },
+        {
+            "at": [
+                9,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "valley"
+        },
+        {
+            "at": [
+                10,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "sailboat"
+        },
+        {
+            "at": [
+                11,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "tall_night"
+        },
+        {
+            "at": [
+                13,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "ripples"
+        },
+        {
+            "at": [
+                13,
+                3,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "panorama"
+        },
+        {
+            "at": [
+                17,
+                1,
+                2
+            ],
+            "face": "north",
+            "item": "painting",
+            "motif": "composition"
+        }
+    ]
+}

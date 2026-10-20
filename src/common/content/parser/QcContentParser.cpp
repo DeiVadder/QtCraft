@@ -1,5 +1,6 @@
 #include "common/content/parser/QcContentParser.h"
 
+#include "common/content/definitions/QcHangingDefinition.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/registry/QcContentNames.h"
@@ -32,6 +33,14 @@ bool isPalette(const QJsonValue &value)
     return value.isObject() && palette.size() <= maxBitmapSide && std::ranges::all_of(palette.keys(), [&palette](const QString &key) {
                return key.size() == 1 && palette.value(key).isString() && palette.value(key).toString().size() <= 9;
            });
+}
+
+// "tiles": [width, height] of a texture drawn over several blocks (decision E-791).
+bool isTiles(const QJsonValue &value)
+{
+    const QJsonArray tiles = value.toArray();
+    const auto inRange = [](const QJsonValue &side) { return side.isDouble() && side.toInt() >= 1 && side.toInt() <= QcPaintingMotif::maxSide; };
+    return value.isArray() && tiles.size() == 2 && inRange(tiles[0]) && inRange(tiles[1]);
 }
 
 // Detail of a procedural texture above 16 x 16 (decision E-299): only the known fields, in range.
@@ -91,13 +100,37 @@ namespace QcContentParser {
     if (json.contains(u"detail"_s) && !isDetail(json.value(u"detail"_s))) {
         return qcError(u"texture '%1': 'detail' may only hold 'grain' and 'bevel' (0 to 1) and 'smooth' (true or false)"_s.arg(texture.name));
     }
-    for (const QString &key : {u"bitmap"_s, u"palette"_s, u"detail"_s}) {
+    if (json.contains(u"tiles"_s) && !isTiles(json.value(u"tiles"_s))) {
+        return qcError(u"texture '%1': 'tiles' must be [width, height] of 1 to %2"_s.arg(texture.name).arg(QcPaintingMotif::maxSide));
+    }
+    for (const QString &key : {u"bitmap"_s, u"palette"_s, u"detail"_s, u"tiles"_s}) {
         if (json.contains(key)) {
             texture.procedural.insert(key, json.value(key));
         }
     }
 
     return texture;
+}
+
+[[nodiscard]] QList<QcTextureDefinition> textureTiles(const QcTextureDefinition &texture)
+{
+    const QJsonArray tiles = texture.procedural.value(u"tiles"_s).toArray();
+    const int width = tiles.size() == 2 ? tiles[0].toInt(1) : 1;
+    const int height = tiles.size() == 2 ? tiles[1].toInt(1) : 1;
+    if (width * height <= 1) {
+        return {};
+    }
+
+    QList<QcTextureDefinition> parts;
+    for (int row = 0; row < height; ++row) {
+        for (int column = 0; column < width; ++column) {
+            QcTextureDefinition part = texture;
+            part.name = QcPaintingMotif::tileName(texture.name, column, row);
+            part.procedural.insert(u"tile"_s, QJsonArray{column, row});
+            parts.append(part);
+        }
+    }
+    return parts;
 }
 
 [[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)

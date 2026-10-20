@@ -74,6 +74,7 @@ public:
     QList<QcStructureDefinition::Spawner> spawners;
     QList<QcStructureDefinition::Loot> loot;
     QList<QcStructureDefinition::Sign> signs;
+    QList<QcStructureDefinition::Hanging> hangings;
     // Zones whose guardians come back (decision E-591) and the layer at the ground's top block
     // (decision E-590).
     QList<QcStructureDefinition::Guardian> guardians;

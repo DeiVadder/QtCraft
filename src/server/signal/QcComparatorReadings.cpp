@@ -1,14 +1,17 @@
 #include "server/signal/QcComparatorReadings.h"
 
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/hanging/QcHangingManager.h"
 #include "server/minecarts/QcMinecartManager.h"
 
 #include <cmath>
 
-QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities, const QcMinecartManager &carts)
+QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities, const QcMinecartManager &carts,
+                                           const QcHangingManager &hangings)
     : m_world(world)
     , m_entities(entities)
     , m_carts(carts)
+    , m_hangings(hangings)
 {
 }
 
@@ -70,6 +73,15 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
         break;
     }
     return std::nullopt;
+}
+
+std::optional<int> QcComparatorReadings::frameAt(QcBlockPos cell, QcBlockFace face) const
+{
+    const QcHangingEntity *frame = m_hangings.at(cell, face);
+    if (!frame || frame->hanging.type != QcHangingType::ItemFrame) {
+        return std::nullopt;
+    }
+    return frame->held.isEmpty() ? 0 : frame->hanging.rotation + 1;
 }
 
 int QcComparatorReadings::contentsAt(QcBlockPos pos) const

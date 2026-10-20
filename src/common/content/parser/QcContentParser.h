@@ -63,6 +63,10 @@ using QcVillagerParser::parseVillagerSettings;
 using QcTradeParser::parseTradeSet;
 
 [[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
+// The tiles of a procedural texture larger than one block (decision E-791, "tiles": [width, height],
+// 1 to QcPaintingMotif::maxSide each): one texture per block named "<name>_<column>_<row>" with
+// its place as "tile": [column, row]; empty for a texture of one block.
+[[nodiscard]] QList<QcTextureDefinition> textureTiles(const QcTextureDefinition &texture);
 [[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
 [[nodiscard]] QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace);
 

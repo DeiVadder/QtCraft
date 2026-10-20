@@ -1,0 +1,12 @@
+{
+    "name": "painting_ripples",
+    "pattern": "painting_rings",
+    "primary": "#3a7a8a",
+    "secondary": "#d8e4dc",
+    "variation": 0.1,
+    "seed": 8177,
+    "tiles": [
+        2,
+        2
+    ]
+}

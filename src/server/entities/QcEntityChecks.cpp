@@ -56,6 +56,9 @@ namespace {
     for (const QcProjectile &shot : entities.projectiles().all()) {
         note(shot, QcEntityKind::Projectile);
     }
+    for (const QcHangingEntity &hanging : entities.hangings().all()) {
+        note(hanging, QcEntityKind::Hanging);
+    }
     // Every client that became a player, also one that is dead or leaving.
     for (const std::unique_ptr<QcServerClient> &client : entities.clients()) {
         if (client->id != 0) {
@@ -123,6 +126,7 @@ QStringList problems(const QcEntities &entities)
         problems.append(checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }));
         problems.append(checkChunks(record.orbs, record.chunk, "experience orb", [](const QcExperienceOrb &orb) { return orb.motion.position; }));
         problems.append(checkChunks(record.projectiles, record.chunk, "projectile", [](const QcProjectile &shot) { return shot.motion.position; }));
+        problems.append(checkChunks(record.hangings, record.chunk, "frame or painting", [](const QcHangingEntity &hanging) { return hanging.motion.position; }));
     }
     return problems;
 }

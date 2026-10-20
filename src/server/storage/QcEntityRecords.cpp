@@ -39,7 +39,7 @@ public:
     QHash<QcChunkPos, QcEntityRecord> take() { return std::move(m_records); }
 
 private:
-    // Adds the stands, minecarts, experience orbs and projectiles `wanted` accepts to their records;
+    // Adds the stands, minecarts, experience orbs, projectiles, frames and paintings `wanted` accepts to their records;
     // transient projectiles (fishing bobbers, decision E-503) are never saved.
     template<typename Wanted>
     void addObjects(const QcEntities &entities, Wanted wanted);
@@ -76,6 +76,11 @@ void RecordCollector::addObjects(const QcEntities &entities, Wanted wanted)
     for (const QcProjectile &shot : entities.projectiles().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(shot); !shot.transient && wanted(chunk)) {
             recordOf(chunk).projectiles.append({shot, shot.id});
+        }
+    }
+    for (const QcHangingEntity &hanging : entities.hangings().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(hanging); wanted(chunk)) {
+            recordOf(chunk).hangings.append({hanging, hanging.id});
         }
     }
 }
@@ -138,6 +143,7 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.explosives().editableAll().removeIf(gone);
     entities.creatures().unload(gone);
     entities.stands().editableStands().removeIf(gone);
+    entities.hangings().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
     entities.orbs().editableOrbs().removeIf(gone);
     entities.projectiles().editableAll().removeIf(gone);
@@ -177,6 +183,13 @@ QStringList apply(const QcEntityRecord &record, QcEntities &entities)
     }
     if (const qsizetype dropped = entities.minecarts().adopt(carts); dropped > 0) {
         warnings.append(u"%1 minecarts beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.minecarts().limit()));
+    }
+    QList<QcHangingEntity> hangings = inOrder(record.hangings);
+    for (QcHangingEntity &hanging : hangings) {
+        hanging.id = entities.newId();
+    }
+    if (const qsizetype dropped = entities.hangings().adopt(hangings); dropped > 0) {
+        warnings.append(u"%1 item frames and paintings beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.hangings().limit()));
     }
     if (const qsizetype merged = entities.orbs().adopt(inOrder(record.orbs), newId); merged > 0) {
         warnings.append(u"%1 experience orbs beyond the limit of %2 joined the nearest orb"_s.arg(merged).arg(entities.orbs().limit()));

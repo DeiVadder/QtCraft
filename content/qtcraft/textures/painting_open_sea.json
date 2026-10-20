@@ -1,0 +1,12 @@
+{
+    "name": "painting_open_sea",
+    "pattern": "painting_sea",
+    "primary": "#215a86",
+    "secondary": "#a8cfe8",
+    "variation": 0.1,
+    "seed": 8170,
+    "tiles": [
+        2,
+        2
+    ]
+}

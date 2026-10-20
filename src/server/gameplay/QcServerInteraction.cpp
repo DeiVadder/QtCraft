@@ -19,6 +19,7 @@
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcServerStands.h"
 #include "server/golems/QcServerGolems.h"
+#include "server/hanging/QcServerHanging.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcServerKitchen.h"
 #include "server/machines/QcServerStonecutter.h"
@@ -144,7 +145,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.carve(client, message.target, message.face, held)
                           || m_parts.plants.strip(client, message.target, held)
                           || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
-    if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)) {
+    if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)
+        || QcServerHanging(m_state, m_parts.sounds, m_parts.inventory).place(client, message)) {
         return;
     }
     placeHeld(client, message, held);

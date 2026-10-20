@@ -1,0 +1,12 @@
+{
+    "name": "painting_tall_night",
+    "pattern": "painting_night",
+    "primary": "#18264e",
+    "secondary": "#e8ecf4",
+    "variation": 0.1,
+    "seed": 8156,
+    "tiles": [
+        1,
+        2
+    ]
+}

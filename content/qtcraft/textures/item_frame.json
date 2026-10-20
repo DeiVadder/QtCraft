@@ -1,0 +1,8 @@
+{
+    "name": "item_frame",
+    "pattern": "item_frame",
+    "primary": "#9a7446",
+    "secondary": "#8a5430",
+    "variation": 0.08,
+    "seed": 8090
+}

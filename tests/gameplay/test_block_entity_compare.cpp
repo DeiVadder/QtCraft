@@ -136,6 +136,8 @@ private:
             return -8;
         case QcEntityKind::PrimedExplosive:
             return -9;
+        case QcEntityKind::Hanging:
+            return -10;
         }
         return 0;
     }

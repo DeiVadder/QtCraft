@@ -1,0 +1,7 @@
+{
+    "name": "item_frame",
+    "texture": "item_frame",
+    "hangs": {
+        "type": "item_frame"
+    }
+}

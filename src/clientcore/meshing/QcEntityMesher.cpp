@@ -595,6 +595,11 @@ void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement 
     emitItem(mesh, look, [&](const QcVec3 &p) { return centre + p * scale; }, light, uv);
 }
 
+void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv)
+{
+    emitItem(mesh, look, place, light, uv);
+}
+
 void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv)
 {
     const ModelLook &look = figure.look;

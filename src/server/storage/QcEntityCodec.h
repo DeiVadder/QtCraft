@@ -64,6 +64,9 @@ enum class Component : quint16 {
     // The ticks left of a lit explosive, on a falling block entry (version 1, decision E-601): the
     // entry is a lit explosive, which a version without it reads as a falling block.
     Fuse = 17,
+    // Type, face, cell, motif by name, rotation and held stack of an item frame or painting
+    // (version 1, decision E-793; QcHangingCodec).
+    Hanging = 18,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

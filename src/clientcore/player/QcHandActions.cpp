@@ -23,6 +23,9 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
     if (entity.isMinecart()) {
         return QcPhysics::boxAt(entity.position, QcMinecartBody::width, QcMinecartBody::height);
     }
+    if (entity.isHanging()) {
+        return entity.hanging.box();
+    }
     if (entity.isArmourStand()) {
         const double scale = entity.stand.small ? 0.5 : 1.0;
         return QcPhysics::boxAt(entity.position, QcStandPose::bodyWidth * scale, QcStandPose::bodyHeight * scale);
@@ -45,13 +48,14 @@ bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &enti
     return creature && QcClientLauncher::usesOnCreature(*creature, item);
 }
 
-// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, a
+// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, an item
+// frame or painting (decision E-790), a
 // villager (its trading screen, decision E-414) and a tameable creature (taming, sitting, healing,
 // its collar; decision E-480), the last two not while sneaking.
 bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entity, bool sneaking)
 {
     const QcMobDefinition *creature = entity.creature(content);
-    return entity.isArmourStand() || entity.isMinecart() || (creature && (creature->villager || creature->tameable) && !sneaking);
+    return entity.isArmourStand() || entity.isMinecart() || entity.isHanging() || (creature && (creature->villager || creature->tameable) && !sneaking);
 }
 
 // Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,

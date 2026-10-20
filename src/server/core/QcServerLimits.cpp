@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 70> table{{
+constexpr std::array<QcServerLimits::Field, 71> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -67,6 +67,7 @@ constexpr std::array<QcServerLimits::Field, 70> table{{
     {"leafPendingChecks", "leaf checks waiting", 256, 1 << 20, &QcServerLimits::leafPendingChecks},
     {"maxArmourStands", "armour stands in the world", 16, 65536, &QcServerLimits::maxArmourStands},
     {"maxMinecarts", "minecarts in the world", 16, 65536, &QcServerLimits::maxMinecarts},
+    {"maxHangings", "item frames and paintings in the world", 16, 65536, &QcServerLimits::maxHangings},
     {"movingBlocksShown", "blocks shown sliding behind pistons", 16, 65536, &QcServerLimits::movingBlocksShown},
     {"chunkGroupLimit", "chunks a group of connected circuits may span before it waits at its edge", 1, 1024, &QcServerLimits::chunkGroupLimit},
     {"chunkUnloadsPerTick", "chunks unloaded per tick (groups are always unloaded whole)", 1, 4096, &QcServerLimits::chunkUnloadsPerTick},

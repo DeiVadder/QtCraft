@@ -106,6 +106,7 @@ private:
     void parseCarts();
     void parseSpawnersAndLoot();
     void parseSigns();
+    void parseHangings();
     void parseAdventure();
     void parseExtras();
 
@@ -365,6 +366,40 @@ void StructureReader::parseSigns()
     }
 }
 
+// "hangings": {"at": [x, y, z], "face": "north", "item": "item_frame", "held": "apple", "rotation":
+// 0 to 7} or {..., "item": "painting", "motif": "valley"}: item frames and paintings hung when the
+// world is made (decision E-797); the face is one of the block faces' names. Only the showcase
+// hangs them (QcWorldSetup), so a structure without "showcase" may not have them.
+void StructureReader::parseHangings()
+{
+    static constexpr std::array<std::pair<QStringView, QcBlockFace>, 6> faces = {{{u"east", QcBlockFace::East},
+                                                                                   {u"west", QcBlockFace::West},
+                                                                                   {u"up", QcBlockFace::Up},
+                                                                                   {u"down", QcBlockFace::Down},
+                                                                                   {u"south", QcBlockFace::South},
+                                                                                   {u"north", QcBlockFace::North}}};
+    if (m_json.contains(u"hangings"_s) && !m_structure.showcase) {
+        m_reader.fail(u"only showcase structures may have 'hangings'"_s);
+        return;
+    }
+    const QJsonArray entries = extraArray(m_json, u"hangings"_s, m_reader);
+    for (const auto &entry : entries) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
+        const QString faceName = object.value(u"face"_s).toString();
+        const auto face = std::ranges::find(faces, QStringView(faceName), &std::pair<QStringView, QcBlockFace>::first);
+        const int rotation = object.value(u"rotation"_s).toInt(0);
+        if (!cell || face == faces.end() || object.value(u"item"_s).toString().isEmpty() || rotation < 0 || rotation > 7) {
+            m_reader.fail(u"'hangings' entries need 'at' inside the structure, a 'face', an 'item' and a 'rotation' of 0 to 7"_s);
+            return;
+        }
+        const QString held = object.value(u"held"_s).toString();
+        m_structure.hangings.append({*cell, face->second, QcContentNames::qualify(object.value(u"item"_s).toString(), m_namespace),
+                                     held.isEmpty() ? QString() : QcContentNames::qualify(held, m_namespace), rotation,
+                                     object.value(u"motif"_s).toString()});
+    }
+}
+
 // "adventure": the allow-list entries of adventure mode (decision E-735), names qualified like the
 // palette's; "*" stays the wildcard. Only the showcase brings them into a world, so a structure
 // without "showcase" may not have them; the names are checked against the content when it is
@@ -415,6 +450,7 @@ void StructureReader::parseExtras()
     parseCarts();
     parseSpawnersAndLoot();
     parseSigns();
+    parseHangings();
     m_structure.choices = QcStructureVariationParser::parseChoices(m_json, m_reader, m_namespace);
     if (m_reader.ok()) {
         m_structure.parts = QcStructureVariationParser::parseParts(m_json, m_keys, m_structure, m_reader);

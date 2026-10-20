@@ -81,6 +81,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `leafPendingChecks` | 16384 | 256 – 1048576 | Leaf checks waiting at most |
 | `maxArmourStands` | 4096 | 16 – 65536 | Armour stands in the world (E-238) |
 | `maxMinecarts` | 4096 | 16 – 65536 | Minecarts in the world (E-382) |
+| `maxHangings` | 4096 | 16 – 65536 | Item frames and paintings in the world (E-790) |
 | `experienceOrbs` | 1024 | 16 – 1048576 | Experience orbs in the world; beyond, dropped experience joins the nearest orb, so none is lost (E-398) |
 | `movingBlocksShown` | 4096 | 16 – 65536 | Blocks shown sliding behind pistons at once; beyond, they appear at once (E-337) |
 | `chunkGroupLimit` | 64 | 1 – 1024 | Chunks a group of connected circuits may span; a larger group loads chunk by chunk and its circuits wait at the edge of the loaded area (E-375) |

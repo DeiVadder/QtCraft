@@ -1,0 +1,12 @@
+{
+    "name": "painting_hills",
+    "pattern": "painting_landscape",
+    "primary": "#6aa040",
+    "secondary": "#8ec0ea",
+    "variation": 0.1,
+    "seed": 8128,
+    "tiles": [
+        2,
+        1
+    ]
+}

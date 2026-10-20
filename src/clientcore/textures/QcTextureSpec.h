@@ -6,6 +6,7 @@
 #include <QStringList>
 
 #include <optional>
+#include <utility>
 
 // Data description of a procedurally generated block/item texture.
 struct QcTextureSpec
@@ -233,6 +234,19 @@ struct QcTextureSpec
         CakeItem,
         CampfireItem,
         LilyPad,
+        // Patterns of QcTexturePaintingPatterns (decision E-791): an item frame (a wooden border in
+        // the primary colour around leather in the secondary) and painting motifs drawn over a
+        // canvas of tilesWide x tilesHigh blocks: a landscape of hills under a sun, the sea with a
+        // sail, an abstract of coloured fields between dark lines, a night with stars over
+        // mountains, a sunset over water and rings spreading over a ground; primary and secondary
+        // colour and the seed vary each.
+        ItemFrame,
+        PaintingLandscape,
+        PaintingSea,
+        PaintingAbstract,
+        PaintingNight,
+        PaintingSunset,
+        PaintingRings,
     };
 
     // Emblem and Icon only: up to 16 rows of up to 16 characters, top row first.
@@ -248,6 +262,12 @@ struct QcTextureSpec
     // -Wmissing-field-initializers.
     QStringList bitmap = {};       // NOLINT(readability-redundant-member-init): see above
     QHash<QChar, QColor> palette = {}; // NOLINT(readability-redundant-member-init): see above
+    // A texture over several blocks (decision E-791, "tiles"): its size in blocks and, for one of
+    // its tiles ("tile"), the column and row (from the top) this texture shows; without a tile the
+    // whole canvas is drawn shrunk into one block (an icon).
+    int tilesWide = 1;
+    int tilesHigh = 1;
+    std::optional<std::pair<int, int>> tile = std::nullopt;
 };
 
 [[nodiscard]] std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name);

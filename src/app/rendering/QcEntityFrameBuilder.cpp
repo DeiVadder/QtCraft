@@ -3,6 +3,7 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/meshing/QcHangingMesher.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/meshing/QcProjectileMesher.h"
 #include "clientcore/session/QcClientSession.h"
@@ -440,6 +441,8 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
             appendCartLoad(*mesh, entity, frame, position);
         } else if (entity.isBlockEntity()) {
             appendBlockEntity(*mesh, entity, frame);
+        } else if (entity.isHanging()) {
+            QcHangingMesher::append(*mesh, entity, frame.content, entityLight(frame.world, entity.position), uv);
         } else {
             appendCreature(*mesh, entity, frame);
         }

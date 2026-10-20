@@ -291,6 +291,10 @@ void PackReader::loadTextures()
             continue;
         }
 
+        const QList<QcTextureDefinition> tiles = QcContentParser::textureTiles(*texture);
+        for (const QcTextureDefinition &tile : tiles) {
+            m_registry.assets().registerTexture(tile);
+        }
         m_registry.assets().registerTexture(*texture);
     }
 

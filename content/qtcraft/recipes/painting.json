@@ -1,0 +1,16 @@
+{
+    "name": "painting",
+    "type": "shaped",
+    "pattern": [
+        "|||",
+        "|W|",
+        "|||"
+    ],
+    "key": {
+        "|": "stick",
+        "W": "#wool"
+    },
+    "result": {
+        "item": "painting"
+    }
+}

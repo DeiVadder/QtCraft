@@ -42,6 +42,8 @@ bool QcServerBlocks::setQuietly(QcBlockPos pos, QcBlockId block)
     }
 
     m_updates.queueNeighbours(pos, block != qcAirBlockId);
+    // Frames and paintings on or in front of it check their wall and room (decision E-790).
+    m_state.entities().hangings().noteBlockChange(pos);
     // Rails one block higher or lower beside a rail connect across the slope, where that rail's own
     // neighbours let it meet them (decision E-382).
     if (QcRails::isRail(m_state.content(), before) || QcRails::isRail(m_state.content(), block)) {

@@ -1,0 +1,112 @@
+{
+    "name": "painting",
+    "texture": "painting_meadow",
+    "hangs": {
+        "type": "painting",
+        "back": "painting_back",
+        "motifs": [
+            {
+                "name": "meadow",
+                "texture": "painting_meadow",
+                "width": 1,
+                "height": 1
+            },
+            {
+                "name": "sailboat",
+                "texture": "painting_sailboat",
+                "width": 1,
+                "height": 1
+            },
+            {
+                "name": "fields",
+                "texture": "painting_fields",
+                "width": 1,
+                "height": 1
+            },
+            {
+                "name": "crescent",
+                "texture": "painting_crescent",
+                "width": 1,
+                "height": 1
+            },
+            {
+                "name": "hills",
+                "texture": "painting_hills",
+                "width": 2,
+                "height": 1
+            },
+            {
+                "name": "harbour",
+                "texture": "painting_harbour",
+                "width": 2,
+                "height": 1
+            },
+            {
+                "name": "dusk",
+                "texture": "painting_dusk",
+                "width": 2,
+                "height": 1
+            },
+            {
+                "name": "column",
+                "texture": "painting_column",
+                "width": 1,
+                "height": 2
+            },
+            {
+                "name": "tall_night",
+                "texture": "painting_tall_night",
+                "width": 1,
+                "height": 2
+            },
+            {
+                "name": "valley",
+                "texture": "painting_valley",
+                "width": 2,
+                "height": 2
+            },
+            {
+                "name": "open_sea",
+                "texture": "painting_open_sea",
+                "width": 2,
+                "height": 2
+            },
+            {
+                "name": "ripples",
+                "texture": "painting_ripples",
+                "width": 2,
+                "height": 2
+            },
+            {
+                "name": "panorama",
+                "texture": "painting_panorama",
+                "width": 4,
+                "height": 2
+            },
+            {
+                "name": "evening_sea",
+                "texture": "painting_evening_sea",
+                "width": 4,
+                "height": 2
+            },
+            {
+                "name": "starfield",
+                "texture": "painting_starfield",
+                "width": 4,
+                "height": 3
+            },
+            {
+                "name": "composition",
+                "texture": "painting_composition",
+                "width": 4,
+                "height": 4
+            },
+            {
+                "name": "pond",
+                "texture": "painting_pond",
+                "width": 4,
+                "height": 4
+            }
+        ]
+    }
+}

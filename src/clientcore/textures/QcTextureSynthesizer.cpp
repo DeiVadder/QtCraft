@@ -7,6 +7,7 @@
 #include "clientcore/textures/QcTextureFarmPatterns.h"
 #include "clientcore/textures/QcTextureKitchenPatterns.h"
 #include "clientcore/textures/QcTexturePaint.h"
+#include "clientcore/textures/QcTexturePaintingPatterns.h"
 #include "clientcore/textures/QcTextureRangedPatterns.h"
 #include "clientcore/textures/QcTextureSignalPatterns.h"
 
@@ -569,6 +570,9 @@ Painter painterFor(Pattern pattern)
     }
     if (const Painter kitchen = qcKitchenPatternPainter(pattern)) {
         return kitchen;
+    }
+    if (const Painter painting = qcPaintingPatternPainter(pattern)) {
+        return painting;
     }
     const Painter armour = qcArmourPatternPainter(pattern);
     return armour ? armour : paintNoise;

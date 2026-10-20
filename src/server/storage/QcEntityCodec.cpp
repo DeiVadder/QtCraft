@@ -11,6 +11,7 @@
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcCreatureComponents.h"
+#include "server/storage/QcHangingCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
 
@@ -646,6 +647,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     writeCartsAndOrbs(stream, record, content);
     writeProjectiles(stream, record, content);
     stream << quint8(record.populated ? 1 : 0);
+    QcHangingCodec::write(stream, record.hangings, content);
     return blob;
 }
 
@@ -660,9 +662,12 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     quint8 populated = 0;
     const bool read = RecordReader(stream, content, where, warnings, record).read();
     stream >> populated;
-    if (!read || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
+    std::optional<QList<QcEntityRecord::Ordered<QcHangingEntity>>> hangings =
+        read && stream.status() == QDataStream::Ok ? QcHangingCodec::read(stream, chunk, content, warnings) : std::nullopt;
+    if (!hangings || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
         return qcError(u"damaged entities of chunk %1, %2"_s.arg(chunk.x).arg(chunk.z));
     }
+    record.hangings = std::move(*hangings);
     record.populated = populated == 1;
     return record;
 }

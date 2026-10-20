@@ -1,0 +1,16 @@
+{
+    "name": "item_frame",
+    "type": "shaped",
+    "pattern": [
+        "|||",
+        "|L|",
+        "|||"
+    ],
+    "key": {
+        "|": "stick",
+        "L": "leather"
+    },
+    "result": {
+        "item": "item_frame"
+    }
+}

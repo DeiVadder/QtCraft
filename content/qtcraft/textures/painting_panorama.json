@@ -1,0 +1,12 @@
+{
+    "name": "painting_panorama",
+    "pattern": "painting_landscape",
+    "primary": "#5a9438",
+    "secondary": "#86bce6",
+    "variation": 0.1,
+    "seed": 8184,
+    "tiles": [
+        4,
+        2
+    ]
+}

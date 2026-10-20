@@ -430,7 +430,7 @@ void QcServerCircuits::runWave(qsizetype limit)
         plan.write(change.pos, change.state);
     }
 
-    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
+    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts(), m_state.entities().hangings());
     QcCircuitComponents reactions(componentContext(power, readings));
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
@@ -478,7 +478,7 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
     positions.resize(std::min(positions.size(), room));
 
     const QcSignalPower power(m_state.world(), m_table);
-    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
+    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts(), m_state.entities().hangings());
     QcCircuitComponents reactions(componentContext(power, readings));
     QcCircuitPlan plan;
     for (const QcBlockPos &pos : std::as_const(positions)) {

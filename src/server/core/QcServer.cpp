@@ -12,6 +12,7 @@
 #include "server/core/QcServerSetup.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcSpectatorRules.h"
+#include "server/hanging/QcServerHanging.h"
 
 #include <QTimer>
 
@@ -314,11 +315,13 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
         m_interaction.useItem(client, *use);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
-        if (!m_stands.hit(client, attack->id) && !m_minecarts.hit(client, attack->id)) {
+        if (!m_stands.hit(client, attack->id) && !m_minecarts.hit(client, attack->id)
+            && !QcServerHanging(m_state, m_sounds, m_inventory).hit(client, attack->id)) {
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id) && !m_trading.open(client, useEntity->id)) {
+        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)
+            && !QcServerHanging(m_state, m_sounds, m_inventory).use(client, useEntity->id) && !m_trading.open(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {

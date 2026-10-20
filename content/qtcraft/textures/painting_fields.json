@@ -1,0 +1,8 @@
+{
+    "name": "painting_fields",
+    "pattern": "painting_abstract",
+    "primary": "#c23a30",
+    "secondary": "#2f5aa8",
+    "variation": 0.1,
+    "seed": 8114
+}

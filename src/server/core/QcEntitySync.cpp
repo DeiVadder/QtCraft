@@ -42,6 +42,23 @@ QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature
     return now;
 }
 
+// The look a creature is drawn with: a villager's clothes (decision E-411) and the collar colour in
+// the shirt colour (QcTint::Collar, decision E-480): a tame creature's own, a wild one of a kind with
+// a collar (a summoned dog) its kind's default.
+QcAppearance creatureLook(const QcCreature &creature, const QcContentRegistry &content)
+{
+    QcAppearance look;
+    if (creature.isVillager()) {
+        look = QcVillagerLooks::appearanceOf(content, creature.type, *creature.villager);
+    }
+    if (creature.isTame()) {
+        look.shirtColor = creature.tame->collar;
+    } else if (const auto &tameable = content.mobs()[creature.type].tameable; tameable && tameable->hasCollar()) {
+        look.shirtColor = tameable->collarColor(tameable->collarDefault).value_or(0);
+    }
+    return look;
+}
+
 // The move of a player: `now` with the view, health, flags (`riding` a minecart) and the selected item.
 QcMsg::EntityMove playerMove(QcMsg::EntityMove now, const QcServerClient &player, bool riding)
 {
@@ -124,6 +141,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         break;
     case QcEntityKind::Item:
     case QcEntityKind::FallingBlock:
+    case QcEntityKind::Hanging:
         break;
     }
     return now;
@@ -160,21 +178,10 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         spawn.appearance.cape = stand.cape;
         break;
     }
-    case QcEntityKind::Creature: {
-        const auto &creature = entity.as<QcCreature>();
-        spawn.creatureType = creature.type;
-        if (creature.isVillager()) {
-            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.type, *creature.villager);
-        }
-        // A tame creature's collar is drawn in the shirt colour (QcTint::Collar, decision E-480); a
-        // wild one of a kind with a collar (a summoned dog) wears its kind's default colour.
-        if (creature.isTame()) {
-            spawn.appearance.shirtColor = creature.tame->collar;
-        } else if (const auto &tameable = m_state.content().mobs()[creature.type].tameable; tameable && tameable->hasCollar()) {
-            spawn.appearance.shirtColor = tameable->collarColor(tameable->collarDefault).value_or(0);
-        }
+    case QcEntityKind::Creature:
+        spawn.creatureType = entity.as<QcCreature>().type;
+        spawn.appearance = creatureLook(entity.as<QcCreature>(), m_state.content());
         break;
-    }
     case QcEntityKind::ExperienceOrb:
         break;
     case QcEntityKind::Projectile: {
@@ -183,6 +190,14 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         if (const std::optional<QcItemId> item = definition ? m_state.content().itemId(definition->item) : std::nullopt) {
             spawn.item = {*item, 1, 0};
         }
+        break;
+    }
+    case QcEntityKind::Hanging: {
+        // Its own item names its motifs (decision E-790); a frame shows the stack it holds.
+        const auto &hanging = entity.as<QcHangingEntity>();
+        spawn.hanging = hanging.hanging;
+        spawn.item = hanging.held;
+        spawn.held = m_state.content().itemId(hanging.item).value_or(qcNoItem);
         break;
     }
     case QcEntityKind::Minecart:
@@ -261,7 +276,8 @@ void QcEntitySync::Pass::update(const QcEntity &entity, const QcMsg::EntityMove 
         }
         break;
     case QcEntityKind::ArmourStand:
-        // Stands send no moves: a spawn when they changed or were pushed.
+    case QcEntityKind::Hanging:
+        // Stands, frames and paintings send no moves: a spawn when they changed or were pushed.
         if (client.view.stale.remove(entity.id)) {
             client.connection->send(sync.spawnOf(entity, now));
         }

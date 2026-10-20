@@ -391,7 +391,7 @@ private slots:
         join();
         const QcBlockPos cake = m_feet.offset(2, 0, 0);
         m_server->world().setBlock(cake, id("qtcraft:cake"));
-        const QcComparatorReadings readings(m_server->world(), m_server->blockEntities(), m_server->carts());
+        const QcComparatorReadings readings(m_server->world(), m_server->blockEntities(), m_server->carts(), m_server->entities().hangings());
         QCOMPARE(readings.at(cake), std::optional<int>(14));
 
         // A full player leaves it as it is, also with food in the hand (nothing is eaten either).

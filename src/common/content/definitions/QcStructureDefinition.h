@@ -2,6 +2,7 @@
 
 #include "common/gameplay/QcAdventureRules.h"
 
+#include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 
@@ -94,6 +95,19 @@ struct QcStructureDefinition
     {
         QcBlockPos at;
         QStringList lines;
+    };
+
+    // An item frame or painting hung when the world is made (decision E-797, the showcase's
+    // station): on `face` of the block behind cell `at` (a painting's lower left cell), from `item`;
+    // a frame holds `held` turned by `rotation` eighths, a painting shows the motif `motif`.
+    struct Hanging
+    {
+        QcBlockPos at;
+        QcBlockFace face = QcBlockFace::North;
+        QString item;
+        QString held;
+        int rotation = 0;
+        QString motif;
     };
 
     // A chest filled from a loot table when its chunk first arrives (decision E-521).
@@ -201,6 +215,7 @@ struct QcStructureDefinition
     QList<Spawner> spawners;
     QList<Loot> loot;
     QList<Sign> signs;
+    QList<Hanging> hangings;
     // Variation where villages and the terrain generator (surface) place the structure; elsewhere it
     // is placed as it is.
     QList<Choice> choices;

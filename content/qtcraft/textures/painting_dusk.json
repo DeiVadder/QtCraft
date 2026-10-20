@@ -1,0 +1,12 @@
+{
+    "name": "painting_dusk",
+    "pattern": "painting_sunset",
+    "primary": "#e88a3a",
+    "secondary": "#5a3a7a",
+    "variation": 0.1,
+    "seed": 8142,
+    "tiles": [
+        2,
+        1
+    ]
+}

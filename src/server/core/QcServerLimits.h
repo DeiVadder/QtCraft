@@ -119,6 +119,8 @@ struct QcServerLimits
     // blocks shown sliding behind pistons (E-337).
     qint64 maxArmourStands = 4096;
     qint64 maxMinecarts = 4096;
+    // Item frames and paintings in the world (E-790; placing more is refused).
+    qint64 maxHangings = 4096;
     qint64 movingBlocksShown = 4096;
     // Loading and unloading chunks (stage 31.3, decisions E-374 to E-377): chunks a circuit group may
     // span before it falls back to waiting at the edge; chunks unloaded per tick (whole groups are

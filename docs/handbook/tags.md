@@ -128,7 +128,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Black wool](blocks.md#block-qtcraft-black_wool), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Brown wool](blocks.md#block-qtcraft-brown_wool), [Cyan wool](blocks.md#block-qtcraft-cyan_wool), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Green wool](blocks.md#block-qtcraft-green_wool), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool), [Lime wool](blocks.md#block-qtcraft-lime_wool), [Magenta wool](blocks.md#block-qtcraft-magenta_wool), [Orange wool](blocks.md#block-qtcraft-orange_wool), [Pink wool](blocks.md#block-qtcraft-pink_wool), [Purple wool](blocks.md#block-qtcraft-purple_wool), [Red wool](blocks.md#block-qtcraft-red_wool), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
+[Black wool](blocks.md#block-qtcraft-black_wool), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Brown wool](blocks.md#block-qtcraft-brown_wool), [Cyan wool](blocks.md#block-qtcraft-cyan_wool), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Green wool](blocks.md#block-qtcraft-green_wool), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool), [Lime wool](blocks.md#block-qtcraft-lime_wool), [Magenta wool](blocks.md#block-qtcraft-magenta_wool), [Orange wool](blocks.md#block-qtcraft-orange_wool), [Painting](items.md#item-qtcraft-painting), [Pink wool](blocks.md#block-qtcraft-pink_wool), [Purple wool](blocks.md#block-qtcraft-purple_wool), [Red wool](blocks.md#block-qtcraft-red_wool), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
 
 ### <a id="tag-qtcraft-coals"></a>Coal or charcoal
 

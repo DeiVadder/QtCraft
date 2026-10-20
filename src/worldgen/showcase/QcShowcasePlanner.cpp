@@ -1,5 +1,6 @@
 #include "worldgen/showcase/QcShowcasePlanner.h"
 
+#include "common/gameplay/QcHanging.h"
 #include "worldgen/showcase/QcShowcaseArmourArea.h"
 #include "worldgen/showcase/QcShowcaseBlockArea.h"
 #include "worldgen/showcase/QcShowcaseCategories.h"
@@ -267,6 +268,21 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     }
     for (const QcStructureDefinition::Sign &sign : structure.signs) {
         m_plan.setup.signs.append({placement.toWorld(sign.at), sign.lines});
+    }
+    for (QcStructureDefinition::Hanging hanging : structure.hangings) {
+        // Turned with the structure like the stands' yaw: north, east, south, west per quarter turn.
+        for (int turn = 0; turn < placement.turns() && QcHanging::isWallFace(hanging.face); ++turn) {
+            static constexpr std::array<QcBlockFace, 4> clockwise = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
+            hanging.face = clockwise[(std::ranges::find(clockwise, hanging.face) - clockwise.begin() + 1) % 4];
+        }
+        // A frame on a floor or ceiling turns its item instead: two eighths per quarter turn,
+        // clockwise as seen from above, which is the other way round as seen from below.
+        if (!QcHanging::isWallFace(hanging.face)) {
+            const int eighths = 2 * placement.turns() * (hanging.face == QcBlockFace::Up ? 1 : -1);
+            hanging.rotation = ((hanging.rotation + eighths) % QcHanging::rotations + QcHanging::rotations) % QcHanging::rotations;
+        }
+        hanging.at = placement.toWorld(hanging.at);
+        m_plan.setup.hangings.append(hanging);
     }
     m_plan.setup.adventure.merge(structure.adventure);
     for (const QcStructureDefinition::Spawner &spawner : structure.spawners) {

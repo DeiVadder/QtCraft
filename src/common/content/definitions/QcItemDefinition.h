@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcArmourDefinition.h"
+#include "common/content/definitions/QcHangingDefinition.h"
 #include "common/content/definitions/QcProjectileDefinition.h"
 
 #include <QString>
@@ -92,6 +93,9 @@ struct QcItemDefinition
     std::optional<QcArmourDefinition> armour;
     // Used on the top of a block, places an armour stand that drops this item again (decision E-238).
     bool placesStand = false;
+    // Used on a block face, hangs an item frame or a painting there that drops this item again
+    // (decision E-790).
+    std::optional<QcHangingDefinition> hangs;
     // Used on a rail, places a minecart that drops this item again (decision E-382). Server side only.
     bool placesCart = false;
     // The block the placed cart carries (decision E-386): a container block (a chest) makes a

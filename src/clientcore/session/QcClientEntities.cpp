@@ -37,6 +37,12 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
         return true;
     case QcEntityKind::ExperienceOrb:
         return spawn.health > 0.0;
+    case QcEntityKind::Hanging: {
+        // Its own item must hang it, a painting's motif must be one of the item's, a frame's stack known.
+        const QcItemDefinition *own = content && content->isValidItem(spawn.held) ? &content->item(spawn.held) : nullptr;
+        const bool motif = own && own->hangs && (spawn.hanging.type == QcHangingType::ItemFrame || spawn.hanging.motif < own->hangs->motifs.size());
+        return motif && own->hangs->type == spawn.hanging.type && (spawn.item.isEmpty() || content->isValidItem(spawn.item.item));
+    }
     case QcEntityKind::Projectile:
         // Drawn as its item (an arrow, decision E-425).
         return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
@@ -56,17 +62,29 @@ QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
     return spawn.kind == QcEntityKind::ArmourStand ? spawn.stand : QcStandPose();
 }
 
+QcHanging hangingOf(const QcMsg::EntitySpawn &spawn)
+{
+    return spawn.kind == QcEntityKind::Hanging ? spawn.hanging : QcHanging();
+}
+
+// Items, projectiles (their look), minecarts (what the cart carries, decision E-386) and frames
+// (what they hold, decision E-790) show a stack.
+bool showsStack(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
+{
+    return spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile || spawn.kind == QcEntityKind::Hanging
+           || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+}
+
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    // Items, projectiles (their look) and minecarts (what the cart carries, decision E-386).
-    const bool item = spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile
-                      || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+    const bool item = showsStack(spawn, content);
 
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();
     entity.appearance = spawn.appearance;
     entity.equipment = equipmentOf(spawn, content);
     entity.stand = standOf(spawn);
+    entity.hanging = hangingOf(spawn);
     entity.pitch = entity.previousPitch = spawn.pitch;
     entity.flags = spawn.flags;
     entity.held = spawn.held;
@@ -89,9 +107,7 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         return false;
     }
 
-    // Items, projectiles (their look) and minecarts (what the cart carries, decision E-386).
-    const bool item = spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile
-                      || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+    const bool item = showsStack(spawn, content);
     // A known entity sent again changed its count (items) or look (players); keep its motion history.
     const auto known = m_entities.find(spawn.id);
     if (known != m_entities.end() && known->kind == spawn.kind && known->creatureType == creatureTypeOf(spawn)) {
@@ -99,6 +115,7 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         known->appearance = spawn.appearance;
         known->equipment = equipmentOf(spawn, content);
         known->stand = standOf(spawn);
+        known->hanging = hangingOf(spawn);
         known->held = spawn.held;
         known->name = spawn.name;
         // An orb sent again grew by merging.

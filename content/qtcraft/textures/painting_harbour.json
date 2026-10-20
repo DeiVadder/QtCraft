@@ -1,0 +1,12 @@
+{
+    "name": "painting_harbour",
+    "pattern": "painting_sea",
+    "primary": "#28648e",
+    "secondary": "#b4d6ee",
+    "variation": 0.1,
+    "seed": 8135,
+    "tiles": [
+        2,
+        1
+    ]
+}

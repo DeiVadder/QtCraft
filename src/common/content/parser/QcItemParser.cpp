@@ -2,6 +2,7 @@
 
 #include "common/content/parser/QcArmourParser.h"
 #include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcHangingParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 
 #include <QJsonArray>
@@ -284,6 +285,12 @@ QcResult<QcItemDefinition> ItemReader::read()
     m_reader.nestedObject(u"armour"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) {
         m_item.armour = QcArmourParser::parseArmour(object, m_namespace, m_item.name, nested);
     });
+    m_reader.nestedObject(u"hangs"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) {
+        m_item.hangs = QcHangingParser::parseHanging(object, m_namespace, nested);
+    });
+    if (m_item.hangs && (m_item.placesStand || m_item.placesCart || !m_item.placesBlock.isEmpty())) {
+        m_reader.fail(u"an item that hangs places no block, stand or minecart"_s);
+    }
 
     parseProjectileUses();
     parseDispense();

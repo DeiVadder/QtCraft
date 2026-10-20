@@ -19,6 +19,7 @@ struct QcWorldSetup
     using Contents = QcStructureDefinition::Contents;
     using Cart = QcStructureDefinition::Cart;
     using Sign = QcStructureDefinition::Sign;
+    using Hanging = QcStructureDefinition::Hanging;
 
     // Seconds into the day the world starts at (QcDayCycle), else the usual morning.
     std::optional<double> timeOfDay;
@@ -42,6 +43,8 @@ struct QcWorldSetup
     QList<Cart> minecarts;
     // Text on signs (decision E-766).
     QList<Sign> signs;
+    // Item frames and paintings (decision E-797).
+    QList<Hanging> hangings;
     // The adventure allow-lists the world starts with (decision E-735; the showcase's station).
     QcAdventureRules adventure;
 

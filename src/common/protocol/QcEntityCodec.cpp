@@ -9,6 +9,40 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+void writeHanging(QDataStream &stream, const QcHanging &hanging)
+{
+    stream << quint8(hanging.type) << quint8(hanging.face) << qint32(hanging.cell.x) << qint32(hanging.cell.y) << qint32(hanging.cell.z)
+           << quint8(hanging.width) << quint8(hanging.height) << hanging.rotation << hanging.motif;
+}
+
+// The hanging part of an EntitySpawn; std::nullopt for values no frame or painting has.
+[[nodiscard]] std::optional<QcHanging> readHanging(QDataStream &stream)
+{
+    quint8 type = 0;
+    quint8 face = 0;
+    qint32 x = 0;
+    qint32 y = 0;
+    qint32 z = 0;
+    quint8 width = 0;
+    quint8 height = 0;
+    QcHanging hanging;
+    stream >> type >> face >> x >> y >> z >> width >> height >> hanging.rotation >> hanging.motif;
+    if (type >= qcHangingTypeCount || face >= qcBlockFaceCount || width < 1 || height < 1 || width > QcPaintingMotif::maxSide
+        || height > QcPaintingMotif::maxSide || hanging.rotation >= QcHanging::rotations) {
+        return std::nullopt;
+    }
+    hanging.type = QcHangingType(type);
+    hanging.face = QcBlockFace(face);
+    hanging.cell = {x, y, z};
+    hanging.width = width;
+    hanging.height = height;
+    return hanging;
+}
+
+} // namespace
+
 namespace QcProtocolCodec {
 
 void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
@@ -23,6 +57,9 @@ void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
     writeEquipment(stream, m.equipment);
     if (m.kind == QcEntityKind::ArmourStand) {
         writeStandPose(stream, m.stand);
+    }
+    if (m.kind == QcEntityKind::Hanging) {
+        writeHanging(stream, m.hanging);
     }
 }
 
@@ -78,6 +115,13 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
     m.equipment = readEquipment(stream);
     if (m.kind == QcEntityKind::ArmourStand) {
         m.stand = readStandPose(stream);
+    }
+    if (m.kind == QcEntityKind::Hanging) {
+        const std::optional<QcHanging> hanging = readHanging(stream);
+        if (!hanging) {
+            return qcError(u"Invalid frame or painting"_s);
+        }
+        m.hanging = *hanging;
     }
     if (!std::isfinite(m.pitch)) {
         return qcError(u"Non-finite entity data"_s);

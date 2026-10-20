@@ -175,6 +175,13 @@ struct BlockPlacement
     double size = 0.98;
 };
 
+// Maps the local space of an item to world space.
+using PlaceFunction = std::function<QcVec3(const QcVec3 &local)>;
+
+// An item in any orientation (the item in a frame, decision E-790): a block item as a small cube
+// centred on the origin, any other item as a flat sprite standing on it.
+void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv);
+
 // A falling block (0.98 m) or the block a cart carries: the block's look (ItemLook with `cube`).
 void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv);
 

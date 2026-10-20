@@ -88,6 +88,8 @@ private:
             return u"projectile"_s;
         case QcEntityKind::PrimedExplosive:
             return u"primed"_s;
+        case QcEntityKind::Hanging:
+            return u"hanging"_s;
         case QcEntityKind::Creature:
             break;
         }

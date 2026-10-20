@@ -5,6 +5,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcHanging.h"
 #include "common/gameplay/QcItemStack.h"
 #include "common/gameplay/QcStandPose.h"
 #include "common/world/QcEntityKind.h"
@@ -45,6 +46,9 @@ struct QcClientEntity
     QcEquipment equipment;
     // Armour stands: pose and what they show.
     QcStandPose stand;
+    // Item frames and paintings (decision E-790): where they hang and what they show; `held` is
+    // their own item, `item` the stack a frame holds.
+    QcHanging hanging;
     // Distance walked (drives the stride), the horizontal step of the latest client tick and the
     // walking speed in m/s smoothed over a few ticks; all from the shown (interpolated) motion.
     double walkDistance = 0.0;
@@ -69,6 +73,8 @@ struct QcClientEntity
     bool isMinecart() const { return kind == QcEntityKind::Minecart; }
     bool isExperienceOrb() const { return kind == QcEntityKind::ExperienceOrb; }
     bool isProjectile() const { return kind == QcEntityKind::Projectile; }
+    // An item frame or a painting: targeted by its thin box (QcHanging::box), never moves.
+    bool isHanging() const { return kind == QcEntityKind::Hanging; }
     // The block a minecart carries (its item's cartBlock, decision E-386); nothing for a plain cart.
     std::optional<QcBlockId> cartBlock(const QcContentRegistry &content) const
     {

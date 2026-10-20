@@ -8,6 +8,7 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcHanging.h"
 #include "common/gameplay/QcItemStack.h"
 #include "common/gameplay/QcStandPose.h"
 #include "common/physics/QcPose.h"
@@ -86,6 +87,10 @@ struct EntitySpawn
     QcStandPose stand{};
     // Creatures only: index into the content's mobs (at most QcStreamLimits::maxDefinitions).
     qint32 creatureType = 0;
+    // Item frames and paintings only (decision E-790): where they hang and what they show; `held`
+    // names their own item (the client finds a painting's motifs there), `item` is the stack a
+    // frame holds.
+    QcHanging hanging{};
 };
 
 struct EntityMove

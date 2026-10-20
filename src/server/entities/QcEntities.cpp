@@ -31,6 +31,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
                                   {int(limits.villagerThoughtsPerTick), int(limits.villagerRoutesPerTick), int(limits.villagerHarvestsPerTick)});
     m_creatures.population().setGolemLimit(limits.villageGolems);
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
+    m_hangings.setLimit(qsizetype(limits.maxHangings));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));
     m_orbs.setLimit(qsizetype(limits.experienceOrbs));
@@ -114,6 +115,9 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcAabb{feet - QcVec3{half, half, half}, feet + QcVec3{half, half, half}};
     }
     case QcEntityKind::MovingBlock:
+    case QcEntityKind::Hanging:
+        // Frames and paintings are no bodies: nothing pushes them, they fall off when their wall
+        // goes (QcServerHanging::tick).
         break;
     }
     return std::nullopt;

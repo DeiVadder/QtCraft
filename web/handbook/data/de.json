@@ -465,6 +465,7 @@
                 "item:qtcraft:flint_and_steel",
                 "item:qtcraft:fired_lamp_shell",
                 "item:qtcraft:yellow_dye",
+                "item:qtcraft:painting",
                 "item:qtcraft:glass_bottle",
                 "item:qtcraft:firefly_bottle",
                 "item:qtcraft:gold_ingot",
@@ -497,6 +498,7 @@
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:paper",
                 "item:qtcraft:arrow",
+                "item:qtcraft:item_frame",
                 "item:qtcraft:raw_iron",
                 "item:qtcraft:raw_gold",
                 "item:qtcraft:raw_copper",
@@ -8741,6 +8743,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -11192,6 +11200,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -14897,6 +14911,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -24207,6 +24227,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -31299,6 +31325,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -33061,6 +33093,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -37631,6 +37669,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -39393,6 +39437,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -41377,6 +41427,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -43139,6 +43195,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -53628,6 +53690,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -55770,6 +55838,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -59465,6 +59539,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -61805,6 +61885,12 @@
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -82761,6 +82847,12 @@
                             "text": "Gelbe Wolle"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:gray_wool",
                             "note": "Beliebige Wolle",
                             "target": "block:qtcraft:gray_wool",
@@ -84737,6 +84829,12 @@
                             "note": "",
                             "target": "block:qtcraft:yellow_bed",
                             "text": "Gelbes Bett"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Beliebige Wolle",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",
@@ -102099,6 +102197,117 @@
             "text": "Eine Waffe: richtet mehr Schaden an Wesen an.",
             "title": "Eisenschwert"
         },
+        "item:qtcraft:item_frame": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Item frame",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:item_frame"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:item_frame",
+            "id": "item:qtcraft:item_frame",
+            "name": "qtcraft:item_frame",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:item_frame",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:item_frame",
+                                "note": "",
+                                "target": "item:qtcraft:item_frame",
+                                "text": "Rahmen"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Lässt sich an jede Fläche eines festen Blocks hängen, auch an Boden und Decke. Rechtsklick mit einem Item legt eines hinein; jeder weitere Rechtsklick dreht es um ein Achtel. Ein Schlag nimmt das Item heraus, der nächste den Rahmen ab. Ein Signal-Komparator hinter dem Block liest die Drehung (1 bis 8), solange der Rahmen ein Item hält. Fällt ab, wenn sein Block verschwindet.",
+            "title": "Rahmen"
+        },
         "item:qtcraft:lapis_lazuli": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -102398,6 +102607,12 @@
                             "note": "",
                             "target": "item:qtcraft:leather_chestplate",
                             "text": "Lederwams"
+                        },
+                        {
+                            "icon": "qtcraft:item_frame",
+                            "note": "",
+                            "target": "item:qtcraft:item_frame",
+                            "text": "Rahmen"
                         }
                     ],
                     "recipes": [
@@ -104005,6 +104220,117 @@
             ],
             "text": "Aus rotem und gelbem Farbstoff gemischt.",
             "title": "Orangefarbener Farbstoff"
+        },
+        "item:qtcraft:painting": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Painting",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:painting"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:painting",
+            "id": "item:qtcraft:painting",
+            "name": "qtcraft:painting",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:black_wool",
+                                    "note": "",
+                                    "target": "tag:qtcraft:wool",
+                                    "text": "Beliebige Wolle"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:painting",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:painting",
+                                "note": "",
+                                "target": "item:qtcraft:painting",
+                                "text": "Gemälde"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Lässt sich an die Seite eines festen Blocks hängen: Es nimmt eines der größten Motive, die auf die freie Wand um die angeklickte Stelle passen, von 1 × 1 bis 4 × 4 Blöcken. Ein Schlag nimmt es ab; es fällt ab, wenn seine Wand oder sein Platz verschwindet.",
+            "title": "Gemälde"
         },
         "item:qtcraft:paper": {
             "category": "items",
@@ -106674,6 +107000,12 @@
                             "text": "Fichtenzauntor"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
+                        },
+                        {
                             "icon": "qtcraft:golden_axe",
                             "note": "",
                             "target": "item:qtcraft:golden_axe",
@@ -106768,6 +107100,12 @@
                             "note": "",
                             "target": "item:qtcraft:arrow",
                             "text": "Pfeil"
+                        },
+                        {
+                            "icon": "qtcraft:item_frame",
+                            "note": "",
+                            "target": "item:qtcraft:item_frame",
+                            "text": "Rahmen"
                         },
                         {
                             "icon": "qtcraft:armor_stand",
@@ -122144,6 +122482,12 @@
                             "note": "",
                             "target": "block:qtcraft:yellow_wool",
                             "text": "Gelbe Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "",
+                            "target": "item:qtcraft:painting",
+                            "text": "Gemälde"
                         },
                         {
                             "icon": "qtcraft:gray_wool",

@@ -6,6 +6,8 @@
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcStandProperties.h"
+#include "server/hanging/QcHangingRules.h"
+#include "server/hanging/QcServerHanging.h"
 #include "server/minecarts/QcMinecartMotion.h"
 #include "server/mobs/QcPetCare.h"
 
@@ -101,6 +103,52 @@ void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
     }
     if (!state.entities().stands().add(stand)) {
         qCWarning(lcServer) << "World setup: too many armour stands";
+    }
+}
+
+// An item frame or painting of the setup (decision E-797); one whose item, held item or motif the
+// content does not know, that has no wall or room there or that covers another is reported and
+// left out. Blocks not loaded count as holding, like for those already hanging.
+void placeHanging(QcServerState &state, const QcWorldSetup::Hanging &setup)
+{
+    const QcContentRegistry &content = state.content();
+    const std::optional<QcItemId> item = content.itemId(setup.item);
+    const std::optional<QcHangingDefinition> &hangs = item ? content.item(*item).hangs : std::nullopt;
+    if (!item || !hangs) {
+        qCWarning(lcServer) << "World setup: no frame or painting item" << setup.item;
+        return;
+    }
+
+    QcHangingEntity hanging;
+    hanging.item = content.item(*item).name;
+    hanging.hanging.type = hangs->type;
+    hanging.hanging.face = setup.face;
+    hanging.hanging.cell = setup.at;
+    hanging.hanging.rotation = quint8(setup.rotation);
+    if (hangs->type == QcHangingType::Painting) {
+        const auto motif = std::ranges::find(hangs->motifs, setup.motif, &QcPaintingMotif::name);
+        if (motif == hangs->motifs.end()) {
+            qCWarning(lcServer) << "World setup: no painting motif" << setup.motif;
+            return;
+        }
+        hanging.hanging.motif = quint8(motif - hangs->motifs.begin());
+        hanging.hanging.width = motif->width;
+        hanging.hanging.height = motif->height;
+    } else if (!setup.held.isEmpty()) {
+        const std::optional<QcItemId> held = content.itemId(setup.held);
+        if (!held) {
+            qCWarning(lcServer) << "World setup: unknown item in a frame" << setup.held;
+            return;
+        }
+        hanging.held = {*held, 1, 0};
+    }
+
+    if (!QcHangingRules::holds(state.world(), hanging.hanging).value_or(true) || QcHangingRules::overlaps(state.entities().hangings(), hanging.hanging)) {
+        qCWarning(lcServer) << "World setup: no room for" << setup.item << "at" << setup.at.x << setup.at.y << setup.at.z;
+        return;
+    }
+    if (!QcServerHanging::spawn(state, hanging)) {
+        qCWarning(lcServer) << "World setup: too many item frames and paintings";
     }
 }
 
@@ -201,6 +249,9 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     }
     for (const QcWorldSetup::Sign &sign : setup.signs) {
         write(state, sign);
+    }
+    for (const QcWorldSetup::Hanging &hanging : setup.hangings) {
+        placeHanging(state, hanging);
     }
 
     updates.setCommandMode(true);

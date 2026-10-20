@@ -490,6 +490,7 @@
                 "item:qtcraft:gunpowder",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
+                "item:qtcraft:item_frame",
                 "item:qtcraft:lapis_lazuli",
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
@@ -504,6 +505,7 @@
                 "item:qtcraft:chest_minecart",
                 "item:qtcraft:hopper_minecart",
                 "item:qtcraft:orange_dye",
+                "item:qtcraft:painting",
                 "item:qtcraft:paper",
                 "item:qtcraft:pink_dye",
                 "item:qtcraft:healing_potion",
@@ -8801,6 +8803,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -11240,6 +11248,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -14945,6 +14959,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -24267,6 +24287,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -31359,6 +31385,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -33121,6 +33153,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -37691,6 +37729,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -39453,6 +39497,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -41437,6 +41487,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -43199,6 +43255,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -53688,6 +53750,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -55818,6 +55886,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_bed",
@@ -59513,6 +59587,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -61853,6 +61933,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -82809,6 +82895,12 @@
                             "text": "Orange wool"
                         },
                         {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
+                        },
+                        {
                             "icon": "qtcraft:pink_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:pink_wool",
@@ -84773,6 +84865,12 @@
                             "note": "Any wool",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "Any wool",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",
@@ -102099,6 +102197,117 @@
             "text": "A weapon: deals more damage to creatures.",
             "title": "Iron sword"
         },
+        "item:qtcraft:item_frame": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Item frame",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:item_frame"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:item_frame",
+            "id": "item:qtcraft:item_frame",
+            "name": "qtcraft:item_frame",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:item_frame",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:item_frame",
+                                "note": "",
+                                "target": "item:qtcraft:item_frame",
+                                "text": "Item frame"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Hang it on any face of a solid block, also on the floor or the ceiling. Right click with an item puts one in; right click again turns it an eighth further. A hit takes the item out, the next hit takes the frame down. A Signal Comparator behind the block reads the turn (1 to 8) while the frame holds an item. The frame falls off when its block goes.",
+            "title": "Item frame"
+        },
         "item:qtcraft:lapis_lazuli": {
             "category": "items",
             "categoryTitle": "Items",
@@ -102374,6 +102583,12 @@
                             "note": "",
                             "target": "item:qtcraft:book",
                             "text": "Book"
+                        },
+                        {
+                            "icon": "qtcraft:item_frame",
+                            "note": "",
+                            "target": "item:qtcraft:item_frame",
+                            "text": "Item frame"
                         },
                         {
                             "icon": "qtcraft:leather_boots",
@@ -104005,6 +104220,117 @@
             ],
             "text": "Mixed from red and yellow dye.",
             "title": "Orange dye"
+        },
+        "item:qtcraft:painting": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Painting",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:painting"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:painting",
+            "id": "item:qtcraft:painting",
+            "name": "qtcraft:painting",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:black_wool",
+                                    "note": "",
+                                    "target": "tag:qtcraft:wool",
+                                    "text": "Any wool"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stick"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:painting",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:painting",
+                                "note": "",
+                                "target": "item:qtcraft:painting",
+                                "text": "Painting"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Hang it on the side of a solid block: it takes one of the largest motifs that fit the free wall around the clicked spot, from 1 x 1 up to 4 x 4 blocks. A hit takes it down; it falls off when its wall or its room goes.",
+            "title": "Painting"
         },
         "item:qtcraft:paper": {
             "category": "items",
@@ -106674,6 +107000,12 @@
                             "text": "Iron sword"
                         },
                         {
+                            "icon": "qtcraft:item_frame",
+                            "note": "",
+                            "target": "item:qtcraft:item_frame",
+                            "text": "Item frame"
+                        },
+                        {
                             "icon": "qtcraft:ladder",
                             "note": "",
                             "target": "block:qtcraft:ladder",
@@ -106702,6 +107034,12 @@
                             "note": "",
                             "target": "block:qtcraft:oak_sign",
                             "text": "Oak Sign"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:powered_rail",
@@ -122192,6 +122530,12 @@
                             "note": "",
                             "target": "block:qtcraft:orange_wool",
                             "text": "Orange wool"
+                        },
+                        {
+                            "icon": "qtcraft:painting",
+                            "note": "",
+                            "target": "item:qtcraft:painting",
+                            "text": "Painting"
                         },
                         {
                             "icon": "qtcraft:pink_wool",

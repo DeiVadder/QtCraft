@@ -1,0 +1,8 @@
+{
+    "name": "painting_meadow",
+    "pattern": "painting_landscape",
+    "primary": "#5e9a3c",
+    "secondary": "#7fb4e6",
+    "variation": 0.1,
+    "seed": 8100
+}

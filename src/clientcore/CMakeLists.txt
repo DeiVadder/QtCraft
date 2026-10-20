@@ -77,6 +77,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcEntityPose.h
     meshing/QcEntityVertex.h
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
+    meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
@@ -176,6 +177,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
     textures/QcTexturePaint.h
+    textures/QcTexturePaintingPatterns.h textures/QcTexturePaintingPatterns.cpp
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
