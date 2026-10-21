@@ -1,0 +1,27 @@
+{
+    "name": "stripped_jungle_log",
+    "tags": [
+        "logs"
+    ],
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "flammable": {
+        "ignite": 5,
+        "burn": 5
+    },
+    "fuelSeconds": 15,
+    "shape": "pillar",
+    "states": {
+        "axis": [
+            "y",
+            "x",
+            "z"
+        ]
+    },
+    "textures": {
+        "top": "stripped_jungle_log_top",
+        "bottom": "stripped_jungle_log_top",
+        "side": "stripped_jungle_log"
+    }
+}

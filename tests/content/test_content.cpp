@@ -307,7 +307,7 @@ private slots:
         sapling.solid = false;
         sapling.opaque = false;
         sapling.drops = {{u"a:sapling"_s, 1, 0.3}};
-        sapling.sapling = {u"a:tree"_s, 5.0, 9.0, {u"a:dirt"_s}, 0.6};
+        sapling.sapling = {u"a:tree"_s, 5.0, 9.0, {u"a:dirt"_s}, 0.6, {}};
         QVERIFY(registry.registerBlock(sapling).has_value());
 
         QByteArray data;

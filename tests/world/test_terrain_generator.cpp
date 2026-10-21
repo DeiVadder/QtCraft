@@ -2,6 +2,7 @@
 #include "common/core/QcWorkerPool.h"
 #include "QcTestUtil.h"
 #include "world/QcTerrainTestUtil.h"
+#include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QJsonObject>
@@ -121,18 +122,20 @@ ChunkArea generateAround(const QcTerrainGenerator &generator, QcChunkPos centre)
     return area;
 }
 
-// Crowns reach at most three blocks from the trunk, which ends at most one block below the highest
-// leaves.
-bool trunkNear(const ChunkArea &area, QcBlockPos leaf, QcBlockId trunk)
+// Crowns reach at most four blocks from the trunk or a branch (giant trees, decision E-822), which
+// ends at most two blocks below the highest leaves.
+bool trunkNear(const ChunkArea &area, QcBlockPos leaf, const QSet<QcBlockId> &trunk)
 {
     const auto blockAt = [&](int x, int y, int z) {
         const QcBlockPos pos{x, y, z};
         return area.value(pos.chunk())->block(pos.localX(), y, pos.localZ());
     };
     bool found = false;
-    for (int dx = -3; dx <= 3 && !found; ++dx) {
-        for (int dz = -3; dz <= 3 && !found; ++dz) {
-            found = blockAt(leaf.x + dx, leaf.y, leaf.z + dz) == trunk || blockAt(leaf.x + dx, leaf.y - 1, leaf.z + dz) == trunk;
+    for (int dx = -4; dx <= 4 && !found; ++dx) {
+        for (int dz = -4; dz <= 4 && !found; ++dz) {
+            for (int dy = -2; dy <= 0 && !found; ++dy) {
+                found = trunk.contains(blockAt(leaf.x + dx, leaf.y + dy, leaf.z + dz));
+            }
         }
     }
     return found;
@@ -140,7 +143,7 @@ bool trunkNear(const ChunkArea &area, QcBlockPos leaf, QcBlockId trunk)
 
 // Checks every leaf of the centre chunk of `area` for its trunk and counts them into `checked`;
 // returns the first leaf without one.
-QString leafWithoutTrunk(const ChunkArea &area, QcChunkPos centre, const QHash<QcBlockId, QcBlockId> &trunkOf, int &checked)
+QString leafWithoutTrunk(const ChunkArea &area, QcChunkPos centre, const QHash<QcBlockId, QSet<QcBlockId>> &trunkOf, int &checked)
 {
     const std::shared_ptr<QcChunk> chunk = area.value(centre);
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
@@ -449,10 +452,12 @@ private slots:
         // Both chunks at a border decide each tree on their own; a leaf without a trunk next to it
         // means one side placed the tree and the other did not.
         const QcTerrainGenerator generator(m_base, 12345);
-        QHash<QcBlockId, QcBlockId> trunkOf;
-        for (const char *wood : {"oak", "birch", "spruce"}) {
+        // Every axis of the log: branches of giant trees lie.
+        QHash<QcBlockId, QSet<QcBlockId>> trunkOf;
+        for (const char *wood : {"oak", "birch", "spruce", "jungle"}) {
+            const QcBlockId log = *m_base->blockId(u"qtcraft:%1_log"_s.arg(QLatin1StringView(wood)));
             trunkOf.insert(*m_base->blockId(u"qtcraft:%1_leaves"_s.arg(QLatin1StringView(wood))),
-                           *m_base->blockId(u"qtcraft:%1_log"_s.arg(QLatin1StringView(wood))));
+                           {log, m_base->withProperty(log, u"axis"_s, u"x"_s), m_base->withProperty(log, u"axis"_s, u"z"_s)});
         }
 
         int checked = 0;
@@ -464,6 +469,42 @@ private slots:
             }
         }
         QVERIFY2(checked > 1000, qPrintable(QString::number(checked)));
+    }
+
+    void leavesBesideStructuresHaveTheirTrunk()
+    {
+        // Trees keep a margin from surface structures; every chunk a tree reaches must see the same
+        // structures, or one side places the tree and the other does not.
+        const QcTerrainGenerator generator(m_base, 12345);
+        std::optional<QcSurfacePlanner::Rect> footprint;
+        for (int cz = -64; cz <= 64 && !footprint; cz += 2) {
+            for (int cx = -64; cx <= 64 && !footprint; cx += 2) {
+                const QList<QcSurfacePlanner::Rect> near = generator.surfaceStructures().footprintsNear({cx, cz}, 0);
+                if (!near.isEmpty()) {
+                    footprint = near.first();
+                }
+            }
+        }
+        QVERIFY(footprint.has_value());
+
+        QHash<QcBlockId, QSet<QcBlockId>> trunkOf;
+        for (const char *wood : {"oak", "birch", "spruce", "jungle"}) {
+            const QcBlockId log = *m_base->blockId(u"qtcraft:%1_log"_s.arg(QLatin1StringView(wood)));
+            trunkOf.insert(*m_base->blockId(u"qtcraft:%1_leaves"_s.arg(QLatin1StringView(wood))),
+                           {log, m_base->withProperty(log, u"axis"_s, u"x"_s), m_base->withProperty(log, u"axis"_s, u"z"_s)});
+        }
+        // The chunks of the footprint and one ring around it.
+        const QcChunkPos first = QcBlockPos{footprint->x0, 0, footprint->z0}.chunk();
+        const QcChunkPos last = QcBlockPos{footprint->x1, 0, footprint->z1}.chunk();
+        int checked = 0;
+        for (int cz = first.z - 1; cz <= last.z + 1; ++cz) {
+            for (int cx = first.x - 1; cx <= last.x + 1; ++cx) {
+                const ChunkArea area = generateAround(generator, {cx, cz});
+                const QString problem = leafWithoutTrunk(area, {cx, cz}, trunkOf, checked);
+                QVERIFY2(problem.isEmpty(), qPrintable(problem));
+            }
+        }
+        qInfo() << "leaves checked" << checked;
     }
 
     void cavesOpenOnlyAtEntrancesAndHoldLavaDeepDown()

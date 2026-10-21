@@ -80,7 +80,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood), [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log), [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood), [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log), [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood)
+[Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood), [Stripped birch log](blocks.md#block-qtcraft-stripped_birch_log), [Stripped birch wood](blocks.md#block-qtcraft-stripped_birch_wood), [Stripped jungle log](blocks.md#block-qtcraft-stripped_jungle_log), [Stripped jungle wood](blocks.md#block-qtcraft-stripped_jungle_wood), [Stripped oak log](blocks.md#block-qtcraft-stripped_oak_log), [Stripped oak wood](blocks.md#block-qtcraft-stripped_oak_wood), [Stripped spruce log](blocks.md#block-qtcraft-stripped_spruce_log), [Stripped spruce wood](blocks.md#block-qtcraft-stripped_spruce_wood)
 
 **Used in**
 
@@ -96,7 +96,7 @@ Recipes that ask for this group take any of its items.
 
 **Items in this group**
 
-[Birch planks](blocks.md#block-qtcraft-birch_planks), [Oak planks](blocks.md#block-qtcraft-oak_planks), [Spruce planks](blocks.md#block-qtcraft-spruce_planks)
+[Birch planks](blocks.md#block-qtcraft-birch_planks), [Jungle planks](blocks.md#block-qtcraft-jungle_planks), [Oak planks](blocks.md#block-qtcraft-oak_planks), [Spruce planks](blocks.md#block-qtcraft-spruce_planks)
 
 **Used in**
 

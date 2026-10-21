@@ -1,0 +1,15 @@
+{
+    "name": "jungle_trapdoor",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "jungle_planks"
+    },
+    "result": {
+        "item": "jungle_trapdoor",
+        "count": 2
+    }
+}

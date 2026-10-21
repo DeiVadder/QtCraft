@@ -15,6 +15,10 @@
     "frozenWater": "ice",
     "features": [
         {
+            "feature": "giant_spruce_tree",
+            "density": 0.0012
+        },
+        {
             "feature": "spruce_tree",
             "density": 0.022
         },

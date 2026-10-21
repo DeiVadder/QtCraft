@@ -18,7 +18,7 @@ Chops wood faster.
 | Mining speed | × 8 |
 | Durability | 1561 uses |
 | Attack damage | 5 health points |
-| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
+| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
 
 **How to make it**
 
@@ -232,7 +232,7 @@ Very fast but soft: it wears out after a few uses and only mines what wood can.
 | Mining speed | × 12 |
 | Durability | 32 uses |
 | Attack damage | 3.5 health points |
-| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
+| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
 
 **How to make it**
 
@@ -446,7 +446,7 @@ Chops wood faster.
 | Mining speed | × 6 |
 | Durability | 250 uses |
 | Attack damage | 4.5 health points |
-| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
+| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
 
 **How to make it**
 
@@ -750,7 +750,7 @@ Chops wood faster.
 | Mining speed | × 4 |
 | Durability | 131 uses |
 | Attack damage | 4 health points |
-| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
+| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
 
 **How to make it**
 
@@ -875,7 +875,7 @@ Chops wood faster.
 | Durability | 59 uses |
 | Attack damage | 3.5 health points |
 | Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
-| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
+| Strips | [Birch log](blocks.md#block-qtcraft-birch_log), [Birch wood](blocks.md#block-qtcraft-birch_wood), [Jungle log](blocks.md#block-qtcraft-jungle_log), [Jungle wood](blocks.md#block-qtcraft-jungle_wood), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak wood](blocks.md#block-qtcraft-oak_wood), [Spruce log](blocks.md#block-qtcraft-spruce_log), [Spruce wood](blocks.md#block-qtcraft-spruce_wood) |
 
 **How to make it**
 

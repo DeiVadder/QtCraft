@@ -6,6 +6,7 @@
     "hardness": 0.0,
     "sapling": {
         "feature": "spruce_tree",
+        "giantFeature": "giant_spruce_tree",
         "minSeconds": 120,
         "maxSeconds": 300,
         "plantOn": [

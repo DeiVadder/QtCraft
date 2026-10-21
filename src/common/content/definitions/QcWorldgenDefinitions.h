@@ -85,8 +85,12 @@ struct QcFeatureDefinition
     QString leavesBlock;
     int minHeight = 4;
     int maxHeight = 6;
-    // "round" or "cone" crowns for trees.
+    // Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", or the giant trees on a 2×2 trunk
+    // "giant_cone" and "giant_round" (decision E-822).
     QString shape = QStringLiteral("round");
+    // Vines hung on the trunk and lowest leaves of trees (a block with the state `attach`); empty for
+    // none.
+    QString vinesBlock;
     // Blocks the feature may stand on; empty allows any solid block.
     QList<QString> groundBlocks;
     // Only on ground at sea level with water right next to it (sugar cane on a shore).

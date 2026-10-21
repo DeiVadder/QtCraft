@@ -1,0 +1,16 @@
+{
+    "name": "jungle_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "jungle_planks"
+    },
+    "result": {
+        "item": "jungle_door",
+        "count": 3
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "name": "jungle_door",
+    "sound": "wood",
+    "shape": "door",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 3.0,
+    "tool": "axe",
+    "door": true,
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ],
+        "hinge": [
+            "left",
+            "right"
+        ]
+    },
+    "itemTexture": "jungle_door_item",
+    "textures": {
+        "all": "jungle_door_lower",
+        "slots": {
+            "lower": "jungle_door_lower",
+            "upper": "jungle_door_upper"
+        }
+    },
+    "fuelSeconds": 10,
+    "signal": {
+        "type": "opener"
+    }
+}

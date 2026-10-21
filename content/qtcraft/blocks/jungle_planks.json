@@ -1,0 +1,17 @@
+{
+    "name": "jungle_planks",
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "tags": [
+        "planks"
+    ],
+    "flammable": {
+        "ignite": 5,
+        "burn": 20
+    },
+    "textures": {
+        "all": "jungle_planks"
+    },
+    "fuelSeconds": 15
+}

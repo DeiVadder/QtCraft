@@ -97,6 +97,18 @@ private:
         return tickTimes(items, world, count, players, {[](const QcVec3 &) { return true; }, give, {}});
     }
 
+    // Writes the blocks of a tree into `world`, leaves only into air.
+    static QcTreeShape::Put intoWorld(QcTestWorld &world)
+    {
+        return [&world](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
+            if (!onlyIntoAir || world.blockAt(pos) == qcAirBlockId) {
+                world.set(pos, id);
+                return true;
+            }
+            return false;
+        };
+    }
+
 private slots:
     void itemsFallAndComeToRest()
     {
@@ -482,12 +494,7 @@ private slots:
         oak.leaves = block("qtcraft:oak_leaves");
         oak.minHeight = oak.maxHeight = 5;
 
-        const auto put = [&world](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
-            if (!onlyIntoAir || world.blockAt(pos) == qcAirBlockId) {
-                world.set(pos, id);
-            }
-        };
-
+        const QcTreeShape::Put put = intoWorld(world);
         QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, put);
         // A second tree whose crown is more than four blocks away from the first trunk.
         QcTreeShape::build(oak, {20, 64, 0}, 0.0, 1, put);
@@ -559,11 +566,7 @@ private slots:
         oak.trunk = block("qtcraft:oak_log");
         oak.leaves = block("qtcraft:oak_leaves");
         oak.minHeight = oak.maxHeight = 5;
-        QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, [&world](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
-            if (!onlyIntoAir || world.blockAt(pos) == qcAirBlockId) {
-                world.set(pos, id);
-            }
-        });
+        QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, intoWorld(world));
 
         // The trunk stripped and lying (decisions E-751, E-753).
         const QcBlockId stripped = m_content->withProperty(block("qtcraft:stripped_oak_log"), u"axis"_s, u"x"_s);
@@ -613,7 +616,10 @@ private slots:
         oak.leaves = block("qtcraft:oak_leaves");
         oak.minHeight = oak.maxHeight = 5;
 
-        QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, [&world](QcBlockPos pos, QcBlockId id, bool) { world.set(pos, id); });
+        QcTreeShape::build(oak, {0, 64, 0}, 0.0, 1, [&world](QcBlockPos pos, QcBlockId id, bool) {
+            world.set(pos, id);
+            return true;
+        });
 
         // Everything beyond x/z = 3 counts as unloaded: the outer leaves cannot be judged yet.
         world.loadedRadius = 3;

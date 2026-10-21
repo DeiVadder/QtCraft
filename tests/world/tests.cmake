@@ -14,6 +14,7 @@ qc_add_test(test_desert_temples SOURCES world/test_desert_temples.cpp LIBRARIES 
 qc_add_test(test_jungle_temples SOURCES world/test_jungle_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_surface_ruins SOURCES world/test_surface_ruins.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_giant_trees SOURCES world/test_giant_trees.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)

@@ -14,14 +14,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
 {
     QHash<QString, QcTreeShape::Params> features;
     for (const QcFeatureDefinition &feature : m_content->worldgen().features()) {
-        QcTreeShape::Params params;
-        params.type = feature.type;
-        params.trunk = m_content->blockId(feature.trunkBlock).value_or(qcAirBlockId);
-        params.leaves = m_content->blockId(feature.leavesBlock).value_or(qcAirBlockId);
-        params.minHeight = feature.minHeight;
-        params.maxHeight = feature.maxHeight;
-        params.cone = feature.shape == u"cone"_s;
-
+        const QcTreeShape::Params params = QcTreeShape::paramsOf(*m_content, feature);
         if (params.trunk == qcAirBlockId || feature.type == QcFeatureDefinition::Type::Pool) {
             continue;
         }
@@ -61,6 +54,14 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
         }
 
         m_trees.insert(block, *feature);
+        if (sapling.giantFeature.isEmpty()) {
+            continue;
+        }
+        if (const auto giant = features.constFind(sapling.giantFeature); giant != features.constEnd()) {
+            m_giantTrees.insert(block, *giant);
+        } else {
+            qCWarning(lcPlants) << "Sapling" << blocks[i].name << "names the unknown giant feature" << sapling.giantFeature;
+        }
     }
 }
 
@@ -165,7 +166,36 @@ QcPlantManager::Support QcPlantManager::rowSupport(QcBlockPos centre, const QcBl
 
 bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock)
 {
-    const QcTreeShape::Params &tree = m_trees[block];
+    // Four saplings in a square grow into the giant tree together (decision E-822).
+    const auto giant = m_giantTrees.constFind(block);
+    if (giant != m_giantTrees.constEnd()) {
+        if (const std::optional<QcBlockPos> corner = giantSquare(sapling, block, world)) {
+            const QList<QcBlockPos> square{*corner, corner->offset(1, 0, 0), corner->offset(0, 0, 1), corner->offset(1, 0, 1)};
+            return growTree(*giant, *corner, square, world, setBlock);
+        }
+    }
+    return growTree(m_trees[block], sapling, {sapling}, world, setBlock);
+}
+
+std::optional<QcBlockPos> QcPlantManager::giantSquare(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world) const
+{
+    // The squares the sapling may be a corner of, north-west corner first as in the reference.
+    for (const int dx : {-1, 0}) {
+        for (const int dz : {-1, 0}) {
+            const QcBlockPos corner = sapling.offset(dx, 0, dz);
+            const bool full = std::ranges::all_of(std::array{corner, corner.offset(1, 0, 0), corner.offset(0, 0, 1), corner.offset(1, 0, 1)},
+                                                  [&](QcBlockPos pos) { return world.blockAt(pos) == block; });
+            if (full) {
+                return corner;
+            }
+        }
+    }
+    return std::nullopt;
+}
+
+bool QcPlantManager::growTree(const QcTreeShape::Params &tree, QcBlockPos base, const QList<QcBlockPos> &saplings, const QcBlockAccess &world,
+                              const SetBlock &setBlock)
+{
     const double random = m_random.generateDouble();
 
     struct Placement
@@ -175,9 +205,20 @@ bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAcce
         bool onlyIntoAir;
     };
 
+    // Leaves and vines go only where QcTreeShape::mayReplace() allows, judged against the world with
+    // the tree's own blocks so far, so vines hang only on leaves that will be there.
     QList<Placement> placements;
-    QcTreeShape::build(tree, sapling, random, m_seed, [&placements](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
+    QHash<QcBlockPos, QcBlockId> planned;
+    QcTreeShape::build(tree, base, random, m_seed, [&](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
+        const auto own = planned.constFind(pos);
+        const std::optional<QcBlockId> existing = own != planned.constEnd() ? std::optional(*own) : world.blockAt(pos);
+        if (existing && onlyIntoAir && !QcTreeShape::mayReplace(tree, *existing, id, true)) {
+            return false;
+        }
+        // An unloaded block stays in the list: the check below makes the tree wait for it.
         placements.append({pos, id, onlyIntoAir});
+        planned.insert(pos, id);
+        return existing.has_value();
     });
 
     // The trunk needs free space (or the sapling itself); leaves fill only what is free.
@@ -187,7 +228,7 @@ bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAcce
             return false;
         }
 
-        const bool free = *existing == qcAirBlockId || placement.pos == sapling
+        const bool free = *existing == qcAirBlockId || saplings.contains(placement.pos)
                           || (m_content->block(*existing).replaceable && !m_content->block(*existing).liquid);
         if (!placement.onlyIntoAir && !free) {
             return false;
@@ -195,10 +236,6 @@ bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAcce
     }
 
     for (const Placement &placement : std::as_const(placements)) {
-        const std::optional<QcBlockId> existing = world.blockAt(placement.pos);
-        if (placement.onlyIntoAir && existing != qcAirBlockId) {
-            continue;
-        }
         setBlock(placement.pos, placement.block);
     }
     return true;

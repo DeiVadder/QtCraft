@@ -91,8 +91,14 @@ private:
     void decayLeaves(const QcBlockAccess &world, const BreakBlock &breakBlock);
     void growSaplings(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const LoadedFunction &isLoaded,
                       const SetBlock &setBlock);
-    // Returns false when the tree has no room yet.
+    // Grows the sapling at `sapling` (with three more in a square into the giant tree); returns false
+    // when the tree has no room yet.
     bool grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock);
+    // The north-west corner of a 2×2 square of `block` saplings that holds `sapling`, if any.
+    [[nodiscard]] std::optional<QcBlockPos> giantSquare(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world) const;
+    // Grows `tree` on `base` where the `saplings` stand; false without room.
+    bool growTree(const QcTreeShape::Params &tree, QcBlockPos base, const QList<QcBlockPos> &saplings, const QcBlockAccess &world,
+                  const SetBlock &setBlock);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
@@ -101,6 +107,8 @@ private:
     QSet<QcBlockId> m_trunks;
     // Tree shape per sapling block; blocks whose feature is unknown never grow.
     QHash<QcBlockId, QcTreeShape::Params> m_trees;
+    // Giant tree per sapling block that grows one from a 2×2 square (decision E-822).
+    QHash<QcBlockId, QcTreeShape::Params> m_giantTrees;
     QHash<QcBlockId, QSet<QcBlockId>> m_plantOn;
     QList<PendingCheck> m_pending;
     QSet<QcBlockPos> m_pendingPositions;

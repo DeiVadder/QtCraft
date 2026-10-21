@@ -1,0 +1,17 @@
+{
+    "name": "jungle_sign",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        " | "
+    ],
+    "key": {
+        "#": "jungle_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "jungle_sign",
+        "count": 3
+    }
+}

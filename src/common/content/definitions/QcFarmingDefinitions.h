@@ -87,6 +87,9 @@ struct QcSaplingDefinition
     QList<QString> plantOn;
     // Chance that a despawning item of this block plants itself instead of vanishing.
     double plantChance = 0.0;
+    // The giant tree feature that four of these saplings in a 2×2 square grow into together; empty
+    // when they only grow alone (decision E-822). Server side only, not sent to clients.
+    QString giantFeature;
 
     bool isSapling() const { return !feature.isEmpty(); }
 };

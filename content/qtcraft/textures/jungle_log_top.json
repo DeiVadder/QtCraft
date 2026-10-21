@@ -1,0 +1,8 @@
+{
+    "name": "jungle_log_top",
+    "pattern": "log_top",
+    "primary": "#9c7350",
+    "secondary": "#6b5034",
+    "variation": 0.08,
+    "seed": 9702
+}

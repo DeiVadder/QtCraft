@@ -1,0 +1,8 @@
+{
+    "name": "stripped_jungle_log",
+    "pattern": "log_side",
+    "primary": "#ab8455",
+    "secondary": "#946e44",
+    "variation": 0.05,
+    "seed": 9710
+}

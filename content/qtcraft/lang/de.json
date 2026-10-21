@@ -751,5 +751,16 @@
     "structure.qtcraft.maps_station": "Karten",
     "structure.qtcraft.maps_station.use": "Halte eine leere Karte und benutze sie: Sie zeichnet das Land um dich",
     "structure.qtcraft.maps_station.craft": "Karte + 8 Papier zoomt heraus, Karte + leere Karten kopiert",
-    "structure.qtcraft.maps_station.wall": "Karten in Rahmen nebeneinander ergeben eine Wandkarte"
+    "structure.qtcraft.maps_station.wall": "Karten in Rahmen nebeneinander ergeben eine Wandkarte",
+    "block.qtcraft.jungle_log": "Dschungelstamm",
+    "block.qtcraft.jungle_wood": "Dschungelholz",
+    "block.qtcraft.stripped_jungle_log": "Entrindeter Dschungelstamm",
+    "block.qtcraft.stripped_jungle_wood": "Entrindetes Dschungelholz",
+    "block.qtcraft.jungle_planks": "Dschungelholzbretter",
+    "block.qtcraft.jungle_leaves": "Dschungellaub",
+    "block.qtcraft.jungle_sapling": "Dschungelsetzling",
+    "block.qtcraft.jungle_door": "Dschungeltür",
+    "block.qtcraft.jungle_trapdoor": "Dschungelfalltür",
+    "block.qtcraft.jungle_sign": "Dschungelschild",
+    "material.qtcraft.jungle": "Dschungel"
 }

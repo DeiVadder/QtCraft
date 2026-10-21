@@ -24,7 +24,7 @@ LICENSE = "GPL-3.0-or-later"
 OUTLINED = {
     "grass_side", "grass_top", "dirt", "stone", "cobblestone", "sand", "gravel", "oak_log", "oak_log_top",
     "oak_planks", "birch_log", "birch_log_top", "birch_planks", "spruce_log", "spruce_log_top",
-    "spruce_planks", "bricks", "stone_bricks", "coal_ore", "iron_ore", "gold_ore", "diamond_ore", "snow",
+    "spruce_planks", "jungle_log", "jungle_log_top", "jungle_planks", "bricks", "stone_bricks", "coal_ore", "iron_ore", "gold_ore", "diamond_ore", "snow",
     "sandstone", "sandstone_top", "bedrock", "clay", "terracotta", "crafting_table_side",
     "crafting_table_top", "furnace_front", "furnace_side", "furnace_top", "chest_front", "chest_side",
     "chest_top", "bookshelf", "obsidian", "polished_stone", "mud_bricks", "packed_ice",
@@ -146,7 +146,7 @@ def details(name, width, pixels):
         for x, y in [(6, 5), (20, 9), (11, 18), (25, 24), (4, 27), (16, 28)]:
             for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
                 pixels[(y + dy) * width + x + dx] = [150, 140, 128, 255] if (dx, dy) != (0, 0) else [190, 182, 170, 255]
-    elif name in ("oak_planks", "birch_planks", "spruce_planks"):
+    elif name in ("oak_planks", "birch_planks", "spruce_planks", "jungle_planks"):
         for y in (3, 11, 19, 27):
             for x in (3, 28):
                 pixels[y * width + x] = [70, 70, 78, 255]

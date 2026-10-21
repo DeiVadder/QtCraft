@@ -10,12 +10,16 @@
     "beach": "sand",
     "features": [
         {
-            "feature": "jungle_tree",
-            "density": 0.06
+            "feature": "giant_jungle_tree",
+            "density": 0.003
         },
         {
-            "feature": "oak_tree",
-            "density": 0.02
+            "feature": "jungle_tree",
+            "density": 0.05
+        },
+        {
+            "feature": "jungle_bush",
+            "density": 0.03
         },
         {
             "feature": "melon_patch",

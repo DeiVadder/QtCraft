@@ -201,7 +201,7 @@
     "block.qtcraft.spruce_leaves.description": "Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal fällt ein Setzling heraus.",
     "block.qtcraft.spruce_log.description": "Holz der Fichte. Ergibt je vier Bretter.",
     "block.qtcraft.spruce_planks.description": "Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.",
-    "block.qtcraft.spruce_sapling.description": "Auf Gras, Erde oder Schnee gepflanzt wächst er nach einer Weile zu einer Fichte.",
+    "block.qtcraft.spruce_sapling.description": "Auf Gras, Erde oder Schnee gepflanzt wächst er nach einer Weile zu einer Fichte. Vier Setzlinge im Quadrat wachsen zu einer Riesenfichte.",
     "block.qtcraft.spruce_trapdoor.description": "Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.",
     "block.qtcraft.spruce_wood.description": "Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.",
     "block.qtcraft.stone.description": "Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.",
@@ -1298,5 +1298,18 @@
     "chapter.qtcraft.maps.copies.title": "Kopien",
     "chapter.qtcraft.maps.copies.text": "Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Karte. Kopien teilen Nummer und Bild: Was ein Halter erkundet, erscheint auf jeder Kopie, so kann eine Gruppe eine Karte teilen.",
     "chapter.qtcraft.maps.frames.title": "Karten an der Wand",
-    "chapter.qtcraft.maps.frames.text": "Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile."
+    "chapter.qtcraft.maps.frames.text": "Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile.",
+    "block.qtcraft.jungle_log.description": "Holz des Dschungelbaums. Ergibt je vier Bretter.",
+    "block.qtcraft.jungle_wood.description": "Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.",
+    "block.qtcraft.stripped_jungle_log.description": "Ein Stamm ohne Rinde: eine Axt auf einen Stamm anwenden. Er liegt entlang der angeklickten Fläche und gibt Bretter wie der Stamm.",
+    "block.qtcraft.stripped_jungle_wood.description": "Holz ohne Rinde: eine Axt auf Holz anwenden oder vier entrindete Stämme zusammenlegen.",
+    "block.qtcraft.jungle_planks.description": "Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.",
+    "block.qtcraft.jungle_leaves.description": "Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal fällt ein Setzling heraus.",
+    "block.qtcraft.jungle_sapling.description": "Auf Gras oder Erde gepflanzt wächst er nach einer Weile zu einem Dschungelbaum. Vier Setzlinge im Quadrat wachsen zu einem riesigen Dschungelbaum.",
+    "block.qtcraft.jungle_door.description": "Zwei Blöcke hoch; mit der Benutzen-Taste öffnen und schließen.",
+    "block.qtcraft.jungle_trapdoor.description": "Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.",
+    "block.qtcraft.jungle_sign.description": "Ein Schild aus Dschungelholz.",
+    "feature.qtcraft.jungle_bush": "Dschungelbusch",
+    "feature.qtcraft.giant_spruce_tree": "Riesenfichte",
+    "feature.qtcraft.giant_jungle_tree": "Riesiger Dschungelbaum"
 }

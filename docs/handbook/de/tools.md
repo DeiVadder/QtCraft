@@ -18,7 +18,7 @@ Schlägt Holz schneller.
 | Abbaugeschwindigkeit | × 8 |
 | Haltbarkeit | 1561 Benutzungen |
 | Angriffsschaden | 5 Lebenspunkte |
-| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
+| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
 
 **Herstellung**
 
@@ -232,7 +232,7 @@ Schlägt Holz schneller.
 | Abbaugeschwindigkeit | × 6 |
 | Haltbarkeit | 250 Benutzungen |
 | Angriffsschaden | 4,5 Lebenspunkte |
-| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
+| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
 
 **Herstellung**
 
@@ -446,7 +446,7 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 | Abbaugeschwindigkeit | × 12 |
 | Haltbarkeit | 32 Benutzungen |
 | Angriffsschaden | 3,5 Lebenspunkte |
-| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
+| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
 
 **Herstellung**
 
@@ -661,7 +661,7 @@ Schlägt Holz schneller.
 | Haltbarkeit | 59 Benutzungen |
 | Angriffsschaden | 3,5 Lebenspunkte |
 | Brennt als Brennstoff | 10 s: [Brennstoffe](tables.md#table-fuels) |
-| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
+| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
 
 **Herstellung**
 
@@ -879,7 +879,7 @@ Schlägt Holz schneller.
 | Abbaugeschwindigkeit | × 4 |
 | Haltbarkeit | 131 Benutzungen |
 | Angriffsschaden | 4 Lebenspunkte |
-| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
+| Entrindet | [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Birkenholz](blocks.md#block-qtcraft-birch_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood) |
 
 **Herstellung**
 

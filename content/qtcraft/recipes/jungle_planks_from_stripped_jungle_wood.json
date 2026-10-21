@@ -1,0 +1,11 @@
+{
+    "name": "jungle_planks_from_stripped_jungle_wood",
+    "type": "shapeless",
+    "ingredients": [
+        "stripped_jungle_wood"
+    ],
+    "result": {
+        "item": "jungle_planks",
+        "count": 4
+    }
+}

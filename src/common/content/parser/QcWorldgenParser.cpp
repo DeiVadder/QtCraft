@@ -103,9 +103,11 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     m_feature.maxHeight = m_reader.integer(u"maxHeight"_s, m_feature.minHeight, m_feature.minHeight, 32);
 
     m_feature.shape = m_reader.string(u"shape"_s, u"round"_s);
-    if (m_feature.shape != u"round"_s && m_feature.shape != u"cone"_s) {
-        m_reader.fail(u"'shape' must be round or cone"_s);
+    static const QStringList shapes{u"round"_s, u"cone"_s, u"bush"_s, u"giant_cone"_s, u"giant_round"_s};
+    if (!shapes.contains(m_feature.shape)) {
+        m_reader.fail(u"'shape' must be round, cone, bush, giant_cone or giant_round"_s);
     }
+    m_feature.vinesBlock = m_reader.name(u"vines"_s, m_namespace);
     if (m_feature.trunkBlock.isEmpty()) {
         m_reader.fail(singleBlock ? u"'block' is required"_s : u"'trunk' is required"_s);
     }

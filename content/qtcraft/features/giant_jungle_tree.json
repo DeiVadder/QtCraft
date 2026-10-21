@@ -1,0 +1,14 @@
+{
+    "name": "giant_jungle_tree",
+    "type": "tree",
+    "trunk": "jungle_log",
+    "leaves": "jungle_leaves",
+    "vines": "vines",
+    "minHeight": 18,
+    "maxHeight": 28,
+    "shape": "giant_round",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

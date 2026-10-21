@@ -171,12 +171,12 @@ private slots:
         // has its own); stone kinds stairs, slabs, vertical slabs and walls, except that plain and
         // polished stone leave walls out and smooth stone and cut sandstone have only slabs.
         QStringList expected;
-        for (const QString &wood : {u"oak"_s, u"birch"_s, u"spruce"_s}) {
+        for (const QString &wood : {u"oak"_s, u"birch"_s, u"spruce"_s, u"jungle"_s}) {
             for (const QString &part : {u"stairs"_s, u"slab"_s, u"vertical_slab"_s, u"fence"_s, u"fence_gate"_s}) {
                 expected.append(u"qtcraft:%1_%2"_s.arg(wood, part));
             }
         }
-        for (const QString &wood : {u"birch"_s, u"spruce"_s}) {
+        for (const QString &wood : {u"birch"_s, u"spruce"_s, u"jungle"_s}) {
             expected.append({u"qtcraft:%1_button"_s.arg(wood), u"qtcraft:%1_pressure_plate"_s.arg(wood)});
         }
         for (const QString &stone : {u"cobblestone"_s, u"brick"_s, u"sandstone"_s, u"mud_bricks"_s, u"smooth_sandstone"_s, u"stone_bricks"_s,

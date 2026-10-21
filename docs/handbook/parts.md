@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch button](#block-qtcraft-birch_button) · [Birch fence](#block-qtcraft-birch_fence) · [Birch fence gate](#block-qtcraft-birch_fence_gate) · [Birch pressure plate](#block-qtcraft-birch_pressure_plate) · [Birch slab](#block-qtcraft-birch_slab) · [Birch stairs](#block-qtcraft-birch_stairs) · [Birch vertical slab](#block-qtcraft-birch_vertical_slab) · [Black carpet](#block-qtcraft-black_wool_carpet) · [Blue carpet](#block-qtcraft-blue_wool_carpet) · [Brick slab](#block-qtcraft-brick_slab) · [Brick stairs](#block-qtcraft-brick_stairs) · [Brick vertical slab](#block-qtcraft-brick_vertical_slab) · [Brick wall](#block-qtcraft-brick_wall) · [Brown carpet](#block-qtcraft-brown_wool_carpet) · [Cobblestone slab](#block-qtcraft-cobblestone_slab) · [Cobblestone stairs](#block-qtcraft-cobblestone_stairs) · [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) · [Cobblestone wall](#block-qtcraft-cobblestone_wall) · [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) · [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) · [Cyan carpet](#block-qtcraft-cyan_wool_carpet) · [Gray carpet](#block-qtcraft-gray_wool_carpet) · [Green carpet](#block-qtcraft-green_wool_carpet) · [Light blue carpet](#block-qtcraft-light_blue_wool_carpet) · [Light gray carpet](#block-qtcraft-light_gray_wool_carpet) · [Lime carpet](#block-qtcraft-lime_wool_carpet) · [Magenta carpet](#block-qtcraft-magenta_wool_carpet) · [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) · [Mossy cobblestone stairs](#block-qtcraft-mossy_cobblestone_stairs) · [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) · [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) · [Mossy stone brick stairs](#block-qtcraft-mossy_stone_bricks_stairs) · [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) · [Mud brick slab](#block-qtcraft-mud_bricks_slab) · [Mud brick stairs](#block-qtcraft-mud_bricks_stairs) · [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) · [Mud brick wall](#block-qtcraft-mud_bricks_wall) · [Oak fence](#block-qtcraft-oak_fence) · [Oak fence gate](#block-qtcraft-oak_fence_gate) · [Oak slab](#block-qtcraft-oak_slab) · [Oak stairs](#block-qtcraft-oak_stairs) · [Oak vertical slab](#block-qtcraft-oak_vertical_slab) · [Orange carpet](#block-qtcraft-orange_wool_carpet) · [Pink carpet](#block-qtcraft-pink_wool_carpet) · [Polished stone slab](#block-qtcraft-polished_stone_slab) · [Polished stone stairs](#block-qtcraft-polished_stone_stairs) · [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) · [Purple carpet](#block-qtcraft-purple_wool_carpet) · [Red carpet](#block-qtcraft-red_wool_carpet) · [Sandstone slab](#block-qtcraft-sandstone_slab) · [Sandstone stairs](#block-qtcraft-sandstone_stairs) · [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) · [Sandstone wall](#block-qtcraft-sandstone_wall) · [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) · [Smooth sandstone stairs](#block-qtcraft-smooth_sandstone_stairs) · [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) · [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) · [Smooth stone slab](#block-qtcraft-smooth_stone_slab) · [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) · [Spruce button](#block-qtcraft-spruce_button) · [Spruce fence](#block-qtcraft-spruce_fence) · [Spruce fence gate](#block-qtcraft-spruce_fence_gate) · [Spruce pressure plate](#block-qtcraft-spruce_pressure_plate) · [Spruce slab](#block-qtcraft-spruce_slab) · [Spruce stairs](#block-qtcraft-spruce_stairs) · [Spruce vertical slab](#block-qtcraft-spruce_vertical_slab) · [Stone brick slab](#block-qtcraft-stone_bricks_slab) · [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) · [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) · [Stone brick wall](#block-qtcraft-stone_bricks_wall) · [Stone slab](#block-qtcraft-stone_slab) · [Stone stairs](#block-qtcraft-stone_stairs) · [Stone vertical slab](#block-qtcraft-stone_vertical_slab) · [White carpet](#block-qtcraft-white_wool_carpet) · [Yellow carpet](#block-qtcraft-yellow_wool_carpet)
+**QtCraft:** [Birch button](#block-qtcraft-birch_button) · [Birch fence](#block-qtcraft-birch_fence) · [Birch fence gate](#block-qtcraft-birch_fence_gate) · [Birch pressure plate](#block-qtcraft-birch_pressure_plate) · [Birch slab](#block-qtcraft-birch_slab) · [Birch stairs](#block-qtcraft-birch_stairs) · [Birch vertical slab](#block-qtcraft-birch_vertical_slab) · [Black carpet](#block-qtcraft-black_wool_carpet) · [Blue carpet](#block-qtcraft-blue_wool_carpet) · [Brick slab](#block-qtcraft-brick_slab) · [Brick stairs](#block-qtcraft-brick_stairs) · [Brick vertical slab](#block-qtcraft-brick_vertical_slab) · [Brick wall](#block-qtcraft-brick_wall) · [Brown carpet](#block-qtcraft-brown_wool_carpet) · [Cobblestone slab](#block-qtcraft-cobblestone_slab) · [Cobblestone stairs](#block-qtcraft-cobblestone_stairs) · [Cobblestone vertical slab](#block-qtcraft-cobblestone_vertical_slab) · [Cobblestone wall](#block-qtcraft-cobblestone_wall) · [Cut sandstone slab](#block-qtcraft-cut_sandstone_slab) · [Cut sandstone vertical slab](#block-qtcraft-cut_sandstone_vertical_slab) · [Cyan carpet](#block-qtcraft-cyan_wool_carpet) · [Gray carpet](#block-qtcraft-gray_wool_carpet) · [Green carpet](#block-qtcraft-green_wool_carpet) · [Jungle button](#block-qtcraft-jungle_button) · [Jungle fence](#block-qtcraft-jungle_fence) · [Jungle fence gate](#block-qtcraft-jungle_fence_gate) · [Jungle pressure plate](#block-qtcraft-jungle_pressure_plate) · [Jungle slab](#block-qtcraft-jungle_slab) · [Jungle stairs](#block-qtcraft-jungle_stairs) · [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) · [Light blue carpet](#block-qtcraft-light_blue_wool_carpet) · [Light gray carpet](#block-qtcraft-light_gray_wool_carpet) · [Lime carpet](#block-qtcraft-lime_wool_carpet) · [Magenta carpet](#block-qtcraft-magenta_wool_carpet) · [Mossy cobblestone slab](#block-qtcraft-mossy_cobblestone_slab) · [Mossy cobblestone stairs](#block-qtcraft-mossy_cobblestone_stairs) · [Mossy cobblestone vertical slab](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Mossy cobblestone wall](#block-qtcraft-mossy_cobblestone_wall) · [Mossy stone brick slab](#block-qtcraft-mossy_stone_bricks_slab) · [Mossy stone brick stairs](#block-qtcraft-mossy_stone_bricks_stairs) · [Mossy stone brick vertical slab](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Mossy stone brick wall](#block-qtcraft-mossy_stone_bricks_wall) · [Mud brick slab](#block-qtcraft-mud_bricks_slab) · [Mud brick stairs](#block-qtcraft-mud_bricks_stairs) · [Mud brick vertical slab](#block-qtcraft-mud_bricks_vertical_slab) · [Mud brick wall](#block-qtcraft-mud_bricks_wall) · [Oak fence](#block-qtcraft-oak_fence) · [Oak fence gate](#block-qtcraft-oak_fence_gate) · [Oak slab](#block-qtcraft-oak_slab) · [Oak stairs](#block-qtcraft-oak_stairs) · [Oak vertical slab](#block-qtcraft-oak_vertical_slab) · [Orange carpet](#block-qtcraft-orange_wool_carpet) · [Pink carpet](#block-qtcraft-pink_wool_carpet) · [Polished stone slab](#block-qtcraft-polished_stone_slab) · [Polished stone stairs](#block-qtcraft-polished_stone_stairs) · [Polished stone vertical slab](#block-qtcraft-polished_stone_vertical_slab) · [Purple carpet](#block-qtcraft-purple_wool_carpet) · [Red carpet](#block-qtcraft-red_wool_carpet) · [Sandstone slab](#block-qtcraft-sandstone_slab) · [Sandstone stairs](#block-qtcraft-sandstone_stairs) · [Sandstone vertical slab](#block-qtcraft-sandstone_vertical_slab) · [Sandstone wall](#block-qtcraft-sandstone_wall) · [Smooth sandstone slab](#block-qtcraft-smooth_sandstone_slab) · [Smooth sandstone stairs](#block-qtcraft-smooth_sandstone_stairs) · [Smooth sandstone vertical slab](#block-qtcraft-smooth_sandstone_vertical_slab) · [Smooth sandstone wall](#block-qtcraft-smooth_sandstone_wall) · [Smooth stone slab](#block-qtcraft-smooth_stone_slab) · [Smooth stone vertical slab](#block-qtcraft-smooth_stone_vertical_slab) · [Spruce button](#block-qtcraft-spruce_button) · [Spruce fence](#block-qtcraft-spruce_fence) · [Spruce fence gate](#block-qtcraft-spruce_fence_gate) · [Spruce pressure plate](#block-qtcraft-spruce_pressure_plate) · [Spruce slab](#block-qtcraft-spruce_slab) · [Spruce stairs](#block-qtcraft-spruce_stairs) · [Spruce vertical slab](#block-qtcraft-spruce_vertical_slab) · [Stone brick slab](#block-qtcraft-stone_bricks_slab) · [Stone brick stairs](#block-qtcraft-stone_bricks_stairs) · [Stone brick vertical slab](#block-qtcraft-stone_bricks_vertical_slab) · [Stone brick wall](#block-qtcraft-stone_bricks_wall) · [Stone slab](#block-qtcraft-stone_slab) · [Stone stairs](#block-qtcraft-stone_stairs) · [Stone vertical slab](#block-qtcraft-stone_vertical_slab) · [White carpet](#block-qtcraft-white_wool_carpet) · [Yellow carpet](#block-qtcraft-yellow_wool_carpet)
 
 ## QtCraft
 
@@ -894,6 +894,257 @@ A thin layer of wool that needs a block below.
 | 1 | 2 | → |
 |---|---|---|
 | [Green wool](blocks.md#block-qtcraft-green_wool) | [Green wool](blocks.md#block-qtcraft-green_wool) | 3 × [Green carpet](#block-qtcraft-green_wool_carpet) |
+
+### <a id="block-qtcraft-jungle_button"></a>Jungle button
+
+A wooden button gives a signal of one and a half seconds when pressed. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_button` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle button](#block-qtcraft-jungle_button) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Washed away by liquids | yes |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 3.75 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Button |
+| Sound | wood |
+| States | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle button](#block-qtcraft-jungle_button) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_fence"></a>Jungle fence
+
+Fences connect to fences, gates and full solid blocks and are too high to jump over.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_fence` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle fence](#block-qtcraft-jungle_fence) |
+| Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Fence |
+| Connects to | fences and gates, full solid blocks |
+| Sound | wood |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Stick](items.md#item-qtcraft-stick) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | 3 × [Jungle fence](#block-qtcraft-jungle_fence) |
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Stick](items.md#item-qtcraft-stick) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_fence_gate"></a>Jungle fence gate
+
+A gate in a fence: use it to open or close it. Open gates let everything through.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_fence_gate` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle fence gate](#block-qtcraft-jungle_fence_gate) |
+| Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Opens and closes when used | yes |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Fence gate |
+| Sound | wood |
+| States | facing (north, east, south, west); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stick](items.md#item-qtcraft-stick) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Stick](items.md#item-qtcraft-stick) | [Jungle fence gate](#block-qtcraft-jungle_fence_gate) |
+| [Stick](items.md#item-qtcraft-stick) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Stick](items.md#item-qtcraft-stick) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_pressure_plate"></a>Jungle pressure plate
+
+A wooden pressure plate gives a signal while anything stands or lies on it, items too. Every kind of wood has its own.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_pressure_plate` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle pressure plate](#block-qtcraft-jungle_pressure_plate) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid block below |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Pressure plate |
+| Sound | wood |
+| States | powered (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle pressure plate](#block-qtcraft-jungle_pressure_plate) |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_slab"></a>Jungle slab
+
+Half a block. The clicked half decides whether it lies low or high; a second slab on the open half makes a full double slab.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle slab](#block-qtcraft-jungle_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Slab |
+| Sound | wood |
+| States | type (bottom, top, double) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | 6 × [Jungle slab](#block-qtcraft-jungle_slab) |
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) | [Jungle slab](#block-qtcraft-jungle_slab) |
+
+**Used in**
+
+[Jungle vertical slab](#block-qtcraft-jungle_vertical_slab)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_stairs"></a>Jungle stairs
+
+Stairs turn away from you when placed; place them on the upper half of a face to hang them upside down. You walk up them without jumping. Next to other stairs they form corners: one turned across in front of a stair makes an outer corner, one turned across behind it an inner corner, as for roofs.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_stairs` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle stairs](#block-qtcraft-jungle_stairs) |
+| Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 11.25 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Stairs |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | · | · | 4 × [Jungle stairs](#block-qtcraft-jungle_stairs) |
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | · |  |
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-jungle_vertical_slab"></a>Jungle vertical slab
+
+Half a block standing upright against one side of its cell: it leans against the face you click, on the floor or ceiling it stands on the far side as you look. A second one facing the other way fills the cell. Three slabs on top of each other make three vertical slabs, one vertical slab gives a slab back.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_vertical_slab` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) |
+| Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
+| Made from | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |
+| Kind of part | Vertical slab |
+| Sound | wood |
+| States | double (false, true); facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Jungle slab](#block-qtcraft-jungle_slab) | 3 × [Jungle vertical slab](#block-qtcraft-jungle_vertical_slab) |
+| [Jungle slab](#block-qtcraft-jungle_slab) |  |
+| [Jungle slab](#block-qtcraft-jungle_slab) |  |
+
+**Used in**
+
+[Jungle slab](#block-qtcraft-jungle_slab)
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-light_blue_wool_carpet"></a>Light blue carpet
 

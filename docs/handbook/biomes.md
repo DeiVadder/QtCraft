@@ -136,7 +136,7 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 
 **Plants and trees**
 
-[Jungle tree](worldgen.md#feature-qtcraft-jungle_tree) (6 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.4 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+[Giant jungle tree](worldgen.md#feature-qtcraft-giant_jungle_tree) (0.3 % of columns), [Jungle bush](worldgen.md#feature-qtcraft-jungle_bush) (3 % of columns), [Jungle tree](worldgen.md#feature-qtcraft-jungle_tree) (5 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.4 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
 
 **Grasses**
 
@@ -260,7 +260,7 @@ Cool spruce forest with snow on the ground.
 
 **Plants and trees**
 
-[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Pumpkins](worldgen.md#feature-qtcraft-pumpkin_patch) (0.15 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (25 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (2.2 % of columns)
+[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Giant spruce](worldgen.md#feature-qtcraft-giant_spruce_tree) (0.12 % of columns), [Pumpkins](worldgen.md#feature-qtcraft-pumpkin_patch) (0.15 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (25 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (2.2 % of columns)
 
 **Grasses**
 

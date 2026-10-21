@@ -2439,3 +2439,21 @@ Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 3
 | GPU Ø (ms) | 0,98 | 1,04 | 1,59 | 1,54 |
 | `sectionMb` (MiB; new: Kapazität der Seiten) | 100 | 110 | 334 | 352 |
 | physischer Gesamtbedarf (MB) | 614 | 606 | 1114 | 1079 |
+
+## Etappe 65 (2×2-Bäume, Dschungelholz), headless, Release (2026-10-21)
+
+`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (6 gelaufen), `dev` `7c9f8a2` (`pre`) gegen `feature/65-big-trees` (`new`, E-822). Mittelwerte der Runden:
+
+| Wert | pre | new |
+|---|---:|---:|
+| Tick Ø (ms) | 0,2405 | 0,2488 (+3,5 %) |
+| Tick p99 (ms) | 1,072 | 1,130 (+5,5 %) |
+| Tick höchstens (ms) | 1,258 | 1,304 (+3,6 %) |
+| Spitzenspeicher (MB) | 70,7 | 72,3 (+2,3 %) |
+| `chunkLoading` Ø (ms) | 0,0578 | 0,0632 (+9,3 %) |
+| `streaming` Ø (ms) | 0,1037 | 0,1086 (+4,7 %) |
+| `blockUpdates` Ø (ms) | 0,0003 | 0,0017 |
+| `items` Ø (ms) | 0,0003 | 0,0004 |
+
+Unter der 10-%-Schwelle. Mehr Blöcke je Chunk in Taiga und Dschungel (Riesen, dichtere Dschungelbäume, Ranken) kosten beim Übernehmen und Senden der Chunks; die Ranken prüfen beim Laden ihren Halt (`blockUpdates`). Eine erste Messung (gegen `dev` `7ae232b`) zeigte +6,9 % Tick und `items` 0,0003 → 0,0060 ms: bis zu 114 Ranken fielen als Items ab, weil eine Ranke an einem Laubplatz hing, den schon die Ranke eines anderen Baums belegte (das Laub wurde dort nicht gesetzt). Seitdem ersetzt Laub fremde Ranken (`QcTreeShape::buildInChunk`, `test_giant_trees::generatedVinesHoldOn`), und es fallen keine Items mehr ab.
+

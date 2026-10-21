@@ -1,0 +1,14 @@
+{
+    "name": "jungle_bush",
+    "type": "tree",
+    "trunk": "jungle_log",
+    "leaves": "jungle_leaves",
+    "minHeight": 1,
+    "maxHeight": 1,
+    "shape": "bush",
+    "patchSize": 32,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

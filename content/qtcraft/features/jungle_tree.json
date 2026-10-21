@@ -1,10 +1,11 @@
 {
     "name": "jungle_tree",
     "type": "tree",
-    "trunk": "oak_log",
-    "leaves": "oak_leaves",
-    "minHeight": 8,
-    "maxHeight": 12,
+    "trunk": "jungle_log",
+    "leaves": "jungle_leaves",
+    "vines": "vines",
+    "minHeight": 6,
+    "maxHeight": 10,
     "shape": "round",
     "patchSize": 64,
     "ground": [

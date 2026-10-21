@@ -1,0 +1,9 @@
+{
+    "name": "charcoal_from_jungle_log",
+    "input": "jungle_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10,
+    "experience": 0.15
+}

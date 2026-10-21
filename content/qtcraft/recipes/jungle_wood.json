@@ -1,0 +1,15 @@
+{
+    "name": "jungle_wood",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "jungle_log"
+    },
+    "result": {
+        "item": "jungle_wood",
+        "count": 3
+    }
+}

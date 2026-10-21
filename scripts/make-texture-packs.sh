@@ -18,7 +18,7 @@ PREVIEW="qtcraft:grass_side,qtcraft:stone,qtcraft:oak_planks,qtcraft:cobblestone
 # the first tools, so the effect shows at once; everything else falls back to the next pack.
 STORYBOOK="$PREVIEW,qtcraft:grass_top,qtcraft:dirt,qtcraft:sand,qtcraft:gravel,qtcraft:oak_log_top,qtcraft:oak_leaves,\
 qtcraft:birch_log,qtcraft:birch_log_top,qtcraft:birch_planks,qtcraft:birch_leaves,qtcraft:spruce_log,qtcraft:spruce_log_top,\
-qtcraft:spruce_planks,qtcraft:spruce_leaves,qtcraft:water,qtcraft:glass,qtcraft:stone_bricks,qtcraft:coal_ore,qtcraft:gold_ore,\
+qtcraft:spruce_planks,qtcraft:spruce_leaves,qtcraft:jungle_log,qtcraft:jungle_log_top,qtcraft:jungle_planks,qtcraft:jungle_leaves,qtcraft:water,qtcraft:glass,qtcraft:stone_bricks,qtcraft:coal_ore,qtcraft:gold_ore,\
 qtcraft:diamond_ore,qtcraft:snow,qtcraft:ice,qtcraft:sandstone,qtcraft:sandstone_top,qtcraft:bedrock,qtcraft:clay,\
 qtcraft:terracotta,qtcraft:tall_grass,qtcraft:poppy,qtcraft:dandelion,qtcraft:crafting_table_side,qtcraft:crafting_table_top,\
 qtcraft:furnace_front,qtcraft:furnace_side,qtcraft:furnace_top,qtcraft:chest_front,qtcraft:chest_side,qtcraft:chest_top,\

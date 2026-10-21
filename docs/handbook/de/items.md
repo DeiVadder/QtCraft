@@ -659,6 +659,14 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 
 | 1 | → |
 |---|---|
+| [Dschungelstamm](blocks.md#block-qtcraft-jungle_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Eichenstamm](blocks.md#block-qtcraft-oak_log) | [Holzkohle](#item-qtcraft-charcoal) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
@@ -684,6 +692,22 @@ Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.
 | 1 | → |
 |---|---|
 | [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindeter Dschungelstamm](blocks.md#block-qtcraft-stripped_jungle_log) | [Holzkohle](#item-qtcraft-charcoal) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Entrindetes Dschungelholz](blocks.md#block-qtcraft-stripped_jungle_wood) | [Holzkohle](#item-qtcraft-charcoal) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -1657,7 +1681,7 @@ Griff für Werkzeuge und Fackeln.
 
 **Wird verwendet für**
 
-[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Angel](#item-qtcraft-fishing_rod), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenschild](blocks.md#block-qtcraft-birch_sign), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenschild](blocks.md#block-qtcraft-oak_sign), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenschild](blocks.md#block-qtcraft-spruce_sign), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gemälde](#item-qtcraft-painting), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rahmen](#item-qtcraft-item_frame), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook)
+[Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Angel](#item-qtcraft-fishing_rod), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Birkenschild](blocks.md#block-qtcraft-birch_sign), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bogen](#item-qtcraft-bow), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Dschungelschild](blocks.md#block-qtcraft-jungle_sign), [Dschungelzaun](parts.md#block-qtcraft-jungle_fence), [Dschungelzauntor](parts.md#block-qtcraft-jungle_fence_gate), [Eichenschild](blocks.md#block-qtcraft-oak_sign), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenschild](blocks.md#block-qtcraft-spruce_sign), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Gemälde](#item-qtcraft-painting), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Hebel](blocks.md#block-qtcraft-lever), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kleine Signalfackel](blocks.md#block-qtcraft-small_signal_torch), [Lagerfeuer](blocks.md#block-qtcraft-campfire), [Leiter](blocks.md#block-qtcraft-ladder), [Pfeil](#item-qtcraft-arrow), [Rahmen](#item-qtcraft-item_frame), [Rüstungsständer](#item-qtcraft-armor_stand), [Schiene](blocks.md#block-qtcraft-rail), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe), [Stolperdrahthaken](blocks.md#block-qtcraft-tripwire_hook)
 
 **Droppt aus**
 

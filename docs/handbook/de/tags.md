@@ -44,7 +44,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Birkenbretter](blocks.md#block-qtcraft-birch_planks), [Eichenbretter](blocks.md#block-qtcraft-oak_planks), [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks)
+[Birkenbretter](blocks.md#block-qtcraft-birch_planks), [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks), [Eichenbretter](blocks.md#block-qtcraft-oak_planks), [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks)
 
 **Wird verwendet für**
 
@@ -124,7 +124,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Birkenholz](blocks.md#block-qtcraft-birch_wood), [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log), [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood), [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood), [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log)
+[Birkenholz](blocks.md#block-qtcraft-birch_wood), [Birkenstamm](blocks.md#block-qtcraft-birch_log), [Dschungelholz](blocks.md#block-qtcraft-jungle_wood), [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Eichenholz](blocks.md#block-qtcraft-oak_wood), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Entrindeter Birkenstamm](blocks.md#block-qtcraft-stripped_birch_log), [Entrindeter Dschungelstamm](blocks.md#block-qtcraft-stripped_jungle_log), [Entrindeter Eichenstamm](blocks.md#block-qtcraft-stripped_oak_log), [Entrindeter Fichtenstamm](blocks.md#block-qtcraft-stripped_spruce_log), [Entrindetes Birkenholz](blocks.md#block-qtcraft-stripped_birch_wood), [Entrindetes Dschungelholz](blocks.md#block-qtcraft-stripped_jungle_wood), [Entrindetes Eichenholz](blocks.md#block-qtcraft-stripped_oak_wood), [Entrindetes Fichtenholz](blocks.md#block-qtcraft-stripped_spruce_wood), [Fichtenholz](blocks.md#block-qtcraft-spruce_wood), [Fichtenstamm](blocks.md#block-qtcraft-spruce_log)
 
 **Wird verwendet für**
 

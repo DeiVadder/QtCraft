@@ -1,0 +1,22 @@
+{
+    "name": "jungle_sapling",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "sapling": {
+        "feature": "jungle_tree",
+        "giantFeature": "giant_jungle_tree",
+        "minSeconds": 120,
+        "maxSeconds": 300,
+        "plantOn": [
+            "grass_block",
+            "dirt"
+        ],
+        "plantChance": 0.75
+    },
+    "textures": {
+        "all": "jungle_sapling"
+    },
+    "fuelSeconds": 5
+}

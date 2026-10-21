@@ -83,7 +83,7 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 **Pflanzen und Bäume**
 
-[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (2 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,4 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (5 % der Säulen), [Dschungelbusch](worldgen.md#feature-qtcraft-jungle_bush) (3 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,4 % der Säulen), [Riesiger Dschungelbaum](worldgen.md#feature-qtcraft-giant_jungle_tree) (0,3 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
 
 **Gräser**
 
@@ -207,7 +207,7 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 **Pflanzen und Bäume**
 
-[Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,4 % der Säulen), [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (2,2 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Schneedecke](worldgen.md#feature-qtcraft-snow_layer) (25 % der Säulen)
+[Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,4 % der Säulen), [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (2,2 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Riesenfichte](worldgen.md#feature-qtcraft-giant_spruce_tree) (0,12 % der Säulen), [Schneedecke](worldgen.md#feature-qtcraft-snow_layer) (25 % der Säulen)
 
 **Gräser**
 

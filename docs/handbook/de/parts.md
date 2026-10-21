@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) · [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) · [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Bemooste Bruchsteintreppe](#block-qtcraft-mossy_cobblestone_stairs) · [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) · [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) · [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) · [Birkenholzdruckplatte](#block-qtcraft-birch_pressure_plate) · [Birkenholzknopf](#block-qtcraft-birch_button) · [Birkenstufe](#block-qtcraft-birch_slab) · [Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab) · [Birkentreppe](#block-qtcraft-birch_stairs) · [Birkenzaun](#block-qtcraft-birch_fence) · [Birkenzauntor](#block-qtcraft-birch_fence_gate) · [Blauer Teppich](#block-qtcraft-blue_wool_carpet) · [Brauner Teppich](#block-qtcraft-brown_wool_carpet) · [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) · [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) · [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) · [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) · [Eichenstufe](#block-qtcraft-oak_slab) · [Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab) · [Eichentreppe](#block-qtcraft-oak_stairs) · [Eichenzaun](#block-qtcraft-oak_fence) · [Eichenzauntor](#block-qtcraft-oak_fence_gate) · [Fichtenholzdruckplatte](#block-qtcraft-spruce_pressure_plate) · [Fichtenholzknopf](#block-qtcraft-spruce_button) · [Fichtenstufe](#block-qtcraft-spruce_slab) · [Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab) · [Fichtentreppe](#block-qtcraft-spruce_stairs) · [Fichtenzaun](#block-qtcraft-spruce_fence) · [Fichtenzauntor](#block-qtcraft-spruce_fence_gate) · [Gelber Teppich](#block-qtcraft-yellow_wool_carpet) · [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) · [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) · [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) · [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) · [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) · [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) · [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) · [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) · [Glattsteinstufe](#block-qtcraft-polished_stone_slab) · [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) · [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) · [Grauer Teppich](#block-qtcraft-gray_wool_carpet) · [Grüner Teppich](#block-qtcraft-green_wool_carpet) · [Hellblauer Teppich](#block-qtcraft-light_blue_wool_carpet) · [Hellgrauer Teppich](#block-qtcraft-light_gray_wool_carpet) · [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) · [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) · [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) · [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) · [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) · [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) · [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) · [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) · [Roter Teppich](#block-qtcraft-red_wool_carpet) · [Sandsteinmauer](#block-qtcraft-sandstone_wall) · [Sandsteinstufe](#block-qtcraft-sandstone_slab) · [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) · [Sandsteintreppe](#block-qtcraft-sandstone_stairs) · [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) · [Steinstufe](#block-qtcraft-stone_slab) · [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) · [Steintreppe](#block-qtcraft-stone_stairs) · [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) · [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) · [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) · [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) · [Türkiser Teppich](#block-qtcraft-cyan_wool_carpet) · [Violetter Teppich](#block-qtcraft-purple_wool_carpet) · [Weißer Teppich](#block-qtcraft-white_wool_carpet) · [Ziegelmauer](#block-qtcraft-brick_wall) · [Ziegelstufe](#block-qtcraft-brick_slab) · [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) · [Ziegeltreppe](#block-qtcraft-brick_stairs)
+**QtCraft:** [Bemooste Bruchsteinmauer](#block-qtcraft-mossy_cobblestone_wall) · [Bemooste Bruchsteinstufe](#block-qtcraft-mossy_cobblestone_slab) · [Bemooste Bruchsteinstufe (senkrecht)](#block-qtcraft-mossy_cobblestone_vertical_slab) · [Bemooste Bruchsteintreppe](#block-qtcraft-mossy_cobblestone_stairs) · [Bemooste Steinziegelmauer](#block-qtcraft-mossy_stone_bricks_wall) · [Bemooste Steinziegelstufe](#block-qtcraft-mossy_stone_bricks_slab) · [Bemooste Steinziegelstufe (senkrecht)](#block-qtcraft-mossy_stone_bricks_vertical_slab) · [Bemooste Steinziegeltreppe](#block-qtcraft-mossy_stone_bricks_stairs) · [Birkenholzdruckplatte](#block-qtcraft-birch_pressure_plate) · [Birkenholzknopf](#block-qtcraft-birch_button) · [Birkenstufe](#block-qtcraft-birch_slab) · [Birkenstufe (senkrecht)](#block-qtcraft-birch_vertical_slab) · [Birkentreppe](#block-qtcraft-birch_stairs) · [Birkenzaun](#block-qtcraft-birch_fence) · [Birkenzauntor](#block-qtcraft-birch_fence_gate) · [Blauer Teppich](#block-qtcraft-blue_wool_carpet) · [Brauner Teppich](#block-qtcraft-brown_wool_carpet) · [Bruchsteinmauer](#block-qtcraft-cobblestone_wall) · [Bruchsteinstufe](#block-qtcraft-cobblestone_slab) · [Bruchsteinstufe (senkrecht)](#block-qtcraft-cobblestone_vertical_slab) · [Bruchsteintreppe](#block-qtcraft-cobblestone_stairs) · [Dschungelholzdruckplatte](#block-qtcraft-jungle_pressure_plate) · [Dschungelholzknopf](#block-qtcraft-jungle_button) · [Dschungelstufe](#block-qtcraft-jungle_slab) · [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) · [Dschungeltreppe](#block-qtcraft-jungle_stairs) · [Dschungelzaun](#block-qtcraft-jungle_fence) · [Dschungelzauntor](#block-qtcraft-jungle_fence_gate) · [Eichenstufe](#block-qtcraft-oak_slab) · [Eichenstufe (senkrecht)](#block-qtcraft-oak_vertical_slab) · [Eichentreppe](#block-qtcraft-oak_stairs) · [Eichenzaun](#block-qtcraft-oak_fence) · [Eichenzauntor](#block-qtcraft-oak_fence_gate) · [Fichtenholzdruckplatte](#block-qtcraft-spruce_pressure_plate) · [Fichtenholzknopf](#block-qtcraft-spruce_button) · [Fichtenstufe](#block-qtcraft-spruce_slab) · [Fichtenstufe (senkrecht)](#block-qtcraft-spruce_vertical_slab) · [Fichtentreppe](#block-qtcraft-spruce_stairs) · [Fichtenzaun](#block-qtcraft-spruce_fence) · [Fichtenzauntor](#block-qtcraft-spruce_fence_gate) · [Gelber Teppich](#block-qtcraft-yellow_wool_carpet) · [Geschnittene Sandsteinstufe](#block-qtcraft-cut_sandstone_slab) · [Geschnittene Sandsteinstufe (senkrecht)](#block-qtcraft-cut_sandstone_vertical_slab) · [Glatte Steinstufe](#block-qtcraft-smooth_stone_slab) · [Glatte Steinstufe (senkrecht)](#block-qtcraft-smooth_stone_vertical_slab) · [Glatter Sandsteinmauer](#block-qtcraft-smooth_sandstone_wall) · [Glatter Sandsteinstufe](#block-qtcraft-smooth_sandstone_slab) · [Glatter Sandsteinstufe (senkrecht)](#block-qtcraft-smooth_sandstone_vertical_slab) · [Glatter Sandsteintreppe](#block-qtcraft-smooth_sandstone_stairs) · [Glattsteinstufe](#block-qtcraft-polished_stone_slab) · [Glattsteinstufe (senkrecht)](#block-qtcraft-polished_stone_vertical_slab) · [Glattsteintreppe](#block-qtcraft-polished_stone_stairs) · [Grauer Teppich](#block-qtcraft-gray_wool_carpet) · [Grüner Teppich](#block-qtcraft-green_wool_carpet) · [Hellblauer Teppich](#block-qtcraft-light_blue_wool_carpet) · [Hellgrauer Teppich](#block-qtcraft-light_gray_wool_carpet) · [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) · [Lehmziegelmauer](#block-qtcraft-mud_bricks_wall) · [Lehmziegelstufe](#block-qtcraft-mud_bricks_slab) · [Lehmziegelstufe (senkrecht)](#block-qtcraft-mud_bricks_vertical_slab) · [Lehmziegeltreppe](#block-qtcraft-mud_bricks_stairs) · [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) · [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) · [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) · [Roter Teppich](#block-qtcraft-red_wool_carpet) · [Sandsteinmauer](#block-qtcraft-sandstone_wall) · [Sandsteinstufe](#block-qtcraft-sandstone_slab) · [Sandsteinstufe (senkrecht)](#block-qtcraft-sandstone_vertical_slab) · [Sandsteintreppe](#block-qtcraft-sandstone_stairs) · [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) · [Steinstufe](#block-qtcraft-stone_slab) · [Steinstufe (senkrecht)](#block-qtcraft-stone_vertical_slab) · [Steintreppe](#block-qtcraft-stone_stairs) · [Steinziegelmauer](#block-qtcraft-stone_bricks_wall) · [Steinziegelstufe](#block-qtcraft-stone_bricks_slab) · [Steinziegelstufe (senkrecht)](#block-qtcraft-stone_bricks_vertical_slab) · [Steinziegeltreppe](#block-qtcraft-stone_bricks_stairs) · [Türkiser Teppich](#block-qtcraft-cyan_wool_carpet) · [Violetter Teppich](#block-qtcraft-purple_wool_carpet) · [Weißer Teppich](#block-qtcraft-white_wool_carpet) · [Ziegelmauer](#block-qtcraft-brick_wall) · [Ziegelstufe](#block-qtcraft-brick_slab) · [Ziegelstufe (senkrecht)](#block-qtcraft-brick_vertical_slab) · [Ziegeltreppe](#block-qtcraft-brick_stairs)
 
 ## QtCraft
 
@@ -860,6 +860,257 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_pressure_plate"></a>Dschungelholzdruckplatte
+
+Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auch Gegenstände. Jede Holzart hat ihre eigene.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_pressure_plate` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelholzdruckplatte](#block-qtcraft-jungle_pressure_plate) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Pressure plate |
+| Klang | Holz |
+| Zustände | powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzdruckplatte](#block-qtcraft-jungle_pressure_plate) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_button"></a>Dschungelholzknopf
+
+Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzart hat ihren eigenen.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_button` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelholzknopf](#block-qtcraft-jungle_button) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | eine feste Fläche, an der es hängt |
+| Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 3,75 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Button |
+| Klang | Holz |
+| Zustände | attach (floor, ceiling, north, east, south, west); powered (false, true) |
+
+**Herstellung**
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzknopf](#block-qtcraft-jungle_button) |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_slab"></a>Dschungelstufe
+
+Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben liegt; eine zweite Stufe auf der freien Hälfte ergibt eine volle Doppelstufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelstufe](#block-qtcraft-jungle_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Stufe |
+| Klang | Holz |
+| Zustände | type (bottom, top, double) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | 6 × [Dschungelstufe](#block-qtcraft-jungle_slab) |
+
+*Handwerksraster*
+
+| 1 | → |
+|---|---|
+| [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) | [Dschungelstufe](#block-qtcraft-jungle_slab) |
+
+**Wird verwendet für**
+
+[Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_vertical_slab"></a>Dschungelstufe (senkrecht)
+
+Ein halber Block, aufrecht an einer Seite seiner Zelle: Er lehnt an der angeklickten Fläche, auf Boden oder Decke steht er auf der Seite in Blickrichtung. Ein zweiter, der in die andere Richtung zeigt, füllt die Zelle. Drei übereinander gelegte Stufen ergeben drei senkrechte Stufen, eine senkrechte Stufe ergibt wieder eine Stufe.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_vertical_slab` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Vertical slab |
+| Klang | Holz |
+| Zustände | double (false, true); facing (north, east, south, west) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | → |
+|---|---|
+| [Dschungelstufe](#block-qtcraft-jungle_slab) | 3 × [Dschungelstufe (senkrecht)](#block-qtcraft-jungle_vertical_slab) |
+| [Dschungelstufe](#block-qtcraft-jungle_slab) |  |
+| [Dschungelstufe](#block-qtcraft-jungle_slab) |  |
+
+**Wird verwendet für**
+
+[Dschungelstufe](#block-qtcraft-jungle_slab)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_stairs"></a>Dschungeltreppe
+
+Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche gesetzt hängen sie kopfüber. Man geht sie ohne Springen hinauf. Neben anderen Treppen bilden sie Ecken: eine quer gestellte Treppe vor einer Treppe ergibt eine Außenecke, eine quer gestellte dahinter eine Innenecke, wie bei Dächern.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_stairs` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungeltreppe](#block-qtcraft-jungle_stairs) |
+| Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 11,25 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Treppe |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); half (bottom, top); shape (straight, inner_left, inner_right, outer_left, outer_right) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | · | · | 4 × [Dschungeltreppe](#block-qtcraft-jungle_stairs) |
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | · |  |
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_fence"></a>Dschungelzaun
+
+Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu hoch zum Überspringen.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_fence` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelzaun](#block-qtcraft-jungle_fence) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Zaun |
+| Verbindet sich mit | Zäune und Tore, volle feste Blöcke |
+| Klang | Holz |
+| Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Stock](items.md#item-qtcraft-stick) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | 3 × [Dschungelzaun](#block-qtcraft-jungle_fence) |
+| [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Stock](items.md#item-qtcraft-stick) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+### <a id="block-qtcraft-jungle_fence_gate"></a>Dschungelzauntor
+
+Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles durch.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_fence_gate` |
+| Härte | 2 |
+| Abbauen mit der Hand | 3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Dschungelzauntor](#block-qtcraft-jungle_fence_gate) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Öffnet und schließt beim Benutzen | ja |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Hergestellt aus | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) |
+| Art des Bauteils | Zauntor |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); open (false, true) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Stock](items.md#item-qtcraft-stick) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Stock](items.md#item-qtcraft-stick) | [Dschungelzauntor](#block-qtcraft-jungle_fence_gate) |
+| [Stock](items.md#item-qtcraft-stick) | [Dschungelholzbretter](blocks.md#block-qtcraft-jungle_planks) | [Stock](items.md#item-qtcraft-stick) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-oak_slab"></a>Eichenstufe
 

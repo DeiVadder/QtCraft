@@ -390,7 +390,7 @@ private slots:
 
         const QcHandbookEntry *planks = m_english.entry(u"tag:qtcraft:planks"_s);
         QCOMPARE(targets(section(*planks, u"Items in this group"_s)->links),
-                 (QStringList{u"block:qtcraft:birch_planks"_s, u"block:qtcraft:oak_planks"_s, u"block:qtcraft:spruce_planks"_s}));
+                 (QStringList{u"block:qtcraft:birch_planks"_s, u"block:qtcraft:jungle_planks"_s, u"block:qtcraft:oak_planks"_s, u"block:qtcraft:spruce_planks"_s}));
 
         // The oak planks page lists the stick through the tag.
         const QcHandbookEntry::Section *usedIn = section(*m_english.entry(u"block:qtcraft:oak_planks"_s), u"Used in"_s);

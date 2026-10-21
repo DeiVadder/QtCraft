@@ -1,0 +1,14 @@
+{
+    "name": "giant_spruce_tree",
+    "type": "tree",
+    "trunk": "spruce_log",
+    "leaves": "spruce_leaves",
+    "minHeight": 15,
+    "maxHeight": 26,
+    "shape": "giant_cone",
+    "ground": [
+        "grass_block",
+        "dirt",
+        "snow_block"
+    ]
+}

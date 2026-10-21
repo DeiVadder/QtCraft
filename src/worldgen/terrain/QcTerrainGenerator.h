@@ -4,6 +4,7 @@
 #include "worldgen/generators/QcWorldGenerator.h"
 #include "worldgen/surface/QcSurfacePlanner.h"
 #include "worldgen/terrain/QcCaveCarver.h"
+#include "worldgen/terrain/QcGiantTreePlacer.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
 #include "worldgen/terrain/QcTerrainClimate.h"
@@ -59,6 +60,10 @@ public:
     const QcCoastalTowerGenerator &coastalTowers() const { return *m_coastalTowers; }
     // Patches of one kind of grass or flower (decision E-814), for tests.
     const QcVegetationPatchPlacer &vegetationPatches() const { return *m_vegetationPatches; }
+    const QcGiantTreePlacer &giantTrees() const { return *m_giantTrees; }
+    // The footprints of surface structures and coastal towers within `margin` columns of the chunk
+    // at `pos`: no trees grow there.
+    [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin) const;
     QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
@@ -154,6 +159,8 @@ private:
     std::unique_ptr<QcCoastalTowerGenerator> m_coastalTowers;
     // Patches of grass and flowers (decision E-814); reads the terrain columns.
     std::unique_ptr<QcVegetationPatchPlacer> m_vegetationPatches;
+    // Giant trees on a 2×2 trunk (decision E-822); reads the terrain columns.
+    std::unique_ptr<QcGiantTreePlacer> m_giantTrees;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

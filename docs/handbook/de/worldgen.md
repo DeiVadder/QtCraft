@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Befallener Stein-Vorkommen](#ore-qtcraft-infested_stone) · [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Dschungelbaum](#feature-qtcraft-jungle_tree) · [Dschungelbusch](#feature-qtcraft-jungle_bush) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kupfererz-Vorkommen](#ore-qtcraft-copper) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Melonen](#feature-qtcraft-melon_patch) · [Riesenfichte](#feature-qtcraft-giant_spruce_tree) · [Riesiger Dschungelbaum](#feature-qtcraft-giant_jungle_tree) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Seerosen](#feature-qtcraft-lily_pad) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Smaragderz-Vorkommen](#ore-qtcraft-emerald) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -61,13 +61,28 @@
 |---|---|
 | ID | `qtcraft:jungle_tree` |
 | Art | Baum |
-| Blöcke | [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenlaub](blocks.md#block-qtcraft-oak_leaves) |
-| Größe | 8–12 Blöcke |
+| Blöcke | [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungellaub](blocks.md#block-qtcraft-jungle_leaves) |
+| Größe | 6–10 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+| Wächst aus | [Dschungelsetzling](blocks.md#block-qtcraft-jungle_sapling) |
+
+**In Biomen**
+
+[Dschungel](biomes.md#biome-qtcraft-jungle) (5 % der Säulen)
+
+### <a id="feature-qtcraft-jungle_bush"></a>Dschungelbusch
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_bush` |
+| Art | Baum |
+| Blöcke | [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungellaub](blocks.md#block-qtcraft-jungle_leaves) |
+| Größe | 1–1 Blöcke |
 | Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
 
 **In Biomen**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (6 % der Säulen)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (3 % der Säulen)
 
 ### <a id="feature-qtcraft-oak_tree"></a>Eiche
 
@@ -82,7 +97,7 @@
 
 **In Biomen**
 
-[Blumental](biomes.md#biome-qtcraft-flower_valley) (0,08 % der Säulen), [Dschungel](biomes.md#biome-qtcraft-jungle) (2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,2 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (3,2 % der Säulen)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (0,08 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,2 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (3,2 % der Säulen)
 
 ### <a id="ore-qtcraft-iron"></a>Eisenerz-Vorkommen
 
@@ -261,6 +276,34 @@ In jedem Chunk dieser Biome versucht.
 **In Biomen**
 
 [Dschungel](biomes.md#biome-qtcraft-jungle) (0,4 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (0,15 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,12 % der Säulen)
+
+### <a id="feature-qtcraft-giant_spruce_tree"></a>Riesenfichte
+
+| | |
+|---|---|
+| ID | `qtcraft:giant_spruce_tree` |
+| Art | Baum |
+| Blöcke | [Fichtenstamm](blocks.md#block-qtcraft-spruce_log), [Fichtennadeln](blocks.md#block-qtcraft-spruce_leaves) |
+| Größe | 15–26 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt), [Schneeblock](blocks.md#block-qtcraft-snow_block) |
+
+**In Biomen**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (0,12 % der Säulen)
+
+### <a id="feature-qtcraft-giant_jungle_tree"></a>Riesiger Dschungelbaum
+
+| | |
+|---|---|
+| ID | `qtcraft:giant_jungle_tree` |
+| Art | Baum |
+| Blöcke | [Dschungelstamm](blocks.md#block-qtcraft-jungle_log), [Dschungellaub](blocks.md#block-qtcraft-jungle_leaves) |
+| Größe | 18–28 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+
+**In Biomen**
+
+[Dschungel](biomes.md#biome-qtcraft-jungle) (0,3 % der Säulen)
 
 ### <a id="feature-qtcraft-red_mushroom"></a>Rote Pilze
 

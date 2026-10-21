@@ -368,6 +368,7 @@ void BlockReader::readSapling(const QJsonObject &saplingJson, QcJsonFieldReader 
 {
     QcSaplingDefinition sapling;
     sapling.feature = saplingReader.name(u"feature"_s, m_namespace);
+    sapling.giantFeature = saplingReader.name(u"giantFeature"_s, m_namespace);
     sapling.minSeconds = saplingReader.number(u"minSeconds"_s, 120.0, 1.0, 86400.0);
     sapling.maxSeconds = saplingReader.number(u"maxSeconds"_s, std::max(300.0, sapling.minSeconds), sapling.minSeconds, 86400.0);
     sapling.plantChance = saplingReader.number(u"plantChance"_s, 0.0, 0.0, 1.0);

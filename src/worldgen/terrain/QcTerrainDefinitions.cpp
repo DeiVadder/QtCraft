@@ -45,6 +45,8 @@ public:
 private:
     // The features a biome places (pools and unknown ones left out with a warning).
     [[nodiscard]] decltype(Biome::features) featuresOf(const QcBiomeDefinition &definition);
+    // Whether the feature at this index is a giant tree (decision E-822).
+    [[nodiscard]] bool isGiant(int feature) const;
 
     const QcContentRegistry &m_content;
     QStringList m_warnings;
@@ -99,7 +101,11 @@ Feature Loader::feature(const QcFeatureDefinition &definition, quint64 patchSeed
     feature.shape.leaves = definition.leavesBlock.isEmpty() ? qcAirBlockId : resolve(definition.leavesBlock, qcAirBlockId);
     feature.shape.minHeight = definition.minHeight;
     feature.shape.maxHeight = definition.maxHeight;
-    feature.shape.cone = definition.shape == u"cone"_s;
+    feature.shape.crown = QcTreeShape::crownOf(definition.shape).value_or(QcTreeShape::Crown::Round);
+    std::tie(feature.shape.trunkX, feature.shape.trunkZ) = QcTreeShape::lyingTrunks(m_content, feature.shape.trunk);
+    if (!definition.vinesBlock.isEmpty()) {
+        feature.shape.vines = QcTreeShape::vinesOf(m_content, resolve(definition.vinesBlock, qcAirBlockId));
+    }
     feature.nearWater = definition.nearWater;
     feature.onWater = definition.onWater;
     feature.patchSize = definition.patchSize;
@@ -135,7 +141,17 @@ Biome Loader::biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBloc
     biome.snowLine = definition.snowLine;
     biome.snow = definition.snowBlock.isEmpty() ? biome.surface : resolve(definition.snowBlock, biome.surface);
 
-    biome.features = featuresOf(definition);
+    // Giant trees are placed per cell (decision E-822): their density per column becomes the chance
+    // of one in a whole cell.
+    const decltype(Biome::features) placed = featuresOf(definition);
+    for (const auto &[feature, density] : placed) {
+        if (isGiant(feature)) {
+            constexpr double cellArea = double(QcTerrainDefinitions::giantCell) * QcTerrainDefinitions::giantCell;
+            biome.giants.append({feature, std::min(1.0, density * cellArea)});
+        } else {
+            biome.features.append({feature, density});
+        }
+    }
     return biome;
 }
 
@@ -155,6 +171,12 @@ decltype(Biome::features) Loader::featuresOf(const QcBiomeDefinition &definition
         features.append({int(it - m_content.worldgen().features().begin()), placement.density});
     }
     return features;
+}
+
+bool Loader::isGiant(int feature) const
+{
+    const QcFeatureDefinition &definition = m_content.worldgen().features()[feature];
+    return definition.type == QcFeatureDefinition::Type::Tree && QcTreeShape::paramsOf(m_content, definition).giant();
 }
 
 void Loader::warnSharedClimate(const QList<Biome> &biomes, const Biome &biome)
@@ -238,6 +260,16 @@ QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes
     return ground;
 }
 
+// The chance of any giant tree per cell of the biome.
+double giantChanceOf(const QcTerrainDefinitions::Biome &biome)
+{
+    double sum = 0.0;
+    for (const auto &[feature, chance] : biome.giants) {
+        sum += chance;
+    }
+    return sum;
+}
+
 } // namespace
 
 QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed)
@@ -276,6 +308,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
             maxPatchChance[layer] = std::max(maxPatchChance[layer], vegetation.patches[layer].patches.chance);
         }
         biome.patches = std::move(vegetation.patches);
+        maxGiantChance = std::max(maxGiantChance, giantChanceOf(biome));
         anyOverhangs = anyOverhangs || biome.overhang > 0;
         anyRidges = anyRidges || biome.ridges > 0.0;
         anyTerraces = anyTerraces || biome.terraceHeight > 0;

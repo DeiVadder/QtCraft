@@ -65,6 +65,9 @@ struct QcTerrainDefinitions
         QcBlockId snow = qcAirBlockId;
         // Index into features and density per column; the vegetation layers come last.
         QList<std::pair<int, double>> features;
+        // Giant trees (decision E-822): index into features and chance per cell of
+        // QcTerrainDefinitions::giantCell blocks, from their density per column; not in `features`.
+        QList<std::pair<int, double>> giants;
         std::array<VegetationPatches, VegetationLayers> patches;
     };
 
@@ -96,6 +99,9 @@ struct QcTerrainDefinitions
         QSet<int> biomes;
     };
 
+    // Giant trees stand at most one per cell of this many blocks along x and z (decision E-822).
+    static constexpr int giantCell = 16;
+
     QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed);
 
     int seaLevel = 62;
@@ -110,6 +116,8 @@ struct QcTerrainDefinitions
     QList<Pool> pools;
     // Highest patch chance of any biome per vegetation layer (cells above it are skipped at once).
     std::array<double, VegetationLayers> maxPatchChance{};
+    // Highest chance of any biome that a giant cell holds a giant tree (cells above it are skipped at once).
+    double maxGiantChance = 0.0;
     // Solid blocks the terrain itself is made of (stone and every biome's ground layers, no
     // features, liquids or ice): where a player may spawn.
     QSet<QcBlockId> naturalGround;
