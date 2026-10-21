@@ -740,5 +740,10 @@
     "block.qtcraft.blue_bed": "Blaues Bett",
     "block.qtcraft.brown_bed": "Braunes Bett",
     "block.qtcraft.green_bed": "Grünes Bett",
-    "block.qtcraft.black_bed": "Schwarzes Bett"
+    "block.qtcraft.black_bed": "Schwarzes Bett",
+    "item.qtcraft.map": "Leere Karte",
+    "item.qtcraft.filled_map": "Karte",
+    "structure.qtcraft.maps_station": "Karten",
+    "structure.qtcraft.maps_station.use": "Halte eine leere Karte und benutze sie: Sie zeichnet das Land um dich",
+    "structure.qtcraft.maps_station.craft": "Karte + 8 Papier zoomt heraus, Karte + leere Karten kopiert"
 }

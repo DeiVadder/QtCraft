@@ -59,5 +59,9 @@
     --qc-clockHand: rgba(240, 232, 160, 1.000);
     --qc-signBoard: rgba(168, 132, 78, 1.000);
     --qc-signBorder: rgba(85, 64, 31, 1.000);
+    --qc-mapPaper: rgba(230, 218, 180, 1.000);
+    --qc-mapPaperEdge: rgba(156, 138, 98, 1.000);
+    --qc-mapMarker: rgba(248, 248, 240, 1.000);
+    --qc-mapMarkerOther: rgba(156, 192, 240, 1.000);
     --qc-clear: rgba(0, 0, 0, 0.000);
 }

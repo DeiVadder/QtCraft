@@ -6,6 +6,7 @@
 #include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
 #include "server/hanging/QcServerHanging.h"
+#include "server/maps/QcServerMaps.h"
 
 #include <QTimer>
 
@@ -148,6 +149,8 @@ void QcServer::addClientSystems()
     using enum QcTickPhase;
     using When = QcTickSystems::When;
     m_tickSystems.add(ClientSync, When::Always, [this] { m_chunkLoading.noteSimulated(); });
+    // Held maps are revealed and their changes sent (decisions E-800, E-802).
+    m_tickSystems.add(ClientSync, When::Simulating, [this] { QcServerMaps(m_state, m_inventory).tick(); });
     // A step of a frozen world moves the time the clients do not advance themselves.
     m_tickSystems.add(ClientSync, When::Simulating, [this] {
         if (m_tickControl.frozen()) {
@@ -267,6 +270,7 @@ void QcServer::removeClosedClients()
             // A rider gets out first, so he is saved standing beside the cart.
             m_minecarts.leave(*client);
             m_commands.playerLeft(client->id);
+            QcServerMaps(m_state, m_inventory).forget(*client);
             leaving = true;
         }
     }

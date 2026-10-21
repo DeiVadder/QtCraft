@@ -12,6 +12,7 @@
 #include "server/entities/QcEntities.h"
 #include "server/login/QcIdentityStore.h"
 #include "server/machines/QcMachineRules.h"
+#include "server/maps/QcMapStore.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcPlantManager.h"
 #include "server/signal/QcCircuitState.h"
@@ -92,6 +93,9 @@ public:
     QcCircuitState &circuits() { return m_circuits; }
     const QcCircuitState &circuits() const { return m_circuits; }
     QcHopperQueue &hoppers() { return m_hoppers; }
+    // The maps of the world by map id (decision E-799).
+    QcMapStore &maps() { return m_maps; }
+    const QcMapStore &maps() const { return m_maps; }
     QRandomGenerator &random() { return m_random; }
     // Separate from random() so that sounds never change drops or spawns.
     QRandomGenerator &soundRandom() { return m_soundRandom; }
@@ -123,6 +127,7 @@ private:
     QcLiquidFlow m_liquids;
     QcCircuitState m_circuits;
     QcHopperQueue m_hoppers;
+    QcMapStore m_maps;
     QRandomGenerator m_random;
     QRandomGenerator m_soundRandom;
     bool m_playerListChanged = false;

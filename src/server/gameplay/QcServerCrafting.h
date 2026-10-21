@@ -27,8 +27,8 @@ public:
 
     QcServerCrafting(QcServerState &state, QcServerInventory &inventory);
 
-    // What the player's grid makes now (a recipe or a repair).
-    [[nodiscard]] static std::optional<QcItemStack> resultOf(const QcContentRegistry &content, const QcServerClient &client);
+    // What the player's grid makes now (a recipe, a repair or a map copied or zoomed out).
+    [[nodiscard]] static std::optional<QcItemStack> resultOf(const QcServerState &state, const QcServerClient &client);
 
     void takeCraftingResult(QcServerClient &client);
     void craftAll(QcServerClient &client);
@@ -49,6 +49,8 @@ private:
     // Takes the crafting result once.
     CraftOutcome craftOnce(QcServerClient &client);
     // Takes the repair result (QcRepair) once.
+    // Copying or zooming out a map in the grid (decision E-804).
+    CraftOutcome mapOnce(QcServerClient &client);
     CraftOutcome repairOnce(QcServerClient &client);
     // Takes one item from each cell; a container (a milk bucket's bucket) stays in a cell it empties.
     void takeOneOfEachCell(QcServerClient &client);

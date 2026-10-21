@@ -109,7 +109,7 @@ QcItemStack QcServerGameModes::validStack(QcItemStack stack) const
     }
 
     const QcItemDefinition &definition = content.item(stack.item);
-    return {stack.item, std::clamp(stack.count, 1, definition.maxStack), std::clamp(stack.damage, 0, std::max(0, definition.durability - 1))};
+    return {stack.item, std::clamp(stack.count, 1, definition.maxStack), definition.keptDamage(stack.damage)};
 }
 
 void QcServerGameModes::creativeItem(QcServerClient &client, QcMsg::CreativeItem message)

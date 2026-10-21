@@ -797,5 +797,7 @@
     "Stonecutter": "Steinschneider",
     "Put stone into the slot on the left.": "Lege Stein in den linken Platz.",
     "Put stone into the left slot and choose a result. %1: pick up and put down, also the output. %2: put down one. %3: move the stack across or take all outputs. %4 closes.": "Lege Stein in den linken Platz und wähle ein Ergebnis. %1: aufnehmen und ablegen, auch die Ausgabe. %2: eines ablegen. %3: Stapel hinüberschieben oder alle Ausgaben nehmen. %4 schließt.",
-    "Put stone into the left slot and choose a result. Left click: pick up and put down, also the output. Right click: put down one. Shift-click: move the stack across or take all outputs. %1 or Esc closes.": "Lege Stein in den linken Platz und wähle ein Ergebnis. Linksklick: aufnehmen und ablegen, auch die Ausgabe. Rechtsklick: eines ablegen. Umschalt-Klick: Stapel hinüberschieben oder alle Ausgaben nehmen. %1 oder Esc schließt."
+    "Put stone into the left slot and choose a result. Left click: pick up and put down, also the output. Right click: put down one. Shift-click: move the stack across or take all outputs. %1 or Esc closes.": "Lege Stein in den linken Platz und wähle ein Ergebnis. Linksklick: aufnehmen und ablegen, auch die Ausgabe. Rechtsklick: eines ablegen. Umschalt-Klick: Stapel hinüberschieben oder alle Ausgaben nehmen. %1 oder Esc schließt.",
+    "Map #%1": "Karte Nr. %1",
+    "Scale 1:%1": "Maßstab 1:%1"
 }

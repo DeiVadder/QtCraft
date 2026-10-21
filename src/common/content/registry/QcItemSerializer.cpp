@@ -31,6 +31,8 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     stream << item.fishing.has_value();
     // The dial the client draws while the item is held (decision E-769).
     stream << quint8(item.dial);
+    // A map (decision E-804): the client sends the use of an empty one and draws a filled one.
+    stream << quint8(item.map);
 }
 
 // What the item hangs on a block face (decision E-790): the client targets and draws frames and
@@ -151,6 +153,13 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
         return std::nullopt;
     }
     item.dial = QcItemDial(dial);
+    quint8 map = 0;
+    stream >> map;
+    if (map >= quint8(qcMapItemCount)) {
+        stream.setStatus(QDataStream::ReadCorruptData);
+        return std::nullopt;
+    }
+    item.map = QcMapItem(map);
     return item;
 }
 

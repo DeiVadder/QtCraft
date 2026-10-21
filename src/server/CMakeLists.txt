@@ -164,6 +164,13 @@ target_sources(qc_server PRIVATE
     machines/QcServerStonecutter.h machines/QcServerStonecutter.cpp
 )
 target_sources(qc_server PRIVATE
+    maps/QcMapPending.h maps/QcMapPending.cpp
+    maps/QcMapSaveCodec.h maps/QcMapSaveCodec.cpp
+    maps/QcMapStore.h maps/QcMapStore.cpp
+    maps/QcMapSurvey.h maps/QcMapSurvey.cpp
+    maps/QcServerMaps.h maps/QcServerMaps.cpp
+)
+target_sources(qc_server PRIVATE
     minecarts/QcMinecartCollisions.h minecarts/QcMinecartCollisions.cpp
     minecarts/QcMinecartHoppers.h minecarts/QcMinecartHoppers.cpp
     minecarts/QcMinecartManager.h minecarts/QcMinecartManager.cpp

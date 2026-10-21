@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -662,6 +662,24 @@ Alte Steintürme stehen an den Küsten, auf niedrigem Land nahe am offenen Meer.
 **Siehe auch**
 
 [Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Eis](blocks.md#block-qtcraft-ice), [Blaues Eis](blocks.md#block-qtcraft-blue_ice), [Monster-Spawner](blocks.md#block-qtcraft-spawner), [Spinnennetz](blocks.md#block-qtcraft-cobweb), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Schiene](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Gemeißelter Sandstein](blocks.md#block-qtcraft-carved_sandstone), [Ranken](blocks.md#block-qtcraft-vines), [Kessel](blocks.md#block-qtcraft-cauldron), [Blumentopf](blocks.md#block-qtcraft-flower_pot), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weinender Obsidian](blocks.md#block-qtcraft-crying_obsidian), [Sprengstoff](blocks.md#block-qtcraft-explosive), [Steindruckplatte](blocks.md#block-qtcraft-stone_pressure_plate), [Kompass](items.md#item-qtcraft-compass), [Uhr](items.md#item-qtcraft-clock)
+
+### <a id="chapter-qtcraft-maps"></a>Karten
+
+**Eine Karte anfertigen**
+
+Lege einen **Kompass** in die Mitte der Werkbank und acht **Papier** darum, dann bekommst du eine **leere Karte**. Benutzt du sie (**R**), wird sie eine Karte des Landes um dich. Jede Karte deckt ein festes Quadrat der Welt ab: zuerst 128 × 128 Blöcke, ein Block je Pixel, an einem Raster ausgerichtet, sodass zwei nahe beieinander angefertigte Karten dasselbe Quadrat zeigen. Jede Karte hat ihre eigene Nummer, die im Inventar erscheint, wenn du auf sie zeigst.
+
+**Erkunden**
+
+Eine Karte zeichnet nur, während du sie hältst: Das Land bis 128 Blöcke um dich erscheint innerhalb einer Sekunde, von oben gesehen in der Farbe des obersten Blocks. Hänge nach Norden sind dunkler, nach Süden heller; tiefes Wasser ist dunkler als flaches. Was noch niemand gesehen hat, bleibt leeres Papier. Du bist der Pfeil auf der Karte, er zeigt in deine Blickrichtung; andere Spieler mit derselben Karte sind auch Pfeile, und ein Spieler jenseits des Rands ist ein Punkt am Rand.
+
+**Herauszoomen**
+
+Eine Karte in der Mitte der Werkbank mit acht **Papier** darum wird eine neue, leere Karte eine Stufe größer: doppelt so viele Blöcke breit, bis zu vier Stufen (2048 × 2048 Blöcke, sechzehn Blöcke je Pixel). Die größere Karte deckt das alte Quadrat ab und beginnt leer; erkunde sie neu.
+
+**Kopien**
+
+Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Karte. Kopien teilen Nummer und Bild: Was ein Halter erkundet, erscheint auf jeder Kopie, so kann eine Gruppe eine Karte teilen.
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 

@@ -4,6 +4,7 @@
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcHangingParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/core/QcLogging.h"
 
 #include <QJsonArray>
 
@@ -58,6 +59,25 @@ void ItemReader::parseBlockUses()
         m_item.dial = QcItemDial::Clock;
     } else if (!dial.isEmpty()) {
         m_reader.fail(u"'dial' must be \"compass\" or \"clock\""_s);
+    }
+    const QString map = m_reader.string(u"map"_s);
+    if (map == u"empty"_s) {
+        m_item.map = QcMapItem::Empty;
+    } else if (map == u"filled"_s) {
+        m_item.map = QcMapItem::Filled;
+    } else if (!map.isEmpty()) {
+        m_reader.fail(u"'map' must be \"empty\" or \"filled\""_s);
+    }
+    if (m_item.map != QcMapItem::None && (!m_item.placesBlock.isEmpty() || m_item.durability > 0)) {
+        m_reader.fail(u"a map neither places a block nor wears"_s);
+    }
+    m_item.zoomsWith = m_reader.name(u"zoomsWith"_s, m_namespace);
+    if (!m_item.zoomsWith.isEmpty() && m_item.map != QcMapItem::Filled) {
+        m_reader.fail(u"only a filled map has 'zoomsWith'"_s);
+    }
+    m_item.filledMap = m_reader.name(u"filledMap"_s, m_namespace);
+    if ((m_item.map == QcMapItem::Empty) != !m_item.filledMap.isEmpty()) {
+        m_reader.fail(u"an empty map, and only an empty map, names its 'filledMap'"_s);
     }
     m_item.ignites = m_reader.boolean(u"ignites"_s, false);
     if (m_item.ignites && (!m_item.placesBlock.isEmpty() || m_item.tills || m_item.flattens || m_item.scoops || m_item.bottles)) {
@@ -254,8 +274,13 @@ void ItemReader::applyStackRules()
     if (!m_item.tool.isEmpty() && m_item.maxStack != 1 && !m_json.contains(u"maxStack"_s)) {
         m_item.maxStack = 1;
     }
+    // Items that wear out stack to one, so stacks of equal damage (QcItemStack::stacksWith) are
+    // never worn tools (decision E-798); a larger maxStack given in the file is overridden.
+    if (m_item.durability > 0 && m_item.maxStack != 1 && m_json.contains(u"maxStack"_s)) {
+        qCWarning(lcRegistry) << "item" << m_item.name << "has a durability: 'maxStack'" << m_item.maxStack << "overridden to 1";
+    }
     // An equipment slot holds one item.
-    if (m_item.armour) {
+    if (m_item.armour || m_item.durability > 0) {
         m_item.maxStack = 1;
     }
     // Burnt fuel leaves its container in the fuel slot, which has room for it only after the last item.

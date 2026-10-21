@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/controllers/QcHeldMap.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/models/QcWorldLabelModel.h"
 #include "common/core/QcChunkPos.h"
@@ -33,6 +34,8 @@ class QcHudState : public QObject
     Q_PROPERTY(Dial dial READ dial NOTIFY dialChanged FINAL)
     Q_PROPERTY(double dialAngle READ dialAngle NOTIFY dialChanged FINAL)
     Q_PROPERTY(QString clockText READ clockText NOTIFY dialChanged FINAL)
+    // The filled map in the hand (decision E-805).
+    Q_PROPERTY(QcHeldMap *heldMap READ heldMap CONSTANT FINAL)
     // Labels floating in the world, drawn over it (decision E-222).
     Q_PROPERTY(QcWorldLabelModel *labels READ labels CONSTANT FINAL)
     // The debug display (decision E-225).
@@ -52,6 +55,7 @@ public:
     Dial dial() const { return m_dial; }
     double dialAngle() const { return m_dialAngle; }
     QString clockText() const { return m_clockText; }
+    QcHeldMap *heldMap() const { return m_heldMap; }
     QcWorldLabelModel *labels() const { return m_labels; }
     QcDebugHud *debug() const { return m_debug; }
     // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for the handbook key.
@@ -87,6 +91,7 @@ private:
     Dial m_dial = Dial::None;
     double m_dialAngle = 0.0;
     QString m_clockText;
+    QcHeldMap *m_heldMap = nullptr;
     QcWorldLabelModel *m_labels = nullptr;
     // The last merge of labelsToDraw and what it was made from.
     QHash<QcChunkPos, QList<QcWorldLabel>> m_mergedFrom;

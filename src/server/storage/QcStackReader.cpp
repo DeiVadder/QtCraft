@@ -27,5 +27,5 @@ QcItemStack QcStackReader::read(QDataStream &stream)
         return {};
     }
     const QcItemDefinition &definition = m_content.item(*item);
-    return {*item, std::clamp(itemCount, 1, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+    return {*item, std::clamp(itemCount, 1, definition.maxStack), definition.keptDamage(damage)};
 }

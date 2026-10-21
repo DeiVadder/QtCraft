@@ -7,6 +7,7 @@
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/maps/QcMapSaveCodec.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcPlayerRecords.h"
@@ -46,7 +47,9 @@ QcStatus QcServerPersistence::open()
     m_state.info().setupDone = false;
 
     if (m_state.config().worldDirectory.isEmpty()) {
-        // Without a world directory unloaded chunks stay in memory (QcChunkStore without directory).
+        // Without a world directory unloaded chunks and maps stay in memory (QcChunkStore without
+        // directory).
+        m_state.maps().open({}, 1);
         return openChunks({});
     }
 
@@ -68,6 +71,7 @@ QcStatus QcServerPersistence::open()
     if (const QcStatus opened = openChunks(m_state.config().worldDirectory); !opened) {
         return opened;
     }
+    openMaps();
     if (!QFile::exists(QDir(m_state.config().worldDirectory).filePath(u"world.json"_s))) {
         return createInfo(storage);
     }
@@ -115,6 +119,37 @@ QcStatus QcServerPersistence::openChunks(const QString &directory)
     }
     m_state.world().setStorage(m_io.get(), std::move(*catalog));
     return {};
+}
+
+void QcServerPersistence::openMaps()
+{
+    const QDir folder(QDir(m_state.config().worldDirectory).filePath(u"maps"_s));
+    quint32 next = 1;
+    const QStringList files = folder.entryList({u"*.qcmap"_s}, QDir::Files);
+    for (const QString &name : files) {
+        if (const std::optional<quint32> id = QcMapSaveCodec::idOf(name)) {
+            next = std::max(next, *id + 1);
+        } else {
+            qCWarning(lcServer) << "Map file" << name << "has no valid map id; left alone";
+        }
+    }
+    const std::shared_ptr<const QcContentRegistry> content = m_state.contentPointer();
+    m_state.maps().open(
+        [folder, content](quint32 id) -> std::optional<QcMapData> {
+            QFile file(folder.filePath(QcMapSaveCodec::fileName(id).section(u'/', -1)));
+            if (!file.exists()) {
+                return std::nullopt;
+            }
+            const QByteArray bytes = file.open(QIODevice::ReadOnly) ? file.read(QcMapSaveCodec::maxBytes + 1) : QByteArray();
+            QcResult<QcMapData> map = QcMapSaveCodec::read(bytes, file.fileName(), *content);
+            if (!map) {
+                // The id stays used; the damaged file is kept aside for a look.
+                qCWarning(lcServer) << map.error() << "- kept aside as" << QcSaveFile::keepAside(file.fileName());
+                return std::nullopt;
+            }
+            return std::move(*map);
+        },
+        next);
 }
 
 void QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
@@ -178,6 +213,8 @@ QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storag
     m_state.info() = *info;
     m_state.world().loaders().restore(m_state.info().chunkLoaders);
     m_state.entities().creatures().setNextUid(m_state.info().nextCreatureId);
+    // Ids of maps kept aside or lost stay used (decision E-799).
+    m_state.maps().reserveIdsBelow(m_state.info().nextMapId);
     m_state.config().worldName = m_state.info().name;
     // A single-player world plays with its own limits; a dedicated server's server.json decides there.
     if (!m_state.config().limitsFromServer) {
@@ -292,6 +329,7 @@ std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
     m_state.info().lastPlayed = QDateTime::currentDateTimeUtc();
     m_state.info().chunkLoaders = m_state.world().loaders().loaders();
     m_state.info().nextCreatureId = m_state.entities().creatures().nextUid();
+    m_state.info().nextMapId = m_state.maps().nextId();
     QList<QcChunkStore::WholeFile> files{{QString::fromLatin1(QcWorldStorage::infoFileName), QcWorldStorage::infoBytes(m_state.info())}};
     // villages.json only after a change since it was last written.
     const quint64 villageChanges = m_state.world().villages().changes();
@@ -311,14 +349,34 @@ std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
             files.append(playerFile(*m_storage, *client));
         }
     }
+    // Only the maps changed since the last save (decision E-799).
+    const QList<quint32> maps = m_state.maps().takeUnsaved();
+    for (const quint32 map : maps) {
+        const QcMapData *data = m_state.maps().find(map);
+        if (!data) {
+            continue;
+        }
+        QByteArray bytes = QcMapSaveCodec::write(*data, m_state.content());
+        // A file the reader would refuse is not written (a map compresses far below the limit).
+        if (bytes.size() > QcMapSaveCodec::maxBytes) {
+            qCWarning(lcServer) << "Map" << map << "takes" << bytes.size() << "bytes, more than a map file may; not saved";
+            continue;
+        }
+        files.append({QcMapSaveCodec::fileName(map), std::move(bytes)});
+    }
     const quint64 id = m_io->save(m_loading.departuresForSave(), std::move(files));
+    if (!maps.isEmpty()) {
+        m_mapsBySave.insert(id, maps);
+    }
     ++m_running;
     return {id, result};
 }
 
-void QcServerPersistence::noteResult(const QcStatus &status)
+void QcServerPersistence::noteResult(quint64 save, const QcStatus &status)
 {
     m_running = std::max(0, m_running - 1);
+    // The maps of a failed save are written again with the next one; written ones may leave memory.
+    m_state.maps().finishSave(m_mapsBySave.take(save), bool(status));
     if (status) {
         m_failing = false;
         return;
@@ -341,7 +399,7 @@ QcStatus QcServerPersistence::save()
     auto [id, result] = submitSave();
     m_io->waitForIdle();
     for (const QcChunkIo::SaveResult &done : m_io->takeSaves()) {
-        noteResult(done.status);
+        noteResult(done.id, done.status);
         if (done.id == id && !done.status && result) {
             result = done.status;
         }
@@ -367,7 +425,7 @@ std::optional<QcStatus> QcServerPersistence::takeNewFailure()
 {
     if (m_io) {
         for (const QcChunkIo::SaveResult &done : m_io->takeSaves()) {
-            noteResult(done.status);
+            noteResult(done.id, done.status);
         }
     }
     return std::exchange(m_newFailure, std::nullopt);

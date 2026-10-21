@@ -1,5 +1,6 @@
 #include "app/session/QcWorldAtlas.h"
 
+#include "app/controllers/QcHeldMap.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIcons.h"
@@ -57,6 +58,7 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
     m_targets.preview.useWorld(m_parts.session->content(), atlas);
     const qint64 iconsStart = timer.nsecsElapsed();
     m_targets.icons.draw(content, *atlas, m_renderTable.get());
+    m_targets.heldMap.useAtlas(content, *atlas);
     const qint64 iconsNs = timer.nsecsElapsed() - iconsStart;
     if (m_parts.view) {
         m_parts.view->setAtlas(atlas->levels());

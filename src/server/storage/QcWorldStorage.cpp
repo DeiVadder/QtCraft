@@ -138,6 +138,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.limits = json.value(u"limits"_s).toObject();
     bool idOk = false;
     info.nextCreatureId = json.value(u"nextCreatureId"_s).toString().toULongLong(&idOk);
+    // Worlds without the field start at 1 (the map files raise it, QcServerPersistence::openMaps).
+    info.nextMapId = quint32(std::clamp<qint64>(json.value(u"nextMapId"_s).toInteger(1), 1, qint64(1) << 31));
     info.chunkLoaders = chunkLoadersOf(json);
     info.forcedChunks = forcedChunksOf(json);
 
@@ -172,6 +174,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                            {u"worldTime"_s, info.worldTime},
                            // As a string like the seed.
                            {u"nextCreatureId"_s, QString::number(info.nextCreatureId)},
+                           {u"nextMapId"_s, qint64(info.nextMapId)},
                            {u"defaultGameMode"_s, info.unknownGameMode.isEmpty() ? QString(QcGameModes::name(info.defaultGameMode)) : info.unknownGameMode},
                            {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
                            {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},

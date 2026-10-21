@@ -748,62 +748,62 @@
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="478"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="487"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="481"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="490"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="483"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="492"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="506"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="515"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="507"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="516"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="508"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="517"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="509"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="518"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="511"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="520"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="512"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="521"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="513"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="522"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="514"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="523"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="515"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="524"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -2202,12 +2202,12 @@
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="62"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="63"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="62"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="63"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -2215,12 +2215,22 @@
 <context>
     <name>QcInventoryModel</name>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="121"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="132"/>
         <source>Armour: +%1</source>
         <translation>Rüstung: +%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="124"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="136"/>
+        <source>Map #%1</source>
+        <translation>Karte Nr. %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="138"/>
+        <source>Scale 1:%1</source>
+        <translation>Maßstab 1:%1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
         <source>Durability: %1 / %2</source>
         <translation>Haltbarkeit: %1 / %2</translation>
     </message>
@@ -3447,22 +3457,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="190"/>
+        <location filename="../src/server/core/QcServer.cpp" line="191"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="411"/>
+        <location filename="../src/server/core/QcServer.cpp" line="415"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="441"/>
+        <location filename="../src/server/core/QcServer.cpp" line="445"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="190"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="193"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -3487,7 +3497,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="205"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="208"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3524,27 +3534,27 @@
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="188"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="226"/>
         <source>Not enough room in the inventory</source>
         <translation>Nicht genug Platz im Inventar</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="202"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="240"/>
         <source>Unknown recipe %1</source>
         <translation>Unbekanntes Rezept %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="209"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="247"/>
         <source>%1 needs a crafting table nearby</source>
         <translation>%1 braucht eine Werkbank in der Nähe</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="228"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="266"/>
         <source>Crafted %1 x %2</source>
         <translation>%1 × %2 hergestellt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="231"/>
+        <location filename="../src/server/gameplay/QcServerCrafting.cpp" line="269"/>
         <source>Missing ingredients or room for %1</source>
         <translation>Zutaten oder Platz für %1 fehlen</translation>
     </message>
@@ -3961,7 +3971,7 @@
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="225"/>
+        <location filename="../src/server/core/QcServer.cpp" line="226"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="79"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>

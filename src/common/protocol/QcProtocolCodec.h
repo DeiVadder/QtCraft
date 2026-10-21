@@ -2,7 +2,7 @@
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
-// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp, QcLoginCodec.cpp and QcSignCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp, QcLoginCodec.cpp, QcSignCodec.cpp and QcMapCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "common/core/QcResult.h"
 #include "common/protocol/QcMessages.h"
@@ -188,5 +188,9 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LoginChallenge>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LoginResponse>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream);
+
+// Maps (QcMapCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::MapUpdate &m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MapUpdate>, QDataStream &stream);
 
 } // namespace QcProtocolCodec

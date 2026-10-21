@@ -80,6 +80,15 @@ Item {
         game: hud.game
     }
 
+    // A held filled map (decision E-805), under the hotbar and the status rows; hidden while a
+    // screen is open (only the chat line leaves the view free).
+    MapInHand {
+        heldMap: hud.game.hud.heldMap
+        visible: heldMap.held && (hud.game.overlay === GameController.Overlay.None || hud.game.overlay === GameController.Overlay.Chat)
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+    }
+
     Item {
         id: crosshair
 

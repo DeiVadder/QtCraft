@@ -71,6 +71,10 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::ClockHand, "clockHand", 0xfff0e8a0},
     {R::SignBoard, "signBoard", 0xffa8844e},
     {R::SignBorder, "signBorder", 0xff55401f},
+    {R::MapPaper, "mapPaper", 0xffe6dab4},
+    {R::MapPaperEdge, "mapPaperEdge", 0xff9c8a62},
+    {R::MapMarker, "mapMarker", 0xfff8f8f0},
+    {R::MapMarkerOther, "mapMarkerOther", 0xff9cc0f0},
     {R::Clear, "clear", 0x00000000},
 }};
 

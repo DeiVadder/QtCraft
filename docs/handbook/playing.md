@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -662,6 +662,24 @@ Old stone towers stand on the coasts, on low land with the open sea close by. A 
 **See also**
 
 [Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian), [Ice](blocks.md#block-qtcraft-ice), [Blue ice](blocks.md#block-qtcraft-blue_ice), [Monster spawner](blocks.md#block-qtcraft-spawner), [Cobweb](blocks.md#block-qtcraft-cobweb), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Rail](blocks.md#block-qtcraft-rail), [Sand](blocks.md#block-qtcraft-sand), [Carved sandstone](blocks.md#block-qtcraft-carved_sandstone), [Vines](blocks.md#block-qtcraft-vines), [Cauldron](blocks.md#block-qtcraft-cauldron), [Flower pot](blocks.md#block-qtcraft-flower_pot), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Crying obsidian](blocks.md#block-qtcraft-crying_obsidian), [Explosive](blocks.md#block-qtcraft-explosive), [Stone pressure plate](blocks.md#block-qtcraft-stone_pressure_plate), [Compass](items.md#item-qtcraft-compass), [Clock](items.md#item-qtcraft-clock)
+
+### <a id="chapter-qtcraft-maps"></a>Maps
+
+**Making a map**
+
+Lay a **compass** in the middle of the crafting table with eight **paper** around it to get an **empty map**. Using it (**R**) turns it into a map of the land around you. Every map covers a fixed square of the world: at the start 128 × 128 blocks, one block per pixel, lined up on a grid, so two maps made near each other show the same square. Each map has its own number, shown when you point at it in the inventory.
+
+**Exploring**
+
+A map draws only while you hold it: the land up to 128 blocks around you appears within a second, seen from above with the colour of each top block. Slopes facing north are darker and those facing south brighter; deep water is darker than shallow water. What nobody has seen yet stays blank paper. You are the arrow on the map, pointing where you look; other players who carry the same map are arrows too, and a player beyond the edge is a dot at the edge.
+
+**Zooming out**
+
+A filled map in the middle of the crafting table with eight **paper** around it becomes a new, empty map one step larger: twice as many blocks across, up to four steps (2048 × 2048 blocks, sixteen blocks per pixel). The larger map covers the old square and starts blank; explore it again.
+
+**Copies**
+
+A filled map with empty maps in the crafting grid gives one copy per empty map. Copies share the map number and the picture: whatever one holder explores appears on every copy, so a group can share one map.
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 

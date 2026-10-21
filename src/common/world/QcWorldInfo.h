@@ -88,6 +88,9 @@ struct QcWorldInfo
     // The persistent id the next saved creature gets (QcMobManager::nextUid, decision E-420); saved
     // with the chunks in one journal, so it lies beyond every id saved in them.
     quint64 nextCreatureId = 1;
+    // The id the next new map gets (QcMapStore::nextId, decision E-799); saved with the maps in one
+    // journal, so ids of maps whose files were kept aside or lost are not handed out again.
+    quint32 nextMapId = 1;
     // Chunks kept loaded by /forceload (decision E-377), in the order they were added.
     QList<QcChunkPos> forcedChunks;
     // Every chunk loader block of the world in the order they were placed (decision E-377).

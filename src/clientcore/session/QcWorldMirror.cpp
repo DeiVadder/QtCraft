@@ -58,6 +58,8 @@ bool QcWorldMirror::handleSkyMessage(const QcMessage &message, const QcVec3 &eye
         m_extras.setSign(*sign);
     } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
         m_extras.setCampfire(*campfire);
+    } else if (const auto *map = std::get_if<QcMsg::MapUpdate>(&message)) {
+        m_maps.apply(*map);
     } else if (const auto *explosion = std::get_if<QcMsg::Explosion>(&message)) {
         m_extras.addExplosion(*explosion, now);
     } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {

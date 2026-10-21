@@ -107,8 +107,10 @@ private slots:
             {Signal, simulating},     {Liquids, simulating},  {Fire, simulating},      {Weather, simulating},
             {Mobs, simulating},       {Projectiles, simulating}, {Items, simulating},  {Plants, simulating},
             {FallingBlocks, simulating}, {Explosions, simulating}, {Minecarts, simulating}, {Machines, simulating},
-            // Chunk loading notes the tick, the time goes out in a step of a frozen world, the clients.
-            {ClientSync, always},     {ClientSync, simulating}, {ClientSync, always},  {Streaming, always},
+            // Chunk loading notes the tick, held maps are revealed, the time goes out in a step of a
+            // frozen world, the clients.
+            {ClientSync, always},     {ClientSync, simulating}, {ClientSync, simulating}, {ClientSync, always},
+            {Streaming, always},
         };
 
         const std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();

@@ -194,18 +194,30 @@ private slots:
         items.spawn(dropAt({pickaxe, 1, 3}, {-3.5, 64.0, 0.5}), 5);
         items.spawn(dropAt({pickaxe, 1, 0}, {-3.4, 64.0, 0.5}), 6);
 
+        // Filled maps merge only with maps of their own map id (decision E-798).
+        const QcItemId map = item("qtcraft:filled_map");
+        items.spawn(dropAt({map, 1, 7}, {0.5, 64.0, -4.5}), 7);
+        items.spawn(dropAt({map, 1, 7}, {0.6, 64.0, -4.5}), 8);
+        items.spawn(dropAt({map, 1, 8}, {0.7, 64.0, -4.5}), 9);
+
         run(items, world, QcItemEntityManager::mergeIntervalTicks);
 
         QList<int> dirt;
         int stone = 0;
         int pickaxes = 0;
+        QList<int> maps;
         for (const QcItemEntity &entry : items.items()) {
             if (entry.stack.item == item("qtcraft:dirt")) {
                 dirt.append(entry.stack.count);
             }
             stone += entry.stack.item == item("qtcraft:stone") ? 1 : 0;
             pickaxes += entry.stack.item == pickaxe ? 1 : 0;
+            if (entry.stack.item == map) {
+                maps.append(entry.stack.count * 100 + entry.stack.damage);
+            }
         }
+        std::ranges::sort(maps);
+        QCOMPARE(maps, (QList<int>{108, 207}));
 
         std::ranges::sort(dirt);
         // 40 + 40 fill one stack of 64; the far stack stays apart; other items and tools stay single.

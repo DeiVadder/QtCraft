@@ -3,7 +3,10 @@
 #include "app/models/QcItemIconUrls.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/maps/QcMapData.h"
 #include "common/protocol/QcMessages.h"
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -62,7 +65,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
     case TooltipRole:
-        return tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language));
+        return tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack));
     default:
         return {};
     }
@@ -109,7 +112,15 @@ void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<Qc
     }
 }
 
-QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStack stack, const QString &label)
+std::optional<int> QcInventoryModel::mapScaleOf(const QcItemDefinition &item, QcItemStack stack) const
+{
+    if (item.map != QcMapItem::Filled || !m_mapScale) {
+        return std::nullopt;
+    }
+    return m_mapScale(quint32(std::max(0, stack.damage)));
+}
+
+QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStack stack, const QString &label, std::optional<int> mapScale)
 {
     if (stack.isEmpty() || !content.isValidItem(stack.item)) {
         return label;
@@ -119,6 +130,13 @@ QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStac
     QStringList lines{label};
     if (item.armour) {
         lines.append(tr("Armour: +%1").arg(item.armour->points));
+    }
+    // A filled map carries its map id as its damage (decision E-798).
+    if (item.map == QcMapItem::Filled) {
+        lines.append(tr("Map #%1").arg(std::max(0, stack.damage)));
+        if (mapScale) {
+            lines.append(tr("Scale 1:%1").arg(1 << std::clamp(*mapScale, 0, QcMapData::maxScale)));
+        }
     }
     if (item.durability > 0) {
         lines.append(tr("Durability: %1 / %2").arg(item.durability - stack.damage).arg(item.durability));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clientcore/maps/QcClientMaps.h"
 #include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/weather/QcClientWeather.h"
@@ -48,11 +49,13 @@ public:
     const QcClientWeather &weather() const { return m_weather; }
     // Labels (E-222), spinning spawner creatures (E-520) and explosions (E-604) of the loaded chunks.
     const QcChunkExtras &extras() const { return m_extras; }
+    // The maps the server sent (decision E-802).
+    const QcClientMaps &maps() const { return m_maps; }
 
 private:
     // Content, chunks and blocks; none for other messages.
     [[nodiscard]] std::optional<Change> handleChunkMessage(const QcMessage &message);
-    // Labels, spawners, explosions, time and weather; false for other messages.
+    // Labels, spawners, explosions, maps, time and weather; false for other messages.
     bool handleSkyMessage(const QcMessage &message, const QcVec3 &eye, quint64 now);
     [[nodiscard]] Change onContentSync(const QcMsg::ContentSync &sync);
     [[nodiscard]] Change onChunkData(const QcMsg::ChunkData &chunkData);
@@ -61,6 +64,7 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcClientWorld> m_world;
     QcChunkExtras m_extras;
+    QcClientMaps m_maps;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
     QcClientWeather m_weather;

@@ -5,9 +5,11 @@
 #include <QSet>
 #include <QTest>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
-// The catalogue of the creative inventory (decision E-286): every item once, mods included, the
+// The catalogue of the creative inventory (decision E-286): every item once (filled maps aside), mods included, the
 // tabs, and the search by translated name, English name and id.
 namespace {
 
@@ -34,18 +36,25 @@ private:
         return QcCreativeCatalog::categoryOf(*m_content, m_content->item(*m_content->itemId(QString::fromLatin1(name))));
     }
 
+    // Every item but the filled maps, which carry a map id (decision E-798).
+    qsizetype listedCount() const
+    {
+        return std::ranges::count_if(m_content->items(), [](const QcItemDefinition &item) { return item.map != QcMapItem::Filled; });
+    }
+
 private slots:
     void everyItemIsListedOnce()
     {
         const QcCreativeCatalog catalog(*m_content, u"en"_s);
-        QCOMPARE(catalog.entries().size(), m_content->itemCount());
+        QCOMPARE(catalog.entries().size(), listedCount());
+        QVERIFY(listedCount() < m_content->itemCount());
         QSet<QcItemId> seen;
         for (const QcCreativeCatalog::Entry &entry : catalog.entries()) {
             QVERIFY(m_content->isValidItem(entry.item));
             seen.insert(entry.item);
         }
-        QCOMPARE(seen.size(), m_content->itemCount());
-        QCOMPARE(catalog.filter(QcCreativeCatalog::Category::All, {}).size(), m_content->itemCount());
+        QCOMPARE(seen.size(), listedCount());
+        QCOMPARE(catalog.filter(QcCreativeCatalog::Category::All, {}).size(), listedCount());
     }
 
     void itemsGoToTheirTabs()
@@ -78,7 +87,7 @@ private slots:
         for (int tab = 1; tab < QcCreativeCatalog::categoryCount; ++tab) {
             total += catalog.filter(C(tab), {}).size();
         }
-        QCOMPARE(total, m_content->itemCount());
+        QCOMPARE(total, listedCount());
         QCOMPARE(catalog.entries().first().category, C::Blocks);
         QCOMPARE(catalog.entries().last().category, C::Items);
     }

@@ -135,7 +135,7 @@ private:
             }
 
             const QcItemDefinition &definition = m_content.item(*item);
-            inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))});
+            inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack), definition.keptDamage(damage)});
         }
         return m_stream.status() == QDataStream::Ok ? std::optional(std::move(inventory)) : std::nullopt;
     }
@@ -165,7 +165,7 @@ private:
             }
 
             const QcItemDefinition &definition = m_content.item(*item);
-            const QcItemStack stack{*item, 1, std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+            const QcItemStack stack{*item, 1, definition.keptDamage(damage)};
             // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
             if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
                 worn.equipment.stacks[i] = stack;

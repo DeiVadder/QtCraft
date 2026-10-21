@@ -2,10 +2,13 @@
 
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcRepair.h"
+#include "common/maps/QcMapCrafting.h"
+#include "common/maps/QcMapData.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/maps/QcServerMaps.h"
 
 #include <algorithm>
 #include <cmath>
@@ -16,8 +19,9 @@ QcServerCrafting::QcServerCrafting(QcServerState &state, QcServerInventory &inve
 {
 }
 
-std::optional<QcItemStack> QcServerCrafting::resultOf(const QcContentRegistry &content, const QcServerClient &client)
+std::optional<QcItemStack> QcServerCrafting::resultOf(const QcServerState &state, const QcServerClient &client)
 {
+    const QcContentRegistry &content = state.content();
     if (const std::optional<qsizetype> recipe = craftingMatch(content, client)) {
         const QcRecipeDefinition &definition = content.recipes()[*recipe];
         if (const std::optional<QcItemId> item = content.itemId(definition.resultItem)) {
@@ -25,7 +29,23 @@ std::optional<QcItemStack> QcServerCrafting::resultOf(const QcContentRegistry &c
         }
         return std::nullopt;
     }
-    return QcRepair::result(content, craftingView(client));
+    if (std::optional<QcItemStack> repaired = QcRepair::result(content, craftingView(client))) {
+        return repaired;
+    }
+    // A map to zoom out shows itself until it is taken, a map at the largest scale nothing (decision
+    // E-804). Only maps in memory are looked at (this runs with every inventory update); one that is
+    // not shows the result, and taking it decides.
+    const std::optional<QcMapCrafting::Result> map = QcMapCrafting::result(content, craftingView(client), client.crafting.size);
+    if (!map) {
+        return std::nullopt;
+    }
+    if (map->kind == QcMapCrafting::Result::Kind::Zoom) {
+        const QcMapData *zoomed = state.maps().loaded(quint32(map->stack.damage));
+        if (zoomed && zoomed->scale() >= QcMapData::maxScale) {
+            return std::nullopt;
+        }
+    }
+    return map->stack;
 }
 
 QList<QcItemStack> QcServerCrafting::craftingView(const QcServerClient &client)
@@ -111,12 +131,40 @@ QcServerCrafting::CraftOutcome QcServerCrafting::repairOnce(QcServerClient &clie
 {
     const std::optional<QcItemStack> repaired = QcRepair::result(m_state.content(), craftingView(client));
     if (!repaired) {
-        return CraftOutcome::NoRecipe;
+        return mapOnce(client);
     }
 
     QcInventory result = client.inventory;
     if (result.add(repaired->item, 1, m_state.content(), repaired->damage) > 0) {
         return CraftOutcome::NoRoom;
+    }
+
+    client.inventory = result;
+    takeOneOfEachCell(client);
+    return CraftOutcome::Crafted;
+}
+
+QcServerCrafting::CraftOutcome QcServerCrafting::mapOnce(QcServerClient &client)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcMapCrafting::Result> made = QcMapCrafting::result(content, craftingView(client), client.crafting.size);
+    if (!made) {
+        return CraftOutcome::NoRecipe;
+    }
+
+    // A zoomed map gets the next free id, which no stack has yet: it needs an empty slot, checked
+    // before the map is made.
+    const bool zoom = made->kind == QcMapCrafting::Result::Kind::Zoom;
+    QcItemStack stack = made->stack;
+    if (zoom) {
+        stack.damage = int(m_state.maps().nextId());
+    }
+    QcInventory result = client.inventory;
+    if (result.add(stack.item, stack.count, content, stack.damage) > 0) {
+        return CraftOutcome::NoRoom;
+    }
+    if (zoom && QcServerMaps(m_state, m_inventory).zoomOut(quint32(made->stack.damage)) != quint32(stack.damage)) {
+        return CraftOutcome::NoRecipe;
     }
 
     client.inventory = result;

@@ -1,0 +1,11 @@
+{
+    "name": "maps",
+    "order": 112,
+    "icon": "filled_map",
+    "sections": [
+        "making",
+        "exploring",
+        "zoom",
+        "copies"
+    ]
+}

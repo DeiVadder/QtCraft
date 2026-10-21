@@ -64,6 +64,10 @@ target_sources(qc_clientcore PRIVATE
     light/QcSky.h light/QcSky.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    maps/QcClientMaps.h maps/QcClientMaps.cpp
+    maps/QcMapColors.h maps/QcMapColors.cpp
+)
+target_sources(qc_clientcore PRIVATE
     meshing/QcAnimator.h meshing/QcAnimator.cpp
     meshing/QcArmourLook.h meshing/QcArmourLook.cpp
     meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp

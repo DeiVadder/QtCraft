@@ -21,12 +21,12 @@ int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content,
     }
 
     const int maxStack = content.item(item).maxStack;
+    const QcItemStack adding{item, count, damage};
     for (QcItemStack &stack : m_slots) {
-        if (count == 0 || damage > 0) {
+        if (count == 0) {
             break;
         }
-        // Damaged tools never merge with other stacks.
-        if (stack.item == item && stack.count < maxStack && stack.damage == 0) {
+        if (!stack.isEmpty() && stack.stacksWith(adding) && stack.count < maxStack) {
             const int moved = std::min(count, maxStack - stack.count);
             stack.count += moved;
             count -= moved;
@@ -114,8 +114,7 @@ void QcInventory::move(int from, int to, const QcContentRegistry &content)
 
     QcItemStack &source = m_slots[from];
     QcItemStack &target = m_slots[to];
-    if (!source.isEmpty() && source.item == target.item && source.damage == 0 && target.damage == 0
-        && content.isValidItem(source.item)) {
+    if (!source.isEmpty() && source.stacksWith(target) && content.isValidItem(source.item)) {
         const int moved = std::min(source.count, content.item(source.item).maxStack - target.count);
         target.count += moved;
         source.count -= moved;

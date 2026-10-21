@@ -470,6 +470,12 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     if (!m_atlas || session.isDead()) {
         return nullptr;
     }
+    // A held filled map takes the hand's place, drawn by the HUD (MapInHand.qml, decision E-805).
+    const auto content = session.content();
+    const QcItemStack &holding = session.inventory().selectedStack();
+    if (content && !holding.isEmpty() && content->isValidItem(holding.item) && content->item(holding.item).map == QcMapItem::Filled) {
+        return nullptr;
+    }
 
     auto mesh = std::make_shared<QcEntityMesh>();
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };

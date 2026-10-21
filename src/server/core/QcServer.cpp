@@ -13,6 +13,7 @@
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcSpectatorRules.h"
 #include "server/hanging/QcServerHanging.h"
+#include "server/maps/QcServerMaps.h"
 
 #include <QTimer>
 
@@ -343,6 +344,13 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     return true;
 }
 
+void QcServer::consumeHeld(Client &client)
+{
+    if (!QcServerMaps(m_state, m_inventory).useHeld(client)) {
+        m_health.consume(client);
+    }
+}
+
 bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
 {
     if (const auto *select = std::get_if<QcMsg::SelectHotbarSlot>(&message)) {
@@ -368,7 +376,7 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
     } else if (std::holds_alternative<QcMsg::CloseCrafting>(message)) {
         m_crafting.closeCrafting(client);
     } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
-        m_health.consume(client);
+        consumeHeld(client);
     } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
         m_screens.close(client, false);
     } else if (const auto *trade = std::get_if<QcMsg::Trade>(&message)) {

@@ -740,5 +740,10 @@
     "block.qtcraft.blue_bed": "Blue bed",
     "block.qtcraft.brown_bed": "Brown bed",
     "block.qtcraft.green_bed": "Green bed",
-    "block.qtcraft.black_bed": "Black bed"
+    "block.qtcraft.black_bed": "Black bed",
+    "item.qtcraft.map": "Empty Map",
+    "item.qtcraft.filled_map": "Map",
+    "structure.qtcraft.maps_station": "Maps",
+    "structure.qtcraft.maps_station.use": "Hold an empty map and use it: it draws the land around you",
+    "structure.qtcraft.maps_station.craft": "Map + 8 paper zooms out, map + empty maps copies"
 }

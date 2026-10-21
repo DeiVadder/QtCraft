@@ -237,6 +237,10 @@ QString QcPlayerController::armourIcon() const
 void QcPlayerController::useContent()
 {
     m_inventory->setContent(m_parts.session->content(), m_settings.contentLanguage());
+    m_inventory->setMapScales([this](quint32 id) -> std::optional<int> {
+        const QcClientMaps::Map *map = m_parts.session ? m_parts.session->worldMirror().maps().find(id) : nullptr;
+        return map ? std::optional<int>(map->data.scale()) : std::nullopt;
+    });
     m_creativeItems->setContent(m_parts.session->content(), m_settings.contentLanguage());
     emit contentChanged();
     updateInventory();

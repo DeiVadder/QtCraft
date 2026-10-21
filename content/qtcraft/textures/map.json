@@ -1,0 +1,30 @@
+{
+    "name": "map",
+    "pattern": "icon",
+    "primary": "#e8e2c8",
+    "variation": 0.0,
+    "seed": 7101,
+    "palette": {
+        "B": "#8a7a52",
+        "P": "#efe8cc",
+        "p": "#ddd4b0",
+        "c": "#b9ae86"
+    },
+    "bitmap": [
+        "",
+        " BBBBBBBBBBBBBB",
+        " BPPPPPPPPPPPPB",
+        " BPpPPPPPPPPpPB",
+        " BPPPPPPPPPPPPB",
+        " BPPPPccPPPPPPB",
+        " BPPPcPPcPPPPPB",
+        " BPPPPPPPcPPPPB",
+        " BPPPPPPPPcPPPB",
+        " BPPPPPPPPPcPPB",
+        " BPPPPPPPPPPPPB",
+        " BPPPPPPPPPPPPB",
+        " BPpPPPPPPPPpPB",
+        " BPPPPPPPPPPPPB",
+        " BBBBBBBBBBBBBB"
+    ]
+}

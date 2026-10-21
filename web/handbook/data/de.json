@@ -24,6 +24,7 @@
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
+                "chapter:qtcraft:maps",
                 "chapter:qtcraft:creative",
                 "chapter:qtcraft:spectator",
                 "chapter:qtcraft:adventure",
@@ -478,6 +479,7 @@
                 "item:qtcraft:lime_dye",
                 "item:qtcraft:charcoal",
                 "item:qtcraft:cod_bucket",
+                "item:qtcraft:filled_map",
                 "item:qtcraft:bone",
                 "item:qtcraft:bone_meal",
                 "item:qtcraft:coal",
@@ -491,6 +493,7 @@
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
                 "item:qtcraft:leather_scrap",
+                "item:qtcraft:map",
                 "item:qtcraft:minecart",
                 "item:qtcraft:magenta_dye",
                 "item:qtcraft:melon_seeds",
@@ -86543,6 +86546,54 @@
             "text": "",
             "title": "Nahrung und Hunger"
         },
+        "chapter:qtcraft:maps": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Maps",
+            "facts": [
+            ],
+            "icon": "qtcraft:filled_map",
+            "id": "chapter:qtcraft:maps",
+            "name": "qtcraft:maps",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Lege einen **Kompass** in die Mitte der Werkbank und acht **Papier** darum, dann bekommst du eine **leere Karte**. Benutzt du sie (**R**), wird sie eine Karte des Landes um dich. Jede Karte deckt ein festes Quadrat der Welt ab: zuerst 128 × 128 Blöcke, ein Block je Pixel, an einem Raster ausgerichtet, sodass zwei nahe beieinander angefertigte Karten dasselbe Quadrat zeigen. Jede Karte hat ihre eigene Nummer, die im Inventar erscheint, wenn du auf sie zeigst.",
+                    "title": "Eine Karte anfertigen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Karte zeichnet nur, während du sie hältst: Das Land bis 128 Blöcke um dich erscheint innerhalb einer Sekunde, von oben gesehen in der Farbe des obersten Blocks. Hänge nach Norden sind dunkler, nach Süden heller; tiefes Wasser ist dunkler als flaches. Was noch niemand gesehen hat, bleibt leeres Papier. Du bist der Pfeil auf der Karte, er zeigt in deine Blickrichtung; andere Spieler mit derselben Karte sind auch Pfeile, und ein Spieler jenseits des Rands ist ein Punkt am Rand.",
+                    "title": "Erkunden"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Karte in der Mitte der Werkbank mit acht **Papier** darum wird eine neue, leere Karte eine Stufe größer: doppelt so viele Blöcke breit, bis zu vier Stufen (2048 × 2048 Blöcke, sechzehn Blöcke je Pixel). Die größere Karte deckt das alte Quadrat ab und beginnt leer; erkunde sie neu.",
+                    "title": "Herauszoomen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Karte. Kopien teilen Nummer und Bild: Was ein Halter erkundet, erscheint auf jeder Kopie, so kann eine Gruppe eine Karte teilen.",
+                    "title": "Kopien"
+                }
+            ],
+            "text": "",
+            "title": "Karten"
+        },
         "chapter:qtcraft:mining": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -92964,6 +93015,20 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:map",
+                            "note": "",
+                            "target": "item:qtcraft:map",
+                            "text": "Leere Karte"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
                 }
             ],
             "text": "Seine Nadel zeigt zum Spawn der Welt, solange du ihn hältst (neben der Schnellleiste). Aus einem Eisenbarren mit vier Signalstaubstücken darum.",
@@ -96375,6 +96440,34 @@
             ],
             "text": "Leicht und weich. Hühner lassen sie fallen. Mit Feuerstein und einem Stock wird daraus ein Pfeil.",
             "title": "Feder"
+        },
+        "item:qtcraft:filled_map": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Map",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:filled_map"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:filled_map",
+            "id": "item:qtcraft:filled_map",
+            "name": "qtcraft:filled_map",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Zeigt das Land, das du erkundet hast, während du sie hieltest, mit dir und den anderen Spielern, die sie tragen, als Pfeile.",
+            "title": "Karte"
         },
         "item:qtcraft:fired_lamp_shell": {
             "category": "items",
@@ -103689,6 +103782,117 @@
             "text": "Färbt Wolle, Glas, Terrakotta und Beton magentafarben.",
             "title": "Magentafarbener Farbstoff"
         },
+        "item:qtcraft:map": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Empty Map",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:map"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:map",
+            "id": "item:qtcraft:map",
+            "name": "qtcraft:map",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:compass",
+                                    "note": "",
+                                    "target": "item:qtcraft:compass",
+                                    "text": "Kompass"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                },
+                                {
+                                    "icon": "qtcraft:paper",
+                                    "note": "",
+                                    "target": "item:qtcraft:paper",
+                                    "text": "Papier"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:map",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:map",
+                                "note": "",
+                                "target": "item:qtcraft:map",
+                                "text": "Leere Karte"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Benutze sie, um das Land um dich zu zeichnen: Sie wird eine Karte eines Quadrats von 128 × 128 Blöcken. Aus acht Papier um einen Kompass.",
+            "title": "Leere Karte"
+        },
         "item:qtcraft:melon_seeds": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -104410,6 +104614,12 @@
                             "note": "",
                             "target": "item:qtcraft:book",
                             "text": "Buch"
+                        },
+                        {
+                            "icon": "qtcraft:map",
+                            "note": "",
+                            "target": "item:qtcraft:map",
+                            "text": "Leere Karte"
                         }
                     ],
                     "recipes": [

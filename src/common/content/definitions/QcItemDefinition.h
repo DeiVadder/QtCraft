@@ -7,6 +7,7 @@
 #include <QString>
 #include <QStringList>
 
+#include <algorithm>
 #include <optional>
 
 // Runtime item id: index into the registry's item table. 0 is "no item" (empty slot).
@@ -39,6 +40,16 @@ enum class QcItemDial : quint8 {
     Clock,
 };
 inline constexpr int qcItemDialCount = 3;
+
+// A map (decision E-804): an empty map becomes its filled map (`filledMap`) of the land around
+// the player when used; a filled map shows the land of its map id, which its stacks carry in
+// `QcItemStack::damage` (decision E-798).
+enum class QcMapItem : quint8 {
+    None,
+    Empty,
+    Filled,
+};
+inline constexpr int qcMapItemCount = 3;
 
 // Drunk with the use button like food is eaten (milk, decision E-500); it becomes `emptiesTo`.
 struct QcDrinkDefinition
@@ -144,12 +155,30 @@ struct QcItemDefinition
     // The dial the client shows while the item is held (`"dial": "compass"` or `"clock"`, decision
     // E-769); reaches the client.
     QcItemDial dial = QcItemDial::None;
+    // An empty or filled map (`"map": "empty"` or `"filled"`, decision E-804); reaches the client.
+    QcMapItem map = QcMapItem::None;
+    // The item a filled map is zoomed out with in the crafting grid (`"zoomsWith"`, eight around
+    // the map, decision E-804); empty for none. Server side only.
+    QString zoomsWith;
+    // The filled map an empty map becomes when used (`"filledMap"`, decision E-804). Server side
+    // only.
+    QString filledMap;
     // A creature that comes out where the item places its liquid (a fish bucket, decision E-501): kept
     // with the world like a bred animal. Server side only.
     QString releasesMob;
     // A fishing rod (decision E-503): the use button casts and reels in its bobber. Only that it fishes
     // reaches the client, which sends the use as QcMsg::ThrowItem.
     std::optional<QcFishingDefinition> fishing;
+
+    // The `damage` a stack of this item may carry (decision E-798): worn uses below the durability,
+    // the map id of a filled map (not negative), else 0.
+    [[nodiscard]] int keptDamage(int damage) const
+    {
+        if (map == QcMapItem::Filled) {
+            return std::max(0, damage);
+        }
+        return std::clamp(damage, 0, std::max(0, durability - 1));
+    }
 
     // Leaves out what does not go together with the projectile uses (when the content is finished):
     // the use button throws a throwable item (QcClientLauncher::uses), so its other uses would never

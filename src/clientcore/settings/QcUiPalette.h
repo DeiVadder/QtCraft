@@ -91,6 +91,12 @@ enum class Role {
     // The wooden board of the sign editor (decision E-766).
     SignBoard,
     SignBorder,
+    // A filled map in the hand (decision E-805): the paper with its edge and the players on it,
+    // the own one and the others.
+    MapPaper,
+    MapPaperEdge,
+    MapMarker,
+    MapMarkerOther,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

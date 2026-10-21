@@ -2,6 +2,8 @@
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
+qc_add_test(test_map_store SOURCES gameplay/test_map_store.cpp LIBRARIES qc_server)
+qc_add_test(test_maps SOURCES gameplay/test_maps.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_protocol SOURCES gameplay/test_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk_protocol SOURCES gameplay/test_chunk_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_entity_protocol SOURCES gameplay/test_entity_protocol.cpp LIBRARIES qc_common)

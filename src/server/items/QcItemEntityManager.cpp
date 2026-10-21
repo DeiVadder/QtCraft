@@ -96,7 +96,7 @@ void QcItemEntityManager::enqueue(const Drop &drop)
     // the queue.
     const int maxStack = m_content->item(drop.stack.item).maxStack;
     for (Drop &waiting : m_queue) {
-        if (waiting.stack.item == drop.stack.item && waiting.stack.damage == 0 && drop.stack.damage == 0
+        if (waiting.stack.stacksWith(drop.stack)
             && waiting.stack.count + drop.stack.count <= maxStack && (waiting.position - drop.position).length() <= mergeRadius) {
             waiting.stack.count += drop.stack.count;
             return;
@@ -159,14 +159,14 @@ void QcItemEntityManager::merge(const QList<bool> &active)
 
     for (qsizetype a = 0; a < awake.size(); ++a) {
         QcItemEntity &target = m_items[awake[a]];
-        if (target.stack.isEmpty() || target.stack.damage != 0) {
+        if (target.stack.isEmpty()) {
             continue;
         }
 
         const int maxStack = m_content->item(target.stack.item).maxStack;
         for (qsizetype b = a + 1; b < awake.size() && target.stack.count < maxStack; ++b) {
             QcItemEntity &other = m_items[awake[b]];
-            if (other.stack.isEmpty() || other.stack.item != target.stack.item || other.stack.damage != 0
+            if (other.stack.isEmpty() || !other.stack.stacksWith(target.stack)
                 || (other.motion.position - target.motion.position).length() > mergeRadius) {
                 continue;
             }

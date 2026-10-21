@@ -38,6 +38,7 @@ class QcBenchmarkRun;
 class QcContentRegistry;
 class QcGamepadSource;
 class QcItemIconProvider;
+class QcMapImageProvider;
 class QQuickWindow;
 struct QcWorldInfo;
 
@@ -150,6 +151,7 @@ public:
     // Language used for content names (block and item labels).
     void setLanguage(const QString &language);
     void setIconProvider(QcItemIconProvider *provider) { m_icons.setProvider(provider); }
+    void setMapProvider(QcMapImageProvider *provider) { m_hud->heldMap()->setProvider(provider); }
     // Opens the audio output (or stays silent when `enabled` is false, e.g. for screenshots) and
     // prepares the menu sounds from the base content.
     void startAudio(bool enabled);

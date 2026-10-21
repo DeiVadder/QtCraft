@@ -10,6 +10,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
+    controllers/QcHeldMap.h controllers/QcHeldMap.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
     controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
@@ -60,6 +61,7 @@ target_sources(qc_app_core PRIVATE
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcItemIconUrls.h models/QcItemIconUrls.cpp
+    models/QcMapImageProvider.h models/QcMapImageProvider.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     models/QcUiScaling.h models/QcUiScaling.cpp
@@ -163,6 +165,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/DialDisplay.qml
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
+        qml/hud/MapInHand.qml
         qml/hud/PhotoNotice.qml
         qml/hud/PlayerListOverlay.qml
         qml/hud/SignEditor.qml

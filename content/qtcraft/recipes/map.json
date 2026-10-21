@@ -1,0 +1,16 @@
+{
+    "name": "map",
+    "type": "shaped",
+    "pattern": [
+        "PPP",
+        "PCP",
+        "PPP"
+    ],
+    "key": {
+        "P": "paper",
+        "C": "compass"
+    },
+    "result": {
+        "item": "map"
+    }
+}

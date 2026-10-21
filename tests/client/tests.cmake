@@ -4,6 +4,10 @@
 
 qc_add_test(test_texture_synthesizer SOURCES client/test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_dials SOURCES client/test_dials.cpp LIBRARIES qc_clientcore)
+# Maps on the client (decisions E-801, E-802): the cache, the colours from the atlas, the image.
+qc_add_test(test_client_maps SOURCES client/test_client_maps.cpp LIBRARIES qc_clientcore)
+# The held map's markers, its image provider and the filled map's tooltip (decision E-805).
+qc_add_test(test_map_hud SOURCES client/test_map_hud.cpp LIBRARIES qc_app_core)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
 qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_base_content qc_clientcore)

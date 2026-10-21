@@ -1,0 +1,75 @@
+{
+    "name": "maps_station",
+    "showcase": {
+        "order": 107
+    },
+    "palette": {
+        "P": "polished_stone",
+        "T": "crafting_table",
+        "C": "chest"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "       ",
+            "  T C  ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                4,
+                1,
+                1
+            ],
+            "items": [
+                {
+                    "item": "map",
+                    "count": 4
+                },
+                {
+                    "item": "paper",
+                    "count": 32
+                },
+                {
+                    "item": "compass",
+                    "count": 1
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                2.5,
+                1.5
+            ],
+            "text": "structure.qtcraft.maps_station.use"
+        },
+        {
+            "at": [
+                3.5,
+                2.0,
+                3.0
+            ],
+            "text": "structure.qtcraft.maps_station.craft"
+        }
+    ]
+}

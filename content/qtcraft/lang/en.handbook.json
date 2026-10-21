@@ -1285,5 +1285,16 @@
     "block.qtcraft.green_bed.description": "A bed in another colour: made from three wool of that colour and planks, or dyed from any bed. It works like every bed.",
     "block.qtcraft.black_bed.description": "A bed in another colour: made from three wool of that colour and planks, or dyed from any bed. It works like every bed.",
     "part.qtcraft.button.description": "A wooden button gives a signal of one and a half seconds when pressed. Every kind of wood has its own.",
-    "part.qtcraft.pressure_plate.description": "A wooden pressure plate gives a signal while anything stands or lies on it, items too. Every kind of wood has its own."
+    "part.qtcraft.pressure_plate.description": "A wooden pressure plate gives a signal while anything stands or lies on it, items too. Every kind of wood has its own.",
+    "item.qtcraft.map.description": "Use it to draw the land around you: it becomes a map of a 128 × 128 block square. Made from eight paper around a compass.",
+    "item.qtcraft.filled_map.description": "Shows the land you have explored while holding it, with you and the other players who carry it as arrows.",
+    "chapter.qtcraft.maps": "Maps",
+    "chapter.qtcraft.maps.making.title": "Making a map",
+    "chapter.qtcraft.maps.making.text": "Lay a **compass** in the middle of the crafting table with eight **paper** around it to get an **empty map**. Using it (**{key.use}**) turns it into a map of the land around you. Every map covers a fixed square of the world: at the start 128 × 128 blocks, one block per pixel, lined up on a grid, so two maps made near each other show the same square. Each map has its own number, shown when you point at it in the inventory.",
+    "chapter.qtcraft.maps.exploring.title": "Exploring",
+    "chapter.qtcraft.maps.exploring.text": "A map draws only while you hold it: the land up to 128 blocks around you appears within a second, seen from above with the colour of each top block. Slopes facing north are darker and those facing south brighter; deep water is darker than shallow water. What nobody has seen yet stays blank paper. You are the arrow on the map, pointing where you look; other players who carry the same map are arrows too, and a player beyond the edge is a dot at the edge.",
+    "chapter.qtcraft.maps.zoom.title": "Zooming out",
+    "chapter.qtcraft.maps.zoom.text": "A filled map in the middle of the crafting table with eight **paper** around it becomes a new, empty map one step larger: twice as many blocks across, up to four steps (2048 × 2048 blocks, sixteen blocks per pixel). The larger map covers the old square and starts blank; explore it again.",
+    "chapter.qtcraft.maps.copies.title": "Copies",
+    "chapter.qtcraft.maps.copies.text": "A filled map with empty maps in the crafting grid gives one copy per empty map. Copies share the map number and the picture: whatever one holder explores appears on every copy, so a group can share one map."
 }

@@ -3605,3 +3605,47 @@ Die unabhängige Prüfung von 37.1 (Wegfindung E-400, Gedränge E-401) fand zehn
 
 - Strukturen kennen `"hangings": [{"at", "face", "item", "held", "rotation", "motif"}]` (`QcStructureDefinition::Hanging` → `QcWorldSetup` → `QcServerSetup::placeHanging`); der Showcase-Planer dreht die Fläche mit der Struktur, bei Rahmen auf Boden und Decke stattdessen das Item (zwei Achtel je Vierteldrehung, an der Decke andersherum). Nur Showcase-Strukturen dürfen `hangings` haben (wie `adventure`), weil nur der Showcase sie aufhängt.
 - Station `frames_paintings` (Reihenfolge 106): Holzwand mit Rahmen (Apfel, Kompass, Stein als Würfel, Schwert gedreht, Uhr auf dem Boden), Komparator mit Lampe hinter dem Apfel-Rahmen, Gemälde 1×1, 2×1, 1×2, 2×2, 4×2 und 4×4.
+
+## E-798 Karten-ID im Stack (Paket 71.1)
+
+- Eine gefüllte Karte trägt ihre Karten-ID in `QcItemStack::damage`, wie das Vorbild in frühen Versionen: Items ohne Haltbarkeit brauchen das Feld nicht, und es reist schon durch Protokoll, Spielerdateien, Truhen, Drops, Rüstungsständer und Rahmen. So halten Rahmen (71.2) Karten ohne eigenen Code; kein neues Speicherformat.
+- `QcItemDefinition::keptDamage` ersetzt die Klemmung beim Laden (Haltbarkeit − 1 für Werkzeuge, ID ≥ 0 für gefüllte Karten, sonst 0).
+- Kreativ-Spieler können jede Karten-ID wählen (ein Stack aus dem Kreativ-Inventar trägt beliebigen `damage`) und sehen damit fremde Karten samt Markierungen (E-803); im Katalog steht die gefüllte Karte nicht (ohne ID zeigte sie nichts). Neue Karten macht ein Spieler höchstens 20 je Minute (`QcServerMaps::maxMapsPerMinute`; Kreativ-Spieler behalten die leere Karte), zusätzlich zur Ratenbegrenzung von `ConsumeItem`.
+- Übergangslösung: Mit den Stack-Daten aus Etappe 68 (Rucksack) wandert die Karten-ID dorthin; `damage` zählt dann wieder nur Abnutzung.
+- Karten mit gleicher ID stapeln bis 64 wie im Vorbild: `damage` gehört zur Identität eines Stacks (`QcItemStack::stacksWith`: gleiches Item und gleicher `damage`), in Inventar, Listen-Slots, Handwerk und Item-Drops (Trichter und Truhen-Zugriff taten das schon). Abgenutzte Werkzeuge verschmelzen trotzdem nie, weil Items mit Haltbarkeit höchstens 1 stapeln (der Parser setzt `maxStack` 1, wie für Rüstung).
+
+## E-799 Kartendaten, Raster und Speichern (Paket 71.1)
+
+- `QcMapData` (common/maps): 128 × 128 Pixel, Maßstab 0–4 (1–16 Blöcke je Pixel), Mitte auf einem festen Raster je Maßstab wie im Vorbild (Quadrate von 128·2^s Blöcken, um 64 verschoben: die erste Karte hat den Spawn in der Mitte).
+- Pixel (`QcMapPixel`): 16 Bit = (Blockdefinition + 1) << 2 | Schattierung, 0 = unerkundet. Der Server speichert Blöcke, nicht Farben; die Farbe findet der Client (E-801).
+- `QcMapStore` (Server, in `QcServerState`): Karten im Speicher, sobald benutzt; aus `maps/<id>.qcmap` (QcSaveFile-Container, `QcMapSaveCodec`: Welt „overworld“, Maßstab, Mitte, Blocknamen-Palette, komprimierte Pixel) erst gelesen, wenn gebraucht; nächste ID als `nextMapId` in `world.json` (im selben Journal wie die Karten), dazu höchstens der höchste gültige Dateiname + 1: IDs beiseitegelegter oder verlorener Dateien werden nicht wieder vergeben; Dateinamen mit einer ID über `QcMapStore::maxId` werden mit Warnung übergangen und blockieren keine IDs. Eine Kartendatei über `QcMapSaveCodec::maxBytes` wird nicht geschrieben (Warnung). Nur seit dem letzten Speichern geänderte Karten gehen in den Speicher-Commit (`WholeFile`, atomar mit der Welt); scheitert ein Speichern, werden sie beim nächsten wieder geschrieben. Beschädigte Dateien: Warnung, Datei beiseite, ID bleibt belegt.
+- Karten verlassen den Speicher, wenn sie 5 Minuten (`QcMapStore::idleTicks`) niemand angesehen, gehalten oder verändert hat (Prüfung jede Minute in `QcMapStore::tick`), aber erst, wenn sie geschrieben sind: geänderte warten auf das nächste Speichern, laufende Speichervorgänge halten ihre Karten (`finishSave`), ein gescheitertes markiert sie wieder als ungespeichert. Ohne Weltordner bleiben sie im Speicher (es gibt nichts, woraus sie zurückkämen). Wer eine ausgelagerte Karte wieder hält, bekommt sie ganz neu (das Rechteck je Spieler geht mit der Karte).
+
+## E-800 Aufdecken (Paket 71.1)
+
+- Nur in der Hand gehalten (das Spiel hat keine zweite Hand). Radius 128 Blöcke um den Halter, je Tick jede 16. Pixelspalte (`QcMapSurvey::sweep`): eine Karte füllt sich in knapp einer Sekunde, ein Tick kostet höchstens ~1 000 Spalten je Halter.
+- Pixel = häufigster oberster Block der Spalten, die er abdeckt (bei Maßstab 0 eine Spalte, sonst bpp² Spalten), wie im Vorbild; Gleichstand: der zuerst gezählte. Gezählt wird beim Aufdecken in einer kleinen Liste je Pixel; der Chunk der letzten Spalte wird wiederverwendet, und der Pixel nördlich des nächsten in derselben Pixelspalte wird nicht noch einmal gezählt (`QcMapSurvey::survey`). Die Kosten je Tick bleiben damit bei jedem Maßstab etwa π·128²/16 ≈ 3 200 Spalten je Halter. Unsichtbare Blöcke werden durchschaut; ein Pixel mit einer Spalte in einem nicht geladenen Chunk bleibt unverändert (es wird nichts geladen oder erzeugt); leere Spalten zählen nicht, ein Pixel nur aus leeren Spalten bleibt leer.
+- Schattierung wie im Vorbild: Land nach dem Unterschied der mittleren Höhe zum nördlichen Pixel ((h − hN)·4/(bpp+4) + Schachbrett ±0,2: > 0,6 hell, < −0,6 dunkel), Wasser (häufigster Block flüssig) nach der mittleren Flüssigkeitstiefe über alle Spalten (Tiefe·0,1 + Schachbrett 0,2: < 0,5 hell, > 0,9 dunkel, Tiefe höchstens 10).
+
+## E-801 Kartenfarben auf dem Client (Paket 71.1)
+
+- Die Farbe eines Blocks ist der Mittelwert seiner oberen Textur, wie der Client sie zeichnet (Atlas samt Texturpaketen), berechnet beim Aufbau des Atlas; die Schattierungen sind 180/220/255 von 255. Texturpakete färben so auch Karten; kein eigenes Farbfeld im Inhalt.
+
+## E-802 Übertragung (Paket 71.1)
+
+- `QcMsg::MapUpdate` (Protokoll 58): ID, Maßstab, Mitte, ein Rechteck Pixel (komprimiert, wenn kürzer), Markierungen. Nur an Spieler, die die Karte in der Hand halten (Rahmen in 71.2).
+- Der Server merkt sich je Spieler und Karte je Zeile die Spanne veränderter Pixel und die Zeile, ab der es weitergeht (`QcMapPending`): eine neue Karte geht ganz, danach die nächsten veränderten Zeilen ab dieser Zeile (am Ende wieder oben), als ein Rechteck aus benachbarten Zeilen von höchstens 4 096 Pixeln je Spieler und Tick. Zeilen, die sich ständig ändern, halten so die übrigen nicht auf: jede veränderte Zeile geht spätestens nach 128 Ticks hinaus. Nimmt ein Spieler eine Karte in die Hand, geht sie ganz (der Client kann sie aus seinem Zwischenspeicher verdrängt haben); das kostet höchstens 4 Ticks. Markierungen ohne neue Pixel alle 4 Ticks.
+- Der Client hält einen Zwischenspeicher je ID mit Obergrenze. Der Decoder prüft ID, Maßstab, Mitte, Rechteck im Bild, Pixelanzahl, die angekündigte entpackte Größe vor `qUncompress`, Zahl und Drehung der Markierungen.
+
+## E-803 Markierungen (Paket 71.1)
+
+- Wie im Vorbild alle Spieler, die die Karte im Inventar tragen, und der Empfänger selbst; Lage in halben Pixeln von der Mitte, Drehung in Sechzehnteln (Blickrichtung, im Uhrzeigersinn ab Norden); außerhalb der Karte als Punkt am Rand; höchstens 32. Wer eine Karten-ID hält, sieht deren Markierungen; Kreativ-Spieler können jede ID wählen (E-798).
+
+## E-804 Herstellen, Benutzen, Zoomen, Kopieren (Paket 71.1)
+
+- Leere Karte (`"map": "empty"`, `filledMap`: die gefüllte Karte; nicht `emptiesTo`, das Handwerk als Behälter-Rest zurückließe) aus 8 Papier um einen Kompass. Benutzen (wie Essen als `ConsumeItem`, auch auf einen Block gezielt) macht eine gefüllte Karte (`"map": "filled"`) mit neuer ID, Maßstab 0, um den Spieler; im Kreativmodus bleibt die leere Karte.
+- `QcMapCrafting` (ohne Werkbank-Rezept, wie die Reparatur): Karte + n leere Karten → n + 1 Karten mit derselben ID; Karte in der Mitte des 3×3-Rasters mit 8 `zoomsWith` (Papier) darum → neue, leere Karte einen Maßstab größer um dasselbe Gebiet (das Vorbild hat dafür den Kartentisch; außerhalb des Umfangs). Die neue ID entsteht erst beim Nehmen, wenn Platz ist; eine Karte im größten Maßstab (4) zeigt im Ergebnisfeld nichts und lässt sich nicht nehmen. Die Vorschau sieht nur Karten im Speicher an (sie läuft mit jeder Inventar-Aktualisierung, ohne Dateien zu lesen); eine ausgelagerte zeigt das Ergebnis, und erst das Nehmen entscheidet. Das Nehmen prüft vor dem Anlegen der neuen Karte, ob ein freier Platz da ist (die neue ID stapelt mit nichts), so entsteht bei vollem Inventar keine verwaiste Karte. Sperren außerhalb des Umfangs.
+
+## E-805 Zeichnen in der Hand (Paket 71.1)
+
+- Eine gehaltene gefüllte Karte zeichnet die Oberfläche (QML) groß unten in der Mitte auf Papier, wie im Vorbild mit leerer zweiter Hand (eine zweite Hand gibt es nicht); Bild aus dem Zwischenspeicher (`QcClientMaps`, höchstens 256 Karten) mit Farben aus `QcMapColors` über den Image-Provider `image://maps` (`QcHeldMap`, `MapInHand.qml`), Markierungen als Pfeile; die 3D-Hand entfällt, solange eine Karte gehalten wird. Im Inventar zeigt die gefüllte Karte ihr festes Symbol und im Tooltip ihre Nummer.

@@ -13,6 +13,11 @@ QcCreativeCatalog::QcCreativeCatalog(const QcContentRegistry &content, const QSt
     m_entries.reserve(items.size());
     for (qsizetype i = 0; i < items.size(); ++i) {
         const QcItemDefinition &item = items[i];
+        // A filled map from the catalogue would carry no map id (decision E-798): maps come from
+        // empty ones.
+        if (item.map == QcMapItem::Filled) {
+            continue;
+        }
         const QString label = content.translations().translate(item.translationKey, language);
         const QString english = content.translations().translate(item.translationKey, u"en"_s);
         // "qtcraft:oak_planks" is also found as "oak planks".

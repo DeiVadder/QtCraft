@@ -150,6 +150,8 @@ public:
             signEditors.append(*editor);
         } else if (const auto *campfire = std::get_if<QcMsg::CampfireDisplay>(&message)) {
             campfires.insert(campfire->pos, campfire->items);
+        } else if (const auto *map = std::get_if<QcMsg::MapUpdate>(&message)) {
+            mapUpdates.append(*map);
         } else {
             return false;
         }
@@ -196,6 +198,8 @@ public:
     // Sign texts and sign editors the server sent (decision E-766), oldest first.
     QList<QcMsg::SignText> signTexts;
     QList<QcMsg::OpenSignEditor> signEditors;
+    // Map updates (decision E-802), oldest first.
+    QList<QcMsg::MapUpdate> mapUpdates;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;

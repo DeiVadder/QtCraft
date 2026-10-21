@@ -5,6 +5,8 @@
 #include "server/storage/QcChunkStore.h"
 #include "server/storage/QcWorldStorage.h"
 
+#include <QHash>
+#include <QList>
 #include <QStringList>
 
 #include <memory>
@@ -85,7 +87,9 @@ private:
     // The file of a player as a save writes it.
     QcChunkStore::WholeFile playerFile(const QcWorldStorage &storage, const QcServerClient &client) const;
     // Notes the result of a finished save (see takeNewFailure).
-    void noteResult(const QcStatus &status);
+    void noteResult(quint64 save, const QcStatus &status);
+    // Hands the world's maps (maps/<id>.qcmap) to the map store, read when first needed.
+    void openMaps();
     [[nodiscard]] QcResult<std::optional<QByteArray>> blockUpdateBytes() const;
 
     QcServerState &m_state;
@@ -104,6 +108,8 @@ private:
     // The change count of the villages (QcVillages::changes) last handed to a save; none: write
     // villages.json with the next save.
     std::optional<quint64> m_villagesSaved;
+    // The maps each running save writes (decision E-799).
+    QHash<quint64, QList<quint32>> m_mapsBySave;
     DamagedFile m_damagedFile;
     QStringList m_openWarnings;
 };

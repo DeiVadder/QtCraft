@@ -59,7 +59,7 @@ void QcServerInventory::send(QcServerClient &client)
     state.craftingSize = client.crafting.size;
     state.equipment = client.equipment;
 
-    state.craftingResult = QcServerCrafting::resultOf(m_state.content(), client).value_or(QcItemStack());
+    state.craftingResult = QcServerCrafting::resultOf(m_state, client).value_or(QcItemStack());
 
     client.connection->send(state);
     if (client.screen.stonecutter) {

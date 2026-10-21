@@ -1,0 +1,33 @@
+{
+    "name": "filled_map",
+    "pattern": "icon",
+    "primary": "#e8e2c8",
+    "variation": 0.0,
+    "seed": 7102,
+    "palette": {
+        "B": "#8a7a52",
+        "P": "#efe8cc",
+        "g": "#6fa04a",
+        "G": "#4f8034",
+        "w": "#4a78c8",
+        "s": "#d8c890",
+        "r": "#c42a24"
+    },
+    "bitmap": [
+        "",
+        " BBBBBBBBBBBBBB",
+        " BggggGggsswwwB",
+        " BgGgggggswwwwB",
+        " BggggggsswwwwB",
+        " BgggGgsswwwwwB",
+        " BggggssswwwwwB",
+        " BgggrsswwwwwwB",
+        " BgggssswwwwwwB",
+        " BGggsswwwwwwwB",
+        " BgggsswwwwwwwB",
+        " BggGgsswwwwwwB",
+        " BggggsswwwwwwB",
+        " BgggggsswwwwwB",
+        " BBBBBBBBBBBBBB"
+    ]
+}

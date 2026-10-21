@@ -17,7 +17,7 @@ bool QcSlotList::moveBetween(int from, int to, int count, const QcContentRegistr
     }
 
     const int wanted = count == 0 ? source.count : std::min(count, source.count);
-    if (target.isEmpty() || (target.item == source.item && target.damage == 0 && source.damage == 0)) {
+    if (target.isEmpty() || target.stacksWith(source)) {
         const int space = content.item(source.item).maxStack - (target.isEmpty() ? 0 : target.count);
         const int moved = std::min(wanted, space);
         if (moved <= 0) {
@@ -45,7 +45,7 @@ int QcSlotList::moveInto(int from, const QList<int> &targets, const QcContentReg
     }
 
     const int before = stacks[from].count;
-    // Damaged items never merge; equal undamaged stacks fill up first.
+    // Stacks of the same items (QcItemStack::stacksWith) fill up first.
     for (const bool merging : {true, false}) {
         for (const int to : targets) {
             if (stacks[from].isEmpty()) {
@@ -55,7 +55,7 @@ int QcSlotList::moveInto(int from, const QList<int> &targets, const QcContentReg
                 continue;
             }
             const QcItemStack &target = stacks[to];
-            const bool equal = !target.isEmpty() && target.item == stacks[from].item && target.damage == 0 && stacks[from].damage == 0;
+            const bool equal = !target.isEmpty() && target.stacksWith(stacks[from]);
             if (merging ? equal : target.isEmpty()) {
                 // Both indices are inside the list (checked above and by the caller).
                 [[maybe_unused]] const bool moved = moveBetween(from, to, 0, content);

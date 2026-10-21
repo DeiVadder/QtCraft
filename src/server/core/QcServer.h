@@ -93,6 +93,8 @@ public:
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
     quint64 tickCount() const { return m_state.clock().tick(); }
     QcServerWorld &world() { return m_state.world(); }
+    // The maps of the world (decision E-799).
+    QcMapStore &maps() { return m_state.maps(); }
     // Every entity of the world (decision E-364) and the tables of the kinds.
     QcEntities &entities() { return m_state.entities(); }
     const QcEntities &entities() const { return m_state.entities(); }
@@ -207,6 +209,9 @@ private:
     bool handlePlayerMessage(Client &client, const QcMessage &message);
     // Messages about the inventory, crafting, machine screens and the look; false for other types.
     bool handleInventoryMessage(Client &client, const QcMessage &message);
+    // The use button with something to consume in the hand: an empty map is used like food is eaten
+    // (decision E-804), anything else eaten or drunk.
+    void consumeHeld(Client &client);
     // Messages before the client plays: Hello, the login response and leaving; anything else ends
     // the connection.
     void handleLoginMessage(Client &client, const QcMessage &message);

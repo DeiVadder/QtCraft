@@ -43,7 +43,7 @@ public:
     static bool usesOnCreature(const QcMobDefinition &creature, const QcItemDefinition &item);
     // Whether the use button with `item` sends QcMsg::ConsumeItem: food is eaten (unless it plants a
     // block and `aimsAtBlock`: then it is placed, decision E-292), drinks drunk (decision E-500) and
-    // armour put on.
+    // armour put on; an empty map is used anywhere (the server fills it, decision E-804).
     static bool consumes(const QcItemDefinition &item, bool aimsAtBlock);
     // The swing of the arm after use() sent `message`: a throw swings it from the start.
     static int swingAfter(const std::optional<QcMessage> &message, int swingTicks)

@@ -190,6 +190,12 @@ target_sources(qc_common PRIVATE
     light/QcSkyLight.h light/QcSkyLight.cpp
 )
 target_sources(qc_common PRIVATE
+    maps/QcMapCrafting.h maps/QcMapCrafting.cpp
+    maps/QcMapData.h maps/QcMapData.cpp
+    maps/QcMapMarker.h
+    maps/QcMapPixel.h
+)
+target_sources(qc_common PRIVATE
     physics/QcBodyFit.h physics/QcBodyFit.cpp
     physics/QcEntityMotion.h
     physics/QcPhysics.h physics/QcPhysics.cpp
@@ -212,6 +218,8 @@ target_sources(qc_common PRIVATE
     protocol/QcLoginSettings.h
     protocol/QcMachineCodec.cpp
     protocol/QcMachineMessages.h
+    protocol/QcMapCodec.cpp
+    protocol/QcMapMessages.h
     protocol/QcMessages.h
     protocol/QcPackComparison.h protocol/QcPackComparison.cpp
     protocol/QcPlayerCodec.cpp

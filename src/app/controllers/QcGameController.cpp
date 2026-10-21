@@ -61,7 +61,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
-    , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render})
+    , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render, *m_hud->heldMap()})
     , m_wiring(m_parts, {*m_audio, *m_hud, *m_player, *m_trade, *m_stonecutter, m_screens, *m_startup, m_worldAtlas})
     , m_frame(m_parts, {*m_settings, *m_input, m_gamepad, *m_preview, m_render, *m_hud, *m_benchmark, *m_startup}, [this] { return m_screens.playing(); })
 {

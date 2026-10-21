@@ -16,6 +16,7 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     : QObject(parent)
     , m_parts(parts)
     , m_settings(settings)
+    , m_heldMap(new QcHeldMap(parts, this))
     , m_labels(new QcWorldLabelModel(this))
     , m_debug(new QcDebugHud(parts, settings, this))
 {

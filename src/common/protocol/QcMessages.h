@@ -7,6 +7,7 @@
 #include "common/protocol/QcEntityMessages.h"
 #include "common/protocol/QcLoginMessages.h"
 #include "common/protocol/QcMachineMessages.h"
+#include "common/protocol/QcMapMessages.h"
 #include "common/protocol/QcPlayerMessages.h"
 #include "common/protocol/QcSessionMessages.h"
 #include "common/protocol/QcSignMessages.h"
@@ -32,4 +33,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::DrawLauncher, QcMsg::ThrowItem, QcMsg::SpawnerDisplay, QcMsg::BlockBatch,
                                QcMsg::Explosion, QcMsg::CampfireDisplay, QcMsg::SignText, QcMsg::OpenSignEditor, QcMsg::EditSign,
                                QcMsg::OpenStonecutter, QcMsg::StonecutterState, QcMsg::SelectStonecutterRecipe,
-                               QcMsg::CloseStonecutter>;
+                               QcMsg::CloseStonecutter, QcMsg::MapUpdate>;

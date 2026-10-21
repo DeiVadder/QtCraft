@@ -3,6 +3,7 @@
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcItemIconProvider.h"
+#include "app/models/QcMapImageProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "app/startup/QcAppLanguage.h"
 #include "app/startup/QcAppOptions.h"
@@ -54,6 +55,8 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), icons);
     auto *texturePackPreviews = new QcTexturePackPreviewProvider;
     engine.addImageProvider(QString::fromLatin1(QcTexturePackPreviewProvider::providerId), texturePackPreviews);
+    auto *maps = new QcMapImageProvider;
+    engine.addImageProvider(QString::fromLatin1(QcMapImageProvider::providerId), maps);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
     engine.loadFromModule("QtCraft", "Main");
@@ -75,6 +78,7 @@ int main(int argc, char *argv[])
     }
 
     game->setIconProvider(icons);
+    game->setMapProvider(maps);
     game->settings()->texturePacks()->setPreviewProvider(texturePackPreviews);
     QcAppStartup::loadSettings(*game);
     QcAppLanguage::followSettings(*game, engine, translator, contentLanguage);

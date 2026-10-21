@@ -1285,5 +1285,16 @@
     "block.qtcraft.green_bed.description": "Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.",
     "block.qtcraft.black_bed.description": "Ein Bett in einer anderen Farbe: aus drei Wolle dieser Farbe und Brettern oder aus einem beliebigen Bett gefärbt. Es funktioniert wie jedes Bett.",
     "part.qtcraft.button.description": "Ein Holzknopf gibt beim Drücken ein Signal von anderthalb Sekunden. Jede Holzart hat ihren eigenen.",
-    "part.qtcraft.pressure_plate.description": "Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auch Gegenstände. Jede Holzart hat ihre eigene."
+    "part.qtcraft.pressure_plate.description": "Eine Holzdruckplatte gibt ein Signal, solange etwas darauf steht oder liegt, auch Gegenstände. Jede Holzart hat ihre eigene.",
+    "item.qtcraft.map.description": "Benutze sie, um das Land um dich zu zeichnen: Sie wird eine Karte eines Quadrats von 128 × 128 Blöcken. Aus acht Papier um einen Kompass.",
+    "item.qtcraft.filled_map.description": "Zeigt das Land, das du erkundet hast, während du sie hieltest, mit dir und den anderen Spielern, die sie tragen, als Pfeile.",
+    "chapter.qtcraft.maps": "Karten",
+    "chapter.qtcraft.maps.making.title": "Eine Karte anfertigen",
+    "chapter.qtcraft.maps.making.text": "Lege einen **Kompass** in die Mitte der Werkbank und acht **Papier** darum, dann bekommst du eine **leere Karte**. Benutzt du sie (**{key.use}**), wird sie eine Karte des Landes um dich. Jede Karte deckt ein festes Quadrat der Welt ab: zuerst 128 × 128 Blöcke, ein Block je Pixel, an einem Raster ausgerichtet, sodass zwei nahe beieinander angefertigte Karten dasselbe Quadrat zeigen. Jede Karte hat ihre eigene Nummer, die im Inventar erscheint, wenn du auf sie zeigst.",
+    "chapter.qtcraft.maps.exploring.title": "Erkunden",
+    "chapter.qtcraft.maps.exploring.text": "Eine Karte zeichnet nur, während du sie hältst: Das Land bis 128 Blöcke um dich erscheint innerhalb einer Sekunde, von oben gesehen in der Farbe des obersten Blocks. Hänge nach Norden sind dunkler, nach Süden heller; tiefes Wasser ist dunkler als flaches. Was noch niemand gesehen hat, bleibt leeres Papier. Du bist der Pfeil auf der Karte, er zeigt in deine Blickrichtung; andere Spieler mit derselben Karte sind auch Pfeile, und ein Spieler jenseits des Rands ist ein Punkt am Rand.",
+    "chapter.qtcraft.maps.zoom.title": "Herauszoomen",
+    "chapter.qtcraft.maps.zoom.text": "Eine Karte in der Mitte der Werkbank mit acht **Papier** darum wird eine neue, leere Karte eine Stufe größer: doppelt so viele Blöcke breit, bis zu vier Stufen (2048 × 2048 Blöcke, sechzehn Blöcke je Pixel). Die größere Karte deckt das alte Quadrat ab und beginnt leer; erkunde sie neu.",
+    "chapter.qtcraft.maps.copies.title": "Kopien",
+    "chapter.qtcraft.maps.copies.text": "Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Karte. Kopien teilen Nummer und Bild: Was ein Halter erkundet, erscheint auf jeder Kopie, so kann eine Gruppe eine Karte teilen."
 }

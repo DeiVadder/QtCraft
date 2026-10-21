@@ -280,7 +280,7 @@ private:
         drop.pickupDelay = std::clamp(drop.pickupDelay, 0.0, QcItemEntityManager::thrownPickupDelay);
         int left = std::clamp(count, 1, QcItemDefinition::maxStackLimit);
         while (left > 0) {
-            drop.stack = {item, std::min(left, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+            drop.stack = {item, std::min(left, definition.maxStack), definition.keptDamage(damage)};
             left -= drop.stack.count;
             m_record.items.append(entry);
             drop.kept = {};
@@ -498,7 +498,7 @@ private:
             return {};
         }
         const QcItemDefinition &definition = m_content.item(*item);
-        return {*item, 1, std::clamp(int(damage), 0, std::max(0, definition.durability - 1))};
+        return {*item, 1, definition.keptDamage(int(damage))};
     }
 
     void fitArmour(QcArmourStand &stand)

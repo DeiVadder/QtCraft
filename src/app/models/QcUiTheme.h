@@ -72,6 +72,10 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor clockHand MEMBER m_clockHand CONSTANT FINAL)
     Q_PROPERTY(QColor signBoard MEMBER m_signBoard CONSTANT FINAL)
     Q_PROPERTY(QColor signBorder MEMBER m_signBorder CONSTANT FINAL)
+    Q_PROPERTY(QColor mapPaper MEMBER m_mapPaper CONSTANT FINAL)
+    Q_PROPERTY(QColor mapPaperEdge MEMBER m_mapPaperEdge CONSTANT FINAL)
+    Q_PROPERTY(QColor mapMarker MEMBER m_mapMarker CONSTANT FINAL)
+    Q_PROPERTY(QColor mapMarkerOther MEMBER m_mapMarkerOther CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -140,5 +144,9 @@ private:
     QColor m_clockHand = QcUiPalette::color(QcUiPalette::Role::ClockHand);
     QColor m_signBoard = QcUiPalette::color(QcUiPalette::Role::SignBoard);
     QColor m_signBorder = QcUiPalette::color(QcUiPalette::Role::SignBorder);
+    QColor m_mapPaper = QcUiPalette::color(QcUiPalette::Role::MapPaper);
+    QColor m_mapPaperEdge = QcUiPalette::color(QcUiPalette::Role::MapPaperEdge);
+    QColor m_mapMarker = QcUiPalette::color(QcUiPalette::Role::MapMarker);
+    QColor m_mapMarkerOther = QcUiPalette::color(QcUiPalette::Role::MapMarkerOther);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };

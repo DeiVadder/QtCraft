@@ -60,7 +60,9 @@ struct QcServerClient : QcEntity
     // What the client may send: inputs refilled each tick by the real time it stands for, one per
     // 50 ms (decision E-249), so other tick rates and sprints keep the player's pace; budgets of the
     // other spammable messages; the latest input applied; positions whose true block was resent in
-    // tick `miningResendTick` after a dropped mining message.
+    // tick `miningResendTick` after a dropped mining message; the maps made since tick
+    // `mapWindowStart` (QcServerMaps::maxMapsPerMinute) and the map id held in the last tick (0:
+    // none; a map taken into the hand goes out whole, decision E-802).
     struct Input
     {
         double budget = maxInputBudget;
@@ -68,6 +70,9 @@ struct QcServerClient : QcEntity
         quint32 lastSequence = 0;
         QList<QcBlockPos> miningResends;
         quint64 miningResendTick = 0;
+        quint64 mapWindowStart = 0;
+        int mapsMade = 0;
+        quint32 heldMap = 0;
     };
 
     // What the client has been told about the world: chunks streamed around the player within

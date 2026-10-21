@@ -14,7 +14,8 @@ bool QcClientLauncher::usesOnCreature(const QcMobDefinition &creature, const QcI
 bool QcClientLauncher::consumes(const QcItemDefinition &item, bool aimsAtBlock)
 {
     const bool eats = item.food > 0 && (item.placesBlock.isEmpty() || !aimsAtBlock);
-    return eats || item.armour || item.drink;
+    // An empty map is filled where the player stands, whatever he aims at (decision E-804).
+    return eats || item.armour || item.drink || item.map == QcMapItem::Empty;
 }
 
 bool QcClientLauncher::press(const QcItemDefinition &held, const QcInventory &inventory, const QcContentRegistry &content, bool creative)
