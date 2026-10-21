@@ -16,6 +16,34 @@ cmake --build --preset release
 
 Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer), `profile` and `deploy` (used by the scripts below). Build directories are `build/<preset>`.
 
+### Windows (port in progress)
+
+Windows has not been built yet (stage 74.2). A build machine needs the following.
+
+**Qt Online Installer, Qt 6.8 (6.8.3 or later):**
+
+- **MSVC 2022 64-bit.** This is the x64 kit, used for x64 PCs. It is also the kit to choose inside an ARM64 Windows VM on Apple silicon when the game is meant for x64 PCs: MSVC cross-compiles for x64 and the x64 Qt tools run emulated.
+- **MSVC 2022 ARM64.** Only needed for a native ARM64 build, for example to play inside the VM. It needs the x64 kit as host tools.
+- **Additional Libraries → Qt Multimedia.** Sound output, with the FFmpeg backend.
+- **Additional Libraries → Qt Shader Tools.** The `qt_add_shaders` step that bakes the shaders for D3D11/D3D12, Vulkan, OpenGL and Metal.
+- **Qt Debug Information Files.** Recommended: they let crash dumps (`.dmp`) resolve Qt frames.
+- **Developer and Designer Tools → CMake and Ninja.**
+- **Already in the base package:** Core, Gui, Network, Concurrent, Qml, Quick, QuickControls2, Test and the Linguist tools (`lupdate`/`lrelease`). They need no separate selection.
+- **Not needed:** Qt Quick 3D, WebEngine, Qt 5 Compatibility, Qt Creator and the sources.
+
+**Outside Qt:**
+
+- Visual Studio 2022 or its Build Tools, workload "Desktop development with C++", including:
+  - MSVC v143 x64/x86 build tools,
+  - MSVC v143 ARM64 build tools (for an ARM64 VM),
+  - a Windows 11 SDK.
+- Git for Windows, with Git Bash: it fetches the SDL submodule, and `scripts/*.sh` run in Git Bash.
+- Python 3: `scripts/*.py`.
+
+Gamepads use SDL3, which `scripts/build-sdl.sh` builds on the first configure. Without Git Bash, configure with `-DQC_GAMEPAD=OFF`.
+
+Copy `CMakeUserPresets.example.json` to `CMakeUserPresets.json` and point its `local` preset at the Qt kit (for example `C:/Qt/6.8.3/msvc2022_64`). Then build from an "x64 Native Tools Command Prompt for VS 2022", or from "ARM64_x64 Cross Tools" inside an ARM64 VM.
+
 ## Release: a standalone app
 
 ```sh
