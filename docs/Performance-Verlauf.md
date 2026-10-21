@@ -2388,3 +2388,12 @@ Die Abschnittsdaten liegen jetzt einmal im (CPU-sichtbaren) GPU-Speicher statt e
 (`base` liefert `sectionMb`/`blocksMb` noch nicht; die Abschnittsdaten sind in beiden Ständen gleich groß.) Bei Sichtweite 8 ist der Gewinn kleiner, weil die Upload-Kopien mit der Zahl der Abschnitte wachsen. Offscreen ändern sich Render-CPU und GPU nicht messbar zum Schlechteren.
 
 **Offen:** der Fenster-Benchmark (`bench-ab.sh` über den Slot-Broker, `@core` mit `VIEW=8` und `stand sprint` mit `VIEW=16`: Bildzeit p99, GPU und Render-CPU im echten Fenster). Er wird nachgeholt, sobald der Mensch wieder Fensterläufe erlaubt; vorher kein Merge, falls dort mehr als 10 % Regression bei Bildzeit oder GPU auftreten.
+
+## Etappe 71 (Karten), Release (2026-10-21)
+
+Basis `pre` = `aaedafc` (nach Etappe 62), `new` = `6446c89` (71.1 und 71.2, dazu 62.5 und T1b). Über den Slot-Broker auf ruhiger Maschine.
+
+**Headless** (@server, 60 Spielsekunden): Tick Ø −1,5 … +1,9 % (farm 0,007 → 0,008 ms, Auflösung 1 µs), Spitzenspeicher −0,6 … +4,8 %.
+
+**Fenster** (@core, 10 s, 3–6 Runden): keine Regression, alle Werte innerhalb ±4 % (GPU −2 … +1,5 %, Render-CPU −8 … +1,4 %, Frame p99 −3,9 … +3,3 %, Speicher +0,0 … +0,7 %). Karten werden von @core nicht eigens gemessen.
+
