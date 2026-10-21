@@ -128,6 +128,14 @@ struct QcTextureSpec
         // middle four rows (decision E-742).
         Chain,
         ChainAcross,
+        // A leather backpack (decision E-832): sides with a strap and a buckle (secondary), the
+        // front with a stitched flap and its buckle, the top with a carrying loop; all with a
+        // darker seam at the edges. BackpackItem is its icon: the body with a loop, a lighter flap
+        // with its buckle and a pocket, on a transparent background.
+        BackpackSide,
+        BackpackFront,
+        BackpackTop,
+        BackpackItem,
         // Patterns of QcTextureFarmPatterns (decision E-289): a hoe (tool head like the others) ...
         Hoe,
         // ... crop plants on a transparent background: stalks (primary) with ears (secondary),

@@ -124,6 +124,12 @@ void QcServerGameModes::creativeItem(QcServerClient &client, const QcMsg::Creati
         return;
     }
 
+    // The slot of a backpack open in the hand is locked (decision E-833).
+    if (client.screen.held && message.slot == client.screen.held->slot) {
+        m_inventory.send(client);
+        return;
+    }
+
     const QcItemStack stack = validStack(message.stack);
     if (message.slot == QcMsg::CreativeItem::addSlot) {
         if (!stack.isEmpty()) {
@@ -206,6 +212,12 @@ void QcServerGameModes::pickBlock(QcServerClient &client, QcBlockPos pos)
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     // Like mining and placing: within reach and in sight, not through walls.
     if (client.dead || !block || *block == qcAirBlockId || !QcLineOfSight::isWithinReach(client, pos) || !QcLineOfSight::canSee(m_state.world(), client, pos)) {
+        return;
+    }
+    // A backpack open in the hand keeps its slot and the selection (decision E-833): picking would
+    // swap or overwrite the slot it is locked in.
+    if (client.screen.held) {
+        m_inventory.send(client);
         return;
     }
 

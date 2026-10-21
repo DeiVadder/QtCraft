@@ -193,6 +193,10 @@ struct QcBlockDefinition
     int containerSlots = 0;
     // Slots per row of its screen (a dispenser's 3 x 3, a hopper's row of 5).
     int containerColumns = 9;
+    // A portable container (`"portable": true`, a backpack, decision E-832): broken, it drops as one
+    // item that carries its contents; it holds no portable container. Its item gets
+    // QcItemDefinition::portableContainer. Server side only.
+    bool portableContainer = false;
     // Tags of the item that places this block (server side only).
     QStringList itemTags;
     // "<material>/<family>" for building parts made by QcPartGenerator, empty otherwise (server side only).

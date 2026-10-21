@@ -1,0 +1,87 @@
+{
+    "name": "backpack_station",
+    "showcase": {
+        "order": 108
+    },
+    "palette": {
+        "P": "polished_stone",
+        "T": "crafting_table",
+        "C": "chest[facing=south]",
+        "B": "backpack[facing=south]",
+        "H": "signal_hopper[facing=down]"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "PPP    ",
+            "  T C B",
+            "      H",
+            "       ",
+            "       "
+        ],
+        [
+            "PPP    ",
+            "       ",
+            "      B",
+            "       ",
+            "       "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [4, 1, 1],
+            "items": [
+                { "item": "leather", "count": 16 },
+                { "item": "chest", "count": 2 }
+            ]
+        },
+        {
+            "at": [6, 1, 1],
+            "items": [
+                { "item": "torch", "count": 16 },
+                { "item": "bread", "count": 8 },
+                { "item": "iron_pickaxe", "count": 1 },
+                { "item": "oak_planks", "count": 32 }
+            ]
+        },
+        {
+            "at": [6, 2, 2],
+            "items": [
+                { "item": "cobblestone", "count": 4 }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [3.5, 2.5, 1.5],
+            "text": "structure.qtcraft.backpack_station.craft"
+        },
+        {
+            "at": [6.5, 2.5, 1.5],
+            "text": "structure.qtcraft.backpack_station.break"
+        },
+        {
+            "at": [6.5, 3.6, 2.5],
+            "text": "structure.qtcraft.backpack_station.hopper"
+        },
+        {
+            "at": [1.0, 3.3, 1.2],
+            "text": "structure.qtcraft.backpack_station.hand"
+        }
+    ],
+    "hangings": [
+        {
+            "at": [1, 2, 1],
+            "face": "south",
+            "item": "item_frame",
+            "held": "backpack",
+            "rotation": 0
+        }
+    ]
+}

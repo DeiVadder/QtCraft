@@ -33,6 +33,9 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     stream << quint8(item.dial);
     // A map (decision E-804): the client sends the use of an empty one and draws a filled one.
     stream << quint8(item.map);
+    // A portable container (a backpack, decision E-832): the client sends its use in the air as
+    // ConsumeItem and lists its contents in the tooltip.
+    stream << item.portableContainer;
 }
 
 // What the item hangs on a block face (decision E-790): the client targets and draws frames and
@@ -160,6 +163,7 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
         return std::nullopt;
     }
     item.map = QcMapItem(map);
+    stream >> item.portableContainer;
     return item;
 }
 

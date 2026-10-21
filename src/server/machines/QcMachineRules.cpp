@@ -75,8 +75,9 @@ double QcMachineRules::progressFraction(const Machine &machine, QcBlockId block)
 
 const QcSmeltingRecipe *QcMachineRules::workableRecipe(const Machine &machine, const QcMachineDefinition &definition) const
 {
+    // A stack with contents (a backpack) is never smelted: its contents would be lost (decision E-832).
     const QcItemStack &input = machine.stacks[inputSlot];
-    const QcSmeltingRecipe *recipe = input.isEmpty() ? nullptr : recipeFor(definition, input.item);
+    const QcSmeltingRecipe *recipe = input.isEmpty() || input.hasContents() ? nullptr : recipeFor(definition, input.item);
     if (!recipe) {
         return nullptr;
     }
@@ -99,7 +100,8 @@ const QcSmeltingRecipe *QcMachineRules::workableRecipe(const Machine &machine, c
 bool QcMachineRules::refuel(Machine &machine) const
 {
     QcItemStack &fuel = machine.stacks[fuelSlot];
-    const double seconds = fuel.isEmpty() ? 0.0 : fuelSeconds(fuel.item);
+    // Nor burnt.
+    const double seconds = fuel.isEmpty() || fuel.hasContents() ? 0.0 : fuelSeconds(fuel.item);
     // Fuel in a container (lava bucket) leaves the empty container in the fuel slot, so such
     // fuel only burns one at a time.
     const QString &emptiesTo = seconds > 0.0 ? m_content->item(fuel.item).emptiesTo : QString();

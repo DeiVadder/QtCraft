@@ -3,7 +3,30 @@
 #include "common/core/QcLogging.h"
 
 #include <algorithm>
+#include <tuple>
 #include <utility>
+
+namespace {
+
+// Kept components in a fixed order: by count, then id, version, tail and bytes.
+int compareKept(const QcKeptComponents &a, const QcKeptComponents &b)
+{
+    if (a.size() != b.size()) {
+        return a.size() < b.size() ? -1 : 1;
+    }
+    for (qsizetype i = 0; i < a.size(); ++i) {
+        const auto key = [](const QcKeptComponent &kept) { return std::tuple{kept.id, kept.version, kept.tail}; };
+        if (key(a[i]) != key(b[i])) {
+            return key(a[i]) < key(b[i]) ? -1 : 1;
+        }
+        if (const int bytes = a[i].payload.compare(b[i].payload); bytes != 0) {
+            return bytes;
+        }
+    }
+    return 0;
+}
+
+} // namespace
 
 QcItemStack QcItemStack::withData(const QcItemData &next) const
 {
@@ -16,6 +39,23 @@ QcItemStack QcItemStack::withData(const QcItemData &next) const
     }
     copy.data.reset(normal.isEmpty() ? nullptr : new QcSharedItemData(std::move(normal)));
     return copy;
+}
+
+std::optional<QcItemStack> QcItemStack::tryWithData(const QcItemData &next) const
+{
+    if (!next.normalized().fitsLimits()) {
+        // The same refusal and warning as withData gives.
+        [[maybe_unused]] const QcItemStack unchanged = withData(next);
+        return std::nullopt;
+    }
+    return withData(next);
+}
+
+std::optional<QcItemStack> QcItemStack::tryWithContents(QList<QcItemStack> stacks) const
+{
+    QcItemData next = itemData();
+    next.contents = std::move(stacks);
+    return tryWithData(next);
 }
 
 QcItemStack QcItemStack::withMapId(quint32 id) const
@@ -47,6 +87,36 @@ QcItemStack QcItemStack::withoutKept() const
     QcItemData known = itemData();
     known.kept = {};
     return withData(known);
+}
+
+QcItemStack QcItemStack::forDisplay() const
+{
+    if (!data || (itemData().contents.isEmpty() && itemData().kept.isEmpty())) {
+        return *this;
+    }
+    QcItemData shown;
+    shown.mapId = mapId();
+    shown.name = name();
+    return withData(shown);
+}
+
+int QcItemStack::compare(const QcItemStack &a, const QcItemStack &b)
+{
+    const bool aEmpty = a.isEmpty();
+    const bool bEmpty = b.isEmpty();
+    if (aEmpty || bEmpty) {
+        return int(bEmpty) - int(aEmpty);
+    }
+    if (a.item != b.item) {
+        return a.item < b.item ? -1 : 1;
+    }
+    if (a.damage != b.damage) {
+        return a.damage < b.damage ? -1 : 1;
+    }
+    if (a.count != b.count) {
+        return a.count < b.count ? -1 : 1;
+    }
+    return a.data == b.data ? 0 : QcItemData::compare(a.itemData(), b.itemData());
 }
 
 QList<QcItemStack> QcItemStack::split(int maxStack) const
@@ -105,6 +175,25 @@ bool QcItemData::fitsLimits() const
 {
     // The stacks inside got their data through QcItemStack::withData, which checked it.
     return name.size() <= maxNameLength && contents.size() <= maxContents && depth() <= maxDepth && stacksInside() <= maxStacksInside;
+}
+
+int QcItemData::compare(const QcItemData &a, const QcItemData &b)
+{
+    if (a.mapId != b.mapId) {
+        return a.mapId < b.mapId ? -1 : 1;
+    }
+    if (const int names = a.name.compare(b.name); names != 0) {
+        return names;
+    }
+    if (a.contents.size() != b.contents.size()) {
+        return a.contents.size() < b.contents.size() ? -1 : 1;
+    }
+    for (qsizetype i = 0; i < a.contents.size(); ++i) {
+        if (const int slot = QcItemStack::compare(a.contents[i], b.contents[i]); slot != 0) {
+            return slot;
+        }
+    }
+    return compareKept(a.kept, b.kept);
 }
 
 bool QcItemData::operator==(const QcItemData &other) const

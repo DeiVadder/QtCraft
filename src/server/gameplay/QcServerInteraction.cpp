@@ -297,7 +297,17 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
 {
     const QcContentRegistry &content = m_state.content();
     const QcBlockDefinition &placedDefinition = content.block(state);
+    const QcItemStack placedStack = client.inventory.selectedStack();
     m_parts.blocks.setAndBroadcast(target, state);
+    // A cell that refused the block keeps the stack in the hand, contents and all.
+    if (m_state.world().blockAt(target) != state) {
+        rejectPlacement(client, target);
+        return;
+    }
+    // A backpack takes the contents its item carries (decision E-832).
+    if (placedStack.hasContents()) {
+        m_parts.blocks.dropStacks(m_state.blockEntities().fillPortable(target, placedStack), target);
+    }
     if (placedDefinition.door) {
         m_parts.blocks.setAndBroadcast(target.offset(0, 1, 0), content.withProperty(state, u"half"_s, u"top"_s));
     }

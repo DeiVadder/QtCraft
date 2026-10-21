@@ -47,7 +47,7 @@ QList<int> targets(int from, Situation situation)
 {
     if (from >= gridSlot) {
         // From the crafting grid, the open block or an armour slot into the inventory.
-        return wholeInventory();
+        return situation.hotbarOnly ? range(0, QcInventory::hotbarSize) : wholeInventory();
     }
     if (from < 0 || from >= QcInventory::slotCount) {
         return {};

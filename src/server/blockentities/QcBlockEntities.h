@@ -133,9 +133,15 @@ public:
     int containerSlots(QcBlockId block) const;
     const QcMachineDefinition *machineOf(QcBlockId block) const;
     bool isSapling(QcBlockId block) const;
+    // Whether `block` is a portable container (a backpack, decision E-832), and whether the one at
+    // `pos` holds anything: broken, it then drops as its item carrying the contents instead of its
+    // usual drop.
+    bool isPortable(QcBlockId block) const;
+    bool carriesContents(QcBlockPos pos, QcBlockId block) const;
 
     // The block at `pos` changed from `before` to `after` (QcServerWorld::setBlock): spills the
-    // contents of a machine that is no machine any more and of a container that is none or smaller,
+    // contents of a machine that is no machine any more and of a container that is none or smaller
+    // (a portable container that leaves spills as its item carrying the contents, decision E-832),
     // creates the container or machine of the new block, ends a sapling's timer and forgets the
     // memory that does not fit the new kind of component. Scheduled ticks stay: they look at
     // whatever block is there when they run.
@@ -158,6 +164,9 @@ public:
     const Container *container(QcBlockPos pos) const;
     Machine *machine(QcBlockPos pos);
     const Machine *machine(QcBlockPos pos) const;
+    // The portable container just placed at `pos` takes the contents its item `stack` carries
+    // (decision E-832); returns what does not fit its slots or must not lie in it, to be dropped.
+    [[nodiscard]] QList<QcItemStack> fillPortable(QcBlockPos pos, const QcItemStack &stack);
     // Creates the container or machine of `block` at `pos` unless there is one; false when the
     // block holds none or the limit of its kind is reached.
     bool ensure(QcBlockPos pos, QcBlockId block);
@@ -270,7 +279,10 @@ private:
     void removeMemory(QcBlockPos pos);
     // The missing containers and machines of the blocks of one section of a chunk.
     void ensureSection(const QcChunk &chunk, int sectionIndex);
-    void placedContainer(QcBlockPos pos, QcBlockId after);
+    void placedContainer(QcBlockPos pos, QcBlockId before, QcBlockId after);
+    // Spills the contents of the portable container `block` that left `pos` as its item carrying
+    // them; nothing when it held nothing.
+    void spillPortable(QcBlockPos pos, QcBlockId block, const QList<QcItemStack> &stacks);
     void placedMachine(QcBlockPos pos, QcBlockId after);
     void placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after);
     QcSignalKind kindOf(QcBlockId block) const;

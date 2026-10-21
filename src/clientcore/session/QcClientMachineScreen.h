@@ -34,6 +34,9 @@ public:
     const QString &category() const { return m_category; }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }
+    // The hotbar slot of a backpack opened from the hand (decision E-833), locked while open; -1
+    // for a block or cart.
+    int heldSlot() const { return m_heldSlot; }
     const QList<QcItemStack> &stacks() const { return m_slots; }
     double burn() const { return m_burn; }
     double progress() const { return m_progress; }
@@ -44,6 +47,7 @@ private:
 
     std::optional<QcBlockPos> m_pos;
     quint32 m_entity = 0;
+    int m_heldSlot = QcMsg::OpenMachine::noHeldSlot;
     // The player closed a screen and has not used a block since.
     bool m_closedLocally = false;
     QString m_category;

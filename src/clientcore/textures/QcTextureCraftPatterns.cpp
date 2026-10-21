@@ -348,7 +348,104 @@ QColor paintChainAcross(const QcTextureSpec &spec, int x, int y, QColor)
     return paintChainLinks(spec, x, y);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 23> painters = {{
+// The faces of a leather backpack (decision E-832) inside the seam (backpackSeam): a strap with a
+// buckle (side), a stitched flap with its buckle (front) or a carrying loop (top).
+QColor paintBackpackSide(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool strap = x >= 6 && x <= 9;
+    const bool buckle = strap && (y == 9 || y == 10) && (x == 6 || x == 9 || y == 9);
+    if (buckle) {
+        return varied(spec, spec.secondary, x, y, 7);
+    }
+    return strap ? scaled(spec.primary, 0.78) : color;
+}
+
+QColor paintBackpackFront(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool flap = y <= 6;
+    const bool flapEdge = y == 6 || (flap && (x == 2 || x == size - 3));
+    const bool buckle = x >= 7 && x <= 8 && y >= 5 && y <= 8;
+    if (buckle) {
+        return varied(spec, spec.secondary, x, y, 7);
+    }
+    if (flapEdge) {
+        return scaled(spec.primary, 0.7);
+    }
+    return flap ? scaled(spec.primary, 0.9) : color;
+}
+
+QColor paintBackpackTop(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool loop = (y == 7 || y == 8) && x >= 4 && x <= 11;
+    return loop ? scaled(spec.primary, 0.72) : color;
+}
+
+// Every face of the backpack: a darker seam with light stitches at the edges around the face's own
+// pattern.
+QColor paintBackpack(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool seam = x == 0 || y == 0 || x == size - 1 || y == size - 1;
+    if (seam) {
+        return scaled(spec.primary, 0.62);
+    }
+    const bool stitch = (x == 1 || y == 1 || x == size - 2 || y == size - 2) && (x + y) % 3 == 0;
+    if (stitch) {
+        return scaled(spec.primary, 1.3);
+    }
+    if (spec.pattern == Pattern::BackpackSide) {
+        return paintBackpackSide(spec, x, y, color);
+    }
+    return spec.pattern == Pattern::BackpackFront ? paintBackpackFront(spec, x, y, color) : paintBackpackTop(spec, x, y, color);
+}
+
+// The inside of the backpack's icon: a lighter flap reaching lower in the middle, its buckle
+// (secondary) and a stitched pocket below.
+QColor paintBackpackItemFace(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool buckle = (x == 7 || x == 8) && y >= 8 && y <= 10;
+    if (buckle) {
+        return (x + y) % 2 == 0 ? spec.secondary : scaled(spec.secondary, 0.8);
+    }
+
+    const int flapEnd = x >= 5 && x <= 10 ? 9 : 8;
+    if (y == flapEnd) {
+        return scaled(spec.primary, 0.7);
+    }
+    if (y < flapEnd) {
+        return y == 5 && x % 2 == 0 ? scaled(spec.primary, 1.45) : scaled(color, 1.2);
+    }
+
+    const bool pocket = x >= 5 && x <= 10 && y >= 11 && y <= 13;
+    const bool pocketEdge = pocket && (x == 5 || x == 10 || y == 11);
+    if (pocketEdge) {
+        return scaled(spec.primary, 0.72);
+    }
+    return pocket ? scaled(color, 1.08) : color;
+}
+
+// The backpack's icon (decision E-832): a leather body with rounded corners and a dark outline
+// under a carrying loop, its face painted by paintBackpackItemFace.
+QColor paintBackpackItem(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool loop = y >= 1 && y <= 3 && (x == 6 || x == 9 || (y == 1 && (x == 7 || x == 8)));
+    if (loop) {
+        return scaled(spec.primary, 0.6);
+    }
+
+    const bool inside = x >= 3 && x <= 12 && y >= 4 && y <= 14;
+    const bool corner = (x == 3 || x == 12) && (y == 4 || y == 14);
+    if (!inside || corner) {
+        return clear();
+    }
+    const bool rim = x == 3 || x == 12 || y == 4 || y == 14;
+    const bool rounding = (x == 4 || x == 11) && (y == 5 || y == 13);
+    if (rim || rounding) {
+        return scaled(spec.primary, 0.55);
+    }
+    return paintBackpackItemFace(spec, x, y, color);
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 27> painters = {{
     {Pattern::Nugget, paintNugget},
     {Pattern::MetalBlock, paintMetalBlock},
     {Pattern::Bars, paintBars},
@@ -372,6 +469,10 @@ constexpr std::array<std::pair<Pattern, Painter>, 23> painters = {{
     {Pattern::RawBlock, paintRawBlock},
     {Pattern::Chain, paintChain},
     {Pattern::ChainAcross, paintChainAcross},
+    {Pattern::BackpackSide, paintBackpack},
+    {Pattern::BackpackFront, paintBackpack},
+    {Pattern::BackpackTop, paintBackpack},
+    {Pattern::BackpackItem, paintBackpackItem},
 }};
 
 } // namespace

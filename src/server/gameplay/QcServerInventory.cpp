@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/registry/QcStonecutting.h"
 #include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcPortableContainers.h"
 #include "common/gameplay/QcQuickMove.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
@@ -26,6 +27,12 @@ namespace {
 // space; other grid cells and block slots are invalid.
 bool isUsableSlot(const QcServerClient &client, int slot, int blockSlots)
 {
+    // A backpack opened from the hand shows only its slots and the hotbar; its own slot is locked
+    // (decision E-833).
+    if (client.screen.held) {
+        const bool hotbar = slot >= 0 && slot < QcInventory::hotbarSize && slot != client.screen.held->slot;
+        return hotbar || (slot >= QcServerInventory::machineSlot && slot < QcServerInventory::machineSlot + blockSlots);
+    }
     if (slot < QcServerInventory::craftingGridSlot) {
         return QcInventory::isValidSlot(slot);
     }
@@ -93,7 +100,7 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
 
 void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
 {
-    if (!armourFits(open.combined.stacks)) {
+    if (!armourFits(open.combined.stacks) || !containerAccepts(open)) {
         send(client);
         m_screens.send(client, true);
         return;
@@ -127,6 +134,12 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     client.crafting.grid = open.combined.stacks.mid(QcInventory::slotCount, 9);
     if (open.container) {
         *open.container->stacks = open.combined.stacks.mid(machineSlot, open.container->stacks->size());
+        // A held backpack carries its slots as the data of its item; containerAccepts() checked
+        // that they fit (decision E-833).
+        if (open.container->heldSlot >= 0) {
+            const QcItemStack held = client.inventory.slot(open.container->heldSlot);
+            client.inventory.setSlot(open.container->heldSlot, held.tryWithContents(*open.container->stacks).value_or(held));
+        }
     }
     if (open.stonecutter) {
         open.stonecutter->setInput(open.combined.stacks[machineSlot]);
@@ -138,7 +151,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     send(client);
     // Everyone looking into this machine or chest sees the change; comparators and hoppers too.
     if (open.container) {
-        m_screens.containerChanged(*open.container, *open.container->stacks != before);
+        m_screens.containerChanged(client, *open.container, *open.container->stacks != before);
     }
     if (open.machine) {
         m_screens.sendToViewers(open.machine->pos);
@@ -174,6 +187,12 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
 
     QcQuickMove::Situation situation;
     situation.containerSlots = open.container ? int(open.container->stacks->size()) : 0;
+    // A backpack takes nothing with contents (decision E-832); one opened from the hand moves only
+    // between its slots and the hotbar, never into its own slot (decision E-833).
+    if (open.container && open.container->portable && !QcPortableContainers::mayHold(m_state.content(), open.combined.stacks[move.slot])) {
+        situation.containerSlots = 0;
+    }
+    situation.hotbarOnly = client.screen.held.has_value();
     situation.machineOpen = open.machine != nullptr || open.stonecutter != nullptr;
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined.stacks[move.slot]);
     if (open.stonecutter) {
@@ -190,8 +209,25 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
         situation.fuel = m_state.machineRules().fuelSeconds(item) > 0.0;
     }
 
-    open.combined.moveInto(move.slot, QcQuickMove::targets(move.slot, situation), m_state.content());
+    QList<int> targets = QcQuickMove::targets(move.slot, situation);
+    targets.removeIf([&](int slot) { return !isUsableSlot(client, slot, open.blockSlots); });
+    open.combined.moveInto(move.slot, targets, m_state.content());
     applyOpenSlots(client, open);
+}
+
+bool QcServerInventory::containerAccepts(const OpenSlots &open) const
+{
+    if (!open.container || !open.container->portable) {
+        return true;
+    }
+
+    // Nothing with contents goes into a backpack (decision E-832); a held one must take its new
+    // slots as data, else nothing changes and nothing is lost.
+    const QList<QcItemStack> cells = open.combined.stacks.mid(machineSlot, open.container->stacks->size());
+    if (!QcPortableContainers::mayHoldAll(m_state.content(), cells)) {
+        return false;
+    }
+    return open.container->heldSlot < 0 || open.combined.stacks[open.container->heldSlot].tryWithContents(cells).has_value();
 }
 
 bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const
@@ -203,9 +239,12 @@ bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, 
     const QcItemStack &output = combined[machineSlot + QcMachineRules::outputSlot];
     const QcItemStack &previousOutput = machine.stacks[QcMachineRules::outputSlot];
 
-    const bool fuelOk = fuel.isEmpty() || m_state.machineRules().fuelSeconds(fuel.item) > 0.0
-                        || (fuel.item == previousFuel.item && fuel.damage == previousFuel.damage && fuel.count <= previousFuel.count);
-    const bool outputOk = output.isEmpty() || (output.item == previousOutput.item && output.count <= previousOutput.count);
+    // Fuel never carries contents, and what stays behind is part of what was there, data and all.
+    const auto partOf = [](const QcItemStack &now, const QcItemStack &before) {
+        return !before.isEmpty() && now.withCount(before.count) == before && now.count <= before.count;
+    };
+    const bool fuelOk = fuel.isEmpty() || (m_state.machineRules().fuelSeconds(fuel.item) > 0.0 && !fuel.hasContents()) || partOf(fuel, previousFuel);
+    const bool outputOk = output.isEmpty() || partOf(output, previousOutput);
     return fuelOk && outputOk;
 }
 
@@ -225,7 +264,8 @@ void QcServerInventory::dropItem(QcServerClient &client, QcMsg::DropItem message
 {
     const int slot = client.inventory.selectedHotbarSlot();
     const QcItemStack stack = client.inventory.slot(slot);
-    if (client.dead || stack.isEmpty()) {
+    // The slot of a backpack open in the hand is locked (decision E-833).
+    if (client.dead || stack.isEmpty() || (client.screen.held && client.screen.held->slot == slot)) {
         return;
     }
 

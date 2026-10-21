@@ -25,6 +25,7 @@
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
                 "chapter:qtcraft:maps",
+                "chapter:qtcraft:backpack",
                 "chapter:qtcraft:creative",
                 "chapter:qtcraft:spectator",
                 "chapter:qtcraft:adventure",
@@ -280,6 +281,7 @@
                 "block:qtcraft:red_mushroom",
                 "block:qtcraft:red_concrete_powder",
                 "block:qtcraft:red_stained_glass",
+                "block:qtcraft:backpack",
                 "block:qtcraft:sand",
                 "block:qtcraft:sandstone",
                 "block:qtcraft:rail",
@@ -3412,6 +3414,159 @@
             ],
             "text": "Eine violette Blütenkugel auf Wiesen und im Gebirge; ergibt magentafarbenen Farbstoff.",
             "title": "Zierlauch"
+        },
+        "block:qtcraft:backpack": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Backpack",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:backpack"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,8"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,2 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Rucksack"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Lager",
+                    "links": [
+                    ],
+                    "value": "9 Felder"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Wolle"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:backpack",
+            "id": "block:qtcraft:backpack",
+            "name": "qtcraft:backpack",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:chest",
+                                    "note": "",
+                                    "target": "block:qtcraft:chest",
+                                    "text": "Truhe"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leder"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:backpack",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:backpack",
+                                "note": "",
+                                "target": "block:qtcraft:backpack",
+                                "text": "Rucksack"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Eine in Leder gehüllte Truhe mit einer Reihe aus neun Plätzen. Abgebaut behält sie alles darin und fällt als ein Gegenstand, den du tragen und wieder aufstellen kannst. Benutze ihn in die Luft, um ihn aus der Hand zu öffnen. Kein Rucksack passt in einen Rucksack.",
+            "title": "Rucksack"
         },
         "block:qtcraft:barrel": {
             "category": "blocks",
@@ -17318,6 +17473,12 @@
                             "note": "",
                             "target": "block:qtcraft:trapped_chest",
                             "text": "Fallentruhe"
+                        },
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Rucksack"
                         },
                         {
                             "icon": "qtcraft:signal_hopper",
@@ -90035,6 +90196,72 @@
             "text": "",
             "title": "Bogenschießen"
         },
+        "chapter:qtcraft:backpack": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Backpack",
+            "facts": [
+            ],
+            "icon": "qtcraft:backpack",
+            "id": "chapter:qtcraft:backpack",
+            "name": "qtcraft:backpack",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Lege eine **Truhe** in die Mitte der Werkbank und acht **Leder** darum, um einen **Rucksack** herzustellen. Aufgestellt ist er ein kleiner Behälter mit einer Reihe aus neun Plätzen: Benutze ihn wie eine Truhe. Abgebaut behält er alles darin und fällt als ein Rucksack, der seinen Inhalt trägt; stellst du ihn wieder auf, liegt alles wieder in seinen Plätzen. Zeigst du im Inventar auf einen Rucksack, steht da, was er enthält. Rucksäcke stapeln nie, auch leere nicht.",
+                    "title": "Herstellen und aufstellen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Halte einen Rucksack und benutze ihn (**R**), während du auf nichts zeigst: Er öffnet sich in deiner Hand. Du siehst seine neun Plätze und deine Schnellleiste, aber nicht den Rest des Inventars; der Platz des Rucksacks in der Schnellleiste ist gesperrt, solange er offen ist. Umschalt-Klick verschiebt einen Stapel zwischen Rucksack und Schnellleiste.",
+                    "title": "Aus der Hand öffnen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alles außer einem anderen Rucksack: Kein Rucksack passt in einen Rucksack, weder von Hand noch per Umschalt-Klick. Signaltrichter füllen einen aufgestellten Rucksack von oben und leeren ihn nach unten wie eine Truhe, legen aber nie einen Rucksack hinein. Ein Rucksack mit Inhalt ist kein Brennstoff und keine Zutat, und Dorfbewohner nehmen ihn nicht als Bezahlung, so geht nichts darin aus Versehen verloren.",
+                    "title": "Was hineinpasst"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Rucksack"
+                        },
+                        {
+                            "icon": "qtcraft:leather",
+                            "note": "",
+                            "target": "item:qtcraft:leather",
+                            "text": "Leder"
+                        },
+                        {
+                            "icon": "qtcraft:chest",
+                            "note": "",
+                            "target": "block:qtcraft:chest",
+                            "text": "Truhe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Rucksack"
+        },
         "chapter:qtcraft:basics": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -107260,6 +107487,12 @@
                             "note": "",
                             "target": "item:qtcraft:item_frame",
                             "text": "Rahmen"
+                        },
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Rucksack"
                         }
                     ],
                     "recipes": [
@@ -121438,6 +121671,12 @@
                             "note": "0,8, aus der Härte",
                             "target": "block:qtcraft:red_wool_carpet",
                             "text": "Roter Teppich"
+                        },
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "0,8, aus der Härte",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Rucksack"
                         },
                         {
                             "icon": "qtcraft:sandstone",

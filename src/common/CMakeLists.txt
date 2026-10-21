@@ -155,6 +155,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcItemStack.h gameplay/QcItemStack.cpp
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp
     gameplay/QcMining.h gameplay/QcMining.cpp
+    gameplay/QcPortableContainers.h gameplay/QcPortableContainers.cpp
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
     gameplay/QcSlotList.h gameplay/QcSlotList.cpp

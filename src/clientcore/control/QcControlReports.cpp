@@ -187,6 +187,10 @@ QJsonObject QcControlReports::machineJson() const
         for (const QcItemStack &stack : stacks) {
             slotList.append(stackJson(stack));
         }
+        // A backpack open in the hand has no place in the world: its hotbar slot names it.
+        if (const int held = m_session.machine().heldSlot(); held >= 0) {
+            return {{u"open"_s, true}, {u"heldSlot"_s, held}, {u"chest"_s, true}, {u"slots"_s, slotList}};
+        }
         return {{u"open"_s, true}, {u"position"_s, QJsonArray{pos->x, pos->y, pos->z}}, {u"chest"_s, true}, {u"slots"_s, slotList}};
     }
 

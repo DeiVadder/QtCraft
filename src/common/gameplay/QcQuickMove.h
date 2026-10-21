@@ -17,6 +17,8 @@ struct Situation
     // The moved item is armour whose slot is empty: the slot number (MoveInventoryItem::equipmentSlot
     // onwards), else -1. With no block open, armour from the inventory goes there first.
     int freeArmourSlot = -1;
+    // A backpack opened from the hand (decision E-833): its slots go into the hotbar only.
+    bool hotbarOnly = false;
 };
 
 // Target slots in the order they are filled; empty when the stack cannot go anywhere.

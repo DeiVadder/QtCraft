@@ -18,10 +18,13 @@ ItemSlot {
 
     // Clicks on slots sound like buttons (QcGameInput).
     property bool clickSound: true
+    // The slot of a backpack opened from the hand: dimmed and without clicks (decision E-833).
+    readonly property bool locked: slot === owner.lockedSlot
 
     infoItem: itemName
     slotLabel: label
-    Accessible.description: tooltip
+    opacity: locked ? 0.45 : 1.0
+    Accessible.description: locked ? qsTr("%1 (open, locked)").arg(tooltip) : tooltip
     infoEnabled: owner.pickedSlot < 0
     onInfoRequested: item => owner.game.handbook.open(item)
     slotIcon: icon

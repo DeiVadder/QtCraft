@@ -25,6 +25,7 @@
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
                 "chapter:qtcraft:maps",
+                "chapter:qtcraft:backpack",
                 "chapter:qtcraft:creative",
                 "chapter:qtcraft:spectator",
                 "chapter:qtcraft:adventure",
@@ -40,6 +41,7 @@
             "entries": [
                 "block:qtcraft:activator_rail",
                 "block:qtcraft:allium",
+                "block:qtcraft:backpack",
                 "block:qtcraft:barrel",
                 "block:qtcraft:bed",
                 "block:qtcraft:bedrock",
@@ -3412,6 +3414,159 @@
             ],
             "text": "A purple ball of blossoms on meadows and mountains; gives magenta dye.",
             "title": "Allium"
+        },
+        "block:qtcraft:backpack": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Backpack",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:backpack"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.8"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "1.2 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Backpack"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Storage",
+                    "links": [
+                    ],
+                    "value": "9 slots"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wool"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west)"
+                }
+            ],
+            "icon": "qtcraft:backpack",
+            "id": "block:qtcraft:backpack",
+            "name": "qtcraft:backpack",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:chest",
+                                    "note": "",
+                                    "target": "block:qtcraft:chest",
+                                    "text": "Chest"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                },
+                                {
+                                    "icon": "qtcraft:leather",
+                                    "note": "",
+                                    "target": "item:qtcraft:leather",
+                                    "text": "Leather"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:backpack",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:backpack",
+                                "note": "",
+                                "target": "block:qtcraft:backpack",
+                                "text": "Backpack"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "A chest wrapped in leather with one row of nine slots. Broken, it keeps everything inside and drops as one item that you can carry and place again. Use it in the air to open it from your hand. No backpack fits into a backpack.",
+            "title": "Backpack"
         },
         "block:qtcraft:barrel": {
             "category": "blocks",
@@ -17313,6 +17468,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Backpack"
+                        },
                         {
                             "icon": "qtcraft:chest_minecart",
                             "note": "",
@@ -90035,6 +90196,72 @@
             "text": "",
             "title": "Archery"
         },
+        "chapter:qtcraft:backpack": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Backpack",
+            "facts": [
+            ],
+            "icon": "qtcraft:backpack",
+            "id": "chapter:qtcraft:backpack",
+            "name": "qtcraft:backpack",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Lay a **chest** in the middle of the crafting table with eight **leather** around it to make a **backpack**. Placed, it is a small container with one row of nine slots: use it like a chest. Broken, it keeps everything inside and drops as one backpack that carries its contents; place it again and they are back in its slots. Pointing at a backpack in the inventory lists what it holds. Backpacks never stack, an empty one neither.",
+                    "title": "Making and placing"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Hold a backpack and use it (**R**) while you point at nothing: it opens in your hand. You see its nine slots and your hotbar, but not the rest of your inventory; the backpack's own slot in the hotbar is locked while it is open. Shift-click moves a stack between the backpack and the hotbar.",
+                    "title": "Opening it from the hand"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Anything but another backpack: no backpack fits into a backpack, neither by hand nor by shift-click. Signal Hoppers fill a placed backpack from above and empty it from below like a chest, but never put a backpack into it. A backpack with something inside is no fuel and no ingredient, and villagers do not take it as payment, so nothing inside is lost by accident.",
+                    "title": "What goes in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Backpack"
+                        },
+                        {
+                            "icon": "qtcraft:leather",
+                            "note": "",
+                            "target": "item:qtcraft:leather",
+                            "text": "Leather"
+                        },
+                        {
+                            "icon": "qtcraft:chest",
+                            "note": "",
+                            "target": "block:qtcraft:chest",
+                            "text": "Chest"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Backpack"
+        },
         "chapter:qtcraft:basics": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -107226,6 +107453,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:backpack",
+                            "note": "",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Backpack"
+                        },
+                        {
                             "icon": "qtcraft:book",
                             "note": "",
                             "target": "item:qtcraft:book",
@@ -121264,6 +121497,12 @@
                             "note": "1, from hardness",
                             "target": "block:qtcraft:spruce_sign",
                             "text": "Spruce Sign"
+                        },
+                        {
+                            "icon": "qtcraft:backpack",
+                            "note": "0.8, from hardness",
+                            "target": "block:qtcraft:backpack",
+                            "text": "Backpack"
                         },
                         {
                             "icon": "qtcraft:black_wool_carpet",

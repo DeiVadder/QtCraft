@@ -85,6 +85,9 @@ private:
     // The armour slot a shift-clicked stack goes to, or -1.
     int freeArmourSlotFor(const QcServerClient &client, const QcItemStack &stack) const;
 
+    // Whether the open container takes its new slots: a backpack nothing with contents, a held one
+    // its slots as the data of its item (decisions E-832, E-833).
+    bool containerAccepts(const OpenSlots &open) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
 

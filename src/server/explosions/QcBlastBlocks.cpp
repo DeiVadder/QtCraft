@@ -1,5 +1,6 @@
 #include "server/explosions/QcBlastBlocks.h"
 
+#include "server/blockentities/QcBlockEntities.h"
 #include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFireRules.h"
 #include "server/blocks/QcServerBlocks.h"
@@ -85,13 +86,16 @@ void QcBlastBlocks::breakCell(const Work &work, QcBlockId block)
         ++m_broken;
         return;
     }
+    // A portable container with contents leaves as its item carrying them (QcBlockEntities spills
+    // it when the cell clears, decision E-832) instead of its usual drop.
+    const bool carriesContents = m_state.blockEntities().carriesContents(work.pos, block);
     if (!clear(work.pos)) {
         return;
     }
 
     ++m_broken;
     m_state.plants().blockRemoved(work.pos, block, m_state.world());
-    if (drops) {
+    if (drops && !carriesContents) {
         m_blocks.dropItemsWithoutExperience(block, work.pos);
     }
     // An infested block lets its creature out (decision E-453).

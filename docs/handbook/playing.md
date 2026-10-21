@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -684,6 +684,24 @@ A filled map with empty maps in the crafting grid gives one copy per empty map. 
 **Maps on the wall**
 
 Put a filled map into an **item frame** and it covers the whole face of the frame, drawn flat on the wall. Each right click turns it a quarter turn. Maps in frames side by side meet without a gap, so four maps of neighbouring squares make a large wall map. Players near a framed map see it change as others explore, and every map shows the frames it hangs in as green arrows.
+
+### <a id="chapter-qtcraft-backpack"></a>Backpack
+
+**Making and placing**
+
+Lay a **chest** in the middle of the crafting table with eight **leather** around it to make a **backpack**. Placed, it is a small container with one row of nine slots: use it like a chest. Broken, it keeps everything inside and drops as one backpack that carries its contents; place it again and they are back in its slots. Pointing at a backpack in the inventory lists what it holds. Backpacks never stack, an empty one neither.
+
+**Opening it from the hand**
+
+Hold a backpack and use it (**R**) while you point at nothing: it opens in your hand. You see its nine slots and your hotbar, but not the rest of your inventory; the backpack's own slot in the hotbar is locked while it is open. Shift-click moves a stack between the backpack and the hotbar.
+
+**What goes in**
+
+Anything but another backpack: no backpack fits into a backpack, neither by hand nor by shift-click. Signal Hoppers fill a placed backpack from above and empty it from below like a chest, but never put a backpack into it. A backpack with something inside is no fuel and no ingredient, and villagers do not take it as payment, so nothing inside is lost by accident.
+
+**See also**
+
+[Backpack](blocks.md#block-qtcraft-backpack), [Leather](items.md#item-qtcraft-leather), [Chest](blocks.md#block-qtcraft-chest)
 
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 

@@ -124,11 +124,23 @@ struct QcServerClient : QcEntity
 
     // The machine, container or villager whose screen the player has open, and what the client was
     // last told about it.
+    // A portable container opened from the hand (a backpack, decision E-833): the hotbar slot that
+    // holds it, locked while open, and its slots as a working copy of the item's contents, filled
+    // from the item whenever the screen is used (QcBlockScreens::openContainerOf) and written back
+    // into it by QcServerInventory.
+    struct HeldContainer
+    {
+        int slot = 0;
+        QList<QcItemStack> stacks;
+    };
+
     struct Screen
     {
         std::optional<QcBlockPos> open;
         // A container minecart (entity id) instead of a block; `open` is unset then.
         quint32 cart = 0;
+        // A backpack opened from the hand instead of a block or cart; `open` is unset and `cart` 0 then.
+        std::optional<HeldContainer> held;
         std::optional<QcMsg::MachineState> sent;
         // The villager (entity id) whose trading screen is open (QcServerTrading), 0 for none, and
         // the screen as last sent.

@@ -25,6 +25,8 @@ Rectangle {
     property int resultSlot: -1
     // A machine's output: it can be picked up, nothing can be put into it.
     property int outputSlot: -1
+    // A slot that takes no clicks: the hotbar slot of a backpack opened from the hand (decision E-833).
+    property int lockedSlot: -1
     // The content the panel is drawn behind.
     property Item panelContent
     // Where the picked-up stack is drawn while the mouse is outside the window: next to its slot.
@@ -52,6 +54,8 @@ Rectangle {
     }
 
     function clicked(slot, empty, button, quick) {
+        if (slot === lockedSlot)
+            return;
         if (carriedItem.length > 0) {
             if (slot !== resultSlot && slot !== outputSlot)
                 game.player.putCreativeItem(slot, carriedItem, button === Qt.RightButton ? 1 : carriedCount);

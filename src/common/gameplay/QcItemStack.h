@@ -8,6 +8,7 @@
 #include <QSharedData>
 #include <QString>
 
+#include <optional>
 #include <utility>
 
 class QcItemData;
@@ -41,8 +42,20 @@ struct QcItemStack
     [[nodiscard]] QcItemStack withMapId(quint32 id) const;
     [[nodiscard]] QcItemStack withContents(QList<QcItemStack> stacks) const;
     [[nodiscard]] QcItemStack withName(QString text) const;
+    // The same stack with `next` as its data, or nothing (with the warning of withData) when the
+    // data is beyond the limits. Callers that take items out of slots to put them into the data
+    // (filling a backpack) ask first, so a refusal loses and doubles nothing (stage 68.2).
+    [[nodiscard]] std::optional<QcItemStack> tryWithData(const QcItemData &next) const;
+    [[nodiscard]] std::optional<QcItemStack> tryWithContents(QList<QcItemStack> stacks) const;
     // The same stack without the components a save kept for a newer version (QcItemData::kept).
     [[nodiscard]] QcItemStack withoutKept() const;
+    // What clients need to draw the stack lying on the ground or in a frame (decision E-832): item,
+    // count, damage, map id and name, without contents and kept components, so a dropped backpack
+    // does not send what it holds to everyone near.
+    [[nodiscard]] QcItemStack forDisplay() const;
+    // A total order of stacks (empty ones first) by item, damage, count and data, so that rules which go through
+    // stacks in a fixed order (hoppers sharing a target, decision E-344) never depend on directions.
+    [[nodiscard]] static int compare(const QcItemStack &a, const QcItemStack &b);
     // The stack in parts of at most stackLimit(maxStack) items, for a stack larger than its item
     // allows (a generous block drop, a save from before a mod lowered maxStack). Only the first part
     // keeps the kept components: one may hold items, which a copy would multiply. A stack with
@@ -104,6 +117,8 @@ public:
     // at most maxContents slots, maxDepth levels and maxStacksInside stacks (the stacks inside
     // were checked when they got their data).
     [[nodiscard]] bool fitsLimits() const;
+    // A total order of data (QcItemStack::compare): negative, 0 or positive.
+    [[nodiscard]] static int compare(const QcItemData &a, const QcItemData &b);
     bool operator==(const QcItemData &other) const;
 };
 

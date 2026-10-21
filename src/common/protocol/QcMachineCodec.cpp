@@ -3,6 +3,7 @@
 #include "common/protocol/QcProtocolCodec.h"
 
 #include "common/content/registry/QcStonecutting.h"
+#include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <algorithm>
@@ -15,7 +16,7 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::OpenMachine &m)
 {
     writePos(stream, m.pos);
-    stream << m.category << m.entity;
+    stream << m.category << m.entity << m.heldSlot;
 }
 
 void encode(QDataStream &stream, const QcMsg::MachineState &m)
@@ -32,9 +33,14 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
 {
     QcMsg::OpenMachine m;
     m.pos = readPos(stream);
-    stream >> m.category >> m.entity;
+    stream >> m.category >> m.entity >> m.heldSlot;
     if (m.category.size() > 64) {
         return qcError(u"Invalid machine category"_s);
+    }
+    // A held backpack is in the hotbar and opens as a storage screen of its own (no cart).
+    if (m.heldSlot != QcMsg::OpenMachine::noHeldSlot
+        && (m.heldSlot < 0 || m.heldSlot >= QcInventory::hotbarSize || !m.category.isEmpty() || m.entity != 0)) {
+        return qcError(u"Invalid held container slot"_s);
     }
     return m;
 }

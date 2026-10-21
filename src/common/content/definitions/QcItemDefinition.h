@@ -169,6 +169,10 @@ struct QcItemDefinition
     // A fishing rod (decision E-503): the use button casts and reels in its bobber. Only that it fishes
     // reaches the client, which sends the use as QcMsg::ThrowItem.
     std::optional<QcFishingDefinition> fishing;
+    // Places a portable container (a backpack, decision E-832; the block's `container.portable`):
+    // the item carries the block's contents, stacks to one, opens from the hand and never goes
+    // into a portable container. Reaches the client.
+    bool portableContainer = false;
 
     // The `damage` a stack of this item may carry (decision E-798): worn uses below the durability,
     // else 0 (the map id of a filled map is item data, decision E-823).

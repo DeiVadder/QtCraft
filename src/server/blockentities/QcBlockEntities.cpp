@@ -1,5 +1,7 @@
 #include "server/blockentities/QcBlockEntities.h"
 
+#include "common/gameplay/QcPortableContainers.h"
+
 #include <algorithm>
 #include <utility>
 
@@ -101,7 +103,7 @@ void QcBlockEntities::placed(QcBlockPos pos, QcBlockId before, QcBlockId after)
 
     // A machine first, then a container: the order in which their contents drop.
     placedMachine(pos, after);
-    placedContainer(pos, after);
+    placedContainer(pos, before, after);
     // Another state of the same sapling (mods may give saplings states) keeps the timer.
     if (!m_content->isValidBlock(before) || !m_content->isValidBlock(after) || !m_content->isSameBlock(before, after)) {
         removeSapling(pos);
@@ -123,11 +125,22 @@ void QcBlockEntities::placedMachine(QcBlockPos pos, QcBlockId after)
     }
 }
 
-void QcBlockEntities::placedContainer(QcBlockPos pos, QcBlockId after)
+void QcBlockEntities::placedContainer(QcBlockPos pos, QcBlockId before, QcBlockId after)
 {
     const int slotCount = containerSlots(after);
     Container *existing = container(pos);
     if (!existing) {
+        if (slotCount > 0) {
+            ensure(pos, after);
+        }
+        return;
+    }
+
+    // A portable container that leaves takes its contents along as one item (decision E-832);
+    // another state of the same block (its facing) keeps them.
+    if (isPortable(before) && !(m_content->isValidBlock(after) && m_content->isSameBlock(before, after))) {
+        spillPortable(pos, before, existing->stacks);
+        removeContainer(pos);
         if (slotCount > 0) {
             ensure(pos, after);
         }
@@ -177,6 +190,42 @@ void QcBlockEntities::placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId a
     if (it != m_memories.end() && it->forgetUnfitting(now)) {
         removeMemory(pos);
     }
+}
+
+bool QcBlockEntities::isPortable(QcBlockId block) const
+{
+    return m_content->isValidBlock(block) && m_content->block(block).portableContainer && m_content->block(block).containerSlots > 0;
+}
+
+QList<QcItemStack> QcBlockEntities::fillPortable(QcBlockPos pos, const QcItemStack &stack)
+{
+    Container *held = container(pos);
+    if (!held || !stack.hasContents()) {
+        return held ? QList<QcItemStack>() : stack.contents();
+    }
+    const int slotCount = int(held->stacks.size());
+    held->stacks = QcPortableContainers::slotsOf(*m_content, stack, slotCount);
+    return QcPortableContainers::leftOver(*m_content, stack, slotCount);
+}
+
+bool QcBlockEntities::carriesContents(QcBlockPos pos, QcBlockId block) const
+{
+    const Container *held = isPortable(block) ? container(pos) : nullptr;
+    return held && std::ranges::any_of(held->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); });
+}
+
+void QcBlockEntities::spillPortable(QcBlockPos pos, QcBlockId block, const QList<QcItemStack> &stacks)
+{
+    // Empty, it drops as the block's usual drop (QcServerBlocks::breakBlock).
+    if (std::ranges::all_of(stacks, [](const QcItemStack &stack) { return stack.isEmpty(); })) {
+        return;
+    }
+
+    // Its item with the contents; should the item be missing or the data refused, the contents
+    // spill one by one, so nothing is lost.
+    const std::optional<QcItemId> item = m_content->itemId(m_content->block(block).name);
+    const std::optional<QcItemStack> filled = item ? QcItemStack{*item, 1, 0}.tryWithContents(stacks) : std::nullopt;
+    spill(pos, filled ? QList<QcItemStack>{*filled} : stacks);
 }
 
 void QcBlockEntities::spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience)
@@ -237,7 +286,8 @@ void QcBlockEntities::reconcile(const QcChunk &chunk)
         placedMachine(pos, blockAt(pos));
     }
     for (const QcBlockPos &pos : positions.containers) {
-        placedContainer(pos, blockAt(pos));
+        // The block before is unknown (a save, a mod taken away): what does not fit spills stack by stack.
+        placedContainer(pos, blockAt(pos), blockAt(pos));
         if (Container *hopper = container(pos); hopper && kindOf(blockAt(pos)) != QcSignalKind::Hopper) {
             hopper->readyAt = 0;
         }

@@ -159,7 +159,8 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         break;
     }
     case QcEntityKind::Item:
-        spawn.item = entity.as<QcItemEntity>().stack;
+        // Only what draws it: a dropped backpack keeps its contents to the server (decision E-832).
+        spawn.item = entity.as<QcItemEntity>().stack.forDisplay();
         break;
     case QcEntityKind::FallingBlock:
         spawn.block = entity.as<QcFallingBlock>().block;
@@ -196,7 +197,7 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         // Its own item names its motifs (decision E-790); a frame shows the stack it holds.
         const auto &hanging = entity.as<QcHangingEntity>();
         spawn.hanging = hanging.hanging;
-        spawn.item = hanging.held;
+        spawn.item = hanging.held.forDisplay();
         spawn.held = m_state.content().itemId(hanging.item).value_or(qcNoItem);
         break;
     }

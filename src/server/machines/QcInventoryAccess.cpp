@@ -1,5 +1,6 @@
 #include "server/machines/QcInventoryAccess.h"
 
+#include "common/gameplay/QcPortableContainers.h"
 #include "server/core/QcServerState.h"
 
 #include <algorithm>
@@ -91,9 +92,13 @@ bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, const QcItemStack &
 bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, const QcItemStack &stack) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    // Hoppers fill and empty a backpack but never put anything with contents into it (decision E-832).
+    if (block && m_state.blockEntities().isPortable(*block)) {
+        return QcPortableContainers::mayHold(m_state.content(), stack);
+    }
     const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
     if (machine && slot == QcMachineRules::fuelSlot) {
-        return m_state.machineRules().fuelSeconds(stack.item) > 0.0;
+        return m_state.machineRules().fuelSeconds(stack.item) > 0.0 && !stack.hasContents();
     }
     // A machine that smelts only some kinds (smoker, blast furnace, decision E-770) takes only what it
     // smelts, so nothing stalls its input; the furnace takes anything, as in the reference.
@@ -158,9 +163,13 @@ QList<QcInventoryAccess::Insertion> QcInventoryAccess::resolve(QList<Insertion> 
 
 QList<QcInventoryAccess::Insertion> QcInventoryAccess::resolveTarget(QList<Insertion> group) const
 {
-    // From above first, then the item order; only these properties decide, never a direction.
+    // From above first, then the order of the stacks with their data (QcItemStack::compare), so
+    // equal items sit together; only these properties decide, never a direction.
     std::ranges::stable_sort(group, [](const Insertion &a, const Insertion &b) {
-        return std::tuple{a.face != QcBlockFace::Up, a.stack.item, a.stack.damage} < std::tuple{b.face != QcBlockFace::Up, b.stack.item, b.stack.damage};
+        if ((a.face != QcBlockFace::Up) != (b.face != QcBlockFace::Up)) {
+            return a.face == QcBlockFace::Up;
+        }
+        return QcItemStack::compare(a.stack.withCount(1), b.stack.withCount(1)) < 0;
     });
 
     const QcBlockPos target = group.constFirst().target;

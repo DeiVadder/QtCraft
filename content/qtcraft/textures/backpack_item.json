@@ -1,0 +1,8 @@
+{
+    "name": "backpack_item",
+    "pattern": "backpack_item",
+    "primary": "#a8683c",
+    "secondary": "#e0bc68",
+    "variation": 0.06,
+    "seed": 1207
+}

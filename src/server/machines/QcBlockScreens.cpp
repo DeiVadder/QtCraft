@@ -1,8 +1,10 @@
 #include "server/machines/QcBlockScreens.h"
 
+#include "common/gameplay/QcPortableContainers.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 
@@ -34,8 +36,11 @@ QcBlockEntities::Machine *QcBlockScreens::openMachineOf(const QcServerClient &cl
     return block && m_state.machineRules().machineOf(*block) ? m_state.blockEntities().machine(*client.screen.open) : nullptr;
 }
 
-std::optional<QcBlockScreens::OpenContainer> QcBlockScreens::openContainerOf(const QcServerClient &client)
+std::optional<QcBlockScreens::OpenContainer> QcBlockScreens::openContainerOf(QcServerClient &client)
 {
+    if (client.screen.held) {
+        return heldContainerOf(client);
+    }
     if (client.screen.cart != 0) {
         QcMinecart *cart = m_state.entities().minecarts().find(client.screen.cart);
         if (!cart || cart->stacks.isEmpty()) {
@@ -54,7 +59,71 @@ std::optional<QcBlockScreens::OpenContainer> QcBlockScreens::openContainerOf(con
     if (!container) {
         return std::nullopt;
     }
-    return OpenContainer{&container->stacks, container->pos, 0};
+    // A container exists only for a block that is there.
+    const bool portable = m_state.blockEntities().isPortable(block.value_or(qcAirBlockId));
+    return OpenContainer{&container->stacks, container->pos, 0, portable, QcMsg::OpenMachine::noHeldSlot};
+}
+
+std::optional<QcBlockScreens::OpenContainer> QcBlockScreens::heldContainerOf(QcServerClient &client)
+{
+    // The item in the locked slot is the truth; the working copy follows it.
+    if (!client.screen.held) {
+        return std::nullopt;
+    }
+    QcServerClient::HeldContainer &held = *client.screen.held;
+    const QcItemStack &stack = client.inventory.slot(held.slot);
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> block =
+        QcPortableContainers::isPortable(content, stack.item) ? content.blockId(content.item(stack.item).placesBlock) : std::nullopt;
+    const int slotCount = block ? content.block(*block).containerSlots : 0;
+    if (stack.isEmpty() || slotCount <= 0) {
+        return std::nullopt;
+    }
+    held.stacks = QcPortableContainers::slotsOf(content, stack, slotCount);
+    return OpenContainer{&held.stacks, {}, 0, true, held.slot};
+}
+
+std::optional<QList<QcItemStack>> QcBlockScreens::openHeld(QcServerClient &client)
+{
+    const int slot = client.inventory.selectedHotbarSlot();
+    const QcItemStack stack = client.inventory.slot(slot);
+    if (client.dead || !QcPortableContainers::isPortable(m_state.content(), stack.item)) {
+        return std::nullopt;
+    }
+
+    closeOtherScreens(client);
+    client.screen.open.reset();
+    client.screen.cart = 0;
+    client.screen.held = QcServerClient::HeldContainer{slot, {}};
+    const std::optional<OpenContainer> container = heldContainerOf(client);
+    if (!container) {
+        client.screen.held.reset();
+        return std::nullopt;
+    }
+
+    // The item keeps only what its slots show; the rest goes back to the player.
+    QList<QcItemStack> leftOver = QcPortableContainers::leftOver(m_state.content(), stack, int(container->stacks->size()));
+    if (!leftOver.isEmpty()) {
+        const std::optional<QcItemStack> trimmed = stack.tryWithContents(*container->stacks);
+        if (!trimmed) {
+            qCWarning(lcServer) << "A held backpack whose contents cannot be trimmed to its slots stays closed, slot" << slot;
+            client.screen.held.reset();
+            return std::nullopt;
+        }
+        client.inventory.setSlot(slot, *trimmed);
+    }
+
+    client.screen.sent.reset();
+    QcMsg::OpenMachine open;
+    open.heldSlot = slot;
+    client.connection->send(open);
+    send(client, true);
+    return leftOver;
+}
+
+bool QcBlockScreens::hasScreen(const QcServerClient &client)
+{
+    return client.screen.open || client.screen.cart != 0 || client.screen.held;
 }
 
 void QcBlockScreens::openCart(QcServerClient &client, const QcMinecart &cart)
@@ -64,14 +133,19 @@ void QcBlockScreens::openCart(QcServerClient &client, const QcMinecart &cart)
     }
     closeOtherScreens(client);
     client.screen.open.reset();
+    client.screen.held.reset();
     client.screen.cart = cart.id;
     client.screen.sent.reset();
     client.connection->send(QcMsg::OpenMachine{QcPhysics::blockContaining(cart.motion.position), {}, cart.id});
     send(client, true);
 }
 
-void QcBlockScreens::containerChanged(const OpenContainer &container, bool changed)
+void QcBlockScreens::containerChanged(QcServerClient &client, const OpenContainer &container, bool changed)
 {
+    if (container.heldSlot >= 0) {
+        send(client, true);
+        return;
+    }
     if (container.cart == 0) {
         sendToViewers(container.pos);
         if (changed) {
@@ -113,6 +187,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
         }
 
         closeOtherScreens(client);
+        client.screen.held.reset();
         client.screen.open = pos;
         client.screen.sent.reset();
         client.connection->send(QcMsg::OpenMachine{pos, {}});
@@ -132,6 +207,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
     }
 
     closeOtherScreens(client);
+    client.screen.held.reset();
     client.screen.open = pos;
     client.screen.sent.reset();
     client.connection->send(QcMsg::OpenMachine{pos, definition->category});
@@ -171,12 +247,13 @@ void QcBlockScreens::endTrade(QcServerClient &client)
 
 void QcBlockScreens::close(QcServerClient &client, bool notify)
 {
-    if (!client.screen.open && client.screen.cart == 0) {
+    if (!hasScreen(client)) {
         return;
     }
 
     client.screen.open.reset();
     client.screen.cart = 0;
+    client.screen.held.reset();
     client.screen.sent.reset();
 
     if (notify) {
@@ -240,7 +317,7 @@ void QcBlockScreens::sendToViewers(QcBlockPos pos)
 void QcBlockScreens::update()
 {
     for (const auto &client : m_state.clients()) {
-        if (client->state != QcServerClient::State::Playing || (!client->screen.open && client->screen.cart == 0)) {
+        if (client->state != QcServerClient::State::Playing || !hasScreen(*client)) {
             continue;
         }
 
@@ -300,6 +377,10 @@ void QcBlockScreens::releaseViewers(QcServerState &state, QcChunkPos chunk)
 
 bool QcBlockScreens::canReach(const QcServerClient &client) const
 {
+    // A held backpack is always at hand.
+    if (client.screen.held) {
+        return true;
+    }
     if (client.screen.cart == 0) {
         return client.screen.open && QcLineOfSight::isWithinReach(client, *client.screen.open);
     }

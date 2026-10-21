@@ -145,7 +145,9 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
 
 [[nodiscard]] std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size)
 {
-    if (grid.size() < qsizetype(size) * size) {
+    // A stack with contents (a filled backpack) is no ingredient: crafting would lose what it holds
+    // (decision E-832).
+    if (grid.size() < qsizetype(size) * size || std::ranges::any_of(grid, [](const QcItemStack &cell) { return cell.hasContents(); })) {
         return std::nullopt;
     }
 
@@ -254,7 +256,7 @@ int available(const QcContentRegistry &content, const QcInventory &inventory, co
 {
     int count = 0;
     for (const QcItemStack &stack : inventory.allSlots()) {
-        if (!stack.isEmpty() && matches(content, stack.item, ingredient)) {
+        if (!stack.isEmpty() && !stack.hasContents() && matches(content, stack.item, ingredient)) {
             count += stack.count;
         }
     }

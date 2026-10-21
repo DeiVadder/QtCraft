@@ -1,0 +1,16 @@
+{
+    "name": "backpack",
+    "type": "shaped",
+    "pattern": [
+        "LLL",
+        "LCL",
+        "LLL"
+    ],
+    "key": {
+        "L": "leather",
+        "C": "chest"
+    },
+    "result": {
+        "item": "backpack"
+    }
+}

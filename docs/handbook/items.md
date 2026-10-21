@@ -1167,7 +1167,7 @@ Tough hide for books; for now it can only be pieced together from scraps.
 
 **Used in**
 
-[Book](#item-qtcraft-book), [Item frame](#item-qtcraft-item_frame), [Leather boots](tools.md#item-qtcraft-leather_boots), [Leather cap](tools.md#item-qtcraft-leather_helmet), [Leather trousers](tools.md#item-qtcraft-leather_leggings), [Leather tunic](tools.md#item-qtcraft-leather_chestplate)
+[Backpack](blocks.md#block-qtcraft-backpack), [Book](#item-qtcraft-book), [Item frame](#item-qtcraft-item_frame), [Leather boots](tools.md#item-qtcraft-leather_boots), [Leather cap](tools.md#item-qtcraft-leather_helmet), [Leather trousers](tools.md#item-qtcraft-leather_leggings), [Leather tunic](tools.md#item-qtcraft-leather_chestplate)
 
 **Dropped by**
 

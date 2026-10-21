@@ -64,8 +64,11 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
         return QcItemIconUrls::url(item.name);
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
-    case TooltipRole:
-        return tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack));
+    case TooltipRole: {
+        const QString tooltip = tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack));
+        const QStringList contents = contentsLines(*m_content, stack, m_language);
+        return contents.isEmpty() ? tooltip : tooltip + u'\n' + contents.join(u'\n');
+    }
     default:
         return {};
     }
@@ -118,6 +121,27 @@ std::optional<int> QcInventoryModel::mapScaleOf(const QcItemDefinition &item, co
         return std::nullopt;
     }
     return m_mapScale(stack.mapId());
+}
+
+QStringList QcInventoryModel::contentsLines(const QcContentRegistry &content, const QcItemStack &stack, const QString &language)
+{
+    QStringList lines;
+    int more = 0;
+    for (const QcItemStack &inside : stack.contents()) {
+        if (inside.isEmpty()) {
+            continue;
+        }
+        if (lines.size() >= maxContentLines || !content.isValidItem(inside.item)) {
+            more += 1;
+            continue;
+        }
+        const QString name = content.translations().translate(content.item(inside.item).translationKey, language);
+        lines.append(inside.count > 1 ? tr("%1 × %2").arg(name).arg(inside.count) : name);
+    }
+    if (more > 0) {
+        lines.append(tr("and %n more", nullptr, more));
+    }
+    return lines;
 }
 
 QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, const QcItemStack &stack, const QString &label, std::optional<int> mapScale)

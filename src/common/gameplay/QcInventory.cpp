@@ -85,7 +85,7 @@ int QcInventory::countOf(QcItemId item) const
 {
     int total = 0;
     for (const QcItemStack &stack : m_slots) {
-        if (stack.item == item) {
+        if (stack.item == item && !stack.hasContents()) {
             total += stack.count;
         }
     }
@@ -99,7 +99,7 @@ bool QcInventory::removeItems(QcItemId item, int count)
     }
 
     for (int i = 0; i < slotCount && count > 0; ++i) {
-        if (m_slots[i].item == item) {
+        if (m_slots[i].item == item && !m_slots[i].hasContents()) {
             count -= removeFromSlot(i, count);
         }
     }

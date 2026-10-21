@@ -147,7 +147,7 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Over TCP every frame is preceded by its length as a big-endian `quint32` (a length of 0 is a keep-alive, `QcFrameReader`, E-251). Version: `QcProtocol::version` (62; the history of the versions is in decision E-368). The payload codecs are one encode/decode overload pair per message, grouped by topic (`QcSessionCodec`, `QcWorldCodec`, `QcPlayerCodec`, `QcEntityCodec`, `QcMachineCodec`, `QcDebugCodec`, shared field codecs in `QcProtocolCodec`, chunks in `QcChunkCodec`); `QcProtocol.cpp` dispatches on the type tag. Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Over TCP every frame is preceded by its length as a big-endian `quint32` (a length of 0 is a keep-alive, `QcFrameReader`, E-251). Version: `QcProtocol::version` (63; the history of the versions is in decision E-368). The payload codecs are one encode/decode overload pair per message, grouped by topic (`QcSessionCodec`, `QcWorldCodec`, `QcPlayerCodec`, `QcEntityCodec`, `QcMachineCodec`, `QcDebugCodec`, shared field codecs in `QcProtocolCodec`, chunks in `QcChunkCodec`); `QcProtocol.cpp` dispatches on the type tag. Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|

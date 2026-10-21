@@ -19,6 +19,10 @@ struct OpenMachine
     QString category;
     // A container minecart (entity id, decision E-386) instead of the block at `pos`; 0 for a block.
     quint32 entity = 0;
+    // A backpack opened from the hand (decision E-833): the hotbar slot that holds it, locked while
+    // the screen is open, which shows only the backpack's slots and the hotbar; -1 for a block or cart.
+    qint32 heldSlot = noHeldSlot;
+    static constexpr qint32 noHeldSlot = -1;
 };
 
 // Server -> client: contents and progress of the open machine. `stacks` are input, fuel and output;

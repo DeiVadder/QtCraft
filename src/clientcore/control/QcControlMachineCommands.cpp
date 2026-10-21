@@ -55,7 +55,8 @@ void QcControlMachineCommands::openMachine(const QJsonObject &request)
 
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(openTicks),
                      [this, startTick, used, pos]() mutable {
-                         if (session().machine().pos() == pos) {
+                         // A backpack open in the hand is no block, wherever its screen says it is.
+                         if (session().machine().pos() == pos && session().machine().heldSlot() < 0) {
                              return true;
                          }
 

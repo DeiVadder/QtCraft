@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -684,6 +684,24 @@ Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Kart
 **Karten an der Wand**
 
 Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile.
+
+### <a id="chapter-qtcraft-backpack"></a>Rucksack
+
+**Herstellen und aufstellen**
+
+Lege eine **Truhe** in die Mitte der Werkbank und acht **Leder** darum, um einen **Rucksack** herzustellen. Aufgestellt ist er ein kleiner Behälter mit einer Reihe aus neun Plätzen: Benutze ihn wie eine Truhe. Abgebaut behält er alles darin und fällt als ein Rucksack, der seinen Inhalt trägt; stellst du ihn wieder auf, liegt alles wieder in seinen Plätzen. Zeigst du im Inventar auf einen Rucksack, steht da, was er enthält. Rucksäcke stapeln nie, auch leere nicht.
+
+**Aus der Hand öffnen**
+
+Halte einen Rucksack und benutze ihn (**R**), während du auf nichts zeigst: Er öffnet sich in deiner Hand. Du siehst seine neun Plätze und deine Schnellleiste, aber nicht den Rest des Inventars; der Platz des Rucksacks in der Schnellleiste ist gesperrt, solange er offen ist. Umschalt-Klick verschiebt einen Stapel zwischen Rucksack und Schnellleiste.
+
+**Was hineinpasst**
+
+Alles außer einem anderen Rucksack: Kein Rucksack passt in einen Rucksack, weder von Hand noch per Umschalt-Klick. Signaltrichter füllen einen aufgestellten Rucksack von oben und leeren ihn nach unten wie eine Truhe, legen aber nie einen Rucksack hinein. Ein Rucksack mit Inhalt ist kein Brennstoff und keine Zutat, und Dorfbewohner nehmen ihn nicht als Bezahlung, so geht nichts darin aus Versehen verloren.
+
+**Siehe auch**
+
+[Rucksack](blocks.md#block-qtcraft-backpack), [Leder](items.md#item-qtcraft-leather), [Truhe](blocks.md#block-qtcraft-chest)
 
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 

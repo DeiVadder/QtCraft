@@ -92,6 +92,9 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     // A slab broken out of a double slab drops both halves, a vertical one too (decision E-755).
     const bool doubleSlab = content.property(*previous, u"type"_s) == u"double"_s || content.property(*previous, u"double"_s) == u"true"_s;
     const bool paired = (definition.door || definition.bed) && QcBlockRules::hasPartner(m_state.world(), pos, *previous);
+    // A portable container with contents drops as its item carrying them (QcBlockEntities spills
+    // it, decision E-832), in creative mode too; empty, it drops as usual.
+    const bool carriesContents = m_state.blockEntities().carriesContents(pos, *previous);
 
     setAndBroadcast(pos, qcAirBlockId);
     if (m_state.world().blockAt(pos) != qcAirBlockId) {
@@ -107,7 +110,7 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     // The upper half of a door and the head of a bed drop nothing: the other half carries the item.
     const bool secondHalf = (definition.door && content.property(*previous, u"half"_s) == u"top"_s)
                             || (definition.bed && content.property(*previous, u"part"_s) == u"head"_s);
-    if (drops && !secondHalf) {
+    if (drops && !secondHalf && !carriesContents) {
         dropBlockItems(*previous, pos);
         if (doubleSlab) {
             dropBlockItems(*previous, pos);

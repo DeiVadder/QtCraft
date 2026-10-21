@@ -346,6 +346,16 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
 
 void QcServer::consumeHeld(Client &client)
 {
+    // A backpack used in the air opens in the hand (decision E-833).
+    if (const std::optional<QList<QcItemStack>> leftOver = m_screens.openHeld(client)) {
+        for (const QcItemStack &stack : *leftOver) {
+            m_inventory.giveOrThrow(client, stack);
+        }
+        if (!leftOver->isEmpty()) {
+            m_inventory.send(client);
+        }
+        return;
+    }
     if (!QcServerMaps(m_state, m_inventory).useHeld(client)) {
         m_health.consume(client);
     }

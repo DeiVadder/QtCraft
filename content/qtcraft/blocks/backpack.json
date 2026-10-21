@@ -1,0 +1,28 @@
+{
+    "name": "backpack",
+    "sound": "wool",
+    "shape": "backpack",
+    "facing": "toward",
+    "lightOpacity": 0,
+    "hardness": 0.8,
+    "container": {
+        "slots": 9,
+        "portable": true
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "side": "backpack_side",
+        "north": "backpack_front",
+        "top": "backpack_top",
+        "bottom": "backpack_top"
+    },
+    "itemTexture": "backpack_item",
+    "signal": { "comparator": "contents" }
+}

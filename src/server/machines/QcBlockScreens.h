@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/protocol/QcMessages.h"
 #include "server/blockentities/QcBlockEntities.h"
 
 #include <functional>
@@ -17,12 +18,16 @@ class QcServerState;
 class QcBlockScreens
 {
 public:
-    // The slots of an open chest (a block at `pos`) or container minecart (`cart`, decision E-386).
+    // The slots of an open chest (a block at `pos`), container minecart (`cart`, decision E-386) or
+    // backpack opened from the hand (`heldSlot`, decision E-833). A portable container (a backpack,
+    // placed or held) holds nothing with contents (QcPortableContainers).
     struct OpenContainer
     {
         QList<QcItemStack> *stacks = nullptr;
         QcBlockPos pos;
         quint32 cart = 0;
+        bool portable = false;
+        int heldSlot = QcMsg::OpenMachine::noHeldSlot;
     };
 
     QcBlockScreens(QcServerState &state, QcServerBlocks &blocks);
@@ -31,15 +36,22 @@ public:
     void open(QcServerClient &client, QcBlockPos pos);
     // Opens the screen of a container minecart for the player.
     void openCart(QcServerClient &client, const QcMinecart &cart);
+    // Opens the held backpack (a portable container in the selected hotbar slot, decision E-833):
+    // its slots and the hotbar, its own slot locked. Contents its slots cannot show (beyond the slot
+    // count, or refused there) leave the item and are returned for the caller to give to the
+    // player, so the first click into the screen cannot delete them. Nothing when the player holds
+    // no backpack.
+    [[nodiscard]] std::optional<QList<QcItemStack>> openHeld(QcServerClient &client);
     // Forgets the open machine; `notify` tells the client (the server closed it).
     void close(QcServerClient &client, bool notify);
     // The open machine of the player while it still exists, else null.
     QcBlockEntities::Machine *openMachineOf(const QcServerClient &client);
-    // The open chest or container cart of the player while it still exists, else nothing.
-    [[nodiscard]] std::optional<OpenContainer> openContainerOf(const QcServerClient &client);
-    // The slots of the container changed: everyone looking into it sees them, comparators and
-    // hoppers around hear of it when `changed`.
-    void containerChanged(const OpenContainer &container, bool changed);
+    // The open chest, container cart or held backpack of the player while it still exists, else nothing.
+    [[nodiscard]] std::optional<OpenContainer> openContainerOf(QcServerClient &client);
+    // The slots of the container `client` has open changed: everyone looking into it sees them,
+    // comparators and hoppers around hear of it when `changed`. A held backpack has no place in the
+    // world: only its holder sees it.
+    void containerChanged(QcServerClient &client, const OpenContainer &container, bool changed);
     // Sends the slots of the cart to every player looking into it.
     void sendToCartViewers(quint32 cart);
     // Sends the open machine's state if it changed since the last message (or always with `force`).
@@ -65,6 +77,10 @@ public:
 
 private:
     void sendContainer(QcServerClient &client, const OpenContainer &container, bool force);
+    // The held backpack's container while the player still holds it, else nothing.
+    [[nodiscard]] std::optional<OpenContainer> heldContainerOf(QcServerClient &client);
+    // Whether a block, cart or held backpack screen is open.
+    static bool hasScreen(const QcServerClient &client);
     // Whether the player can still reach what the screen shows.
     bool canReach(const QcServerClient &client) const;
     // A block's or cart's screen opening closes the player's trading screen and stonecutter (one

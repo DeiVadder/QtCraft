@@ -129,6 +129,12 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
     // Everything of the cell first (contents, cooldown, timers, memory, scheduled tick: a dispenser
     // waiting to fire fires where it is now), so setting the block at `to` keeps it.
     m_state.blockEntities().relocate(from, to);
+    // The source cell empties in the world at once: the block pushed next lands in it, and a stale
+    // portable container there would otherwise leave as an item carrying that block's contents
+    // (decision E-832).
+    if (!m_blocks.setQuietly(from, qcAirBlockId)) {
+        qCWarning(lcServer) << "A piston could not empty the cell of a moved block at" << from.x << from.y << from.z;
+    }
     m_state.hoppers().wake(to);
     // The planner moves blocks only within loaded chunks and the world height (QcPistonPlanner), so
     // the cell takes the block; the block entity moved first and would otherwise sit on air.

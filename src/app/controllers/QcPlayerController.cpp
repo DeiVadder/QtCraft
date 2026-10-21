@@ -146,6 +146,11 @@ int QcPlayerController::containerSlots() const
     return m_parts.session && m_parts.session->machine().isContainer() ? int(m_parts.session->machine().stacks().size()) : 0;
 }
 
+int QcPlayerController::containerHeldSlot() const
+{
+    return m_parts.session && m_parts.session->machine().isContainer() ? m_parts.session->machine().heldSlot() : QcMsg::OpenMachine::noHeldSlot;
+}
+
 double QcPlayerController::machineProgress() const
 {
     return m_parts.session ? m_parts.session->machine().progress() : 0.0;
@@ -297,6 +302,16 @@ void QcPlayerController::nameOpenMachine()
     const QcClientSession &session = *m_parts.session;
     const auto content = session.content();
     const std::optional<QcBlockPos> pos = session.machine().pos();
+    if (const int held = session.machine().heldSlot(); held >= 0) {
+        // A backpack opened from the hand: named after its item, its rows as long as its block's
+        // (decision E-833).
+        const QcItemStack &stack = session.inventory().slot(held);
+        const bool known = content->isValidItem(stack.item);
+        const std::optional<QcBlockId> block = known ? content->blockId(content->item(stack.item).placesBlock) : std::nullopt;
+        m_machineLabel = known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString();
+        m_containerColumns = block ? content->block(*block).containerColumns : 9;
+        return;
+    }
     if (session.machine().entity() != 0) {
         // A container cart: named after its item, its rows as long as those of the block it carries.
         const QcClientEntity cart = session.entities().value(session.machine().entity());

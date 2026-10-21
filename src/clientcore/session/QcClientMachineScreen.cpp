@@ -21,6 +21,7 @@ std::optional<QcClientMachineScreen::Change> QcClientMachineScreen::handle(const
     }
     m_pos.reset();
     m_entity = 0;
+    m_heldSlot = QcMsg::OpenMachine::noHeldSlot;
     return Change::Closed;
 }
 
@@ -33,6 +34,7 @@ QcClientMachineScreen::Change QcClientMachineScreen::open(const QcMsg::OpenMachi
 
     m_pos = open.pos;
     m_entity = open.entity;
+    m_heldSlot = open.heldSlot;
     m_category = open.category;
     m_slots = QList<QcItemStack>(open.category.isEmpty() ? 0 : QcMsg::MachineState::slotCount);
     m_burn = 0.0;
@@ -66,6 +68,7 @@ bool QcClientMachineScreen::closeLocally()
 
     m_pos.reset();
     m_entity = 0;
+    m_heldSlot = QcMsg::OpenMachine::noHeldSlot;
     m_closedLocally = true;
     return true;
 }

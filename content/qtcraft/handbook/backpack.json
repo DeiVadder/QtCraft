@@ -1,0 +1,15 @@
+{
+    "name": "backpack",
+    "order": 113,
+    "icon": "backpack",
+    "sections": [
+        "making",
+        "hand",
+        "rules"
+    ],
+    "related": [
+        "backpack",
+        "leather",
+        "chest"
+    ]
+}

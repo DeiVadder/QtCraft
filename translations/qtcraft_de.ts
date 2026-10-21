@@ -178,21 +178,31 @@
 <context>
     <name>ChestScreen</name>
     <message>
-        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="25"/>
+        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="28"/>
         <source>Chest</source>
         <translation>Truhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="61"/>
+        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="65"/>
+        <source>%1: pick up and put down. %2: put down one. %3: move the stack between the backpack and the hotbar. %4 closes.</source>
+        <translation>%1: aufnehmen und ablegen. %2: eines ablegen. %3: den Stapel zwischen Rucksack und Schnellleiste verschieben. %4 schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="68"/>
         <source>%1: pick up and put down. %2: put down one. %3: move the stack between this block and the inventory. %4 closes. Breaking the block drops its contents.</source>
         <translation>%1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel zwischen diesem Block und dem Inventar verschieben. %4 schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="67"/>
+        <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between the backpack and the hotbar. %1 or Esc closes.</source>
+        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. Umschalt-Klick: den Stapel zwischen Rucksack und Schnellleiste verschieben. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.</source>
         <translation type="vanished">A: aufnehmen und ablegen. X: eins ablegen. Y: den Stapel zwischen diesem Block und dem Inventar verschieben. B schließt. Wird der Block abgebaut, fällt sein Inhalt heraus.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="63"/>
+        <location filename="../src/app/qml/inventory/ChestScreen.qml" line="70"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen diesem Block und dem Inventar verschieben. %1 oder Esc schließt. Wer den Block abbaut, verstreut seinen Inhalt.</translation>
     </message>
@@ -863,6 +873,14 @@
         <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="196"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
+    </message>
+</context>
+<context>
+    <name>InventorySlot</name>
+    <message>
+        <location filename="../src/app/qml/inventory/InventorySlot.qml" line="27"/>
+        <source>%1 (open, locked)</source>
+        <translation>%1 (offen, gesperrt)</translation>
     </message>
 </context>
 <context>
@@ -2228,22 +2246,35 @@
 <context>
     <name>QcInventoryModel</name>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="132"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="139"/>
+        <source>%1 × %2</source>
+        <translation>%1 × %2</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
+        <source>and %n more</source>
+        <translation>
+            <numerusform>und %n weiterer</numerusform>
+            <numerusform>und %n weitere</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="156"/>
         <source>Armour: +%1</source>
         <translation>Rüstung: +%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="136"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="160"/>
         <source>Map #%1</source>
         <translation>Karte Nr. %1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="138"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="162"/>
         <source>Scale 1:%1</source>
         <translation>Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="166"/>
         <source>Durability: %1 / %2</source>
         <translation>Haltbarkeit: %1 / %2</translation>
     </message>
@@ -3475,12 +3506,12 @@
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="419"/>
+        <location filename="../src/server/core/QcServer.cpp" line="429"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="449"/>
+        <location filename="../src/server/core/QcServer.cpp" line="459"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -3530,19 +3561,19 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="261"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="110"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="263"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="184"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="269"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="271"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="275"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="129"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="277"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="204"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>

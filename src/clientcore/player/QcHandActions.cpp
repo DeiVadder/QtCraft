@@ -280,6 +280,12 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
     }
 
     if (!m_target) {
+        // A backpack used in the air opens in the hand (decision E-833); the server answers with its
+        // screen, so it shows like a block's.
+        if (item && item->portableContainer) {
+            m_send(QcMsg::ConsumeItem{});
+            return HandEffect::UsedBlock;
+        }
         return HandEffect::None;
     }
 

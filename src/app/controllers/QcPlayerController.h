@@ -46,6 +46,9 @@ class QcPlayerController : public QObject
     Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerSlots READ containerSlots NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerColumns READ containerColumns NOTIFY machineChanged FINAL)
+    // The hotbar slot of a backpack opened from the hand (decision E-833), -1 otherwise: the chest
+    // screen then shows only the backpack's slots and the hotbar, that slot locked.
+    Q_PROPERTY(int containerHeldSlot READ containerHeldSlot NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
@@ -80,6 +83,7 @@ public:
     double machineBurn() const;
     // Slots of the open chest, 0 when none is open.
     int containerSlots() const;
+    int containerHeldSlot() const;
     double machineProgress() const;
     int craftingSize() const;
     QVariantList craftableRecipes() const { return m_craftableRecipes; }

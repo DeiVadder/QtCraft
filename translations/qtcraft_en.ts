@@ -13,6 +13,17 @@
     </message>
 </context>
 <context>
+    <name>QcInventoryModel</name>
+    <message numerus="yes">
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
+        <source>and %n more</source>
+        <translation>
+            <numerusform>and %n more</numerusform>
+            <numerusform>and %n more</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>SettingsScreen</name>
     <message numerus="yes">
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="127"/>

@@ -242,6 +242,11 @@ void QcContentRegistry::createBlockItems()
         item.placesBlock = block.name;
         item.fuelSeconds = block.fuelSeconds;
         item.tags = block.itemTags;
+        // A portable container's item carries its contents and so holds one (decision E-832).
+        item.portableContainer = block.portableContainer;
+        if (block.portableContainer) {
+            item.maxStack = 1;
+        }
         if (!block.itemTexture.isEmpty()) {
             item.texture = block.itemTexture;
         }

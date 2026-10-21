@@ -107,6 +107,7 @@ public:
         } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
             openMachine = machine->pos;
             openMachineEntity = machine->entity;
+            openMachineHeldSlot = machine->heldSlot;
             machineCategory = machine->category;
             machineClosed = false;
         } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
@@ -226,6 +227,8 @@ public:
     bool tradeClosed = false;
     // The container minecart of the open screen, 0 for a block.
     quint32 openMachineEntity = 0;
+    // The hotbar slot of a backpack opened from the hand (decision E-833), -1 for a block or cart.
+    int openMachineHeldSlot = -1;
     QString machineCategory;
     QList<QcItemStack> machineStacks;
     float machineBurn = 0.0f;

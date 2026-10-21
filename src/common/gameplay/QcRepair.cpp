@@ -16,7 +16,8 @@ namespace QcRepair {
         }
     }
 
-    if (filled.size() != 2 || filled[0].item != filled[1].item || !content.isValidItem(filled[0].item)) {
+    if (filled.size() != 2 || filled[0].item != filled[1].item || !content.isValidItem(filled[0].item) || filled[0].hasContents()
+        || filled[1].hasContents()) {
         return std::nullopt;
     }
 
@@ -27,7 +28,10 @@ namespace QcRepair {
 
     const int bonus = int(std::floor(durability * bonusShare));
     const int remaining = (durability - filled[0].damage) + (durability - filled[1].damage) + bonus;
-    return QcItemStack{filled[0].item, 1, std::max(0, durability - remaining)};
+    // The repaired item keeps a custom name (the first one's, as the anvil would); contents and the
+    // components a save kept never come along (decision E-832).
+    const QString name = !filled[0].name().isEmpty() ? filled[0].name() : filled[1].name();
+    return QcItemStack{filled[0].item, 1, std::max(0, durability - remaining)}.withName(name);
 }
 
 } // namespace QcRepair

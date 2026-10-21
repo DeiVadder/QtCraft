@@ -51,6 +51,10 @@ public:
     // filled map its number and, with `mapScale` (when the client has the map), its scale.
     static QString tooltipOf(const QcContentRegistry &content, const QcItemStack &stack, const QString &label,
                              std::optional<int> mapScale = std::nullopt);
+    // The tooltip lines of what a stack holds (a backpack, decision E-832): the first
+    // maxContentLines stacks by name and count, then how many more; empty without contents.
+    static constexpr int maxContentLines = 5;
+    static QStringList contentsLines(const QcContentRegistry &content, const QcItemStack &stack, const QString &language);
     // Finds the scale of a map the client has (decision E-802), for the tooltips of filled maps.
     void setMapScales(std::function<std::optional<int>(quint32)> mapScale) { m_mapScale = std::move(mapScale); }
 
