@@ -1,3 +1,5 @@
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/session/QcExplosionEffects.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
@@ -155,6 +157,18 @@ private slots:
         }
 
         QCOMPARE(content->translations().translate(u"block.qtcraft.stone"_s, u"de"_s), u"Stein"_s);
+    }
+
+    // The particles the client draws by a fixed texture name (explosion flash and smoke, the campfire
+    // smoke, experience orbs) find their tile in the atlas, not the missing placeholder.
+    void particleTexturesAreInTheAtlas()
+    {
+        const auto content = QcTestUtil::baseContent()->registry;
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content);
+        const QRectF missing = atlas.uv(QString::fromLatin1(QcTextureAtlas::missingTextureName));
+        for (const char *texture : {QcExplosionEffects::flashTexture, QcExplosionEffects::smokeTexture, QcEntityMesher::orbTexture}) {
+            QVERIFY2(atlas.uv(QString::fromLatin1(texture)) != missing, texture);
+        }
     }
 
     void brokenEntriesAreSkippedWithWarnings()

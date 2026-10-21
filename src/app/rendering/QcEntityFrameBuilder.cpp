@@ -7,6 +7,7 @@
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/meshing/QcProjectileMesher.h"
 #include "clientcore/session/QcClientSession.h"
+#include "clientcore/session/QcExplosionEffects.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/world/QcLightVolume.h"
 
@@ -240,10 +241,10 @@ void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFram
 {
     QcEntityMesher::ItemLook flash;
     flash.cube = true;
-    flash.faces.fill(QString::fromLatin1(explosionFlashTexture));
+    flash.faces.fill(QString::fromLatin1(QcExplosionEffects::flashTexture));
     QcEntityMesher::ItemLook smoke;
     smoke.cube = true;
-    smoke.faces.fill(QString::fromLatin1(explosionSmokeTexture));
+    smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
 
     for (const QcExplosionEffects::Puff &puff : m_parts.session->worldMirror().extras().explosions().puffs()) {
         if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
@@ -335,7 +336,7 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
 
     QcEntityMesher::ItemLook smoke;
     smoke.cube = true;
-    smoke.faces.fill(QString::fromLatin1(explosionSmokeTexture));
+    smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
     m_smoke.refresh(frame.world, viewer, session.tickCount());
     for (const QcBlockPos &campfire : m_smoke.campfires()) {
         const QList<QcCampfireSmoke::Puff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);

@@ -37,6 +37,10 @@ public:
     static constexpr int flashPuffs = 4;
     static constexpr int smokePuffsPerPower = 4;
     static constexpr int maxPuffs = 512;
+    // Content textures of the puffs (atlas names with the namespace); the campfire smoke
+    // (QcCampfireSmoke) is drawn with the smoke texture too.
+    static constexpr auto flashTexture = "qtcraft:explosion_flash";
+    static constexpr auto smokeTexture = "qtcraft:explosion_smoke";
 
     void add(const QcMsg::Explosion &explosion, quint64 tick);
     // Forgets the puffs that are over at `tick`.

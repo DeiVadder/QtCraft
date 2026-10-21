@@ -54,9 +54,6 @@ private:
     // A lit explosive flashes every this many ticks and swells in its last ticks (decision E-604).
     static constexpr int primedFlashTicks = 5;
     static constexpr int primedSwellTicks = 10;
-    // Textures of the puffs of explosions (content textures).
-    static constexpr auto explosionFlashTexture = "explosion_flash";
-    static constexpr auto explosionSmokeTexture = "explosion_smoke";
 
     // What every entity of one frame is drawn with.
     struct EntityFrame
