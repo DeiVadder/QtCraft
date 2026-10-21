@@ -499,7 +499,7 @@ private slots:
         QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         QcBlockEntities::Container *container = m_server->blockEntities().container(chest);
         QVERIFY(container);
-        QVERIFY(std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        QVERIFY(std::ranges::any_of(container->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
     }
 
     // Debug-relative cost of spawners in the server tick (stage 38.1, docs/Performance-Verlauf.md):
@@ -543,7 +543,7 @@ private slots:
         QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         QcBlockEntities::Container *container = m_server->blockEntities().container(chest);
         QVERIFY(container);
-        QVERIFY(std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        QVERIFY(std::ranges::any_of(container->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
         std::ranges::fill(container->stacks, QcItemStack{});
 
         // Far from the player the chunks leave the world and come back.
@@ -554,7 +554,7 @@ private slots:
         QVERIFY(m_server->world().blockEntityExtras().isFurnished(chest.chunk()));
         container = m_server->blockEntities().container(chest);
         QVERIFY(container);
-        QVERIFY(std::ranges::all_of(container->stacks, [](QcItemStack stack) { return stack.isEmpty(); }));
+        QVERIFY(std::ranges::all_of(container->stacks, [](const QcItemStack &stack) { return stack.isEmpty(); }));
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);
     }
 
@@ -603,7 +603,7 @@ private slots:
         QCOMPARE(cartsAtRail().size(), 1);
         QcMinecart &cart = *cartsAtRail().constFirst();
         QCOMPARE(cart.item, u"qtcraft:chest_minecart"_s);
-        QVERIFY(std::ranges::any_of(cart.stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        QVERIFY(std::ranges::any_of(cart.stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
         std::ranges::fill(cart.stacks, QcItemStack{});
 
         // Far from the player the chunk leaves the world and comes back with its cart.
@@ -612,7 +612,7 @@ private slots:
         QVERIFY(cartsAtRail().isEmpty());
         m_server->world().loadChunk(rail.chunk());
         QCOMPARE(cartsAtRail().size(), 1);
-        QVERIFY(std::ranges::all_of(cartsAtRail().constFirst()->stacks, [](QcItemStack stack) { return stack.isEmpty(); }));
+        QVERIFY(std::ranges::all_of(cartsAtRail().constFirst()->stacks, [](const QcItemStack &stack) { return stack.isEmpty(); }));
     }
 
     // /regenerate puts a mine shaft's chest minecart on its rail again, filled, instead of a
@@ -630,7 +630,7 @@ private slots:
         chat(u"/regenerate %1 %2"_s.arg(rail.x).arg(rail.z));
         chat(u"/confirm"_s);
         QCOMPARE(cartsAt(rail).size(), 1);
-        QVERIFY(std::ranges::any_of(cartsAt(rail).constFirst()->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        QVERIFY(std::ranges::any_of(cartsAt(rail).constFirst()->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
     }
 
     // Debug-relative cost of furnishing arriving chunks on the tick thread (decision E-520), printed,

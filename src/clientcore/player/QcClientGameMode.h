@@ -57,7 +57,7 @@ public:
 
     // The creative catalogue: puts `stack` into `slot` (QcMsg::CreativeItem); the server refuses it
     // outside creative mode.
-    void creativeItem(int slot, QcItemStack stack) const;
+    void creativeItem(int slot, const QcItemStack &stack) const;
     // The middle mouse button on the block at `pos` (QcMsg::PickBlock).
     void pickBlock(QcBlockPos pos) const;
 

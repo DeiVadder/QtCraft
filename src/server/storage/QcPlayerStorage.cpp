@@ -2,7 +2,9 @@
 
 #include "common/core/QcWorldConstants.h"
 #include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcLoadWarnings.h"
 #include "server/storage/QcSaveFile.h"
+#include "server/storage/QcStackReader.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -43,6 +45,7 @@ public:
         : m_stream(stream)
         , m_content(content)
         , m_path(path)
+        , m_stacks(content, path, m_warnings)
     {
     }
 
@@ -92,7 +95,7 @@ public:
         return player;
     }
 
-    [[nodiscard]] QStringList takeWarnings() { return std::exchange(m_warnings, {}); }
+    [[nodiscard]] QStringList takeWarnings() { return m_warnings.takeTexts(); }
 
 private:
     // The armour slots and the inventory with the pieces that no longer fit their slot.
@@ -120,22 +123,7 @@ private:
 
         QcInventory inventory;
         for (quint32 i = 0; i < *slotCountRead; ++i) {
-            QString name;
-            qint32 count = 0;
-            qint32 damage = 0;
-            m_stream >> name >> count >> damage;
-            if (name.isEmpty() || count <= 0) {
-                continue;
-            }
-
-            const std::optional<QcItemId> item = m_content.itemId(name);
-            if (!item) {
-                m_warnings.append(u"%1: unknown item '%2' dropped"_s.arg(m_path, name));
-                continue;
-            }
-
-            const QcItemDefinition &definition = m_content.item(*item);
-            inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack), definition.keptDamage(damage)});
+            inventory.setSlot(int(i), m_stacks.read(m_stream));
         }
         return m_stream.status() == QDataStream::Ok ? std::optional(std::move(inventory)) : std::nullopt;
     }
@@ -150,27 +138,18 @@ private:
 
         Worn worn{{}, std::move(inventory)};
         for (quint32 i = 0; i < *countRead; ++i) {
-            QString name;
-            qint32 stackCount = 0;
-            qint32 damage = 0;
-            m_stream >> name >> stackCount >> damage;
-            if (name.isEmpty() || stackCount <= 0) {
+            const QcItemStack read = m_stacks.read(m_stream);
+            if (read.isEmpty()) {
                 continue;
             }
 
-            const std::optional<QcItemId> item = m_content.itemId(name);
-            if (!item) {
-                m_warnings.append(u"%1: unknown item '%2' dropped"_s.arg(m_path, name));
-                continue;
-            }
-
-            const QcItemDefinition &definition = m_content.item(*item);
-            const QcItemStack stack{*item, 1, definition.keptDamage(damage)};
+            const QcItemDefinition &definition = m_content.item(read.item);
+            const QcItemStack stack = read.withCount(1);
             // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
             if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
                 worn.equipment.stacks[i] = stack;
-            } else if (worn.inventory.add(stack.item, 1, m_content, stack.damage) > 0) {
-                m_warnings.append(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(m_path, name));
+            } else if (worn.inventory.add(stack, m_content) > 0) {
+                m_warnings.add(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(m_path, definition.name));
             }
         }
         return m_stream.status() == QDataStream::Ok ? std::optional(std::move(worn)) : std::nullopt;
@@ -188,7 +167,7 @@ private:
         if (const std::optional<QcGameMode> known = QcGameModes::fromValue(mode)) {
             other.gameMode = *known;
         } else {
-            m_warnings.append(u"%1: unknown game mode %2, playing survival"_s.arg(m_path).arg(mode));
+            m_warnings.add(u"%1: unknown game mode %2, playing survival"_s.arg(m_path).arg(mode));
         }
 
         std::optional<QcInventory> kept = readSlots();
@@ -207,7 +186,8 @@ private:
     QDataStream &m_stream;
     const QcContentRegistry &m_content;
     const QString &m_path;
-    QStringList m_warnings;
+    QcLoadWarnings m_warnings;
+    QcStackReader m_stacks;
 };
 
 } // namespace

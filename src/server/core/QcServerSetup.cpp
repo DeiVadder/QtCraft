@@ -151,7 +151,7 @@ QcItemStack revealedMap(QcServerState &state, QcItemId filledMap, QPoint centre)
     for (const QcMapSurvey::Surveyed &pixel : surveyed) {
         state.maps().set(*id, pixel.pixel, pixel.value);
     }
-    return {filledMap, 1, int(*id)};
+    return QcItemStack{filledMap, 1, 0}.withMapId(*id);
 }
 
 // An item frame or painting of the setup (decision E-797); one whose item, held item or motif the

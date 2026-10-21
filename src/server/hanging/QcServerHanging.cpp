@@ -119,7 +119,7 @@ void QcServerHanging::useFrame(QcServerClient &client, quint32 id)
     if (held.isEmpty()) {
         return;
     }
-    frame.held = {held.item, 1, held.damage};
+    frame.held = held.withCount(1);
     frame.hanging.rotation = 0;
     if (!client.rules().infiniteItems) {
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
@@ -198,7 +198,7 @@ void QcServerHanging::tick()
     }
 }
 
-void QcServerHanging::drop(QcItemStack stack, const QcHangingEntity &hanging)
+void QcServerHanging::drop(const QcItemStack &stack, const QcHangingEntity &hanging)
 {
     if (!stack.isEmpty()) {
         m_state.entities().items().spawnScattered(stack, hanging.motion.position, m_state.entities().newId());

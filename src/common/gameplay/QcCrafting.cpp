@@ -182,7 +182,7 @@ bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcR
         return removeIngredient(content, inventory, entry.first, entry.second * times);
     });
     const QList<QcItemStack> containers = containersLeft(content, before, inventory);
-    return taken && std::ranges::all_of(containers, [&](QcItemStack container) {
+    return taken && std::ranges::all_of(containers, [&](const QcItemStack &container) {
         return inventory.add(container.item, container.count, content) == 0;
     });
 }

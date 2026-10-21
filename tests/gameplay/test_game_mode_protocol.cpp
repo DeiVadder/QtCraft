@@ -118,7 +118,7 @@ private slots:
 
     void creativeItemSlotsAndStacksAreChecked()
     {
-        const auto accepted = [](qint32 slot, QcItemStack stack) {
+        const auto accepted = [](qint32 slot, const QcItemStack &stack) {
             return decodeFrom(QcMsg::CreativeItem{slot, stack}, QcProtocol::Peer::Client).has_value();
         };
         QVERIFY(accepted(QcMsg::CreativeItem::addSlot, {3, 1, 0}));

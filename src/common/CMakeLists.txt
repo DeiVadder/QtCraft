@@ -128,6 +128,7 @@ target_sources(qc_common PRIVATE
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp
     core/QcIntMath.h
+    core/QcKeptComponent.h
     core/QcLogging.h core/QcLogging.cpp
     core/QcMailbox.h
     core/QcNameText.h core/QcNameText.cpp
@@ -151,7 +152,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcGameMode.h gameplay/QcGameMode.cpp
     gameplay/QcHanging.h gameplay/QcHanging.cpp
     gameplay/QcInventory.h gameplay/QcInventory.cpp
-    gameplay/QcItemStack.h
+    gameplay/QcItemStack.h gameplay/QcItemStack.cpp
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp
     gameplay/QcMining.h gameplay/QcMining.cpp
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp

@@ -5,7 +5,7 @@
 
 bool QcBlockEntities::Machine::isCold() const
 {
-    return std::ranges::all_of(stacks, [](QcItemStack stack) { return stack.isEmpty(); }) && burnRemaining <= 0.0
+    return std::ranges::all_of(stacks, [](const QcItemStack &stack) { return stack.isEmpty(); }) && burnRemaining <= 0.0
            && burnSeconds <= 0.0 && progress <= 0.0;
 }
 
@@ -181,7 +181,7 @@ void QcBlockEntities::placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId a
 
 void QcBlockEntities::spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience)
 {
-    stacks.removeIf([](QcItemStack stack) { return stack.isEmpty(); });
+    stacks.removeIf([](const QcItemStack &stack) { return stack.isEmpty(); });
     if (!stacks.isEmpty() || experience > 0.0) {
         m_spills.append({pos, std::move(stacks), experience});
     }
@@ -510,7 +510,7 @@ void QcBlockEntities::chunkLeft(QcChunkPos pos)
     const ChunkIndex positions = *index;
     for (const QcBlockPos &entry : positions.containers) {
         const Container &container = m_containers[entry];
-        if (container.readyAt == 0 && std::ranges::all_of(container.stacks, [](QcItemStack stack) { return stack.isEmpty(); })) {
+        if (container.readyAt == 0 && std::ranges::all_of(container.stacks, [](const QcItemStack &stack) { return stack.isEmpty(); })) {
             removeContainer(entry);
         }
     }

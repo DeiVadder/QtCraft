@@ -52,7 +52,7 @@ bool QcClientTrading::affordable(int index, const QList<QcItemStack> &inventory)
         }
         return count;
     };
-    return std::ranges::all_of(costs, [&](QcItemStack cost) { return countOf(inventory, cost.item) >= countOf(costs, cost.item); });
+    return std::ranges::all_of(costs, [&](const QcItemStack &cost) { return countOf(inventory, cost.item) >= countOf(costs, cost.item); });
 }
 
 void QcClientTrading::close()

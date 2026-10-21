@@ -79,7 +79,7 @@ protected:
 
     // An item entity at local (x + fx, y + fy, z + fz), fx and fz measured in the turned frame
     // (0.5 is the middle of the cell in every turn).
-    quint32 drop(double x, double y, double z, QcItemStack dropped)
+    quint32 drop(double x, double y, double z, const QcItemStack &dropped)
     {
         const QcBlockPos cell = at(int(std::floor(x)), int(std::floor(y)), int(std::floor(z)));
         QcItemEntityManager::Drop entity;

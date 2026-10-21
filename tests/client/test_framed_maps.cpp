@@ -112,9 +112,9 @@ private slots:
         frame.kind = QcEntityKind::Hanging;
         frame.hanging = southFrame(0);
         frame.held = item("qtcraft:item_frame");
-        frame.item = {item("qtcraft:filled_map"), 1, 12};
+        frame.item = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(12);
         QCOMPARE(QcHangingMesher::framedMap(frame, *m_content), std::optional<quint32>(12));
-        frame.item = {item("qtcraft:apple"), 1, 12};
+        frame.item = QcItemStack{item("qtcraft:apple"), 1, 0}.withMapId(12);
         QVERIFY(!QcHangingMesher::framedMap(frame, *m_content));
         frame.item = {item("qtcraft:map"), 1, 0};
         QVERIFY(!QcHangingMesher::framedMap(frame, *m_content));
@@ -122,7 +122,7 @@ private slots:
         QVERIFY(!QcHangingMesher::framedMap(frame, *m_content));
 
         // With a map the frame draws only the edges of a board as large as the face.
-        frame.item = {item("qtcraft:filled_map"), 1, 12};
+        frame.item = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(12);
         const QcEntityMesher::UvLookup uv = [](const QString &) { return QRectF(0.0, 0.0, 0.1, 0.1); };
         QcEntityMesh mesh;
         QcHangingMesher::append(mesh, frame, *m_content, {1.0f, 0.0f}, uv);

@@ -19,16 +19,19 @@ public:
     QcInventory();
 
     const QcItemStack &slot(int index) const { return m_slots[index]; }
-    void setSlot(int index, QcItemStack stack) { m_slots[index] = stack; }
+    void setSlot(int index, const QcItemStack &stack) { m_slots[index] = stack; }
     const QList<QcItemStack> &allSlots() const { return m_slots; }
 
     int selectedHotbarSlot() const { return m_selected; }
     void setSelectedHotbarSlot(int slot);
     const QcItemStack &selectedStack() const { return m_slots[m_selected]; }
 
-    // Adds items, filling matching stacks first, then empty slots (hotbar first). Damaged items
-    // (`damage` > 0) only go into empty slots. Returns the number of items that did not fit.
-    int add(QcItemId item, int count, const QcContentRegistry &content, int damage = 0);
+    // Adds the items of `adding` with their damage and data, filling stacks they stack with first
+    // (QcItemStack::stacksWith), then empty slots (hotbar first). Returns the number of items that
+    // did not fit.
+    int add(const QcItemStack &adding, const QcContentRegistry &content);
+    // The same for `count` plain items (no damage, no data).
+    int add(QcItemId item, int count, const QcContentRegistry &content) { return add(QcItemStack{item, count, 0}, content); }
     // Removes up to `count` items from a slot; returns how many were removed.
     int removeFromSlot(int index, int count);
     int countOf(QcItemId item) const;

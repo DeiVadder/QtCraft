@@ -24,7 +24,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     }
     for (const QcItemStack &cell : std::as_const(held)) {
         if (!cell.isEmpty()) {
-            record.lost += player.inventory.add(cell.item, cell.count, content, cell.damage);
+            record.lost += player.inventory.add(cell, content);
         }
     }
 

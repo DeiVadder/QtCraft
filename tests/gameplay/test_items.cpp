@@ -41,7 +41,7 @@ private:
         return world;
     }
 
-    static QcItemEntityManager::Drop dropAt(QcItemStack stack, const QcVec3 &position, double pickupDelay = 0.0)
+    static QcItemEntityManager::Drop dropAt(const QcItemStack &stack, const QcVec3 &position, double pickupDelay = 0.0)
     {
         QcItemEntityManager::Drop drop;
         drop.stack = stack;
@@ -86,7 +86,7 @@ private:
     static QList<QcItemEntity> run(QcItemEntityManager &items, const QcTestWorld &world, int count, bool loaded = true)
     {
         return tickTimes(items, world, count, {},
-                         {[loaded](const QcVec3 &) { return loaded; }, [](quint32, QcItemStack stack) { return stack.count; }, {}});
+                         {[loaded](const QcVec3 &) { return loaded; }, [](quint32, const QcItemStack &stack) { return stack.count; }, {}});
     }
 
     // Runs ticks with `players` in the loaded world; `give` hands them the items they touch.
@@ -156,7 +156,7 @@ private slots:
 
         int given = 0;
         // The player has room for 4 items only.
-        const auto give = [&given](quint32 player, QcItemStack stack) {
+        const auto give = [&given](quint32 player, const QcItemStack &stack) {
             if (player != 7) {
                 return stack.count;
             }
@@ -179,7 +179,7 @@ private slots:
         QcItemEntityManager items(m_content, 1);
         items.spawn(dropAt({item("qtcraft:dirt"), 3, 0}, {0.5, 64.0, 0.5}), 1);
         int given = 0;
-        const auto give = [&given](quint32, QcItemStack stack) {
+        const auto give = [&given](quint32, const QcItemStack &stack) {
             given += stack.count;
             return 0;
         };
@@ -208,9 +208,10 @@ private slots:
 
         // Filled maps merge only with maps of their own map id (decision E-798).
         const QcItemId map = item("qtcraft:filled_map");
-        items.spawn(dropAt({map, 1, 7}, {0.5, 64.0, -4.5}), 7);
-        items.spawn(dropAt({map, 1, 7}, {0.6, 64.0, -4.5}), 8);
-        items.spawn(dropAt({map, 1, 8}, {0.7, 64.0, -4.5}), 9);
+        const QcItemStack seven = QcItemStack{map, 1, 0}.withMapId(7);
+        items.spawn(dropAt(seven, {0.5, 64.0, -4.5}), 7);
+        items.spawn(dropAt(seven, {0.6, 64.0, -4.5}), 8);
+        items.spawn(dropAt(seven.withMapId(8), {0.7, 64.0, -4.5}), 9);
 
         run(items, world, QcItemEntityManager::mergeIntervalTicks);
 
@@ -225,7 +226,7 @@ private slots:
             stone += entry.stack.item == item("qtcraft:stone") ? 1 : 0;
             pickaxes += entry.stack.item == pickaxe ? 1 : 0;
             if (entry.stack.item == map) {
-                maps.append(entry.stack.count * 100 + entry.stack.damage);
+                maps.append(entry.stack.count * 100 + int(entry.stack.mapId()));
             }
         }
         std::ranges::sort(maps);
@@ -274,7 +275,7 @@ private slots:
         const qsizetype waiting = items.queued().size();
 
         // A player picking everything up makes room for the waiting drops.
-        const auto give = [](quint32, QcItemStack) { return 0; };
+        const auto give = [](quint32, const QcItemStack &) { return 0; };
         runWithPlayers(items, world, 1, {{1, {0.5, 64.0, 0.5}, true}}, give);
         QVERIFY(items.queued().size() < waiting);
         QVERIFY(items.items().size() <= QcItemEntityManager::activeLimit);
@@ -376,7 +377,7 @@ private slots:
 
         // Only the first 300 items stay loaded: all of them are awake now; nothing moved or vanished.
         const auto firstLoaded = [](const QcVec3 &position) { return position.x < 900.0; };
-        const auto keep = [](quint32, QcItemStack stack) { return stack.count; };
+        const auto keep = [](quint32, const QcItemStack &stack) { return stack.count; };
         const auto noId = [] { return quint32(0); };
         for (int i = 0; i < 3; ++i) {
             tickOnce(items, world, {}, QcItemEntityManager::TickCallbacks{firstLoaded, keep, noId});

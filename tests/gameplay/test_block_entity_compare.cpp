@@ -48,7 +48,7 @@ private:
     int m_dumpRuns = 0;
     static constexpr int allDumpRuns = 5;
 
-    static QString stackText(QcItemStack stack, const QcContentRegistry &content) { return QcBlockEntityDump::stackText(stack, content); }
+    static QString stackText(const QcItemStack &stack, const QcContentRegistry &content) { return QcBlockEntityDump::stackText(stack, content); }
     static QString posText(QcBlockPos pos) { return QcBlockEntityDump::posText(pos); }
 
     QStringList blockEntityLines() const { return QcBlockEntityDump::lines(*m_server, *m_content); }

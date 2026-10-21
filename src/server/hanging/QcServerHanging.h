@@ -37,7 +37,7 @@ private:
     bool canReach(const QcServerClient &client, const QcHangingEntity &hanging) const;
     // Puts one of the held stack into an empty frame, or turns its item an eighth further.
     void useFrame(QcServerClient &client, quint32 id);
-    void drop(QcItemStack stack, const QcHangingEntity &hanging);
+    void drop(const QcItemStack &stack, const QcHangingEntity &hanging);
     // The frame's look changed: clients get it again, comparators read it again.
     void changed(const QcHangingEntity &hanging);
 

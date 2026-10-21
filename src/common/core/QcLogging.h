@@ -9,3 +9,5 @@
 Q_DECLARE_LOGGING_CATEGORY(lcConnection)
 // "qtcraft.registry": changes to the content registry that it refuses.
 Q_DECLARE_LOGGING_CATEGORY(lcRegistry)
+// "qtcraft.itemdata": item data refused for going beyond its limits (QcItemStack::withData).
+Q_DECLARE_LOGGING_CATEGORY(lcItemData)

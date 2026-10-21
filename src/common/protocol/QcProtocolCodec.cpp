@@ -49,26 +49,130 @@ QcBlockPos readPos(QDataStream &stream)
     return {x, y, z};
 }
 
-void writeStack(QDataStream &stream, QcItemStack stack)
+namespace {
+
+// The components of item data on the wire (decision E-823), one bit each in a byte after the
+// damage, which only stacks with data have (stackDataFlag set in the count): a plain stack is as
+// long as before. The components a save keeps without knowing them never go on the wire.
+constexpr qint32 stackDataFlag = 0x4000'0000;
+
+enum StackBits : quint8 {
+    MapIdBit = 1,
+    ContentsBit = 2,
+    NameBit = 4,
+    KnownBits = MapIdBit | ContentsBit | NameBit,
+};
+
+// The component bits of `data` on the wire; 0 for none.
+quint8 bitsOf(const QcItemData &data)
 {
-    stream << stack.item << qint32(stack.count) << qint32(stack.damage);
+    return quint8((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit));
 }
 
-QcItemStack readStack(QDataStream &stream)
+// Writes the components of `data` after their bits, which are not 0.
+void writeData(QDataStream &stream, const QcItemData &data);
+
+// Reads a stack whose contents may nest `depth` more levels; a corrupt stream for invalid data.
+QcItemStack readStackAt(QDataStream &stream, int depth);
+
+void writeData(QDataStream &stream, const QcItemData &data)
+{
+    stream << bitsOf(data);
+    if (data.mapId != 0) {
+        stream << data.mapId;
+    }
+    if (!data.contents.isEmpty()) {
+        stream << quint8(data.contents.size());
+        for (const QcItemStack &slot : data.contents) {
+            writeStack(stream, slot);
+        }
+    }
+    if (!data.name.isEmpty()) {
+        stream << data.name;
+    }
+}
+
+// Reads the data after a stack's damage: contents of at most maxContents stacks nesting at most
+// `depth` levels and holding at most maxStacksInside stacks, a name of at most maxNameLength
+// characters; else the stream turns corrupt.
+std::optional<QcItemData> readData(QDataStream &stream, int depth)
+{
+    quint8 bits = 0;
+    stream >> bits;
+    QcItemData data;
+    if (bits == 0 || (bits & ~KnownBits) != 0) {
+        return std::nullopt;
+    }
+    if ((bits & MapIdBit) != 0) {
+        stream >> data.mapId;
+    }
+    if ((bits & ContentsBit) != 0) {
+        quint8 count = 0;
+        stream >> count;
+        if (depth <= 0 || count > QcItemData::maxContents) {
+            return std::nullopt;
+        }
+        for (quint8 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
+            data.contents.append(readStackAt(stream, depth - 1));
+        }
+        // Each stack inside kept the limit itself, so a level reads at most maxContents of them.
+        if (data.stacksInside() > QcItemData::maxStacksInside) {
+            return std::nullopt;
+        }
+    }
+    if ((bits & NameBit) != 0) {
+        stream >> data.name;
+        if (data.name.size() > QcItemData::maxNameLength) {
+            return std::nullopt;
+        }
+    }
+    return data;
+}
+
+QcItemStack readStackAt(QDataStream &stream, int depth)
 {
     QcItemStack slot;
     qint32 amount = 0;
     qint32 damage = 0;
     stream >> slot.item >> amount >> damage;
-    slot.count = amount;
+    slot.count = amount & ~stackDataFlag;
     slot.damage = damage;
-    return slot;
+    if ((amount & stackDataFlag) == 0) {
+        return slot;
+    }
+    const std::optional<QcItemData> data = readData(stream, depth);
+    if (!data) {
+        stream.setStatus(QDataStream::ReadCorruptData);
+        return {};
+    }
+    return data->isEmpty() ? slot : slot.withData(*data);
+}
+
+} // namespace
+
+void writeStack(QDataStream &stream, const QcItemStack &stack)
+{
+    const quint8 bits = bitsOf(stack.itemData());
+    stream << stack.item << qint32(bits != 0 ? stack.count | stackDataFlag : stack.count) << qint32(stack.damage);
+    if (bits != 0) {
+        writeData(stream, stack.itemData());
+    }
+}
+
+QcItemStack readStack(QDataStream &stream)
+{
+    return readStackAt(stream, QcItemData::maxDepth);
+}
+
+QcItemStack readFlatStack(QDataStream &stream)
+{
+    return readStackAt(stream, 0);
 }
 
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks)
 {
     stream << quint32(stacks.size());
-    for (const QcItemStack slot : stacks) {
+    for (const QcItemStack &slot : stacks) {
         writeStack(stream, slot);
     }
 }

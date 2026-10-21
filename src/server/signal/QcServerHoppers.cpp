@@ -187,7 +187,7 @@ QSet<QcBlockPos> QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInven
         const QList<QcItemStack> room = access.slotsAt(target);
         const QList<int> cells = access.slotsIn(target, face);
         for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
-            const QcItemStack unit{stacks[slot].item, 1, stacks[slot].damage};
+            const QcItemStack unit = stacks[slot].withCount(1);
             if (!stacks[slot].isEmpty() && access.slotFor(target, room, cells, unit) >= 0) {
                 wanted.append({target, face, unit, int(sources.size()), -1});
                 sources.append({hopper, int(slot)});
@@ -264,14 +264,14 @@ bool QcServerHoppers::apply(const Pull &pull, QcInventoryAccess &access)
 
     int placed = 0;
     for (const auto &[slot, count] : pull.places) {
-        placed += access.put(pull.hopper, slot, {pull.stack.item, count, pull.stack.damage}) ? count : 0;
+        placed += access.put(pull.hopper, slot, pull.stack.withCount(count)) ? count : 0;
     }
     if (pull.entity == 0) {
         return placed > 0 && access.take(pull.source, pull.slot, 1);
     }
     if (placed < pull.stack.count) {
         // Cannot happen after ensure(); never lose the rest.
-        m_state.entities().items().spawn({{pull.stack.item, pull.stack.count - placed, pull.stack.damage}, {pull.hopper.x + 0.5, pull.hopper.y + 1.0, pull.hopper.z + 0.5}, {}},
+        m_state.entities().items().spawn({pull.stack.withCount(pull.stack.count - placed), {pull.hopper.x + 0.5, pull.hopper.y + 1.0, pull.hopper.z + 0.5}, {}},
                             m_state.entities().newId());
     }
     return true;
@@ -290,7 +290,7 @@ QcServerHoppers::Intake QcServerHoppers::pullFor(QcBlockPos hopper, QcInventoryA
         const QList<QcItemStack> stacks = access.slotsAt(hopper);
         const QList<int> out = access.slotsOut(above, QcBlockFace::Down);
         for (const int slot : out) {
-            const QcItemStack unit{source[slot].item, 1, source[slot].damage};
+            const QcItemStack unit = source[slot].withCount(1);
             const bool takes = !source[slot].isEmpty() && access.mayTakeOut(above, slot, unit);
             const int into = takes ? access.slotFor(hopper, stacks, allSlots(stacks.size()), unit) : -1;
             if (into >= 0) {
@@ -328,7 +328,7 @@ std::optional<QcServerHoppers::Pull> QcServerHoppers::pickUp(QcBlockPos hopper, 
             fits += count;
         }
         if (fits > 0) {
-            return Pull{hopper, hopper, -1, items[index].id, {stack.item, fits, stack.damage}, places};
+            return Pull{hopper, hopper, -1, items[index].id, stack.withCount(fits), places};
         }
     }
     return std::nullopt;

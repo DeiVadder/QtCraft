@@ -146,11 +146,11 @@ namespace QcHangingMesher {
 
 std::optional<quint32> framedMap(const QcClientEntity &entity, const QcContentRegistry &content)
 {
-    if (!entity.isHanging() || entity.hanging.type != QcHangingType::ItemFrame || entity.item.isEmpty() || entity.item.damage <= 0
+    if (!entity.isHanging() || entity.hanging.type != QcHangingType::ItemFrame || entity.item.isEmpty() || entity.item.mapId() == 0
         || !content.isValidItem(entity.item.item) || content.item(entity.item.item).map != QcMapItem::Filled) {
         return std::nullopt;
     }
-    return quint32(entity.item.damage);
+    return entity.item.mapId();
 }
 
 void appendFramedMap(QcEntityMesh &mesh, const QcHanging &hanging, const QRectF &uv, QcEntityLight light)

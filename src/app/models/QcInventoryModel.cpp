@@ -98,7 +98,7 @@ int QcInventoryModel::slotOfRow(int row)
 }
 
 void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<QcItemStack> &craftingGrid,
-                                    QcItemStack craftingResult, const QList<QcItemStack> &machine, const QcEquipment &equipment)
+                                    const QcItemStack &craftingResult, const QList<QcItemStack> &machine, const QcEquipment &equipment)
 {
     const int previousSelection = m_inventory.selectedHotbarSlot();
     m_inventory = inventory;
@@ -112,15 +112,15 @@ void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<Qc
     }
 }
 
-std::optional<int> QcInventoryModel::mapScaleOf(const QcItemDefinition &item, QcItemStack stack) const
+std::optional<int> QcInventoryModel::mapScaleOf(const QcItemDefinition &item, const QcItemStack &stack) const
 {
     if (item.map != QcMapItem::Filled || !m_mapScale) {
         return std::nullopt;
     }
-    return m_mapScale(quint32(std::max(0, stack.damage)));
+    return m_mapScale(stack.mapId());
 }
 
-QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStack stack, const QString &label, std::optional<int> mapScale)
+QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, const QcItemStack &stack, const QString &label, std::optional<int> mapScale)
 {
     if (stack.isEmpty() || !content.isValidItem(stack.item)) {
         return label;
@@ -131,9 +131,9 @@ QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStac
     if (item.armour) {
         lines.append(tr("Armour: +%1").arg(item.armour->points));
     }
-    // A filled map carries its map id as its damage (decision E-798).
+    // A filled map carries its map id as item data (decisions E-798, E-823).
     if (item.map == QcMapItem::Filled) {
-        lines.append(tr("Map #%1").arg(std::max(0, stack.damage)));
+        lines.append(tr("Map #%1").arg(stack.mapId()));
         if (mapScale) {
             lines.append(tr("Scale 1:%1").arg(1 << std::clamp(*mapScale, 0, QcMapData::maxScale)));
         }

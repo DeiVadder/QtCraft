@@ -67,6 +67,9 @@ enum class Component : quint16 {
     // Type, face, cell, motif by name, rotation and held stack of an item frame or painting
     // (version 1, decision E-793; QcHangingCodec).
     Hanging = 18,
+    // The data of a dropped stack: the components of its QcItemData (QcItemDataCodec; version 1,
+    // decision E-823); only for stacks with data.
+    ItemData = 19,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

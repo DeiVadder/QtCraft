@@ -74,7 +74,7 @@ std::optional<QcDispenserActions::Shot> QcDispenserActions::aim(QcBlockPos pos) 
     const quint64 seed = quint64(m_state.config().seed) * 0x9E3779B97F4A7C15ULL ^ m_state.clock().tick() * 0xBF58476D1CE4E5B9ULL ^ contents;
     QRandomGenerator random(quint32(seed ^ (seed >> 32)));
     const int slot = filled[qsizetype(random.bounded(quint32(filled.size())))];
-    return Shot{pos, *state.facing, slot, {stacks[slot].item, 1, stacks[slot].damage}};
+    return Shot{pos, *state.facing, slot, stacks[slot].withCount(1)};
 }
 
 qsizetype QcDispenserActions::fire(const QList<QcBlockPos> &positions)

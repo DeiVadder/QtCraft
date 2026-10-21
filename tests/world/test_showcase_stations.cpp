@@ -138,7 +138,7 @@ private slots:
         QCOMPARE(entry->mob, u"qtcraft:zombie"_s);
         QVERIFY(entry->confined);
         const QcBlockEntities::Container *container = server->blockEntities().container(chest);
-        QVERIFY(container && std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+        QVERIFY(container && std::ranges::any_of(container->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
 
         const QcBlockId torch = *m_content->stateId(u"qtcraft:torch[attach=north]"_s);
         int torches = 0;
@@ -230,7 +230,7 @@ private slots:
         }
         for (const auto &[x, z] : {std::pair{8, 2}, {10, 2}, {11, 10}}) {
             const QcBlockEntities::Container *dispenser = server.blockEntities().container(temple->toWorld(QcBlockPos{x, 1, z}));
-            QVERIFY(dispenser && std::ranges::any_of(dispenser->stacks, [](QcItemStack stack) { return !stack.isEmpty(); }));
+            QVERIFY(dispenser && std::ranges::any_of(dispenser->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); }));
         }
         const QcBlockPos door = temple->toWorld(QcBlockPos{4, 1, 4});
         QCOMPARE(m_content->block(*server.world().blockAt(door)).name, u"qtcraft:mossy_cobblestone"_s);

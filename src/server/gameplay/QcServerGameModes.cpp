@@ -101,18 +101,21 @@ void QcServerGameModes::sendAdventureRules() const
     }
 }
 
-QcItemStack QcServerGameModes::validStack(QcItemStack stack) const
+QcItemStack QcServerGameModes::validStack(const QcItemStack &stack) const
 {
     const QcContentRegistry &content = m_state.content();
     if (stack.count <= 0 || !content.isValidItem(stack.item)) {
         return {};
     }
 
+    // Of the data only the map id of a filled map (decisions E-798, E-823): contents would mint
+    // items past the rules of what a container holds, names are given at the anvil.
     const QcItemDefinition &definition = content.item(stack.item);
-    return {stack.item, std::clamp(stack.count, 1, definition.maxStack), definition.keptDamage(stack.damage)};
+    const QcItemStack plain{stack.item, std::clamp(stack.count, 1, definition.maxStack), definition.keptDamage(stack.damage)};
+    return definition.map == QcMapItem::Filled ? plain.withMapId(stack.mapId()) : plain;
 }
 
-void QcServerGameModes::creativeItem(QcServerClient &client, QcMsg::CreativeItem message)
+void QcServerGameModes::creativeItem(QcServerClient &client, const QcMsg::CreativeItem &message)
 {
     if (!QcGameModes::rules(client.gameMode).itemCatalogue || client.dead) {
         // A client out of step with its mode (or a cheat): it gets the true inventory back.
@@ -124,7 +127,7 @@ void QcServerGameModes::creativeItem(QcServerClient &client, QcMsg::CreativeItem
     const QcItemStack stack = validStack(message.stack);
     if (message.slot == QcMsg::CreativeItem::addSlot) {
         if (!stack.isEmpty()) {
-            client.inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
+            client.inventory.add(stack, m_state.content());
         }
     } else if (QcMsg::MoveInventoryItem::isEquipmentSlot(message.slot)) {
         putIntoArmourSlot(client, message.slot - QcMsg::MoveInventoryItem::equipmentSlot, stack);
@@ -134,25 +137,25 @@ void QcServerGameModes::creativeItem(QcServerClient &client, QcMsg::CreativeItem
     m_inventory.send(client);
 }
 
-void QcServerGameModes::putIntoSlot(QcServerClient &client, int slot, QcItemStack stack) const
+void QcServerGameModes::putIntoSlot(QcServerClient &client, int slot, const QcItemStack &stack) const
 {
     const QcItemStack existing = client.inventory.slot(slot);
-    if (!stack.isEmpty() && !existing.isEmpty() && existing.item == stack.item && existing.damage == stack.damage) {
+    if (!stack.isEmpty() && !existing.isEmpty() && existing.stacksWith(stack)) {
         const int limit = m_state.content().item(stack.item).maxStack;
-        client.inventory.setSlot(slot, {stack.item, std::min(existing.count + stack.count, limit), stack.damage});
+        client.inventory.setSlot(slot, stack.withCount(std::min(existing.count + stack.count, limit)));
         return;
     }
     client.inventory.setSlot(slot, stack);
 }
 
-bool QcServerGameModes::putIntoArmourSlot(QcServerClient &client, int slot, QcItemStack stack) const
+bool QcServerGameModes::putIntoArmourSlot(QcServerClient &client, int slot, const QcItemStack &stack) const
 {
     if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, QcEquipmentSlot(slot))) {
         return false;
     }
 
     QcEquipment worn = client.equipment;
-    worn.stacks[std::size_t(slot)] = stack.isEmpty() ? QcItemStack{} : QcItemStack{stack.item, 1, stack.damage};
+    worn.stacks[std::size_t(slot)] = stack.isEmpty() ? QcItemStack{} : stack.withCount(1);
     m_inventory.setEquipment(client, worn);
     return true;
 }

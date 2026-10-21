@@ -14,14 +14,14 @@ void QcInventory::setSelectedHotbarSlot(int slot)
     m_selected = std::clamp(slot, 0, hotbarSize - 1);
 }
 
-int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content, int damage)
+int QcInventory::add(const QcItemStack &adding, const QcContentRegistry &content)
 {
-    if (!content.isValidItem(item) || count <= 0) {
-        return count;
+    int count = adding.count;
+    if (!content.isValidItem(adding.item) || count <= 0) {
+        return std::max(count, 0);
     }
 
-    const int maxStack = content.item(item).maxStack;
-    const QcItemStack adding{item, count, damage};
+    const int maxStack = adding.stackLimit(content.item(adding.item).maxStack);
     for (QcItemStack &stack : m_slots) {
         if (count == 0) {
             break;
@@ -39,7 +39,7 @@ int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content,
         }
         if (stack.isEmpty()) {
             const int moved = std::min(count, maxStack);
-            stack = {item, moved, damage};
+            stack = adding.withCount(moved);
             count -= moved;
         }
     }

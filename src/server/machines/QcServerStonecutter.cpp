@@ -118,14 +118,14 @@ bool QcServerStonecutter::takeOutput(QcServerClient &client, QcMsg::MoveInventor
     }
     const QcItemStack target = client.inventory.slot(move.to);
     const int maxStack = content.item(output.item).maxStack;
-    const int room = target.isEmpty() ? maxStack : (target.item == output.item && target.damage == 0 ? maxStack - target.count : 0);
+    const int room = target.isEmpty() ? maxStack : (target.stacksWith(output) ? maxStack - target.count : 0);
     if (output.count > room) {
         m_inventory.send(client);
         return true;
     }
 
     client.inventory.setSlot(move.to, {output.item, (target.isEmpty() ? 0 : target.count) + output.count, 0});
-    cutter.setInput({cutter.input.item, cutter.input.count - 1, cutter.input.damage});
+    cutter.setInput(cutter.input.withCount(cutter.input.count - 1));
     tookOutput(client, 1);
     return true;
 }
@@ -148,7 +148,7 @@ bool QcServerStonecutter::takeOnce(QcServerClient &client) const
         return false;
     }
     client.inventory = attempt;
-    cutter.setInput({cutter.input.item, cutter.input.count - 1, cutter.input.damage});
+    cutter.setInput(cutter.input.withCount(cutter.input.count - 1));
     return true;
 }
 

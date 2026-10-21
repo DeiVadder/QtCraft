@@ -27,7 +27,7 @@ private:
     // Moves items between the inventory and the open machine and answers with the machine state.
     void moveMachineItem(const QJsonObject &request, int from, int to);
     // Inventory slot that takes the machine's output: a stack of the same item with room first, else an empty slot; -1 if none.
-    int outputDestination(QcItemStack output) const;
+    int outputDestination(const QcItemStack &output) const;
 
     QcControlContext &m_context;
 };

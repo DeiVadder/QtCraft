@@ -55,7 +55,7 @@ public:
     void forget(const QcServerClient &client);
 
     // The map id of a filled map stack, std::nullopt for anything else.
-    [[nodiscard]] std::optional<quint32> mapIdOf(QcItemStack stack) const;
+    [[nodiscard]] std::optional<quint32> mapIdOf(const QcItemStack &stack) const;
     // A new map one scale larger around the same land as map `id` (zooming out, decision E-804);
     // std::nullopt for an unknown map, one at the largest scale, or when the ids are used up.
     [[nodiscard]] std::optional<quint32> zoomOut(quint32 id);

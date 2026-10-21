@@ -2457,3 +2457,20 @@ Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 3
 
 Unter der 10-%-Schwelle. Mehr Blöcke je Chunk in Taiga und Dschungel (Riesen, dichtere Dschungelbäume, Ranken) kosten beim Übernehmen und Senden der Chunks; die Ranken prüfen beim Laden ihren Halt (`blockUpdates`). Eine erste Messung (gegen `dev` `7ae232b`) zeigte +6,9 % Tick und `items` 0,0003 → 0,0060 ms: bis zu 114 Ranken fielen als Items ab, weil eine Ranke an einem Laubplatz hing, den schon die Ranke eines anderen Baums belegte (das Laub wurde dort nicht gesetzt). Seitdem ersetzt Laub fremde Ranken (`QcTreeShape::buildInChunk`, `test_giant_trees::generatedVinesHoldOn`), und es fallen keine Items mehr ab.
 
+## Paket 68.1 (Daten je Item-Stapel), headless, Release (2026-10-21)
+
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `35cbdda`, `new` = Branch `feature/68-backpack` mit 24-Byte-Stapeln und Kennbit auf der Leitung (E-823); Median je Szenario:
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Spitzenspeicher (MB) |
+|---|---:|---|---|---|
+| crowd | 3 | 0,168 → 0,168 (±0 %) | 0,252 → 0,248 (−2 %) | 63,6 → 63,9 (+0,5 %) |
+| gravel-collapse | 6 | 0,560 → 0,538 (−4 %) | 1,619 → 1,523 (−6 %) | 90,3 → 98,3 (+8,9 %) |
+| farm | 3 | 0,008 → 0,008 | 0,015 → 0,014 | 56,5 → 55,9 (−1 %) |
+| farm-seeds | 6 | 0,019 → 0,019 (+3 %) | 0,058 → 0,062 (+8 %, 4 µs) | 55,3 → 55,3 |
+| explore | 3 | 0,254 → 0,249 (−2 %) | 1,110 → 1,108 | 70,5 → 71,5 (+1,4 %) |
+| showcase-signal_components | 6 | 0,096 → 0,098 (+2 %) | 0,176 → 0,187 (+6 %) | 62,6 → 62,8 |
+| showcase-signal_machines | 3 | 0,101 → 0,101 | 0,181 → 0,182 | 62,2 → 62,8 (+1 %) |
+| showcase-signal_farm | 3 | 0,099 → 0,099 | 0,178 → 0,188 (+6 %) | 62,7 → 62,8 |
+
+Keine Tick-Regression über 10 %. Der Spitzenspeicher von gravel-collapse hing an der Größe der Stapel, nicht an Daten: Die erste Reihe (32-Byte-Stapel mit `std::shared_ptr`, Kennbyte nach jedem Stapel auf der Leitung) zeigte 90,3 → 101,3 MB (+12 %); `dev` mit 12 Byte Polster im Stapel allein ergab 96–97 MB. Die lebenden Allokationen am Ende sind gleich (`heap`: 14,2 MB in beiden), der Unterschied ist der Höchststand der freigegebenen kleinen Allokationen (`vmmap`, `MALLOC_SMALL`). `malloc_history -allEvents` zeigt als Quelle mit Stapeln die Tabelle der Spawns im messenden Roh-Client (`QcRawWorldRecord::spawns`, `QHash<quint32, QcMsg::EntitySpawn>`: ein Spawn trägt ein Item und vier Rüstungsstapel, 352 → 408 Byte), also das Messwerkzeug, nicht den Server. Daraufhin: Zeiger mit Zähler in den Daten (`QExplicitlySharedDataPointer`, Stapel 24 statt 32 Byte, `QcMessage` 360 → 416 statt 456 Byte) und auf der Leitung das Kennbit in der Anzahl statt eines Bytes je Stapel (gewöhnliche Stapel gleich lang wie vorher); danach die Reihe oben.
+

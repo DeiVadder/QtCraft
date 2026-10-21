@@ -113,7 +113,7 @@ struct QcServerClient : QcEntity
 
         // Puts `stack` into the input slot; another item or none drops the chosen recipe, as in the
         // reference (more or fewer of the same item keep it).
-        void setInput(QcItemStack stack)
+        void setInput(const QcItemStack &stack)
         {
             if (stack.isEmpty() || stack.item != input.item) {
                 recipe.clear();

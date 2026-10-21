@@ -32,7 +32,7 @@ class TestMaps : public QcServerTestFixture
         }
         send(QcMsg::SelectHotbarSlot{slot});
         const QcItemStack stack = m_client->stacks.value(slot);
-        return quint32(stack.damage);
+        return stack.mapId();
     }
 
     // Places a crafting table beside the player and opens it.
@@ -48,7 +48,7 @@ class TestMaps : public QcServerTestFixture
     // The inventory slot holding filled map `map`, -1 for none.
     int slotOfMap(quint32 map) const
     {
-        const QcItemStack wanted{item("qtcraft:filled_map"), 1, int(map)};
+        const QcItemStack wanted = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(map);
         for (int slot = 0; slot < m_client->stacks.size(); ++slot) {
             const QcItemStack &stack = m_client->stacks.at(slot);
             if (!stack.isEmpty() && stack.stacksWith(wanted)) {
@@ -121,7 +121,7 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:map")), 1);
         QCOMPARE(countOf(item("qtcraft:filled_map")), 1);
         const QcItemStack filled = m_client->stacks.value(slotOf(item("qtcraft:filled_map")));
-        QCOMPARE(filled.damage, 1);
+        QCOMPARE(filled.mapId(), 1u);
 
         const QcMapData *map = m_server->maps().find(1);
         QVERIFY(map);
@@ -132,7 +132,7 @@ private slots:
         // The second one replaces the empty map in the hand.
         send(QcMsg::ConsumeItem{});
         QCOMPARE(countOf(item("qtcraft:map")), 0);
-        QCOMPARE(m_client->stacks.value(m_client->selected).damage, 2);
+        QCOMPARE(m_client->stacks.value(m_client->selected).mapId(), 2u);
     }
 
     void holdingAMapRevealsTheLandAround()
@@ -244,7 +244,7 @@ private slots:
     void mapsCraftLikeTheReference()
     {
         const QcContentRegistry &content = *m_content;
-        const QcItemStack filled{item("qtcraft:filled_map"), 1, 7};
+        const QcItemStack filled = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(7);
         const QcItemStack empty{item("qtcraft:map"), 1, 0};
         const QcItemStack paper{item("qtcraft:paper"), 1, 0};
         using Kind = QcMapCrafting::Result::Kind;
@@ -252,7 +252,7 @@ private slots:
         const std::optional<QcMapCrafting::Result> copy = QcMapCrafting::result(content, {filled, empty, {}, empty}, 2);
         QVERIFY(copy);
         QCOMPARE(copy->kind, Kind::Copy);
-        QCOMPARE(copy->stack, (QcItemStack{filled.item, 3, 7}));
+        QCOMPARE(copy->stack, filled.withCount(3));
         QVERIFY(!QcMapCrafting::result(content, {filled, filled, empty, {}}, 2));
         QVERIFY(!QcMapCrafting::result(content, {filled, paper, empty, {}}, 2));
         QVERIFY(!QcMapCrafting::result(content, {filled, {}, {}, {}}, 2));
@@ -261,7 +261,7 @@ private slots:
         const std::optional<QcMapCrafting::Result> zoom = QcMapCrafting::result(content, ring, 3);
         QVERIFY(zoom);
         QCOMPARE(zoom->kind, Kind::Zoom);
-        QCOMPARE(zoom->stack, (QcItemStack{filled.item, 1, 7}));
+        QCOMPARE(zoom->stack, filled);
         QList<QcItemStack> gap = ring;
         gap[0] = {};
         QVERIFY(!QcMapCrafting::result(content, gap, 3));
@@ -274,7 +274,8 @@ private slots:
         chat(u"/give map 1"_s);
         send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:filled_map")), QcServer::craftingGridSlot, 1});
         send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:map")), QcServer::craftingGridSlot + 1, 1});
-        QCOMPARE(m_client->craftingResult, (QcItemStack{item("qtcraft:filled_map"), 2, int(map)}));
+        const QcItemStack twoCopies = QcItemStack{item("qtcraft:filled_map"), 2, 0}.withMapId(map);
+        QCOMPARE(m_client->craftingResult, twoCopies);
         send(QcMsg::TakeCraftingResult{});
         QCOMPARE(countOf(item("qtcraft:filled_map")), 2);
         QCOMPARE(countOf(item("qtcraft:map")), 0);
@@ -315,7 +316,7 @@ private slots:
         QCOMPARE(m_client->craftingSize, 3);
         for (int scale = 1; scale <= QcMapData::maxScale; ++scale) {
             layOutZoom(map);
-            QCOMPARE(m_client->craftingResult.damage, int(map));
+            QCOMPARE(m_client->craftingResult.mapId(), map);
             send(QcMsg::TakeCraftingResult{});
             map = m_server->maps().nextId() - 1;
             const QcMapData *zoomed = m_server->maps().find(map);
@@ -376,13 +377,13 @@ private slots:
         // id, has no room, and no map is made.
         chat(u"/give stone %1"_s.arg(64 * QcInventory::slotCount));
         QVERIFY(slotOfMap(map) >= 0);
-        const qsizetype free = std::ranges::count_if(m_client->stacks, [](QcItemStack stack) { return stack.isEmpty(); });
+        const qsizetype free = std::ranges::count_if(m_client->stacks, [](const QcItemStack &stack) { return stack.isEmpty(); });
         QCOMPARE(free, 0);
         const quint32 next = m_server->maps().nextId();
         send(QcMsg::TakeCraftingResult{});
         send(QcMsg::TakeCraftingResult{});
         QCOMPARE(m_server->maps().nextId(), next);
-        QCOMPARE(m_client->craftingResult.damage, int(map));
+        QCOMPARE(m_client->craftingResult.mapId(), map);
     }
 
     void playersCarryingTheMapAreMarkersUntilTheyLeave()
@@ -400,7 +401,7 @@ private slots:
         QcTestUtil::pump();
         ticks(2);
         other->connection.send(QcMsg::ChatInput{u"/gamemode creative"_s});
-        other->connection.send(QcMsg::CreativeItem{0, {item("qtcraft:filled_map"), 1, int(map)}});
+        other->connection.send(QcMsg::CreativeItem{0, QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(map)});
         QcPlayerInput look;
         look.sequence = 1;
         look.yaw = 90.0f;

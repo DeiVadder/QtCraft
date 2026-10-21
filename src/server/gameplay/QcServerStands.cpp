@@ -212,7 +212,7 @@ void QcServerStands::swapWithHand(QcServerClient &client, QcArmourStand &stand, 
     QcInventory inventory = client.inventory;
     if (held.count > 1) {
         inventory.removeFromSlot(hand, 1);
-        if (!onStand.isEmpty() && inventory.add(onStand.item, onStand.count, m_state.content(), onStand.damage) > 0) {
+        if (!onStand.isEmpty() && inventory.add(onStand, m_state.content()) > 0) {
             return;
         }
     } else {

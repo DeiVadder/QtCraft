@@ -40,7 +40,7 @@ std::optional<QcItemStack> QcServerCrafting::resultOf(const QcServerState &state
         return std::nullopt;
     }
     if (map->kind == QcMapCrafting::Result::Kind::Zoom) {
-        const QcMapData *zoomed = state.maps().loaded(quint32(map->stack.damage));
+        const QcMapData *zoomed = state.maps().loaded(map->stack.mapId());
         if (zoomed && zoomed->scale() >= QcMapData::maxScale) {
             return std::nullopt;
         }
@@ -135,7 +135,7 @@ QcServerCrafting::CraftOutcome QcServerCrafting::repairOnce(QcServerClient &clie
     }
 
     QcInventory result = client.inventory;
-    if (result.add(repaired->item, 1, m_state.content(), repaired->damage) > 0) {
+    if (result.add(repaired->withCount(1), m_state.content()) > 0) {
         return CraftOutcome::NoRoom;
     }
 
@@ -157,13 +157,13 @@ QcServerCrafting::CraftOutcome QcServerCrafting::mapOnce(QcServerClient &client)
     const bool zoom = made->kind == QcMapCrafting::Result::Kind::Zoom;
     QcItemStack stack = made->stack;
     if (zoom) {
-        stack.damage = int(m_state.maps().nextId());
+        stack = stack.withMapId(m_state.maps().nextId());
     }
     QcInventory result = client.inventory;
-    if (result.add(stack.item, stack.count, content, stack.damage) > 0) {
+    if (result.add(stack, content) > 0) {
         return CraftOutcome::NoRoom;
     }
-    if (zoom && QcServerMaps(m_state, m_inventory).zoomOut(quint32(made->stack.damage)) != quint32(stack.damage)) {
+    if (zoom && QcServerMaps(m_state, m_inventory).zoomOut(made->stack.mapId()) != stack.mapId()) {
         return CraftOutcome::NoRecipe;
     }
 
@@ -307,7 +307,7 @@ void QcServerCrafting::returnCraftingGrid(QcServerClient &client)
         }
 
         if (catalogue) {
-            client.inventory.add(cell.item, cell.count, m_state.content(), cell.damage);
+            client.inventory.add(cell, m_state.content());
         } else {
             m_inventory.giveOrThrow(client, cell);
         }

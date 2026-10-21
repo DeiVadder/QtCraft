@@ -124,7 +124,7 @@ QList<qsizetype> recipesFor(const QcContentRegistry &content, const QString &inp
     return found;
 }
 
-QcItemStack output(const QcContentRegistry &content, QcItemStack input, const QString &recipe)
+QcItemStack output(const QcContentRegistry &content, const QcItemStack &input, const QString &recipe)
 {
     const std::optional<qsizetype> index = recipe.isEmpty() ? std::nullopt : content.stonecuttingIndex(recipe);
     if (input.isEmpty() || !index || !content.isValidItem(input.item)) {

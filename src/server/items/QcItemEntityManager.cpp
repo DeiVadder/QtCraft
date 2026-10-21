@@ -40,22 +40,20 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     }
 
     // More than a stack (e.g. a generous block drop) becomes several items; the rest waits a tick.
-    // Only the first part keeps what its saved entry held for a newer version (decision E-420): a
-    // copy for every part would multiply it.
+    // Only the first part keeps what its saved entry held for a newer version (decision E-420), of
+    // the entry and of the stack's data (QcItemStack::split): a copy for every part would multiply it.
     const int maxStack = m_content->item(drop.stack.item).maxStack;
-    if (drop.stack.count > maxStack) {
+    if (drop.stack.count > drop.stack.stackLimit(maxStack)) {
+        const QList<QcItemStack> parts = drop.stack.split(maxStack);
         Drop rest = drop;
-        rest.stack.count = drop.stack.count - maxStack;
         rest.kept = {};
-        Drop first = drop;
-        first.stack.count = maxStack;
-
-        while (rest.stack.count > 0) {
-            Drop part = rest;
-            part.stack.count = std::min(rest.stack.count, maxStack);
-            rest.stack.count -= part.stack.count;
-            enqueue(part);
+        for (qsizetype i = 1; i < parts.size(); ++i) {
+            rest.stack = parts.at(i);
+            enqueue(rest);
         }
+
+        Drop first = drop;
+        first.stack = parts.constFirst();
         return spawn(first, id);
     }
 
@@ -78,7 +76,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     return id;
 }
 
-quint32 QcItemEntityManager::spawnScattered(QcItemStack stack, const QcVec3 &position, quint32 id)
+quint32 QcItemEntityManager::spawnScattered(const QcItemStack &stack, const QcVec3 &position, quint32 id)
 {
     const double angle = m_random.bounded(2.0 * M_PI);
     const double speed = 0.5 + m_random.bounded(1.0);

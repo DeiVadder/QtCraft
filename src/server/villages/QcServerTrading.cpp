@@ -30,7 +30,7 @@ QcVec3 centreOf(const QcCreature &mob, const QcMobDefinition &definition)
 // Whether the inventory holds all costs (two costs of the same item add up).
 bool canPay(const QcInventory &inventory, const QList<QcItemStack> &costs)
 {
-    return std::ranges::all_of(costs, [&](QcItemStack cost) {
+    return std::ranges::all_of(costs, [&](const QcItemStack &cost) {
         int needed = 0;
         for (const QcItemStack &other : costs) {
             needed += other.item == cost.item ? other.count : 0;
@@ -172,7 +172,7 @@ void QcServerTrading::hand(QcServerClient &client, const QcCreature &villager, c
     // The results of all trades at once, in whole stacks: what does not fit falls as few drops.
     const int maxStack = std::max(1, m_state.content().item(offer.result.item).maxStack);
     for (int left = offer.result.count * traded; left > 0; left -= maxStack) {
-        m_inventory.giveOrThrow(client, {offer.result.item, std::min(left, maxStack), offer.result.damage});
+        m_inventory.giveOrThrow(client, offer.result.withCount(std::min(left, maxStack)));
     }
 
     // The player's experience falls as orbs between the villager and the player, all at once.

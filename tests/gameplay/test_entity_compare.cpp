@@ -46,7 +46,7 @@ private:
 
     static QString num(double value) { return QString::number(value, 'f', 6); }
     static QString vec(const QcVec3 &v) { return num(v.x) + u' ' + num(v.y) + u' ' + num(v.z); }
-    QString stackText(QcItemStack stack) const { return QcBlockEntityDump::stackText(stack, *m_content); }
+    QString stackText(const QcItemStack &stack) const { return QcBlockEntityDump::stackText(stack, *m_content); }
 
     QString equipmentText(const QcEquipment &equipment) const
     {
@@ -224,7 +224,7 @@ private:
         return stand.id;
     }
 
-    quint32 thrown(const QcVec3 &from, const QcVec3 &velocity, QcItemStack thrownStack)
+    quint32 thrown(const QcVec3 &from, const QcVec3 &velocity, const QcItemStack &thrownStack)
     {
         QcItemEntityManager::Drop entity;
         entity.stack = thrownStack;

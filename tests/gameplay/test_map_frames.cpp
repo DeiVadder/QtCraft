@@ -32,7 +32,7 @@ class TestMapFrames : public QcServerTestFixture
         if (m_server->maps().nextId() == next) {
             return 0;
         }
-        const QcItemStack made{item("qtcraft:filled_map"), 1, int(next)};
+        const QcItemStack made = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(next);
         for (int slot = 0; slot < m_client->stacks.size(); ++slot) {
             if (m_client->stacks.at(slot).stacksWith(made)) {
                 send(QcMsg::SelectHotbarSlot{slot});
@@ -61,7 +61,7 @@ class TestMapFrames : public QcServerTestFixture
         hanging.hanging.face = QcBlockFace::South;
         hanging.hanging.cell = cell;
         hanging.hanging.rotation = quint8(rotation);
-        hanging.held = {item("qtcraft:filled_map"), 1, int(map)};
+        hanging.held = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(map);
         hanging.motion.position = hanging.hanging.centre();
         hanging.id = m_server->entities().newId();
         m_server->world().loadChunk(cell.chunk());
@@ -408,7 +408,7 @@ private slots:
             if (hanging.held.item != item("qtcraft:filled_map")) {
                 continue;
             }
-            const QcMapData *map = m_server->maps().find(quint32(hanging.held.damage));
+            const QcMapData *map = m_server->maps().find(hanging.held.mapId());
             QVERIFY(map);
             centres.append(map->centre());
             cells.append(hanging.hanging.cell);

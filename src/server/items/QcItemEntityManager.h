@@ -67,7 +67,7 @@ public:
     };
 
     // Called when an item touches a player; returns how many items did not fit into the inventory.
-    using GiveFunction = std::function<int(quint32 playerEntityId, QcItemStack stack)>;
+    using GiveFunction = std::function<int(quint32 playerEntityId, const QcItemStack &stack)>;
     using LoadedFunction = std::function<bool(const QcVec3 &position)>;
 
     QcItemEntityManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
@@ -76,7 +76,7 @@ public:
     // empty or in the void.
     quint32 spawn(const Drop &drop, quint32 id);
     // Drops a stack at `position` with a small random upward velocity (mined blocks, loot).
-    quint32 spawnScattered(QcItemStack stack, const QcVec3 &position, quint32 id);
+    quint32 spawnScattered(const QcItemStack &stack, const QcVec3 &position, quint32 id);
 
     // What a tick asks the server.
     struct TickCallbacks

@@ -171,14 +171,8 @@ struct QcItemDefinition
     std::optional<QcFishingDefinition> fishing;
 
     // The `damage` a stack of this item may carry (decision E-798): worn uses below the durability,
-    // the map id of a filled map (not negative), else 0.
-    [[nodiscard]] int keptDamage(int damage) const
-    {
-        if (map == QcMapItem::Filled) {
-            return std::max(0, damage);
-        }
-        return std::clamp(damage, 0, std::max(0, durability - 1));
-    }
+    // else 0 (the map id of a filled map is item data, decision E-823).
+    [[nodiscard]] int keptDamage(int damage) const { return std::clamp(damage, 0, std::max(0, durability - 1)); }
 
     // Leaves out what does not go together with the projectile uses (when the content is finished):
     // the use button throws a throwable item (QcClientLauncher::uses), so its other uses would never

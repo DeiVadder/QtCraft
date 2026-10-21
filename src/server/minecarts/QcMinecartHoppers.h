@@ -40,7 +40,7 @@ public:
     void forgetTick() { m_stats = {}; }
 
     // The slot of `stacks` that takes one more of `unit`'s item, or -1 (first that fits).
-    static int slotFor(const QList<QcItemStack> &stacks, QcItemStack unit, int maxStack);
+    static int slotFor(const QList<QcItemStack> &stacks, const QcItemStack &unit, int maxStack);
 
 private:
     // The carts that act now, in the order of their ids after the last one of the previous tick.

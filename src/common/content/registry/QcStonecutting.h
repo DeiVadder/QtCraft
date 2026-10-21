@@ -26,6 +26,6 @@ void generate(QcContentRegistry &registry);
 
 // The stonecutter's output slot (decision E-785): what the recipe named `recipe` makes from one item
 // of `input`, or an empty stack when the input is empty, the recipe unknown or for another input.
-[[nodiscard]] QcItemStack output(const QcContentRegistry &content, QcItemStack input, const QString &recipe);
+[[nodiscard]] QcItemStack output(const QcContentRegistry &content, const QcItemStack &input, const QString &recipe);
 
 } // namespace QcStonecutting

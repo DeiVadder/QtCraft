@@ -25,11 +25,11 @@ QcMinecartHoppers::QcMinecartHoppers(QcServerState &state, QcBlockScreens &scree
 {
 }
 
-int QcMinecartHoppers::slotFor(const QList<QcItemStack> &stacks, QcItemStack unit, int maxStack)
+int QcMinecartHoppers::slotFor(const QList<QcItemStack> &stacks, const QcItemStack &unit, int maxStack)
 {
     for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
         const QcItemStack &stack = stacks[slot];
-        if (stack.isEmpty() || (stack.item == unit.item && stack.damage == unit.damage && stack.count < maxStack)) {
+        if (stack.isEmpty() || (stack.stacksWith(unit) && stack.count < maxStack)) {
             return int(slot);
         }
     }
@@ -112,7 +112,7 @@ bool QcMinecartHoppers::unloadInto(QcMinecart &cart, QcBlockPos hopper, QcInvent
     QList<int> cells(room.size());
     std::ranges::iota(cells, 0);
     for (QcItemStack &stack : cart.stacks) {
-        const QcItemStack unit{stack.item, 1, stack.damage};
+        const QcItemStack unit = stack.withCount(1);
         const int slot = stack.isEmpty() ? -1 : access.slotFor(hopper, room, cells, unit);
         if (slot < 0 || !access.put(hopper, slot, unit)) {
             continue;
@@ -144,7 +144,7 @@ QcMinecartHoppers::Pull QcMinecartHoppers::pullFromAbove(QcMinecart &cart, QcInv
     const QList<QcItemStack> source = access.slotsAt(above);
     const QList<int> out = access.slotsOut(above, QcBlockFace::Down);
     for (const int slot : out) {
-        const QcItemStack unit{source[slot].item, 1, source[slot].damage};
+        const QcItemStack unit = source[slot].withCount(1);
         if (source[slot].isEmpty() || !access.mayTakeOut(above, slot, unit)) {
             continue;
         }
@@ -154,7 +154,7 @@ QcMinecartHoppers::Pull QcMinecartHoppers::pullFromAbove(QcMinecart &cart, QcInv
         }
 
         QcItemStack &target = cart.stacks[into];
-        target = target.isEmpty() ? unit : QcItemStack{target.item, target.count + 1, target.damage};
+        target = target.isEmpty() ? unit : target.withCount(target.count + 1);
         ++m_stats.moved;
         return Pull::Moved;
     }
@@ -191,12 +191,12 @@ bool QcMinecartHoppers::pickUp(QcMinecart &cart)
         QList<QcItemStack> stacks = cart.stacks;
         int taken = 0;
         for (; taken < item.stack.count; ++taken) {
-            const QcItemStack unit{item.stack.item, 1, item.stack.damage};
+            const QcItemStack unit = item.stack.withCount(1);
             const int slot = slotFor(stacks, unit, maxStack);
             if (slot < 0) {
                 break;
             }
-            stacks[slot] = stacks[slot].isEmpty() ? unit : QcItemStack{unit.item, stacks[slot].count + 1, unit.damage};
+            stacks[slot] = stacks[slot].isEmpty() ? unit : unit.withCount(stacks[slot].count + 1);
         }
         // The item entity may be gone already (another cart took it in this tick).
         if (taken > 0 && m_state.entities().items().take(item.id, taken)) {

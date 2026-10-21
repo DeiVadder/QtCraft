@@ -77,7 +77,7 @@ private:
     // Selectors: mobs, hostile, animals, ambient, items, stands, all, a creature name or "item:<name>".
     bool isKnownSelector(const QString &what) const;
     bool matchesMob(const QString &what, int type) const;
-    bool matchesItem(const QString &what, QcItemStack stack) const;
+    bool matchesItem(const QString &what, const QcItemStack &stack) const;
 
     QcServerState &m_state;
     QcPendingCommands &m_pending;

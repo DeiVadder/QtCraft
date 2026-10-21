@@ -88,7 +88,7 @@ private:
     }
 
     // A machine at m_pos with the given input and fuel.
-    QcBlockEntities::Machine &setUp(Machines &machines, QcItemStack input, QcItemStack fuel, QcItemStack output = {})
+    QcBlockEntities::Machine &setUp(Machines &machines, const QcItemStack &input, const QcItemStack &fuel, const QcItemStack &output = {})
     {
         if (!machines.entities.ensure(m_pos, block("t:furnace"))) {
             // Callers hold on to the returned machine, and nothing could stand in for it; only broken

@@ -47,9 +47,9 @@ public:
     // nothing is sent.
     void returnStonecutterInput(QcServerClient &client);
     // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
-    void giveOrThrow(QcServerClient &client, QcItemStack stack);
+    void giveOrThrow(QcServerClient &client, const QcItemStack &stack);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
-    void throwFromPlayer(const QcServerClient &client, QcItemStack stack);
+    void throwFromPlayer(const QcServerClient &client, const QcItemStack &stack);
     // Turns one item of the selected stack into `item` (filled bucket, firefly in a bottle); what
     // does not fit into the inventory is thrown.
     void exchangeHeld(QcServerClient &client, const QString &item);
@@ -83,7 +83,7 @@ private:
     // Whether the armour slots of the slot list hold only armour made for them.
     bool armourFits(const QList<QcItemStack> &combined) const;
     // The armour slot a shift-clicked stack goes to, or -1.
-    int freeArmourSlotFor(const QcServerClient &client, QcItemStack stack) const;
+    int freeArmourSlotFor(const QcServerClient &client, const QcItemStack &stack) const;
 
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;

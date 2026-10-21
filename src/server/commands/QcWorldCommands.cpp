@@ -226,7 +226,7 @@ bool QcWorldCommands::matchesMob(const QString &what, int type) const
     return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content().mobIndex(QcCommandArguments::qualified(what)) == type;
 }
 
-bool QcWorldCommands::matchesItem(const QString &what, QcItemStack stack) const
+bool QcWorldCommands::matchesItem(const QString &what, const QcItemStack &stack) const
 {
     if (what == u"items"_s || what == u"all"_s) {
         return true;

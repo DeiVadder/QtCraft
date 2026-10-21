@@ -21,7 +21,7 @@ inline constexpr double damagePerWear = 4.0;
 // The armour of an item; null for items that are no armour or unknown.
 const QcArmourDefinition *of(const QcContentRegistry &content, QcItemId item);
 // Whether the stack may be worn in `slot`: one armour item made for that slot.
-bool fits(const QcContentRegistry &content, QcItemStack stack, QcEquipmentSlot slot);
+bool fits(const QcContentRegistry &content, const QcItemStack &stack, QcEquipmentSlot slot);
 // The item an empty `slot` shows as a pale placeholder: the first armour item for it in content
 // order (mods included); nothing when the content has none.
 [[nodiscard]] std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmentSlot slot);

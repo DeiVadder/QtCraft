@@ -27,13 +27,13 @@ QcServerMaps::QcServerMaps(QcServerState &state, QcServerInventory &inventory)
 {
 }
 
-std::optional<quint32> QcServerMaps::mapIdOf(QcItemStack stack) const
+std::optional<quint32> QcServerMaps::mapIdOf(const QcItemStack &stack) const
 {
     const QcContentRegistry &content = m_state.content();
-    if (stack.isEmpty() || !content.isValidItem(stack.item) || content.item(stack.item).map != QcMapItem::Filled || stack.damage <= 0) {
+    if (stack.isEmpty() || !content.isValidItem(stack.item) || content.item(stack.item).map != QcMapItem::Filled || stack.mapId() == 0) {
         return std::nullopt;
     }
-    return quint32(stack.damage);
+    return stack.mapId();
 }
 
 bool QcServerMaps::useHeld(QcServerClient &client)
@@ -59,7 +59,7 @@ bool QcServerMaps::useHeld(QcServerClient &client)
     if (!client.rules().infiniteItems) {
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     }
-    const QcItemStack map{*filled, 1, int(*id)};
+    const QcItemStack map = QcItemStack{*filled, 1, 0}.withMapId(*id);
     if (client.inventory.selectedStack().isEmpty()) {
         client.inventory.setSlot(client.inventory.selectedHotbarSlot(), map);
     } else {
@@ -221,7 +221,7 @@ int QcServerMaps::sendTo(QcServerClient &client, quint32 id, int budget, const F
 
 bool QcServerMaps::carries(const QcServerClient &client, quint32 id) const
 {
-    return std::ranges::any_of(client.inventory.allSlots(), [this, id](QcItemStack stack) { return mapIdOf(stack) == id; });
+    return std::ranges::any_of(client.inventory.allSlots(), [this, id](const QcItemStack &stack) { return mapIdOf(stack) == id; });
 }
 
 QList<QcMapMarker> QcServerMaps::markersFor(const QcServerClient &receiver, quint32 id, const QcMapData &map, const FramedMaps &framed) const

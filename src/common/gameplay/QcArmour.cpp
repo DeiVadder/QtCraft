@@ -16,7 +16,7 @@ const QcArmourDefinition *of(const QcContentRegistry &content, QcItemId item)
     return armour ? &*armour : nullptr;
 }
 
-bool fits(const QcContentRegistry &content, QcItemStack stack, QcEquipmentSlot slot)
+bool fits(const QcContentRegistry &content, const QcItemStack &stack, QcEquipmentSlot slot)
 {
     const QcArmourDefinition *armour = stack.isEmpty() ? nullptr : of(content, stack.item);
     return armour && armour->slot == slot && stack.count == 1;

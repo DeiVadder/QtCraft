@@ -46,11 +46,11 @@ public:
     QList<int> slotsIn(QcBlockPos pos, QcBlockFace face) const;
     QList<int> slotsOut(QcBlockPos pos, QcBlockFace face) const;
     // Whether `stack` may leave that slot (a machine's fuel slot gives only an empty bucket back).
-    bool mayTakeOut(QcBlockPos pos, int slot, QcItemStack stack) const;
+    bool mayTakeOut(QcBlockPos pos, int slot, const QcItemStack &stack) const;
     // The first slot of `slots` in `stacks` that takes one more of `stack`'s item, or -1.
-    int slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks, const QList<int> &cells, QcItemStack stack) const;
+    int slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks, const QList<int> &cells, const QcItemStack &stack) const;
     // Where as much of `stack` as fits into `stacks` through `slots` goes: slot and count each.
-    QList<std::pair<int, int>> fit(QcBlockPos pos, QList<QcItemStack> stacks, const QList<int> &cells, QcItemStack stack) const;
+    QList<std::pair<int, int>> fit(QcBlockPos pos, QList<QcItemStack> stacks, const QList<int> &cells, const QcItemStack &stack) const;
 
     // Decides which insertions into the same targets happen together (one unit each): per target the
     // one from above first, then the others grouped by item in a fixed item order, each group whole or
@@ -61,14 +61,14 @@ public:
     // Takes `count` from a slot / puts a stack into a slot (the slot was chosen by this class); false
     // when the slot does not exist. Callers put first and take only after a successful put.
     [[nodiscard]] bool take(QcBlockPos pos, int slot, int count);
-    [[nodiscard]] bool put(QcBlockPos pos, int slot, QcItemStack stack);
+    [[nodiscard]] bool put(QcBlockPos pos, int slot, const QcItemStack &stack);
     // Empties slots left at count 0 and tells the neighbours about every changed inventory.
     void finish();
     // Whether the hopper at `pos` received something while it was empty since the last finish().
     bool wasEmptyBefore(QcBlockPos pos) const { return m_filledFromEmpty.contains(pos); }
 
 private:
-    bool accepts(QcBlockPos pos, int slot, QcItemStack stack) const;
+    bool accepts(QcBlockPos pos, int slot, const QcItemStack &stack) const;
     QcItemStack *slotPtr(QcBlockPos pos, int slot);
     // Insertions into one target, kept in place.
     QList<Insertion> resolveTarget(QList<Insertion> group) const;

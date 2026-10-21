@@ -41,7 +41,7 @@ public:
 
     // QcMsg::CreativeItem: refused (the inventory is sent again) unless the player's mode has the
     // item catalogue.
-    void creativeItem(QcServerClient &client, QcMsg::CreativeItem message);
+    void creativeItem(QcServerClient &client, const QcMsg::CreativeItem &message);
     // QcMsg::PickBlock: selects the block's item in the hotbar or swaps it in from the storage
     // rows; in creative mode it comes from the catalogue when the inventory has none.
     void pickBlock(QcServerClient &client, QcBlockPos pos);
@@ -55,11 +55,12 @@ private:
     // goes up to the nearest free place (QcSpectatorRules::freePlaceAbove). The client takes both
     // from the next state.
     void comeOutOfBlocks(QcServerClient &client) const;
-    // A stack of a known item within its limits; empty for unknown items and no count.
-    QcItemStack validStack(QcItemStack stack) const;
-    void putIntoSlot(QcServerClient &client, int slot, QcItemStack stack) const;
+    // A stack of a known item within its limits, of its data only the map id of a filled map
+    // (decision E-823); empty for unknown items and no count.
+    QcItemStack validStack(const QcItemStack &stack) const;
+    void putIntoSlot(QcServerClient &client, int slot, const QcItemStack &stack) const;
     // Whether the armour slot took the stack (empty clears it).
-    bool putIntoArmourSlot(QcServerClient &client, int slot, QcItemStack stack) const;
+    bool putIntoArmourSlot(QcServerClient &client, int slot, const QcItemStack &stack) const;
     // The hotbar slot a picked item goes to: the selected one when empty, else the first empty
     // one, else the selected one.
     static int pickTarget(const QcServerClient &client);

@@ -335,7 +335,7 @@ bool QcServerProjectiles::pickUp(quint32 player, const QcProjectile &projectile)
         }
         const QcProjectileDefinition *definition = m_state.content().projectile(projectile.type);
         const std::optional<QcItemId> item = definition ? m_state.content().itemId(definition->item) : std::nullopt;
-        if (!item || client->inventory.add(*item, 1, m_state.content(), 0) > 0) {
+        if (!item || client->inventory.add(*item, 1, m_state.content()) > 0) {
             return false;
         }
         m_sounds.play(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);

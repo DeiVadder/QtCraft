@@ -172,7 +172,9 @@ struct GameMode
 // Client -> server, creative mode only (decision E-283): puts `stack` into the inventory slot `slot`
 // (0..35, or an armour slot 100..103 for armour made for it), onto the same item up to its stack
 // size, else in place of what is there; an empty stack clears the slot (the bin). `addSlot` adds
-// the stack to the inventory like picking it up. The server refuses it in other modes.
+// the stack to the inventory like picking it up. The server refuses it in other modes. A stack
+// with contents fails to decode; of the other data the server keeps only a filled map's id
+// (decision E-823).
 struct CreativeItem
 {
     static constexpr qint32 addSlot = -1;

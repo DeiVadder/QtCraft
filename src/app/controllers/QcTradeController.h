@@ -57,7 +57,7 @@ signals:
     void changed();
 
 private:
-    QVariantMap stackMap(QcItemStack stack) const;
+    QVariantMap stackMap(const QcItemStack &stack) const;
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;

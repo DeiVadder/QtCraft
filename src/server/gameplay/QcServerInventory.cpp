@@ -110,7 +110,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
             return;
         }
         // A player taking from the output gets the experience the machine gathered (decision E-398).
-        const auto countOf = [](QcItemStack stack) { return stack.isEmpty() ? 0 : stack.count; };
+        const auto countOf = [](const QcItemStack &stack) { return stack.isEmpty() ? 0 : stack.count; };
         const bool tookOutput = countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
             open.machine->stacks[std::size_t(slot)] = open.combined.stacks[machineSlot + slot];
@@ -209,15 +209,15 @@ bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, 
     return fuelOk && outputOk;
 }
 
-void QcServerInventory::giveOrThrow(QcServerClient &client, QcItemStack stack)
+void QcServerInventory::giveOrThrow(QcServerClient &client, const QcItemStack &stack)
 {
     if (stack.isEmpty()) {
         return;
     }
 
-    const int left = client.inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
+    const int left = client.inventory.add(stack, m_state.content());
     if (left > 0) {
-        throwFromPlayer(client, {stack.item, left, stack.damage});
+        throwFromPlayer(client, stack.withCount(left));
     }
 }
 
@@ -230,7 +230,7 @@ void QcServerInventory::dropItem(QcServerClient &client, QcMsg::DropItem message
     }
 
     const int removed = client.inventory.removeFromSlot(slot, message.wholeStack ? stack.count : 1);
-    throwFromPlayer(client, {stack.item, removed, stack.damage});
+    throwFromPlayer(client, stack.withCount(removed));
     client.mining.pos.reset();
     send(client);
 }
@@ -272,13 +272,13 @@ void QcServerInventory::returnStonecutterInput(QcServerClient &client)
     client.screen.stonecutter->setInput({});
     // Catalogue items that do not fit go into the bin rather than into the world (decision E-283).
     if (QcGameModes::rules(client.gameMode).itemCatalogue) {
-        client.inventory.add(input.item, input.count, m_state.content(), input.damage);
+        client.inventory.add(input, m_state.content());
     } else {
         giveOrThrow(client, input);
     }
 }
 
-void QcServerInventory::throwFromPlayer(const QcServerClient &client, QcItemStack stack)
+void QcServerInventory::throwFromPlayer(const QcServerClient &client, const QcItemStack &stack)
 {
     const double yaw = qDegreesToRadians(double(client.yaw));
     const double pitch = qDegreesToRadians(double(client.pitch));
@@ -331,7 +331,7 @@ bool QcServerInventory::armourFits(const QList<QcItemStack> &combined) const
     return true;
 }
 
-int QcServerInventory::freeArmourSlotFor(const QcServerClient &client, QcItemStack stack) const
+int QcServerInventory::freeArmourSlotFor(const QcServerClient &client, const QcItemStack &stack) const
 {
     const QcArmourDefinition *armour = stack.isEmpty() ? nullptr : QcArmour::of(m_state.content(), stack.item);
     if (!armour || !client.equipment.at(armour->slot).isEmpty()) {
@@ -349,7 +349,7 @@ void QcServerInventory::setEquipment(QcServerClient &client, const QcEquipment &
     // A piece put on or taken off makes a sound; wear alone does not.
     const auto items = [](const QcEquipment &worn) {
         std::array<QcItemId, QcEquipment::slotCount> ids{};
-        std::ranges::transform(worn.stacks, ids.begin(), [](QcItemStack stack) { return stack.item; });
+        std::ranges::transform(worn.stacks, ids.begin(), [](const QcItemStack &stack) { return stack.item; });
         return ids;
     };
     if (items(client.equipment) != items(equipment)) {

@@ -43,7 +43,7 @@ QcClientMachineScreen::Change QcClientMachineScreen::open(const QcMsg::OpenMachi
 QcClientMachineScreen::Change QcClientMachineScreen::update(const QcMsg::MachineState &machine, const QcContentRegistry *content)
 {
     // Only the open machine's state is shown; unknown items would break the screen.
-    const bool known = std::ranges::all_of(machine.stacks, [content](QcItemStack stack) {
+    const bool known = std::ranges::all_of(machine.stacks, [content](const QcItemStack &stack) {
         return stack.isEmpty() || (content && content->isValidItem(stack.item));
     });
     // A cart's screen is known by its entity, a block's by its position.

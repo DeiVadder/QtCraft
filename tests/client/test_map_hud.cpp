@@ -59,8 +59,7 @@ private slots:
         map.name = u"t:filled_map"_s;
         map.map = QcMapItem::Filled;
         const QcItemId id = *content.registerItem(map);
-        QcItemStack stack{id, 1};
-        stack.damage = 12;
+        const QcItemStack stack = QcItemStack{id, 1}.withMapId(12);
 
         QCOMPARE(QcInventoryModel::tooltipOf(content, stack, u"Map"_s), u"Map\nMap #12"_s);
         QCOMPARE(QcInventoryModel::tooltipOf(content, stack, u"Map"_s, 2), u"Map\nMap #12\nScale 1:4"_s);

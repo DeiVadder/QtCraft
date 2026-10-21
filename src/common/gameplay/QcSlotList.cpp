@@ -18,12 +18,12 @@ bool QcSlotList::moveBetween(int from, int to, int count, const QcContentRegistr
 
     const int wanted = count == 0 ? source.count : std::min(count, source.count);
     if (target.isEmpty() || target.stacksWith(source)) {
-        const int space = content.item(source.item).maxStack - (target.isEmpty() ? 0 : target.count);
+        const int space = source.stackLimit(content.item(source.item).maxStack) - (target.isEmpty() ? 0 : target.count);
         const int moved = std::min(wanted, space);
         if (moved <= 0) {
             return true;
         }
-        target = {source.item, (target.isEmpty() ? 0 : target.count) + moved, source.damage};
+        target = source.withCount((target.isEmpty() ? 0 : target.count) + moved);
         source.count -= moved;
         if (source.count <= 0) {
             source = {};

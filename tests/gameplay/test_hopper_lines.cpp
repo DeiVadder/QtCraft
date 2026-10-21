@@ -56,7 +56,7 @@ private:
         ticks(2);
     }
 
-    void fillAt(QcBlockPos pos, QcItemStack stacked)
+    void fillAt(QcBlockPos pos, const QcItemStack &stacked)
     {
         QVERIFY(ensureEntity(pos));
         m_server->blockEntities().container(pos)->stacks[0] = stacked;

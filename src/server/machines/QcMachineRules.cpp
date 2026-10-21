@@ -91,7 +91,7 @@ const QcSmeltingRecipe *QcMachineRules::workableRecipe(const Machine &machine, c
         return recipe->resultCount <= m_content->item(*result).maxStack ? recipe : nullptr;
     }
 
-    const bool fits = output.item == *result && output.damage == 0
+    const bool fits = output.item == *result && output.damage == 0 && !output.data
                       && output.count + recipe->resultCount <= m_content->item(*result).maxStack;
     return fits ? recipe : nullptr;
 }

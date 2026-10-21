@@ -43,7 +43,7 @@ void QcHeldMap::update()
     const QcContentRegistry *content = session ? session->content().get() : nullptr;
     const QcItemStack stack = session ? session->inventory().slot(session->inventory().selectedHotbarSlot()) : QcItemStack{};
     const bool held = content && content->isValidItem(stack.item) && content->item(stack.item).map == QcMapItem::Filled;
-    const quint32 id = held ? quint32(std::max(0, stack.damage)) : 0;
+    const quint32 id = held ? stack.mapId() : 0;
     const QcClientMaps::Map *map = held ? session->worldMirror().maps().find(id) : nullptr;
     const quint64 revision = map ? map->revision : 0;
     const quint64 pictureRevision = map ? map->pictureRevision : 0;

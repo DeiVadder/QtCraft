@@ -141,34 +141,35 @@ private slots:
         const QcContentRegistry &content = *m_content;
         const QcItemId map = item("qtcraft:filled_map");
         QVERIFY(map != qcNoItem);
+        const auto filled = [map](int count, quint32 id) { return QcItemStack{map, count, 0}.withMapId(id); };
 
         // Adding: onto the stack of the same id, else into a free slot.
         QcInventory inventory;
-        inventory.setSlot(0, {map, 1, 7});
-        QCOMPARE(inventory.add(map, 1, content, 8), 0);
-        QCOMPARE(inventory.add(map, 2, content, 7), 0);
+        inventory.setSlot(0, filled(1, 7));
+        QCOMPARE(inventory.add(filled(1, 8), content), 0);
+        QCOMPARE(inventory.add(filled(2, 7), content), 0);
         const QcItemStack first = inventory.slot(0);
         const QcItemStack second = inventory.slot(1);
-        QCOMPARE(first, (QcItemStack{map, 3, 7}));
-        QCOMPARE(second, (QcItemStack{map, 1, 8}));
+        QCOMPARE(first, filled(3, 7));
+        QCOMPARE(second, filled(1, 8));
 
         // Moving onto another id swaps; onto the same id merges.
         inventory.move(1, 0, content);
         const QcItemStack swapped = inventory.slot(0);
-        QCOMPARE(swapped, (QcItemStack{map, 1, 8}));
-        inventory.setSlot(2, {map, 1, 8});
+        QCOMPARE(swapped, filled(1, 8));
+        inventory.setSlot(2, filled(1, 8));
         inventory.move(2, 0, content);
         const QcItemStack merged = inventory.slot(0);
         QCOMPARE(merged.count, 2);
 
         // Screens move the same way.
-        QcSlotList screen{{{map, 1, 7}, {map, 1, 8}, {map, 2, 7}}};
+        QcSlotList screen{{filled(1, 7), filled(1, 8), filled(2, 7)}};
         QVERIFY(screen.moveBetween(0, 1, 0, content));
-        QCOMPARE(screen.stacks.at(0), (QcItemStack{map, 1, 8}));
-        QCOMPARE(screen.stacks.at(1), (QcItemStack{map, 1, 7}));
+        QCOMPARE(screen.stacks.at(0), filled(1, 8));
+        QCOMPARE(screen.stacks.at(1), filled(1, 7));
         QCOMPARE(screen.moveInto(1, {0, 2}, content), 1);
-        QCOMPARE(screen.stacks.at(2), (QcItemStack{map, 3, 7}));
-        QCOMPARE(screen.stacks.at(0), (QcItemStack{map, 1, 8}));
+        QCOMPARE(screen.stacks.at(2), filled(3, 7));
+        QCOMPARE(screen.stacks.at(0), filled(1, 8));
     }
 
     void unknownBlocksOfAMapFileReadAsBlank()

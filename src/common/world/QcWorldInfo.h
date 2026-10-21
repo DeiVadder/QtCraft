@@ -17,7 +17,7 @@
 // been released). What each format changed is recorded in docs/Entscheidungen.md.
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 16;
+    static constexpr int formatVersion = 17;
     static constexpr int oldestFormatVersion = 16;
     static constexpr auto defaultGenerator = "terrain";
 

@@ -31,7 +31,7 @@ void fillChest(QcServerState &state, const QcChunkFurnishing::Chest &chest)
         qCWarning(lcServer) << "Unknown loot table" << chest.lootTable << "for the chest at" << chest.at.x << chest.at.y << chest.at.z;
         return;
     }
-    if (!container || std::ranges::any_of(container->stacks, [](QcItemStack stack) { return !stack.isEmpty(); })) {
+    if (!container || std::ranges::any_of(container->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); })) {
         return;
     }
     container->stacks = lootFor(state.content(), *table, chest.seed, int(container->stacks.size()));

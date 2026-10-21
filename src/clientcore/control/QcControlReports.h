@@ -23,7 +23,7 @@ public:
     static QJsonObject appearanceJson(const QcAppearance &look);
 
     QJsonObject playerStatus() const;
-    QJsonValue stackJson(QcItemStack stack) const;
+    QJsonValue stackJson(const QcItemStack &stack) const;
     QJsonObject inventoryJson() const;
     QJsonObject machineJson() const;
     // Recent sound cues with their loudness and side as heard now, and the ambience levels.

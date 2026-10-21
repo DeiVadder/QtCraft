@@ -8,9 +8,9 @@
 
 namespace {
 
-bool sameItem(QcItemStack a, QcItemStack b)
+bool sameItem(const QcItemStack &a, const QcItemStack &b)
 {
-    return a.item == b.item && a.damage == b.damage;
+    return a.stacksWith(b);
 }
 
 bool before(QcBlockPos a, QcBlockPos b)
@@ -79,7 +79,7 @@ QList<int> QcInventoryAccess::slotsOut(QcBlockPos pos, QcBlockFace face) const
     return cells;
 }
 
-bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, QcItemStack stack) const
+bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, const QcItemStack &stack) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     if (block && m_state.machineRules().machineOf(*block) && slot == QcMachineRules::fuelSlot) {
@@ -88,7 +88,7 @@ bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, QcItemStack stack) 
     return true;
 }
 
-bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, QcItemStack stack) const
+bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, const QcItemStack &stack) const
 {
     const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     const QcMachineDefinition *machine = block ? m_state.machineRules().machineOf(*block) : nullptr;
@@ -103,7 +103,7 @@ bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, QcItemStack stack) con
     return true;
 }
 
-int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks, const QList<int> &cells, QcItemStack stack) const
+int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks, const QList<int> &cells, const QcItemStack &stack) const
 {
     if (stack.isEmpty() || !m_state.content().isValidItem(stack.item)) {
         return -1;
@@ -120,9 +120,9 @@ int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks,
     return -1;
 }
 
-QList<std::pair<int, int>> QcInventoryAccess::fit(QcBlockPos pos, QList<QcItemStack> stacks, const QList<int> &cells, QcItemStack stack) const
+QList<std::pair<int, int>> QcInventoryAccess::fit(QcBlockPos pos, QList<QcItemStack> stacks, const QList<int> &cells, const QcItemStack &stack) const
 {
-    const int maxStack = m_state.content().isValidItem(stack.item) ? m_state.content().item(stack.item).maxStack : 0;
+    const int maxStack = m_state.content().isValidItem(stack.item) ? stack.stackLimit(m_state.content().item(stack.item).maxStack) : 0;
     QList<std::pair<int, int>> places;
     int placed = 0;
     while (placed < stack.count) {
@@ -133,7 +133,7 @@ QList<std::pair<int, int>> QcInventoryAccess::fit(QcBlockPos pos, QList<QcItemSt
         QcItemStack &there = stacks[slot];
         const int count = there.isEmpty() ? 0 : there.count;
         const int moved = std::min(maxStack - count, stack.count - placed);
-        there = {stack.item, count + moved, stack.damage};
+        there = stack.withCount(count + moved);
         places.append({slot, moved});
         placed += moved;
     }
@@ -185,7 +185,7 @@ QList<QcInventoryAccess::Insertion> QcInventoryAccess::resolveTarget(QList<Inser
                 break;
             }
             const QcItemStack there = trial[insertion.slot];
-            trial[insertion.slot] = {insertion.stack.item, (there.isEmpty() ? 0 : there.count) + insertion.stack.count, insertion.stack.damage};
+            trial[insertion.slot] = insertion.stack.withCount((there.isEmpty() ? 0 : there.count) + insertion.stack.count);
             placed.append(insertion);
         }
         if (!placed.isEmpty()) {
@@ -224,18 +224,18 @@ bool QcInventoryAccess::take(QcBlockPos pos, int slot, int count)
     return true;
 }
 
-bool QcInventoryAccess::put(QcBlockPos pos, int slot, QcItemStack stack)
+bool QcInventoryAccess::put(QcBlockPos pos, int slot, const QcItemStack &stack)
 {
     QcItemStack *there = slotPtr(pos, slot);
     if (!there) {
         return false;
     }
 
-    if (std::ranges::all_of(slotsAt(pos), [](QcItemStack other) { return other.count <= 0 || other.item == qcNoItem; })) {
+    if (std::ranges::all_of(slotsAt(pos), [](const QcItemStack &other) { return other.count <= 0 || other.item == qcNoItem; })) {
         m_filledFromEmpty.insert(pos);
     }
-    const int count = there->item == stack.item && there->damage == stack.damage ? there->count : 0;
-    *there = {stack.item, count + stack.count, stack.damage};
+    const int count = there->stacksWith(stack) ? there->count : 0;
+    *there = stack.withCount(count + stack.count);
     m_changed.insert(pos);
     return true;
 }

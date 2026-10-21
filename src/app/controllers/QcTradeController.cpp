@@ -90,7 +90,7 @@ void QcTradeController::trade(int index, bool repeat) const
     }
 }
 
-QVariantMap QcTradeController::stackMap(QcItemStack stack) const
+QVariantMap QcTradeController::stackMap(const QcItemStack &stack) const
 {
     const std::shared_ptr<const QcContentRegistry> content = m_parts.session->content();
     if (!content || !content->isValidItem(stack.item)) {

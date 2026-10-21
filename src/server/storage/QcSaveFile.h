@@ -29,8 +29,9 @@ struct Payload
 [[nodiscard]] QcResult<Payload> read(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion);
 // The same for the bytes of a file (`path` names it in messages).
 [[nodiscard]] QcResult<Payload> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion);
-// An item stack by item name, count and damage; empty stacks and invalid items as an empty name.
-void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content);
+// An item stack by item name, count and damage, then its data (QcItemDataCodec); empty stacks and
+// invalid items as an empty name.
+void writeStack(QDataStream &stream, const QcItemStack &stack, const QcContentRegistry &content);
 
 // Damaged copies kept aside per file at most (<path>.damaged, .damaged.2, …).
 inline constexpr int maxDamagedCopies = 16;

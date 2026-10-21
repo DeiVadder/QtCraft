@@ -12,6 +12,7 @@
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcCreatureComponents.h"
 #include "server/storage/QcHangingCodec.h"
+#include "server/storage/QcItemDataCodec.h"
 #include "server/storage/QcSaveFile.h"
 #include "server/storage/QcStackReader.h"
 
@@ -250,8 +251,14 @@ private:
             in >> count >> damage >> drop.age >> drop.pickupDelay;
             return true;
         };
+        std::optional<QcItemData> data = QcItemData{};
+        const auto dataFields = [&](QDataStream &in, quint16) {
+            data = QcStackReader(m_content, m_path, m_warnings).readData(in, QcItemData::maxDepth);
+            return data.has_value();
+        };
         drop.kept = keptOf(header, false);
-        std::optional<QcEntityComponents> components = readComponents({known(Component::Item, kindVersion, fields)});
+        std::optional<QcEntityComponents> components =
+            readComponents({known(Component::Item, kindVersion, fields), known(Component::ItemData, kindVersion, dataFields)});
         if (!components || !std::isfinite(drop.age) || !std::isfinite(drop.pickupDelay)) {
             return false;
         }
@@ -264,24 +271,26 @@ private:
             }
             return true;
         }
-        addItem(entry, *item, count, damage);
+        addItem(entry, QcStackReader::Saved{*item, count, damage, std::move(*data)});
         return true;
     }
 
     // A stack saved larger than the item allows now (a mod lowered maxStack) is split; only the first
-    // part keeps what this version does not use (as QcItemEntityManager::spawn splits).
-    void addItem(const QcEntityRecord::Ordered<QcItemEntityManager::Drop> &read, QcItemId item, int count, int damage)
+    // part keeps what this version does not use, of the entry and of the stack's data
+    // (QcItemStack::split, as in QcItemEntityManager::spawn): an unknown component may hold items,
+    // which a copy would multiply. A stack with contents is one item, whatever count was saved, for the same reason.
+    void addItem(const QcEntityRecord::Ordered<QcItemEntityManager::Drop> &read, const QcStackReader::Saved &saved)
     {
-        const QcItemDefinition &definition = m_content.item(item);
         QcEntityRecord::Ordered<QcItemEntityManager::Drop> entry = read;
         QcItemEntityManager::Drop &drop = entry.entry;
         drop.velocity = clampedVelocity(drop.velocity);
         drop.age = std::clamp(drop.age, 0.0, QcItemEntityManager::despawnSeconds);
         drop.pickupDelay = std::clamp(drop.pickupDelay, 0.0, QcItemEntityManager::thrownPickupDelay);
-        int left = std::clamp(count, 1, QcItemDefinition::maxStackLimit);
-        while (left > 0) {
-            drop.stack = {item, std::min(left, definition.maxStack), definition.keptDamage(damage)};
-            left -= drop.stack.count;
+        const QcItemStack fitted = QcStackReader(m_content, m_path, m_warnings).fitted(saved);
+        const int count = std::clamp(saved.count, 1, QcItemDefinition::maxStackLimit);
+        const QList<QcItemStack> parts = fitted.withCount(count).split(m_content.item(fitted.item).maxStack);
+        for (const QcItemStack &part : parts) {
+            drop.stack = part;
             m_record.items.append(entry);
             drop.kept = {};
         }
@@ -484,21 +493,8 @@ private:
     // What a stand wears or holds: one item, by name; unknown items are dropped with a warning.
     QcItemStack standStack(QDataStream &in)
     {
-        QString name;
-        qint32 count = 0;
-        qint32 damage = 0;
-        in >> name >> count >> damage;
-        if (name.isEmpty() || count <= 0) {
-            return {};
-        }
-
-        const std::optional<QcItemId> item = m_content.itemId(name);
-        if (!item) {
-            warnOnce(u"item"_s, name);
-            return {};
-        }
-        const QcItemDefinition &definition = m_content.item(*item);
-        return {*item, 1, definition.keptDamage(int(damage))};
+        const QcItemStack stack = QcStackReader(m_content, m_path, m_warnings).read(in);
+        return stack.isEmpty() ? QcItemStack{} : stack.withCount(1);
     }
 
     void fitArmour(QcArmourStand &stand)
@@ -576,8 +572,14 @@ void writeItemsAndBlocks(QDataStream &stream, const QcEntityRecord &record, cons
     writeEntries(stream, record.items, [&](const QcItemEntityManager::Drop &drop, quint64 order) {
         const QString name = drop.stack.isEmpty() ? QString() : content.item(drop.stack.item).name;
         const auto fields = [&drop](QDataStream &out) { out << qint32(drop.stack.count) << qint32(drop.stack.damage) << drop.age << drop.pickupDelay; };
+        const auto dataFields = [&drop, &content](QDataStream &out) { QcItemDataCodec::write(out, drop.stack.itemData(), content); };
         writeEntry(stream, {name, drop.position, drop.velocity, 0.0f, order, drop.kept.uid}, drop.kept.components,
-                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::Item), kindVersion, fields); });
+                   [&](QcComponentFrames::Writer &components) {
+                       components.add(quint16(Component::Item), kindVersion, fields);
+                       if (drop.stack.data) {
+                           components.add(quint16(Component::ItemData), kindVersion, dataFields);
+                       }
+                   });
     });
     // Lit explosives are falling block entries with a fuse (decision E-601), in the same list.
     stream << quint32(record.fallingBlocks.size() + record.primedExplosives.size());

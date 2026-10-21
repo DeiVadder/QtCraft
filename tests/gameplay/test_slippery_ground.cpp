@@ -151,7 +151,7 @@ private:
         quint32 next = 1;
         const quint32 id = items.spawn(drop, next++);
         items.editableItems().first().motion.onGround = true;
-        const QcItemEntityManager::TickCallbacks callbacks{[](const QcVec3 &) { return true; }, [](quint32, QcItemStack stack) { return stack.count; },
+        const QcItemEntityManager::TickCallbacks callbacks{[](const QcVec3 &) { return true; }, [](quint32, const QcItemStack &stack) { return stack.count; },
                                                            [&next] { return next++; }};
         for (int tick = 0; tick < 200; ++tick) {
             items.tick(world, {}, dt, callbacks);

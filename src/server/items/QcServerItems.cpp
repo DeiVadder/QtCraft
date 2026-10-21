@@ -28,7 +28,7 @@ QList<QcItemEntity> QcServerItems::tick()
     const QList<QcItemEntity> despawned = m_state.entities().items().tick(
         m_state.world(), players, dt,
         {[this](const QcVec3 &position) { return m_state.isLoadedAt(QcPhysics::blockContaining(position)); },
-         [this, &changed](quint32 entityId, QcItemStack stack) {
+         [this, &changed](quint32 entityId, const QcItemStack &stack) {
              const Given given = giveToPlayer(entityId, stack);
              if (given.taker) {
                  changed.insert(given.taker);
@@ -43,14 +43,14 @@ QList<QcItemEntity> QcServerItems::tick()
     return despawned;
 }
 
-QcServerItems::Given QcServerItems::giveToPlayer(quint32 entityId, QcItemStack stack)
+QcServerItems::Given QcServerItems::giveToPlayer(quint32 entityId, const QcItemStack &stack)
 {
     for (const auto &client : m_state.clients()) {
         if (client->id != entityId || client->state != QcServerClient::State::Playing) {
             continue;
         }
 
-        const int left = client->inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
+        const int left = client->inventory.add(stack, m_state.content());
         if (left >= stack.count) {
             return {left, nullptr};
         }

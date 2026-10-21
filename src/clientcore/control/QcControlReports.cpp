@@ -128,7 +128,7 @@ std::optional<QJsonObject> QcControlReports::targetJson() const
                        {u"block"_s, block ? m_session.content()->block(*block).name : QString()}};
 }
 
-QJsonValue QcControlReports::stackJson(QcItemStack stack) const
+QJsonValue QcControlReports::stackJson(const QcItemStack &stack) const
 {
     const auto content = m_session.content();
     if (stack.isEmpty() || !content || !content->isValidItem(stack.item)) {
@@ -138,6 +138,9 @@ QJsonValue QcControlReports::stackJson(QcItemStack stack) const
     QJsonObject json{{u"item"_s, content->item(stack.item).name}, {u"count"_s, stack.count}};
     if (stack.damage > 0) {
         json.insert(u"damage"_s, stack.damage);
+    }
+    if (stack.mapId() != 0) {
+        json.insert(u"mapId"_s, qint64(stack.mapId()));
     }
     return json;
 }

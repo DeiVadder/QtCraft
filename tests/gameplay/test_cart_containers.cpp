@@ -149,7 +149,7 @@ private slots:
         QcTestUtil::pump();
         idle(1);
         QCOMPARE(countOf(item("qtcraft:cobblestone")), 0);
-        QVERIFY(std::ranges::none_of(bob->stacks, [this](QcItemStack stack) { return stack.item == item("qtcraft:cobblestone"); }));
+        QVERIFY(std::ranges::none_of(bob->stacks, [this](const QcItemStack &stack) { return stack.item == item("qtcraft:cobblestone"); }));
         QCOMPARE(droppedCount(item("qtcraft:cobblestone")), 10);
         QVERIFY(entityProblems().isEmpty());
     }

@@ -12,7 +12,7 @@
 // before and after a save, can be compared line by line.
 namespace QcBlockEntityDump {
 
-inline QString stackText(QcItemStack stack, const QcContentRegistry &content)
+inline QString stackText(const QcItemStack &stack, const QcContentRegistry &content)
 {
     return stack.isEmpty() ? QStringLiteral("-") : QStringLiteral("%1x%2/%3").arg(content.item(stack.item).name).arg(stack.count).arg(stack.damage);
 }
@@ -31,7 +31,7 @@ inline QStringList chunkLines(const QcBlockEntities::Chunk &chunk, quint64 now, 
         for (const QcItemStack &stack : container.stacks) {
             stacks.append(stackText(stack, content));
         }
-        if (std::ranges::any_of(container.stacks, [](QcItemStack stack) { return !stack.isEmpty(); })) {
+        if (std::ranges::any_of(container.stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); })) {
             lines.append(QStringLiteral("container %1: %2").arg(posText(container.pos), stacks.join(u' ')));
         }
         if (container.readyAt > now) {

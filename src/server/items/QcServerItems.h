@@ -28,7 +28,7 @@ private:
     };
 
     // Puts the stack into the inventory of the playing player with this entity id.
-    [[nodiscard]] Given giveToPlayer(quint32 entityId, QcItemStack stack);
+    [[nodiscard]] Given giveToPlayer(quint32 entityId, const QcItemStack &stack);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

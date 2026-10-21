@@ -21,8 +21,15 @@ QDataStream &operator<<(QDataStream &stream, const QcAppearance &value);
 [[nodiscard]] std::optional<QcAppearance> readAppearance(QDataStream &stream);
 void writePos(QDataStream &stream, QcBlockPos pos);
 QcBlockPos readPos(QDataStream &stream);
-void writeStack(QDataStream &stream, QcItemStack stack);
+// A stack with the known components of its data (decision E-823): contents of at most
+// QcItemData::maxContents stacks nesting at most QcItemData::maxDepth levels and holding at most
+// QcItemData::maxStacksInside stacks, names of at most QcItemData::maxNameLength characters;
+// anything else turns the stream corrupt.
+void writeStack(QDataStream &stream, const QcItemStack &stack);
 QcItemStack readStack(QDataStream &stream);
+// A stack from a client: as readStack, but contents turn the stream corrupt (a client never sends
+// stacks inside a stack).
+QcItemStack readFlatStack(QDataStream &stream);
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
 // At most 1024 stacks; std::nullopt for a larger count.
 [[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream);
@@ -112,7 +119,7 @@ void encode(QDataStream &stream, QcMsg::DropItem m);
 void encode(QDataStream &stream, QcMsg::PlayerFood m);
 void encode(QDataStream &stream, QcMsg::PlayerExperience m);
 void encode(QDataStream &stream, const QcMsg::GameMode &m);
-void encode(QDataStream &stream, QcMsg::CreativeItem m);
+void encode(QDataStream &stream, const QcMsg::CreativeItem &m);
 void encode(QDataStream &stream, QcMsg::PickBlock m);
 void encode(QDataStream &stream, QcMsg::DrawLauncher m);
 void encode(QDataStream &stream, QcMsg::ThrowItem m);

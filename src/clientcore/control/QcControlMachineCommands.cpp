@@ -136,7 +136,7 @@ void QcControlMachineCommands::takeOutput(const QJsonObject &request)
     moveMachineItem(request, QcMsg::MoveInventoryItem::machineOutputSlot, to);
 }
 
-int QcControlMachineCommands::outputDestination(QcItemStack output) const
+int QcControlMachineCommands::outputDestination(const QcItemStack &output) const
 {
     const auto content = session().content();
     const QcInventory &inventory = session().inventory();
@@ -144,7 +144,7 @@ int QcControlMachineCommands::outputDestination(QcItemStack output) const
 
     for (int slot = 0; slot < QcInventory::slotCount; ++slot) {
         const QcItemStack &stack = inventory.slot(slot);
-        if (stack.item == output.item && stack.damage == 0 && stack.count < maxStack) {
+        if (stack.stacksWith(output) && stack.count < maxStack) {
             return slot;
         }
     }

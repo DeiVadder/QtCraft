@@ -103,7 +103,7 @@ void encode(QDataStream &stream, const QcMsg::GameMode &m)
     m.adventure.write(stream);
 }
 
-void encode(QDataStream &stream, QcMsg::CreativeItem m)
+void encode(QDataStream &stream, const QcMsg::CreativeItem &m)
 {
     stream << m.slot;
     writeStack(stream, m.stack);
@@ -300,7 +300,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 {
     QcMsg::CreativeItem m;
     stream >> m.slot;
-    m.stack = readStack(stream);
+    m.stack = readFlatStack(stream);
     const bool inventorySlot = m.slot >= QcMsg::CreativeItem::addSlot && m.slot < QcInventory::slotCount;
     if (!inventorySlot && !QcMsg::MoveInventoryItem::isEquipmentSlot(m.slot)) {
         return qcError(u"Creative slot %1 out of range"_s.arg(m.slot));

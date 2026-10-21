@@ -1,6 +1,7 @@
 #include "server/storage/QcSaveFile.h"
 
 #include "common/core/QcCrc32.h"
+#include "server/storage/QcItemDataCodec.h"
 
 #include <QFile>
 #include <QSaveFile>
@@ -75,10 +76,15 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     return Payload{std::move(payload), fileVersion};
 }
 
-void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content)
+void writeStack(QDataStream &stream, const QcItemStack &stack, const QcContentRegistry &content)
 {
     const QString name = !stack.isEmpty() && content.isValidItem(stack.item) ? content.item(stack.item).name : QString();
-    stream << name << qint32(name.isEmpty() ? 0 : stack.count) << qint32(stack.damage);
+    const bool withData = !name.isEmpty() && stack.data;
+    const qint32 count = name.isEmpty() ? 0 : stack.count;
+    stream << name << (withData ? count | QcItemDataCodec::dataFlag : count) << qint32(stack.damage);
+    if (withData) {
+        QcItemDataCodec::write(stream, stack.itemData(), content);
+    }
 }
 
 QString keepAside(const QString &path)
