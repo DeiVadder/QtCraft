@@ -23,20 +23,28 @@
             "density": 0.25
         },
         {
-            "feature": "tall_grass",
-            "density": 0.08
-        },
-        {
             "feature": "brown_mushroom",
             "density": 0.004
-        },
-        {
-            "feature": "fern",
-            "density": 0.1
         },
         {
             "feature": "pumpkin_patch",
             "density": 0.0015
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.17,
+            "patchSize": 16,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 8
+                },
+                {
+                    "block": "fern",
+                    "weight": 9
+                }
+            ]
+        }
+    }
 }

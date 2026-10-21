@@ -155,4 +155,17 @@ void QcHandbookIndex::indexBiome(const QcBiomeDefinition &biome, const QcHandboo
             }
         }
     }
+
+    // Grasses and flowers (decision E-814); a layer without density grows only from bone meal.
+    for (const auto &[layer, label] : {std::pair{&biome.vegetation.grass, u"section.grasses"_s}, std::pair{&biome.vegetation.flowers, u"section.flowers"_s}}) {
+        if (layer->density <= 0.0 && layer->patches.chance <= 0.0) {
+            continue;
+        }
+        for (const QcVegetationPlant &plant : layer->plants) {
+            if (!m_content.blockId(plant.block)) {
+                continue;
+            }
+            m_foundIn[plant.block].addUnique(links.biomeLink(biome, text.label(label)));
+        }
+    }
 }

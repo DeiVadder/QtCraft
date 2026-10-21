@@ -22,7 +22,15 @@ Heller Wald aus Birken.
 
 **Pflanzen und Bäume**
 
-[Birke](worldgen.md#feature-qtcraft-birch_tree) (2,8 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (16 % der Säulen), [Kornblumen](worldgen.md#feature-qtcraft-cornflower) (1,4 % der Säulen), [Löwenzahn](worldgen.md#feature-qtcraft-dandelion) (1,2 % der Säulen), [Maiglöckchen](worldgen.md#feature-qtcraft-lily_of_the_valley) (0,8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+[Birke](worldgen.md#feature-qtcraft-birch_tree) (2,8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Löwenzahn](blocks.md#block-qtcraft-dandelion) (35,29 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (41,18 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (23,53 %)
 
 **Wesen**
 
@@ -44,7 +52,15 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 **Pflanzen und Bäume**
 
-[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (2 % der Säulen), [Farne](worldgen.md#feature-qtcraft-fern) (12 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (20 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,4 % der Säulen), [Mohn](worldgen.md#feature-qtcraft-poppy) (0,4 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (2 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,4 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (60 %), [Farn](blocks.md#block-qtcraft-fern) (40 %)
+
+**Blumen**
+
+[Mohn](blocks.md#block-qtcraft-poppy) (100 %)
 
 **Wesen**
 
@@ -66,7 +82,15 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 
 **Pflanzen und Bäume**
 
-[Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (30 % der Säulen), [Kornblumen](worldgen.md#feature-qtcraft-cornflower) (1,2 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Löwenzahn](worldgen.md#feature-qtcraft-dandelion) (2,2 % der Säulen), [Mohn](worldgen.md#feature-qtcraft-poppy) (2,2 % der Säulen), [Zierlauch](worldgen.md#feature-qtcraft-allium) (0,6 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+[Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,2 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Löwenzahn](blocks.md#block-qtcraft-dandelion) (35,48 %), [Mohn](blocks.md#block-qtcraft-poppy) (35,48 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (19,35 %), [Zierlauch](blocks.md#block-qtcraft-allium) (9,68 %)
 
 **Wesen**
 
@@ -90,7 +114,15 @@ Hohe Felsgipfel mit Schnee darauf.
 
 **Pflanzen und Bäume**
 
-[Fichte](worldgen.md#feature-qtcraft-spruce_tree) (0,6 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (6 % der Säulen), [Kornblumen](worldgen.md#feature-qtcraft-cornflower) (0,6 % der Säulen), [Zierlauch](worldgen.md#feature-qtcraft-allium) (0,6 % der Säulen)
+[Fichte](worldgen.md#feature-qtcraft-spruce_tree) (0,6 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Kornblume](blocks.md#block-qtcraft-cornflower) (50 %), [Zierlauch](blocks.md#block-qtcraft-allium) (50 %)
 
 **Wesen**
 
@@ -112,7 +144,15 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 **Pflanzen und Bäume**
 
-[Blaue Orchideen](worldgen.md#feature-qtcraft-blue_orchid) (2 % der Säulen), [Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (1,2 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (1,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (16 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,15 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,6 % der Säulen), [Seerosen](worldgen.md#feature-qtcraft-lily_pad) (8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (30 % der Säulen)
+[Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (1,2 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (1,2 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,15 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,6 % der Säulen), [Seerosen](worldgen.md#feature-qtcraft-lily_pad) (8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (30 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Blaue Orchidee](blocks.md#block-qtcraft-blue_orchid) (100 %)
 
 **Wesen**
 
@@ -136,7 +176,11 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 **Pflanzen und Bäume**
 
-[Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,4 % der Säulen), [Farne](worldgen.md#feature-qtcraft-fern) (10 % der Säulen), [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (2,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (8 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Schneedecke](worldgen.md#feature-qtcraft-snow_layer) (25 % der Säulen)
+[Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,4 % der Säulen), [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (2,2 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,15 % der Säulen), [Schneedecke](worldgen.md#feature-qtcraft-snow_layer) (25 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (47,06 %), [Farn](blocks.md#block-qtcraft-fern) (52,94 %)
 
 **Wesen**
 
@@ -181,7 +225,15 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 **Pflanzen und Bäume**
 
-[Birke](worldgen.md#feature-qtcraft-birch_tree) (0,8 % der Säulen), [Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (3,2 % der Säulen), [Hohes Gras](worldgen.md#feature-qtcraft-tall_grass) (15 % der Säulen), [Löwenzahn](worldgen.md#feature-qtcraft-dandelion) (0,5 % der Säulen), [Maiglöckchen](worldgen.md#feature-qtcraft-lily_of_the_valley) (0,8 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,12 % der Säulen), [Mohn](worldgen.md#feature-qtcraft-poppy) (0,8 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,3 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+[Birke](worldgen.md#feature-qtcraft-birch_tree) (0,8 % der Säulen), [Braune Pilze](worldgen.md#feature-qtcraft-brown_mushroom) (0,6 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (3,2 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,12 % der Säulen), [Rote Pilze](worldgen.md#feature-qtcraft-red_mushroom) (0,3 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (15 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Mohn](blocks.md#block-qtcraft-poppy) (38,1 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (23,81 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (38,1 %)
 
 **Wesen**
 

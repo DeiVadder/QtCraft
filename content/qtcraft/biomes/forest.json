@@ -18,18 +18,6 @@
             "density": 0.008
         },
         {
-            "feature": "tall_grass",
-            "density": 0.15
-        },
-        {
-            "feature": "poppy",
-            "density": 0.008
-        },
-        {
-            "feature": "dandelion",
-            "density": 0.005
-        },
-        {
             "feature": "brown_mushroom",
             "density": 0.006
         },
@@ -42,12 +30,43 @@
             "density": 0.15
         },
         {
-            "feature": "lily_of_the_valley",
-            "density": 0.008
-        },
-        {
             "feature": "melon_patch",
             "density": 0.0012
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.15,
+            "patchSize": 28,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.016,
+            "patchSize": 12,
+            "plants": [
+                {
+                    "block": "poppy",
+                    "weight": 8
+                },
+                {
+                    "block": "dandelion",
+                    "weight": 5
+                },
+                {
+                    "block": "lily_of_the_valley",
+                    "weight": 8
+                }
+            ],
+            "patches": {
+                "chance": 0.2,
+                "tries": 40,
+                "radius": 5
+            }
+        }
+    }
 }

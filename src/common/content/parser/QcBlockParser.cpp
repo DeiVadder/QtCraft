@@ -530,6 +530,7 @@ void BlockReader::readFarming()
     });
     m_block.tillsInto = m_reader.name(u"tillsInto"_s, m_namespace);
     m_block.flattensInto = m_reader.name(u"flattensInto"_s, m_namespace);
+    m_block.growsVegetation = m_reader.boolean(u"growsVegetation"_s, false);
     m_block.coveredInto = m_reader.name(u"coveredInto"_s, m_namespace);
     m_block.strippedInto = m_reader.name(u"strippedInto"_s, m_namespace);
     m_block.dyeProperty = m_reader.string(u"dyeProperty"_s);

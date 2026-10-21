@@ -65,6 +65,7 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcTerrainGenerator.h terrain/QcTerrainGenerator.cpp
     terrain/QcTerrainMath.h
     terrain/QcTreeShape.h terrain/QcTreeShape.cpp
+    terrain/QcVegetationPatchPlacer.h terrain/QcVegetationPatchPlacer.cpp
 )
 target_sources(qc_worldgen PRIVATE
     towers/QcCoastalTowerGenerator.h towers/QcCoastalTowerGenerator.cpp
@@ -96,7 +97,7 @@ qc_configure_target(qc_worldgen)
 set(qc_worldgen_fp_sources
     terrain/QcCaveCarver.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp terrain/QcTerrainColumnGrid.cpp
     terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTreeShape.cpp
-    villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
+    terrain/QcVegetationPatchPlacer.cpp villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
     villages/QcRoadNetworkPlanner.cpp villages/QcVillageDraft.cpp villages/QcVillageForecourt.cpp villages/QcVillagePlanner.cpp
     villages/QcWetlandPattern.cpp villages/QcWetlandShaper.cpp)
 if(MSVC)

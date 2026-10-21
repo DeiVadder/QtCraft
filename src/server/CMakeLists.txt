@@ -228,6 +228,7 @@ target_sources(qc_server PRIVATE
     plants/QcPlantGrowth.h plants/QcPlantGrowth.cpp
     plants/QcPlantManager.h plants/QcPlantManager.cpp
     plants/QcServerPlants.h plants/QcServerPlants.cpp
+    plants/QcVegetationSpread.h plants/QcVegetationSpread.cpp
 )
 target_sources(qc_server PRIVATE
     projectiles/QcHitEffects.h projectiles/QcHitEffects.cpp

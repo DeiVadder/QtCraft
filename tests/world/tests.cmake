@@ -51,6 +51,7 @@ qc_add_test(test_entity_storage SOURCES world/test_entity_storage.cpp LIBRARIES 
 qc_add_test(test_entity_components SOURCES world/test_entity_components.cpp LIBRARIES qc_server)
 qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_server)
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
+qc_add_test(test_vegetation SOURCES world/test_vegetation.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_ores_metals SOURCES world/test_ores_metals.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)

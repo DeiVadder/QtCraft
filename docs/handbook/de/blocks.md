@@ -682,7 +682,7 @@ Eine Blume, die nur im Sumpf wächst; ergibt hellblauen Farbstoff.
 
 **Kommt vor in**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp) (Blaue Orchideen)
+[Sumpf](biomes.md#biome-qtcraft-swamp) (Blumen)
 
 ### <a id="block-qtcraft-blue_terracotta"></a>Blaue Terrakotta
 
@@ -2290,7 +2290,7 @@ Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöck
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Farne), [Taiga](biomes.md#biome-qtcraft-taiga) (Farne)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser)
 
 ### <a id="block-qtcraft-barrel"></a>Fass
 
@@ -4776,7 +4776,7 @@ Bedeckt Wiesen; man kann direkt hineinbauen.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Hohes Gras), [Dschungel](biomes.md#biome-qtcraft-jungle) (Hohes Gras), [Ebene](biomes.md#biome-qtcraft-plains) (Hohes Gras), [Gebirge](biomes.md#biome-qtcraft-mountains) (Hohes Gras), [Sumpf](biomes.md#biome-qtcraft-swamp) (Hohes Gras), [Taiga](biomes.md#biome-qtcraft-taiga) (Hohes Gras), [Wald](biomes.md#biome-qtcraft-forest) (Hohes Gras)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Gräser), [Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Ebene](biomes.md#biome-qtcraft-plains) (Gräser), [Gebirge](biomes.md#biome-qtcraft-mountains) (Gräser), [Sumpf](biomes.md#biome-qtcraft-swamp) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser), [Wald](biomes.md#biome-qtcraft-forest) (Gräser)
 
 ### <a id="block-qtcraft-cactus"></a>Kaktus
 
@@ -5217,7 +5217,7 @@ Eine blaue Blume der Ebenen; ergibt blauen Farbstoff.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Kornblumen), [Ebene](biomes.md#biome-qtcraft-plains) (Kornblumen), [Gebirge](biomes.md#biome-qtcraft-mountains) (Kornblumen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Gebirge](biomes.md#biome-qtcraft-mountains) (Blumen)
 
 ### <a id="block-qtcraft-cake"></a>Kuchen
 
@@ -5847,7 +5847,7 @@ Eine gelbe Blume; ergibt gelben Farbstoff.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Löwenzahn), [Ebene](biomes.md#biome-qtcraft-plains) (Löwenzahn), [Wald](biomes.md#biome-qtcraft-forest) (Löwenzahn)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen)
 
 ### <a id="block-qtcraft-magenta_glazed_terracotta"></a>Magentafarbene glasierte Terrakotta
 
@@ -6145,7 +6145,7 @@ Eine kleine weiße Waldblume; ergibt weißen Farbstoff.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Maiglöckchen), [Wald](biomes.md#biome-qtcraft-forest) (Maiglöckchen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen)
 
 ### <a id="block-qtcraft-melon"></a>Melone
 
@@ -6253,7 +6253,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Mohn), [Ebene](biomes.md#biome-qtcraft-plains) (Mohn), [Wald](biomes.md#biome-qtcraft-forest) (Mohn)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen)
 
 ### <a id="block-qtcraft-spawner"></a>Monster-Spawner
 
@@ -10558,7 +10558,7 @@ Eine violette Blütenkugel auf Wiesen und im Gebirge; ergibt magentafarbenen Far
 
 **Kommt vor in**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (Zierlauch), [Gebirge](biomes.md#biome-qtcraft-mountains) (Zierlauch)
+[Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Gebirge](biomes.md#biome-qtcraft-mountains) (Blumen)
 
 ### <a id="block-qtcraft-sugar_cane"></a>Zuckerrohr
 

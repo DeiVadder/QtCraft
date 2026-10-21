@@ -49,6 +49,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcStructureDefinition.h
     content/definitions/QcTextureDefinition.h
     content/definitions/QcTradeDefinitions.h
+    content/definitions/QcVegetationDefinition.h
     content/definitions/QcVillageDefinitions.h
     content/definitions/QcVillagerDefinitions.h
     content/definitions/QcWeatherDefinition.h
@@ -88,6 +89,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcStructureSiteParser.h content/parser/QcStructureSiteParser.cpp
     content/parser/QcStructureVariationParser.h content/parser/QcStructureVariationParser.cpp
     content/parser/QcTradeParser.h content/parser/QcTradeParser.cpp
+    content/parser/QcVegetationParser.h content/parser/QcVegetationParser.cpp
     content/parser/QcVillageLayoutParser.h content/parser/QcVillageLayoutParser.cpp
     content/parser/QcVillageParser.h content/parser/QcVillageParser.cpp
     content/parser/QcVillagerParser.h content/parser/QcVillagerParser.cpp
@@ -250,6 +252,7 @@ target_sources(qc_common PRIVATE
     world/QcPlacedChunkLoader.h
     world/QcPrecipitationTable.h world/QcPrecipitationTable.cpp
     world/QcSignText.h world/QcSignText.cpp
+    world/QcVegetationTable.h world/QcVegetationTable.cpp
     world/QcWeather.h world/QcWeather.cpp
     world/QcWorldInfo.h world/QcWorldInfo.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp

@@ -455,6 +455,7 @@
     "item.qtcraft.raw_mutton": "Raw mutton",
     "item.qtcraft.cooked_mutton": "Cooked mutton",
     "structure.qtcraft.farm_station": "Farm: crops, farmland, stems and fruit",
+    "structure.qtcraft.farm_station.bone_meal": "Bone meal on grass grows grass and flowers",
     "structure.qtcraft.farm_station.wet": "Wet farmland next to water",
     "structure.qtcraft.farm_station.dry": "Dry farmland",
     "structure.qtcraft.farm_station.stems": "Stems put their fruit next to them",

@@ -253,6 +253,9 @@ struct QcBlockDefinition
     // Block it turns into when an item that `flattens` (a shovel) is used on its top, empty for none
     // (decision E-406). Server side only.
     QString flattensInto;
+    // Bone meal used on it grows grass and flowers of the biome around it (a grass block, decision
+    // E-814). Server side only.
+    bool growsVegetation = false;
     // Block it turns into when an item that `carves` (shears) is used on it, facing the clicked side,
     // dropping `carveDropCount` of the item `carveDrop` (a pumpkin carved into a head, decision E-472);
     // empty for none. Server side only.

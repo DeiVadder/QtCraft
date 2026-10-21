@@ -15,10 +15,6 @@
             "density": 0.012
         },
         {
-            "feature": "tall_grass",
-            "density": 0.16
-        },
-        {
             "feature": "brown_mushroom",
             "density": 0.012
         },
@@ -31,10 +27,6 @@
             "density": 0.3
         },
         {
-            "feature": "blue_orchid",
-            "density": 0.02
-        },
-        {
             "feature": "melon_patch",
             "density": 0.0015
         },
@@ -42,5 +34,32 @@
             "feature": "lily_pad",
             "density": 0.08
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.16,
+            "patchSize": 28,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.015,
+            "patchSize": 12,
+            "plants": [
+                {
+                    "block": "blue_orchid",
+                    "weight": 1
+                }
+            ],
+            "patches": {
+                "chance": 0.2,
+                "tries": 40,
+                "radius": 5
+            }
+        }
+    }
 }

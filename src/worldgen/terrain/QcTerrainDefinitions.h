@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcVegetationTable.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTreeShape.h"
 
@@ -8,6 +9,7 @@
 #include <QSet>
 #include <QStringList>
 
+#include <array>
 #include <utility>
 
 // The registry's terrain, biome, feature, ore and pool definitions resolved to block ids for the
@@ -25,7 +27,19 @@ struct QcTerrainDefinitions
         QcNoise patches{0};
         // Seed of the placement chances, derived from the feature's name.
         quint64 seed = 0;
+        // A layer of a biome's vegetation (decision E-814): the plant comes from this table, by
+        // weight, the same kind in areas of about patchSize / 2 blocks; empty for content features.
+        QcVegetationTable plants;
     };
+
+    // The patches of one vegetation layer of a biome (decision E-814).
+    struct VegetationPatches
+    {
+        QcVegetationTable plants;
+        QcVegetationPatches patches;
+    };
+    // Layers of a biome's vegetation in this order.
+    enum VegetationLayer { Grass, Flowers, VegetationLayers };
 
     struct Biome
     {
@@ -48,8 +62,9 @@ struct QcTerrainDefinitions
         QcBlockId frozenWater = qcAirBlockId;
         int snowLine = 0;
         QcBlockId snow = qcAirBlockId;
-        // Index into features and density per column.
+        // Index into features and density per column; the vegetation layers come last.
         QList<std::pair<int, double>> features;
+        std::array<VegetationPatches, VegetationLayers> patches;
     };
 
     struct Pool
@@ -92,6 +107,8 @@ struct QcTerrainDefinitions
     QList<Feature> features;
     QList<Ore> ores;
     QList<Pool> pools;
+    // Highest patch chance of any biome per vegetation layer (cells above it are skipped at once).
+    std::array<double, VegetationLayers> maxPatchChance{};
     // Solid blocks the terrain itself is made of (stone and every biome's ground layers, no
     // features, liquids or ice): where a player may spawn.
     QSet<QcBlockId> naturalGround;

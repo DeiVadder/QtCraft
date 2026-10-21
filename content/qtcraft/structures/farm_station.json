@@ -42,7 +42,7 @@
             "PWWWWWWWWWWWP",
             "PPPPPPPPPPPPP",
             "PPPPPPPPPPPPP",
-            "PPPPPPPPPPPPP",
+            "PGGGGGGGGGGGP",
             "PDDDDDDDDDDDP",
             "PPPPPPPPPPPPP",
             "PGWGPGWGPWPWP",
@@ -167,6 +167,10 @@
                 {
                     "item": "melon",
                     "count": 4
+                },
+                {
+                    "item": "bone_meal",
+                    "count": 64
                 }
             ]
         }
@@ -211,6 +215,14 @@
                 5.5
             ],
             "text": "structure.qtcraft.farm_station.pantry"
+        },
+        {
+            "at": [
+                10.5,
+                1.6,
+                6.5
+            ],
+            "text": "structure.qtcraft.farm_station.bone_meal"
         }
     ]
 }

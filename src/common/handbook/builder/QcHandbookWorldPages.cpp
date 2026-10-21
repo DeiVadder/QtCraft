@@ -42,7 +42,51 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     return facts;
 }
 
-// The features placed in a biome and the creatures spawning there.
+// The plants of one vegetation layer the content knows (decision E-814); unknown ones are noted as
+// problems and get no link.
+[[nodiscard]] QList<QcVegetationPlant> knownPlants(const QcHandbookContext &context, const QcBiomeDefinition &biome, const QcVegetationLayer &layer)
+{
+    QList<QcVegetationPlant> plants;
+    for (const QcVegetationPlant &plant : layer.plants) {
+        if (context.content.blockId(plant.block)) {
+            plants.append(plant);
+        } else {
+            context.text.addProblem(u"biome %1: unknown plant %2"_s.arg(biome.name, plant.block));
+        }
+    }
+    return plants;
+}
+
+// The grasses and flowers of a biome (decision E-814), each with its share of its layer; a layer
+// that never generates (no density, no patches) grows only from bone meal and is left out.
+[[nodiscard]] QList<Section> vegetationSections(const QcHandbookContext &context, const QcBiomeDefinition &biome)
+{
+    QList<Section> sections;
+    const QcHandbookText &text = context.text;
+    const std::array<std::pair<const QcVegetationLayer *, QString>, 2> layers{
+        {{&biome.vegetation.grass, u"section.grasses"_s}, {&biome.vegetation.flowers, u"section.flowers"_s}}};
+    for (const auto &[layer, label] : layers) {
+        if (layer->density <= 0.0 && layer->patches.chance <= 0.0) {
+            continue;
+        }
+        const QList<QcVegetationPlant> plants = knownPlants(context, biome, *layer);
+        int total = 0;
+        for (const QcVegetationPlant &plant : plants) {
+            total += plant.weight;
+        }
+
+        Section section{text.label(label), {}, {}, {}};
+        for (const QcVegetationPlant &plant : plants) {
+            section.links.append(context.links.blockLink(plant.block, text.percent(double(plant.weight) / total)));
+        }
+        if (!section.links.isEmpty()) {
+            sections.append(std::move(section));
+        }
+    }
+    return sections;
+}
+
+// The features placed in a biome, its vegetation and the creatures spawning there.
 [[nodiscard]] QList<Section> biomeSections(const QcHandbookContext &context, const QcBiomeDefinition &biome)
 {
     QList<Section> sections;
@@ -62,6 +106,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     if (!features.links.isEmpty()) {
         sections.append(std::move(features));
     }
+    sections += vegetationSections(context, biome);
 
     Section creatures{text.label(u"section.creatures"_s), {}, {}, {}};
     for (const QcMobDefinition &mob : content.mobs()) {

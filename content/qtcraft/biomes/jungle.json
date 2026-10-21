@@ -18,24 +18,43 @@
             "density": 0.02
         },
         {
-            "feature": "fern",
-            "density": 0.12
-        },
-        {
-            "feature": "tall_grass",
-            "density": 0.2
-        },
-        {
             "feature": "melon_patch",
             "density": 0.004
         },
         {
             "feature": "sugar_cane",
             "density": 0.2
-        },
-        {
-            "feature": "poppy",
-            "density": 0.004
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.3,
+            "patchSize": 20,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 18
+                },
+                {
+                    "block": "fern",
+                    "weight": 12
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.004,
+            "patchSize": 14,
+            "plants": [
+                {
+                    "block": "poppy",
+                    "weight": 1
+                }
+            ],
+            "patches": {
+                "chance": 0.05,
+                "tries": 32,
+                "radius": 4
+            }
+        }
+    }
 }

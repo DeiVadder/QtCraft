@@ -674,7 +674,7 @@ private slots:
         QCOMPARE(book.packs()[1].name, u"Rubies"_s);
 
         for (const QString &id : {u"block:rubies:ruby_ore"_s, u"item:rubies:ruby"_s, u"mob:rubies:crystal_beetle"_s,
-                                  u"block:rubies:molten_ruby"_s, u"feature:rubies:ruby_rose"_s, u"ore:rubies:ruby"_s,
+                                  u"block:rubies:molten_ruby"_s, u"feature:rubies:molten_ruby_pool"_s, u"ore:rubies:ruby"_s,
                                   u"block:rubies:ruby_pillar"_s}) {
             const QcHandbookEntry *entry = book.entry(id);
             QVERIFY2(entry && entry->pack == u"rubies"_s, qPrintable(id));

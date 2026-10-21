@@ -2397,3 +2397,20 @@ Basis `pre` = `aaedafc` (nach Etappe 62), `new` = `6446c89` (71.1 und 71.2, dazu
 
 **Fenster** (@core, 10 s, 3–6 Runden): keine Regression, alle Werte innerhalb ±4 % (GPU −2 … +1,5 %, Render-CPU −8 … +1,4 %, Frame p99 −3,9 … +3,3 %, Speicher +0,0 … +0,7 %). Karten werden von @core nicht eigens gemessen.
 
+
+## 63 Vegetationskarte, headless, Release (2026-10-21)
+
+`scripts/bench-headless.sh`, `@server` (mit `explore`), 60 Spielsekunden, adaptiv 3–6 Runden, `dev` `c11e6e5` (`pre`) gegen `feature/63-vegetation-map` (`new`). Mittelwerte der Runden, Differenz `new` zu `pre`:
+
+| Szenario | Tick Ø ms pre → new | Tick p99 ms pre → new | Spitzenspeicher MB pre → new |
+|---|---:|---:|---:|
+| crowd | 0,162 → 0,158 (−2,7 %) | 0,238 → 0,235 (−1,3 %) | 63,8 → 63,5 (−0,5 %) |
+| gravel-collapse | 0,520 → 0,521 (+0,2 %) | 1,448 → 1,469 (+1,4 %) | 89,7 → 90,1 (+0,5 %) |
+| farm (6 Runden) | 0,0083 → 0,0080 (−4,0 %) | 0,0147 → 0,0138 (−5,7 %) | 56,3 → 55,7 (−1,1 %) |
+| farm-seeds | 0,018 → 0,018 (±0 %) | 0,054 → 0,054 (+0,6 %) | 55,2 → 55,4 (+0,3 %) |
+| explore | 0,2367 → 0,2370 (+0,1 %) | 1,054 → 1,055 (+0,1 %) | 70,6 → 71,0 (+0,6 %) |
+| showcase-signal_components | 0,0903 → 0,0897 (−0,7 %) | 0,169 → 0,168 (−0,4 %) | 62,6 → 62,5 (−0,2 %) |
+| showcase-signal_machines | 0,0933 → 0,0923 (−1,1 %) | 0,167 → 0,172 (+3,0 %) | 61,6 → 61,9 (+0,4 %) |
+| showcase-signal_farm | 0,0923 → 0,0917 (−0,7 %) | 0,168 → 0,175 (+4,2 %, Streuung 13 %) | 62,4 → 62,6 (+0,3 %) |
+
+Alle Werte innerhalb von ±6 %, keine Regression. Die Vegetationsschichten und Blumenflecken (E-814) ersetzen die bisherigen Pflanzen-Features der Biome; die Weltgenerierung beim Erkunden (`explore`) kostet gleich viel.

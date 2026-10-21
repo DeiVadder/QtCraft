@@ -8,6 +8,7 @@
 #include "worldgen/terrain/QcPoolPlacer.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/terrain/QcTerrainDefinitions.h"
+#include "worldgen/terrain/QcVegetationPatchPlacer.h"
 
 #include <QList>
 #include <QVarLengthArray>
@@ -55,6 +56,8 @@ public:
     const QcSurfaceStructures &surfaceStructures() const { return *m_surface; }
     // Coastal towers (decision E-605): their chests' loot, and the plans for tools and tests.
     const QcCoastalTowerGenerator &coastalTowers() const { return *m_coastalTowers; }
+    // Patches of one kind of grass or flower (decision E-814), for tests.
+    const QcVegetationPatchPlacer &vegetationPatches() const { return *m_vegetationPatches; }
     QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
@@ -135,6 +138,8 @@ private:
     // Created after the mine shafts and the surface structures: its plans keep clear of their
     // entrances and footprints and of villages (decision E-605).
     std::unique_ptr<QcCoastalTowerGenerator> m_coastalTowers;
+    // Patches of grass and flowers (decision E-814); reads the terrain columns.
+    std::unique_ptr<QcVegetationPatchPlacer> m_vegetationPatches;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

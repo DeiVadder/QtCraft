@@ -55,6 +55,23 @@ double terraced(double height, int step)
     return (floor + smoothstep(0.97, 1.0, level - floor)) * step;
 }
 
+// The value that chooses the kind of a scattered vegetation plant at a column (decision E-814): the
+// same over areas of about patchSize / 2 blocks with frayed borders, per column without a patch size.
+double kindRandom(const QcTerrainDefinitions::Feature &feature, int x, int z)
+{
+    if (feature.patchSize < 4) {
+        return qcPositionRandom(feature.seed, x, 2, z);
+    }
+
+    // Areas of one kind: cells of half the patch size, their borders bent by the patch noise.
+    const int size = feature.patchSize / 2;
+    const double warpX = feature.patches.noise2(x / 9.0 + 31.7, z / 9.0) * size * 0.5;
+    const double warpZ = feature.patches.noise2(x / 9.0, z / 9.0 + 57.3) * size * 0.5;
+    const int areaX = int(std::floor((x + warpX) / size));
+    const int areaZ = int(std::floor((z + warpZ) / size));
+    return qcPositionRandom(feature.seed, areaX, 2, areaZ);
+}
+
 } // namespace
 
 QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed)
@@ -82,6 +99,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_mineshafts = std::make_unique<QcMineshaftGenerator>(*this, *m_content, m_seed);
     m_surface = std::make_unique<QcSurfaceStructures>(*this, *m_villages, *m_content, m_seed);
     m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed);
+    m_vegetationPatches = std::make_unique<QcVegetationPatchPlacer>(*this, m_definitions, m_seed);
     m_warnings = m_definitions.warnings + m_villages->styles().warnings() + m_dungeons->planner().warnings()
                  + m_mineshafts->planner().warnings() + m_surface->planner().warnings() + m_coastalTowers->planner().warnings();
 }
@@ -504,8 +522,11 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
     if ((shore && !waterBeside()) || (!inside && feature.shape.type != QcFeatureDefinition::Type::Tree)) {
         return;
     }
-    const QcBlockId ground = surfaceBlock(info, x, z);
-    if (!feature.ground.isEmpty() && !feature.ground.contains(ground)) {
+    // A vegetation layer (decision E-814) chooses its plant here, and the plant's own ground counts.
+    const QcVegetationTable::Plant *plant =
+        feature.plants.isEmpty() ? nullptr : &feature.plants.pick(kindRandom(feature, x, z));
+    const QSet<QcBlockId> &allowedGround = plant ? plant->ground : feature.ground;
+    if (!allowedGround.isEmpty() && !allowedGround.contains(surfaceBlock(info, x, z))) {
         return;
     }
 
@@ -518,6 +539,12 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
         return;
     }
 
+    if (plant) {
+        if (top + 1 < QcWorld::worldHeight && chunk.block(x - baseX, top + 1, z - baseZ) == qcAirBlockId) {
+            chunk.setBlock(x - baseX, top + 1, z - baseZ, plant->block);
+        }
+        return;
+    }
     placeFeature(chunk, feature, {x, top + 1, z}, qcPositionRandom(feature.seed, x, 1, z));
 }
 
@@ -552,20 +579,22 @@ void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
+    // Trees reach featureMargin blocks from their trunk: none grows into a village, nor into a
+    // surface structure, where it would be cut or left floating.
+    const auto allowed = [&](int x, int z) {
+        const QcSurfacePlanner::Rect trunk{x, z, x, z};
+        return !(village && village->covers(x, z, featureMargin))
+               && std::ranges::none_of(structures, [&](QcSurfacePlanner::Rect footprint) { return footprint.intersects(trunk, featureMargin); });
+    };
     for (int z = baseZ - featureMargin; z < baseZ + QcWorld::chunkSize + featureMargin; ++z) {
         for (int x = baseX - featureMargin; x < baseX + QcWorld::chunkSize + featureMargin; ++x) {
-            // Trees reach featureMargin blocks from their trunk: none grows into a village.
-            if (village && village->covers(x, z, featureMargin)) {
-                continue;
+            if (allowed(x, z)) {
+                placeFeatureInColumn(chunk, columns, carved, x, z);
             }
-            // Nor into a surface structure, where it would be cut or left floating.
-            const QcSurfacePlanner::Rect trunk{x, z, x, z};
-            if (std::ranges::any_of(structures, [&](QcSurfacePlanner::Rect footprint) { return footprint.intersects(trunk, featureMargin); })) {
-                continue;
-            }
-            placeFeatureInColumn(chunk, columns, carved, x, z);
         }
     }
+    // Patches of one plant kind after the scattered plants (decision E-814).
+    m_vegetationPatches->place(chunk, columns, carved, allowed);
 }
 
 std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const

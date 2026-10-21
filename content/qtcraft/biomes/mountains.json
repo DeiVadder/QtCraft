@@ -20,18 +20,37 @@
         {
             "feature": "spruce_tree",
             "density": 0.006
-        },
-        {
-            "feature": "tall_grass",
-            "density": 0.06
-        },
-        {
-            "feature": "cornflower",
-            "density": 0.006
-        },
-        {
-            "feature": "allium",
-            "density": 0.006
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.06,
+            "patchSize": 28,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.012,
+            "patchSize": 12,
+            "plants": [
+                {
+                    "block": "cornflower",
+                    "weight": 6
+                },
+                {
+                    "block": "allium",
+                    "weight": 6
+                }
+            ],
+            "patches": {
+                "chance": 0.1,
+                "tries": 32,
+                "radius": 4
+            }
+        }
+    }
 }

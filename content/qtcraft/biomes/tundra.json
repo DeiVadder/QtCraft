@@ -15,5 +15,16 @@
             "feature": "spruce_tree",
             "density": 0.0015
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    }
 }

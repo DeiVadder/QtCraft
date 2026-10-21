@@ -283,9 +283,19 @@ private slots:
         // Mud shores still carry sugar cane, grass and orchids.
         for (const char *plant : {"sugar_cane", "tall_grass", "blue_orchid"}) {
             QVERIFY2(m_content->block(block(plant)).groundBlocks.contains(u"qtcraft:mud"_s), plant);
-            const auto feature = std::ranges::find(m_content->worldgen().features(), u"qtcraft:"_s + QString::fromLatin1(plant), &QcFeatureDefinition::name);
-            QVERIFY2(feature != m_content->worldgen().features().end() && feature->groundBlocks.contains(u"qtcraft:mud"_s), plant);
         }
+        const auto cane = std::ranges::find(m_content->worldgen().features(), u"qtcraft:sugar_cane"_s, &QcFeatureDefinition::name);
+        QVERIFY(cane != m_content->worldgen().features().end() && cane->groundBlocks.contains(u"qtcraft:mud"_s));
+
+        // Grass and orchids come from the swamp's vegetation (decision E-814), standing on the
+        // ground of their blocks.
+        const auto swamp = std::ranges::find(m_content->worldgen().biomes(), u"qtcraft:swamp"_s, &QcBiomeDefinition::name);
+        QVERIFY(swamp != m_content->worldgen().biomes().end());
+        const auto lists = [](const QcVegetationLayer &layer, const QString &name) {
+            return std::ranges::any_of(layer.plants, [&](const QcVegetationPlant &plant) { return plant.block == name; });
+        };
+        QVERIFY(lists(swamp->vegetation.grass, u"qtcraft:tall_grass"_s));
+        QVERIFY(lists(swamp->vegetation.flowers, u"qtcraft:blue_orchid"_s));
     }
 
     void glassBottlesFillWithoutTakingTheWater()

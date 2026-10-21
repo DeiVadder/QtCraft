@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcBlockFace.h"
 #include "server/items/QcItemEntityManager.h"
+#include "server/plants/QcVegetationSpread.h"
 
 #include <QHash>
 #include <QSet>
@@ -54,8 +55,10 @@ public:
     bool strip(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
     // Bone meal (an item that `fertilizes`, decision E-426) on the clicked block within reach: a crop
     // that is not ripe grows fertilizeStagesMin..Max stages at once, a sapling grows into its tree on
-    // the next tick with QcItemDefinition::fertilizeSaplingChance; either takes one item (not in
-    // creative mode). False for other blocks (then other uses of the item may follow).
+    // the next tick with QcItemDefinition::fertilizeSaplingChance, a block that `growsVegetation`
+    // with air above grows the biome's grass and flowers around it (QcVegetationSpread, decision
+    // E-814); each takes one item (not in creative mode). False for other blocks (then other uses of
+    // the item may follow).
     bool fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
     // Grows the crop at `pos` by up to `stages` stages (not beyond ripe); false when it is no crop
     // or ripe already.
@@ -69,6 +72,8 @@ private:
     // Where a resting seed item plants this check: its own cell or a free one around it (each
     // rolling the chance), none of the cells already `planned`.
     std::optional<QcBlockPos> seedTarget(const QcItemEntity &item, QcBlockId crop, const QSet<QcBlockPos> &planned);
+    // Bone meal on a block that grows vegetation: false without air above it.
+    bool growVegetation(QcBlockPos target);
     // Soil at `ground` with air above where `crop` may stand.
     bool isFreeSoil(QcBlockPos ground, QcBlockId crop) const;
 
@@ -79,4 +84,5 @@ private:
     quint64 m_itemTicks = 0;
     // Crop each self-planting seed item places.
     QHash<QcItemId, QcBlockId> m_seedCrops;
+    QcVegetationSpread m_vegetation;
 };

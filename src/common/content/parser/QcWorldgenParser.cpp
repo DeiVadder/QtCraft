@@ -3,6 +3,7 @@
 #include "common/content/parser/QcCoastalTowerParser.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcVegetationParser.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/core/QcWorldConstants.h"
 
@@ -129,6 +130,33 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
 }
 
 
+// The `features` a biome places with their densities.
+[[nodiscard]] QList<QcFeaturePlacement> parsePlacements(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<QcFeaturePlacement> placements;
+    const QJsonValue features = json.value(u"features"_s);
+    if (!features.isUndefined() && !features.isArray()) {
+        reader.fail(u"'features' must be an array"_s);
+    }
+    const QJsonArray featureList = features.toArray();
+    if (featureList.size() > 64) {
+        reader.fail(u"'features' has more than 64 entries"_s);
+    }
+
+    for (const auto &entry : featureList) {
+        const QJsonObject placementJson = entry.toObject();
+        QcJsonFieldReader placementReader{placementJson, reader.context, {}};
+        const QcFeaturePlacement placement{placementReader.name(u"feature"_s, packNamespace),
+                                           placementReader.number(u"density"_s, 0.0, 0.0, 1.0)};
+        if (!entry.isObject() || placement.feature.isEmpty() || !placementReader.ok()) {
+            reader.fail(placementReader.ok() ? u"feature entries need 'feature' and 'density'"_s : placementReader.error);
+            break;
+        }
+        placements.append(placement);
+    }
+    return placements;
+}
+
 } // namespace
 
 namespace QcWorldgenParser {
@@ -167,6 +195,9 @@ namespace QcWorldgenParser {
     biome.snowLine = reader.integer(u"snowLine"_s, 0, 0, QcWorld::worldHeight);
     biome.snowBlock = reader.name(u"snow"_s, packNamespace);
     biome.villages = reader.boolean(u"villages"_s, false);
+    reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
+    });
 
     if (biome.surfaceBlock.isEmpty()) {
         reader.fail(u"'surface' is required"_s);
@@ -175,26 +206,7 @@ namespace QcWorldgenParser {
         reader.fail(u"'snowLine' needs a 'snow' block"_s);
     }
 
-    const QJsonValue features = json.value(u"features"_s);
-    if (!features.isUndefined() && !features.isArray()) {
-        reader.fail(u"'features' must be an array"_s);
-    }
-    const QJsonArray featureList = features.toArray();
-    if (featureList.size() > 64) {
-        reader.fail(u"'features' has more than 64 entries"_s);
-    }
-
-    for (const auto &entry : featureList) {
-        const QJsonObject placementJson = entry.toObject();
-        QcJsonFieldReader placementReader{placementJson, reader.context, {}};
-        const QcFeaturePlacement placement{placementReader.name(u"feature"_s, packNamespace),
-                                           placementReader.number(u"density"_s, 0.0, 0.0, 1.0)};
-        if (!entry.isObject() || placement.feature.isEmpty() || !placementReader.ok()) {
-            reader.fail(placementReader.ok() ? u"feature entries need 'feature' and 'density'"_s : placementReader.error);
-            break;
-        }
-        biome.features.append(placement);
-    }
+    biome.features = parsePlacements(json, reader, packNamespace);
 
     if (!reader.ok()) {
         return qcError(reader.error);
@@ -396,6 +408,7 @@ QcMineshaftSettings MineshaftReader::read()
     settings.caveRoof = reader.integer(u"caveRoof"_s, settings.caveRoof, 0, 32);
     settings.caveEntrances = reader.number(u"caveEntrances"_s, settings.caveEntrances, 0.0, 1.0);
     settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
+    settings.vegetationBiome = reader.name(u"vegetationBiome"_s, packNamespace);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.dungeons = parseDungeons(object, nested, packNamespace);
     });

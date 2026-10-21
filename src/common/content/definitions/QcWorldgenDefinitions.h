@@ -7,6 +7,7 @@
 #include "common/content/definitions/QcCoastalTowerDefinition.h"
 #include "common/content/definitions/QcDungeonDefinition.h"
 #include "common/content/definitions/QcMineshaftDefinition.h"
+#include "common/content/definitions/QcVegetationDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -61,6 +62,8 @@ struct QcBiomeDefinition
     // fallback style. Server side only.
     bool villages = false;
     QList<QcFeaturePlacement> features;
+    // Grass and flowers (decision E-814): placed after the listed features, used by bone meal.
+    QcVegetationDefinition vegetation;
 };
 
 struct QcFeatureDefinition
@@ -138,6 +141,9 @@ struct QcTerrainSettings
     double caveEntrances = 0.04;
     // Bedrock: the bottom layer is solid, the layers above it get thinner up to this many layers.
     int bedrockLayers = 3;
+    // Biome whose vegetation bone meal grows where the world generator names no biome (flat,
+    // showcase and void worlds; decision E-814); empty: none there.
+    QString vegetationBiome;
     // Dungeons with spawners and corridors to caves (decision E-522).
     QcDungeonSettings dungeons;
     // Mine shafts with levels, staircases, bridges and surface entrances (decision E-570).

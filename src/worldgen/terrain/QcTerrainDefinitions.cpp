@@ -12,6 +12,14 @@ using Feature = QcTerrainDefinitions::Feature;
 using Ore = QcTerrainDefinitions::Ore;
 using Pool = QcTerrainDefinitions::Pool;
 
+// The resolved vegetation of one biome (decision E-814), applied by the constructor.
+struct BiomeVegetation
+{
+    std::array<QcTerrainDefinitions::VegetationPatches, QcTerrainDefinitions::VegetationLayers> patches;
+    // The features of the scattered plants with their densities per column.
+    QList<std::pair<Feature, double>> scattered;
+};
+
 // Resolves block names of one registry and collects the warnings about them.
 class Loader
 {
@@ -27,6 +35,9 @@ public:
     // `stone` and `water` are the fallbacks of the biome's own blocks.
     Biome biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBlockId water);
     void warnSharedClimate(const QList<Biome> &biomes, const Biome &biome);
+    // The vegetation layers of a biome (decision E-814): a feature for the scattered plants of each
+    // layer with a density, placed after the biome's own features, and the patches.
+    [[nodiscard]] BiomeVegetation vegetation(const QcBiomeDefinition &definition, quint64 seed);
     std::optional<Ore> ore(const QcOreDefinition &definition, QcBlockId stone, quint64 seed);
     void warn(const QString &warning) { m_warnings.append(warning); }
     [[nodiscard]] QStringList takeWarnings() { return std::exchange(m_warnings, {}); }
@@ -178,6 +189,39 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     return ore;
 }
 
+BiomeVegetation Loader::vegetation(const QcBiomeDefinition &definition, quint64 seed)
+{
+    BiomeVegetation vegetation;
+    const std::array<std::pair<const QcVegetationLayer *, QString>, QcTerrainDefinitions::VegetationLayers> layers{
+        {{&definition.vegetation.grass, u"#grass"_s}, {&definition.vegetation.flowers, u"#flowers"_s}}};
+    for (std::size_t index = 0; index < layers.size(); ++index) {
+        const auto &[layer, suffix] = layers[index];
+        QcVegetationTable::Resolved resolved = QcVegetationTable::resolve(m_content, *layer);
+        for (const QString &unknown : std::as_const(resolved.unknown)) {
+            warn(u"Biome %1 lists the unknown plant %2"_s.arg(definition.name, unknown));
+        }
+        for (const QString &notPlant : std::as_const(resolved.notPlants)) {
+            warn(u"Biome %1 lists %2 among its plants, which is solid or a liquid"_s.arg(definition.name, notPlant));
+        }
+        if (resolved.table.isEmpty()) {
+            continue;
+        }
+
+        vegetation.patches[index] = {resolved.table, layer->patches};
+        if (layer->density > 0.0) {
+            const quint64 salt = qcNameSalt(definition.name + suffix);
+            Feature feature;
+            feature.shape.type = QcFeatureDefinition::Type::Plant;
+            feature.patchSize = layer->patchSize;
+            feature.patches = QcNoise(qcMixSeed(seed, salt + 2));
+            feature.seed = qcMixSeed(seed, salt + 1);
+            feature.plants = std::move(resolved.table);
+            vegetation.scattered.append({std::move(feature), layer->density});
+        }
+    }
+    return vegetation;
+}
+
 QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes, QcBlockId stone, QcBlockId water)
 {
     QSet<QcBlockId> ground{stone};
@@ -220,7 +264,16 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     }
 
     for (const QcBiomeDefinition &definition : content.worldgen().biomes()) {
-        const Biome biome = loader.biome(definition, stone, water);
+        Biome biome = loader.biome(definition, stone, water);
+        BiomeVegetation vegetation = loader.vegetation(definition, seed);
+        for (auto &[feature, density] : vegetation.scattered) {
+            biome.features.append({int(features.size()), density});
+            features.append(std::move(feature));
+        }
+        for (std::size_t layer = 0; layer < vegetation.patches.size(); ++layer) {
+            maxPatchChance[layer] = std::max(maxPatchChance[layer], vegetation.patches[layer].patches.chance);
+        }
+        biome.patches = std::move(vegetation.patches);
         anyOverhangs = anyOverhangs || biome.overhang > 0;
         anyRidges = anyRidges || biome.ridges > 0.0;
         anyTerraces = anyTerraces || biome.terraceHeight > 0;
@@ -238,6 +291,10 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     }
 
     naturalGround = naturalGroundOf(biomes, stone, water);
+    const QString &vegetationBiome = terrain.vegetationBiome;
+    if (!vegetationBiome.isEmpty() && std::ranges::none_of(biomes, [&vegetationBiome](const Biome &biome) { return biome.name == vegetationBiome; })) {
+        loader.warn(u"Terrain names the unknown vegetation biome %1"_s.arg(vegetationBiome));
+    }
 
     for (const QcOreDefinition &definition : content.worldgen().ores()) {
         if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {

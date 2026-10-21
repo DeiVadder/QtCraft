@@ -26,5 +26,16 @@
             "feature": "dead_bush",
             "density": 0.02
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    }
 }

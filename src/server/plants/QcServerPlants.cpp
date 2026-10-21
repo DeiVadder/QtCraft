@@ -19,6 +19,7 @@ QcServerPlants::QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcS
     , m_sounds(sounds)
     , m_blocks(blocks)
     , m_inventory(inventory)
+    , m_vegetation(state.content())
 {
     // Items that plant themselves: they place a crop with a plantChance (decision E-294).
     const QcContentRegistry &content = m_state.content();
@@ -259,6 +260,10 @@ bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const 
         if (m_state.blockEntities().sapling(target) && random.generateDouble() < QcItemDefinition::fertilizeSaplingChance) {
             m_state.blockEntities().setSaplingRemaining(target, 0.0);
         }
+    } else if (block.growsVegetation) {
+        if (!growVegetation(target)) {
+            return false;
+        }
     } else if (!growCrop(target, random.bounded(fertilizeStagesMin, fertilizeStagesMax + 1))) {
         return false;
     }
@@ -268,6 +273,18 @@ bool QcServerPlants::fertilize(QcServerClient &client, QcBlockPos target, const 
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     }
     m_inventory.send(client);
+    return true;
+}
+
+bool QcServerPlants::growVegetation(QcBlockPos target)
+{
+    if (m_state.world().blockAt(target.offset(0, 1, 0)) != qcAirBlockId) {
+        return false;
+    }
+    const QList<QcVegetationSpread::Planting> plantings = m_vegetation.spread(m_state.world(), target, m_state.random());
+    for (const QcVegetationSpread::Planting &planting : plantings) {
+        m_blocks.setAndBroadcast(planting.pos, planting.block);
+    }
     return true;
 }
 

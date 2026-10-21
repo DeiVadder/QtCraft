@@ -14,24 +14,43 @@
             "density": 0.028
         },
         {
-            "feature": "tall_grass",
-            "density": 0.16
-        },
-        {
-            "feature": "dandelion",
-            "density": 0.012
-        },
-        {
-            "feature": "cornflower",
-            "density": 0.014
-        },
-        {
             "feature": "sugar_cane",
             "density": 0.15
-        },
-        {
-            "feature": "lily_of_the_valley",
-            "density": 0.008
         }
-    ]
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.16,
+            "patchSize": 28,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.025,
+            "patchSize": 12,
+            "plants": [
+                {
+                    "block": "dandelion",
+                    "weight": 12
+                },
+                {
+                    "block": "cornflower",
+                    "weight": 14
+                },
+                {
+                    "block": "lily_of_the_valley",
+                    "weight": 8
+                }
+            ],
+            "patches": {
+                "chance": 0.2,
+                "tries": 40,
+                "radius": 5
+            }
+        }
+    }
 }

@@ -62,7 +62,7 @@ A purple ball of blossoms on meadows and mountains; gives magenta dye.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Alliums), [Plains](biomes.md#biome-qtcraft-plains) (Alliums)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-barrel"></a>Barrel
 
@@ -1289,7 +1289,7 @@ A flower that only grows in swamps; gives light blue dye.
 
 **Found in**
 
-[Swamp](biomes.md#biome-qtcraft-swamp) (Blue orchids)
+[Swamp](biomes.md#biome-qtcraft-swamp) (Flowers)
 
 ### <a id="block-qtcraft-blue_stained_glass"></a>Blue stained glass
 
@@ -2638,7 +2638,7 @@ A blue flower of the plains; gives blue dye.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Cornflowers), [Mountains](biomes.md#biome-qtcraft-mountains) (Cornflowers), [Plains](biomes.md#biome-qtcraft-plains) (Cornflowers)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Mountains](biomes.md#biome-qtcraft-mountains) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-cracked_stone_bricks"></a>Cracked stone bricks
 
@@ -3054,7 +3054,7 @@ A yellow flower; gives yellow dye.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Dandelions), [Forest](biomes.md#biome-qtcraft-forest) (Dandelions), [Plains](biomes.md#biome-qtcraft-plains) (Dandelions)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-dead_bush"></a>Dead bush
 
@@ -3280,7 +3280,7 @@ Grows in the shade of the taiga. Like tall grass, blocks placed into it replace 
 
 **Found in**
 
-[Jungle](biomes.md#biome-qtcraft-jungle) (Ferns), [Taiga](biomes.md#biome-qtcraft-taiga) (Ferns)
+[Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
 
 ### <a id="block-qtcraft-fire"></a>Fire
 
@@ -5299,7 +5299,7 @@ A small white flower of the woods; gives white dye.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Lilies of the valley), [Forest](biomes.md#biome-qtcraft-forest) (Lilies of the valley)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers)
 
 ### <a id="block-qtcraft-lily_pad"></a>Lily pad
 
@@ -7258,7 +7258,7 @@ A red flower; gives red dye.
 
 **Found in**
 
-[Forest](biomes.md#biome-qtcraft-forest) (Poppies), [Jungle](biomes.md#biome-qtcraft-jungle) (Poppies), [Plains](biomes.md#biome-qtcraft-plains) (Poppies)
+[Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Jungle](biomes.md#biome-qtcraft-jungle) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-potato_crop"></a>Potato crop
 
@@ -9809,7 +9809,7 @@ Covers meadows; you can build right into it.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Tall grass), [Forest](biomes.md#biome-qtcraft-forest) (Tall grass), [Jungle](biomes.md#biome-qtcraft-jungle) (Tall grass), [Mountains](biomes.md#biome-qtcraft-mountains) (Tall grass), [Plains](biomes.md#biome-qtcraft-plains) (Tall grass), [Swamp](biomes.md#biome-qtcraft-swamp) (Tall grass), [Taiga](biomes.md#biome-qtcraft-taiga) (Tall grass)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Grasses), [Forest](biomes.md#biome-qtcraft-forest) (Grasses), [Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Mountains](biomes.md#biome-qtcraft-mountains) (Grasses), [Plains](biomes.md#biome-qtcraft-plains) (Grasses), [Swamp](biomes.md#biome-qtcraft-swamp) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
 
 ### <a id="block-qtcraft-target"></a>Target
 

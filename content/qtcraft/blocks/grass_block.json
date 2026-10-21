@@ -14,5 +14,6 @@
         "side": "grass_side"
     },
     "tillsInto": "farmland",
-    "flattensInto": "dirt_path"
+    "flattensInto": "dirt_path",
+    "growsVegetation": true
 }

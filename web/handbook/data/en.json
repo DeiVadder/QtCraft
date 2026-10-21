@@ -660,22 +660,17 @@
         },
         {
             "entries": [
-                "feature:qtcraft:allium",
                 "feature:qtcraft:birch_tree",
-                "feature:qtcraft:blue_orchid",
                 "feature:qtcraft:brown_mushroom",
                 "feature:qtcraft:cactus",
                 "ore:qtcraft:clay_pocket",
                 "ore:qtcraft:coal",
                 "ore:qtcraft:cobweb",
                 "ore:qtcraft:copper",
-                "feature:qtcraft:cornflower",
-                "feature:qtcraft:dandelion",
                 "feature:qtcraft:dead_bush",
                 "ore:qtcraft:diamond",
                 "ore:qtcraft:dirt_pocket",
                 "ore:qtcraft:emerald",
-                "feature:qtcraft:fern",
                 "ore:qtcraft:gold",
                 "ore:qtcraft:gravel_pocket",
                 "ore:qtcraft:infested_stone",
@@ -684,19 +679,16 @@
                 "ore:qtcraft:lapis",
                 "feature:qtcraft:lava_lake",
                 "feature:qtcraft:lava_pool",
-                "feature:qtcraft:lily_of_the_valley",
                 "feature:qtcraft:lily_pad",
                 "ore:qtcraft:magma",
                 "feature:qtcraft:melon_patch",
                 "feature:qtcraft:oak_tree",
-                "feature:qtcraft:poppy",
                 "feature:qtcraft:pumpkin_patch",
                 "feature:qtcraft:red_mushroom",
                 "ore:qtcraft:signal",
                 "feature:qtcraft:snow_layer",
                 "feature:qtcraft:spruce_tree",
                 "feature:qtcraft:sugar_cane",
-                "feature:qtcraft:tall_grass",
                 "world:terrain",
                 "feature:qtcraft:wild_carrots",
                 "feature:qtcraft:wild_potatoes"
@@ -823,40 +815,56 @@
                             "text": "Birch tree"
                         },
                         {
-                            "icon": "qtcraft:cornflower",
-                            "note": "1.4 % of columns",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Cornflowers"
-                        },
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "1.2 % of columns",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Dandelions"
-                        },
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "0.8 % of columns",
-                            "target": "feature:qtcraft:lily_of_the_valley",
-                            "text": "Lilies of the valley"
-                        },
-                        {
                             "icon": "qtcraft:sugar_cane",
                             "note": "15 % of columns",
                             "target": "feature:qtcraft:sugar_cane",
                             "text": "Sugar cane"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "16 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "35.29 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Dandelion"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "41.18 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Cornflower"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "23.53 %",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Lily of the valley"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -1229,18 +1237,6 @@
                             "text": "Brown mushrooms"
                         },
                         {
-                            "icon": "qtcraft:dandelion",
-                            "note": "0.5 % of columns",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Dandelions"
-                        },
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "0.8 % of columns",
-                            "target": "feature:qtcraft:lily_of_the_valley",
-                            "text": "Lilies of the valley"
-                        },
-                        {
                             "icon": "qtcraft:melon",
                             "note": "0.12 % of columns",
                             "target": "feature:qtcraft:melon_patch",
@@ -1253,12 +1249,6 @@
                             "text": "Oak tree"
                         },
                         {
-                            "icon": "qtcraft:poppy",
-                            "note": "0.8 % of columns",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Poppies"
-                        },
-                        {
                             "icon": "qtcraft:red_mushroom",
                             "note": "0.3 % of columns",
                             "target": "feature:qtcraft:red_mushroom",
@@ -1269,18 +1259,52 @@
                             "note": "15 % of columns",
                             "target": "feature:qtcraft:sugar_cane",
                             "text": "Sugar cane"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "15 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "38.1 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "23.81 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Dandelion"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "38.1 %",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Lily of the valley"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -1447,12 +1471,6 @@
                 {
                     "links": [
                         {
-                            "icon": "qtcraft:fern",
-                            "note": "12 % of columns",
-                            "target": "feature:qtcraft:fern",
-                            "text": "Ferns"
-                        },
-                        {
                             "icon": "qtcraft:oak_log",
                             "note": "6 % of columns",
                             "target": "feature:qtcraft:jungle_tree",
@@ -1471,28 +1489,50 @@
                             "text": "Oak tree"
                         },
                         {
-                            "icon": "qtcraft:poppy",
-                            "note": "0.4 % of columns",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Poppies"
-                        },
-                        {
                             "icon": "qtcraft:sugar_cane",
                             "note": "20 % of columns",
                             "target": "feature:qtcraft:sugar_cane",
                             "text": "Sugar cane"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "20 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "60 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "40 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Fern"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "100 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -1683,34 +1723,50 @@
                 {
                     "links": [
                         {
-                            "icon": "qtcraft:allium",
-                            "note": "0.6 % of columns",
-                            "target": "feature:qtcraft:allium",
-                            "text": "Alliums"
-                        },
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "0.6 % of columns",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Cornflowers"
-                        },
-                        {
                             "icon": "qtcraft:spruce_log",
                             "note": "0.6 % of columns",
                             "target": "feature:qtcraft:spruce_tree",
                             "text": "Spruce tree"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "6 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "50 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Cornflower"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "50 %",
+                            "target": "block:qtcraft:allium",
+                            "text": "Allium"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -1877,34 +1933,10 @@
                 {
                     "links": [
                         {
-                            "icon": "qtcraft:allium",
-                            "note": "0.6 % of columns",
-                            "target": "feature:qtcraft:allium",
-                            "text": "Alliums"
-                        },
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "1.2 % of columns",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Cornflowers"
-                        },
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "2.2 % of columns",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Dandelions"
-                        },
-                        {
                             "icon": "qtcraft:oak_log",
                             "note": "0.2 % of columns",
                             "target": "feature:qtcraft:oak_tree",
                             "text": "Oak tree"
-                        },
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "2.2 % of columns",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Poppies"
                         },
                         {
                             "icon": "qtcraft:pumpkin",
@@ -1917,18 +1949,58 @@
                             "note": "15 % of columns",
                             "target": "feature:qtcraft:sugar_cane",
                             "text": "Sugar cane"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "30 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "35.48 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Dandelion"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "35.48 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Poppy"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "19.35 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Cornflower"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "9.68 %",
+                            "target": "block:qtcraft:allium",
+                            "text": "Allium"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -2089,12 +2161,6 @@
                 {
                     "links": [
                         {
-                            "icon": "qtcraft:blue_orchid",
-                            "note": "2 % of columns",
-                            "target": "feature:qtcraft:blue_orchid",
-                            "text": "Blue orchids"
-                        },
-                        {
                             "icon": "qtcraft:brown_mushroom",
                             "note": "1.2 % of columns",
                             "target": "feature:qtcraft:brown_mushroom",
@@ -2129,18 +2195,40 @@
                             "note": "30 % of columns",
                             "target": "feature:qtcraft:sugar_cane",
                             "text": "Sugar cane"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "16 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_orchid",
+                            "note": "100 %",
+                            "target": "block:qtcraft:blue_orchid",
+                            "text": "Blue orchid"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
                 },
                 {
                     "links": [
@@ -2343,12 +2431,6 @@
                             "text": "Brown mushrooms"
                         },
                         {
-                            "icon": "qtcraft:fern",
-                            "note": "10 % of columns",
-                            "target": "feature:qtcraft:fern",
-                            "text": "Ferns"
-                        },
-                        {
                             "icon": "qtcraft:pumpkin",
                             "note": "0.15 % of columns",
                             "target": "feature:qtcraft:pumpkin_patch",
@@ -2365,18 +2447,32 @@
                             "note": "2.2 % of columns",
                             "target": "feature:qtcraft:spruce_tree",
                             "text": "Spruce tree"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "8 % of columns",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Tall grass"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "47.06 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "52.94 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Fern"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
                 },
                 {
                     "links": [
@@ -2991,13 +3087,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Alliums",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:mountains",
                             "text": "Mountains"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Alliums",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
                         }
@@ -10491,7 +10587,7 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Blue orchids",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
                         }
@@ -21331,19 +21427,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Cornflowers",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birch Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Cornflowers",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:mountains",
                             "text": "Mountains"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Cornflowers",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
                         }
@@ -24578,19 +24674,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Dandelions",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birch Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Dandelions",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Dandelions",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
                         }
@@ -26347,13 +26443,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Ferns",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:jungle",
                             "text": "Jungle"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Ferns",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
                         }
@@ -39790,13 +39886,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Lilies of the valley",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birch Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Lilies of the valley",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
                         }
@@ -57344,19 +57440,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Poppies",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Poppies",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:jungle",
                             "text": "Jungle"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Poppies",
+                            "note": "Flowers",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
                         }
@@ -79752,43 +79848,43 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birch Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:jungle",
                             "text": "Jungle"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:mountains",
                             "text": "Mountains"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Tall grass",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
                         }
@@ -88144,90 +88240,6 @@
             "text": "",
             "title": "The world"
         },
-        "feature:qtcraft:allium": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Alliums",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:allium"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:allium",
-                            "note": "",
-                            "target": "block:qtcraft:allium",
-                            "text": "Allium"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:allium",
-            "id": "feature:qtcraft:allium",
-            "name": "qtcraft:allium",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.6 % of columns",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Mountains"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.6 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Alliums"
-        },
         "feature:qtcraft:birch_tree": {
             "category": "worldgen",
             "categoryTitle": "World generation",
@@ -88329,90 +88341,6 @@
             ],
             "text": "",
             "title": "Birch tree"
-        },
-        "feature:qtcraft:blue_orchid": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Blue orchids",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:blue_orchid"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:blue_orchid",
-                            "note": "",
-                            "target": "block:qtcraft:blue_orchid",
-                            "text": "Blue orchid"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:mud",
-                            "note": "",
-                            "target": "block:qtcraft:mud",
-                            "text": "Mud"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:blue_orchid",
-            "id": "feature:qtcraft:blue_orchid",
-            "name": "qtcraft:blue_orchid",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2 % of columns",
-                            "target": "biome:qtcraft:swamp",
-                            "text": "Swamp"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Blue orchids"
         },
         "feature:qtcraft:brown_mushroom": {
             "category": "worldgen",
@@ -88576,186 +88504,6 @@
             "text": "",
             "title": "Cactus"
         },
-        "feature:qtcraft:cornflower": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Cornflowers",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:cornflower"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "",
-                            "target": "block:qtcraft:cornflower",
-                            "text": "Cornflower"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:cornflower",
-            "id": "feature:qtcraft:cornflower",
-            "name": "qtcraft:cornflower",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1.4 % of columns",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.6 % of columns",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Mountains"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1.2 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Cornflowers"
-        },
-        "feature:qtcraft:dandelion": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Dandelions",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:dandelion"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "",
-                            "target": "block:qtcraft:dandelion",
-                            "text": "Dandelion"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:dandelion",
-            "id": "feature:qtcraft:dandelion",
-            "name": "qtcraft:dandelion",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1.2 % of columns",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.5 % of columns",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2.2 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Dandelions"
-        },
         "feature:qtcraft:dead_bush": {
             "category": "worldgen",
             "categoryTitle": "World generation",
@@ -88827,90 +88575,6 @@
             ],
             "text": "",
             "title": "Dead bushes"
-        },
-        "feature:qtcraft:fern": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Ferns",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:fern"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:fern",
-                            "note": "",
-                            "target": "block:qtcraft:fern",
-                            "text": "Fern"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:fern",
-            "id": "feature:qtcraft:fern",
-            "name": "qtcraft:fern",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "12 % of columns",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Jungle"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "10 % of columns",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Ferns"
         },
         "feature:qtcraft:jungle_tree": {
             "category": "worldgen",
@@ -89145,90 +88809,6 @@
             ],
             "text": "",
             "title": "Lava pool"
-        },
-        "feature:qtcraft:lily_of_the_valley": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Lilies of the valley",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:lily_of_the_valley"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "",
-                            "target": "block:qtcraft:lily_of_the_valley",
-                            "text": "Lily of the valley"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:lily_of_the_valley",
-            "id": "feature:qtcraft:lily_of_the_valley",
-            "name": "qtcraft:lily_of_the_valley",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.8 % of columns",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.8 % of columns",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Lilies of the valley"
         },
         "feature:qtcraft:lily_pad": {
             "category": "worldgen",
@@ -89505,96 +89085,6 @@
             ],
             "text": "",
             "title": "Oak tree"
-        },
-        "feature:qtcraft:poppy": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Poppies",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:poppy"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "",
-                            "target": "block:qtcraft:poppy",
-                            "text": "Poppy"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:poppy",
-            "id": "feature:qtcraft:poppy",
-            "name": "qtcraft:poppy",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.8 % of columns",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.4 % of columns",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Jungle"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2.2 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Poppies"
         },
         "feature:qtcraft:pumpkin_patch": {
             "category": "worldgen",
@@ -90075,126 +89565,6 @@
             ],
             "text": "",
             "title": "Sugar cane"
-        },
-        "feature:qtcraft:tall_grass": {
-            "category": "worldgen",
-            "categoryTitle": "World generation",
-            "englishTitle": "Tall grass",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:tall_grass"
-                },
-                {
-                    "label": "Kind",
-                    "links": [
-                    ],
-                    "value": "plant"
-                },
-                {
-                    "label": "Blocks",
-                    "links": [
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "",
-                            "target": "block:qtcraft:tall_grass",
-                            "text": "Tall grass"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Size",
-                    "links": [
-                    ],
-                    "value": "4–4 blocks"
-                },
-                {
-                    "label": "Grows on",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:mud",
-                            "note": "",
-                            "target": "block:qtcraft:mud",
-                            "text": "Mud"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:tall_grass",
-            "id": "feature:qtcraft:tall_grass",
-            "name": "qtcraft:tall_grass",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "16 % of columns",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "15 % of columns",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "20 % of columns",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Jungle"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "6 % of columns",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Mountains"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "30 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "16 % of columns",
-                            "target": "biome:qtcraft:swamp",
-                            "text": "Swamp"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "8 % of columns",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
-            ],
-            "text": "",
-            "title": "Tall grass"
         },
         "feature:qtcraft:wild_carrots": {
             "category": "worldgen",

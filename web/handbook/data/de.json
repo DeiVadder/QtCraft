@@ -662,31 +662,24 @@
             "entries": [
                 "ore:qtcraft:infested_stone",
                 "feature:qtcraft:birch_tree",
-                "feature:qtcraft:blue_orchid",
                 "feature:qtcraft:brown_mushroom",
                 "ore:qtcraft:diamond",
                 "feature:qtcraft:jungle_tree",
                 "feature:qtcraft:oak_tree",
                 "ore:qtcraft:iron",
                 "ore:qtcraft:dirt_pocket",
-                "feature:qtcraft:fern",
                 "feature:qtcraft:spruce_tree",
                 "world:terrain",
                 "ore:qtcraft:gold",
-                "feature:qtcraft:tall_grass",
                 "feature:qtcraft:cactus",
                 "ore:qtcraft:gravel_pocket",
-                "feature:qtcraft:cornflower",
                 "ore:qtcraft:copper",
                 "feature:qtcraft:pumpkin_patch",
                 "ore:qtcraft:lapis",
                 "feature:qtcraft:lava_pool",
                 "feature:qtcraft:lava_lake",
-                "feature:qtcraft:dandelion",
                 "ore:qtcraft:magma",
-                "feature:qtcraft:lily_of_the_valley",
                 "feature:qtcraft:melon_patch",
-                "feature:qtcraft:poppy",
                 "feature:qtcraft:red_mushroom",
                 "feature:qtcraft:snow_layer",
                 "feature:qtcraft:lily_pad",
@@ -698,7 +691,6 @@
                 "feature:qtcraft:dead_bush",
                 "feature:qtcraft:wild_carrots",
                 "feature:qtcraft:wild_potatoes",
-                "feature:qtcraft:allium",
                 "feature:qtcraft:sugar_cane"
             ],
             "id": "worldgen",
@@ -823,30 +815,6 @@
                             "text": "Birke"
                         },
                         {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "16 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        },
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "1,4 % der Säulen",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Kornblumen"
-                        },
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "1,2 % der Säulen",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Löwenzahn"
-                        },
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "0,8 % der Säulen",
-                            "target": "feature:qtcraft:lily_of_the_valley",
-                            "text": "Maiglöckchen"
-                        },
-                        {
                             "icon": "qtcraft:sugar_cane",
                             "note": "15 % der Säulen",
                             "target": "feature:qtcraft:sugar_cane",
@@ -857,6 +825,46 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "35,29 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "41,18 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Kornblume"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "23,53 %",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Maiglöckchen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -1235,34 +1243,10 @@
                             "text": "Eiche"
                         },
                         {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "15 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        },
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "0,5 % der Säulen",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Löwenzahn"
-                        },
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "0,8 % der Säulen",
-                            "target": "feature:qtcraft:lily_of_the_valley",
-                            "text": "Maiglöckchen"
-                        },
-                        {
                             "icon": "qtcraft:melon",
                             "note": "0,12 % der Säulen",
                             "target": "feature:qtcraft:melon_patch",
                             "text": "Melonen"
-                        },
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "0,8 % der Säulen",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Mohn"
                         },
                         {
                             "icon": "qtcraft:red_mushroom",
@@ -1281,6 +1265,46 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "38,1 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "23,81 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "38,1 %",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Maiglöckchen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -1459,28 +1483,10 @@
                             "text": "Eiche"
                         },
                         {
-                            "icon": "qtcraft:fern",
-                            "note": "12 % der Säulen",
-                            "target": "feature:qtcraft:fern",
-                            "text": "Farne"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "20 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        },
-                        {
                             "icon": "qtcraft:melon",
                             "note": "0,4 % der Säulen",
                             "target": "feature:qtcraft:melon_patch",
                             "text": "Melonen"
-                        },
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "0,4 % der Säulen",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Mohn"
                         },
                         {
                             "icon": "qtcraft:sugar_cane",
@@ -1493,6 +1499,40 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "60 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "40 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Farn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "100 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -1687,30 +1727,46 @@
                             "note": "0,6 % der Säulen",
                             "target": "feature:qtcraft:spruce_tree",
                             "text": "Fichte"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "6 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        },
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "0,6 % der Säulen",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Kornblumen"
-                        },
-                        {
-                            "icon": "qtcraft:allium",
-                            "note": "0,6 % der Säulen",
-                            "target": "feature:qtcraft:allium",
-                            "text": "Zierlauch"
                         }
                     ],
                     "recipes": [
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "50 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Kornblume"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "50 %",
+                            "target": "block:qtcraft:allium",
+                            "text": "Zierlauch"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -1883,40 +1939,10 @@
                             "text": "Eiche"
                         },
                         {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "30 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        },
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "1,2 % der Säulen",
-                            "target": "feature:qtcraft:cornflower",
-                            "text": "Kornblumen"
-                        },
-                        {
                             "icon": "qtcraft:pumpkin",
                             "note": "0,15 % der Säulen",
                             "target": "feature:qtcraft:pumpkin_patch",
                             "text": "Kürbisse"
-                        },
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "2,2 % der Säulen",
-                            "target": "feature:qtcraft:dandelion",
-                            "text": "Löwenzahn"
-                        },
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "2,2 % der Säulen",
-                            "target": "feature:qtcraft:poppy",
-                            "text": "Mohn"
-                        },
-                        {
-                            "icon": "qtcraft:allium",
-                            "note": "0,6 % der Säulen",
-                            "target": "feature:qtcraft:allium",
-                            "text": "Zierlauch"
                         },
                         {
                             "icon": "qtcraft:sugar_cane",
@@ -1929,6 +1955,52 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "35,48 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "35,48 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "19,35 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Kornblume"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "9,68 %",
+                            "target": "block:qtcraft:allium",
+                            "text": "Zierlauch"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -2089,12 +2161,6 @@
                 {
                     "links": [
                         {
-                            "icon": "qtcraft:blue_orchid",
-                            "note": "2 % der Säulen",
-                            "target": "feature:qtcraft:blue_orchid",
-                            "text": "Blaue Orchideen"
-                        },
-                        {
                             "icon": "qtcraft:brown_mushroom",
                             "note": "1,2 % der Säulen",
                             "target": "feature:qtcraft:brown_mushroom",
@@ -2105,12 +2171,6 @@
                             "note": "1,2 % der Säulen",
                             "target": "feature:qtcraft:oak_tree",
                             "text": "Eiche"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "16 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
                         },
                         {
                             "icon": "qtcraft:melon",
@@ -2141,6 +2201,34 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_orchid",
+                            "note": "100 %",
+                            "target": "block:qtcraft:blue_orchid",
+                            "text": "Blaue Orchidee"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
                 },
                 {
                     "links": [
@@ -2343,22 +2431,10 @@
                             "text": "Braune Pilze"
                         },
                         {
-                            "icon": "qtcraft:fern",
-                            "note": "10 % der Säulen",
-                            "target": "feature:qtcraft:fern",
-                            "text": "Farne"
-                        },
-                        {
                             "icon": "qtcraft:spruce_log",
                             "note": "2,2 % der Säulen",
                             "target": "feature:qtcraft:spruce_tree",
                             "text": "Fichte"
-                        },
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "8 % der Säulen",
-                            "target": "feature:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
                         },
                         {
                             "icon": "qtcraft:pumpkin",
@@ -2377,6 +2453,26 @@
                     ],
                     "text": "",
                     "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "47,06 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "52,94 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Farn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
                 },
                 {
                     "links": [
@@ -2991,13 +3087,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Zierlauch",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Zierlauch",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:mountains",
                             "text": "Gebirge"
                         }
@@ -10491,7 +10587,7 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Blaue Orchideen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         }
@@ -21331,19 +21427,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Kornblumen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Kornblumen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Kornblumen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:mountains",
                             "text": "Gebirge"
                         }
@@ -24578,19 +24674,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Löwenzahn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Löwenzahn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Löwenzahn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -26347,13 +26443,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Farne",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Farne",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
                         }
@@ -39790,13 +39886,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Maiglöckchen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Maiglöckchen",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -57344,19 +57440,19 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Mohn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Mohn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Mohn",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -79752,43 +79848,43 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:mountains",
                             "text": "Gebirge"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
                         },
                         {
                             "icon": "qtcraft:grass_block",
-                            "note": "Hohes Gras",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -88144,90 +88240,6 @@
             "text": "",
             "title": "Die Welt"
         },
-        "feature:qtcraft:allium": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Alliums",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:allium"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:allium",
-                            "note": "",
-                            "target": "block:qtcraft:allium",
-                            "text": "Zierlauch"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:allium",
-            "id": "feature:qtcraft:allium",
-            "name": "qtcraft:allium",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,6 % der Säulen",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Ebene"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,6 % der Säulen",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Gebirge"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Zierlauch"
-        },
         "feature:qtcraft:birch_tree": {
             "category": "worldgen",
             "categoryTitle": "Weltgenerierung",
@@ -88329,90 +88341,6 @@
             ],
             "text": "",
             "title": "Birke"
-        },
-        "feature:qtcraft:blue_orchid": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Blue orchids",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:blue_orchid"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:blue_orchid",
-                            "note": "",
-                            "target": "block:qtcraft:blue_orchid",
-                            "text": "Blaue Orchidee"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:mud",
-                            "note": "",
-                            "target": "block:qtcraft:mud",
-                            "text": "Schlamm"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:blue_orchid",
-            "id": "feature:qtcraft:blue_orchid",
-            "name": "qtcraft:blue_orchid",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2 % der Säulen",
-                            "target": "biome:qtcraft:swamp",
-                            "text": "Sumpf"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Blaue Orchideen"
         },
         "feature:qtcraft:brown_mushroom": {
             "category": "worldgen",
@@ -88576,186 +88504,6 @@
             "text": "",
             "title": "Kaktus"
         },
-        "feature:qtcraft:cornflower": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Cornflowers",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:cornflower"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:cornflower",
-                            "note": "",
-                            "target": "block:qtcraft:cornflower",
-                            "text": "Kornblume"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:cornflower",
-            "id": "feature:qtcraft:cornflower",
-            "name": "qtcraft:cornflower",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1,4 % der Säulen",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birkenwald"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1,2 % der Säulen",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Ebene"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,6 % der Säulen",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Gebirge"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Kornblumen"
-        },
-        "feature:qtcraft:dandelion": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Dandelions",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:dandelion"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:dandelion",
-                            "note": "",
-                            "target": "block:qtcraft:dandelion",
-                            "text": "Löwenzahn"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:dandelion",
-            "id": "feature:qtcraft:dandelion",
-            "name": "qtcraft:dandelion",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "1,2 % der Säulen",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birkenwald"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2,2 % der Säulen",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Ebene"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,5 % der Säulen",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Wald"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Löwenzahn"
-        },
         "feature:qtcraft:dead_bush": {
             "category": "worldgen",
             "categoryTitle": "Weltgenerierung",
@@ -88827,90 +88575,6 @@
             ],
             "text": "",
             "title": "Tote Büsche"
-        },
-        "feature:qtcraft:fern": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Ferns",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:fern"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:fern",
-                            "note": "",
-                            "target": "block:qtcraft:fern",
-                            "text": "Farn"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:fern",
-            "id": "feature:qtcraft:fern",
-            "name": "qtcraft:fern",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "12 % der Säulen",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Dschungel"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "10 % der Säulen",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Farne"
         },
         "feature:qtcraft:jungle_tree": {
             "category": "worldgen",
@@ -89145,90 +88809,6 @@
             ],
             "text": "",
             "title": "Lavabecken"
-        },
-        "feature:qtcraft:lily_of_the_valley": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Lilies of the valley",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:lily_of_the_valley"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:lily_of_the_valley",
-                            "note": "",
-                            "target": "block:qtcraft:lily_of_the_valley",
-                            "text": "Maiglöckchen"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:lily_of_the_valley",
-            "id": "feature:qtcraft:lily_of_the_valley",
-            "name": "qtcraft:lily_of_the_valley",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,8 % der Säulen",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birkenwald"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,8 % der Säulen",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Wald"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Maiglöckchen"
         },
         "feature:qtcraft:lily_pad": {
             "category": "worldgen",
@@ -89505,96 +89085,6 @@
             ],
             "text": "",
             "title": "Eiche"
-        },
-        "feature:qtcraft:poppy": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Poppies",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:poppy"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:poppy",
-                            "note": "",
-                            "target": "block:qtcraft:poppy",
-                            "text": "Mohn"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:poppy",
-            "id": "feature:qtcraft:poppy",
-            "name": "qtcraft:poppy",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,4 % der Säulen",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Dschungel"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "2,2 % der Säulen",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Ebene"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0,8 % der Säulen",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Wald"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Mohn"
         },
         "feature:qtcraft:pumpkin_patch": {
             "category": "worldgen",
@@ -90075,126 +89565,6 @@
             ],
             "text": "",
             "title": "Zuckerrohr"
-        },
-        "feature:qtcraft:tall_grass": {
-            "category": "worldgen",
-            "categoryTitle": "Weltgenerierung",
-            "englishTitle": "Tall grass",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:tall_grass"
-                },
-                {
-                    "label": "Art",
-                    "links": [
-                    ],
-                    "value": "Pflanze"
-                },
-                {
-                    "label": "Blöcke",
-                    "links": [
-                        {
-                            "icon": "qtcraft:tall_grass",
-                            "note": "",
-                            "target": "block:qtcraft:tall_grass",
-                            "text": "Hohes Gras"
-                        }
-                    ],
-                    "value": ""
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "4–4 Blöcke"
-                },
-                {
-                    "label": "Wächst auf",
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:mud",
-                            "note": "",
-                            "target": "block:qtcraft:mud",
-                            "text": "Schlamm"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:tall_grass",
-            "id": "feature:qtcraft:tall_grass",
-            "name": "qtcraft:tall_grass",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "16 % der Säulen",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birkenwald"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "20 % der Säulen",
-                            "target": "biome:qtcraft:jungle",
-                            "text": "Dschungel"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "30 % der Säulen",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Ebene"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "6 % der Säulen",
-                            "target": "biome:qtcraft:mountains",
-                            "text": "Gebirge"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "16 % der Säulen",
-                            "target": "biome:qtcraft:swamp",
-                            "text": "Sumpf"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "8 % der Säulen",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "15 % der Säulen",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Wald"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In Biomen"
-                }
-            ],
-            "text": "",
-            "title": "Hohes Gras"
         },
         "feature:qtcraft:wild_carrots": {
             "category": "worldgen",
