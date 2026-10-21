@@ -10,6 +10,8 @@ void QcMapStore::open(Loader loader, quint32 nextId)
     m_missing.clear();
     m_unsaved.clear();
     m_saving.clear();
+    m_watched.clear();
+    m_made.clear();
 }
 
 std::optional<quint32> QcMapStore::create(QcMapData map)
@@ -81,6 +83,20 @@ void QcMapStore::resend(quint32 id, quint32 client)
     }
 }
 
+void QcMapStore::unwatch(quint32 id, quint32 client)
+{
+    if (const auto found = m_maps.find(id); found != m_maps.end()) {
+        found->pending.remove(client);
+    }
+}
+
+void QcMapStore::touch(quint32 id, quint64 now)
+{
+    if (const auto found = m_maps.find(id); found != m_maps.end()) {
+        found->lastUse = std::max(found->lastUse, now);
+    }
+}
+
 bool QcMapStore::watches(quint32 id, quint32 client) const
 {
     const auto found = m_maps.constFind(id);
@@ -96,8 +112,37 @@ QRect QcMapStore::takePending(quint32 id, quint32 client, int budget)
     return found->pending[client].take(budget);
 }
 
+void QcMapStore::setWatched(quint32 client, const QList<quint32> &ids)
+{
+    if (ids.isEmpty()) {
+        m_watched.remove(client);
+    } else {
+        m_watched.insert(client, ids);
+    }
+}
+
+bool QcMapStore::countMade(const QString &player, quint64 now, int perMinute)
+{
+    constexpr quint64 minute = quint64(60) * 20;
+    // Entries of past minutes go once there are many, so the table stays as small as the players
+    // making maps.
+    if (m_made.size() > 256) {
+        m_made.removeIf([now](const QHash<QString, std::pair<quint64, int>>::iterator made) { return now >= made->first + minute; });
+    }
+    std::pair<quint64, int> &made = m_made[player];
+    if (now >= made.first + minute || made.second == 0) {
+        made = {now, 0};
+    }
+    if (made.second >= perMinute) {
+        return false;
+    }
+    ++made.second;
+    return true;
+}
+
 void QcMapStore::forget(quint32 client)
 {
+    m_watched.remove(client);
     for (Entry &map : m_maps) {
         map.pending.remove(client);
     }

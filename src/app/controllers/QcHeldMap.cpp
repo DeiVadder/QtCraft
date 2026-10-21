@@ -84,6 +84,7 @@ QVariantList QcHeldMap::markerList(const QList<QcMapMarker> &markers)
             {u"rotation"_s, double(marker.rotation % 16) * degreesPerStep},
             {u"onMap"_s, marker.onMap},
             {u"own"_s, marker.own},
+            {u"frame"_s, marker.frame},
         });
     }
     return list;

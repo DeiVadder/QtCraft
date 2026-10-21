@@ -17,14 +17,14 @@
             "PPPPPPP"
         ],
         [
-            "       ",
+            "PP     ",
             "  T C  ",
             "       ",
             "       ",
             "       "
         ],
         [
-            "       ",
+            "PP     ",
             "       ",
             "       ",
             "       ",
@@ -70,6 +70,76 @@
                 3.0
             ],
             "text": "structure.qtcraft.maps_station.craft"
+        },
+        {
+            "at": [
+                1.0,
+                3.3,
+                1.2
+            ],
+            "text": "structure.qtcraft.maps_station.wall"
+        }
+    ],
+    "hangings": [
+        {
+            "at": [
+                0,
+                2,
+                1
+            ],
+            "face": "south",
+            "item": "item_frame",
+            "held": "filled_map",
+            "rotation": 0,
+            "map": [
+                0,
+                0
+            ]
+        },
+        {
+            "at": [
+                1,
+                2,
+                1
+            ],
+            "face": "south",
+            "item": "item_frame",
+            "held": "filled_map",
+            "rotation": 0,
+            "map": [
+                1,
+                0
+            ]
+        },
+        {
+            "at": [
+                0,
+                1,
+                1
+            ],
+            "face": "south",
+            "item": "item_frame",
+            "held": "filled_map",
+            "rotation": 0,
+            "map": [
+                0,
+                1
+            ]
+        },
+        {
+            "at": [
+                1,
+                1,
+                1
+            ],
+            "face": "south",
+            "item": "item_frame",
+            "held": "filled_map",
+            "rotation": 0,
+            "map": [
+                1,
+                1
+            ]
         }
     ]
 }

@@ -85,6 +85,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
+    rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp

@@ -46,6 +46,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
     // Without an atlas the view keeps the last entity mesh it was given.
     if (std::shared_ptr<QcEntityMesh> mesh = m_entities.buildEntities(alpha, mode)) {
         m_parts.view->setEntityMesh(std::move(mesh));
+        m_parts.view->setFramedMaps(m_entities.framedMaps(), m_entities.framedMapTiles());
     }
 }
 

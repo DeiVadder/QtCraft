@@ -3650,3 +3650,36 @@ Die unabhängige Prüfung von 37.1 (Wegfindung E-400, Gedränge E-401) fand zehn
 ## E-805 Zeichnen in der Hand (Paket 71.1)
 
 - Eine gehaltene gefüllte Karte zeichnet die Oberfläche (QML) groß unten in der Mitte auf Papier, wie im Vorbild mit leerer zweiter Hand (eine zweite Hand gibt es nicht); Bild aus dem Zwischenspeicher (`QcClientMaps`, höchstens 256 Karten) mit Farben aus `QcMapColors` über den Image-Provider `image://maps` (`QcHeldMap`, `MapInHand.qml`), Markierungen als Pfeile; die 3D-Hand entfällt, solange eine Karte gehalten wird. Im Inventar zeigt die gefüllte Karte ihr festes Symbol und im Tooltip ihre Nummer.
+
+## E-806 Karte im Rahmen (Paket 71.2)
+
+- Ein Rahmen mit einer gefüllten Karte (`QcHangingMesher::framedMap`) wächst wie im Vorbild auf die ganze Blockfläche: gezeichnet werden nur die Kanten eines 1 × 1 großen Bretts in der Rahmen-Textur, davor liegt die Karte als ein Viereck über die ganze Fläche (`QcHangingMesher::appendFramedMap`), Norden oben an der Wand. Nebeneinander hängende Karten stoßen ohne Fuge aneinander und ergeben so eine Wandkarte; ein eigenes Zusammenfügen gibt es nicht.
+- Drehung: Der Rahmen behält seine 8 Stufen (Komparator, Speichern unverändert); die Karte dreht sich um 90° je Stufe, die 8 Stufen zeigen also 4 Lagen (`QcHangingMesher::mapQuarterTurns` = Stufe mod 4), wie im Vorbild.
+- Zielen und Schlagen bleiben bei der Box des Rahmens (`QcHanging::box`), wie im Vorbild.
+
+## E-807 Wer eine Karte im Rahmen bekommt (Paket 71.2)
+
+- Je Tick sammelt `QcServerMaps` einmal die Rahmen mit Karten (Tabelle der Rahmen, höchstens `maxHangings`). Ein Spieler sieht die gehaltene Karte und die Karten der nächsten Rahmen innerhalb von `frameWatchRange` (64) Blöcken, zusammen höchstens `maxWatched` (64). Eine Karte, die er schon sieht, zählt `watchSlack` (8) Blöcke näher: sie endet erst jenseits von 72 Blöcken, und eine neue Karte verdrängt sie unter den 64 nur, wenn sie um mehr als 8 Blöcke näher hängt; so flackert nichts an der Grenze. Ohne Spieler im Spiel wird die Tabelle der Rahmen nur im Takt der Speicherprüfung gesammelt. Die Pixel-Grenze von 4 096 gilt je Spieler und Tick über alle Karten (gehaltene zuerst, dann nach Abstand), nicht mehr je Karte.
+- Was ein Spieler nicht mehr sieht, wird abgemeldet (`QcMapStore::unwatch`, nichts bleibt für ihn liegen); was er neu sieht (in die Hand genommen oder in Reichweite gekommen), geht ganz hinaus, weil der Client die Karte aus seinem Zwischenspeicher verdrängt haben kann. Das ersetzt das gemerkte `heldMap` am Spieler.
+- Speicher: Karten in Rahmen geladener Chunks gelten bei jeder Prüfung (`evictionInterval`) als benutzt (`QcMapStore::touch`, liest nie die Datei), auch ohne Spieler in der Nähe. Rahmen in entladenen Chunks halten nichts; ihre Karte wird beim Wiederkommen gelesen.
+
+## E-808 Rahmen-Markierung und Protokoll 59 (Paket 71.2)
+
+- Wie im Vorbild zeigt eine Karte die Rahmen, in denen sie hängt, als grünen Pfeil (`QcMapMarker::frame`, Flag-Bit 4 im `MapUpdate`; Protokoll 59): Lage der Rahmenmitte, Richtung von der Wand weg (Nord 0, Ost 4, Süd 8, West 12 in Sechzehnteln), auf Boden und Decke die Richtung des oberen Bildrands (Viertel je Stufe wie das Bild, Boden bei Stufe 0 Nord, Decke Süd). Rahmen außerhalb der Karte bekommen keine Markierung (ein Punkt am Rand verriete die Richtung eines Verstecks). Höchstens die Hälfte der 32 Markierungen sind Rahmen.
+- Eine Karte im Rahmen zeigt nur Rahmen-Markierungen, keine Spieler (wie im Vorbild); Spieler bekommen die Spieler-Markierungen nur für die gehaltene Karte. Markierungen einer nur gerahmten Karte gehen alle `framedMarkerInterval` (20) Ticks, je Karte versetzt.
+- Neue Theme-Farbe `mapMarkerFrame` (QML in der Hand, Bild im Rahmen).
+
+## E-809 Zeichnen der Karten im Rahmen (Paket 71.2)
+
+- Eine Textur für alle Karten im Rahmen (`QcFramedMapAtlas`, GUI-Thread): 8 × 8 Kacheln zu 128 Pixeln (1024², 4 MB), Kachel 0 ist leeres Papier (Karte noch nicht empfangen, alle Kacheln in diesem Bild belegt). Jedes Bild beginnt mit den Karten der geladenen Rahmen, nach Abstand des nächsten Rahmens zur Kamera sortiert (`QcFramedMapAtlas::beginFrame`): die nächsten 63 behalten ihre Kachel, eine neue unter ihnen nimmt die am längsten unbenutzte, nie eine in diesem Bild gezeigte (kein Weiterreichen von Kacheln innerhalb eines Bildes); gemalt wird eine Kachel nur, wenn sich das Bild (`pictureRevision`), die Farben oder die Rahmen-Markierungen der Karte ändern, nie je Bild oder je Rahmen. Viele Rahmen mit derselben Karte kosten nur ihr Viereck.
+- Die Vierecke kommen in ein eigenes Entity-Mesh (`QcEntityFrameBuilder::framedMaps`); der Renderer lädt nur Kacheln mit neuer Version hoch (`QcFramedMapTexture`) und zeichnet das Mesh mit der Entity-Pipeline und eigenen Bindings gleichen Layouts (Uniforms 0, Textur 1, nächster Nachbar ohne Mipmaps): ein Zeichenaufruf für alle Karten im Rahmen.
+- Mehr als 63 verschiedene Karten in geladenen Rahmen zeigen die entfernteren als Papier (dokumentierte Grenze; der Server schickt ohnehin höchstens 64 je Spieler).
+
+## E-810 Grenze neuer Karten nur im Kreativmodus (Paket 71.2)
+
+- `QcServerMaps::maxMapsPerMinute` (20) gilt nur für Kreativ-Spieler, die die leere Karte behalten; im Überleben kostet jede Karte Papier, und das Vorbild kennt keine Grenze. Der Zähler gehört zum Spielernamen (`QcServerMaps`), nicht zur Verbindung: Neu verbinden beginnt keine neue Minute. Abgelaufene Einträge fallen weg, sobald es mehr als 256 sind.
+
+## E-811 Wandkarte in der Showcase-Station (Paket 71.2)
+
+- Einträge in `hangings` können `"map": [Ost, Süd]` (je 0–3) tragen: Der Weltaufbau (`QcServerSetup`) legt für einen Rahmen mit `held` = gefüllte Karte eine neue Karte (Maßstab 0) an, im Raster um das Quadrat des ersten gerahmten Kartenrahmens plus diesen Versatz in Karten, erzeugt die 8 × 8 Chunks ihres Gebiets sofort (die Vermessung liest nur geladene Chunks) und deckt sie ganz auf (`QcMapSurvey::survey` über alle Pixel); die Karte entsteht erst, wenn der Rahmen Platz hat. Die Versätze sind Weltrichtungen (Karten zeigen immer Norden oben), daher dreht der Showcase-Planer sie nicht, auch nicht die Drehung einer Karte auf Boden oder Decke. `"map"` gehört nur zu einem Rahmen mit `held` (der Parser lehnt es bei Gemälden und leeren Rahmen ab; hält der Rahmen keine gefüllte Karte, warnt der Weltaufbau).
+- Station `maps_station`: 2 × 2 Rahmen an einer Wand mit den vier benachbarten Karten (links oben Nordwest), dazu ein Schild.

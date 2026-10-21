@@ -6,7 +6,8 @@ import QtCraft
 // A filled map in the hand (decision E-805), large in the lower middle of the view as the reference
 // holds it with both hands; the crosshair above stays free. QtCraft has no offhand: with one, a map
 // there would be drawn small and to the side instead. Paper first, the map image on it (unexplored
-// pixels are transparent, so the paper shows), then the players as pointers (decision E-803).
+// pixels are transparent, so the paper shows), then the players as pointers (decision E-803) and
+// the item frames showing the map in green (decision E-808).
 Item {
     id: mapInHand
 
@@ -45,7 +46,7 @@ Item {
 
                     required property var modelData
                     readonly property real size: picture.width / 16
-                    readonly property color tint: marker.modelData.own ? Theme.mapMarker : Theme.mapMarkerOther
+                    readonly property color tint: marker.modelData.frame ? Theme.mapMarkerFrame : marker.modelData.own ? Theme.mapMarker : Theme.mapMarkerOther
 
                     x: (marker.modelData.x + 1) / 2 * picture.width - width / 2
                     y: (marker.modelData.z + 1) / 2 * picture.height - height / 2

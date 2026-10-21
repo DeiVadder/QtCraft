@@ -92,11 +92,12 @@ enum class Role {
     SignBoard,
     SignBorder,
     // A filled map in the hand (decision E-805): the paper with its edge and the players on it,
-    // the own one and the others.
+    // the own one and the others, and the item frames showing the map (decision E-808).
     MapPaper,
     MapPaperEdge,
     MapMarker,
     MapMarkerOther,
+    MapMarkerFrame,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

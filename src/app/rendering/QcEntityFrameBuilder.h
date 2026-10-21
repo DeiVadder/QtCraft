@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/meshing/QcCapeTracker.h"
 #include "clientcore/meshing/QcEntityMesher.h"
 #include "clientcore/meshing/QcSignTextCache.h"
@@ -38,6 +39,7 @@ public:
     {
         m_atlas = std::move(atlas);
         m_signTexts.clear();
+        m_mapColoursStale = true;
     }
     // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
@@ -45,8 +47,14 @@ public:
 
     // The local player's pose at `alpha` between the last two ticks, or the forced pose.
     QcEntityPose localPose(double alpha) const;
-    // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an atlas.
+    // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an
+    // atlas. The maps in item frames go into a mesh of their own (framedMaps()).
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildEntities(double alpha, QcCameraMode mode);
+    // The maps in item frames of the last buildEntities, drawn with the framed-map texture
+    // (decision E-809); null before the first.
+    [[nodiscard]] std::shared_ptr<QcEntityMesh> framedMaps() const { return m_framedMapMesh; }
+    // The tiles of the framed-map texture the framed maps' coordinates point into.
+    [[nodiscard]] std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles() const { return m_framedMaps.tiles(); }
     // The first-person arm with the held item at `eye`; null without an atlas or while dead.
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildHand(double alpha, const QcVec3 &eye) const;
 
@@ -73,6 +81,9 @@ private:
     void appendSigns(QcEntityMesh &mesh, const EntityFrame &frame);
     // The items lying on the campfires near the player and the smoke rising from them (decision E-772).
     void appendCampfires(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The maps in item frames (decision E-806), their tiles given nearest to the camera first
+    // (decision E-809).
+    [[nodiscard]] std::shared_ptr<QcEntityMesh> buildFramedMaps(const EntityFrame &frame);
     // A falling or moving block or a lit explosive, drawn as its block.
     void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).
@@ -107,6 +118,11 @@ private:
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
     QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;
+    // The pictures of the framed maps, kept from frame to frame, and the mesh of their quads.
+    QcFramedMapAtlas m_framedMaps;
+    std::shared_ptr<QcEntityMesh> m_framedMapMesh;
+    // The map colours come from the atlas; true until worked out for the current one.
+    bool m_mapColoursStale = true;
     QElapsedTimer m_capeClock;
     // Vertex and index count of the last entity mesh.
     std::pair<qsizetype, qsizetype> m_entityMeshSize;

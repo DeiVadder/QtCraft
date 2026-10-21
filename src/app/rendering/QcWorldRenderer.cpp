@@ -130,6 +130,11 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     m_device.uploadOutline(updates, m_frame.selection);
     m_sample.uploadBytes += m_device.entityBuffers.uploadDynamic(m_device.rhi, updates, m_frame.entityMesh.get());
     m_sample.uploadBytes += m_device.handBuffers.uploadDynamic(m_device.rhi, updates, m_frame.handMesh.get());
+    const QcEntityMesh *framedMaps = m_frame.framedMapMesh && m_frame.framedMapTiles ? m_frame.framedMapMesh.get() : nullptr;
+    m_sample.uploadBytes += m_device.framedMapBuffers.uploadDynamic(m_device.rhi, updates, framedMaps);
+    if (framedMaps && !framedMaps->indices.isEmpty()) {
+        m_sample.uploadBytes += m_device.framedMaps.upload(m_device.rhi, updates, *m_frame.framedMapTiles, m_device.frameUniforms.get());
+    }
     m_sample.uploadBytes += m_meshStore.uploadQueued(updates);
     m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
 }
@@ -325,6 +330,12 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
         commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
         commandBuffer->setShaderResources();
         drawBuffers(commandBuffer, m_device.entityBuffers);
+    }
+    // The maps in item frames: the same pipeline with the framed-map texture (decision E-809).
+    if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && m_device.framedMaps.bindings()) {
+        commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
+        commandBuffer->setShaderResources(m_device.framedMaps.bindings());
+        drawBuffers(commandBuffer, m_device.framedMapBuffers);
     }
 }
 

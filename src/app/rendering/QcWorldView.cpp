@@ -85,6 +85,13 @@ void QcWorldView::setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh)
     update();
 }
 
+void QcWorldView::setFramedMaps(std::shared_ptr<const QcEntityMesh> mesh, std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> tiles)
+{
+    m_frame.framedMapMesh = std::move(mesh);
+    m_frame.framedMapTiles = std::move(tiles);
+    update();
+}
+
 void QcWorldView::setHandMesh(std::shared_ptr<const QcEntityMesh> mesh)
 {
     m_frame.handMesh = std::move(mesh);

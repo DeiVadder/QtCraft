@@ -8,6 +8,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QPoint>
 #include <QString>
 #include <QStringList>
 
@@ -108,6 +109,10 @@ struct QcStructureDefinition
         QString held;
         int rotation = 0;
         QString motif;
+        // A filled map in a frame (decision E-811): which map of a wall map, in maps east and south
+        // of the map around the first framed map of the world setup; made and revealed when the
+        // world is made.
+        std::optional<QPoint> map;
     };
 
     // A chest filled from a loot table when its chunk first arrives (decision E-521).

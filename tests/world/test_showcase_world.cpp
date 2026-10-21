@@ -160,7 +160,12 @@ private slots:
             QVERIFY(furnaceFilled);
             QVERIFY(storedItems(*server) >= m_content->itemCount());
             QVERIFY(!server->blockEntities().saplingsInOrder().isEmpty());
-            QVERIFY(server->pendingCommandBlockUpdates() + server->waitingBlockUpdates() >= 6);
+            // The block updates of chunks not loaded yet wait for them (the setup loads some, e.g.
+            // the area of the wall map, decision E-811).
+            const QList<QcBlockPos> updates = QcShowcaseGenerator(m_content).setup().updates;
+            const auto unloaded = std::ranges::count_if(updates, [&](QcBlockPos pos) { return !server->world().chunk(pos.chunk()); });
+            QVERIFY(updates.size() >= 6);
+            QVERIFY(server->pendingCommandBlockUpdates() + server->waitingBlockUpdates() >= unloaded);
             QVERIFY(server->stop());
         }
 

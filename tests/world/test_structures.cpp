@@ -127,6 +127,13 @@ private slots:
                                       << u"1 to 16 options"_s;
         QTest::newRow("bad option") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"choices\": {\"x\": [{\"stone\": 3}]}}")
                                     << u"name -> name"_s;
+        // A frame's "map" (decision E-811): [east, south] of 0 to 3, only with a held map.
+        const QString frame = text("{\"name\": \"a\", \"showcase\": {\"order\": 5}, \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], "
+                                   "\"hangings\": [{\"at\": [0, 0, 0], \"face\": \"north\", %1}]}");
+        QTest::newRow("map out of range") << frame.arg(u"\"item\": \"item_frame\", \"held\": \"filled_map\", \"map\": [4, 0]"_s) << u"each 0 to 3"_s;
+        QTest::newRow("map of one number") << frame.arg(u"\"item\": \"item_frame\", \"held\": \"filled_map\", \"map\": [1]"_s) << u"each 0 to 3"_s;
+        QTest::newRow("map on a painting") << frame.arg(u"\"item\": \"painting\", \"motif\": \"valley\", \"map\": [0, 0]"_s) << u"not to a painting"_s;
+        QTest::newRow("map in an empty frame") << frame.arg(u"\"item\": \"item_frame\", \"map\": [0, 0]"_s) << u"not to a painting"_s;
         const QString wide(65, u'#');
         QTest::newRow("too wide") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"%1\"]]}").arg(wide) << u"at most 64"_s;
     }
@@ -233,6 +240,21 @@ private slots:
         const QcResult<QcStructureDefinition> parsed = QcContentParser::parseStructure(QJsonDocument::fromJson(text.toUtf8()).object(), u"qtcraft"_s);
         QVERIFY(!parsed);
         QVERIFY2(parsed.error().contains(problem), qPrintable(parsed.error()));
+    }
+
+    void readsTheMapOfAFrame()
+    {
+        const QcResult<QcStructureDefinition> parsed = QcContentParser::parseStructure(
+            QJsonDocument::fromJson("{\"name\": \"a\", \"showcase\": {\"order\": 5}, \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], "
+                                    "\"hangings\": [{\"at\": [0, 0, 0], \"face\": \"north\", \"item\": \"item_frame\", \"held\": \"filled_map\", \"map\": [1, 3]}, "
+                                    "{\"at\": [0, 0, 0], \"face\": \"south\", \"item\": \"item_frame\", \"held\": \"apple\"}]}")
+                .object(),
+            u"qtcraft"_s);
+        QVERIFY(parsed);
+        QCOMPARE(parsed->hangings.size(), qsizetype(2));
+        QCOMPARE(parsed->hangings.at(0).map, std::optional(QPoint(1, 3)));
+        QCOMPARE(parsed->hangings.at(0).held, u"qtcraft:filled_map"_s);
+        QCOMPARE(parsed->hangings.at(1).map, std::optional<QPoint>());
     }
 
     void resolvesAgainstTheRegistry()

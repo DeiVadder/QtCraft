@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "clientcore/maps/QcMapColors.h"
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/meshing/QcHangingMesher.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
@@ -422,6 +423,10 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration};
     m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
+    if (m_mapColoursStale) {
+        m_framedMaps.setColours(QcMapColors::ofAtlas(frame.content, *m_atlas));
+        m_mapColoursStale = false;
+    }
 
     for (const QcClientEntity &entity : session.entities()) {
         if (entity.isItem()) {
@@ -462,6 +467,43 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     m_capes.endFrame();
 
     m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
+    m_framedMapMesh = buildFramedMaps(frame);
+    return mesh;
+}
+
+std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildFramedMaps(const EntityFrame &frame)
+{
+    struct Framed
+    {
+        float distance = 0.0f;
+        quint32 id = 0;
+        const QcClientEntity *entity = nullptr;
+    };
+    const QcClientSession &session = *m_parts.session;
+    const QVector3D eye = m_parts.view ? m_parts.view->camera().position : QVector3D();
+    QList<Framed> framed;
+    for (const QcClientEntity &entity : session.entities()) {
+        if (const std::optional<quint32> id = QcHangingMesher::framedMap(entity, frame.content)) {
+            const QcVec3 centre = entity.hanging.centre();
+            const QVector3D offset = QVector3D(float(centre.x), float(centre.y), float(centre.z)) - eye;
+            framed.append({offset.lengthSquared(), *id, &entity});
+        }
+    }
+
+    // The nearest maps get the tiles (decision E-809).
+    std::ranges::sort(framed, {}, &Framed::distance);
+    QList<quint32> nearestFirst;
+    nearestFirst.reserve(framed.size());
+    for (const Framed &each : std::as_const(framed)) {
+        nearestFirst.append(each.id);
+    }
+    const QcClientMaps &maps = session.worldMirror().maps();
+    m_framedMaps.beginFrame(nearestFirst, maps);
+    auto mesh = std::make_shared<QcEntityMesh>();
+    for (const Framed &each : std::as_const(framed)) {
+        const QRectF tile = m_framedMaps.place(each.id, maps);
+        QcHangingMesher::appendFramedMap(*mesh, each.entity->hanging, tile, entityLight(frame.world, each.entity->position));
+    }
     return mesh;
 }
 

@@ -368,8 +368,9 @@ void StructureReader::parseSigns()
 
 // "hangings": {"at": [x, y, z], "face": "north", "item": "item_frame", "held": "apple", "rotation":
 // 0 to 7} or {..., "item": "painting", "motif": "valley"}: item frames and paintings hung when the
-// world is made (decision E-797); the face is one of the block faces' names. Only the showcase
-// hangs them (QcWorldSetup), so a structure without "showcase" may not have them.
+// world is made (decision E-797); the face is one of the block faces' names. A frame holding a
+// filled map may add "map": [east, south], which map of a wall map it shows (decision E-811). Only
+// the showcase hangs them (QcWorldSetup), so a structure without "showcase" may not have them.
 void StructureReader::parseHangings()
 {
     static constexpr std::array<std::pair<QStringView, QcBlockFace>, 6> faces = {{{u"east", QcBlockFace::East},
@@ -394,9 +395,24 @@ void StructureReader::parseHangings()
             return;
         }
         const QString held = object.value(u"held"_s).toString();
+        std::optional<QPoint> map;
+        if (object.contains(u"map"_s)) {
+            const QJsonArray offset = object.value(u"map"_s).toArray();
+            const int east = offset.at(0).toInt(-1);
+            const int south = offset.at(1).toInt(-1);
+            if (offset.size() != 2 || east < 0 || east > 3 || south < 0 || south > 3) {
+                m_reader.fail(u"'map' of a hanging is [east, south], each 0 to 3"_s);
+                return;
+            }
+            if (held.isEmpty() || object.contains(u"motif"_s)) {
+                m_reader.fail(u"'map' belongs to an item frame with a filled map as 'held', not to a painting"_s);
+                return;
+            }
+            map = QPoint(east, south);
+        }
         m_structure.hangings.append({*cell, face->second, QcContentNames::qualify(object.value(u"item"_s).toString(), m_namespace),
                                      held.isEmpty() ? QString() : QcContentNames::qualify(held, m_namespace), rotation,
-                                     object.value(u"motif"_s).toString()});
+                                     object.value(u"motif"_s).toString(), map});
     }
 }
 

@@ -94,6 +94,11 @@ void appendFrame(QcEntityMesh &mesh, const QcClientEntity &entity, const QcConte
 {
     const Axes axes(entity.hanging);
     const QRectF texture = uv(content.item(entity.held).texture);
+    // A map covers the whole face; only the edges of the board show, the map is drawn on its own.
+    if (QcHangingMesher::framedMap(entity, content)) {
+        boardEdges(mesh, axes, {0.0, 0.0, 1.0, 1.0, QcHanging::frameDepth}, texture, light);
+        return;
+    }
     const double inset = (1.0 - QcHanging::frameSide) * 0.5;
     const Panel panel{inset, inset, 1.0 - inset, 1.0 - inset, QcHanging::frameDepth};
     boardFront(mesh, axes, panel, texture, light);
@@ -138,6 +143,31 @@ void appendPainting(QcEntityMesh &mesh, const QcClientEntity &entity, const QcHa
 } // namespace
 
 namespace QcHangingMesher {
+
+std::optional<quint32> framedMap(const QcClientEntity &entity, const QcContentRegistry &content)
+{
+    if (!entity.isHanging() || entity.hanging.type != QcHangingType::ItemFrame || entity.item.isEmpty() || entity.item.damage <= 0
+        || !content.isValidItem(entity.item.item) || content.item(entity.item.item).map != QcMapItem::Filled) {
+        return std::nullopt;
+    }
+    return quint32(entity.item.damage);
+}
+
+void appendFramedMap(QcEntityMesh &mesh, const QcHanging &hanging, const QRectF &uv, QcEntityLight light)
+{
+    const Axes axes(hanging);
+    const auto p = [&](double a, double b) { return axes.at(a, b, QcHanging::frameDepth); };
+    std::array<QcEntityVertex, 4> corners = quad({p(0.0, 0.0), p(1.0, 0.0), p(1.0, 1.0), p(0.0, 1.0)}, uv, light, 1.0f);
+
+    // Turning the picture clockwise moves each corner's texture coordinates one corner on.
+    const std::array<QcEntityVertex, 4> unturned = corners;
+    const auto turns = std::size_t(mapQuarterTurns(hanging.rotation));
+    for (std::size_t corner = 0; corner < 4; ++corner) {
+        corners[corner].u = unturned[(corner + turns) % 4].u;
+        corners[corner].v = unturned[(corner + turns) % 4].v;
+    }
+    mesh.addQuad(corners);
+}
 
 void append(QcEntityMesh &mesh, const QcClientEntity &entity, const QcContentRegistry &content, QcEntityLight light,
             const QcEntityMesher::UvLookup &uv)

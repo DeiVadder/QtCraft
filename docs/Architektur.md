@@ -198,7 +198,7 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `Trade` | C→S | villager and offer index, `repeat` for as often as possible (shift-click); rate limited like the inventory; the server checks villager, trader, reach and costs |
 | `CloseTrade` | both | the player closed the screen, or the server closed it (villager fled, slept, died or out of reach) |
 | `ServerDebug` | S→C | to operators while subscribed, at most every 10 ticks (a new subscription does not restart the pace): mean and maximum per tick phase over the latest 100 ticks, tick duration and lateness, durations of the ticks since the previous message, tick number, skipped ticks, loaded chunks, players, creatures, items, falling blocks, block updates, biome at the feet, world type, with the goals flag where creatures within 48 m are heading (at most 256) |
-| `MapUpdate` | S→C | protocol 58 (E-802): map id, scale, centre, a rectangle of changed pixels (block index and shade, compressed when shorter) and the player markers; only to players holding the map, at most 4 096 pixels per tick |
+| `MapUpdate` | S→C | protocol 58 (E-802), 59 (E-808): map id, scale, centre, a rectangle of changed pixels (block index and shade, compressed when shorter) and the markers of players and item frames; only to players holding the map or near a frame showing it, at most 4 096 pixels per player and tick |
 
 The TCP transport (`QcTcpTransport`) implements `QcTransport`; `QcNetworkServer` accepts connections into `QcServer::addClient` as remote clients, which log in before they play (E-252, `docs/Multiplayer.md`). Before the login a client may only send `Hello`, `LoginResponse` and `Disconnect`.
 

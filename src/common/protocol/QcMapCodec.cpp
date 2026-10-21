@@ -60,11 +60,12 @@ QByteArray pixelBytes(const QList<quint16> &pixels)
     for (QcMapMarker &marker : markers) {
         quint8 flags = 0;
         stream >> marker.x >> marker.z >> marker.rotation >> flags;
-        if (marker.rotation >= 16 || flags > 3) {
+        if (marker.rotation >= 16 || flags > 7) {
             return std::nullopt;
         }
         marker.onMap = (flags & 1) != 0;
         marker.own = (flags & 2) != 0;
+        marker.frame = (flags & 4) != 0;
     }
     return markers;
 }
@@ -83,7 +84,7 @@ void encode(QDataStream &stream, const QcMsg::MapUpdate &m)
     }
     stream << quint8(m.markers.size());
     for (const QcMapMarker &marker : m.markers) {
-        stream << marker.x << marker.z << marker.rotation << quint8((marker.onMap ? 1 : 0) | (marker.own ? 2 : 0));
+        stream << marker.x << marker.z << marker.rotation << quint8((marker.onMap ? 1 : 0) | (marker.own ? 2 : 0) | (marker.frame ? 4 : 0));
     }
 }
 

@@ -681,6 +681,10 @@ Eine Karte in der Mitte der Werkbank mit acht **Papier** darum wird eine neue, l
 
 Eine Karte mit leeren Karten im Handwerksraster ergibt eine Kopie je leerer Karte. Kopien teilen Nummer und Bild: Was ein Halter erkundet, erscheint auf jeder Kopie, so kann eine Gruppe eine Karte teilen.
 
+**Karten an der Wand**
+
+Lege eine Karte in einen **Rahmen**, und sie bedeckt die ganze Fläche des Rahmens, flach an der Wand. Jeder Rechtsklick dreht sie um eine Vierteldrehung. Karten in Rahmen nebeneinander stoßen ohne Fuge aneinander, so ergeben vier Karten benachbarter Quadrate eine große Wandkarte. Wer in der Nähe einer gerahmten Karte steht, sieht sie sich ändern, wenn andere das Land erkunden, und jede Karte zeigt die Rahmen, in denen sie hängt, als grüne Pfeile.
+
 ### <a id="chapter-qtcraft-creative"></a>Kreativmodus
 
 **Überleben und Kreativ**

@@ -745,5 +745,6 @@
     "item.qtcraft.filled_map": "Karte",
     "structure.qtcraft.maps_station": "Karten",
     "structure.qtcraft.maps_station.use": "Halte eine leere Karte und benutze sie: Sie zeichnet das Land um dich",
-    "structure.qtcraft.maps_station.craft": "Karte + 8 Papier zoomt heraus, Karte + leere Karten kopiert"
+    "structure.qtcraft.maps_station.craft": "Karte + 8 Papier zoomt heraus, Karte + leere Karten kopiert",
+    "structure.qtcraft.maps_station.wall": "Karten in Rahmen nebeneinander ergeben eine Wandkarte"
 }

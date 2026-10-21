@@ -8,6 +8,7 @@
 #include "server/gameplay/QcStandProperties.h"
 #include "server/hanging/QcHangingRules.h"
 #include "server/hanging/QcServerHanging.h"
+#include "server/maps/QcMapSurvey.h"
 #include "server/minecarts/QcMinecartMotion.h"
 #include "server/mobs/QcPetCare.h"
 
@@ -106,10 +107,57 @@ void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
     }
 }
 
+// The map grid square of the first framed map of a setup (decision E-811): the maps of a wall map
+// lie east and south of it.
+std::optional<QPoint> wallMapOrigin(const QList<QcWorldSetup::Hanging> &hangings)
+{
+    const auto framed = std::ranges::find_if(hangings, [](const QcWorldSetup::Hanging &hanging) { return hanging.map.has_value(); });
+    if (framed == hangings.end() || !framed->map) {
+        return std::nullopt;
+    }
+    const QPoint offset = *framed->map * QcMapData::size;
+    return QcMapData::around(framed->at.x - offset.x(), framed->at.z - offset.y(), 0).centre();
+}
+
+// A new map of scale 0 around `centre`, revealed over its whole area: the setup generates the
+// area's chunks first (the survey reads loaded chunks only; decision E-811). Its stack, or an empty
+// one when the ids are used up.
+QcItemStack revealedMap(QcServerState &state, QcItemId filledMap, QPoint centre)
+{
+    const QcMapData map = QcMapData::around(centre.x(), centre.y(), 0);
+    const std::optional<quint32> id = state.maps().create(map);
+    if (!id) {
+        qCWarning(lcServer) << "World setup: no map ids left";
+        return {};
+    }
+    const int half = QcMapData::size / 2;
+    const QcChunkPos first = QcBlockPos{map.centre().x() - half, 0, map.centre().y() - half}.chunk();
+    const QcChunkPos last = QcBlockPos{map.centre().x() + half - 1, 0, map.centre().y() + half - 1}.chunk();
+    for (int x = first.x; x <= last.x; ++x) {
+        for (int z = first.z; z <= last.z; ++z) {
+            state.world().loadChunk({x, z});
+        }
+    }
+
+    QList<QPoint> pixels;
+    pixels.reserve(QcMapData::pixelCount);
+    for (int x = 0; x < QcMapData::size; ++x) {
+        for (int z = 0; z < QcMapData::size; ++z) {
+            pixels.append({x, z});
+        }
+    }
+    const QList<QcMapSurvey::Surveyed> surveyed = QcMapSurvey::survey(state.world(), map, pixels);
+    for (const QcMapSurvey::Surveyed &pixel : surveyed) {
+        state.maps().set(*id, pixel.pixel, pixel.value);
+    }
+    return {filledMap, 1, int(*id)};
+}
+
 // An item frame or painting of the setup (decision E-797); one whose item, held item or motif the
 // content does not know, that has no wall or room there or that covers another is reported and
 // left out. Blocks not loaded count as holding, like for those already hanging.
-void placeHanging(QcServerState &state, const QcWorldSetup::Hanging &setup)
+// A framed map of a wall map (decision E-811) is made around `wallMap` plus its offset.
+void placeHanging(QcServerState &state, const QcWorldSetup::Hanging &setup, std::optional<QPoint> wallMap)
 {
     const QcContentRegistry &content = state.content();
     const std::optional<QcItemId> item = content.itemId(setup.item);
@@ -141,11 +189,18 @@ void placeHanging(QcServerState &state, const QcWorldSetup::Hanging &setup)
             return;
         }
         hanging.held = {*held, 1, 0};
+        if (setup.map && content.item(*held).map != QcMapItem::Filled) {
+            qCWarning(lcServer) << "World setup: a wall map's frame holds no filled map but" << setup.held;
+        }
     }
 
     if (!QcHangingRules::holds(state.world(), hanging.hanging).value_or(true) || QcHangingRules::overlaps(state.entities().hangings(), hanging.hanging)) {
         qCWarning(lcServer) << "World setup: no room for" << setup.item << "at" << setup.at.x << setup.at.y << setup.at.z;
         return;
+    }
+    // The map is made only for a frame that hangs.
+    if (setup.map && wallMap && !hanging.held.isEmpty() && content.item(hanging.held.item).map == QcMapItem::Filled) {
+        hanging.held = revealedMap(state, hanging.held.item, *wallMap + *setup.map * QcMapData::size);
     }
     if (!QcServerHanging::spawn(state, hanging)) {
         qCWarning(lcServer) << "World setup: too many item frames and paintings";
@@ -250,8 +305,9 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     for (const QcWorldSetup::Sign &sign : setup.signs) {
         write(state, sign);
     }
+    const std::optional<QPoint> wallMap = wallMapOrigin(setup.hangings);
     for (const QcWorldSetup::Hanging &hanging : setup.hangings) {
-        placeHanging(state, hanging);
+        placeHanging(state, hanging, wallMap);
     }
 
     updates.setCommandMode(true);

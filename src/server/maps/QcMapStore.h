@@ -7,6 +7,7 @@
 #include <QList>
 #include <QRect>
 #include <QSet>
+#include <QString>
 
 #include <algorithm>
 #include <functional>
@@ -15,8 +16,9 @@
 // The maps of a world (decision E-799) by map id: kept in memory while used, read from the save
 // when first needed (the loader), written with the next save only when changed since, and dropped
 // from memory when nobody used them for idleTicks and they are written (tick). It also
-// keeps, per player that holds a map, the rectangle of pixels that player has not received yet
-// (decision E-802), so a revealed pixel goes out once to everyone who has the map.
+// keeps, per player that holds a map or stands near a frame showing it, the rectangle of pixels
+// that player has not received yet (decisions E-802, E-807), so a revealed pixel goes out once to
+// everyone who sees the map.
 class QcMapStore
 {
 public:
@@ -48,6 +50,12 @@ public:
     void watch(quint32 id, quint32 client);
     // `client` gets map `id` whole again with the next takePending (it took the map into the hand).
     void resend(quint32 id, quint32 client);
+    // `client` no longer holds map `id` nor stands near a frame showing it: nothing is kept for it
+    // (a later watch sends the map whole again). Never reads the save.
+    void unwatch(quint32 id, quint32 client);
+    // Map `id` is shown somewhere (an item frame in a loaded chunk, decision E-807): it counts as
+    // used at tick `now`, if it is in memory. Never reads the save.
+    void touch(quint32 id, quint64 now);
     // Whether `client` got map `id` before (since it joined).
     bool watches(quint32 id, quint32 client) const;
     // At most `budget` pixels of what `client` has not received of map `id` (QcMapPending::take);
@@ -55,6 +63,13 @@ public:
     [[nodiscard]] QRect takePending(quint32 id, quint32 client, int budget);
     // The player left: nothing is kept for it.
     void forget(quint32 client);
+    // The maps `client` watched in the last tick (QcServerMaps), and setting them for this tick.
+    QList<quint32> watched(quint32 client) const { return m_watched.value(client); }
+    void setWatched(quint32 client, const QList<quint32> &ids);
+
+    // Counts a new map of `player` at tick `now` (decision E-810); false when it made `perMinute`
+    // maps in its current minute already. Kept by player name, so reconnecting starts no new minute.
+    bool countMade(const QString &player, quint64 now, int perMinute);
 
     // The ids of the maps changed since the last call (for a save); they stay in memory until
     // finishSave.
@@ -88,4 +103,8 @@ private:
     // Maps taken for saves that are not done yet, with the number of those saves.
     QHash<quint32, int> m_saving;
     quint64 m_now = 0;
+    // The maps each player watched in the last tick, by player id.
+    QHash<quint32, QList<quint32>> m_watched;
+    // The tick each map-making player's minute began and the maps made in it, by player name.
+    QHash<QString, std::pair<quint64, int>> m_made;
 };

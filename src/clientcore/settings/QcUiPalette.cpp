@@ -75,6 +75,7 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::MapPaperEdge, "mapPaperEdge", 0xff9c8a62},
     {R::MapMarker, "mapMarker", 0xfff8f8f0},
     {R::MapMarkerOther, "mapMarkerOther", 0xff9cc0f0},
+    {R::MapMarkerFrame, "mapMarkerFrame", 0xff3cb83c},
     {R::Clear, "clear", 0x00000000},
 }};
 

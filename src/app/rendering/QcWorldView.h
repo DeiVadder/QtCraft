@@ -4,6 +4,7 @@
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/debug/QcDebugLines.h"
 #include "clientcore/light/QcSky.h"
+#include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/meshing/QcChunkMesh.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 #include "clientcore/settings/QcGameSettings.h"
@@ -58,6 +59,9 @@ public:
         QList<QcAabb> selection;
         std::shared_ptr<const QcEntityMesh> entityMesh;
         std::shared_ptr<const QcEntityMesh> handMesh;
+        // The maps in item frames and the tiles of the texture they are drawn with (decision E-809).
+        std::shared_ptr<const QcEntityMesh> framedMapMesh;
+        std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles;
         std::shared_ptr<const QList<QcDebugLineVertex>> debugLines;
         std::shared_ptr<const QList<QcPrecipitationDrop>> precipitation;
         // Benchmark: the renderer records one QcRenderSample per frame while set.
@@ -79,6 +83,8 @@ public:
     void setSelection(const QList<QcAabb> &boxes);
     // Entity triangles for this frame (replaces the previous set).
     void setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh);
+    // The maps in item frames for this frame and the tiles of their texture (decision E-809).
+    void setFramedMaps(std::shared_ptr<const QcEntityMesh> mesh, std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> tiles);
     // First-person arm and held item; drawn in front of everything else. Null hides it.
     void setHandMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.

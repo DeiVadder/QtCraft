@@ -3,10 +3,11 @@
 #include <QTypeInfo>
 #include <QtGlobal>
 
-// A player shown on a map (decision E-803): where, in half pixels from the map's middle (-128 at
-// the west or north edge, 127 at the east or south edge), and which way the player looks, in
-// sixteenths of a full turn clockwise from north. A player off the map stands at the edge as a dot
-// (`onMap` false) like in the reference, so the holder sees where the map lies.
+// A player or an item frame shown on a map (decisions E-803, E-808): where, in half pixels from the
+// map's middle (-128 at the west or north edge, 127 at the east or south edge), and which way the
+// player looks or the frame faces, in sixteenths of a full turn clockwise from north. A player off
+// the map stands at the edge as a dot (`onMap` false) like in the reference, so the holder sees
+// where the map lies.
 struct QcMapMarker
 {
     // How many markers one map shows at most; more players are left out.
@@ -18,6 +19,8 @@ struct QcMapMarker
     bool onMap = true;
     // The marker of the player who receives it.
     bool own = false;
+    // An item frame that shows this map (drawn green; the only markers a framed map shows).
+    bool frame = false;
 
     bool operator==(const QcMapMarker &) const = default;
 };

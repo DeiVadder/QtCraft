@@ -745,5 +745,6 @@
     "item.qtcraft.filled_map": "Map",
     "structure.qtcraft.maps_station": "Maps",
     "structure.qtcraft.maps_station.use": "Hold an empty map and use it: it draws the land around you",
-    "structure.qtcraft.maps_station.craft": "Map + 8 paper zooms out, map + empty maps copies"
+    "structure.qtcraft.maps_station.craft": "Map + 8 paper zooms out, map + empty maps copies",
+    "structure.qtcraft.maps_station.wall": "Maps in item frames side by side make a wall map"
 }

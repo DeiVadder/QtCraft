@@ -104,6 +104,38 @@ private slots:
         QCOMPARE(memoryOnly.loadedCount(), 1);
     }
 
+    void framedMapsCountAsUsedAndUnwatchingKeepsNothing()
+    {
+        QcMapStore store;
+        store.open([](quint32) -> std::optional<QcMapData> { return QcMapData::around(0, 0, 0); }, 1);
+        const std::optional<quint32> id = store.create(QcMapData::around(0, 0, 0));
+        QVERIFY(id);
+        store.finishSave(store.takeUnsaved(), true);
+        constexpr quint64 idle = QcMapStore::idleTicks;
+        constexpr quint64 interval = QcMapStore::evictionInterval;
+
+        // Shown in a frame (decision E-807): touched at each look for idle maps, it stays.
+        for (quint64 now = interval; now <= 2 * idle; now += interval) {
+            store.touch(*id, now);
+            store.tick(now);
+        }
+        QVERIFY(store.loaded(*id));
+        store.tick(3 * idle);
+        QVERIFY(!store.loaded(*id));
+        // Touching a map that is not in memory does not read it.
+        store.touch(*id, 3 * idle);
+        QVERIFY(!store.loaded(*id));
+
+        // A player that stops watching keeps nothing; watching again sends the map whole.
+        QVERIFY(store.find(*id));
+        store.watch(*id, 7);
+        QCOMPARE(store.takePending(*id, 7, QcMapData::pixelCount), QcMapData::bounds());
+        store.unwatch(*id, 7);
+        QVERIFY(!store.watches(*id, 7));
+        store.watch(*id, 7);
+        QCOMPARE(store.takePending(*id, 7, QcMapData::pixelCount), QcMapData::bounds());
+    }
+
     void mapsOfDifferentIdsNeverMerge()
     {
         const QcContentRegistry &content = *m_content;

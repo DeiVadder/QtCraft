@@ -65,6 +65,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     maps/QcClientMaps.h maps/QcClientMaps.cpp
+    maps/QcFramedMapAtlas.h maps/QcFramedMapAtlas.cpp
     maps/QcMapColors.h maps/QcMapColors.cpp
 )
 target_sources(qc_clientcore PRIVATE

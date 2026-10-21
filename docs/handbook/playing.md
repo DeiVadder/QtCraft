@@ -681,6 +681,10 @@ A filled map in the middle of the crafting table with eight **paper** around it 
 
 A filled map with empty maps in the crafting grid gives one copy per empty map. Copies share the map number and the picture: whatever one holder explores appears on every copy, so a group can share one map.
 
+**Maps on the wall**
+
+Put a filled map into an **item frame** and it covers the whole face of the frame, drawn flat on the wall. Each right click turns it a quarter turn. Maps in frames side by side meet without a gap, so four maps of neighbouring squares make a large wall map. Players near a framed map see it change as others explore, and every map shows the frames it hangs in as green arrows.
+
 ### <a id="chapter-qtcraft-creative"></a>Creative mode
 
 **Survival and creative**

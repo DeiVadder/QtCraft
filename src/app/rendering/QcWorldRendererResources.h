@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/rendering/QcDebugLineRenderer.h"
+#include "app/rendering/QcFramedMapTexture.h"
 #include "app/rendering/QcGpuMeshStore.h"
 #include "app/rendering/QcPrecipitationRenderer.h"
 #include "app/rendering/QcSkyRenderer.h"
@@ -23,7 +24,8 @@
 
 // What belongs to one QRhi and survives a change of render pass (the window moved to another
 // screen, a resize, a new sample count): the frame uniform buffer, the atlas texture with its
-// sampler and bindings, the outline's bindings and vertices, and the entity and hand buffers.
+// sampler and bindings, the outline's bindings and vertices, the entity and hand buffers, and the
+// framed maps' buffers and texture.
 // Dropped (`= {}`) only for a new QRhi. The sections' buffers are in QcGpuMeshStore, which the
 // renderer resets with this group but keeps: its queue of received meshes outlives the QRhi.
 struct QcWorldDeviceResources
@@ -57,6 +59,9 @@ struct QcWorldDeviceResources
     // Per-frame entity meshes (dynamic buffers that grow on demand, QcGpuBuffers::uploadDynamic).
     QcGpuBuffers entityBuffers;
     QcGpuBuffers handBuffers;
+    QcGpuBuffers framedMapBuffers;
+    // The framed-map texture; its bindings refer to frameUniforms (declared after it, released first).
+    QcFramedMapTexture framedMaps;
     // The bindings refer to the resources above and are declared after them (released first).
     // Frame uniforms and atlas (atlasBindings()); null until first use after a new atlas texture.
     std::unique_ptr<QRhiShaderResourceBindings> bindings;

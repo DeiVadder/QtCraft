@@ -276,8 +276,9 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
             hanging.face = clockwise[(std::ranges::find(clockwise, hanging.face) - clockwise.begin() + 1) % 4];
         }
         // A frame on a floor or ceiling turns its item instead: two eighths per quarter turn,
-        // clockwise as seen from above, which is the other way round as seen from below.
-        if (!QcHanging::isWallFace(hanging.face)) {
+        // clockwise as seen from above, which is the other way round as seen from below. A map
+        // keeps north where it is (decision E-811).
+        if (!QcHanging::isWallFace(hanging.face) && !hanging.map) {
             const int eighths = 2 * placement.turns() * (hanging.face == QcBlockFace::Up ? 1 : -1);
             hanging.rotation = ((hanging.rotation + eighths) % QcHanging::rotations + QcHanging::rotations) % QcHanging::rotations;
         }

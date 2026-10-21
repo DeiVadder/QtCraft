@@ -76,6 +76,7 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor mapPaperEdge MEMBER m_mapPaperEdge CONSTANT FINAL)
     Q_PROPERTY(QColor mapMarker MEMBER m_mapMarker CONSTANT FINAL)
     Q_PROPERTY(QColor mapMarkerOther MEMBER m_mapMarkerOther CONSTANT FINAL)
+    Q_PROPERTY(QColor mapMarkerFrame MEMBER m_mapMarkerFrame CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -148,5 +149,6 @@ private:
     QColor m_mapPaperEdge = QcUiPalette::color(QcUiPalette::Role::MapPaperEdge);
     QColor m_mapMarker = QcUiPalette::color(QcUiPalette::Role::MapMarker);
     QColor m_mapMarkerOther = QcUiPalette::color(QcUiPalette::Role::MapMarkerOther);
+    QColor m_mapMarkerFrame = QcUiPalette::color(QcUiPalette::Role::MapMarkerFrame);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };
