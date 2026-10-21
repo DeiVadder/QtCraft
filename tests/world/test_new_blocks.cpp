@@ -10,7 +10,7 @@
 
 using namespace Qt::StringLiterals;
 
-// Blocks and recipes of the side branch (docs/FORTSCHRITT-Bloecke-Rezepte.md): cobwebs and mud in
+// Blocks and recipes of the side branch (docs/archiv/FORTSCHRITT-Bloecke-Rezepte.md): cobwebs and mud in
 // the shared physics, concrete powder, magma, glass bottles and soup on the server, and the new
 // recipe chains.
 class TestNewBlocks : public QcServerTestFixture

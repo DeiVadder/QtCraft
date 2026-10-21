@@ -1,5 +1,7 @@
 # Fortschritt: Blöcke und Rezepte (Nebenstrang)
 
+> **Archiv – abgeschlossener Nebenstrang** (`feature/blocks-recipes`, in `dev` gemergt; E-200 ff.). Wird nicht mehr nachgeführt; den aktuellen Stand nennt `docs/FORTSCHRITT.md`.
+
 Wiederaufnahme-Dokument für diesen Nebenstrang. Ein frischer Agent (auch unter einem anderen Account) liest zuerst **dieses** Dokument, danach `QtCraft-Agent-Auftrag.md` (Regeln, Größengrenzen, Verifikation) und bei Bedarf `docs/Entscheidungen.md`. `docs/FORTSCHRITT.md` gehört dem Hauptstrang (Etappen 20 ff.) und wird hier **nicht** angefasst.
 
 ## Rahmen
