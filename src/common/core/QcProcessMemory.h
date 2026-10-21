@@ -1,12 +1,20 @@
 #pragma once
 
-// Memory of the running process in megabytes (debug display, statistics log, benchmark); 0 where
-// the platform does not report it.
+// Memory of the running process in MiB (debug display, statistics log, benchmark); 0 where the
+// platform does not report it.
 namespace QcProcessMemory {
+
+// Bytes per MiB: every memory figure of the debug display ("MiB"), the statistics JSON (keys
+// ending in "Mb") and the BENCH line (keys ending in "_mb") uses this unit (decision E-813).
+inline constexpr double bytesPerMb = 1024.0 * 1024.0;
 
 // Resident memory now.
 double currentMb();
 // Highest resident memory so far.
 double peakMb();
+// Physical footprint now and its highest value so far (macOS: what the Activity Monitor shows, with
+// GPU memory the process owns that is not mapped into it; elsewhere the resident memory).
+double footprintMb();
+double peakFootprintMb();
 
 } // namespace QcProcessMemory

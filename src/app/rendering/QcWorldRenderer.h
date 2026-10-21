@@ -62,7 +62,7 @@ private:
     void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
     // `count` indices from `firstIndex`, all of them when `count` is 0.
-    void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuBuffers &buffers, quint32 firstIndex = 0, quint32 count = 0);
+    void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 firstIndex = 0, quint32 count = 0);
     // The pipeline the translucent step draws the water lists with: the translucent one as long as
     // the water pipeline does the same (m_waterLikeTranslucent), so alternating draws need no switch.
     QRhiGraphicsPipeline *waterPipelineInTranslucent() const;

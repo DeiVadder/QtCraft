@@ -21,6 +21,12 @@ public:
     bool isEmpty() const { return isUniform() && m_palette.constFirst() == qcAirBlockId; }
 
     const QList<QcBlockId> &palette() const { return m_palette; }
+    // Bytes the palette and the indices hold on the heap (their capacity; shared copies count in
+    // full for each holder), for memory statistics.
+    qsizetype heapBytes() const
+    {
+        return m_palette.capacity() * qsizetype(sizeof(QcBlockId)) + m_indices.capacity() * qsizetype(sizeof(quint16));
+    }
 
     // Calls `visit(pos)` for every cell whose block is `wanted`, with the section's lowest corner at
     // `corner` in the world.

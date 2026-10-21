@@ -8,6 +8,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
+#include "clientcore/session/QcClientWorld.h"
 #include "clientcore/tick/QcTickTiming.h"
 #include "common/core/QcProcessMemory.h"
 #include "common/core/QcTickSummary.h"
@@ -325,7 +326,7 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(ticks.ticks)
                                     .arg(ticks.skipped)
                                     .arg(m_frameProfile.summary(), tickPhasePairs(ticks))
-                                    + u' ' + entityPairs() + u' ' + clientTickPairs();
+                                    + u' ' + entityPairs() + u' ' + clientTickPairs() + u' ' + memoryPairs();
 }
 
 QString QcBenchmarkRun::clientTickPairs() const
@@ -338,6 +339,21 @@ QString QcBenchmarkRun::clientTickPairs() const
         .arg(ticks.lateMaxMs, 0, 'f', 3)
         .arg(ticks.ticks)
         .arg(ticks.missed);
+}
+
+QString QcBenchmarkRun::memoryPairs() const
+{
+    // The physical footprint adds GPU memory the process owns but has not mapped; the blocks and
+    // block light are the client's copies (the server in the same process keeps its own).
+    const QcClientWorld *world = m_parts.session ? m_parts.session->world() : nullptr;
+    const QcClientWorld::Memory blocks = world ? world->memory() : QcClientWorld::Memory();
+    constexpr double mb = QcProcessMemory::bytesPerMb;
+    return u"peak_footprint_mb=%1 client_chunks=%2 client_paletted_sections=%3 client_blocks_mb=%4 client_light_mb=%5"_s
+        .arg(QcProcessMemory::peakFootprintMb(), 0, 'f', 1)
+        .arg(blocks.chunks)
+        .arg(blocks.palettedSections)
+        .arg(double(blocks.bytes) / mb, 0, 'f', 1)
+        .arg(double(m_parts.meshes->lightBytes()) / mb, 0, 'f', 1);
 }
 
 QString QcBenchmarkRun::entityPairs() const

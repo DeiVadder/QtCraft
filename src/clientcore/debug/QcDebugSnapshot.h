@@ -56,6 +56,10 @@ struct QcDebugSnapshot
         // Worker time per section mesh and per light job since the previous snapshot; 0 without jobs.
         double meshJobMs = 0.0;
         double lightJobMs = 0.0;
+        // Bytes of the section buffers on the GPU and of the block light handed to the mesher
+        // (decision E-813); the light only in a full snapshot (QcDebugHud::snapshot).
+        quint64 sectionBytes = 0;
+        qint64 blockLightBytes = 0;
     };
 
     struct Target
@@ -93,6 +97,9 @@ struct QcDebugSnapshot
     qsizetype loadedChunks = 0;
     double memoryMb = 0.0;
     double peakMemoryMb = 0.0;
+    double footprintMb = 0.0;
+    // The blocks of the loaded chunks (QcClientWorld::memory, decision E-813).
+    qint64 blockBytes = 0;
     std::optional<QcMsg::ServerDebug> server;
     std::optional<Frame> frame;
 

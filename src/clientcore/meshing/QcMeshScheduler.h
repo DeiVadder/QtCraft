@@ -80,6 +80,10 @@ public:
     qsizetype jobsInFlight() const { return m_inFlight.size(); }
     // Light jobs submitted or gathered and not yet back.
     int lightJobsPending() const { return m_lightJobsPending + (m_gathered.isEmpty() ? 0 : 1); }
+    // Bytes of the block light sections handed to the mesher (memory statistics, decision E-813);
+    // the light engine on its own thread holds about as many again. Walks every section: for
+    // occasional statistics, not per frame.
+    qint64 lightBytes() const;
     // Block light (0..15) as the meshes show it; 0 where it is not known yet.
     int blockLight(QcBlockPos pos) const;
     // Submits the gathered light changes and blocks until all queued jobs finished; their results are

@@ -5,7 +5,6 @@
 #include <QTest>
 
 #include <cmath>
-#include <cstring>
 #include <numbers>
 
 namespace {
@@ -115,18 +114,6 @@ private slots:
         QVERIFY(QcIndexPacking::fitsShortIndices(65536));
         QVERIFY(!QcIndexPacking::fitsShortIndices(65537));
         QVERIFY(!QcIndexPacking::fitsShortIndices(200000));
-    }
-
-    void shortIndicesKeepValuesAndOrder()
-    {
-        const QList<quint32> indices = {0, 1, 2, 2, 3, 0, 65535, 40000};
-        const QByteArray packed = QcIndexPacking::toShortIndices(indices);
-        QCOMPARE(packed.size(), qsizetype(16));
-        std::array<quint16, 8> values{};
-        std::memcpy(values.data(), packed.constData(), sizeof(values));
-        const std::array<quint16, 8> expected = {0, 1, 2, 2, 3, 0, 65535, 40000};
-        QCOMPARE(values, expected);
-        QVERIFY(QcIndexPacking::toShortIndices({}).isEmpty());
     }
 };
 

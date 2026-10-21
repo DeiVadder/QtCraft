@@ -1,6 +1,7 @@
 #include "clientcore/debug/QcDebugJson.h"
 
 #include "common/core/QcIntMath.h"
+#include "common/core/QcProcessMemory.h"
 
 #include <QJsonArray>
 
@@ -14,6 +15,12 @@ namespace {
 double rounded(double ms)
 {
     return std::round(ms * 1000.0) / 1000.0;
+}
+
+// Bytes as MiB with one decimal.
+double megabytes(double bytes)
+{
+    return std::round(bytes / QcProcessMemory::bytesPerMb * 10.0) / 10.0;
 }
 
 QJsonObject timing(double meanMs, double maxMs)
@@ -79,6 +86,8 @@ QJsonObject clientJson(const QcDebugSnapshot &snapshot)
         {u"loadedChunks"_s, qint64(snapshot.loadedChunks)},
         {u"memoryMb"_s, std::round(snapshot.memoryMb)},
         {u"peakMemoryMb"_s, std::round(snapshot.peakMemoryMb)},
+        {u"footprintMb"_s, std::round(snapshot.footprintMb)},
+        {u"blocksMb"_s, megabytes(double(snapshot.blockBytes))},
     };
     if (snapshot.target) {
         json.insert(u"target"_s, targetJson(*snapshot.target));
@@ -106,7 +115,9 @@ QJsonObject frameJson(const QcDebugSnapshot::Frame &frame)
             {u"meshBacklog"_s, qint64(frame.meshBacklog)},
             {u"lightJobsPending"_s, frame.lightJobsPending},
             {u"meshJobMs"_s, rounded(frame.meshJobMs)},
-            {u"lightJobMs"_s, rounded(frame.lightJobMs)}};
+            {u"lightJobMs"_s, rounded(frame.lightJobMs)},
+            {u"sectionMb"_s, megabytes(double(frame.sectionBytes))},
+            {u"blockLightMb"_s, megabytes(double(frame.blockLightBytes))}};
 }
 
 QJsonObject serverJson(const QcMsg::ServerDebug &server)

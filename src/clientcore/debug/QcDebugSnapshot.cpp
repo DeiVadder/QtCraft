@@ -97,6 +97,7 @@ QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const s
     snapshot.pitch = session.intent().pitch;
     snapshot.memoryMb = QcProcessMemory::currentMb();
     snapshot.peakMemoryMb = QcProcessMemory::peakMb();
+    snapshot.footprintMb = QcProcessMemory::footprintMb();
     snapshot.server = session.debug().mirror().latest();
 
     const QcClientWorld *world = session.world();
@@ -105,6 +106,7 @@ QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const s
     }
 
     snapshot.loadedChunks = world->chunkCount();
+    snapshot.blockBytes = world->memory().bytes;
     snapshot.entities = countEntities(session);
     snapshot.targetEntity = targetEntityName(session);
     const QcBlockPos feetBlock = snapshot.block();

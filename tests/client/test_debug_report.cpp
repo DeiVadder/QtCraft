@@ -202,7 +202,7 @@ private slots:
         QVERIFY(lines.contains(u"  Tags: qtcraft:wooden_stairs"_s));
         QVERIFY(lines.contains(u"  Light in front: sky 14, block 0"_s));
         QVERIFY(lines.contains(u"Entities: 3 creatures, 1 players, 2 items, 0 falling blocks"_s));
-        QVERIFY(lines.contains(u"Memory: 312 MB (peak 330 MB)"_s));
+        QVERIFY(lines.contains(u"Memory: 312 MiB (peak 330 MiB)"_s));
         QVERIFY(std::ranges::any_of(lines, [](const QString &line) { return line.startsWith(u"Server tick 0: 0.50 ms (max 2.00 ms)"_s); }));
         QVERIFY(lines.contains(u"Protocol 20 · world type showcase · seed 42"_s));
     }

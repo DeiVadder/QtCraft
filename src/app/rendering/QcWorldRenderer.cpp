@@ -168,15 +168,15 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
 
-void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuBuffers &buffers, quint32 firstIndex, quint32 count)
+void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 firstIndex, quint32 count)
 {
-    if (buffers.indexCount == 0) {
+    if (list.indexCount == 0) {
         return;
     }
 
-    const quint32 drawn = count > 0 ? count : buffers.indexCount;
-    const QRhiCommandBuffer::VertexInput input(buffers.vertices.get(), 0);
-    commandBuffer->setVertexInput(0, 1, &input, buffers.indices.get(), 0, buffers.indexFormat);
+    const quint32 drawn = count > 0 ? count : list.indexCount;
+    const QRhiCommandBuffer::VertexInput input(list.vertices, list.vertexOffset);
+    commandBuffer->setVertexInput(0, 1, &input, list.indices, list.indexOffset, list.indexFormat);
     commandBuffer->drawIndexed(drawn, 1, firstIndex);
     ++m_sample.drawCalls;
     m_sample.indicesDrawn += drawn;
@@ -278,7 +278,7 @@ void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
     if (m_device.handBuffers.indexCount > 0 && m_pass.handPipeline) {
         commandBuffer->setGraphicsPipeline(m_pass.handPipeline.get());
         commandBuffer->setShaderResources();
-        drawBuffers(commandBuffer, m_device.handBuffers);
+        drawBuffers(commandBuffer, m_device.handBuffers.list());
     }
 }
 
@@ -329,13 +329,13 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
     if (m_device.entityBuffers.indexCount > 0 && m_pass.entityPipeline) {
         commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
         commandBuffer->setShaderResources();
-        drawBuffers(commandBuffer, m_device.entityBuffers);
+        drawBuffers(commandBuffer, m_device.entityBuffers.list());
     }
     // The maps in item frames: the same pipeline with the framed-map texture (decision E-809).
     if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && m_device.framedMaps.bindings()) {
         commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
         commandBuffer->setShaderResources(m_device.framedMaps.bindings());
-        drawBuffers(commandBuffer, m_device.framedMapBuffers);
+        drawBuffers(commandBuffer, m_device.framedMapBuffers.list());
     }
 }
 

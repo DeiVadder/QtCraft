@@ -1,7 +1,8 @@
 #include "app/rendering/QcGpuMeshStore.h"
 
 #include "app/debug/QcAppLogging.h"
-#include "clientcore/meshing/QcIndexPacking.h"
+#include "app/rendering/QcBufferWrite.h"
+#include "clientcore/meshing/QcPackedMesh.h"
 
 #include <algorithm>
 #include <limits>
@@ -13,37 +14,79 @@ void QcGpuMeshStore::reset(QRhi *rhi, bool sectionLight)
     m_bytes = 0;
     m_rhi = rhi;
     m_sectionLight = sectionLight;
+    m_directWrite = QcBufferWrite::isSupported(rhi);
+    m_warnedWriteFallback = false;
+    m_directWrites = 0;
 }
 
-QcGpuBuffers QcGpuMeshStore::createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
-                                           const QList<quint32> &indices)
+QRhiBuffer::UsageFlags QcGpuMeshStore::usage(QRhiBuffer::UsageFlag kind) const
 {
-    QcGpuBuffers buffers;
-    if (indices.isEmpty()) {
-        return buffers;
+    // Without the storage usage QRhi's Metal backend keeps every buffer once per frame in flight;
+    // section buffers are written once and never again, so one copy is safe, and QcBufferWrite
+    // needs it (decision E-813).
+    return m_directWrite ? QRhiBuffer::UsageFlags(kind | QRhiBuffer::StorageBuffer) : QRhiBuffer::UsageFlags(kind);
+}
+
+std::unique_ptr<QRhiBuffer> QcGpuMeshStore::createBuffer(QRhiBuffer::UsageFlag kind, quint32 size) const
+{
+    std::unique_ptr<QRhiBuffer> buffer(m_rhi->newBuffer(QRhiBuffer::Immutable, usage(kind), size));
+    if (!buffer->create()) {
+        qCWarning(lcRenderer).nospace() << "Section buffer of " << size << " bytes could not be created";
+        return nullptr;
+    }
+    return buffer;
+}
+
+void QcGpuMeshStore::fill(QRhiResourceUpdateBatch *updates, QRhiBuffer *buffer, const QByteArray &data)
+{
+    const auto size = quint32(data.size());
+    if (m_directWrite) {
+        if (QcBufferWrite::write(buffer, data.constData(), size)) {
+            ++m_directWrites;
+            return;
+        }
+        // Expected to work for every section buffer on this QRhi; the batch upload below still fills it.
+        if (!m_warnedWriteFallback) {
+            m_warnedWriteFallback = true;
+            qCWarning(lcRenderer) << "Direct section buffer write failed, uploading through resource update batches";
+        }
+    }
+    updates->uploadStaticBuffer(buffer, data.constData());
+}
+
+QcGpuMesh QcGpuMeshStore::createMesh(QRhiResourceUpdateBatch *updates, const QcChunkMesh &mesh)
+{
+    QcGpuMesh gpuMesh;
+    const QcPackedMesh packed = QcPackedMesh::pack(mesh);
+    if (packed.isEmpty()) {
+        return gpuMesh;
     }
 
-    const quint32 vertexBytes = quint32(vertices.size() * qsizetype(sizeof(QcBlockVertex)));
-    buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, vertexBytes));
-    buffers.vertices->create();
-    updates->uploadStaticBuffer(buffers.vertices.get(), vertices.constData());
-
-    // Almost every section has at most 65536 vertices; its indices then take two bytes each.
-    if (QcIndexPacking::fitsShortIndices(vertices.size())) {
-        const QByteArray shortIndices = QcIndexPacking::toShortIndices(indices);
-        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, quint32(shortIndices.size())));
-        buffers.indices->create();
-        updates->uploadStaticBuffer(buffers.indices.get(), shortIndices.constData());
-        buffers.indexFormat = QRhiCommandBuffer::IndexUInt16;
-    } else {
-        const quint32 indexBytes = quint32(indices.size() * qsizetype(sizeof(quint32)));
-        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, indexBytes));
-        buffers.indices->create();
-        updates->uploadStaticBuffer(buffers.indices.get(), indices.constData());
+    // Both buffers exist before either is filled: a buffer released with an upload still queued in
+    // the batch would crash the backend (decision E-413).
+    gpuMesh.vertexBuffer = createBuffer(QRhiBuffer::VertexBuffer, quint32(packed.vertices.size()));
+    gpuMesh.indexBuffer = createBuffer(QRhiBuffer::IndexBuffer, quint32(packed.indices.size()));
+    if (!gpuMesh.vertexBuffer || !gpuMesh.indexBuffer) {
+        return QcGpuMesh(); // nothing to draw; createBuffer() reported it
     }
+    fill(updates, gpuMesh.vertexBuffer.get(), packed.vertices);
+    fill(updates, gpuMesh.indexBuffer.get(), packed.indices);
 
-    buffers.indexCount = quint32(indices.size());
-    return buffers;
+    const auto list = [&](QcPackedMesh::List which) {
+        const QcPackedMesh::Place &place = packed.place(which);
+        return QcGpuList{gpuMesh.vertexBuffer.get(),
+                         gpuMesh.indexBuffer.get(),
+                         place.vertexOffset,
+                         place.indexOffset,
+                         place.indexCount,
+                         place.shortIndices ? QRhiCommandBuffer::IndexUInt16 : QRhiCommandBuffer::IndexUInt32};
+    };
+    gpuMesh.opaque = list(QcPackedMesh::List::Opaque);
+    gpuMesh.cutout = list(QcPackedMesh::List::Cutout);
+    gpuMesh.translucent = list(QcPackedMesh::List::Translucent);
+    gpuMesh.water = list(QcPackedMesh::List::Water);
+    gpuMesh.underside = list(QcPackedMesh::List::Underside);
+    return gpuMesh;
 }
 
 void QcGpuMeshStore::release(quint64 key)
@@ -71,12 +114,7 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
             continue;
         }
 
-        QcGpuMesh gpuMesh;
-        gpuMesh.opaque = createBuffers(updates, mesh->opaqueVertices, mesh->opaqueIndices);
-        gpuMesh.cutout = createBuffers(updates, mesh->cutoutVertices, mesh->cutoutIndices);
-        gpuMesh.translucent = createBuffers(updates, mesh->translucentVertices, mesh->translucentIndices);
-        gpuMesh.water = createBuffers(updates, mesh->waterVertices, mesh->waterIndices);
-        gpuMesh.underside = createBuffers(updates, mesh->undersideVertices, mesh->undersideIndices);
+        QcGpuMesh gpuMesh = createMesh(updates, *mesh);
         gpuMesh.translucentRuns = mesh->translucentRuns;
 
         QVector3D low(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),

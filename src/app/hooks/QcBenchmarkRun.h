@@ -70,6 +70,8 @@ private:
     QString entityPairs() const;
     // "key=value" pairs of the client session's tick punctuality (decision E-560).
     QString clientTickPairs() const;
+    // "key=value" pairs of the client's memory at the end (decision E-813).
+    QString memoryPairs() const;
     void logReport(const QList<qint64> &sorted, double p99Ms) const;
 
     QcScreenState &m_screens;

@@ -140,7 +140,7 @@ private slots:
         mesh.underside.indexCount = 6;
         QVERIFY(!mesh.isDrawable(false));
         QVERIFY(mesh.isDrawable(true));
-        for (QcGpuBuffers *buffers : {&mesh.opaque, &mesh.translucent, &mesh.water}) {
+        for (QcGpuList *buffers : {&mesh.opaque, &mesh.translucent, &mesh.water}) {
             mesh.underside.indexCount = 0;
             buffers->indexCount = 6;
             QVERIFY(mesh.isDrawable(false));

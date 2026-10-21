@@ -126,6 +126,8 @@ QcDebugSnapshot QcDebugHud::snapshot(const QcVec3 &feet, QcFrameMonitor::Reader 
     QcDebugSnapshot snapshot = QcDebugSnapshot::collect(*m_parts.session, feet);
     if (m_frames.depth() != QcFrameMonitor::Depth::None) {
         snapshot.frame = m_frames.frame(*m_parts.meshes, m_parts.view ? m_parts.view->meshCount() : 0, reader);
+        // Walks every light section: only for the full display and the statistics log, not per frame.
+        snapshot.frame->blockLightBytes = m_parts.meshes->lightBytes();
     }
     return snapshot;
 }

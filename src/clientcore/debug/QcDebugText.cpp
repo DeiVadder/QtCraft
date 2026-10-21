@@ -1,6 +1,7 @@
 #include "clientcore/debug/QcDebugText.h"
 
 #include "common/core/QcIntMath.h"
+#include "common/core/QcProcessMemory.h"
 
 #include <algorithm>
 
@@ -169,7 +170,15 @@ QStringList QcDebugText::worldLines(const QcDebugSnapshot &snapshot)
         lines.append(tr("Chunks: %1 loaded").arg(snapshot.loadedChunks));
     }
 
-    lines.append(tr("Memory: %1 MB (peak %2 MB)").arg(qRound(snapshot.memoryMb)).arg(qRound(snapshot.peakMemoryMb)));
+    lines.append(tr("Memory: %1 MiB (peak %2 MiB)").arg(qRound(snapshot.memoryMb)).arg(qRound(snapshot.peakMemoryMb)));
+    if (const std::optional<QcDebugSnapshot::Frame> &frame = snapshot.frame) {
+        constexpr double mb = QcProcessMemory::bytesPerMb;
+        lines.append(tr("Client memory: blocks %1 MiB · block light %2 MiB · section buffers %3 MiB · footprint %4 MiB")
+                         .arg(qRound(double(snapshot.blockBytes) / mb))
+                         .arg(qRound(double(frame->blockLightBytes) / mb))
+                         .arg(qRound(double(frame->sectionBytes) / mb))
+                         .arg(qRound(snapshot.footprintMb)));
+    }
     return lines;
 }
 

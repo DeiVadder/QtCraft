@@ -1,5 +1,7 @@
 #include "app/hooks/QcFrameProfile.h"
 
+#include "common/core/QcProcessMemory.h"
+
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -83,11 +85,11 @@ QString QcFrameProfile::summary() const
            u"sections=%17 section_mb=%18 render_frames=%19 preview_mesh_avg_ms=%20 preview_mesh_max_ms=%21"_s
         .arg(ms(average(m_guiCpuMs)), ms(percentile99(m_guiCpuMs)), ms(average(renderCpu)), ms(percentile99(renderCpu)),
              ms(average(worldRender)), ms(percentile99(worldRender)), ms(average(upload)),
-             ms(upload.isEmpty() ? 0.0 : *std::ranges::max_element(upload)), QString::number(uploadBytes / 1e6, 'f', 1))
+             ms(upload.isEmpty() ? 0.0 : *std::ranges::max_element(upload)), QString::number(uploadBytes / QcProcessMemory::bytesPerMb, 'f', 1))
         .arg(ms(average(gpu)), ms(percentile99(gpu)), ms(average(m_entityMeshMs)), ms(percentile99(m_entityMeshMs)),
              QString::number(average(drawCalls), 'f', 0), QString::number(average(visible), 'f', 0),
              QString::number(average(triangles), 'f', 0), QString::number(last.sections),
-             QString::number(double(last.sectionBytes) / 1e6, 'f', 1))
+             QString::number(double(last.sectionBytes) / QcProcessMemory::bytesPerMb, 'f', 1))
         .arg(QString::number(m_render.size()), ms(average(m_previewMeshMs)),
              ms(m_previewMeshMs.isEmpty() ? 0.0 : *std::ranges::max_element(m_previewMeshMs)));
 }

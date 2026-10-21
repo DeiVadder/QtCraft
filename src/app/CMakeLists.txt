@@ -83,6 +83,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
+    rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
@@ -111,6 +112,13 @@ if(APPLE)
     target_link_libraries(qc_app_core PRIVATE "-framework AppKit" "-framework ApplicationServices")
 else()
     target_sources(qc_app_core PRIVATE input/QcRelativeMouse_other.cpp)
+endif()
+# Section buffers are written straight into Metal buffers (decision E-813); elsewhere through QRhi.
+if(APPLE)
+    target_sources(qc_app_core PRIVATE rendering/QcBufferWrite_mac.mm)
+    target_link_libraries(qc_app_core PRIVATE "-framework Metal")
+else()
+    target_sources(qc_app_core PRIVATE rendering/QcBufferWrite_other.cpp)
 endif()
 # The SDL3 gamepad backend, statically linked, only with QC_GAMEPAD (cmake/QcGamepad.cmake, E-540).
 if(QC_GAMEPAD_ENABLED)

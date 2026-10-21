@@ -5,6 +5,7 @@
 #include "common/core/QcSectionKey.h"
 #include "common/world/QcLightPassage.h"
 
+#include <QSet>
 #include <QThread>
 
 #include <algorithm>
@@ -393,6 +394,22 @@ std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world
     input.hasBlockLight = m_lightEngine != nullptr;
     input.sectionLight = m_sectionLight;
     return input;
+}
+
+qint64 QcMeshScheduler::lightBytes() const
+{
+    QSet<const QcChunkLight::Section *> sections;
+    for (const std::shared_ptr<const QcChunkLight> &light : m_light) {
+        if (!light) {
+            continue;
+        }
+        for (const std::shared_ptr<const QcChunkLight::Section> &section : light->sections) {
+            if (section) {
+                sections.insert(section.get());
+            }
+        }
+    }
+    return qint64(sections.size()) * qint64(sizeof(QcChunkLight::Section));
 }
 
 void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input)

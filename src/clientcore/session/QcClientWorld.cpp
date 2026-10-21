@@ -25,6 +25,21 @@ void QcClientWorld::setChunk(const std::shared_ptr<const QcChunk> &chunk)
     m_chunks.insert(chunk->pos(), chunk);
 }
 
+QcClientWorld::Memory QcClientWorld::memory() const
+{
+    Memory memory;
+    memory.chunks = m_chunks.size();
+    for (const std::shared_ptr<const QcChunk> &chunk : m_chunks) {
+        memory.bytes += qint64(sizeof(QcChunk));
+        for (int index = 0; index < QcWorld::sectionCount; ++index) {
+            const QcChunkSection &section = chunk->section(index);
+            memory.bytes += section.heapBytes();
+            memory.palettedSections += section.isUniform() ? 0 : 1;
+        }
+    }
+    return memory;
+}
+
 void QcClientWorld::removeChunk(QcChunkPos pos)
 {
     m_chunks.remove(pos);

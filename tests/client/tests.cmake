@@ -41,6 +41,7 @@ qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_con
 qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_worlds qc_clientcore Qt::Qml)
 target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_packed_mesh SOURCES client/test_packed_mesh.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_reconciliation SOURCES client/test_reconciliation.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
@@ -112,6 +113,9 @@ qc_add_test(test_section_light SOURCES client/test_section_light.cpp LIBRARIES q
 # The world renderer uploads each section once per frame, however often it changed since the last
 # one (decision E-413): rendered through a QQuickRenderControl offscreen (Metal; skipped without a device).
 qc_add_test(test_world_renderer_uploads SOURCES client/test_world_renderer_uploads.cpp LIBRARIES qc_app_core)
+# Section buffers written directly into GPU memory (decision E-813): uploaded through the mesh store
+# and read back on an offscreen QRhi (Metal; skipped without a device).
+qc_add_test(test_gpu_mesh_upload SOURCES client/test_gpu_mesh_upload.cpp LIBRARIES qc_app_core)
 # The steps of a frame of the world renderer and their GPU render passes (decision E-390); the plan is
 # a header of the app, so the test takes only the app's include folders.
 qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES qc_app_core_headers Qt::Core)

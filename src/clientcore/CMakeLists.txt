@@ -83,8 +83,9 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcEntityVertex.h
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
     meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
-    meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
+    meshing/QcIndexPacking.h
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
+    meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
     meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
     meshing/QcSignTextCache.h meshing/QcSignTextCache.cpp
     meshing/QcSignTextMesher.h meshing/QcSignTextMesher.cpp

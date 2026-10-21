@@ -2356,3 +2356,35 @@ Basis `pre` = `eeb4885` (vor 62.1, noch mit dem Shader von 47.1), `new` = `35bbe
 | crowd | 2,21 ms (−41 %) | 1,92 ms (+24 %) | 10,0 ms (0 %) | 487 MB (+3,9 %) |
 
 GPU-Gewinn aus 47.1b (E-756). Render-CPU steigt um 0,3–0,6 ms, weil der getrennte Durchgang für ausgeschnittene Flächen mehr Zeichenaufrufe braucht (stand 361 → 572); Frame p99 unverändert. Folgepaket: Zeichenaufrufe bündeln (mehrere Sections in einem Puffer oder indirektes Zeichnen).
+
+## Etappe 58 (Client-Speicher bei Sichtweite 16), Release (2026-10-21)
+
+Basis `base` = `dev` `6446c89`, `new` = `feature/58-client-memory` (E-813). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, Stand nach vollständigem Laden und Vernetzen; `vmmap -summary`, `footprint`, `heap -s` mit `MallocStackLogging=lite`, Statistik-JSON; Werte in MB):
+
+| Sichtweite 16 | base | new |
+|---|---:|---:|
+| RSS | 943 | 775 (−18 %) |
+| physischer Gesamtbedarf | 1322 | 1115 (−16 %) |
+| Heap (MALLOC_SMALL, belegt) | 611 (570) | 301 |
+| davon Upload-Kopien in QRhis Batches | 303 | 2 |
+| IOAccelerator, resident | 266 (12 366 Regionen) | 378 (4 792 Regionen) |
+| Abschnittspuffer `section_mb` (MiB) | 334 | 334 |
+| Blöcke des Clients (MiB) | 55 | 55 |
+
+Die Abschnittsdaten liegen jetzt einmal im (CPU-sichtbaren) GPU-Speicher statt einmal dort und noch einmal als Kopie im Heap; der Rest des Heaps sind vor allem die Blockindizes von Client und Server (rund 120 MB), Licht (rund 25 MB) sowie Qt, QML und Schriften. Zweite Messung nach den Review-Korrekturen (`new` = Stand des Branches mit Metal-Upload-Test und MiB-Einheiten; beide Release, je ein Lauf über den Slot-Broker mit 1800 Bildern, Werte bei vollständig geladener und vernetzter Sicht; Bildzeiten aus dem letzten Statistik-Fenster, offscreen also nur Richtwerte):
+
+| | Sichtweite 8 base | 8 new | Sichtweite 16 base | 16 new |
+|---|---:|---:|---:|---:|
+| RSS (Spitze) | 420 | 387 (−8 %) | 945 | 824 (−13 %) |
+| physischer Gesamtbedarf (`footprint`) | 665 | 620 (−7 %) | 1323 | 1118 (−15 %) |
+| Heap belegt (`heap -s`) | 247 | 146 | 598 | 277 |
+| MALLOC_SMALL resident | 262 | 169 | 613 | 297 |
+| IOAccelerator (graphics), resident | 68 | 115 | 268 | 378 |
+| Abschnittspuffer `sectionMb` (MiB) | – | 100 | – | 334 |
+| Blöcke des Clients `blocksMb` (MiB) | – | 16,5 | – | 54,6 |
+| Render-CPU je Bild, Mittel (ms) | 0,48 | 0,49 | 1,73 | 1,32 |
+| GPU je Bild, Mittel (ms) | 1,15 | 0,84 | 2,90 | 2,84 |
+
+(`base` liefert `sectionMb`/`blocksMb` noch nicht; die Abschnittsdaten sind in beiden Ständen gleich groß.) Bei Sichtweite 8 ist der Gewinn kleiner, weil die Upload-Kopien mit der Zahl der Abschnitte wachsen. Offscreen ändern sich Render-CPU und GPU nicht messbar zum Schlechteren.
+
+**Offen:** der Fenster-Benchmark (`bench-ab.sh` über den Slot-Broker, `@core` mit `VIEW=8` und `stand sprint` mit `VIEW=16`: Bildzeit p99, GPU und Render-CPU im echten Fenster). Er wird nachgeholt, sobald der Mensch wieder Fensterläufe erlaubt; vorher kein Merge, falls dort mehr als 10 % Regression bei Bildzeit oder GPU auftreten.

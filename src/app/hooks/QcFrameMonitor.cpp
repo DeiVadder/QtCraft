@@ -75,6 +75,7 @@ QcDebugSnapshot::Frame QcFrameMonitor::frame(const QcMeshScheduler &meshes, qsiz
     frame.meshedSections = meshedSections;
     frame.meshBacklog = meshes.dirtyCount() + meshes.jobsInFlight();
     frame.lightJobsPending = meshes.lightJobsPending();
+    frame.sectionBytes = m_render.sectionBytes;
 
     // The scheduler counts since its last reset (the benchmark resets it): differences since the
     // reader's previous call, from zero after a reset.
