@@ -80,6 +80,7 @@ private:
     void buildSteps(QcChunk &chunk, const QList<QcVillagePlan::Step> &steps) const;
     // Lays the jetty cells that lie in the chunk, with the posts under them down to the ground.
     void buildDecks(QcChunk &chunk, const QList<QcVillagePlan::Deck> &decks) const;
+    // Solid ground a post, foundation or road can stand on; not frozen water (decision E-815).
     bool isGround(QcBlockId block) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
@@ -87,4 +88,6 @@ private:
     QcVillagePlanner m_planner;
     QcWetlandShaper m_wetland;
     QcVillagePlanCache m_cache{cachedPlans};
+    // The biomes' frozen water blocks (ice), which isGround() does not count as ground.
+    QList<QcBlockId> m_frozenWater;
 };

@@ -292,6 +292,11 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         biomes.append(fallback);
         loader.warn(u"No biomes defined; using a stone fallback"_s);
     }
+    if (std::ranges::none_of(biomes, [](const Biome &biome) { return biome.rarity <= 0.0; })) {
+        // Outside the rarity spots no biome would have any weight; the terrain falls back to the
+        // nearest biome (decision E-815).
+        loader.warn(u"Every biome has a rarity; outside the rare spots the nearest biome is used"_s);
+    }
 
     naturalGround = naturalGroundOf(biomes, stone, water);
     const QString &vegetationBiome = terrain.vegetationBiome;

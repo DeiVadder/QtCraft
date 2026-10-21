@@ -90,6 +90,15 @@ private:
     QcBlockId subsurfaceBlock(const Column &column, QcBlockId surface) const;
     // Biome height of land before blending: base height plus hills, ridges and terraces.
     double biomeHeight(const Biome &biome, double rolling, double ridge, double terraces) const;
+    // The climate blend of a column: its biome (the heaviest) and the weighted land height and
+    // overhang of all biomes.
+    struct Blend
+    {
+        int biome = 0;
+        double landHeight = 0.0;
+        double overhang = 0.0;
+    };
+    [[nodiscard]] Blend blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;

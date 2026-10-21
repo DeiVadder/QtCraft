@@ -322,7 +322,10 @@ private slots:
             while (blockIn(chunks, {deck.at.x, y, deck.at.z}) == deck.post) {
                 --y;
             }
-            QVERIFY2(m_content->block(*blockIn(chunks, {deck.at.x, y, deck.at.z})).solid, "a post stands on solid ground");
+            // The foot stands on the lake bed, not on the ice sheet over it (decision E-815).
+            const QcBlockId foot = *blockIn(chunks, {deck.at.x, y, deck.at.z});
+            QVERIFY2(m_content->block(foot).solid && !m_content->block(foot).liquid, "a post stands on solid ground");
+            QVERIFY2(foot != ice, "a post stands on the lake bed, not on ice");
         }
         QVERIFY(touches);
     }

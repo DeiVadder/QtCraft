@@ -163,6 +163,57 @@ double QcTerrainGenerator::rarityAt(int x, int z) const
     return m_climate.at(x, z, warpedX, warpedZ).rarity;
 }
 
+QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const
+{
+    // Inverse-distance weighting in climate space blends heights smoothly across biome borders.
+    double weightSum = 0.0;
+    double landHeight = 0.0;
+    double overhang = 0.0;
+    double bestWeight = -1.0;
+    // The nearest biome in climate space with the rarity left out.
+    double nearestWeight = -1.0;
+    int nearest = 0;
+    Blend result;
+    for (qsizetype i = 0; i < m_definitions.biomes.size(); ++i) {
+        const Biome &biome = m_definitions.biomes[i];
+        const double dt = climate.temperature - biome.temperature;
+        const double dh = climate.humidity - biome.humidity;
+        const double dr = ruggednessWeight * (climate.ruggedness - biome.ruggedness);
+        const double distanceSquared = dt * dt + dh * dh + dr * dr + 0.0015;
+        double weight = 1.0 / (distanceSquared * distanceSquared);
+        if (weight > nearestWeight) {
+            nearestWeight = weight;
+            nearest = int(i);
+        }
+        if (biome.rarity > 0.0) {
+            // Gated by the rarity map (decision E-821): exactly 0 outside the spots, so the other
+            // biomes' heights stay untouched there, and full weight where the column's rarity
+            // reaches the biome's.
+            weight *= std::min(1.0, climate.rarity / biome.rarity);
+        }
+        weightSum += weight;
+        landHeight += weight * biomeHeight(biome, rolling, ridge, terraces);
+        overhang += weight * biome.overhang;
+        if (weight > bestWeight) {
+            bestWeight = weight;
+            result.biome = int(i);
+        }
+    }
+
+    if (weightSum <= 0.0) {
+        // Every biome is rare and the column lies outside the spots (only with mods, warned at load,
+        // decision E-815): the nearest biome alone.
+        const Biome &biome = m_definitions.biomes[nearest];
+        result.biome = nearest;
+        result.landHeight = biomeHeight(biome, rolling, ridge, terraces);
+        result.overhang = biome.overhang;
+        return result;
+    }
+    result.landHeight = landHeight / weightSum;
+    result.overhang = overhang / weightSum;
+    return result;
+}
+
 QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
 {
     // Bent coordinates for the large-scale maps, so biome borders and coasts meander (rarityAt bends
@@ -184,43 +235,18 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     const double terraces =
         m_definitions.anyTerraces ? smoothstep(-0.1, 0.15, m_terraceNoise.fractal2(x / terraceScale, z / terraceScale, 2)) : 0.0;
 
-    // Inverse-distance weighting in climate space blends heights smoothly across biome borders.
-    double weightSum = 0.0;
-    double landHeight = 0.0;
-    double overhang = 0.0;
-    double bestWeight = -1.0;
+    const Blend blended = blend(climate, rolling, ridge, terraces);
     Column result;
-    for (qsizetype i = 0; i < m_definitions.biomes.size(); ++i) {
-        const Biome &biome = m_definitions.biomes[i];
-        const double dt = climate.temperature - biome.temperature;
-        const double dh = climate.humidity - biome.humidity;
-        const double dr = ruggednessWeight * (climate.ruggedness - biome.ruggedness);
-        const double distanceSquared = dt * dt + dh * dh + dr * dr + 0.0015;
-        double weight = 1.0 / (distanceSquared * distanceSquared);
-        if (biome.rarity > 0.0) {
-            // Gated by the rarity map (decision E-821): exactly 0 outside the spots, so the other
-            // biomes' heights stay untouched there, and full weight where the column's rarity
-            // reaches the biome's.
-            weight *= std::min(1.0, climate.rarity / biome.rarity);
-        }
-        weightSum += weight;
-        landHeight += weight * biomeHeight(biome, rolling, ridge, terraces);
-        overhang += weight * biome.overhang;
-        if (weight > bestWeight) {
-            bestWeight = weight;
-            result.biome = int(i);
-        }
-    }
-    landHeight /= weightSum;
+    result.biome = blended.biome;
 
     const double continent = 1.4 * m_continentNoise.fractal2(warpedX / continentScale, warpedZ / continentScale, 4);
     result.landFactor = smoothstep(-0.30, -0.05, continent);
     const double oceanFloor = seaLevel() - oceanDepth + 5.0 * detail;
-    const double height = oceanFloor + (landHeight - oceanFloor) * result.landFactor;
+    const double height = oceanFloor + (blended.landHeight - oceanFloor) * result.landFactor;
     result.height = std::clamp(int(std::lround(height)), 4, QcWorld::worldHeight - 8);
     // Overhangs fade out towards the coast and never reach down to the sea level, so no hollow
     // lies next to or under water.
-    const double overhangAmplitude = std::min(overhang / weightSum * result.landFactor, double(result.height - seaLevel() - 3));
+    const double overhangAmplitude = std::min(blended.overhang * result.landFactor, double(result.height - seaLevel() - 3));
     result.overhang = overhangAmplitude < 1.0 ? 0.0 : overhangAmplitude;
     return result;
 }

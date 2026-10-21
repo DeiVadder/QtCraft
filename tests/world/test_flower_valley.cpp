@@ -5,6 +5,8 @@
 #include <QSet>
 #include <QTest>
 
+#include <cmath>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -192,6 +194,43 @@ private slots:
             QVERIFY2(outside > 4 * inside, qPrintable(u"%1 %2"_s.arg(outside).arg(inside)));
             QCOMPARE(different, 0);
         }
+    }
+
+    // Only rare biomes (possible with mods, decision E-815): a load warning, and outside the spots
+    // the nearest biome alone shapes the land instead of a blend of no weight at all.
+    void fallsBackToTheNearestBiomeWhenEveryBiomeIsRare()
+    {
+        auto onlyRare = std::make_shared<QcContentRegistry>(*m_content);
+        for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
+            if (biome.rarity <= 0.0) {
+                onlyRare->worldgen().removeBiome(biome.name);
+            }
+        }
+        QCOMPARE(onlyRare->worldgen().biomes().size(), 1);
+
+        const QcTerrainGenerator generator(onlyRare, 42);
+        QVERIFY2(generator.warnings().join(u'\n').contains(u"Every biome has a rarity"_s), qPrintable(generator.warnings().join(u'\n')));
+        int outside = 0;
+        for (int i = 0; i < gridCells; i += 4) {
+            for (int j = 0; j < gridCells; j += 4) {
+                const int x = -gridReach + j * gridStep;
+                const int z = -gridReach + i * gridStep;
+                if (generator.rarityAt(x, z) > 0.0) {
+                    continue;
+                }
+                ++outside;
+                const QcTerrainGenerator::Column column = generator.column(x, z);
+                QCOMPARE(generator.biomeName(column.biome), u"qtcraft:flower_valley"_s);
+                QVERIFY(std::isfinite(column.overhang));
+                // Inland the valley's own low land (base height 62.5, variation 3), not the lowest
+                // height a broken blend would clamp to.
+                if (column.landFactor > 0.99) {
+                    QVERIFY2(column.height > generator.seaLevel() - 8 && column.height < generator.seaLevel() + 16,
+                             qPrintable(u"%1 at %2 %3"_s.arg(column.height).arg(x).arg(z)));
+                }
+            }
+        }
+        QVERIFY(outside > 0);
     }
 
     void hasFarMoreFlowersThanThePlains()

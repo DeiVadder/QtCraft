@@ -18,6 +18,19 @@ int regionOf(int block, int spacing)
     return qcFloorDiv(block, spacing);
 }
 
+// The blocks the biomes freeze their water to at the sea level (ice).
+QList<QcBlockId> frozenWaterOf(const QcContentRegistry &content)
+{
+    QList<QcBlockId> blocks;
+    for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
+        const QcBlockId block = content.blockId(biome.frozenWaterBlock).value_or(qcAirBlockId);
+        if (block != qcAirBlockId && !blocks.contains(block)) {
+            blocks.append(block);
+        }
+    }
+    return blocks;
+}
+
 } // namespace
 
 QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed)
@@ -25,6 +38,7 @@ QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::s
     , m_styles(*m_content)
     , m_planner(terrain, *m_content, m_styles, seed)
     , m_wetland(terrain, seed)
+    , m_frozenWater(frozenWaterOf(*m_content))
 {
 }
 
@@ -146,7 +160,9 @@ std::optional<QcStructurePlacement> QcVillageGenerator::nearestPiece(const QStri
 bool QcVillageGenerator::isGround(QcBlockId block) const
 {
     const QcBlockDefinition &definition = m_content->block(block);
-    return block != qcAirBlockId && definition.solid && !definition.liquid && !definition.replaceable;
+    // Frozen water is a thin sheet over the water (decision E-815): posts and foundations reach
+    // through it to the lake bed, so nothing hangs in the air once the ice breaks or melts.
+    return block != qcAirBlockId && definition.solid && !definition.liquid && !definition.replaceable && !m_frozenWater.contains(block);
 }
 
 void QcVillageGenerator::buildPiece(QcChunk &chunk, const QcStructurePlacement &piece, const QcVillagePlan &plan) const
