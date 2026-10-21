@@ -2,6 +2,10 @@
 
 Datierter Verlauf der Stände, die früher als „Laufender Stand“ und weitere Stand-Zeilen in `docs/FORTSCHRITT.md` standen, neueste zuerst; ein Abschnitt je Aktualisierung. Der aktuelle Stand steht kurz in `docs/FORTSCHRITT.md` („Aktueller Stand“); neue Einträge kommen hier oben dazu. Die Texte sind unverändert übernommen, nur in Absätze geteilt.
 
+## 2026-10-21 07:25 (Pause)
+
+Nach Etappe 62: 62.5 (Rauch-Textur ohne Namensraum, Rahmen-Station von der falschen Seite fotografiert; über die Offscreen-Tour gefunden), 71.1 Karten und 71.2 Karten in Rahmen in `dev` (Reviews fanden u. a. verwaiste Karten beim Zoom, verhungernde Zeilen, leere Showcase-Wandkarte, Randmarken mit Richtungsverrat – alle behoben). Broker T1b: Lastgrenze 1,25 × Kerne mit Schätzung der kurzfristigen Last, Ausnahme bei fremder Last nur einzeln. Etappe 71: Benchmarks ohne Regression, voller Verify für die Pause abgebrochen. Etappe 58 begonnen (Client-Speicher bei Sichtweite 16 −18 %). Pause auf Wunsch des Menschen.
+
 ## 2026-10-21 04:00
 
 Etappe 62 abgeschlossen: 62.3 (`1fa8f0a`), 62.4 Rahmen und Gemälde (`e49d410`, Haltprüfung nach Ereignissen statt jeden Tick), 62.3b Steinschneider mit Feldern wie im Vorbild (Mensch 2026-10-20; `c5b26b5`, clazy hing minutenlang an einem Index auf ein Temporäres in `QVERIFY`), 62.3c ein Fenster zur Zeit (`35bbe16`). Headless: Tick gleich, Speicher +8–15 %; Fenster: GPU −41…−56 % (47.1b), Render-CPU +3…+24 % durch mehr Zeichenaufrufe; voller Verify grün. Plan: Etappe 73 Monster-Spawn-Parität (kein Creeper, kein Phantom, eigenes Monster „Kjut“). 71.1 Karten im Review-Fix.
