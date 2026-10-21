@@ -2340,3 +2340,19 @@ Die Filterung selbst kostet also gegenüber *Aus* rund 5–13 % GPU-Zeit (4× un
 
 Nachmessung nach der Korrektur der Sichtbarkeit (Abschnitte mit nur ausgeschnittenen Flächen wurden in der ersten Fassung nicht gezeichnet, E-756; `sp4b` = 7f69d77, 3 Runden, sonst gleich), GPU Ø ms gegen `pre`: stand 1,89 (4 %) → 1,51 (1 %), **−20,0 %**; sprint 2,07 (3 %) → 1,78 (3 %), **−13,9 %**; light 1,66 (4 %) → 1,55 (1 %), **−7,0 %**; glass 2,09 (3 %) → 2,11 (2 %), +0,9 %. Die Szenen der Benchmarks haben kaum solche Abschnitte (Gras und Blumen an Abschnittsgrenzen), die Werte der ersten Messung gelten also weiter; Spitzenspeicher +4–5 %.
 
+## Etappe 62 (Block-Parität), Release (2026-10-21)
+
+Basis `pre` = `eeb4885` (vor 62.1, noch mit dem Shader von 47.1), `new` = `35bbe16` (62.1–62.4 mit 62.2a/b, 62.3b/c, dazu 47.1b und T1). Ruhige Maschine über den Slot-Broker (E-781).
+
+**Headless** (`scripts/bench-headless.sh`, @server, 60 Spielsekunden, adaptiv 3–6 Runden): Server-Tick Ø und p99 gleichauf (−1,6 … +2,5 %; farm +7 % bei 13 % Streuung), Spitzenspeicher +8,5 … +15 % (rund 5–12 MB; größere Inhaltstabellen: Treppen-Ecken, vertikale Stufen, Keramik, Betten, Rezepte).
+
+**Fenster** (`scripts/bench-ab.sh`, @core, 10 s, 6 Runden), Mittel, Differenz zu `pre`:
+
+| Szenario | GPU Ø | Render-CPU Ø | Frame p99 | Speicher |
+|---|---|---|---|---|
+| stand | 1,52 ms (−56 %) | 2,15 ms (+11 %) | 10,0 ms (+1 %) | 479 MB (+4,6 %) |
+| sprint | 1,76 ms (−51 %) | 1,98 ms (+12 %) | 10,2 ms (+3,5 %) | 529 MB (+4,5 %) |
+| showcase | 0,86 ms (−45 %) | 1,57 ms (+3 %) | 10,5 ms (+1 %) | 352 MB (+4,3 %) |
+| crowd | 2,21 ms (−41 %) | 1,92 ms (+24 %) | 10,0 ms (0 %) | 487 MB (+3,9 %) |
+
+GPU-Gewinn aus 47.1b (E-756). Render-CPU steigt um 0,3–0,6 ms, weil der getrennte Durchgang für ausgeschnittene Flächen mehr Zeichenaufrufe braucht (stand 361 → 572); Frame p99 unverändert. Folgepaket: Zeichenaufrufe bündeln (mehrere Sections in einem Puffer oder indirektes Zeichnen).
