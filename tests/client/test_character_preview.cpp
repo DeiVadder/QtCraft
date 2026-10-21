@@ -319,8 +319,12 @@ private slots:
         QVERIFY(base);
         const QcContentRegistry &content = *base->registry;
 
-        // The world's figures (head yaw 0) are drawn exactly as before the head could turn: these
-        // fingerprints were taken from the meshes of the commit before stage 22 (78618f4).
+        // The world's figures (head yaw 0) are drawn exactly as before the head could turn: the
+        // fingerprints of the figure were taken from the meshes of the commit before stage 22
+        // (78618f4), renewed when the held item became one flat sprite in the fist (decision E-831).
+        // The held look is made here without a shape and without the content's placement, so the
+        // fingerprints also cover the flat-sprite fallback at the default HeldPlacement; held.json
+        // does not change them.
         QcEntityMesher::ModelLook look;
         look.model = content.assets().model(u"qtcraft:humanoid"_s);
         look.outfit = content.assets().appearance(u"qtcraft:miner"_s);
@@ -329,7 +333,7 @@ private slots:
         look.colors.skinColor = 0xb97b56;
         QcEntityMesher::ItemLook held;
         held.sprite = content.item(*content.itemId(u"qtcraft:iron_pickaxe"_s)).texture;
-        const QList<quint32> before{0x29832d24, 0x06e75bdf, 0x269ee273, 0xe97c883a, 0xad64ea6f};
+        const QList<quint32> before{0x22946b29, 0xf9ce603a, 0x6e3111c1, 0x4bd06cfd, 0x9fd8326b};
 
         const QList<QcEntityPose> poses = worldPoses();
         QCOMPARE(poses.size(), before.size());
@@ -338,7 +342,7 @@ private slots:
             QcEntityMesher::appendModel(mesh, {look, &held}, QcAnimator::animateBody(poses[i], 3.7),
                                         {{1.5, 64.0, -2.25}, 37.0, QcEntityLight(0.8f, 0.3f), false}, anyUv);
             const std::pair<qsizetype, quint32> print = fingerprint(mesh);
-            QCOMPARE(print.first, 328);
+            QCOMPARE(print.first, 320);
             QVERIFY2(print.second == before[i], qPrintable(u"pose %1: 0x%2"_s.arg(i).arg(print.second, 8, 16, QChar(u'0'))));
         }
     }

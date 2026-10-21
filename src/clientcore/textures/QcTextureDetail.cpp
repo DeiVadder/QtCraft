@@ -180,7 +180,7 @@ Params forPattern(Pattern pattern)
     }
     // Wood and built things of straight boards: crisp lines with a bevel.
     if (among(pattern, {Pattern::Planks, Pattern::LogSide, Pattern::LogTop, Pattern::Bookshelf, Pattern::BarrelSide, Pattern::BarrelTop,
-                        Pattern::ChestSide, Pattern::ChestFront, Pattern::ChestTop, Pattern::DoorLower, Pattern::DoorUpper,
+                        Pattern::ChestSide, Pattern::ChestFront, Pattern::ChestTop, Pattern::DoorLower, Pattern::DoorUpper, Pattern::DoorItem,
                         Pattern::Trapdoor, Pattern::Ladder, Pattern::Torch, Pattern::Lantern})) {
         return {0.05, 0.18, false};
     }

@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcCommandMacroDefinition.h"
 #include "common/content/definitions/QcEffectDefinition.h"
+#include "common/content/definitions/QcHoldDisplay.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/definitions/QcMaterialDefinition.h"
 #include "common/content/definitions/QcMobDefinition.h"
@@ -139,6 +140,10 @@ public:
     // What the weather does to the world (server side only); a later pack replaces it.
     void setWeather(QcWeatherDefinition weather) { m_weather = std::move(weather); }
     const QcWeatherDefinition &weather() const { return m_weather; }
+    // How items are held by category (decision E-831); a later pack overrides the fields it sets.
+    // They reach the client.
+    void mergeHoldDefaults(const QcHoldDefaults &later) { m_holdDefaults = m_holdDefaults.merged(later); }
+    const QcHoldDefaults &holdDefaults() const { return m_holdDefaults; }
 
     // Biomes, features, ores, terrain, structures and world type settings (server side only).
     QcWorldgenCatalog &worldgen() { return m_worldgen; }
@@ -204,6 +209,7 @@ private:
     QcNamedList<QcSmeltingRecipe> m_stonecuttingRecipes;
     QcNamedList<QcCommandMacroDefinition> m_commandMacros;
     QcWeatherDefinition m_weather;
+    QcHoldDefaults m_holdDefaults;
     QcWorldgenCatalog m_worldgen;
     QcVillageCatalog m_villages;
     QcNamedList<QcProjectileDefinition> m_projectiles;

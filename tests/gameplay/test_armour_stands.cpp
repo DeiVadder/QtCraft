@@ -582,10 +582,14 @@ private slots:
         QStringList equipped;
         for (const QcWorldSetup::Stand &stand : plan.setup.stands) {
             for (const QString &property : stand.properties) {
-                if (property.startsWith(u"equip qtcraft:"_s) && property.count(u'_') == 0) {
+                if (property.startsWith(u"equip qtcraft:"_s)) {
                     equipped.append(property.mid(6));
                 }
             }
+        }
+        // The stands hold a bow, a pickaxe and a sword (decision E-831).
+        for (const QString &item : {u"qtcraft:bow"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_sword"_s}) {
+            QVERIFY2(equipped.contains(item), qPrintable(item));
         }
         const QStringList sets = QcShowcaseArmourArea::sets(*m_content);
         for (const QString &set : sets) {

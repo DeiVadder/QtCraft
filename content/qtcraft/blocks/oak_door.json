@@ -1,5 +1,6 @@
 {
     "name": "oak_door",
+    "hold": { "firstPerson": { "scale": 0.3 }, "thirdPerson": { "scale": 0.4 } },
     "sound": "wood",
     "shape": "door",
     "render": "cutout",

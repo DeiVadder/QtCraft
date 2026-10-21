@@ -278,8 +278,8 @@ private slots:
         sword.sprite = u"t:sword"_s;
         QcEntityMesh armed;
         QcEntityMesher::appendModel(armed, {modelLook, &sword}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
-        // Two crossed, double-sided sprites.
-        QCOMPARE(armed.indices.size() - plain.indices.size(), 4 * 6);
+        // Without a shape: one flat, double-sided sprite in the fist (decision E-831).
+        QCOMPARE(armed.indices.size() - plain.indices.size(), 2 * 6);
     }
 
     void handIsDrawnInFrontOfTheCamera()
@@ -318,23 +318,24 @@ private slots:
         QcEntityMesher::appendHand(holding, {modelLook, &block}, {}, {eye, 0.0, 0.0, 1.0f}, anyUv);
         QCOMPARE(holding.indices.size(), 2 * 6 * 6);
 
-        // An empty hand is drawn smaller and lower than one holding an item (decision E-722).
-        const auto armExtent = [](const QcEntityMesh &arm, qsizetype count) {
-            double top = -1e9;
-            double bottom = 1e9;
-            for (qsizetype i = 0; i < count; ++i) {
-                top = std::max(top, double(arm.vertices[i].y));
-                bottom = std::min(bottom, double(arm.vertices[i].y));
-            }
-            return std::pair{top, top - bottom};
-        };
-        // The same arm boxes either way; in `holding` they come first and the item follows.
+        // The empty arm is drawn at 0.8 of the model's size (decision E-722): its box of 0.2 x 0.65
+        // x 0.2 m spans 0.57 m corner to corner. Where the arm holding an item sits is
+        // test_held_item's part (decision E-831).
         const qsizetype armVertices = mesh.vertices.size();
         QCOMPARE(holding.vertices.size(), armVertices + qsizetype(6 * 4));
-        const auto [emptyTop, emptyHeight] = armExtent(mesh, armVertices);
-        const auto [heldTop, heldHeight] = armExtent(holding, armVertices);
-        QVERIFY(emptyTop < heldTop - 0.05);
-        QVERIFY(emptyHeight < heldHeight * 0.9);
+        const auto armSize = [](const QcEntityMesh &arm, qsizetype count) {
+            double size = 0.0;
+            for (qsizetype i = 0; i < count; ++i) {
+                for (qsizetype j = 0; j < count; ++j) {
+                    const QcEntityVertex &a = arm.vertices[i];
+                    const QcEntityVertex &b = arm.vertices[j];
+                    size = std::max(size, QcVec3{a.x - b.x, a.y - b.y, a.z - b.z}.length());
+                }
+            }
+            return size;
+        };
+        const double expected = QcEntityMesher::emptyHandScale * std::sqrt(0.2 * 0.2 + 0.65 * 0.65 + 0.2 * 0.2);
+        QVERIFY2(std::abs(armSize(mesh, armVertices) - expected) < 0.01, qPrintable(QString::number(armSize(mesh, armVertices))));
     }
 
     void glowingItemsAreNeverDarkerThanTheirOwnLight()
@@ -346,6 +347,7 @@ private slots:
         QcEntityMesher::ItemLook torch;
         torch.sprite = u"t:torch"_s;
         torch.glow = 14.0f / 15.0f;
+        torch.firstPerson.scale = {0.4, 0.4, 0.4};
         const QcEntityLight dark(0.0f, 0.1f);
         const QcVec3 eye{0.0, 70.0, 0.0};
 
@@ -382,8 +384,8 @@ private slots:
         QCOMPARE(held.vertices.first().blockLight, 0.1f);
         QCOMPARE(held.vertices.last().blockLight, lantern.glow);
 
-        // A sprite in the hand is about as large as a held block: its diagonal is at most that of
-        // the held cube (0.15 m edge, 0.26 m diagonal).
+        // A sprite in the hand without a shape is flat and as large as its placement says
+        // (decision E-831): 0.4 m across, 0.57 m diagonal.
         QcEntityMesh sprite;
         QcEntityMesher::appendHand(sprite, {modelLook, &torch}, {}, {eye, 0.0, 0.0, dark}, anyUv);
         double diagonal = 0.0;
@@ -394,7 +396,7 @@ private slots:
                 diagonal = std::max(diagonal, QcVec3{a.x - b.x, a.y - b.y, a.z - b.z}.length());
             }
         }
-        QVERIFY2(diagonal > 0.15 && diagonal < 0.27, qPrintable(QString::number(diagonal)));
+        QVERIFY2(diagonal > 0.5 && diagonal < 0.6, qPrintable(QString::number(diagonal)));
     }
 
     void thirdPersonCameraAvoidsWalls()

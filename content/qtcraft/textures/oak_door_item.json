@@ -1,6 +1,6 @@
 {
     "name": "oak_door_item",
-    "pattern": "door_lower",
+    "pattern": "door_item",
     "primary": "#a8844e",
     "secondary": "#7d6038",
     "variation": 0.08,

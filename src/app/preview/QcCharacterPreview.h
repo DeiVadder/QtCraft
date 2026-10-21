@@ -3,6 +3,7 @@
 #include "app/preview/QcPreviewSource.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/meshing/QcSpriteShapes.h"
 #include "clientcore/preview/QcPreviewActivity.h"
 #include "clientcore/preview/QcPreviewCamera.h"
 #include "clientcore/preview/QcPreviewPacer.h"
@@ -120,6 +121,8 @@ private:
     QcPreviewPacer m_pacer;
     QcPreviewPose::Gaze m_gaze;
     QcCapeSwing m_cape;
+    // The shape of the held item's sprite, kept per atlas (decision E-831).
+    QcSpriteShapes m_spriteShapes;
     bool m_interactive = true;
     bool m_paused = false;
     // A frame since the preview was last hidden showed the figure.

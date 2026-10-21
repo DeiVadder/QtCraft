@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcProjectileDefinition.h"
 #include "common/content/registry/QcArmourSerializer.h"
 #include "common/content/registry/QcBlockSerializer.h"
+#include "common/content/registry/QcHoldSerializer.h"
 #include "common/protocol/QcStreamLimits.h"
 
 namespace {
@@ -183,6 +184,7 @@ void write(QDataStream &stream, const QcItemDefinition &item)
     QcArmourSerializer::write(stream, item.armour);
     writeUses(stream, item);
     writeHanging(stream, item.hangs);
+    QcHoldSerializer::write(stream, item.hold);
 }
 
 std::optional<QcItemDefinition> read(QDataStream &stream)
@@ -222,8 +224,13 @@ std::optional<QcItemDefinition> read(QDataStream &stream)
     if (!hangs) {
         return std::nullopt;
     }
+    std::optional<QcHoldDisplay> hold = QcHoldSerializer::read(stream);
+    if (!hold) {
+        return std::nullopt;
+    }
     if (used) {
         used->hangs = std::move(*hangs);
+        used->hold = *hold;
     }
     if (!used || stream.status() != QDataStream::Ok || food < 0 || food > QcItemDefinition::maxFood
         || !QcBlockSerializer::plausibleFuel(used->fuelSeconds)) {

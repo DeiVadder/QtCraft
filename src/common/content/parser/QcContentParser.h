@@ -4,6 +4,7 @@
 #include "common/content/parser/QcBlockParser.h"
 #include "common/content/parser/QcCommandMacroParser.h"
 #include "common/content/parser/QcEffectParser.h"
+#include "common/content/parser/QcHoldParser.h"
 #include "common/content/parser/QcItemParser.h"
 #include "common/content/parser/QcLootTableParser.h"
 #include "common/content/parser/QcMaterialParser.h"
@@ -43,6 +44,7 @@ using QcMobParser::parseModel;
 using QcMobParser::parseAppearance;
 using QcRecipeParser::parseRecipe;
 using QcItemParser::parseItem;
+using QcHoldParser::parseHoldDefaults;
 using QcProjectileParser::parseProjectile;
 using QcRecipeParser::parseSmeltingRecipe;
 using QcRecipeParser::parseStonecuttingRecipe;

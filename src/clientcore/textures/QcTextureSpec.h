@@ -49,6 +49,9 @@ struct QcTextureSpec
         // handle, the upper one with a window.
         DoorLower,
         DoorUpper,
+        // The whole door as an icon: both halves in a narrow frame, the window above, the handle
+        // below, on a transparent background (decision E-831).
+        DoorItem,
         // Hatch of boards with a frame and two openings.
         Trapdoor,
         // Chest: boards (primary) with darker edges and a lid seam; the front adds a latch

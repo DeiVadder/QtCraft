@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcHoldSerializer.h"
 #include "common/content/registry/QcItemSerializer.h"
 #include "common/protocol/QcStreamLimits.h"
 
@@ -598,6 +599,17 @@ void writeEffect(QDataStream &stream, const QcEffectDefinition &effect)
     });
 }
 
+// How items are held by category (decision E-831).
+[[nodiscard]] QcStatus readHoldDefaults(QDataStream &stream, QcContentRegistry &registry)
+{
+    const std::optional<QcHoldDefaults> defaults = QcHoldSerializer::readDefaults(stream);
+    if (!defaults) {
+        return qcError(u"Corrupt content: hold defaults"_s);
+    }
+    registry.mergeHoldDefaults(*defaults);
+    return {};
+}
+
 } // namespace
 
 void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &stream)
@@ -623,6 +635,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     });
     writeList(stream, content.assets().sounds(), writeSound);
     writeList(stream, content.effects(), writeEffect);
+    QcHoldSerializer::writeDefaults(stream, content.holdDefaults());
 }
 
 QcStatus QcContentRegistry::readBlockTable(QDataStream &stream)
@@ -664,9 +677,10 @@ QcResult<QcContentRegistry> QcContentSerializer::read(QDataStream &stream)
     using ReadStep = QcStatus (*)(QDataStream &, QcContentRegistry &);
     // The order of the tables in the stream.
     constexpr ReadStep readBlocks = [](QDataStream &in, QcContentRegistry &registry) { return registry.readBlockTable(in); };
-    constexpr std::array<ReadStep, 12> steps{readBlocks,       &readItems,           &readMobs,   &readRecipes,
+    constexpr std::array<ReadStep, 13> steps{readBlocks,       &readItems,           &readMobs,   &readRecipes,
                                              &readTextures,    &readTranslations,    &readPacks,  &readModels,
-                                             &readAppearances, &readSmeltingRecipes, &readSounds, &readEffects};
+                                             &readAppearances, &readSmeltingRecipes, &readSounds, &readEffects,
+                                             &readHoldDefaults};
 
     QcContentRegistry registry;
     for (const ReadStep step : steps) {

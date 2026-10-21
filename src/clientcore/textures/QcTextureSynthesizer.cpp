@@ -142,8 +142,10 @@ bool toolHead(Pattern pattern, int x, int y)
 
 QColor paintToolWithHead(const QcTextureSpec &spec, int x, int y, QColor)
 {
-    // Diagonal handle from the bottom left; the head shape depends on the tool.
-    const bool handle = x + y == size - 1 && x <= 9 && x >= 2;
+    // Diagonal handle from the bottom left; the head shape depends on the tool. A pickaxe's and a
+    // hoe's handle reaches up to its head, so the tool holds together when drawn large in a hand.
+    const int handleTop = spec.pattern == Pattern::Pickaxe ? 12 : spec.pattern == Pattern::Hoe ? 11 : 9;
+    const bool handle = x + y == size - 1 && x <= handleTop && x >= 2;
     const bool head = toolHead(spec.pattern, x, y);
     const bool swordHandle = spec.pattern == Pattern::Sword && x + y == size - 1 && x < 6 && x >= 1;
     if (head) {

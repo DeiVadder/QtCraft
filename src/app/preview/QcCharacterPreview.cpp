@@ -309,8 +309,11 @@ void QcCharacterPreview::buildFrame()
     }
 
     const bool mining = m_animation == QcPreviewPose::Animation::Mine;
-    const QcPreviewScene::Figure figure{m_source->appearance(), m_source->heldItem(mining), QcPreviewPose::pose(m_animation, m_seconds, m_gaze),
-                                        m_camera.modelYaw(), m_seconds, m_source->equipment(), m_cape.angles()};
+    QcPreviewScene::Figure figure{m_source->appearance(), m_source->heldItem(mining), QcPreviewPose::pose(m_animation, m_seconds, m_gaze),
+                                  m_camera.modelYaw(), m_seconds, m_source->equipment(), m_cape.angles(), nullptr};
+    if (content->isValidItem(figure.held)) {
+        figure.heldShape = m_spriteShapes.shape(atlas, content->item(figure.held).texture);
+    }
     m_mesh = std::make_shared<const QcEntityMesh>(QcPreviewScene::build(*content, figure, [&atlas](const QString &texture) { return atlas->uv(texture); }));
     m_viewCamera = m_camera.camera();
 }

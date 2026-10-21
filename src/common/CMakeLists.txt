@@ -23,6 +23,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcFireDefinition.h
     content/definitions/QcHangingDefinition.h
     content/definitions/QcHitEffect.h
+    content/definitions/QcHoldDisplay.h content/definitions/QcHoldDisplay.cpp
     content/definitions/QcItemDefinition.h content/definitions/QcItemDefinition.cpp
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
@@ -71,6 +72,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcHangingParser.h content/parser/QcHangingParser.cpp
+    content/parser/QcHoldParser.h content/parser/QcHoldParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
     content/parser/QcLiquidParser.h content/parser/QcLiquidParser.cpp
@@ -106,6 +108,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/registry/QcHoldSerializer.h content/registry/QcHoldSerializer.cpp
     content/registry/QcItemSerializer.h content/registry/QcItemSerializer.cpp
     content/registry/QcLootTables.h content/registry/QcLootTables.cpp
     content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp

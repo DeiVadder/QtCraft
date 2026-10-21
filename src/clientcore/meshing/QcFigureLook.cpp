@@ -117,6 +117,49 @@ QcBlockId itemState(const QcContentRegistry &content, QcBlockId block)
     return block;
 }
 
+namespace {
+
+// The kind of held thing `definition` is, for its hold defaults (decision E-831).
+QcHoldCategory categoryOf(const QcItemDefinition &definition, const QcEntityMesher::ItemLook &look)
+{
+    if (look.cube) {
+        return look.boxes.isEmpty() ? QcHoldCategory::Block : QcHoldCategory::PartialBlock;
+    }
+    if (definition.launcher) {
+        return QcHoldCategory::Launcher;
+    }
+    if (!definition.tool.isEmpty() || definition.fishing) {
+        return QcHoldCategory::Tool;
+    }
+    return definition.attackDamage > 1.0 ? QcHoldCategory::Weapon : QcHoldCategory::Sprite;
+}
+
+QcEntityMesher::HeldPlacement placementOf(const QcHoldTransform &transform)
+{
+    QcEntityMesher::HeldPlacement placement;
+    placement.translate = transform.translate.value_or(placement.translate);
+    placement.rotate = transform.rotate.value_or(placement.rotate);
+    placement.scale = transform.scale.value_or(placement.scale);
+    return placement;
+}
+
+// `look` with how it is held: the item's own hold over the hold of the block it places over its
+// category's defaults.
+QcEntityMesher::ItemLook withHold(QcEntityMesher::ItemLook look, const QcContentRegistry &content, const QcItemDefinition &definition,
+                                  const QcHoldDisplay &blockHold)
+{
+    const QcHoldDisplay own = definition.hold.over(blockHold);
+    const QcHoldCategory category = own.category.value_or(categoryOf(definition, look));
+    const QcHoldDisplay display = own.over(content.holdDefaults().of(category));
+    look.grip = display.grip.value_or(QcHoldGrip::Base);
+    look.firstPerson = placementOf(display.firstPerson);
+    look.thirdPerson = placementOf(display.thirdPerson);
+    look.swing = placementOf(display.swing.over(display.firstPerson));
+    return look;
+}
+
+} // namespace
+
 QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
 {
     QcEntityMesher::ItemLook look;
@@ -138,7 +181,7 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
             look.boxes = content.state(itemState(content, *block)).boxes;
         }
     }
-    return look;
+    return withHold(std::move(look), content, definition, block ? content.block(*block).hold : QcHoldDisplay());
 }
 
 [[nodiscard]] std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item)

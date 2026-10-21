@@ -57,7 +57,11 @@ float QcEntityFrameBuilder::blockLightAt(QcBlockPos pos) const
 std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item) const
 {
     const auto content = m_parts.session->content();
-    return content ? QcFigureLook::held(*content, item) : std::nullopt;
+    std::optional<QcEntityMesher::ItemLook> look = content ? QcFigureLook::held(*content, item) : std::nullopt;
+    if (look && !look->cube) {
+        look->shape = m_spriteShapes.shape(m_atlas, look->sprite);
+    }
+    return look;
 }
 
 QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &appearance) const

@@ -5,6 +5,7 @@
 #include "common/content/definitions/QcCookingDefinitions.h"
 #include "common/content/definitions/QcFarmingDefinitions.h"
 #include "common/content/definitions/QcFireDefinition.h"
+#include "common/content/definitions/QcHoldDisplay.h"
 #include "common/content/definitions/QcLiquidDefinition.h"
 #include "common/content/definitions/QcMachineDefinition.h"
 #include "common/content/definitions/QcShapeCondition.h"
@@ -161,6 +162,9 @@ struct QcBlockDefinition
     QList<std::pair<QString, QString>> textureSlots;
     // Item icon drawn flat instead of the block model (torches, doors); empty for the block model.
     QString itemTexture;
+    // How a hand holds the item that places this block, for the fields that item leaves unset
+    // (decision E-831).
+    QcHoldDisplay hold;
     // Whether the block gets an item of its own name; internal variants (a lit lamp, a piston head)
     // have none and drop the item of their main block. Server side only.
     bool hasItem = true;

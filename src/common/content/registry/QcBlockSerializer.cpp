@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/registry/QcBlockStateTable.h"
+#include "common/content/registry/QcHoldSerializer.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <cmath>
@@ -393,6 +394,8 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
     // take the use instead of food being eaten.
     stream << block.floats << qint32(block.bites.food) << qint32(block.campfire.slotCount);
+    // How a hand holds its item (decision E-831).
+    QcHoldSerializer::write(stream, block.hold);
 }
 
 std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
@@ -421,9 +424,11 @@ std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
     block->textureSlots = std::move(*textureSlots);
 
     block = withBehaviour(stream, std::move(*block));
-    if (!block || stream.status() != QDataStream::Ok) {
+    std::optional<QcHoldDisplay> hold = block ? QcHoldSerializer::read(stream) : std::nullopt;
+    if (!hold || stream.status() != QDataStream::Ok) {
         return std::nullopt;
     }
+    block->hold = *hold;
     return block;
 }
 

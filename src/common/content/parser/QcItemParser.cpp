@@ -3,6 +3,7 @@
 #include "common/content/parser/QcArmourParser.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcHangingParser.h"
+#include "common/content/parser/QcHoldParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/core/QcLogging.h"
 
@@ -313,6 +314,7 @@ QcResult<QcItemDefinition> ItemReader::read()
     m_reader.nestedObject(u"hangs"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) {
         m_item.hangs = QcHangingParser::parseHanging(object, m_namespace, nested);
     });
+    m_item.hold = QcHoldParser::holdOf(m_reader);
     if (m_item.hangs && (m_item.placesStand || m_item.placesCart || !m_item.placesBlock.isEmpty())) {
         m_reader.fail(u"an item that hangs places no block, stand or minecart"_s);
     }

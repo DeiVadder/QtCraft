@@ -28,6 +28,8 @@ struct Figure
     QcEquipment equipment{};
     // The cape's swing (QcCapeSwing, kept by the preview from frame to frame).
     QcCapeSwing::Angles cape = {};
+    // The shape of the held item's sprite (QcSpriteShapes); null draws it flat.
+    std::shared_ptr<const QcSpriteShape> heldShape = nullptr;
 };
 
 // Empty when the content has no humanoid model or no outfit to draw.

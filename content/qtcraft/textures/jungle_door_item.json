@@ -1,6 +1,6 @@
 {
     "name": "jungle_door_item",
-    "pattern": "door_lower",
+    "pattern": "door_item",
     "primary": "#a0734f",
     "secondary": "#7d5638",
     "variation": 0.08,

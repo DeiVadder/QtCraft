@@ -177,6 +177,9 @@ HandPose animateHand(const QcEntityPose &pose, double time, double switchProgres
         hand.offset.z -= 0.10 * thrust;
         hand.pitch += lift >= 0.0 ? 22.0 * lift : 12.0 * lift;
         hand.yaw += 18.0 * down;
+        // The item turns into its swing placement on the way up and back after the blow, fully
+        // turned around the middle of the swing.
+        hand.swing = thrust;
     }
     if (pose.drawProgress >= 0.0) {
         // Drawing a bow: the hand comes to the middle and pulls back, trembling at a full draw.

@@ -1,6 +1,6 @@
 {
     "name": "birch_door_item",
-    "pattern": "door_lower",
+    "pattern": "door_item",
     "primary": "#d2bd88",
     "secondary": "#a99366",
     "variation": 0.08,

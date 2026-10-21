@@ -5,6 +5,7 @@
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcCookingParser.h"
 #include "common/content/parser/QcFarmingParser.h"
+#include "common/content/parser/QcHoldParser.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/parser/QcLiquidParser.h"
 #include "common/content/parser/QcRailParser.h"
@@ -666,6 +667,7 @@ QcResult<QcBlockDefinition> BlockReader::read()
 
     readTextures();
     m_block.itemTexture = m_reader.name(u"itemTexture"_s, m_namespace);
+    m_block.hold = QcHoldParser::holdOf(m_reader);
     m_block.hasItem = m_reader.boolean(u"item"_s, true);
     m_block.itemTags = QcContentFields::parseTags(m_json.value(u"tags"_s), m_namespace, m_reader);
     checkPartTextures(m_block, m_reader);

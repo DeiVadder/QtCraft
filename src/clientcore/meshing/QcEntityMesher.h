@@ -5,9 +5,11 @@
 #include "clientcore/light/QcEntityLight.h"
 #include "clientcore/meshing/QcAnimator.h"
 #include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/meshing/QcSpriteShape.h"
 #include "clientcore/session/QcClientEntity.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/content/definitions/QcAppearanceDefinition.h"
+#include "common/content/definitions/QcHoldDisplay.h"
 #include "common/content/definitions/QcMobDefinition.h"
 #include "common/content/definitions/QcModelDefinition.h"
 
@@ -15,12 +17,32 @@
 
 #include <array>
 #include <functional>
+#include <memory>
 
 // Builds the triangles of entities: static box models, animated skeleton models with outfits and
 // hair, dropped items and the first-person hand. Rebuilt every frame; entities are few.
 namespace QcEntityMesher {
 
 using UvLookup = std::function<QRectF(const QString &texture)>;
+
+// Where a held item sits around the grip (decision E-831), resolved from the content's hold
+// transforms (QcHoldTransform): a point of the item (a sprite one unit across, a block one unit per
+// edge, relative to the grip) is scaled by `scale`, turned by `rotate` (degrees: Turn by y, then
+// Rotate by x and z) and moved by `translate`, in metres in the frame of the fist.
+struct HeldPlacement
+{
+    QcVec3 translate;
+    QcVec3 rotate;
+    // A quarter of a block per unit when no pack sets a size.
+    QcVec3 scale{0.25, 0.25, 0.25};
+
+    // `weight` (0..1) of the way from this placement to `other`: translate and rotate blended per
+    // axis as written, the scale kept, so the grip stays in the fist while the item turns.
+    [[nodiscard]] HeldPlacement towards(const HeldPlacement &other, double weight) const
+    {
+        return {translate + (other.translate - translate) * weight, rotate + (other.rotate - rotate) * weight, scale};
+    }
+};
 
 // Appearance of an item: a small cube with the block's face textures for placeable cube blocks,
 // otherwise a sprite of the item texture.
@@ -34,6 +56,16 @@ struct ItemLook
     QString sprite;
     // Light the item gives off itself (0..1, a torch): it is never drawn darker than that.
     float glow = 0.0f;
+    // Where a hand takes a sprite; a block is taken by the middle of its boxes.
+    QcHoldGrip grip = QcHoldGrip::Base;
+    HeldPlacement firstPerson;
+    HeldPlacement thirdPerson;
+    // The first-person placement in the middle of a swing (QcHoldDisplay::swing); the hand blends
+    // towards it by HandPose::swing.
+    HeldPlacement swing;
+    // The sprite's opaque texels; held sprites with a shape are drawn with thickness, without one
+    // flat.
+    std::shared_ptr<const QcSpriteShape> shape;
 };
 
 // What a skeleton model looks like: the model, an outfit, an optional hair style and cape, the
@@ -88,14 +120,19 @@ struct Figure
 // Edge length of a dropped cube and of a sprite.
 inline constexpr double itemCubeSize = 0.25;
 inline constexpr double itemSpriteSize = 0.45;
-// Where the first-person shoulder sits in the camera's frame (x right, y up, z backwards, metres)
-// with an item in the hand and without one, and how large the empty arm is drawn (decision E-722).
-inline constexpr QcVec3 heldItemShoulder{0.4, -0.36, -0.06};
+// Where the empty first-person shoulder sits in the camera's frame (x right, y up, z backwards,
+// metres) and how large the empty arm is drawn (decision E-722).
 inline constexpr QcVec3 emptyHandShoulder{0.4, -0.4, -0.08};
 inline constexpr double emptyHandScale = 0.8;
+// The first-person arm holding an item (decision E-831): the grip in the camera's frame, low right
+// of the crosshair; the arm's pitch (degrees, 90 points it forward) and turn (negative: inwards)
+// and its scale; the grip lies this far (model metres) above the end of the arm, inside the fist.
+inline constexpr QcVec3 heldGrip{0.3, -0.3, -0.55};
+inline constexpr double heldArmPitch = 100.0;
+inline constexpr double heldArmYaw = -20.0;
+inline constexpr double heldArmScale = 0.8;
+inline constexpr double heldFistInset = 0.08;
 
-// Scale of a sprite held in the first-person hand: about as large as a held block (0.15 m).
-inline constexpr double handSpriteScale = 0.36;
 // Height the humanoid models are built for.
 inline constexpr double modelHeight = 1.8;
 // A cape's lower part (below the square emblem part) bends further back than the upper part by

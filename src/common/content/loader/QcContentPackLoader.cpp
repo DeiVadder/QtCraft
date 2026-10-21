@@ -165,6 +165,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
         }
     }
     files.append(root.filePath(u"weather.json"_s));
+    files.append(root.filePath(u"held.json"_s));
 
     // Only what exists as a regular file is read.
     files.removeIf([](const QString &path) {
@@ -205,6 +206,8 @@ public:
     void loadLaterDefinitions();
     void loadWorldgenSettings();
     void loadWeatherSettings();
+    // How items are held by category (`held.json`, decision E-831).
+    void loadHoldDefaults();
     void loadTranslations();
 
     [[nodiscard]] const QStringList &warnings() const { return m_warnings; }
@@ -522,6 +525,13 @@ void PackReader::loadWeatherSettings()
     m_registry.setWeather(std::move(*weather));
 }
 
+void PackReader::loadHoldDefaults()
+{
+    if (auto defaults = readSettingsFile(u"held.json"_s, QcContentParser::parseHoldDefaults)) {
+        m_registry.mergeHoldDefaults(*defaults);
+    }
+}
+
 // Whether the new keys of a language file keep all languages within QcStreamLimits::maxTranslations
 // (decision E-371): checked per file, so a mod never builds a table that clients would refuse.
 [[nodiscard]] bool fitsTranslationBudget(const QcContentRegistry &registry, const QString &language, const QHash<QString, QString> &entries)
@@ -575,6 +585,7 @@ QcResult<QcLoadedPack> QcContentPackLoader::load(const QString &directory, QcCon
     pack.loadLaterDefinitions();
     pack.loadWorldgenSettings();
     pack.loadWeatherSettings();
+    pack.loadHoldDefaults();
     pack.loadTranslations();
 
     return QcLoadedPack{std::move(*info), pack.warnings()};

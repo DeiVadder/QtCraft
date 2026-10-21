@@ -197,6 +197,7 @@ Geschätzt vom Hauptagenten am 2026-10-15 nach der Regel „Arbeitspakete höchs
 | 41 | 41.2a | Amboss: Reparieren, Kombinieren, Umbenennen, Kosten, Abnutzung, fallender Amboss; dazu (vom Menschen 2026-10-20): Name als Feld der Stapel-Daten aus Etappe 68 (kursiv in Tooltip und Hotbar), umbenannte Behälter (Kiste, Fass, Öfen, Trichter, Rucksack) zeigen den Namen als Fenstertitel und behalten ihn beim Abbauen, Namensschild (nicht herstellbar: Truhen von Verliesen, Minen, Tempeln und Handel; am Amboss beschriftet, auf ein Wesen angewandt: Name über dem Wesen, verschwindet nicht mehr, gespeichert), Namen in Todesmeldungen und Debug-Anzeige; keine Scherz-Namen | M |
 | 41 | 41.2b | BUD-Varianten der Signal-Bauteile über den Amboss | S |
 | 47 | 47 | erledigt (47.1 `1203c7a`, 47.2 `1709682`; Fenster-Benchmark geschuldet) | M |
+| 47 | 47.3 | Gegenstand in der Hand (Mensch 2026-10-21): extrudierte Sprites, Faust-Rig, Griff am Stiel, Lage je Kategorie/Item/Block aus `held.json` und `hold` (E-831, Protokoll 64); Branch `feature/47-3-held-item`, Screenshots `docs/screenshots/47-3-*`; Fenster-Benchmark geschuldet (zentral) | M |
 | 45 | 45.1a | HDR, Tonemapping, Bloom, Höhennebel | L |
 | 45 | 45.1b | Weiches Licht/SSAO, bewegtes Licht (gehaltene Fackel, Glühwürmchen) | L |
 | 45 | 45.2 | Sonnenschatten | L |

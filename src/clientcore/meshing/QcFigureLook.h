@@ -46,7 +46,8 @@ QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds);
 
 // An item as drawn in a hand, on the ground or falling: placeable cube blocks as cubes (or their
 // shape), everything else as a sprite of the item texture. An item the content does not know looks
-// like nothing (an empty look).
+// like nothing (an empty look). How a hand holds it comes from the item's `hold`, then its block's,
+// then its category's defaults (decision E-831).
 QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item);
 // The item in a figure's hand (world and preview): none for no item or one the content does not
 // know.

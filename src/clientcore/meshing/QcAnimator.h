@@ -49,12 +49,15 @@ struct BodyPose
 };
 
 // Where the first-person arm and held item sit relative to their rest position, in the camera's
-// frame (x right, y up, z backwards) in metres, and how far the arm is turned (degrees).
+// frame (x right, y up, z backwards) in metres, and how far the arm is turned (degrees). `swing`
+// (0..1) is how far the held item has turned from its rest placement to its swing placement
+// (ItemLook::swing, decision E-831).
 struct HandPose
 {
     QcVec3 offset;
     double pitch = 0.0;
     double yaw = 0.0;
+    double swing = 0.0;
 };
 
 // Share of a mining or attack swing at which the arm is highest and lowest.

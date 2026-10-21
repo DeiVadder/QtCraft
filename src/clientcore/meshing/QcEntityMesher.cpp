@@ -1,5 +1,7 @@
 #include "clientcore/meshing/QcEntityMesher.h"
 
+#include "clientcore/meshing/QcHeldItemMesher.h"
+#include "clientcore/meshing/QcMeshRotation.h"
 #include "common/core/QcBlockFace.h"
 
 #include <QtMath>
@@ -61,51 +63,6 @@ Tint tintFor(QcTint tint, const QcAppearance &colors)
     }
     return white;
 }
-
-// Rotation around the X axis (positive moves -Y towards -Z), then around Z (positive moves -Y
-// towards +X) and then around Y (positive moves -Z towards +X), all in degrees. Sine and cosine are
-// taken once, not per vertex.
-struct Rotate
-{
-    double cosPitch;
-    double sinPitch;
-    double cosRoll;
-    double sinRoll;
-    double cosYaw;
-    double sinYaw;
-
-    Rotate(double pitch, double roll, double yaw = 0.0)
-        : cosPitch(std::cos(qDegreesToRadians(pitch)))
-        , sinPitch(std::sin(qDegreesToRadians(pitch)))
-        , cosRoll(std::cos(qDegreesToRadians(roll)))
-        , sinRoll(std::sin(qDegreesToRadians(roll)))
-        , cosYaw(std::cos(qDegreesToRadians(yaw)))
-        , sinYaw(std::sin(qDegreesToRadians(yaw)))
-    {
-    }
-
-    QcVec3 operator()(const QcVec3 &p) const
-    {
-        const QcVec3 q{p.x, p.y * cosPitch - p.z * sinPitch, p.y * sinPitch + p.z * cosPitch};
-        const QcVec3 r{q.x * cosRoll - q.y * sinRoll, q.x * sinRoll + q.y * cosRoll, q.z};
-        return {r.x * cosYaw - r.z * sinYaw, r.y, r.x * sinYaw + r.z * cosYaw};
-    }
-};
-
-// Rotation around the Y axis by a yaw in degrees: the model faces -Z; yaw 90 faces +X.
-struct Turn
-{
-    double cosYaw;
-    double sinYaw;
-
-    explicit Turn(double yawDegrees)
-        : cosYaw(std::cos(qDegreesToRadians(yawDegrees)))
-        , sinYaw(std::sin(qDegreesToRadians(yawDegrees)))
-    {
-    }
-
-    QcVec3 operator()(const QcVec3 &p) const { return {p.x * cosYaw - p.z * sinYaw, p.y, p.x * sinYaw + p.z * cosYaw}; }
-};
 
 // Texture rectangle, tint and light of the faces of a box.
 struct Surface
@@ -311,39 +268,71 @@ QcVec3 gripOf(const QcModelBone &arm)
     return {arm.pivot.x, bottom + 0.05, arm.pivot.z - 0.05};
 }
 
-// An item held in the fist of a model, `fist` placing the grip's local space.
-template<typename Place>
-void emitInFist(QcEntityMesh &mesh, const ItemLook &held, const Place &fist, QcEntityLight light, const UvLookup &uv)
-{
-    if (held.cube) {
-        emitItem(mesh, held, [&](const QcVec3 &p) { return fist(p * 0.7); }, light, uv);
-        return;
-    }
-
-    // Tools point forward and up out of the fist; two crossed sprites keep them visible from the
-    // front and the side.
-    const Rotate tilt(-45.0, 0.0);
-    for (const double angle : {0.0, 90.0}) {
-        const Turn spin(angle);
-        const auto place = [&](const QcVec3 &p) { return fist(tilt(spin(p * 0.9))); };
-        emitSprite(mesh, itemSpriteSize, place, uv(held.sprite), glowing(light, held));
-    }
-}
-
 // The arm boxes of the outfit in the first-person hand, in the arm's space with the pivot at the
-// origin; returns the arm's length below the pivot.
+// origin.
 template<typename Place>
-double emitHandArm(const LayerPainter &paint, const QcAppearanceDefinition &outfit, const QcModelBone &arm, const Place &place)
+void emitHandArm(const LayerPainter &paint, const QcAppearanceDefinition &outfit, const QcModelBone &arm, const Place &place)
 {
-    double length = 0.0;
     for (const QcModelBox &box : arm.boxes) {
         if (const QcAppearanceLayer *layer = outfit.layer(box.slot)) {
             emitBox(paint.mesh, {box.from - arm.pivot, box.to - arm.pivot}, place,
                     {paint.uv(layer->texture), tintFor(layer->tint, paint.colors), paint.light});
         }
-        length = std::max(length, arm.pivot.y - box.from.y);
+    }
+}
+
+// The arm's length below its pivot; a default length without a model arm.
+double armLength(const QcModelBone *arm)
+{
+    if (!arm) {
+        return 0.6;
+    }
+    double length = 0.0;
+    for (const QcModelBox &box : arm->boxes) {
+        length = std::max(length, arm->pivot.y - box.from.y);
     }
     return length;
+}
+
+// The empty first-person arm: the shoulder sits low on the right, a little ahead of the eyes so
+// the sleeve's cuff shows; the arm points forward, slightly up and inwards, drawn smaller and lower
+// than an arm holding an item (decision E-722). `toWorld` maps the camera's frame to world space.
+void emitEmptyHand(const LayerPainter &paint, const ModelLook &look, const QcAnimator::HandPose &hand, const PlaceFunction &toWorld)
+{
+    const QcModelBone *arm = look.model ? boneWithRole(*look.model, QcBoneRole::RightArm) : nullptr;
+    if (!arm || !look.outfit) {
+        return;
+    }
+    const QcVec3 shoulder = emptyHandShoulder + hand.offset;
+    const Rotate armRotate(108.0 + hand.pitch, 0.0);
+    const Turn armTurn(-14.0 - hand.yaw);
+    emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return toWorld(shoulder + armTurn(armRotate(local * emptyHandScale))); });
+}
+
+// The first-person arm holding an item (decision E-831): the fist sits at heldGrip, low right of
+// the crosshair, the forearm comes up to it from the lower right corner, and the item stands in
+// the fist. The hand pose turns arm and item together about the shoulder; during a swing the item
+// also turns about the grip towards its swing placement.
+void emitHeldHand(const LayerPainter &paint, const Figure &figure, const QcAnimator::HandPose &hand, const PlaceFunction &toWorld)
+{
+    const ModelLook &look = figure.look;
+    const QcModelBone *arm = look.model ? boneWithRole(*look.model, QcBoneRole::RightArm) : nullptr;
+    const Rotate armPitch(heldArmPitch, 0.0);
+    const Turn armTurn(heldArmYaw);
+    const auto armRest = [&](const QcVec3 &local) { return armTurn(armPitch(local * heldArmScale)); };
+    // Points at rest relative to the shoulder; the grip lies inside the fist, above the arm's end.
+    const QcVec3 grip = armRest({0.0, heldFistInset - armLength(arm), 0.0});
+    const QcVec3 shoulder = heldGrip - grip + hand.offset;
+    const Rotate swingPitch(hand.pitch, 0.0);
+    const Turn swingTurn(-hand.yaw);
+    const auto camera = [&](const QcVec3 &rest) { return toWorld(shoulder + swingTurn(swingPitch(rest))); };
+
+    if (arm && look.outfit) {
+        emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return camera(armRest(local)); });
+    }
+    const HeldItemPainter item(paint.mesh, paint.uv, paint.light);
+    const HeldPlacement placement = figure.held->firstPerson.towards(figure.held->swing, hand.swing);
+    item.paint(*figure.held, placement, [&](const QcVec3 &p) { return camera(grip + p); });
 }
 
 // The faces of a cape's textures (QcCapeShape): the outer side shows the emblem on the upper part
@@ -526,7 +515,8 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
     if (figure.held && arm) {
         const QcVec3 grip = gripOf(*arm);
         const auto armPlace = toWorld.bone(*arm);
-        emitInFist(mesh, *figure.held, [&](const QcVec3 &p) { return armPlace(grip + p); }, placement.light, uv);
+        const HeldItemPainter item(mesh, uv, placement.light);
+        item.paint(*figure.held, figure.held->thirdPerson, [&](const QcVec3 &p) { return armPlace(grip + p); });
     }
 }
 
@@ -602,49 +592,19 @@ void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunct
 
 void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv)
 {
-    const ModelLook &look = figure.look;
     const double y = qDegreesToRadians(view.yaw);
     const double p = qDegreesToRadians(view.pitch);
     const QcVec3 forward{std::sin(y) * std::cos(p), std::sin(p), -std::cos(y) * std::cos(p)};
     const QcVec3 right{std::cos(y), 0.0, std::sin(y)};
     const QcVec3 up{-std::sin(y) * std::sin(p), std::cos(p), std::cos(y) * std::sin(p)};
     // Camera space (x right, y up, z backwards) -> world.
-    const auto toWorld = [&](const QcVec3 &c) { return view.eye + right * c.x + up * c.y - forward * c.z; };
+    const PlaceFunction toWorld = [&](const QcVec3 &c) { return view.eye + right * c.x + up * c.y - forward * c.z; };
 
-    // The shoulder sits low on the right, a little ahead of the eyes so the sleeve's cuff shows;
-    // the arm points forward, slightly up and inwards. An empty hand is drawn smaller and lower
-    // (decision E-722), so the bare arm does not fill the corner of the view.
-    const bool empty = !figure.held;
-    const QcVec3 shoulder = (empty ? emptyHandShoulder : heldItemShoulder) + hand.offset;
-    const double armScale = empty ? emptyHandScale : 1.0;
-    const Rotate armRotate(108.0 + hand.pitch, 0.0);
-    const Turn armTurn(-14.0 - hand.yaw);
-    const auto armCamera = [&](const QcVec3 &local) { return shoulder + armTurn(armRotate(local * armScale)); };
-    const auto armSpace = [&](const QcVec3 &local) { return toWorld(armCamera(local)); };
-    const QcModelBone *arm = look.model ? boneWithRole(*look.model, QcBoneRole::RightArm) : nullptr;
-    double length = 0.6;
-    if (arm && look.outfit) {
-        length = emitHandArm({mesh, uv, look.colors, white, view.light}, *look.outfit, *arm, armSpace);
-    }
-    if (!figure.held) {
-        return;
-    }
-
-    // Held in front of the fist, facing the camera: blocks turned a little to show three faces,
-    // tools tilted so the blade points up and to the left.
-    const QcVec3 fist = armCamera({0.0, -length, 0.0});
-    if (figure.held->cube) {
-        const Turn turn(35.0);
-        const Rotate rotate(-20.0, 0.0);
-        const auto place = [&](const QcVec3 &local) { return toWorld(fist + QcVec3{-0.02, 0.06, -0.12} + rotate(turn(local * 0.6))); };
-        emitItem(mesh, *figure.held, place, view.light, uv);
+    const LayerPainter paint{mesh, uv, figure.look.colors, white, view.light};
+    if (figure.held) {
+        emitHeldHand(paint, figure, hand, toWorld);
     } else {
-        const Rotate rotate(0.0, 35.0);
-        const Turn turn(-20.0);
-        const auto place = [&](const QcVec3 &local) {
-            return toWorld(fist + QcVec3{-0.03, 0.04, -0.12} + turn(rotate(local * handSpriteScale)));
-        };
-        emitItem(mesh, *figure.held, place, view.light, uv);
+        emitEmptyHand(paint, figure.look, hand, toWorld);
     }
 }
 

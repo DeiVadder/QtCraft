@@ -83,12 +83,16 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcEntityVertex.h
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
     meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
+    meshing/QcHeldItemMesher.h meshing/QcHeldItemMesher.cpp
     meshing/QcIndexPacking.h
+    meshing/QcMeshRotation.h
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
     meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
     meshing/QcSignTextCache.h meshing/QcSignTextCache.cpp
     meshing/QcSignTextMesher.h meshing/QcSignTextMesher.cpp
+    meshing/QcSpriteShape.h meshing/QcSpriteShape.cpp
+    meshing/QcSpriteShapes.h meshing/QcSpriteShapes.cpp
 )
 target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp

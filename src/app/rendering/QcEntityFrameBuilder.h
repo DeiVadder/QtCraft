@@ -5,6 +5,7 @@
 #include "clientcore/meshing/QcCapeTracker.h"
 #include "clientcore/meshing/QcEntityMesher.h"
 #include "clientcore/meshing/QcSignTextCache.h"
+#include "clientcore/meshing/QcSpriteShapes.h"
 #include "clientcore/session/QcCampfireSmoke.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
@@ -107,11 +108,15 @@ private:
     // Block light (0..1) of entities and the hand at a position, as the meshes show it.
     float blockLightAt(QcBlockPos pos) const;
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
+    // What a hand holds: a sprite with its shape (decision E-831).
     [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
+    // A cache: the shapes of held sprites, cut from the atlas on first use (decision E-831). GUI
+    // thread only: frames are built there, and the cache is not locked.
+    mutable QcSpriteShapes m_spriteShapes;
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;

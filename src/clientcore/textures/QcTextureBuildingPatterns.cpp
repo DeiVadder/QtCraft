@@ -92,7 +92,37 @@ QColor paintGlazedTerracotta(const QcTextureSpec &spec, int x, int y, QColor col
     return color;
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 5> painters = {{
+// The whole door as an icon, half as wide as high (x 4..11): boards (primary) in a frame
+// (secondary), a window of four panes in the upper half, a rail across the middle and the handle
+// below it.
+QColor paintDoorItem(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    constexpr int left = 4;
+    constexpr int right = 11;
+    if (x < left || x > right) {
+        return clear();
+    }
+
+    const bool window = x >= left + 2 && x <= right - 2 && y >= 2 && y <= 6 && y != 4;
+    if (window) {
+        return clear();
+    }
+    const bool frame = x == left || x == right || y == 0 || y == size - 1 || y == 8;
+    const bool windowFrame = (x == left + 1 || x == right - 1) && y >= 1 && y <= 7;
+    if (frame || windowFrame || (y == 4 && x > left && x < right) || y == 1 || y == 7) {
+        return varied(spec, spec.secondary, x, y, 5);
+    }
+    if (x == right - 1 && (y == 10 || y == 11)) {
+        return QColor(70, 70, 76);
+    }
+    if (x == left + 3 || x == right - 3) {
+        return scaled(spec.primary, 0.82);
+    }
+    return scaled(spec.primary, 1.0 + spec.variation * 0.5 * noise(spec.seed, x / 3, y));
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 6> painters = {{
+    {Pattern::DoorItem, paintDoorItem},
     {Pattern::MossyBricks, paintMossyBricks},
     {Pattern::CrackedBricks, paintCrackedBricks},
     {Pattern::ChiseledBricks, paintChiseledBricks},

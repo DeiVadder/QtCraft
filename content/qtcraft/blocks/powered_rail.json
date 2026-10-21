@@ -1,5 +1,6 @@
 {
     "name": "powered_rail",
+    "hold": { "firstPerson": { "rotate": [0, -20, 30], "scale": 0.3 }, "thirdPerson": { "scale": 0.4 } },
     "sound": "stone",
     "shape": "signal_rail",
     "render": "cutout",

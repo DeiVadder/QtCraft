@@ -20,6 +20,7 @@ layout(binding = 1) uniform sampler2D atlas;
 void main()
 {
     vec4 texel = texture(atlas, vTexCoord) * vTint;
+    // QcSpriteShape::minOpaqueAlpha follows this threshold: held sprites get sides on every drawn texel.
     if (texel.a < 0.1)
         discard;
     vec3 lit = texel.rgb * vLight;

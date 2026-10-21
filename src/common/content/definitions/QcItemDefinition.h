@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcArmourDefinition.h"
 #include "common/content/definitions/QcHangingDefinition.h"
+#include "common/content/definitions/QcHoldDisplay.h"
 #include "common/content/definitions/QcProjectileDefinition.h"
 
 #include <QString>
@@ -107,6 +108,9 @@ struct QcItemDefinition
     // Used on a block face, hangs an item frame or a painting there that drops this item again
     // (decision E-790).
     std::optional<QcHangingDefinition> hangs;
+    // How a hand holds it (decision E-831); unset fields come from the block it places, then from
+    // its category's defaults.
+    QcHoldDisplay hold;
     // Used on a rail, places a minecart that drops this item again (decision E-382). Server side only.
     bool placesCart = false;
     // The block the placed cart carries (decision E-386): a container block (a chest) makes a

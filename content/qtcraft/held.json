@@ -1,0 +1,34 @@
+{
+    "categories": {
+        "tool": {
+            "grip": "handle",
+            "firstPerson": { "translate": [0, 0, 0], "rotate": [0, -20, 62], "scale": 0.45 },
+            "swing": { "rotate": [0, -85, -15] },
+            "thirdPerson": { "translate": [0, 0, 0], "rotate": [-30, -75, 0], "scale": 0.6 }
+        },
+        "weapon": {
+            "grip": "handle",
+            "firstPerson": { "translate": [0, 0, 0], "rotate": [0, -20, 62], "scale": 0.45 },
+            "swing": { "rotate": [0, -85, -15] },
+            "thirdPerson": { "translate": [0, 0, 0], "rotate": [-30, -75, 0], "scale": 0.6 }
+        },
+        "launcher": {
+            "grip": "middle",
+            "firstPerson": { "translate": [-0.02, 0.06, -0.03], "rotate": [0, -20, 15], "scale": 0.45 },
+            "thirdPerson": { "translate": [0, 0.06, -0.04], "rotate": [-75, 90, 0], "scale": 0.55 }
+        },
+        "sprite": {
+            "grip": "base",
+            "firstPerson": { "translate": [0, 0, 0], "rotate": [0, -20, 15], "scale": 0.4 },
+            "thirdPerson": { "translate": [0, 0, 0], "rotate": [-45, -75, 0], "scale": 0.5 }
+        },
+        "block": {
+            "firstPerson": { "translate": [-0.01, 0.12, -0.05], "rotate": [20, 45, 0], "scale": 0.12 },
+            "thirdPerson": { "translate": [0, 0, 0], "rotate": [0, 0, 0], "scale": 0.175 }
+        },
+        "partialBlock": {
+            "firstPerson": { "translate": [-0.01, 0.13, -0.05], "rotate": [20, 45, 0], "scale": 0.14 },
+            "thirdPerson": { "translate": [0, 0, 0], "rotate": [0, 0, 0], "scale": 0.2 }
+        }
+    }
+}
