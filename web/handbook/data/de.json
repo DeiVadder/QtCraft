@@ -670,12 +670,15 @@
                 "biome:qtcraft:birch_forest",
                 "biome:qtcraft:flower_valley",
                 "biome:qtcraft:jungle",
+                "biome:qtcraft:jungle_edge",
                 "biome:qtcraft:plains",
                 "biome:qtcraft:mountains",
                 "biome:qtcraft:swamp",
                 "biome:qtcraft:taiga",
                 "biome:qtcraft:tundra",
+                "biome:qtcraft:snowy_taiga",
                 "biome:qtcraft:forest",
+                "biome:qtcraft:forest_steppe",
                 "biome:qtcraft:desert"
             ],
             "id": "biomes",
@@ -690,6 +693,7 @@
                 "feature:qtcraft:jungle_tree",
                 "feature:qtcraft:jungle_bush",
                 "feature:qtcraft:oak_tree",
+                "feature:qtcraft:oak_bush",
                 "ore:qtcraft:iron",
                 "ore:qtcraft:dirt_pocket",
                 "feature:qtcraft:spruce_tree",
@@ -715,6 +719,7 @@
                 "ore:qtcraft:coal",
                 "ore:qtcraft:clay_pocket",
                 "feature:qtcraft:dead_bush",
+                "feature:qtcraft:dry_shrub",
                 "feature:qtcraft:wild_carrots",
                 "feature:qtcraft:wild_potatoes",
                 "feature:qtcraft:sugar_cane"
@@ -769,7 +774,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,38, Feuchte 0,58, Zerklüftung 0,2"
+                    "value": "Temperatur 0,42, Feuchte 0,6, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -991,7 +996,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,92, Feuchte 0,15, Zerklüftung 0,2"
+                    "value": "Temperatur 0,94, Feuchte 0,15, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -1185,7 +1190,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,55, Feuchte 0,5, Zerklüftung 0,1"
+                    "value": "Temperatur 0,55, Feuchte 0,61, Zerklüftung 0,2"
                 },
                 {
                     "label": "Seltenheit",
@@ -1449,7 +1454,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,62, Feuchte 0,68, Zerklüftung 0,2"
+                    "value": "Temperatur 0,44, Feuchte 0,73, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -1680,6 +1685,234 @@
             "text": "Dichte Eichen und Birken mit Pilzen im Schatten.",
             "title": "Wald"
         },
+        "biome:qtcraft:forest_steppe": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Forest Steppe",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:forest_steppe"
+                },
+                {
+                    "label": "Klima",
+                    "links": [
+                    ],
+                    "value": "Temperatur 0,71, Feuchte 0,3, Zerklüftung 0,2"
+                },
+                {
+                    "label": "Geländehöhe",
+                    "links": [
+                    ],
+                    "value": "um y 69, ± 8"
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:forest_steppe",
+            "name": "qtcraft:forest_steppe",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0,4 % der Säulen",
+                            "target": "feature:qtcraft:oak_tree",
+                            "text": "Eiche"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0,8 % der Säulen",
+                            "target": "feature:qtcraft:oak_bush",
+                            "text": "Eichenbusch"
+                        },
+                        {
+                            "icon": "qtcraft:pumpkin",
+                            "note": "0,1 % der Säulen",
+                            "target": "feature:qtcraft:pumpkin_patch",
+                            "text": "Kürbisse"
+                        },
+                        {
+                            "icon": "qtcraft:dead_bush",
+                            "note": "0,6 % der Säulen",
+                            "target": "feature:qtcraft:dry_shrub",
+                            "text": "Trockenes Gestrüpp"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "10 % der Säulen",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Zuckerrohr"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "75 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "25 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelten Eichen und Eichenbüschen, hier und da trockenes Gestrüpp. Auch hier stehen Dörfer der Ebene.",
+            "title": "Waldsteppe"
+        },
         "biome:qtcraft:jungle": {
             "category": "biomes",
             "categoryTitle": "Biome",
@@ -1695,7 +1928,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,95, Feuchte 0,62, Zerklüftung 0,2"
+                    "value": "Temperatur 1, Feuchte 0,58, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -1913,6 +2146,246 @@
             ],
             "text": "Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Darin verstecken sich Dschungeltempel.",
             "title": "Dschungel"
+        },
+        "biome:qtcraft:jungle_edge": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Jungle Edge",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:jungle_edge"
+                },
+                {
+                    "label": "Klima",
+                    "links": [
+                    ],
+                    "value": "Temperatur 0,77, Feuchte 0,49, Zerklüftung 0,2"
+                },
+                {
+                    "label": "Geländehöhe",
+                    "links": [
+                    ],
+                    "value": "um y 69, ± 12"
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:jungle_edge",
+            "name": "qtcraft:jungle_edge",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:jungle_log",
+                            "note": "1 % der Säulen",
+                            "target": "feature:qtcraft:jungle_tree",
+                            "text": "Dschungelbaum"
+                        },
+                        {
+                            "icon": "qtcraft:jungle_log",
+                            "note": "2,5 % der Säulen",
+                            "target": "feature:qtcraft:jungle_bush",
+                            "text": "Dschungelbusch"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0,3 % der Säulen",
+                            "target": "feature:qtcraft:oak_tree",
+                            "text": "Eiche"
+                        },
+                        {
+                            "icon": "qtcraft:melon",
+                            "note": "0,3 % der Säulen",
+                            "target": "feature:qtcraft:melon_patch",
+                            "text": "Melonen"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "20 % der Säulen",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Zuckerrohr"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "75 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "25 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Farn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "66,67 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "33,33 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:ocelot",
+                            "text": "Ozelot"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäume, viele Dschungelbüsche, Farne und Melonen, aber keine Dschungelriesen.",
+            "title": "Dschungelrand"
         },
         "biome:qtcraft:mountains": {
             "category": "biomes",
@@ -2163,7 +2636,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,58, Feuchte 0,32, Zerklüftung 0,2"
+                    "value": "Temperatur 0,52, Feuchte 0,3, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -2376,6 +2849,218 @@
             "text": "Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe.",
             "title": "Ebene"
         },
+        "biome:qtcraft:snowy_taiga": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Snowy Taiga",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:snowy_taiga"
+                },
+                {
+                    "label": "Klima",
+                    "links": [
+                    ],
+                    "value": "Temperatur 0,08, Feuchte 0,7, Zerklüftung 0,2"
+                },
+                {
+                    "label": "Geländehöhe",
+                    "links": [
+                    ],
+                    "value": "um y 71, ± 16"
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "block:qtcraft:snow_block",
+                            "text": "Schneeblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Steile Hänge",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "ab 4 Blöcken Gefälle",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Gefrorenes Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "",
+                            "target": "block:qtcraft:ice",
+                            "text": "Eis"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:snow_block",
+            "id": "biome:qtcraft:snowy_taiga",
+            "name": "qtcraft:snowy_taiga",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:spruce_log",
+                            "note": "1,4 % der Säulen",
+                            "target": "feature:qtcraft:spruce_tree",
+                            "text": "Fichte"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_log",
+                            "note": "0,05 % der Säulen",
+                            "target": "feature:qtcraft:giant_spruce_tree",
+                            "text": "Riesenfichte"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:wolf",
+                            "text": "Wolf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere Bäume als in der Taiga, hin und wieder eine Riesenfichte, gefrorene Seen und kein Gras.",
+            "title": "Verschneite Taiga"
+        },
         "biome:qtcraft:swamp": {
             "category": "biomes",
             "categoryTitle": "Biome",
@@ -2391,7 +3076,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,8, Feuchte 0,9, Zerklüftung 0,2"
+                    "value": "Temperatur 0,94, Feuchte 0,88, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -2631,7 +3316,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,15, Feuchte 0,72, Zerklüftung 0,2"
+                    "value": "Temperatur 0,15, Feuchte 0,73, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -2881,7 +3566,7 @@
                     "label": "Klima",
                     "links": [
                     ],
-                    "value": "Temperatur 0,08, Feuchte 0,3, Zerklüftung 0,2"
+                    "value": "Temperatur 0,05, Feuchte 0,3, Zerklüftung 0,2"
                 },
                 {
                     "label": "Geländehöhe",
@@ -25178,6 +25863,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -25186,6 +25877,12 @@
                             "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -25264,6 +25961,18 @@
                             "note": "",
                             "target": "block:qtcraft:sand",
                             "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
                         }
                     ],
                     "value": "steht nur auf"
@@ -25307,6 +26016,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Trockenes Gestrüpp",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        },
                         {
                             "icon": "qtcraft:sand",
                             "note": "Tote Büsche",
@@ -26038,6 +26753,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Unter der Oberfläche, Unter Wasser",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Unter der Oberfläche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -26073,10 +26794,22 @@
                             "text": "Tundra"
                         },
                         {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Unter der Oberfläche",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "Unter der Oberfläche, Unter Wasser",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Unter der Oberfläche",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -26949,6 +27682,12 @@
                             "note": "Gräser",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Gräser",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -30115,6 +30854,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Oberfläche",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oberfläche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -30141,6 +30886,12 @@
                             "note": "Oberfläche",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oberfläche",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -30477,6 +31228,12 @@
                             "note": "Unter Wasser",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Unter Wasser, Strände",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -34396,6 +35153,12 @@
                             "note": "Gefrorenes Wasser",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Gefrorenes Wasser",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -36751,6 +37514,12 @@
                             "note": "Riesiger Dschungelbaum, Dschungelbusch",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Dschungelbaum, Dschungelbusch",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
                         }
                     ],
                     "recipes": [
@@ -37000,6 +37769,12 @@
                             "note": "Riesiger Dschungelbaum, Dschungelbusch",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Dschungelbaum, Dschungelbusch",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
                         }
                     ],
                     "recipes": [
@@ -47935,6 +48710,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Melonen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Melonen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         },
@@ -53724,6 +54505,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Eiche",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Eiche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -53738,6 +54525,12 @@
                             "note": "Eiche",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Eiche, Eichenbusch",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -53991,6 +54784,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Eiche",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Eiche",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -54005,6 +54804,12 @@
                             "note": "Eiche",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Eiche, Eichenbusch",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -61850,6 +62655,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -61858,6 +62669,12 @@
                             "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -62358,6 +63175,12 @@
                             "note": "Kürbisse",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Kürbisse",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -66932,6 +67755,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Strände",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Unter Wasser, Strände",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -66941,6 +67770,12 @@
                             "note": "Strände",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Unter Wasser, Strände",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         },
                         {
                             "icon": "qtcraft:sand",
@@ -74902,6 +75737,12 @@
                             "note": "Oberfläche, Strände",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Oberfläche",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -76197,6 +77038,12 @@
                             "note": "Fichte",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Riesenfichte, Fichte",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -76458,6 +77305,12 @@
                             "note": "Fichte",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Riesenfichte, Fichte",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -79452,6 +80305,12 @@
                             "note": "Steile Hänge",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "Steile Hänge",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -84619,6 +85478,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Zuckerrohr",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Zuckerrohr",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -84633,6 +85498,12 @@
                             "note": "Zuckerrohr",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Zuckerrohr",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         },
                         {
                             "icon": "qtcraft:sand",
@@ -84775,6 +85646,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Gräser",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Gräser",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -84801,6 +85678,12 @@
                             "note": "Gräser",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Gräser",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -93562,6 +94445,84 @@
             "text": "",
             "title": "Tote Büsche"
         },
+        "feature:qtcraft:dry_shrub": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Dry shrub",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:dry_shrub"
+                },
+                {
+                    "label": "Art",
+                    "links": [
+                    ],
+                    "value": "Pflanze"
+                },
+                {
+                    "label": "Blöcke",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dead_bush",
+                            "note": "",
+                            "target": "block:qtcraft:dead_bush",
+                            "text": "Toter Busch"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "4–4 Blöcke"
+                },
+                {
+                    "label": "Wächst auf",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:dead_bush",
+            "id": "feature:qtcraft:dry_shrub",
+            "name": "qtcraft:dry_shrub",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,6 % der Säulen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "In Biomen"
+                }
+            ],
+            "text": "",
+            "title": "Trockenes Gestrüpp"
+        },
         "feature:qtcraft:giant_jungle_tree": {
             "category": "worldgen",
             "categoryTitle": "Weltgenerierung",
@@ -93725,6 +94686,12 @@
                             "note": "0,12 % der Säulen",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "0,05 % der Säulen",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -93809,6 +94776,12 @@
                             "note": "3 % der Säulen",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "2,5 % der Säulen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
                         }
                     ],
                     "recipes": [
@@ -93905,6 +94878,12 @@
                             "note": "5 % der Säulen",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "1 % der Säulen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
                         }
                     ],
                     "recipes": [
@@ -93983,6 +94962,12 @@
                             "note": "",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         },
                         {
                             "icon": "qtcraft:sand",
@@ -94214,6 +95199,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "0,3 % der Säulen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "0,15 % der Säulen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
@@ -94233,6 +95224,90 @@
             ],
             "text": "",
             "title": "Melonen"
+        },
+        "feature:qtcraft:oak_bush": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Oak bush",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:oak_bush"
+                },
+                {
+                    "label": "Art",
+                    "links": [
+                    ],
+                    "value": "Baum"
+                },
+                {
+                    "label": "Blöcke",
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "",
+                            "target": "block:qtcraft:oak_log",
+                            "text": "Eichenstamm"
+                        },
+                        {
+                            "icon": "qtcraft:oak_leaves",
+                            "note": "",
+                            "target": "block:qtcraft:oak_leaves",
+                            "text": "Eichenlaub"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "1–1 Blöcke"
+                },
+                {
+                    "label": "Wächst auf",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:oak_log",
+            "id": "feature:qtcraft:oak_bush",
+            "name": "qtcraft:oak_bush",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,8 % der Säulen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "In Biomen"
+                }
+            ],
+            "text": "",
+            "title": "Eichenbusch"
         },
         "feature:qtcraft:oak_tree": {
             "category": "worldgen",
@@ -94322,6 +95397,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "0,3 % der Säulen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "0,2 % der Säulen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -94337,6 +95418,12 @@
                             "note": "3,2 % der Säulen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,4 % der Säulen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -94415,6 +95502,12 @@
                             "note": "0,15 % der Säulen",
                             "target": "biome:qtcraft:taiga",
                             "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,1 % der Säulen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         }
                     ],
                     "recipes": [
@@ -94691,6 +95784,12 @@
                             "note": "0,15 % der Säulen",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "1,4 % der Säulen",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -94802,6 +95901,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "20 % der Säulen",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "15 % der Säulen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
@@ -94817,6 +95922,12 @@
                             "note": "15 % der Säulen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "10 % der Säulen",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         },
                         {
                             "icon": "qtcraft:sand",
@@ -116309,6 +117420,18 @@
                             "text": "Tundra"
                         },
                         {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        },
+                        {
                             "icon": "qtcraft:sand",
                             "note": "",
                             "target": "biome:qtcraft:desert",
@@ -117603,6 +118726,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         }
@@ -117767,6 +118896,18 @@
                             "text": "Tundra"
                         },
                         {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        },
+                        {
                             "icon": "qtcraft:sand",
                             "note": "",
                             "target": "biome:qtcraft:desert",
@@ -117923,6 +119064,12 @@
                             "note": "",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         }
                     ],
                     "recipes": [
@@ -119067,6 +120214,12 @@
                             "note": "",
                             "target": "biome:qtcraft:tundra",
                             "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -128295,6 +129448,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -128323,10 +129482,22 @@
                             "text": "Tundra"
                         },
                         {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
                         },
                         {
                             "icon": "qtcraft:sand",

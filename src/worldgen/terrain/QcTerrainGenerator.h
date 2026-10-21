@@ -71,7 +71,12 @@ public:
     Column column(int x, int z) const;
     // The world's rarity at a column in [0, 1] (decision E-821): 0 outside the spots where rare
     // biomes may appear, and everywhere when no biome is rare.
-    [[nodiscard]] double rarityAt(int x, int z) const;
+    [[nodiscard]] double rarityAt(int x, int z) const { return climateAt(x, z).rarity; }
+    // The climate point of a column (decisions E-014, E-821, E-824), for tests and tools.
+    [[nodiscard]] QcTerrainClimate::Point climateAt(int x, int z) const;
+    // The biome a climate point belongs to (the heaviest after the rarity gate), as the terrain picks
+    // it; tests check the layout of the biomes in climate space with it (decision E-824).
+    [[nodiscard]] int biomeForClimate(const QcTerrainClimate::Point &climate) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
     QString biomeName(int index) const;

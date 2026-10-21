@@ -21,6 +21,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// Ticks after using an item on a creature by which a catch or a feeding shows on the client.
+constexpr int useSettleTicks = 12;
+
 qint64 entityArgument(const QJsonObject &request)
 {
     return request.value(u"entity"_s).toInteger(-1);
@@ -248,10 +251,10 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
 
     const qint64 wanted = entityArgument(request);
     const UseBefore before{session().inventory().selectedStack(), session().entities().value(quint32(wanted)).flags};
-    bool sent = false;
+    std::optional<quint64> sentTick;
 
-    m_context.begin({request, QcControlActiveCommand::timeoutPolls(6), [this, startTick, sent, wanted, before]() mutable {
-                         if (!sent) {
+    m_context.begin({request, QcControlActiveCommand::timeoutPolls(useSettleTicks), [this, startTick, sentTick, wanted, before]() mutable {
+                         if (!sentTick) {
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
@@ -259,11 +262,19 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                                  m_context.setActiveError(u"Entity is not in reach or not in sight"_s);
                                  return true;
                              }
-                             sent = true;
+                             sentTick = session().tickCount();
                              return false;
                          }
 
-                         if (session().tickCount() < startTick + 4) {
+                         // Counted from the use, not from the command: under load the client sends it
+                         // ticks late. The held item comes back at once, a caught creature leaves with
+                         // the next entity update, so a used item beside a creature still there waits
+                         // a few ticks more before it counts as refused.
+                         const quint64 ticks = session().tickCount() - *sentTick;
+                         const bool stillThere = session().entities().contains(quint32(wanted));
+                         const QcItemStack &held = session().inventory().selectedStack();
+                         const bool heldChanged = held.item != before.held.item || held.count != before.held.count;
+                         if (ticks < 4 || (heldChanged && stillThere && ticks < useSettleTicks)) {
                              return false;
                          }
                          if (const QString error = useEntityError(quint32(wanted), before); !error.isEmpty()) {
@@ -273,7 +284,7 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                      }});
 }
 
-QString QcControlEntityCommands::useEntityError(quint32 entityId, UseBefore before) const
+QString QcControlEntityCommands::useEntityError(quint32 entityId, const UseBefore &before) const
 {
     // Caught creatures vanish; fed adults fall in love; fed young ones take the item (also from a
     // creative hand, which keeps it).

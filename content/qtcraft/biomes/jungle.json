@@ -1,7 +1,8 @@
 {
     "name": "jungle",
-    "temperature": 0.95,
-    "humidity": 0.62,
+    "temperature": 1.0,
+    "humidity": 0.58,
+    "spread": 0.04,
     "baseHeight": 70,
     "heightVariation": 14,
     "surface": "grass_block",

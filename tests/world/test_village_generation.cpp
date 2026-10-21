@@ -108,7 +108,7 @@ private slots:
             const QString expected = biome == u"qtcraft:desert"_s ? u"qtcraft:desert"_s
                                      : biome == u"qtcraft:taiga"_s ? u"qtcraft:taiga"_s
                                      : biome == u"qtcraft:swamp"_s ? u"qtcraft:swamp"_s
-                                     : biome == u"qtcraft:tundra"_s ? u"qtcraft:snowy"_s
+                                     : biome == u"qtcraft:tundra"_s || biome == u"qtcraft:snowy_taiga"_s ? u"qtcraft:snowy"_s
                                                                    : u"qtcraft:plains"_s;
             QCOMPARE(plan->style, expected);
             styles.insert(plan->style);

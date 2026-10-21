@@ -1,7 +1,8 @@
 {
     "name": "swamp",
-    "temperature": 0.8,
-    "humidity": 0.9,
+    "temperature": 0.94,
+    "humidity": 0.88,
+    "spread": 0.035,
     "baseHeight": 63,
     "heightVariation": 2,
     "surface": "grass_block",

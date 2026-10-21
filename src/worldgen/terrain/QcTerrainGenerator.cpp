@@ -3,6 +3,7 @@
 #include "worldgen/dungeons/QcDungeonGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
+#include "worldgen/terrain/QcClimateBiomes.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainMath.h"
 #include "worldgen/terrain/QcTreeShape.h"
@@ -27,8 +28,6 @@ constexpr double warpScale = 420.0;
 constexpr double warpAmplitude = 140.0;
 // Terraces form only in patches of about this size.
 constexpr double terraceScale = 380.0;
-// The ruggedness axis counts twice as much as temperature and humidity.
-constexpr double ruggednessWeight = 2.0;
 // Ocean floor lies this far below sea level (before detail noise).
 constexpr double oceanDepth = 12.0;
 constexpr int featureMargin = QcTerrainColumnGrid::featureMargin;
@@ -157,16 +156,23 @@ double QcTerrainGenerator::biomeHeight(const Biome &biome, double rolling, doubl
     return height;
 }
 
-double QcTerrainGenerator::rarityAt(int x, int z) const
+QcTerrainClimate::Point QcTerrainGenerator::climateAt(int x, int z) const
 {
     const double warpedX = x + warpAmplitude * m_warpNoiseX.fractal2(x / warpScale, z / warpScale, 3);
     const double warpedZ = z + warpAmplitude * m_warpNoiseZ.fractal2(x / warpScale, z / warpScale, 3);
-    return m_climate.at(x, z, warpedX, warpedZ).rarity;
+    return m_climate.at(x, z, warpedX, warpedZ);
+}
+
+int QcTerrainGenerator::biomeForClimate(const QcTerrainClimate::Point &climate) const
+{
+    return QcClimateBiomes::choose(m_definitions.biomes, climate);
 }
 
 QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const
 {
-    // Inverse-distance weighting in climate space blends heights smoothly across biome borders.
+    // Inverse-distance weighting in climate space blends heights smoothly across biome borders. All
+    // biomes take part: the mountains' height reaches far into the lowland through their weight, and
+    // a cut-off made the slopes there steep (decision E-824).
     double weightSum = 0.0;
     double landHeight = 0.0;
     double overhang = 0.0;
@@ -177,21 +183,12 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
     Blend result;
     for (qsizetype i = 0; i < m_definitions.biomes.size(); ++i) {
         const Biome &biome = m_definitions.biomes[i];
-        const double dt = climate.temperature - biome.temperature;
-        const double dh = climate.humidity - biome.humidity;
-        const double dr = ruggednessWeight * (climate.ruggedness - biome.ruggedness);
-        const double distanceSquared = dt * dt + dh * dh + dr * dr + 0.0015;
-        double weight = 1.0 / (distanceSquared * distanceSquared);
+        double weight = QcClimateBiomes::weight(biome, climate);
         if (weight > nearestWeight) {
             nearestWeight = weight;
             nearest = int(i);
         }
-        if (biome.rarity > 0.0) {
-            // Gated by the rarity map (decision E-821): exactly 0 outside the spots, so the other
-            // biomes' heights stay untouched there, and full weight where the column's rarity
-            // reaches the biome's.
-            weight *= std::min(1.0, climate.rarity / biome.rarity);
-        }
+        weight *= QcClimateBiomes::rarityGate(biome, climate.rarity);
         weightSum += weight;
         landHeight += weight * biomeHeight(biome, rolling, ridge, terraces);
         overhang += weight * biome.overhang;
@@ -217,7 +214,7 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
 
 QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
 {
-    // Bent coordinates for the large-scale maps, so biome borders and coasts meander (rarityAt bends
+    // Bent coordinates for the large-scale maps, so biome borders and coasts meander (climateAt bends
     // the same way).
     const double warpedX = x + warpAmplitude * m_warpNoiseX.fractal2(x / warpScale, z / warpScale, 3);
     const double warpedZ = z + warpAmplitude * m_warpNoiseZ.fractal2(x / warpScale, z / warpScale, 3);

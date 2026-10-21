@@ -33,6 +33,14 @@ private:
     std::unique_ptr<QcTerrainGenerator> m_terrain;
     QHash<QString, Plans> m_plans;
 
+    // Natural ground or an ore vein in it (veins reach the surface of hills).
+    bool isTerrain(const QcTerrainGenerator &terrain, QcBlockId block) const
+    {
+        return terrain.isNaturalGround(block) || std::ranges::any_of(m_content->worldgen().ores(), [&](const QcOreDefinition &ore) {
+                   return m_content->stateId(ore.block) == block;
+               });
+    }
+
     int kindOf(const QcTerrainGenerator &terrain, const QString &name) const
     {
         return terrain.surfaceStructures().planner().kindIndex(name).value_or(-1);
@@ -187,7 +195,7 @@ private:
                     const std::optional<QcBlockId> written = cells.contains(world) ? std::optional(cells.value(world)) : std::nullopt;
                     const QcBlockId block = at(chunks, world);
                     const bool kept = !written || y >= origin.y + structure.sizeY();
-                    if (kept && y > origin.y + structure.groundLayer && block != qcAirBlockId && !terrain.isNaturalGround(block)) {
+                    if (kept && y > origin.y + structure.groundLayer && block != qcAirBlockId && !isTerrain(terrain, block)) {
                         problems.append(u"%1 at %2 %3 %4"_s.arg(m_content->block(block).name).arg(x).arg(y).arg(z));
                     }
                     if (written != qcAirBlockId || y >= origin.y + structure.sizeY()) {

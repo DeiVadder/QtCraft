@@ -484,6 +484,11 @@ private slots:
         QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x"})"), u"b"_s).has_value());
         QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","temperature":2})"), u"b"_s).has_value());
         QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","snowLine":100})"), u"b"_s).has_value());
+        // Spread (decision E-824) and rarity (E-821) stay in their ranges.
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","spread":0.2})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","spread":-0.01})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","rarity":1.5})"), u"b"_s).has_value());
+        QCOMPARE(QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","spread":0.03})"), u"b"_s)->spread, 0.03);
         QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","features":[{"density":0.1}]})"), u"b"_s).has_value());
     }
 

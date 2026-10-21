@@ -1,7 +1,7 @@
 {
     "name": "taiga",
     "temperature": 0.15,
-    "humidity": 0.72,
+    "humidity": 0.73,
     "baseHeight": 72,
     "heightVariation": 20,
     "terraceHeight": 4,

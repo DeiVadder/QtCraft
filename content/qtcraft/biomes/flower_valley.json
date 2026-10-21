@@ -1,9 +1,9 @@
 {
     "name": "flower_valley",
     "temperature": 0.55,
-    "humidity": 0.5,
-    "ruggedness": 0.1,
+    "humidity": 0.61,
     "rarity": 1.0,
+    "spread": 0.03,
     "baseHeight": 62.5,
     "heightVariation": 3,
     "surface": "grass_block",

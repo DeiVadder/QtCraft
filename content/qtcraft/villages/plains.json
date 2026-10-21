@@ -1,7 +1,7 @@
 {
     "formatVersion": 1,
     "name": "plains",
-    "biomes": ["plains"],
+    "biomes": ["plains", "forest_steppe"],
     "fallback": true,
     "centre": "village_plains_well",
     "lamp": "village_plains_lamp",

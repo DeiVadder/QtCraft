@@ -1525,7 +1525,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Riesiger Dschungelbaum, Dschungelbusch)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Riesiger Dschungelbaum, Dschungelbusch), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Dschungelbaum, Dschungelbusch)
 
 ### <a id="block-qtcraft-jungle_sign"></a>Dschungelschild
 
@@ -1626,7 +1626,7 @@ Holz des Dschungelbaums. Ergibt je vier Bretter.
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Riesiger Dschungelbaum, Dschungelbusch)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Riesiger Dschungelbaum, Dschungelbusch), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Dschungelbaum, Dschungelbusch)
 
 ### <a id="block-qtcraft-jungle_door"></a>Dschungeltür
 
@@ -1854,7 +1854,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 
 **Kommt vor in**
 
-[Blumental](biomes.md#biome-qtcraft-flower_valley) (Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (Eiche), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Eiche, Eichenbusch)
 
 ### <a id="block-qtcraft-oak_sign"></a>Eichenschild
 
@@ -1955,7 +1955,7 @@ Holz der Eiche: das Erste, was man sammelt. Ergibt je vier Bretter.
 
 **Kommt vor in**
 
-[Blumental](biomes.md#biome-qtcraft-flower_valley) (Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (Eiche), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Eiche), [Ebene](biomes.md#biome-qtcraft-plains) (Eiche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Eiche), [Wald](biomes.md#biome-qtcraft-forest) (Eiche), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Eiche, Eichenbusch)
 
 ### <a id="block-qtcraft-oak_door"></a>Eichentür
 
@@ -2016,7 +2016,7 @@ Bedeckt das Wasser kalter Biome. Rutschig: Wer darauf läuft, rutscht weiter und
 
 **Kommt vor in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Gefrorenes Wasser), [Tundra](biomes.md#biome-qtcraft-tundra) (Gefrorenes Wasser)
+[Taiga](biomes.md#biome-qtcraft-taiga) (Gefrorenes Wasser), [Tundra](biomes.md#biome-qtcraft-tundra) (Gefrorenes Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Gefrorenes Wasser)
 
 ### <a id="block-qtcraft-iron_block"></a>Eisenblock
 
@@ -2537,7 +2537,7 @@ Einfache Erde unter dem Gras.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Unter der Oberfläche, Unter Wasser), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Unter der Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Unter der Oberfläche, Unter Wasser), [Ebene](biomes.md#biome-qtcraft-plains) (Unter der Oberfläche), [Erde-Vorkommen](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter der Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Unter der Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter der Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter der Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Unter der Oberfläche, Unter Wasser)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Unter der Oberfläche, Unter Wasser), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Unter der Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Unter der Oberfläche, Unter Wasser), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Unter der Oberfläche, Unter Wasser), [Ebene](biomes.md#biome-qtcraft-plains) (Unter der Oberfläche), [Erde-Vorkommen](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter der Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Unter der Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter der Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter der Oberfläche), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter der Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Unter der Oberfläche, Unter Wasser), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter der Oberfläche)
 
 **Wesen, die darauf erscheinen**
 
@@ -2643,7 +2643,7 @@ Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöck
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser)
 
 ### <a id="block-qtcraft-barrel"></a>Fass
 
@@ -2827,7 +2827,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Fichte), [Taiga](biomes.md#biome-qtcraft-taiga) (Riesenfichte, Fichte), [Tundra](biomes.md#biome-qtcraft-tundra) (Fichte)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Fichte), [Taiga](biomes.md#biome-qtcraft-taiga) (Riesenfichte, Fichte), [Tundra](biomes.md#biome-qtcraft-tundra) (Fichte), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Riesenfichte, Fichte)
 
 ### <a id="block-qtcraft-spruce_sign"></a>Fichtenschild
 
@@ -2928,7 +2928,7 @@ Holz der Fichte. Ergibt je vier Bretter.
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Fichte), [Taiga](biomes.md#biome-qtcraft-taiga) (Riesenfichte, Fichte), [Tundra](biomes.md#biome-qtcraft-tundra) (Fichte)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Fichte), [Taiga](biomes.md#biome-qtcraft-taiga) (Riesenfichte, Fichte), [Tundra](biomes.md#biome-qtcraft-tundra) (Fichte), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Riesenfichte, Fichte)
 
 ### <a id="block-qtcraft-spruce_door"></a>Fichtentür
 
@@ -3803,7 +3803,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Oberfläche), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Oberfläche)
 
 **Wesen, die darauf erscheinen**
 
@@ -5129,7 +5129,7 @@ Bedeckt Wiesen; man kann direkt hineinbauen.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Gräser), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Gräser), [Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Ebene](biomes.md#biome-qtcraft-plains) (Gräser), [Gebirge](biomes.md#biome-qtcraft-mountains) (Gräser), [Sumpf](biomes.md#biome-qtcraft-swamp) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser), [Wald](biomes.md#biome-qtcraft-forest) (Gräser)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Gräser), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Gräser), [Dschungel](biomes.md#biome-qtcraft-jungle) (Gräser), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Gräser), [Ebene](biomes.md#biome-qtcraft-plains) (Gräser), [Gebirge](biomes.md#biome-qtcraft-mountains) (Gräser), [Sumpf](biomes.md#biome-qtcraft-swamp) (Gräser), [Taiga](biomes.md#biome-qtcraft-taiga) (Gräser), [Wald](biomes.md#biome-qtcraft-forest) (Gräser), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Gräser)
 
 ### <a id="block-qtcraft-cactus"></a>Kaktus
 
@@ -5285,7 +5285,7 @@ Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein 
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Unter Wasser, Strände), [Kies-Vorkommen](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter Wasser, Strände), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter Wasser)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Unter Wasser, Strände), [Kies-Vorkommen](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter Wasser, Strände), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter Wasser, Strände)
 
 **Wesen, die darauf erscheinen**
 
@@ -5838,7 +5838,7 @@ Wächst neben einem Kürbisstängel und wild in Ebenen und Taiga. Gibt Kürbiske
 
 **Kommt vor in**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (Kürbisse), [Taiga](biomes.md#biome-qtcraft-taiga) (Kürbisse)
+[Ebene](biomes.md#biome-qtcraft-plains) (Kürbisse), [Taiga](biomes.md#biome-qtcraft-taiga) (Kürbisse), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Kürbisse)
 
 ### <a id="block-qtcraft-jack_o_lantern"></a>Kürbislaterne
 
@@ -6200,7 +6200,7 @@ Eine gelbe Blume; ergibt gelben Farbstoff.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Blumen), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Blumen), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Blumen), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Blumen)
 
 ### <a id="block-qtcraft-magenta_glazed_terracotta"></a>Magentafarbene glasierte Terrakotta
 
@@ -6555,7 +6555,7 @@ Wächst neben einem Melonenstängel und wild in Wäldern und Sümpfen. Zerfällt
 
 **Kommt vor in**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (Melonen), [Sumpf](biomes.md#biome-qtcraft-swamp) (Melonen), [Wald](biomes.md#biome-qtcraft-forest) (Melonen)
+[Dschungel](biomes.md#biome-qtcraft-jungle) (Melonen), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Melonen), [Sumpf](biomes.md#biome-qtcraft-swamp) (Melonen), [Wald](biomes.md#biome-qtcraft-forest) (Melonen)
 
 ### <a id="block-qtcraft-melon_stem"></a>Melonenstängel
 
@@ -6631,7 +6631,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 
 **Kommt vor in**
 
-[Blumental](biomes.md#biome-qtcraft-flower_valley) (Blumen), [Dschungel](biomes.md#biome-qtcraft-jungle) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (Blumen), [Dschungel](biomes.md#biome-qtcraft-jungle) (Blumen), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Blumen), [Ebene](biomes.md#biome-qtcraft-plains) (Blumen), [Wald](biomes.md#biome-qtcraft-forest) (Blumen), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Blumen)
 
 ### <a id="block-qtcraft-spawner"></a>Monster-Spawner
 
@@ -8258,7 +8258,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter Wasser, Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
 **Wesen, die darauf erscheinen**
 
@@ -8578,7 +8578,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Schnee), [Tundra](biomes.md#biome-qtcraft-tundra) (Oberfläche, Strände)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Schnee), [Tundra](biomes.md#biome-qtcraft-tundra) (Oberfläche, Strände), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Oberfläche)
 
 **Wesen, die darauf erscheinen**
 
@@ -9592,7 +9592,7 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Steile Hänge), [Taiga](biomes.md#biome-qtcraft-taiga) (Steile Hänge)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Steile Hänge), [Taiga](biomes.md#biome-qtcraft-taiga) (Steile Hänge), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Steile Hänge)
 
 **Wesen, die darauf erscheinen**
 
@@ -9998,7 +9998,7 @@ Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.
 | Lichtdämpfung | 0 von 15 |
 | Fest | nein |
 | Wird beim Bauen ersetzt | ja |
-| Braucht Halt | steht nur auf: [Sand](#block-qtcraft-sand) |
+| Braucht Halt | steht nur auf: [Sand](#block-qtcraft-sand), [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
 | Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
@@ -10006,7 +10006,7 @@ Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.
 
 **Kommt vor in**
 
-[Wüste](biomes.md#biome-qtcraft-desert) (Tote Büsche)
+[Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Trockenes Gestrüpp), [Wüste](biomes.md#biome-qtcraft-desert) (Tote Büsche)
 
 ### <a id="block-qtcraft-dirt_path"></a>Trampelpfad
 
@@ -11061,4 +11061,4 @@ Wächst auf Sand oder Erde direkt neben Wasser.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Zuckerrohr), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Zuckerrohr), [Dschungel](biomes.md#biome-qtcraft-jungle) (Zuckerrohr), [Ebene](biomes.md#biome-qtcraft-plains) (Zuckerrohr), [Sumpf](biomes.md#biome-qtcraft-swamp) (Zuckerrohr), [Wald](biomes.md#biome-qtcraft-forest) (Zuckerrohr), [Wüste](biomes.md#biome-qtcraft-desert) (Zuckerrohr)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Zuckerrohr), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Zuckerrohr), [Dschungel](biomes.md#biome-qtcraft-jungle) (Zuckerrohr), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Zuckerrohr), [Ebene](biomes.md#biome-qtcraft-plains) (Zuckerrohr), [Sumpf](biomes.md#biome-qtcraft-swamp) (Zuckerrohr), [Wald](biomes.md#biome-qtcraft-forest) (Zuckerrohr), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Zuckerrohr), [Wüste](biomes.md#biome-qtcraft-desert) (Zuckerrohr)

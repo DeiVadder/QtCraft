@@ -144,15 +144,16 @@ void QcWetlandShaper::shape(QcChunk &chunk, const QcVillagePlan &plan) const
             }
             const int ground = m_terrain.column(x, z).height - 1;
             if (const std::optional<Column> target = targetAt(plan, x, z, ground)) {
-                shapeColumn(chunk, {lx, ground, lz}, *target, bottom);
+                shapeColumn(chunk, {lx, ground, lz}, *target, plan.wetland.settings);
                 plant(chunk, {lx, target->top, lz}, plan);
             }
         }
     }
 }
 
-void QcWetlandShaper::shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, QcBlockId bottom) const
+void QcWetlandShaper::shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, const QcVillageStyle::Wetland &settings) const
 {
+    const QcBlockId bottom = settings.bottom;
     const int x = chunk.pos().x * QcWorld::chunkSize + local.x;
     const int z = chunk.pos().z * QcWorld::chunkSize + local.z;
     const int ground = local.y;
@@ -172,6 +173,15 @@ void QcWetlandShaper::shapeColumn(QcChunk &chunk, QcBlockPos local, Column colum
     // Raised ground (deep water filled up) is bottom.
     for (int y = ground + 1; y < target; ++y) {
         chunk.setBlock(local.x, y, local.z, bottom);
+    }
+    // Caves under the wetland, from the water surface down to below the deepest pool's bottom, are
+    // sealed, so no pool of the village drains into one through its side or bottom. Only cave air:
+    // rooms of dungeons and mine shafts there stay open (other water may run into caves).
+    const QcTerrainGenerator::Column terrain = m_terrain.column(x, z);
+    for (int y = std::min(target - 1, waterSurface); y >= std::max(1, waterSurface - settings.depth - 2); --y) {
+        if (chunk.block(local.x, y, local.z) == qcAirBlockId && m_terrain.isCave(x, y, z, terrain)) {
+            chunk.setBlock(local.x, y, local.z, bottom);
+        }
     }
     const bool grass = target >= waterSurface && column.cover == QcWetlandPattern::Cover::Grass;
     chunk.setBlock(local.x, target, local.z, grass ? m_terrain.surfaceBlockAt(x, z) : bottom);

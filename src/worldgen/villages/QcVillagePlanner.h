@@ -39,6 +39,9 @@ private:
     // The style of the centre column when it is land (or, for a style over water, wet ground too) of a
     // biome with villages.
     const QcVillageStyle *styleAt(int x, int z) const;
+    // Whether the columns around a centre, as far as its meeting point may lie from it, belong to
+    // biomes with villages, so the bell never stands in a biome without them.
+    [[nodiscard]] bool villageBiomeAround(int x, int z) const;
     // Whether the ground around a centre is flat enough (and, over water, carries stilts everywhere).
     bool isFlatAround(const QcVillageStyle &style, int x, int z) const;
     // Over water: QcBoardwalkPlanner::wetAround() around the centre.

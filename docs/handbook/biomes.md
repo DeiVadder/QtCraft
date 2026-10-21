@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Jungle](#biome-qtcraft-jungle) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
 
 ## QtCraft
 
@@ -13,7 +13,7 @@ Light forest of birches.
 | | |
 |---|---|
 | ID | `qtcraft:birch_forest` |
-| Climate | temperature 0.38, humidity 0.58, ruggedness 0.2 |
+| Climate | temperature 0.42, humidity 0.6, ruggedness 0.2 |
 | Terrain height | around y 71, ± 16 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -43,7 +43,7 @@ Sand and sandstone with cacti and little else.
 | | |
 |---|---|
 | ID | `qtcraft:desert` |
-| Climate | temperature 0.92, humidity 0.15, ruggedness 0.2 |
+| Climate | temperature 0.94, humidity 0.15, ruggedness 0.2 |
 | Terrain height | around y 67, ± 10 |
 | Surface | [Sand](blocks.md#block-qtcraft-sand) |
 | Below the surface | [Sand](blocks.md#block-qtcraft-sand) (4 blocks) |
@@ -66,7 +66,7 @@ A rare, sheltered valley in temperate land: a broad grassy floor between low hil
 | | |
 |---|---|
 | ID | `qtcraft:flower_valley` |
-| Climate | temperature 0.55, humidity 0.5, ruggedness 0.1 |
+| Climate | temperature 0.55, humidity 0.61, ruggedness 0.2 |
 | Rarity | 1 (only in scattered spots where the climate fits) |
 | Terrain height | around y 62.5, ± 3 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
@@ -97,7 +97,7 @@ Dense oaks and birches with mushrooms in the shade.
 | | |
 |---|---|
 | ID | `qtcraft:forest` |
-| Climate | temperature 0.62, humidity 0.68, ruggedness 0.2 |
+| Climate | temperature 0.44, humidity 0.73, ruggedness 0.2 |
 | Terrain height | around y 71, ± 18 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -120,6 +120,36 @@ Dense oaks and birches with mushrooms in the shade.
 
 [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-forest_steppe"></a>Forest Steppe
+
+Warm, dry grassland between the plains and the desert: tall grass with scattered oaks and oak bushes, dry shrubs here and there. Plains villages stand here too.
+
+| | |
+|---|---|
+| ID | `qtcraft:forest_steppe` |
+| Climate | temperature 0.71, humidity 0.3, ruggedness 0.2 |
+| Terrain height | around y 69, ± 8 |
+| Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
+| Under water | [Sand](blocks.md#block-qtcraft-sand) |
+| Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Plants and trees**
+
+[Dry shrub](worldgen.md#feature-qtcraft-dry_shrub) (0.6 % of columns), [Oak bush](worldgen.md#feature-qtcraft-oak_bush) (0.8 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.4 % of columns), [Pumpkins](worldgen.md#feature-qtcraft-pumpkin_patch) (0.1 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (10 % of columns)
+
+**Grasses**
+
+[Tall grass](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Flowers**
+
+[Dandelion](blocks.md#block-qtcraft-dandelion) (75 %), [Poppy](blocks.md#block-qtcraft-poppy) (25 %)
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-jungle"></a>Jungle
 
 Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temples hide in it.
@@ -127,7 +157,7 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 | | |
 |---|---|
 | ID | `qtcraft:jungle` |
-| Climate | temperature 0.95, humidity 0.62, ruggedness 0.2 |
+| Climate | temperature 1, humidity 0.58, ruggedness 0.2 |
 | Terrain height | around y 70, ± 14 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -145,6 +175,36 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 **Flowers**
 
 [Poppy](blocks.md#block-qtcraft-poppy) (100 %)
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-jungle_edge"></a>Jungle Edge
+
+The thin edge of the jungle towards temperate forests: single jungle trees, many jungle bushes, ferns and melons, but no giant jungle trees.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_edge` |
+| Climate | temperature 0.77, humidity 0.49, ruggedness 0.2 |
+| Terrain height | around y 69, ± 12 |
+| Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
+| Under water | [Dirt](blocks.md#block-qtcraft-dirt) |
+| Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Plants and trees**
+
+[Jungle bush](worldgen.md#feature-qtcraft-jungle_bush) (2.5 % of columns), [Jungle tree](worldgen.md#feature-qtcraft-jungle_tree) (1 % of columns), [Melons](worldgen.md#feature-qtcraft-melon_patch) (0.3 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.3 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+
+**Grasses**
+
+[Tall grass](blocks.md#block-qtcraft-tall_grass) (75 %), [Fern](blocks.md#block-qtcraft-fern) (25 %)
+
+**Flowers**
+
+[Poppy](blocks.md#block-qtcraft-poppy) (66.67 %), [Dandelion](blocks.md#block-qtcraft-dandelion) (33.33 %)
 
 **Creatures**
 
@@ -189,7 +249,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 | | |
 |---|---|
 | ID | `qtcraft:plains` |
-| Climate | temperature 0.58, humidity 0.32, ruggedness 0.2 |
+| Climate | temperature 0.52, humidity 0.3, ruggedness 0.2 |
 | Terrain height | around y 68, ± 7 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -212,6 +272,30 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-snowy_taiga"></a>Snowy Taiga
+
+Cold spruce forest on snow between the tundra and the taiga: fewer and smaller trees than in the taiga, now and then a giant spruce, frozen lakes and no grass.
+
+| | |
+|---|---|
+| ID | `qtcraft:snowy_taiga` |
+| Climate | temperature 0.08, humidity 0.7, ruggedness 0.2 |
+| Terrain height | around y 71, ± 16 |
+| Surface | [Snow block](blocks.md#block-qtcraft-snow_block) |
+| Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
+| Under water | [Gravel](blocks.md#block-qtcraft-gravel) |
+| Beaches | [Gravel](blocks.md#block-qtcraft-gravel) |
+| Steep slopes | [Stone](blocks.md#block-qtcraft-stone) (drops of 4+ blocks) |
+| Frozen water | [Ice](blocks.md#block-qtcraft-ice) |
+
+**Plants and trees**
+
+[Giant spruce](worldgen.md#feature-qtcraft-giant_spruce_tree) (0.05 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (1.4 % of columns)
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
 Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand on stilts in the water.
@@ -219,7 +303,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 | | |
 |---|---|
 | ID | `qtcraft:swamp` |
-| Climate | temperature 0.8, humidity 0.9, ruggedness 0.2 |
+| Climate | temperature 0.94, humidity 0.88, ruggedness 0.2 |
 | Terrain height | around y 63, ± 2 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -249,7 +333,7 @@ Cool spruce forest with snow on the ground.
 | | |
 |---|---|
 | ID | `qtcraft:taiga` |
-| Climate | temperature 0.15, humidity 0.72, ruggedness 0.2 |
+| Climate | temperature 0.15, humidity 0.73, ruggedness 0.2 |
 | Terrain height | around y 72, ± 20 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -277,7 +361,7 @@ Cold flat land under snow; its water freezes.
 | | |
 |---|---|
 | ID | `qtcraft:tundra` |
-| Climate | temperature 0.08, humidity 0.3, ruggedness 0.2 |
+| Climate | temperature 0.05, humidity 0.3, ruggedness 0.2 |
 | Terrain height | around y 68, ± 9 |
 | Surface | [Snow block](blocks.md#block-qtcraft-snow_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |

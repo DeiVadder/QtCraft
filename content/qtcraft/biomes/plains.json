@@ -1,7 +1,7 @@
 {
     "name": "plains",
-    "temperature": 0.58,
-    "humidity": 0.32,
+    "temperature": 0.52,
+    "humidity": 0.3,
     "baseHeight": 68,
     "heightVariation": 7,
     "surface": "grass_block",

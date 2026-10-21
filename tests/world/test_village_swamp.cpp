@@ -167,6 +167,62 @@ private:
         return std::nullopt;
     }
 
+    // The flat wetland of a village (shaped columns at or below the water surface), counted.
+    struct WetlandCensus
+    {
+        // Columns of the open wetland (off pieces and boardwalks) per cover.
+        std::map<QcWetlandPattern::Cover, int> open;
+        int all = 0;
+        // Columns under water: pools and ground below the water surface.
+        int water = 0;
+        // Open mud below the water surface: ground too deep to raise near the blend's end.
+        int deepened = 0;
+        // Ground below the water surface under pieces and boardwalks, where the terrain lies deeper
+        // than the blend raises it (decision E-660).
+        int deepUnderneath = 0;
+        // Pools of the pattern under pieces and boardwalks (there must be none).
+        QStringList poolsUnderneath;
+
+        // Counts a column at or below the water surface; `raised` whether the blend raised its
+        // ground as far as it could (to the water surface or above the terrain).
+        void add(QcBlockPos column, QcWetlandPattern::Cover cover, bool underneath, bool raised, int waterSurface)
+        {
+            const bool pool = cover == QcWetlandPattern::Cover::Water || cover == QcWetlandPattern::Cover::DeepWater;
+            const bool wet = pool || column.y < waterSurface;
+            ++all;
+            water += wet ? 1 : 0;
+            if (underneath) {
+                if (pool || !raised) {
+                    poolsUnderneath.append(u"%1 %2"_s.arg(column.x).arg(column.z));
+                }
+                deepUnderneath += wet ? 1 : 0;
+            } else if (column.y < waterSurface && cover == QcWetlandPattern::Cover::Mud) {
+                ++deepened;
+            } else {
+                ++open[cover];
+            }
+        }
+    };
+
+    WetlandCensus wetlandCensus(const QcVillagePlan &plan) const
+    {
+        const QcWetlandShaper &shaper = m_generator.villages().wetland();
+        const int waterSurface = m_generator.seaLevel() - 1;
+        WetlandCensus census;
+        for (int z = plan.minZ; z <= plan.maxZ; ++z) {
+            for (int x = plan.minX; x <= plan.maxX; ++x) {
+                const std::optional<QcWetlandShaper::Column> column = shaper.columnAt(plan, x, z);
+                if (!column || column->top > waterSurface) {
+                    continue;
+                }
+                const bool underneath = std::ranges::any_of(plan.wetland.wet, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
+                const bool raised = column->top == waterSurface || column->top > m_generator.column(x, z).height - 1;
+                census.add({x, column->top, z}, column->cover, underneath, raised, waterSurface);
+            }
+        }
+        return census;
+    }
+
 private slots:
     void swampVillagesStandInSwamps()
     {
@@ -337,23 +393,32 @@ private slots:
 
     void theWetlandBlendsIntoTheTerrain_data()
     {
-        QTest::addColumn<int>("rings");
-        QTest::newRow("rings 14") << rings;
-        // Seed 42 within 16 rings: a village beside a mountain (x 1640..1718, z -6041..-5981, the
-        // terrain up to y 94) whose wetland once cut a pit with steps of 6 blocks (decision E-660).
-        QTest::newRow("rings 16, village beside a mountain") << 16;
+        QTest::addColumn<qint64>("seed");
+        QTest::addColumn<int>("regionX");
+        QTest::addColumn<int>("regionZ");
+        QTest::newRow("rings 14") << seed << 0 << 0;
+        // Seed 20261017: a village beside a hill (x 9007..9096, z 5502..5564, the terrain up to
+        // y 83); a wetland beside high ground once cut a pit with steps of 6 blocks (decision E-660).
+        const int spacing = m_generator.villages().spacing();
+        QTest::newRow("village beside a hill") << qint64(20261017) << 9050 / spacing << 5530 / spacing;
     }
 
     void theWetlandBlendsIntoTheTerrain()
     {
-        QFETCH(int, rings);
-        const QcWetlandShaper &shaper = m_generator.villages().wetland();
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = rings == TestVillageSwamp::rings ? swampPlans() : swampPlansOf(plansAround(m_generator, rings));
+        QFETCH(qint64, seed);
+        QFETCH(int, regionX);
+        QFETCH(int, regionZ);
+        const QcTerrainGenerator other(m_content, seed);
+        const QcTerrainGenerator &generator = seed == TestVillageSwamp::seed ? m_generator : other;
+        const std::shared_ptr<const QcVillagePlan> beside = seed == TestVillageSwamp::seed ? nullptr : generator.villages().regionPlan(regionX, regionZ);
+        QVERIFY(seed == TestVillageSwamp::seed || (beside && beside->style == u"qtcraft:swamp"_s));
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = beside ? QList{beside} : swampPlans();
+        const QcWetlandShaper &shaper = generator.villages().wetland();
         int shaped = 0;
         int steepest = 0;
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             QVERIFY(plan->wetland.settings.bottom == block(u"mud"_s));
-            const auto ground = [&](int x, int z) { return m_generator.column(x, z).height - 1; };
+            const auto ground = [&](int x, int z) { return generator.column(x, z).height - 1; };
             const auto height = [&](int x, int z) { return shaper.groundAt(*plan, x, z).value_or(ground(x, z)); };
             const auto dry = [&](int x, int z) {
                 return std::ranges::any_of(plan->wetland.dry, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
@@ -363,7 +428,7 @@ private slots:
                     const int here = height(x, z);
                     shaped += here != ground(x, z) ? 1 : 0;
                     // Never above the water surface where the ground was raised, never higher than it was.
-                    QVERIFY(here <= std::max(ground(x, z), m_generator.seaLevel() - 1));
+                    QVERIFY(here <= std::max(ground(x, z), generator.seaLevel() - 1));
                     // No cliff into the neighbouring terrain: a step at most a block steeper than the
                     // terrain's own, at most 2 on flat ground (a pool's edge); the land access keeps its sides.
                     for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{0, 1}}) {
@@ -386,47 +451,30 @@ private slots:
     {
         // Over the flat wetland (shaped columns at or below the water surface): pools of water over
         // the style's share of the open ground, mud under pieces and boardwalks (decision E-661).
-        const QcWetlandShaper &shaper = m_generator.villages().wetland();
-        const int waterSurface = m_generator.seaLevel() - 1;
         double shares = 0.0;
         int villages = 0;
+        int deepUnderneath = 0;
         for (const std::shared_ptr<const QcVillagePlan> &plan : swampPlans()) {
-            std::map<QcWetlandPattern::Cover, int> open;
-            int all = 0;
-            int water = 0;
-            int deepened = 0;
-            for (int z = plan->minZ; z <= plan->maxZ; ++z) {
-                for (int x = plan->minX; x <= plan->maxX; ++x) {
-                    const std::optional<QcWetlandShaper::Column> column = shaper.columnAt(*plan, x, z);
-                    if (!column || column->top > waterSurface) {
-                        continue;
-                    }
-                    const bool wet = column->cover == QcWetlandPattern::Cover::Water || column->cover == QcWetlandPattern::Cover::DeepWater
-                                     || column->top < waterSurface;
-                    const bool underneath = std::ranges::any_of(plan->wetland.wet, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
-                    QVERIFY2(!wet || !underneath, qPrintable(u"pool under a piece or boardwalk at %1 %2"_s.arg(x).arg(z)));
-                    ++all;
-                    water += wet ? 1 : 0;
-                    if (!underneath && column->top < waterSurface && column->cover == QcWetlandPattern::Cover::Mud) {
-                        // Ground too deep to raise to the water surface near the blend's end.
-                        ++deepened;
-                    } else if (!underneath) {
-                        ++open[column->cover];
-                    }
-                }
-            }
-            int openAll = deepened;
-            for (const auto &[cover, count] : open) {
+            WetlandCensus census = wetlandCensus(*plan);
+            QVERIFY2(census.poolsUnderneath.isEmpty(), qPrintable(u"pool under a piece or boardwalk at "_s + census.poolsUnderneath.mid(0, 8).join(u", "_s)));
+            deepUnderneath += census.deepUnderneath;
+
+            // The pools' share of the open flat wetland; ground the blend could not raise is the
+            // terrain's water, not the pattern's (some villages stand at a lake's shore).
+            int openAll = 0;
+            for (const auto &[cover, count] : census.open) {
                 openAll += count;
             }
-            const int openWater = open[QcWetlandPattern::Cover::Water] + open[QcWetlandPattern::Cover::DeepWater] + deepened;
+            const int openWater = census.open[QcWetlandPattern::Cover::Water] + census.open[QcWetlandPattern::Cover::DeepWater];
             const double share = double(openWater) / std::max(1, openAll);
-            qInfo("village %d %d: water %.0f %% of the open wetland (%d columns), %.0f %% of all (%d), mud %d, grass %d", plan->minX, plan->minZ,
-                  100.0 * share, openAll, 100.0 * water / std::max(1, all), all, open[QcWetlandPattern::Cover::Mud], open[QcWetlandPattern::Cover::Grass]);
-            QVERIFY(open[QcWetlandPattern::Cover::Mud] > 0 && open[QcWetlandPattern::Cover::Grass] > 0);
+            qInfo("village %d %d: water %.0f %% of the open wetland (%d columns), %.0f %% of all (%d), mud %d, grass %d, deepened %d", plan->minX,
+                  plan->minZ, 100.0 * share, openAll, 100.0 * census.water / std::max(1, census.all), census.all, census.open[QcWetlandPattern::Cover::Mud],
+                  census.open[QcWetlandPattern::Cover::Grass], census.deepened);
+            QVERIFY(census.open[QcWetlandPattern::Cover::Mud] > 0 && census.open[QcWetlandPattern::Cover::Grass] > 0);
             shares += share;
             ++villages;
         }
+        qInfo("%d columns under pieces and boardwalks below the water surface", deepUnderneath);
         QVERIFY(villages >= 3);
         const double mean = shares / villages;
         QVERIFY2(mean >= 0.3 && mean <= 0.5, qPrintable(QString::number(mean)));
@@ -439,7 +487,7 @@ private slots:
         const QcBlockId water = block(u"water"_s);
         const int waterSurface = m_generator.seaLevel() - 1;
         int pools = 0;
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans().mid(0, 3);
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans();
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             const Chunks &chunks = built(*plan);
             for (int z = plan->minZ; z <= plan->maxZ; ++z) {
@@ -472,7 +520,7 @@ private slots:
         const int waterSurface = m_generator.seaLevel() - 1;
         int pools = 0;
         int lilies = 0;
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans().mid(0, 3);
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans();
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             const Chunks &chunks = built(*plan);
             for (int z = plan->minZ; z <= plan->maxZ; ++z) {
@@ -493,7 +541,7 @@ private slots:
     void builtTheSameInAnyOrder()
     {
         // Three villages: wetland, stilts, boardwalks and stairs written chunk by chunk.
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans().mid(0, 3);
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = swampPlans();
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
             const QList<QcChunkPos> positions = chunksOf(*plan);
             const Chunks &first = built(*plan);

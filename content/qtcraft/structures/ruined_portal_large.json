@@ -5,6 +5,7 @@
         "biomes": [
             "forest",
             "mountains",
+            "snowy_taiga",
             "taiga",
             "tundra"
         ],

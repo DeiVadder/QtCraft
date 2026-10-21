@@ -48,6 +48,7 @@ struct QcTerrainDefinitions
         double humidity = 0.5;
         double ruggedness = 0.2;
         double rarity = 0.0;
+        double spread = 0.0;
         double baseHeight = 68.0;
         double heightVariation = 6.0;
         double ridges = 0.0;

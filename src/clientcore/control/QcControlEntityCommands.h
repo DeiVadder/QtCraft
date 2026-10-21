@@ -32,7 +32,7 @@ private:
 
     void useEntity(const QJsonObject &request);
     // Why the use of the held item on the entity did not catch or feed it; empty when it did.
-    QString useEntityError(quint32 entityId, UseBefore before) const;
+    QString useEntityError(quint32 entityId, const UseBefore &before) const;
     void collect(const QJsonObject &request);
     // Gets into the minecart `request` names, or out of the one ridden (decision E-382).
     void ride(const QJsonObject &request);

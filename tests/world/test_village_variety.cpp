@@ -287,7 +287,9 @@ private slots:
             const int gapZ = std::max({0, hut.origin().z - near.z, near.z - (hut.origin().z + hut.sizeZ() - 1)});
             QVERIFY2(gapX + gapZ <= 12, qPrintable(u"jetty %1 blocks from its hut"_s.arg(gapX + gapZ)));
         }
-        QVERIFY2(huts >= 2, qPrintable(u"%1 huts"_s.arg(huts)));
+        // The rule needs water within a few blocks of a road end: one hut in this sample since the
+        // climate order (decision E-824), two before.
+        QVERIFY2(huts >= 1, qPrintable(u"%1 huts"_s.arg(huts)));
 
         // Built: the jetty's far end stands in the water on posts reaching the ground (a village on
         // land; over water the decks are boardwalks).

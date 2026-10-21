@@ -144,7 +144,7 @@ private slots:
         // Both mods' biomes, once each, the crop and the layout; the rest as the base has it.
         const QcVillageStyleDefinition *plains = loaded.content->villageCatalog().style(u"qtcraft:plains"_s);
         QVERIFY(plains);
-        QCOMPARE(plains->biomes, (QStringList{u"qtcraft:plains"_s, u"qtcraft:forest"_s, u"qtcraft:birch_forest"_s}));
+        QCOMPARE(plains->biomes, (QStringList{u"qtcraft:plains"_s, u"qtcraft:forest_steppe"_s, u"qtcraft:forest"_s, u"qtcraft:birch_forest"_s}));
         QCOMPARE(plains->crops.constLast().block, u"qtcraft:pumpkin_stem"_s);
         QCOMPARE(plains->crops.size(), 4);
         QCOMPARE(plains->layouts.size(), 7);
@@ -231,7 +231,7 @@ private slots:
         QVERIFY(content.villageCatalog().style(u"copies:copy"_s)->biomes.isEmpty());
         QVERIFY(!content.villageCatalog().style(u"copies:copy"_s)->fallback);
         QVERIFY(content.villageCatalog().style(u"qtcraft:plains"_s)->fallback);
-        QCOMPARE(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes, QStringList{u"qtcraft:plains"_s});
+        QCOMPARE(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes, (QStringList{u"qtcraft:plains"_s, u"qtcraft:forest_steppe"_s}));
 
         // `remove` moves the desert from its base style to the mod's.
         QVERIFY(content.villageCatalog().style(u"qtcraft:desert"_s)->biomes.isEmpty());
@@ -253,7 +253,8 @@ private slots:
         QVERIFY(anyContains(loaded.warnings, u"'qtcraft:plains' and 'first:meadow' are both the fallback; 'first:meadow'"_s));
         QVERIFY(anyContains(loaded.warnings, u"village style 'qtcraft:taiga': unknown biome 'qtcraft:moon'"_s));
         QCOMPARE(content.villageCatalog().style(u"qtcraft:taiga"_s)->biomes, (QStringList{u"qtcraft:taiga"_s, u"qtcraft:plains"_s, u"qtcraft:moon"_s}));
-        QVERIFY(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes.isEmpty());
+        // The plains style keeps only its other biome.
+        QCOMPARE(content.villageCatalog().style(u"qtcraft:plains"_s)->biomes, QStringList{u"qtcraft:forest_steppe"_s});
         QVERIFY(content.villageCatalog().style(u"first:meadow"_s)->biomes.isEmpty());
         QVERIFY(content.villageCatalog().style(u"first:meadow"_s)->fallback);
         QVERIFY(!content.villageCatalog().style(u"qtcraft:plains"_s)->fallback);

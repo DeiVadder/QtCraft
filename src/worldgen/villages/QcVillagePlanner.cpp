@@ -6,6 +6,7 @@
 #include "worldgen/villages/QcVillageRoads.h"
 
 #include <algorithm>
+#include <array>
 
 using namespace Qt::StringLiterals;
 
@@ -13,6 +14,8 @@ namespace {
 
 // Pieces keep this many blocks to the region's edge besides the radius.
 constexpr int regionMargin = 8;
+// How far the bell in the meeting point may lie from the chosen centre.
+constexpr int centreReach = 8;
 
 } // namespace
 
@@ -58,6 +61,19 @@ const QcVillageStyle *QcVillagePlanner::styleAt(int x, int z) const
     return style;
 }
 
+bool QcVillagePlanner::villageBiomeAround(int x, int z) const
+{
+    static constexpr std::array<std::array<int, 2>, 4> corners{{{-1, -1}, {1, -1}, {-1, 1}, {1, 1}}};
+    for (const auto &[sx, sz] : corners) {
+        const QcTerrainColumn column = m_terrain.column(x + sx * centreReach, z + sz * centreReach);
+        const QcBiomeDefinition *biome = m_content.worldgen().biome(m_terrain.biomeName(column.biome));
+        if (!biome || !biome->villages) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool QcVillagePlanner::isFlatAround(const QcVillageStyle &style, int x, int z) const
 {
     const int reach = m_settings.radius / 2 / flatnessStep * flatnessStep;
@@ -96,7 +112,7 @@ std::optional<QcVillageDraft::Centre> QcVillagePlanner::chooseCentre(int regionX
         const int x = regionX * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -1 - 2 * attempt, regionZ) * room);
         const int z = regionZ * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -2 - 2 * attempt, regionZ) * room);
         const QcVillageStyle *style = styleAt(x, z);
-        if (!style || (chosen && !style->overWater)) {
+        if (!style || (chosen && !style->overWater) || !villageBiomeAround(x, z)) {
             continue;
         }
         const std::optional<int> wet = style->overWater ? wetAround(*style, x, z) : std::nullopt;

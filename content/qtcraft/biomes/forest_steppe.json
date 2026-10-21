@@ -1,0 +1,60 @@
+{
+    "name": "forest_steppe",
+    "temperature": 0.71,
+    "humidity": 0.3,
+    "baseHeight": 69,
+    "heightVariation": 8,
+    "surface": "grass_block",
+    "villages": true,
+    "subsurface": "dirt",
+    "underwater": "sand",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "oak_tree",
+            "density": 0.004
+        },
+        {
+            "feature": "oak_bush",
+            "density": 0.008
+        },
+        {
+            "feature": "dry_shrub",
+            "density": 0.006
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.1
+        },
+        {
+            "feature": "pumpkin_patch",
+            "density": 0.001
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.5,
+            "patchSize": 24,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.008,
+            "patchSize": 14,
+            "plants": [
+                {
+                    "block": "dandelion",
+                    "weight": 3
+                },
+                {
+                    "block": "poppy",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

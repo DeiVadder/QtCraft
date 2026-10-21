@@ -38,7 +38,8 @@ public:
     // Shapes the chunk's columns of the plan's wetland, before the village is built into it: lowered
     // ground is removed (water up to the water surface, air above), raised ground filled with the
     // bottom, the top block is the bottom under water and on mud, else the terrain's surface block;
-    // the style's plant grows on some columns beside the pools.
+    // cave air from the water surface down to below the deepest pool is filled with the bottom; the
+    // style's plant grows on some columns beside the pools.
     void shape(QcChunk &chunk, const QcVillagePlan &plan) const;
 
 private:
@@ -50,7 +51,7 @@ private:
     // Whether a pool may be cut at the column: none of its sides lies above the water surface.
     [[nodiscard]] bool poolFits(const QcVillagePlan &plan, int x, int z) const;
     // Shapes one column: `local` is the column in the chunk with y the terrain ground's top block.
-    void shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, QcBlockId bottom) const;
+    void shapeColumn(QcChunk &chunk, QcBlockPos local, Column column, const QcVillageStyle::Wetland &settings) const;
     // The style's plant on a column at the water surface beside a pool, where it grows, and its
     // floating plant on the water of a pool column.
     void plant(QcChunk &chunk, QcBlockPos local, const QcVillagePlan &plan) const;

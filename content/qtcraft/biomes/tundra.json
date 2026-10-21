@@ -1,6 +1,6 @@
 {
     "name": "tundra",
-    "temperature": 0.08,
+    "temperature": 0.05,
     "humidity": 0.3,
     "baseHeight": 68,
     "heightVariation": 9,

@@ -2457,6 +2457,23 @@ Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 3
 
 Unter der 10-%-Schwelle. Mehr Blöcke je Chunk in Taiga und Dschungel (Riesen, dichtere Dschungelbäume, Ranken) kosten beim Übernehmen und Senden der Chunks; die Ranken prüfen beim Laden ihren Halt (`blockUpdates`). Eine erste Messung (gegen `dev` `7ae232b`) zeigte +6,9 % Tick und `items` 0,0003 → 0,0060 ms: bis zu 114 Ranken fielen als Items ab, weil eine Ranke an einem Laubplatz hing, den schon die Ranke eines anderen Baums belegte (das Laub wurde dort nicht gesetzt). Seitdem ersetzt Laub fremde Ranken (`QcTreeShape::buildInChunk`, `test_giant_trees::generatedVinesHoldOn`), und es fallen keine Items mehr ab.
 
+
+## Etappe 66 (Klima-Ordnung, Übergangsbiome), headless, Release (2026-10-21)
+
+`scripts/bench-headless.sh`, `@server` (crowd, gravel-collapse, farm, farm-seeds, explore, drei Signal-Stationen der Showcase), 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, keine Szene nahe der Schwelle), `dev` `156d786` (`pre`) gegen `feature/66-climate-order` (`new`, E-824, E-825). Lastmittel während der Reihe 3,7–5,5. Mittelwerte der Runden:
+
+| Wert | pre | new |
+|---|---:|---:|
+| explore Tick Ø (ms) | 0,2467 | 0,2433 (−1,4 %) |
+| explore Tick p99 (ms) | 1,159 | 1,132 (−2,3 %) |
+| explore Spitzenspeicher (MB) | 71,4 | 71,6 (+0,3 %) |
+| explore `chunkLoading` Ø (ms) | 0,0619 | 0,0617 |
+| explore `streaming` Ø (ms) | 0,1094 | 0,1073 |
+| crowd Tick Ø (ms) | 0,166 | 0,132 (−20 %) |
+| übrige Szenen Tick Ø | | ±3 % |
+
+Die Menge in `crowd` hängt von der Welt ab: in der neuen Welt stehen dort 90 statt 110 Wesen, daher der kürzere Tick (keine Änderung am Wesen-Code). Die Erzeugung der Chunks läuft im Pool und steht nicht im Tick; eigens gemessen (Release, `QcTerrainGenerator::generate` für 4 Seeds × 3 Felder von 24 × 24 Chunks, zweimal abwechselnd): dev 0,813 ms je Chunk, neu 0,828 ms (+1,7 %; zwei Biome mehr in der Klimawahl, Eichenbüsche und Gestrüpp). Unter der 10-%-Schwelle.
+
 ## Paket 68.1 (Daten je Item-Stapel), headless, Release (2026-10-21)
 
 `scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `35cbdda`, `new` = Branch `feature/68-backpack` mit 24-Byte-Stapeln und Kennbit auf der Leitung (E-823); Median je Szenario:

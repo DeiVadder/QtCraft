@@ -7,6 +7,9 @@
     "biome.qtcraft.plains.description": "Open grassland with flowers and few trees; pigs and sheep graze here.",
     "biome.qtcraft.swamp.description": "Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand on stilts in the water.",
     "biome.qtcraft.taiga.description": "Cool spruce forest with snow on the ground.",
+    "biome.qtcraft.snowy_taiga.description": "Cold spruce forest on snow between the tundra and the taiga: fewer and smaller trees than in the taiga, now and then a giant spruce, frozen lakes and no grass.",
+    "biome.qtcraft.forest_steppe.description": "Warm, dry grassland between the plains and the desert: tall grass with scattered oaks and oak bushes, dry shrubs here and there. Plains villages stand here too.",
+    "biome.qtcraft.jungle_edge.description": "The thin edge of the jungle towards temperate forests: single jungle trees, many jungle bushes, ferns and melons, but no giant jungle trees.",
     "biome.qtcraft.tundra.description": "Cold flat land under snow; its water freezes.",
     "block.qtcraft.allium.description": "A purple ball of blossoms on meadows and mountains; gives magenta dye.",
     "block.qtcraft.orange_tulip.description": "An orange tulip of the flower valleys; gives orange dye.",
@@ -1318,6 +1321,8 @@
     "block.qtcraft.jungle_trapdoor.description": "A hatch that opens upwards; sits high or low in its block.",
     "block.qtcraft.jungle_sign.description": "A sign of jungle wood.",
     "feature.qtcraft.jungle_bush": "Jungle bush",
+    "feature.qtcraft.oak_bush": "Oak bush",
+    "feature.qtcraft.dry_shrub": "Dry shrub",
     "feature.qtcraft.giant_spruce_tree": "Giant spruce",
     "feature.qtcraft.giant_jungle_tree": "Giant jungle tree"
 }

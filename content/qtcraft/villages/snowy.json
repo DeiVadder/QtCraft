@@ -2,7 +2,8 @@
     "formatVersion": 1,
     "name": "snowy",
     "biomes": [
-        "tundra"
+        "tundra",
+        "snowy_taiga"
     ],
     "centre": "village_plains_well",
     "lamp": "village_plains_lamp",

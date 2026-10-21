@@ -143,8 +143,8 @@ private slots:
         const double plainsHeight = double(total.plainsHeight) / total.plains;
         qInfo("flower valley %.4f of the land (%d samples, %d in ponds), height %.1f against plains %.1f", share, total.valley,
               total.ponds, valleyHeight, plainsHeight);
-        // Measured: 0.031 of the land (0.027-0.034 per seed), 4 % of the valley in ponds, 66.0 against
-        // 68.8 blocks.
+        // Measured: 0.024 of the land (0.021-0.030 per seed), 5 % of the valley in ponds, 67.3 against
+        // 68.7 blocks.
         QVERIFY2(share > 0.02 && share < 0.045, qPrintable(QString::number(share)));
         QCOMPARE(seedsWithValleys, 4);
         // Only in the spots of the rarity map.
@@ -190,8 +190,11 @@ private slots:
                     different += same ? 0 : 1;
                 }
             }
+            qInfo("seed %lld: %.3f of the samples in the spots", qlonglong(seed), double(inside) / (inside + outside));
             QVERIFY2(inside > 0, qPrintable(QString::number(seed)));
-            QVERIFY2(outside > 4 * inside, qPrintable(u"%1 %2"_s.arg(outside).arg(inside)));
+            // The spots cover about a third of the samples (0.35 on both seeds, decision E-824), most
+            // of it where the valley loses to the climate's own biome.
+            QVERIFY2(outside > inside, qPrintable(u"%1 %2"_s.arg(outside).arg(inside)));
             QCOMPARE(different, 0);
         }
     }

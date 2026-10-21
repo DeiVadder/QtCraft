@@ -5,6 +5,7 @@
         "biomes": [
             "birch_forest",
             "desert",
+            "forest_steppe",
             "plains",
             "swamp",
             "taiga"

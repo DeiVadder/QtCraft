@@ -38,8 +38,9 @@ private:
         qsizetype asleep = 0;
     };
 
-    // The `count` villages nearest to the origin, ring by ring of regions.
-    QList<std::shared_ptr<const QcVillagePlan>> villages(int count) const
+    // The `count` villages nearest to the origin, ring by ring of regions; only those of `style`
+    // unless it is empty.
+    QList<std::shared_ptr<const QcVillagePlan>> villages(int count, const QString &style) const
     {
         const QcTerrainGenerator generator(m_content, seed);
         QList<std::shared_ptr<const QcVillagePlan>> plans;
@@ -49,7 +50,8 @@ private:
                     if (std::max(std::abs(rx), std::abs(rz)) != ring) {
                         continue;
                     }
-                    if (std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz)) {
+                    std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz);
+                    if (plan && (style.isEmpty() || plan->style == style)) {
                         plans.append(std::move(plan));
                     }
                 }
@@ -114,16 +116,16 @@ private:
         return {sum / double(times.size()), times[qsizetype(double(times.size() - 1) * 0.99)], times.last(), asleep};
     }
 
-    // A server on seed 42 with the `count` villages nearest to the origin loaded, only their
-    // villagers alive.
-    QList<std::shared_ptr<const QcVillagePlan>> startWith(int count)
+    // A server on seed 42 with the `count` villages (of `style`, unless empty) nearest to the origin
+    // loaded, only their villagers alive.
+    QList<std::shared_ptr<const QcVillagePlan>> startWith(int count, const QString &style = {})
     {
         QcServerConfig config;
         config.seed = seed;
         config.keepChunksLoaded = true;
         join(config, std::make_unique<QcTerrainGenerator>(m_content, seed));
         chat(u"/gamerule weatherCycle false"_s);
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = villages(count);
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = villages(count, style);
         loadVillages(plans);
         chat(u"/gamerule mobSpawning false"_s);
         removeCreatures([](const QcCreature &mob) { return mob.isVillager(); });
@@ -194,12 +196,11 @@ private slots:
 
     void theSwampVillageSleepsAtMidnight()
     {
-        // The village nearest to the origin stands on boardwalks over a swamp (around 555, -214):
-        // a whole day from sunrise (wandering, work, the meeting at the bell, the evening home) to
-        // midnight; none stays in the water it fell into, none is stuck at a door, all are in bed.
-        const QList<std::shared_ptr<const QcVillagePlan>> plans = startWith(1);
+        // The swamp village nearest to the origin stands on boardwalks over a swamp: a whole day
+        // from sunrise (wandering, work, the meeting at the bell, the evening home) to midnight;
+        // none stays in the water it fell into, none is stuck at a door, all are in bed.
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = startWith(1, u"qtcraft:swamp"_s);
         QCOMPARE(plans.size(), 1);
-        QCOMPARE(plans.front()->style, u"qtcraft:swamp"_s);
         const qsizetype villagers = m_server->mobs().mobs().size();
         QVERIFY(villagers >= 10);
 

@@ -90,8 +90,8 @@ private:
     }
 
     // A fresh generator plans the same in the other order of the regions; each copy lies wholly in
-    // its region, with the rule's biome along its edges and in its middle.
-    void verifyPlans(const QList<std::shared_ptr<const QcStructurePlacement>> &found, int kind, const QString &biome) const
+    // its region, with one of the rule's biomes along its edges and in its middle.
+    void verifyPlans(const QList<std::shared_ptr<const QcStructurePlacement>> &found, int kind, const QStringList &biomes) const
     {
         const QcTerrainGenerator fresh(m_content, seed);
         for (qsizetype i = found.size() - 1; i >= 0; --i) {
@@ -106,7 +106,8 @@ private:
             QCOMPARE(qcFloorDiv(plan.origin().z + plan.sizeZ() - 1, spacing), rz);
             for (const auto &[dx, dz] : {std::pair{0, 0}, {plan.sizeX() - 1, plan.sizeZ() - 1}, {plan.sizeX() / 2, plan.sizeZ() / 2}, {0, plan.sizeZ() - 1},
                                          {plan.sizeX() - 1, 0}}) {
-                QCOMPARE(m_terrain->biomeAt(plan.origin().x + dx, plan.origin().z + dz), biome);
+                const QString biome = m_terrain->biomeAt(plan.origin().x + dx, plan.origin().z + dz);
+                QVERIFY2(biomes.contains(biome), qPrintable(biome));
             }
         }
     }
@@ -148,8 +149,8 @@ private slots:
 
     void plansAreDeterministicAndInTheirBiome()
     {
-        verifyPlans(m_temples, m_temple, u"qtcraft:jungle"_s);
-        verifyPlans(m_huts, m_hut, u"qtcraft:swamp"_s);
+        verifyPlans(m_temples, m_temple, {u"qtcraft:jungle"_s, u"qtcraft:jungle_edge"_s});
+        verifyPlans(m_huts, m_hut, {u"qtcraft:swamp"_s});
         // Another seed plans elsewhere.
         const QcTerrainGenerator other(m_content, seed + 1);
         const QList<std::shared_ptr<const QcStructurePlacement>> otherTemples = plans(other, m_temple);

@@ -34,7 +34,8 @@
             "forest",
             "birch_forest",
             "taiga",
-            "tundra"
+            "tundra",
+            "snowy_taiga"
         ],
         "maxGroup": 4,
         "weight": 1

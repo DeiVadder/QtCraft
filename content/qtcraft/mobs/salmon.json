@@ -19,7 +19,8 @@
         "biomes": [
             "taiga",
             "tundra",
-            "mountains"
+            "mountains",
+            "snowy_taiga"
         ],
         "maxGroup": 4,
         "weight": 3

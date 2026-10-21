@@ -6,7 +6,9 @@
     "hardness": 0.0,
     "replaceable": true,
     "ground": [
-        "sand"
+        "sand",
+        "grass_block",
+        "dirt"
     ],
     "washable": true,
     "drops": [

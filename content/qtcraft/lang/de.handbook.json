@@ -7,6 +7,9 @@
     "biome.qtcraft.plains.description": "Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe.",
     "biome.qtcraft.swamp.description": "Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer stehen auf Stelzen im Wasser.",
     "biome.qtcraft.taiga.description": "Kühler Fichtenwald mit Schnee am Boden.",
+    "biome.qtcraft.snowy_taiga.description": "Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere Bäume als in der Taiga, hin und wieder eine Riesenfichte, gefrorene Seen und kein Gras.",
+    "biome.qtcraft.forest_steppe.description": "Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelten Eichen und Eichenbüschen, hier und da trockenes Gestrüpp. Auch hier stehen Dörfer der Ebene.",
+    "biome.qtcraft.jungle_edge.description": "Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäume, viele Dschungelbüsche, Farne und Melonen, aber keine Dschungelriesen.",
     "biome.qtcraft.tundra.description": "Kaltes flaches Land unter Schnee; sein Wasser gefriert.",
     "block.qtcraft.allium.description": "Eine violette Blütenkugel auf Wiesen und im Gebirge; ergibt magentafarbenen Farbstoff.",
     "block.qtcraft.orange_tulip.description": "Eine orange Tulpe der Blumentäler; ergibt orangen Farbstoff.",
@@ -1318,6 +1321,8 @@
     "block.qtcraft.jungle_trapdoor.description": "Eine Klappe, die nach oben öffnet; sitzt oben oder unten im Block.",
     "block.qtcraft.jungle_sign.description": "Ein Schild aus Dschungelholz.",
     "feature.qtcraft.jungle_bush": "Dschungelbusch",
+    "feature.qtcraft.oak_bush": "Eichenbusch",
+    "feature.qtcraft.dry_shrub": "Trockenes Gestrüpp",
     "feature.qtcraft.giant_spruce_tree": "Riesenfichte",
     "feature.qtcraft.giant_jungle_tree": "Riesiger Dschungelbaum"
 }

@@ -3079,7 +3079,7 @@ A yellow flower; gives yellow dye.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Flowers), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Flowers), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-dead_bush"></a>Dead bush
 
@@ -3094,7 +3094,7 @@ A dry shrub of the desert; breaking it gives a stick or two.
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Replaced when building into it | yes |
-| Needs support | stands only on: [Sand](#block-qtcraft-sand) |
+| Needs support | stands only on: [Sand](#block-qtcraft-sand), [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
 | Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
@@ -3102,7 +3102,7 @@ A dry shrub of the desert; breaking it gives a stick or two.
 
 **Found in**
 
-[Desert](biomes.md#biome-qtcraft-desert) (Dead bushes)
+[Desert](biomes.md#biome-qtcraft-desert) (Dead bushes), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Dry shrub)
 
 ### <a id="block-qtcraft-detector_rail"></a>Detector Rail
 
@@ -3190,7 +3190,7 @@ Plain earth below the grass.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Below the surface, Under water), [Dirt veins](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Below the surface), [Forest](biomes.md#biome-qtcraft-forest) (Below the surface, Under water), [Jungle](biomes.md#biome-qtcraft-jungle) (Below the surface, Under water), [Mountains](biomes.md#biome-qtcraft-mountains) (Below the surface), [Plains](biomes.md#biome-qtcraft-plains) (Below the surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Below the surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Below the surface), [Tundra](biomes.md#biome-qtcraft-tundra) (Below the surface)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Below the surface, Under water), [Dirt veins](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Below the surface), [Forest](biomes.md#biome-qtcraft-forest) (Below the surface, Under water), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Below the surface), [Jungle](biomes.md#biome-qtcraft-jungle) (Below the surface, Under water), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Below the surface, Under water), [Mountains](biomes.md#biome-qtcraft-mountains) (Below the surface), [Plains](biomes.md#biome-qtcraft-plains) (Below the surface), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Below the surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Below the surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Below the surface), [Tundra](biomes.md#biome-qtcraft-tundra) (Below the surface)
 
 **Creatures appearing on it**
 
@@ -3305,7 +3305,7 @@ Grows in the shade of the taiga. Like tall grass, blocks placed into it replace 
 
 **Found in**
 
-[Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
+[Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
 
 ### <a id="block-qtcraft-fire"></a>Fire
 
@@ -3914,7 +3914,7 @@ Earth covered with grass, the surface of most land.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Jungle](biomes.md#biome-qtcraft-jungle) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Surface), [Jungle](biomes.md#biome-qtcraft-jungle) (Surface), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface)
 
 **Creatures appearing on it**
 
@@ -3945,7 +3945,7 @@ Loose stones that fall when nothing holds them. Now and then it drops a flint as
 
 **Found in**
 
-[Gravel veins](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Mountains](biomes.md#biome-qtcraft-mountains) (Under water, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Under water, Beaches), [Tundra](biomes.md#biome-qtcraft-tundra) (Under water)
+[Gravel veins](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Mountains](biomes.md#biome-qtcraft-mountains) (Under water, Beaches), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Under water, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Under water, Beaches), [Tundra](biomes.md#biome-qtcraft-tundra) (Under water)
 
 **Creatures appearing on it**
 
@@ -4504,7 +4504,7 @@ Covers the water of cold biomes. Slippery: whoever walks on it keeps sliding, an
 
 **Found in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Frozen water), [Tundra](biomes.md#biome-qtcraft-tundra) (Frozen water)
+[Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Frozen water), [Taiga](biomes.md#biome-qtcraft-taiga) (Frozen water), [Tundra](biomes.md#biome-qtcraft-tundra) (Frozen water)
 
 ### <a id="block-qtcraft-infested_cobblestone"></a>Infested cobblestone
 
@@ -4761,7 +4761,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 
 **Found in**
 
-[Jungle](biomes.md#biome-qtcraft-jungle) (Giant jungle tree, Jungle tree, Jungle bush)
+[Jungle](biomes.md#biome-qtcraft-jungle) (Giant jungle tree, Jungle tree, Jungle bush), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Jungle tree, Jungle bush)
 
 ### <a id="block-qtcraft-jungle_log"></a>Jungle log
 
@@ -4804,7 +4804,7 @@ Wood of the jungle tree. Gives four planks each.
 
 **Found in**
 
-[Jungle](biomes.md#biome-qtcraft-jungle) (Giant jungle tree, Jungle tree, Jungle bush)
+[Jungle](biomes.md#biome-qtcraft-jungle) (Giant jungle tree, Jungle tree, Jungle bush), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Jungle tree, Jungle bush)
 
 ### <a id="block-qtcraft-jungle_planks"></a>Jungle planks
 
@@ -6187,7 +6187,7 @@ Grows next to a melon stem and wild in forests and swamps. Breaks into three to 
 
 **Found in**
 
-[Forest](biomes.md#biome-qtcraft-forest) (Melons), [Jungle](biomes.md#biome-qtcraft-jungle) (Melons), [Swamp](biomes.md#biome-qtcraft-swamp) (Melons)
+[Forest](biomes.md#biome-qtcraft-forest) (Melons), [Jungle](biomes.md#biome-qtcraft-jungle) (Melons), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Melons), [Swamp](biomes.md#biome-qtcraft-swamp) (Melons)
 
 ### <a id="block-qtcraft-melon_stem"></a>Melon stem
 
@@ -6618,7 +6618,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 
 **Found in**
 
-[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Oak tree), [Forest](biomes.md#biome-qtcraft-forest) (Oak tree), [Plains](biomes.md#biome-qtcraft-plains) (Oak tree), [Swamp](biomes.md#biome-qtcraft-swamp) (Oak tree)
+[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Oak tree), [Forest](biomes.md#biome-qtcraft-forest) (Oak tree), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Oak tree, Oak bush), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Oak tree), [Plains](biomes.md#biome-qtcraft-plains) (Oak tree), [Swamp](biomes.md#biome-qtcraft-swamp) (Oak tree)
 
 ### <a id="block-qtcraft-oak_log"></a>Oak log
 
@@ -6661,7 +6661,7 @@ Wood of the oak: the first thing to collect. Four planks each.
 
 **Found in**
 
-[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Oak tree), [Forest](biomes.md#biome-qtcraft-forest) (Oak tree), [Plains](biomes.md#biome-qtcraft-plains) (Oak tree), [Swamp](biomes.md#biome-qtcraft-swamp) (Oak tree)
+[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Oak tree), [Forest](biomes.md#biome-qtcraft-forest) (Oak tree), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Oak tree, Oak bush), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Oak tree), [Plains](biomes.md#biome-qtcraft-plains) (Oak tree), [Swamp](biomes.md#biome-qtcraft-swamp) (Oak tree)
 
 ### <a id="block-qtcraft-oak_planks"></a>Oak planks
 
@@ -7650,7 +7650,7 @@ A red flower; gives red dye.
 
 **Found in**
 
-[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Jungle](biomes.md#biome-qtcraft-jungle) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
+[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Flowers), [Forest](biomes.md#biome-qtcraft-forest) (Flowers), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Flowers), [Jungle](biomes.md#biome-qtcraft-jungle) (Flowers), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Flowers), [Plains](biomes.md#biome-qtcraft-plains) (Flowers)
 
 ### <a id="block-qtcraft-potato_crop"></a>Potato crop
 
@@ -7730,7 +7730,7 @@ Grows next to a pumpkin stem and wild in plains and taiga. Gives pumpkin seeds a
 
 **Found in**
 
-[Plains](biomes.md#biome-qtcraft-plains) (Pumpkins), [Taiga](biomes.md#biome-qtcraft-taiga) (Pumpkins)
+[Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Pumpkins), [Plains](biomes.md#biome-qtcraft-plains) (Pumpkins), [Taiga](biomes.md#biome-qtcraft-taiga) (Pumpkins)
 
 ### <a id="block-qtcraft-pumpkin_stem"></a>Pumpkin stem
 
@@ -8305,7 +8305,7 @@ Falls when nothing holds it. Smelts into glass.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Beaches), [Desert](biomes.md#biome-qtcraft-desert) (Surface, Below the surface, Under water, Beaches), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Beaches), [Forest](biomes.md#biome-qtcraft-forest) (Beaches), [Jungle](biomes.md#biome-qtcraft-jungle) (Beaches), [Plains](biomes.md#biome-qtcraft-plains) (Under water, Beaches)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Beaches), [Desert](biomes.md#biome-qtcraft-desert) (Surface, Below the surface, Under water, Beaches), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Beaches), [Forest](biomes.md#biome-qtcraft-forest) (Beaches), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Under water, Beaches), [Jungle](biomes.md#biome-qtcraft-jungle) (Beaches), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Beaches), [Plains](biomes.md#biome-qtcraft-plains) (Under water, Beaches)
 
 **Creatures appearing on it**
 
@@ -9235,7 +9235,7 @@ Packed snow of cold mountains and tundra.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Snow), [Tundra](biomes.md#biome-qtcraft-tundra) (Surface, Beaches)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Snow), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Surface), [Tundra](biomes.md#biome-qtcraft-tundra) (Surface, Beaches)
 
 **Creatures appearing on it**
 
@@ -9323,7 +9323,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Spruce tree), [Taiga](biomes.md#biome-qtcraft-taiga) (Giant spruce, Spruce tree), [Tundra](biomes.md#biome-qtcraft-tundra) (Spruce tree)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Spruce tree), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Giant spruce, Spruce tree), [Taiga](biomes.md#biome-qtcraft-taiga) (Giant spruce, Spruce tree), [Tundra](biomes.md#biome-qtcraft-tundra) (Spruce tree)
 
 ### <a id="block-qtcraft-spruce_log"></a>Spruce log
 
@@ -9366,7 +9366,7 @@ Wood of the spruce. Four planks each.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Spruce tree), [Taiga](biomes.md#biome-qtcraft-taiga) (Giant spruce, Spruce tree), [Tundra](biomes.md#biome-qtcraft-tundra) (Spruce tree)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Spruce tree), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Giant spruce, Spruce tree), [Taiga](biomes.md#biome-qtcraft-taiga) (Giant spruce, Spruce tree), [Tundra](biomes.md#biome-qtcraft-tundra) (Spruce tree)
 
 ### <a id="block-qtcraft-spruce_planks"></a>Spruce planks
 
@@ -9698,7 +9698,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Steep slopes), [Taiga](biomes.md#biome-qtcraft-taiga) (Steep slopes)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Steep slopes), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Steep slopes), [Taiga](biomes.md#biome-qtcraft-taiga) (Steep slopes)
 
 **Creatures appearing on it**
 
@@ -10264,7 +10264,7 @@ Grows on sand or earth right next to water.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Sugar cane), [Desert](biomes.md#biome-qtcraft-desert) (Sugar cane), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Sugar cane), [Forest](biomes.md#biome-qtcraft-forest) (Sugar cane), [Jungle](biomes.md#biome-qtcraft-jungle) (Sugar cane), [Plains](biomes.md#biome-qtcraft-plains) (Sugar cane), [Swamp](biomes.md#biome-qtcraft-swamp) (Sugar cane)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Sugar cane), [Desert](biomes.md#biome-qtcraft-desert) (Sugar cane), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Sugar cane), [Forest](biomes.md#biome-qtcraft-forest) (Sugar cane), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Sugar cane), [Jungle](biomes.md#biome-qtcraft-jungle) (Sugar cane), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Sugar cane), [Plains](biomes.md#biome-qtcraft-plains) (Sugar cane), [Swamp](biomes.md#biome-qtcraft-swamp) (Sugar cane)
 
 ### <a id="block-qtcraft-tall_grass"></a>Tall grass
 
@@ -10286,7 +10286,7 @@ Covers meadows; you can build right into it.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Grasses), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Grasses), [Forest](biomes.md#biome-qtcraft-forest) (Grasses), [Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Mountains](biomes.md#biome-qtcraft-mountains) (Grasses), [Plains](biomes.md#biome-qtcraft-plains) (Grasses), [Swamp](biomes.md#biome-qtcraft-swamp) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Grasses), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Grasses), [Forest](biomes.md#biome-qtcraft-forest) (Grasses), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Grasses), [Jungle](biomes.md#biome-qtcraft-jungle) (Grasses), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Grasses), [Mountains](biomes.md#biome-qtcraft-mountains) (Grasses), [Plains](biomes.md#biome-qtcraft-plains) (Grasses), [Swamp](biomes.md#biome-qtcraft-swamp) (Grasses), [Taiga](biomes.md#biome-qtcraft-taiga) (Grasses)
 
 ### <a id="block-qtcraft-target"></a>Target
 

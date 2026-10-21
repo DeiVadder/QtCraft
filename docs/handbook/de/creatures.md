@@ -260,7 +260,7 @@ Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: J
 
 Und in Dörfern von Biomen ohne eigenen Dorfstil.
 
-[Ebene](biomes.md#biome-qtcraft-plains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wüste](biomes.md#biome-qtcraft-desert)
+[Ebene](biomes.md#biome-qtcraft-plains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert)
 
 ### <a id="mob-qtcraft-cow"></a>Kuh
 
@@ -315,7 +315,7 @@ Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwa
 
 **Erscheint in Biomen**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 
@@ -344,7 +344,7 @@ Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe)
 
 **Erscheint in Biomen**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle), [Sumpf](biomes.md#biome-qtcraft-swamp)
+[Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Sumpf](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sandgolem
 
@@ -459,7 +459,7 @@ Alle Biome.
 
 Und in Dörfern von Biomen ohne eigenen Dorfstil.
 
-[Ebene](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wüste](biomes.md#biome-qtcraft-desert)
+[Ebene](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert)
 
 ### <a id="mob-qtcraft-silverfish"></a>Silberfischchen
 
@@ -564,7 +564,7 @@ Ein grauer Jäger der Wälder, der Taiga und der Tundra, der im Rudel lebt. Er l
 
 **Erscheint in Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wald](biomes.md#biome-qtcraft-forest)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest)
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 

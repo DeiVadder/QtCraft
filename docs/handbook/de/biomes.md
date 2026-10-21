@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Wald](#biome-qtcraft-forest) · [Wüste](#biome-qtcraft-desert)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert)
 
 ## QtCraft
 
@@ -13,7 +13,7 @@ Heller Wald aus Birken.
 | | |
 |---|---|
 | ID | `qtcraft:birch_forest` |
-| Klima | Temperatur 0,38, Feuchte 0,58, Zerklüftung 0,2 |
+| Klima | Temperatur 0,42, Feuchte 0,6, Zerklüftung 0,2 |
 | Geländehöhe | um y 71, ± 16 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -43,7 +43,7 @@ Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwisc
 | | |
 |---|---|
 | ID | `qtcraft:flower_valley` |
-| Klima | Temperatur 0,55, Feuchte 0,5, Zerklüftung 0,1 |
+| Klima | Temperatur 0,55, Feuchte 0,61, Zerklüftung 0,2 |
 | Seltenheit | 1 (nur an verstreuten Stellen mit passendem Klima) |
 | Geländehöhe | um y 62,5, ± 3 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
@@ -74,7 +74,7 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 | | |
 |---|---|
 | ID | `qtcraft:jungle` |
-| Klima | Temperatur 0,95, Feuchte 0,62, Zerklüftung 0,2 |
+| Klima | Temperatur 1, Feuchte 0,58, Zerklüftung 0,2 |
 | Geländehöhe | um y 70, ± 14 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -97,6 +97,36 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-jungle_edge"></a>Dschungelrand
+
+Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäume, viele Dschungelbüsche, Farne und Melonen, aber keine Dschungelriesen.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_edge` |
+| Klima | Temperatur 0,77, Feuchte 0,49, Zerklüftung 0,2 |
+| Geländehöhe | um y 69, ± 12 |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
+| Unter Wasser | [Erde](blocks.md#block-qtcraft-dirt) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (1 % der Säulen), [Dschungelbusch](worldgen.md#feature-qtcraft-jungle_bush) (2,5 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,3 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,3 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (75 %), [Farn](blocks.md#block-qtcraft-fern) (25 %)
+
+**Blumen**
+
+[Mohn](blocks.md#block-qtcraft-poppy) (66,67 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (33,33 %)
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-plains"></a>Ebene
 
 Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe.
@@ -104,7 +134,7 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 | | |
 |---|---|
 | ID | `qtcraft:plains` |
-| Klima | Temperatur 0,58, Feuchte 0,32, Zerklüftung 0,2 |
+| Klima | Temperatur 0,52, Feuchte 0,3, Zerklüftung 0,2 |
 | Geländehöhe | um y 68, ± 7 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -166,7 +196,7 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 | | |
 |---|---|
 | ID | `qtcraft:swamp` |
-| Klima | Temperatur 0,8, Feuchte 0,9, Zerklüftung 0,2 |
+| Klima | Temperatur 0,94, Feuchte 0,88, Zerklüftung 0,2 |
 | Geländehöhe | um y 63, ± 2 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -196,7 +226,7 @@ Kühler Fichtenwald mit Schnee am Boden.
 | | |
 |---|---|
 | ID | `qtcraft:taiga` |
-| Klima | Temperatur 0,15, Feuchte 0,72, Zerklüftung 0,2 |
+| Klima | Temperatur 0,15, Feuchte 0,73, Zerklüftung 0,2 |
 | Geländehöhe | um y 72, ± 20 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -224,7 +254,7 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 | | |
 |---|---|
 | ID | `qtcraft:tundra` |
-| Klima | Temperatur 0,08, Feuchte 0,3, Zerklüftung 0,2 |
+| Klima | Temperatur 0,05, Feuchte 0,3, Zerklüftung 0,2 |
 | Geländehöhe | um y 68, ± 9 |
 | Oberfläche | [Schneeblock](blocks.md#block-qtcraft-snow_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -240,6 +270,30 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-snowy_taiga"></a>Verschneite Taiga
+
+Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere Bäume als in der Taiga, hin und wieder eine Riesenfichte, gefrorene Seen und kein Gras.
+
+| | |
+|---|---|
+| ID | `qtcraft:snowy_taiga` |
+| Klima | Temperatur 0,08, Feuchte 0,7, Zerklüftung 0,2 |
+| Geländehöhe | um y 71, ± 16 |
+| Oberfläche | [Schneeblock](blocks.md#block-qtcraft-snow_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
+| Unter Wasser | [Kies](blocks.md#block-qtcraft-gravel) |
+| Strände | [Kies](blocks.md#block-qtcraft-gravel) |
+| Steile Hänge | [Stein](blocks.md#block-qtcraft-stone) (ab 4 Blöcken Gefälle) |
+| Gefrorenes Wasser | [Eis](blocks.md#block-qtcraft-ice) |
+
+**Pflanzen und Bäume**
+
+[Fichte](worldgen.md#feature-qtcraft-spruce_tree) (1,4 % der Säulen), [Riesenfichte](worldgen.md#feature-qtcraft-giant_spruce_tree) (0,05 % der Säulen)
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-forest"></a>Wald
 
 Dichte Eichen und Birken mit Pilzen im Schatten.
@@ -247,7 +301,7 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 | | |
 |---|---|
 | ID | `qtcraft:forest` |
-| Klima | Temperatur 0,62, Feuchte 0,68, Zerklüftung 0,2 |
+| Klima | Temperatur 0,44, Feuchte 0,73, Zerklüftung 0,2 |
 | Geländehöhe | um y 71, ± 18 |
 | Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 | Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
@@ -270,6 +324,36 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-forest_steppe"></a>Waldsteppe
+
+Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelten Eichen und Eichenbüschen, hier und da trockenes Gestrüpp. Auch hier stehen Dörfer der Ebene.
+
+| | |
+|---|---|
+| ID | `qtcraft:forest_steppe` |
+| Klima | Temperatur 0,71, Feuchte 0,3, Zerklüftung 0,2 |
+| Geländehöhe | um y 69, ± 8 |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
+| Unter Wasser | [Sand](blocks.md#block-qtcraft-sand) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,4 % der Säulen), [Eichenbusch](worldgen.md#feature-qtcraft-oak_bush) (0,8 % der Säulen), [Kürbisse](worldgen.md#feature-qtcraft-pumpkin_patch) (0,1 % der Säulen), [Trockenes Gestrüpp](worldgen.md#feature-qtcraft-dry_shrub) (0,6 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (10 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Löwenzahn](blocks.md#block-qtcraft-dandelion) (75 %), [Mohn](blocks.md#block-qtcraft-poppy) (25 %)
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-desert"></a>Wüste
 
 Sand und Sandstein mit Kakteen und wenig sonst.
@@ -277,7 +361,7 @@ Sand und Sandstein mit Kakteen und wenig sonst.
 | | |
 |---|---|
 | ID | `qtcraft:desert` |
-| Klima | Temperatur 0,92, Feuchte 0,15, Zerklüftung 0,2 |
+| Klima | Temperatur 0,94, Feuchte 0,15, Zerklüftung 0,2 |
 | Geländehöhe | um y 67, ± 10 |
 | Oberfläche | [Sand](blocks.md#block-qtcraft-sand) |
 | Unter der Oberfläche | [Sand](blocks.md#block-qtcraft-sand) (4 Blöcke) |

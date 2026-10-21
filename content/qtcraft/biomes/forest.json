@@ -1,7 +1,7 @@
 {
     "name": "forest",
-    "temperature": 0.62,
-    "humidity": 0.68,
+    "temperature": 0.44,
+    "humidity": 0.73,
     "baseHeight": 71,
     "heightVariation": 18,
     "surface": "grass_block",

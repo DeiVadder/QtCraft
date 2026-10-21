@@ -1,0 +1,10 @@
+{
+    "name": "dry_shrub",
+    "type": "plant",
+    "block": "dead_bush",
+    "patchSize": 16,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

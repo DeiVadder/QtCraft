@@ -255,8 +255,10 @@ private slots:
                 for (const QcGiantTreePlacer::Giant &giant : giants) {
                     const QString name = m_content->worldgen().features()[giant.feature].name;
                     (name == u"qtcraft:giant_spruce_tree"_s ? spruce : jungle) = giant;
-                    QCOMPARE(terrain.biomeAt(giant.base.x, giant.base.z),
-                             name == u"qtcraft:giant_spruce_tree"_s ? u"qtcraft:taiga"_s : u"qtcraft:jungle"_s);
+                    const QString biome = terrain.biomeAt(giant.base.x, giant.base.z);
+                    const QStringList biomes = name == u"qtcraft:giant_spruce_tree"_s ? QStringList{u"qtcraft:taiga"_s, u"qtcraft:snowy_taiga"_s}
+                                                                                     : QStringList{u"qtcraft:jungle"_s};
+                    QVERIFY2(biomes.contains(biome), qPrintable(name + u' ' + biome));
                 }
             }
         }

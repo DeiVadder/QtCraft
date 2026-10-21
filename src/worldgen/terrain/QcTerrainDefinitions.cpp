@@ -124,6 +124,7 @@ Biome Loader::biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBloc
     biome.humidity = definition.humidity;
     biome.ruggedness = definition.ruggedness;
     biome.rarity = definition.rarity;
+    biome.spread = definition.spread;
     biome.baseHeight = definition.baseHeight;
     biome.heightVariation = definition.heightVariation;
     biome.ridges = definition.ridges;

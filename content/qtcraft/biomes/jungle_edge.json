@@ -1,0 +1,64 @@
+{
+    "name": "jungle_edge",
+    "temperature": 0.77,
+    "humidity": 0.49,
+    "baseHeight": 69,
+    "heightVariation": 12,
+    "surface": "grass_block",
+    "villages": true,
+    "subsurface": "dirt",
+    "underwater": "dirt",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "jungle_tree",
+            "density": 0.01
+        },
+        {
+            "feature": "jungle_bush",
+            "density": 0.025
+        },
+        {
+            "feature": "oak_tree",
+            "density": 0.003
+        },
+        {
+            "feature": "melon_patch",
+            "density": 0.003
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.2
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.35,
+            "patchSize": 20,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 3
+                },
+                {
+                    "block": "fern",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.006,
+            "patchSize": 14,
+            "plants": [
+                {
+                    "block": "poppy",
+                    "weight": 2
+                },
+                {
+                    "block": "dandelion",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

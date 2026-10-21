@@ -4,6 +4,7 @@
     "surface": {
         "biomes": [
             "birch_forest",
+            "forest_steppe",
             "plains"
         ],
         "spacing": 320,

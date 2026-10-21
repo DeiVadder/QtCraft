@@ -1,7 +1,8 @@
 {
     "name": "desert",
-    "temperature": 0.92,
+    "temperature": 0.94,
     "humidity": 0.15,
+    "spread": 0.03,
     "baseHeight": 67,
     "heightVariation": 10,
     "terraceHeight": 5,

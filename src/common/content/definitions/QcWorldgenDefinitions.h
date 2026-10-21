@@ -39,6 +39,10 @@ struct QcBiomeDefinition
     // its own, so it is exactly 0 elsewhere) and there wins where its temperature, humidity and
     // ruggedness fit best (so a temperate rare biome never replaces a desert).
     double rarity = 0.0;
+    // How far the biome reaches beyond the midpoint to its neighbours in climate space (decision
+    // E-824): subtracted from its squared climate distance, so its share grows while its borders
+    // stay straight and it keeps the same neighbours; 0 for an ordinary biome.
+    double spread = 0.0;
     // Surface height in blocks for land in this biome.
     double baseHeight = 68.0;
     double heightVariation = 6.0;

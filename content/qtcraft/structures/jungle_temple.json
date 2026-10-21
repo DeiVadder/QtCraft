@@ -3,7 +3,8 @@
     "groundLayer": 3,
     "surface": {
         "biomes": [
-            "jungle"
+            "jungle",
+            "jungle_edge"
         ],
         "spacing": 256,
         "chance": 0.6,
@@ -206,16 +207,16 @@
             "..............."
         ],
         [
-            ".......K.......",
             "...............",
-            "..............V",
+            "...............",
+            "...............",
             "...ddddMMMMd...",
-            "k..MdBddBMdM..V",
+            "...MdBddBMdM...",
             "...MMMMBdBMM...",
             "...dBddddMdd...",
-            "...dBddBddBM..V",
-            "k..ddMddMdMd...",
-            "k..BdMBMBddB...",
+            "...dBddBddBM...",
+            "...ddMddMdMd...",
+            "...BdMBMBddB...",
             "...MdddBMMMd...",
             "...MddMMBddB...",
             "...dMdBdMMdB...",

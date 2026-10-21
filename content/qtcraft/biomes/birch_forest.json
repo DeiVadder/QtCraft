@@ -1,7 +1,7 @@
 {
     "name": "birch_forest",
-    "temperature": 0.38,
-    "humidity": 0.58,
+    "temperature": 0.42,
+    "humidity": 0.6,
     "baseHeight": 71,
     "heightVariation": 16,
     "surface": "grass_block",

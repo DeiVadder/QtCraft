@@ -1,0 +1,37 @@
+{
+    "name": "snowy_taiga",
+    "temperature": 0.08,
+    "humidity": 0.7,
+    "baseHeight": 71,
+    "heightVariation": 16,
+    "terraceHeight": 4,
+    "surface": "snow_block",
+    "villages": true,
+    "subsurface": "dirt",
+    "underwater": "gravel",
+    "beach": "gravel",
+    "steep": "stone",
+    "steepSlope": 4,
+    "frozenWater": "ice",
+    "features": [
+        {
+            "feature": "giant_spruce_tree",
+            "density": 0.0005
+        },
+        {
+            "feature": "spruce_tree",
+            "density": 0.014
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "fern",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

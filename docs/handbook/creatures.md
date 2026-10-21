@@ -41,7 +41,7 @@ A cat of the villages, a few in every village. Feed it raw cod: each fish tames 
 
 And in villages of biomes without a village style of their own.
 
-[Desert](biomes.md#biome-qtcraft-desert), [Plains](biomes.md#biome-qtcraft-plains), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Desert](biomes.md#biome-qtcraft-desert), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Plains](biomes.md#biome-qtcraft-plains), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-cave_spider"></a>Cave spider
 
@@ -288,7 +288,7 @@ A shy spotted cat of the jungle (until there is one, of swamps). It runs away fr
 
 **Appears in biomes**
 
-[Jungle](biomes.md#biome-qtcraft-jungle), [Swamp](biomes.md#biome-qtcraft-swamp)
+[Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Swamp](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-pig"></a>Pig
 
@@ -322,7 +322,7 @@ All biomes.
 
 And in villages of biomes without a village style of their own.
 
-[Desert](biomes.md#biome-qtcraft-desert), [Plains](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Desert](biomes.md#biome-qtcraft-desert), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Plains](biomes.md#biome-qtcraft-plains), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-salmon"></a>Salmon
 
@@ -349,7 +349,7 @@ A fish of the cold waters of taiga, tundra and mountains. It swims in schools, f
 
 **Appears in biomes**
 
-[Mountains](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Mountains](biomes.md#biome-qtcraft-mountains), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sand golem
 
@@ -564,7 +564,7 @@ A grey hunter of forests, taiga and tundra that roams in packs. It leaves you al
 
 **Appears in biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Forest](biomes.md#biome-qtcraft-forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Forest](biomes.md#biome-qtcraft-forest), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 
