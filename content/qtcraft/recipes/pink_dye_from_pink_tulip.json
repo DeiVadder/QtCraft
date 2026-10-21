@@ -1,0 +1,11 @@
+{
+    "name": "pink_dye_from_pink_tulip",
+    "type": "shapeless",
+    "ingredients": [
+        "pink_tulip"
+    ],
+    "result": {
+        "item": "pink_dye",
+        "count": 2
+    }
+}

@@ -33,6 +33,12 @@ struct QcBiomeDefinition
     // almost everywhere and high along chains, so a biome with a high value forms mountain ranges
     // across all climates. Counts twice as much as temperature and humidity.
     double ruggedness = 0.2;
+    // How rare the biome is, in [0, 1] (decision E-821); 0 for an ordinary biome. The world's rarity
+    // is 0 almost everywhere and rises to 1 in scattered spots. A biome with a rarity takes part in
+    // the climate choice only inside those spots (its weight is scaled by the world's rarity against
+    // its own, so it is exactly 0 elsewhere) and there wins where its temperature, humidity and
+    // ruggedness fit best (so a temperate rare biome never replaces a desert).
+    double rarity = 0.0;
     // Surface height in blocks for land in this biome.
     double baseHeight = 68.0;
     double heightVariation = 6.0;

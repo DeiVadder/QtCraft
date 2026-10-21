@@ -1,6 +1,7 @@
 {
     "biome.qtcraft.birch_forest": "Birkenwald",
     "biome.qtcraft.desert": "Wüste",
+    "biome.qtcraft.flower_valley": "Blumental",
     "biome.qtcraft.forest": "Wald",
     "biome.qtcraft.mountains": "Gebirge",
     "biome.qtcraft.plains": "Ebene",
@@ -287,6 +288,9 @@
     "block.qtcraft.lily_of_the_valley": "Maiglöckchen",
     "block.qtcraft.blue_orchid": "Blaue Orchidee",
     "block.qtcraft.allium": "Zierlauch",
+    "block.qtcraft.orange_tulip": "Orange Tulpe",
+    "block.qtcraft.oxeye_daisy": "Margerite",
+    "block.qtcraft.pink_tulip": "Rosa Tulpe",
     "block.qtcraft.dead_bush": "Toter Busch",
     "block.qtcraft.fern": "Farn",
     "block.qtcraft.fire": "Feuer",

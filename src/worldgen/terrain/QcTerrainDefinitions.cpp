@@ -117,6 +117,7 @@ Biome Loader::biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBloc
     biome.temperature = definition.temperature;
     biome.humidity = definition.humidity;
     biome.ruggedness = definition.ruggedness;
+    biome.rarity = definition.rarity;
     biome.baseHeight = definition.baseHeight;
     biome.heightVariation = definition.heightVariation;
     biome.ridges = definition.ridges;
@@ -159,7 +160,8 @@ decltype(Biome::features) Loader::featuresOf(const QcBiomeDefinition &definition
 void Loader::warnSharedClimate(const QList<Biome> &biomes, const Biome &biome)
 {
     for (const Biome &other : biomes) {
-        if (other.temperature == biome.temperature && other.humidity == biome.humidity && other.ruggedness == biome.ruggedness) {
+        if (other.temperature == biome.temperature && other.humidity == biome.humidity && other.ruggedness == biome.ruggedness
+            && other.rarity == biome.rarity) {
             warn(u"Biomes %1 and %2 share a climate point; only %1 can appear"_s.arg(other.name, biome.name));
         }
     }
@@ -277,6 +279,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         anyOverhangs = anyOverhangs || biome.overhang > 0;
         anyRidges = anyRidges || biome.ridges > 0.0;
         anyTerraces = anyTerraces || biome.terraceHeight > 0;
+        anyRare = anyRare || biome.rarity > 0.0;
         loader.warnSharedClimate(biomes, biome);
         biomes.append(biome);
     }

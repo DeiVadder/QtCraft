@@ -6,6 +6,7 @@
 #include "worldgen/terrain/QcCaveCarver.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
+#include "worldgen/terrain/QcTerrainClimate.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/terrain/QcTerrainDefinitions.h"
 #include "worldgen/terrain/QcVegetationPatchPlacer.h"
@@ -24,8 +25,8 @@ class QcSurfaceStructures;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
 
-// Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity
-// and ruggedness, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
+// Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity,
+// ruggedness and rarity, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
 // cliffs, connected cave tunnels and caverns, ore veins, liquid pools sunk into cave floors and
 // features (trees, cacti, plants in patches). All blocks
 // come from the registry's biome, feature, ore and terrain definitions. Deterministic per seed and
@@ -63,6 +64,9 @@ public:
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
 
     Column column(int x, int z) const;
+    // The world's rarity at a column in [0, 1] (decision E-821): 0 outside the spots where rare
+    // biomes may appear, and everywhere when no biome is rare.
+    [[nodiscard]] double rarityAt(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
     QString biomeName(int index) const;
@@ -128,6 +132,7 @@ private:
     QcTerrainDefinitions m_definitions;
     QcCaveCarver m_caves;
     QcPoolPlacer m_pools;
+    QcTerrainClimate m_climate;
     // Created in the constructor's body: it reads the terrain columns.
     std::unique_ptr<QcVillageGenerator> m_villages;
     std::unique_ptr<QcDungeonGenerator> m_dungeons;
@@ -143,13 +148,8 @@ private:
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;
-    QcNoise m_temperatureNoise;
-    QcNoise m_humidityNoise;
-    QcNoise m_ruggednessNoise;
     QcNoise m_warpNoiseX;
     QcNoise m_warpNoiseZ;
-    QcNoise m_climateWarpNoiseX;
-    QcNoise m_climateWarpNoiseZ;
     QcNoise m_hillNoise;
     QcNoise m_ridgeNoise;
     QcNoise m_terraceNoise;

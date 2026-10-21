@@ -386,6 +386,10 @@ private slots:
         // New dyes from flowers and mixes; every colour has wool, carpet, glass, pane, terracotta
         // and concrete with its powder (E-205, E-206).
         QCOMPARE(crafted({{0, "lily_of_the_valley"}}, 2), u"qtcraft:white_dye"_s);
+        // The flowers of the flower valley (decision E-821).
+        QCOMPARE(crafted({{0, "oxeye_daisy"}}, 2), u"qtcraft:light_gray_dye"_s);
+        QCOMPARE(crafted({{0, "orange_tulip"}}, 2), u"qtcraft:orange_dye"_s);
+        QCOMPARE(crafted({{0, "pink_tulip"}}, 2), u"qtcraft:pink_dye"_s);
         QCOMPARE(crafted({{0, "blue_dye"}, {1, "green_dye"}}, 2), u"qtcraft:cyan_dye"_s);
         QCOMPARE(crafted({{0, "red_dye"}, {1, "white_dye"}}, 2), u"qtcraft:pink_dye"_s);
         QCOMPARE(crafted({{0, "white_wool"}, {1, "lime_dye"}}, 2), u"qtcraft:lime_wool"_s);

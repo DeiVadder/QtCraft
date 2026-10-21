@@ -1214,6 +1214,12 @@ Colours wool, glass, terracotta and concrete light gray.
 |---|---|---|
 | [Gray dye](#item-qtcraft-gray_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Light gray dye](#item-qtcraft-light_gray_dye) |
 
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Oxeye daisy](blocks.md#block-qtcraft-oxeye_daisy) | 2 × [Light gray dye](#item-qtcraft-light_gray_dye) |
+
 **Used in**
 
 [Light gray bed](blocks.md#block-qtcraft-light_gray_bed), [Light gray concrete powder](blocks.md#block-qtcraft-light_gray_concrete_powder), [Light gray stained glass](blocks.md#block-qtcraft-light_gray_stained_glass), [Light gray terracotta](blocks.md#block-qtcraft-light_gray_terracotta), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool)
@@ -1365,7 +1371,7 @@ A minecart that carries a Signal Hopper: it pulls items from a container above i
 
 ### <a id="item-qtcraft-orange_dye"></a>Orange dye
 
-Mixed from red and yellow dye.
+Made from orange tulips or mixed from red and yellow dye.
 
 | | |
 |---|---|
@@ -1380,6 +1386,12 @@ Mixed from red and yellow dye.
 | 1 | 2 | → |
 |---|---|---|
 | [Red dye](#item-qtcraft-red_dye) | [Yellow dye](#item-qtcraft-yellow_dye) | 2 × [Orange dye](#item-qtcraft-orange_dye) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Orange tulip](blocks.md#block-qtcraft-orange_tulip) | 2 × [Orange dye](#item-qtcraft-orange_dye) |
 
 **Used in**
 
@@ -1442,6 +1454,12 @@ Colours wool, glass, terracotta and concrete pink.
 | 1 | 2 | → |
 |---|---|---|
 | [Red dye](#item-qtcraft-red_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Pink dye](#item-qtcraft-pink_dye) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Pink tulip](blocks.md#block-qtcraft-pink_tulip) | 2 × [Pink dye](#item-qtcraft-pink_dye) |
 
 **Used in**
 

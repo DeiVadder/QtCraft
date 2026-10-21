@@ -14,6 +14,7 @@ class QcWorldgenCatalog
 public:
     void registerBiome(QcBiomeDefinition definition) { m_biomes.set(std::move(definition)); }
     const QList<QcBiomeDefinition> &biomes() const { return m_biomes.items(); }
+    void removeBiome(const QString &name) { m_biomes.remove(name); }
     // The biome named `name`; null when there is none.
     const QcBiomeDefinition *biome(const QString &name) const { return m_biomes.find(name); }
     void registerFeature(QcFeatureDefinition definition) { m_features.set(std::move(definition)); }

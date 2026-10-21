@@ -47,6 +47,7 @@ struct QcTerrainDefinitions
         double temperature = 0.5;
         double humidity = 0.5;
         double ruggedness = 0.2;
+        double rarity = 0.0;
         double baseHeight = 68.0;
         double heightVariation = 6.0;
         double ridges = 0.0;
@@ -115,6 +116,8 @@ struct QcTerrainDefinitions
     // Whether any biome uses ridges or terraces (their noise is skipped otherwise).
     bool anyRidges = false;
     bool anyTerraces = false;
+    // Some biome has a rarity (decision E-821); without one the world's rarity map is not computed.
+    bool anyRare = false;
     bool anyOverhangs = false;
     // What could not be resolved and was replaced by a fallback.
     QStringList warnings;

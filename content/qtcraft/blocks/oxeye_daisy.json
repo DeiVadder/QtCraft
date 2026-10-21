@@ -1,0 +1,18 @@
+{
+    "name": "oxeye_daisy",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
+    "textures": {
+        "all": "oxeye_daisy"
+    }
+}

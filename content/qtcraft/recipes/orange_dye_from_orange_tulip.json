@@ -1,0 +1,11 @@
+{
+    "name": "orange_dye_from_orange_tulip",
+    "type": "shapeless",
+    "ingredients": [
+        "orange_tulip"
+    ],
+    "result": {
+        "item": "orange_dye",
+        "count": 2
+    }
+}

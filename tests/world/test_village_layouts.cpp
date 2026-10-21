@@ -23,9 +23,9 @@ class TestVillageLayouts : public QObject
 private:
     static constexpr qint64 seed = 42;
     // The statistics run over a fixed sample (decision E-424): the first 160 villages ring by ring
-    // around the origin (about 30 x 30 regions at seed 42; the rings stop at 33 x 33).
+    // around the origin (about 31 x 31 regions at seed 42; the rings stop at 35 x 35).
     static constexpr qsizetype sampleSize = 160;
-    static constexpr int rings = 16;
+    static constexpr int rings = 17;
 
     using Plans = QList<std::shared_ptr<const QcVillagePlan>>;
 

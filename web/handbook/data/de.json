@@ -228,6 +228,7 @@
                 "block:qtcraft:magenta_stained_glass",
                 "block:qtcraft:magma_block",
                 "block:qtcraft:lily_of_the_valley",
+                "block:qtcraft:oxeye_daisy",
                 "block:qtcraft:melon",
                 "block:qtcraft:melon_stem",
                 "block:qtcraft:mine_lamp",
@@ -236,6 +237,7 @@
                 "block:qtcraft:note_block",
                 "block:qtcraft:obsidian",
                 "block:qtcraft:furnace",
+                "block:qtcraft:orange_tulip",
                 "block:qtcraft:orange_glazed_terracotta",
                 "block:qtcraft:orange_stained_glass_pane",
                 "block:qtcraft:orange_terracotta",
@@ -251,6 +253,7 @@
                 "block:qtcraft:raw_iron_block",
                 "block:qtcraft:raw_gold_block",
                 "block:qtcraft:raw_copper_block",
+                "block:qtcraft:pink_tulip",
                 "block:qtcraft:pink_glazed_terracotta",
                 "block:qtcraft:pink_stained_glass_pane",
                 "block:qtcraft:pink_terracotta",
@@ -646,6 +649,7 @@
         {
             "entries": [
                 "biome:qtcraft:birch_forest",
+                "biome:qtcraft:flower_valley",
                 "biome:qtcraft:jungle",
                 "biome:qtcraft:plains",
                 "biome:qtcraft:mountains",
@@ -1143,6 +1147,270 @@
             ],
             "text": "Sand und Sandstein mit Kakteen und wenig sonst.",
             "title": "Wüste"
+        },
+        "biome:qtcraft:flower_valley": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Flower Valley",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:flower_valley"
+                },
+                {
+                    "label": "Klima",
+                    "links": [
+                    ],
+                    "value": "Temperatur 0,55, Feuchte 0,5, Zerklüftung 0,1"
+                },
+                {
+                    "label": "Seltenheit",
+                    "links": [
+                    ],
+                    "value": "1 (nur an verstreuten Stellen mit passendem Klima)"
+                },
+                {
+                    "label": "Geländehöhe",
+                    "links": [
+                    ],
+                    "value": "um y 62,5, ± 3"
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "",
+                            "target": "block:qtcraft:clay",
+                            "text": "Ton"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:flower_valley",
+            "name": "qtcraft:flower_valley",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:birch_log",
+                            "note": "0,12 % der Säulen",
+                            "target": "feature:qtcraft:birch_tree",
+                            "text": "Birke"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0,08 % der Säulen",
+                            "target": "feature:qtcraft:oak_tree",
+                            "text": "Eiche"
+                        },
+                        {
+                            "icon": "qtcraft:lily_pad",
+                            "note": "5 % der Säulen",
+                            "target": "feature:qtcraft:lily_pad",
+                            "text": "Seerosen"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "20 % der Säulen",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Zuckerrohr"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Pflanzen und Bäume"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Hohes Gras"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Gräser"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:oxeye_daisy",
+                            "note": "17,07 %",
+                            "target": "block:qtcraft:oxeye_daisy",
+                            "text": "Margerite"
+                        },
+                        {
+                            "icon": "qtcraft:pink_tulip",
+                            "note": "14,63 %",
+                            "target": "block:qtcraft:pink_tulip",
+                            "text": "Rosa Tulpe"
+                        },
+                        {
+                            "icon": "qtcraft:orange_tulip",
+                            "note": "14,63 %",
+                            "target": "block:qtcraft:orange_tulip",
+                            "text": "Orange Tulpe"
+                        },
+                        {
+                            "icon": "qtcraft:dandelion",
+                            "note": "12,2 %",
+                            "target": "block:qtcraft:dandelion",
+                            "text": "Löwenzahn"
+                        },
+                        {
+                            "icon": "qtcraft:poppy",
+                            "note": "12,2 %",
+                            "target": "block:qtcraft:poppy",
+                            "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:cornflower",
+                            "note": "12,2 %",
+                            "target": "block:qtcraft:cornflower",
+                            "text": "Kornblume"
+                        },
+                        {
+                            "icon": "qtcraft:allium",
+                            "note": "9,76 %",
+                            "target": "block:qtcraft:allium",
+                            "text": "Zierlauch"
+                        },
+                        {
+                            "icon": "qtcraft:lily_of_the_valley",
+                            "note": "7,32 %",
+                            "target": "block:qtcraft:lily_of_the_valley",
+                            "text": "Maiglöckchen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Blumen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwischen niedrigen Hügeln, übersät mit Blumen, große Felder einer Sorte inmitten eines bunten Teppichs, einige Birken und Eichen und hin und wieder ein Teich mit Schilf und Seerosen. Nur hier wachsen Margeriten und Tulpen.",
+            "title": "Blumental"
         },
         "biome:qtcraft:forest": {
             "category": "biomes",
@@ -3088,6 +3356,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -4832,6 +5106,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Birke",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Birke",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -5083,6 +5363,12 @@
                             "note": "Birke",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Birke",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -17702,6 +17988,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Unter Wasser",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Unter Wasser",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
                         },
@@ -21434,6 +21726,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -24681,6 +24979,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
                         },
@@ -25526,6 +25830,12 @@
                             "note": "Unter der Oberfläche, Unter Wasser",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Unter der Oberfläche",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -29497,6 +29807,12 @@
                             "note": "Oberfläche",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oberfläche",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -39893,6 +40209,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
                         }
@@ -39980,6 +40302,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Seerosen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Seerosen",
@@ -49686,6 +50014,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Eiche",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Dschungelbaum, Eiche",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
@@ -49951,6 +50285,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Eiche",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Dschungelbaum, Eiche",
@@ -53635,6 +53975,128 @@
             "text": "Gefärbte Terrakotta in erdigen Tönen.",
             "title": "Orangefarbene Terrakotta"
         },
+        "block:qtcraft:orange_tulip": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Orange tulip",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:orange_tulip"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:orange_tulip",
+                            "note": "",
+                            "target": "block:qtcraft:orange_tulip",
+                            "text": "Orange Tulpe"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": "steht nur auf"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "qtcraft:orange_tulip",
+            "id": "block:qtcraft:orange_tulip",
+            "name": "qtcraft:orange_tulip",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:orange_dye",
+                            "note": "",
+                            "target": "item:qtcraft:orange_dye",
+                            "text": "Orangefarbener Farbstoff"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Eine orange Tulpe der Blumentäler; ergibt orangen Farbstoff.",
+            "title": "Orange Tulpe"
+        },
         "block:qtcraft:orange_wool": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -54028,6 +54490,128 @@
             ],
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Orangefarbener Teppich"
+        },
+        "block:qtcraft:oxeye_daisy": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Oxeye daisy",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:oxeye_daisy"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:oxeye_daisy",
+                            "note": "",
+                            "target": "block:qtcraft:oxeye_daisy",
+                            "text": "Margerite"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": "steht nur auf"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "qtcraft:oxeye_daisy",
+            "id": "block:qtcraft:oxeye_daisy",
+            "name": "qtcraft:oxeye_daisy",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:light_gray_dye",
+                            "note": "",
+                            "target": "item:qtcraft:light_gray_dye",
+                            "text": "Hellgrauer Farbstoff"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Eine weiße Blume mit gelbem Herz, die nur in Blumentälern wächst; ergibt hellgrauen Farbstoff.",
+            "title": "Margerite"
         },
         "block:qtcraft:packed_ice": {
             "category": "blocks",
@@ -55785,6 +56369,128 @@
             "text": "Gefärbte Terrakotta in erdigen Tönen.",
             "title": "Rosafarbene Terrakotta"
         },
+        "block:qtcraft:pink_tulip": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Pink tulip",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:pink_tulip"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:pink_tulip",
+                            "note": "",
+                            "target": "block:qtcraft:pink_tulip",
+                            "text": "Rosa Tulpe"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grasblock"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Erde"
+                        }
+                    ],
+                    "value": "steht nur auf"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "qtcraft:pink_tulip",
+            "id": "block:qtcraft:pink_tulip",
+            "name": "qtcraft:pink_tulip",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:pink_dye",
+                            "note": "",
+                            "target": "item:qtcraft:pink_dye",
+                            "text": "Rosafarbener Farbstoff"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Eine rosa Tulpe der Blumentäler; ergibt rosa Farbstoff.",
+            "title": "Rosa Tulpe"
+        },
         "block:qtcraft:pink_wool": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -57438,6 +58144,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Blumen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Blumen",
@@ -62514,6 +63226,12 @@
                             "note": "Strände",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Strände",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -79705,6 +80423,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Zuckerrohr",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Zuckerrohr",
                             "target": "biome:qtcraft:jungle",
                             "text": "Dschungel"
                         },
@@ -79851,6 +80575,12 @@
                             "note": "Gräser",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Gräser",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -88328,6 +89058,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "0,12 % der Säulen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "0,8 % der Säulen",
                             "target": "biome:qtcraft:forest",
                             "text": "Wald"
@@ -88874,6 +89610,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "5 % der Säulen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "8 % der Säulen",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
@@ -89052,6 +89794,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0,08 % der Säulen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "2 % der Säulen",
@@ -89525,6 +90273,12 @@
                             "note": "15 % der Säulen",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "20 % der Säulen",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -102881,6 +103635,33 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 2
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:oxeye_daisy",
+                                    "note": "",
+                                    "target": "block:qtcraft:oxeye_daisy",
+                                    "text": "Margerite"
+                                }
+                            ],
+                            "count": 2,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:light_gray_dye_from_oxeye_daisy",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:light_gray_dye",
+                                "note": "",
+                                "target": "item:qtcraft:light_gray_dye",
+                                "text": "Hellgrauer Farbstoff"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
                         }
                     ],
                     "text": "",
@@ -103756,6 +104537,33 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 2
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:orange_tulip",
+                                    "note": "",
+                                    "target": "block:qtcraft:orange_tulip",
+                                    "text": "Orange Tulpe"
+                                }
+                            ],
+                            "count": 2,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:orange_dye_from_orange_tulip",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:orange_dye",
+                                "note": "",
+                                "target": "item:qtcraft:orange_dye",
+                                "text": "Orangefarbener Farbstoff"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
                         }
                     ],
                     "text": "",
@@ -103800,7 +104608,7 @@
                     "title": "Wird verwendet für"
                 }
             ],
-            "text": "Aus rotem und gelbem Farbstoff gemischt.",
+            "text": "Aus orangen Tulpen oder aus rotem und gelbem Farbstoff gemischt.",
             "title": "Orangefarbener Farbstoff"
         },
         "item:qtcraft:painting": {
@@ -104081,6 +104889,33 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 2
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:pink_tulip",
+                                    "note": "",
+                                    "target": "block:qtcraft:pink_tulip",
+                                    "text": "Rosa Tulpe"
+                                }
+                            ],
+                            "count": 2,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:pink_dye_from_pink_tulip",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:pink_dye",
+                                "note": "",
+                                "target": "item:qtcraft:pink_dye",
+                                "text": "Rosafarbener Farbstoff"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
                         }
                     ],
                     "text": "",
@@ -116897,6 +117732,12 @@
                             "text": "Maiglöckchen"
                         },
                         {
+                            "icon": "qtcraft:oxeye_daisy",
+                            "note": "0, aus der Härte",
+                            "target": "block:qtcraft:oxeye_daisy",
+                            "text": "Margerite"
+                        },
+                        {
                             "icon": "qtcraft:melon_stem",
                             "note": "0, aus der Härte",
                             "target": "block:qtcraft:melon_stem",
@@ -116907,6 +117748,18 @@
                             "note": "0, aus der Härte",
                             "target": "block:qtcraft:poppy",
                             "text": "Mohn"
+                        },
+                        {
+                            "icon": "qtcraft:orange_tulip",
+                            "note": "0, aus der Härte",
+                            "target": "block:qtcraft:orange_tulip",
+                            "text": "Orange Tulpe"
+                        },
+                        {
+                            "icon": "qtcraft:pink_tulip",
+                            "note": "0, aus der Härte",
+                            "target": "block:qtcraft:pink_tulip",
+                            "text": "Rosa Tulpe"
                         },
                         {
                             "icon": "qtcraft:red_mushroom",
@@ -120662,6 +121515,12 @@
                             "text": "Maiglöckchen"
                         },
                         {
+                            "icon": "qtcraft:oxeye_daisy",
+                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "target": "block:qtcraft:oxeye_daisy",
+                            "text": "Margerite"
+                        },
+                        {
                             "icon": "qtcraft:melon_stem",
                             "note": "Licht geht durch, Wesen erscheinen darin",
                             "target": "block:qtcraft:melon_stem",
@@ -120680,10 +121539,22 @@
                             "text": "Mohn"
                         },
                         {
+                            "icon": "qtcraft:orange_tulip",
+                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "target": "block:qtcraft:orange_tulip",
+                            "text": "Orange Tulpe"
+                        },
+                        {
                             "icon": "qtcraft:vines",
                             "note": "Licht geht durch, Wesen erscheinen darin",
                             "target": "block:qtcraft:vines",
                             "text": "Ranken"
+                        },
+                        {
+                            "icon": "qtcraft:pink_tulip",
+                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "target": "block:qtcraft:pink_tulip",
+                            "text": "Rosa Tulpe"
                         },
                         {
                             "icon": "qtcraft:red_mushroom",
@@ -122318,6 +123189,12 @@
                             "note": "",
                             "target": "biome:qtcraft:birch_forest",
                             "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
                         },
                         {
                             "icon": "qtcraft:grass_block",

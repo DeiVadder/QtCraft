@@ -1,6 +1,7 @@
 {
     "biome.qtcraft.birch_forest": "Birch Forest",
     "biome.qtcraft.desert": "Desert",
+    "biome.qtcraft.flower_valley": "Flower Valley",
     "biome.qtcraft.forest": "Forest",
     "biome.qtcraft.mountains": "Mountains",
     "biome.qtcraft.plains": "Plains",
@@ -287,6 +288,9 @@
     "block.qtcraft.lily_of_the_valley": "Lily of the valley",
     "block.qtcraft.blue_orchid": "Blue orchid",
     "block.qtcraft.allium": "Allium",
+    "block.qtcraft.orange_tulip": "Orange tulip",
+    "block.qtcraft.oxeye_daisy": "Oxeye daisy",
+    "block.qtcraft.pink_tulip": "Pink tulip",
     "block.qtcraft.dead_bush": "Dead bush",
     "block.qtcraft.fern": "Fern",
     "block.qtcraft.fire": "Fire",

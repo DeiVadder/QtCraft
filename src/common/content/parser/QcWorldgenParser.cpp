@@ -178,6 +178,7 @@ namespace QcWorldgenParser {
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
     biome.ruggedness = reader.number(u"ruggedness"_s, biome.ruggedness, 0.0, 1.0);
+    biome.rarity = reader.number(u"rarity"_s, biome.rarity, 0.0, 1.0);
     biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
     biome.heightVariation = reader.number(u"heightVariation"_s, 6.0, 0.0, 120.0);
     biome.ridges = reader.number(u"ridges"_s, 0.0, 0.0, 1.0);

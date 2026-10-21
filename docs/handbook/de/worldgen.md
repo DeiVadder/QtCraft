@@ -29,7 +29,7 @@
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (2,8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (2,8 % der Säulen), [Blumental](biomes.md#biome-qtcraft-flower_valley) (0,12 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Braune Pilze
 
@@ -82,7 +82,7 @@
 
 **In Biomen**
 
-[Dschungel](biomes.md#biome-qtcraft-jungle) (2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,2 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (3,2 % der Säulen)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (0,08 % der Säulen), [Dschungel](biomes.md#biome-qtcraft-jungle) (2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,2 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (3,2 % der Säulen)
 
 ### <a id="ore-qtcraft-iron"></a>Eisenerz-Vorkommen
 
@@ -137,7 +137,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Biome**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Dschungel](biomes.md#biome-qtcraft-jungle), [Ebene](biomes.md#biome-qtcraft-plains), [Gebirge](biomes.md#biome-qtcraft-mountains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wald](biomes.md#biome-qtcraft-forest), [Wüste](biomes.md#biome-qtcraft-desert)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Ebene](biomes.md#biome-qtcraft-plains), [Gebirge](biomes.md#biome-qtcraft-mountains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Wald](biomes.md#biome-qtcraft-forest), [Wüste](biomes.md#biome-qtcraft-desert)
 
 ### <a id="ore-qtcraft-gold"></a>Golderz-Vorkommen
 
@@ -303,7 +303,7 @@ In jedem Chunk dieser Biome versucht.
 
 **In Biomen**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp) (8 % der Säulen)
+[Blumental](biomes.md#biome-qtcraft-flower_valley) (5 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (8 % der Säulen)
 
 ### <a id="ore-qtcraft-signal"></a>Signalerz-Vorkommen
 
@@ -402,4 +402,4 @@ In jedem Chunk dieser Biome versucht.
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (15 % der Säulen), [Dschungel](biomes.md#biome-qtcraft-jungle) (20 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (15 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (30 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen), [Wüste](biomes.md#biome-qtcraft-desert) (20 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (15 % der Säulen), [Blumental](biomes.md#biome-qtcraft-flower_valley) (20 % der Säulen), [Dschungel](biomes.md#biome-qtcraft-jungle) (20 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (15 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (30 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen), [Wüste](biomes.md#biome-qtcraft-desert) (20 % der Säulen)

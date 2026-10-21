@@ -19,7 +19,7 @@
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (2.8 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (2.8 % of columns), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (0.12 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Brown mushrooms
 
@@ -241,7 +241,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Swamp](biomes.md#biome-qtcraft-swamp) (8 % of columns)
+[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (5 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (8 % of columns)
 
 ### <a id="ore-qtcraft-magma"></a>Magma block veins
 
@@ -280,7 +280,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Forest](biomes.md#biome-qtcraft-forest) (3.2 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (1.2 % of columns)
+[Flower Valley](biomes.md#biome-qtcraft-flower_valley) (0.08 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (3.2 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (1.2 % of columns)
 
 ### <a id="feature-qtcraft-pumpkin_patch"></a>Pumpkins
 
@@ -362,7 +362,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (15 % of columns), [Desert](biomes.md#biome-qtcraft-desert) (20 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (15 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (20 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (15 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (30 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (15 % of columns), [Desert](biomes.md#biome-qtcraft-desert) (20 % of columns), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (20 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (15 % of columns), [Jungle](biomes.md#biome-qtcraft-jungle) (20 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (15 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (30 % of columns)
 
 ### <a id="world-terrain"></a>Terrain
 
@@ -382,7 +382,7 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Forest](biomes.md#biome-qtcraft-forest), [Jungle](biomes.md#biome-qtcraft-jungle), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Jungle](biomes.md#biome-qtcraft-jungle), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="feature-qtcraft-wild_carrots"></a>Wild carrots
 

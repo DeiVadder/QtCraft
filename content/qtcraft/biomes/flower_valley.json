@@ -1,0 +1,86 @@
+{
+    "name": "flower_valley",
+    "temperature": 0.55,
+    "humidity": 0.5,
+    "ruggedness": 0.1,
+    "rarity": 1.0,
+    "baseHeight": 62.5,
+    "heightVariation": 3,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "clay",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "birch_tree",
+            "density": 0.0012
+        },
+        {
+            "feature": "oak_tree",
+            "density": 0.0008
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.2
+        },
+        {
+            "feature": "lily_pad",
+            "density": 0.05
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.18,
+            "patchSize": 24,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.3,
+            "patchSize": 0,
+            "plants": [
+                {
+                    "block": "oxeye_daisy",
+                    "weight": 14
+                },
+                {
+                    "block": "pink_tulip",
+                    "weight": 12
+                },
+                {
+                    "block": "orange_tulip",
+                    "weight": 12
+                },
+                {
+                    "block": "dandelion",
+                    "weight": 10
+                },
+                {
+                    "block": "poppy",
+                    "weight": 10
+                },
+                {
+                    "block": "cornflower",
+                    "weight": 10
+                },
+                {
+                    "block": "allium",
+                    "weight": 8
+                },
+                {
+                    "block": "lily_of_the_valley",
+                    "weight": 6
+                }
+            ],
+            "patches": {
+                "chance": 0.9,
+                "tries": 96,
+                "radius": 7
+            }
+        }
+    }
+}

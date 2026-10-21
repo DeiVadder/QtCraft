@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Forest](#biome-qtcraft-forest) · [Jungle](#biome-qtcraft-jungle) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Jungle](#biome-qtcraft-jungle) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
 
 ## QtCraft
 
@@ -54,6 +54,37 @@ Sand and sandstone with cacti and little else.
 **Plants and trees**
 
 [Cactus](worldgen.md#feature-qtcraft-cactus) (0.6 % of columns), [Dead bushes](worldgen.md#feature-qtcraft-dead_bush) (2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-flower_valley"></a>Flower Valley
+
+A rare, sheltered valley in temperate land: a broad grassy floor between low hills, covered in flowers, with large fields of a single kind among a colourful carpet, a few birches and oaks, and now and then a pond with reeds and lily pads. Only here grow oxeye daisies and tulips.
+
+| | |
+|---|---|
+| ID | `qtcraft:flower_valley` |
+| Climate | temperature 0.55, humidity 0.5, ruggedness 0.1 |
+| Rarity | 1 (only in scattered spots where the climate fits) |
+| Terrain height | around y 62.5, ± 3 |
+| Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
+| Under water | [Clay](blocks.md#block-qtcraft-clay) |
+| Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Plants and trees**
+
+[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (0.12 % of columns), [Lily pads](worldgen.md#feature-qtcraft-lily_pad) (5 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.08 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+
+**Grasses**
+
+[Tall grass](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Flowers**
+
+[Oxeye daisy](blocks.md#block-qtcraft-oxeye_daisy) (17.07 %), [Pink tulip](blocks.md#block-qtcraft-pink_tulip) (14.63 %), [Orange tulip](blocks.md#block-qtcraft-orange_tulip) (14.63 %), [Dandelion](blocks.md#block-qtcraft-dandelion) (12.2 %), [Poppy](blocks.md#block-qtcraft-poppy) (12.2 %), [Cornflower](blocks.md#block-qtcraft-cornflower) (12.2 %), [Allium](blocks.md#block-qtcraft-allium) (9.76 %), [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) (7.32 %)
 
 **Creatures**
 

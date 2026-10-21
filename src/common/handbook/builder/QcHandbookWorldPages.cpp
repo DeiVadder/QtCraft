@@ -141,6 +141,9 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
                         text.label(u"value.climate"_s)
                             .arg(text.number(biome.temperature), text.number(biome.humidity), text.number(biome.ruggedness)),
                         {}});
+    if (biome.rarity > 0.0) {
+        entry.facts.append({text.label(u"fact.rarity"_s), text.label(u"value.rarity"_s).arg(text.number(biome.rarity)), {}});
+    }
     entry.facts.append({text.label(u"fact.height"_s),
                         text.label(u"value.height"_s).arg(text.number(biome.baseHeight), text.number(biome.heightVariation)), {}});
 

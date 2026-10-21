@@ -602,6 +602,12 @@ Färbt Wolle, Glas, Terrakotta und Beton hellgrau.
 |---|---|---|
 | [Grauer Farbstoff](#item-qtcraft-gray_dye) | [Weißer Farbstoff](#item-qtcraft-white_dye) | 2 × [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) |
 
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Margerite](blocks.md#block-qtcraft-oxeye_daisy) | 2 × [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) |
+
 **Wird verwendet für**
 
 [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgraues Betonpulver](blocks.md#block-qtcraft-light_gray_concrete_powder), [Hellgraues Bett](blocks.md#block-qtcraft-light_gray_bed), [Hellgraues Glas](blocks.md#block-qtcraft-light_gray_stained_glass)
@@ -1164,7 +1170,7 @@ Frische Milch einer Kuh. Mit der Benutzen-Taste getrunken, beendet sie alle Stat
 
 ### <a id="item-qtcraft-orange_dye"></a>Orangefarbener Farbstoff
 
-Aus rotem und gelbem Farbstoff gemischt.
+Aus orangen Tulpen oder aus rotem und gelbem Farbstoff gemischt.
 
 | | |
 |---|---|
@@ -1179,6 +1185,12 @@ Aus rotem und gelbem Farbstoff gemischt.
 | 1 | 2 | → |
 |---|---|---|
 | [Roter Farbstoff](#item-qtcraft-red_dye) | [Gelber Farbstoff](#item-qtcraft-yellow_dye) | 2 × [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Orange Tulpe](blocks.md#block-qtcraft-orange_tulip) | 2 × [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) |
 
 **Wird verwendet für**
 
@@ -1376,6 +1388,12 @@ Färbt Wolle, Glas, Terrakotta und Beton rosafarben.
 | 1 | 2 | → |
 |---|---|---|
 | [Roter Farbstoff](#item-qtcraft-red_dye) | [Weißer Farbstoff](#item-qtcraft-white_dye) | 2 × [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) |
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Rosa Tulpe](blocks.md#block-qtcraft-pink_tulip) | 2 × [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) |
 
 **Wird verwendet für**
 

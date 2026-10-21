@@ -495,7 +495,8 @@ private slots:
 
     void swampsGrowLilyPadsOnTheirWater()
     {
-        // Lily pads lie on the sea-level water of swamp columns and nowhere else.
+        // Lily pads lie on the sea-level water of swamp columns (and of the ponds of a flower
+        // valley, decision E-821) and nowhere else.
         const QcTerrainGenerator generator(m_content, 42);
         const QcBlockId lily = id("qtcraft:lily_pad");
         const QcBlockId water = id("qtcraft:water");
@@ -520,7 +521,9 @@ private slots:
                 const bool wet = chunk->block(x, y - 1, z) == water;
                 swampWater += swamp && wet ? 1 : 0;
                 if (chunk->block(x, y, z) == lily) {
-                    QVERIFY2(swamp && wet, qPrintable(u"lily pad at %1 %2"_s.arg(pos.x * 16 + x).arg(pos.z * 16 + z)));
+                    const bool valley = generator.biomeAt(pos.x * QcWorld::chunkSize + x, pos.z * QcWorld::chunkSize + z)
+                                        == u"qtcraft:flower_valley"_s;
+                    QVERIFY2((swamp || valley) && wet, qPrintable(u"lily pad at %1 %2"_s.arg(pos.x * 16 + x).arg(pos.z * 16 + z)));
                     ++lilies;
                 }
             }

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Dschungel](#biome-qtcraft-jungle) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Wald](#biome-qtcraft-forest) · [Wüste](#biome-qtcraft-desert)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Wald](#biome-qtcraft-forest) · [Wüste](#biome-qtcraft-desert)
 
 ## QtCraft
 
@@ -35,6 +35,37 @@ Heller Wald aus Birken.
 **Wesen**
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-flower_valley"></a>Blumental
+
+Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwischen niedrigen Hügeln, übersät mit Blumen, große Felder einer Sorte inmitten eines bunten Teppichs, einige Birken und Eichen und hin und wieder ein Teich mit Schilf und Seerosen. Nur hier wachsen Margeriten und Tulpen.
+
+| | |
+|---|---|
+| ID | `qtcraft:flower_valley` |
+| Klima | Temperatur 0,55, Feuchte 0,5, Zerklüftung 0,1 |
+| Seltenheit | 1 (nur an verstreuten Stellen mit passendem Klima) |
+| Geländehöhe | um y 62,5, ± 3 |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (3 Blöcke) |
+| Unter Wasser | [Ton](blocks.md#block-qtcraft-clay) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Birke](worldgen.md#feature-qtcraft-birch_tree) (0,12 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,08 % der Säulen), [Seerosen](worldgen.md#feature-qtcraft-lily_pad) (5 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Blumen**
+
+[Margerite](blocks.md#block-qtcraft-oxeye_daisy) (17,07 %), [Rosa Tulpe](blocks.md#block-qtcraft-pink_tulip) (14,63 %), [Orange Tulpe](blocks.md#block-qtcraft-orange_tulip) (14,63 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (12,2 %), [Mohn](blocks.md#block-qtcraft-poppy) (12,2 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (12,2 %), [Zierlauch](blocks.md#block-qtcraft-allium) (9,76 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (7,32 %)
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-jungle"></a>Dschungel
 

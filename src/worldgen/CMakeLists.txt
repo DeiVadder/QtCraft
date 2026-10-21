@@ -59,6 +59,7 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcCaveCarver.h terrain/QcCaveCarver.cpp
     terrain/QcNoise.h terrain/QcNoise.cpp
     terrain/QcPoolPlacer.h terrain/QcPoolPlacer.cpp
+    terrain/QcTerrainClimate.h terrain/QcTerrainClimate.cpp
     terrain/QcTerrainColumn.h
     terrain/QcTerrainColumnGrid.h terrain/QcTerrainColumnGrid.cpp
     terrain/QcTerrainDefinitions.h terrain/QcTerrainDefinitions.cpp
@@ -95,8 +96,8 @@ target_sources(qc_worldgen PRIVATE
 qc_configure_target(qc_worldgen)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
 set(qc_worldgen_fp_sources
-    terrain/QcCaveCarver.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp terrain/QcTerrainColumnGrid.cpp
-    terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTreeShape.cpp
+    terrain/QcCaveCarver.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp terrain/QcTerrainClimate.cpp
+    terrain/QcTerrainColumnGrid.cpp terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTreeShape.cpp
     terrain/QcVegetationPatchPlacer.cpp villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
     villages/QcRoadNetworkPlanner.cpp villages/QcVillageDraft.cpp villages/QcVillageForecourt.cpp villages/QcVillagePlanner.cpp
     villages/QcWetlandPattern.cpp villages/QcWetlandShaper.cpp)

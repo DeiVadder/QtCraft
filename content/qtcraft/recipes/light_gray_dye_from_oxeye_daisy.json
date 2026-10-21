@@ -1,0 +1,11 @@
+{
+    "name": "light_gray_dye_from_oxeye_daisy",
+    "type": "shapeless",
+    "ingredients": [
+        "oxeye_daisy"
+    ],
+    "result": {
+        "item": "light_gray_dye",
+        "count": 2
+    }
+}

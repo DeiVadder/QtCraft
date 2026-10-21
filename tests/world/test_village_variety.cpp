@@ -304,12 +304,17 @@ private slots:
             }
         }
         const Chunks chunks = generateInOrder(m_generator, positions);
+        // Water, or water frozen over (the jetty of a tundra village stands on ice).
+        const QcBlockId ice = m_content->blockId(u"qtcraft:ice"_s).value_or(qcAirBlockId);
+        const auto isWater = [&](QcBlockPos at) {
+            const QcBlockId block = *blockIn(chunks, at);
+            return m_content->block(block).liquid || block == ice;
+        };
         bool touches = false;
         for (const QcVillagePlan::Deck &deck : plan->decks) {
             QCOMPARE(blockIn(chunks, deck.at), deck.block);
             const QcBlockPos below = deck.at.offset(0, -1, 0);
-            touches = touches || m_content->block(*blockIn(chunks, below)).liquid
-                      || m_content->block(*blockIn(chunks, below.offset(0, -1, 0))).liquid;
+            touches = touches || isWater(below) || isWater(below.offset(0, -1, 0));
             if (deck.post == qcAirBlockId) {
                 continue;
             }
