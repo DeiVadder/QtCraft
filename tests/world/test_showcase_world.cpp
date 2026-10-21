@@ -165,7 +165,7 @@ private slots:
             const QList<QcBlockPos> updates = QcShowcaseGenerator(m_content).setup().updates;
             const auto unloaded = std::ranges::count_if(updates, [&](QcBlockPos pos) { return !server->world().chunk(pos.chunk()); });
             QVERIFY(updates.size() >= 6);
-            QVERIFY(server->pendingCommandBlockUpdates() + server->waitingBlockUpdates() >= unloaded);
+            QVERIFY(server->blockUpdates().pendingCommandCount() + server->blockUpdates().waitingCount() >= unloaded);
             QVERIFY(server->stop());
         }
 

@@ -146,6 +146,19 @@ target_sources(qc_common PRIVATE
     core/QcWorldConstants.h
 )
 target_sources(qc_common PRIVATE
+    diagnostics/QcBuildInfo.h diagnostics/QcBuildInfo.cpp
+    diagnostics/QcCrashHandler.h diagnostics/QcCrashHandler.cpp
+    diagnostics/QcDiagnosticsBundle.h diagnostics/QcDiagnosticsBundle.cpp
+    diagnostics/QcDiagnosticsOptions.h diagnostics/QcDiagnosticsOptions.cpp
+    diagnostics/QcDiagnosticsSession.h diagnostics/QcDiagnosticsSession.cpp
+    diagnostics/QcHealthLog.h diagnostics/QcHealthLog.cpp
+    diagnostics/QcHealthSample.h
+    diagnostics/QcIntervalStats.h diagnostics/QcIntervalStats.cpp
+    diagnostics/QcLogFiles.h diagnostics/QcLogFiles.cpp
+    diagnostics/QcLogWriter.h diagnostics/QcLogWriter.cpp
+    diagnostics/QcMessageLog.h diagnostics/QcMessageLog.cpp
+)
+target_sources(qc_common PRIVATE
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
@@ -267,6 +280,35 @@ qc_configure_target(qc_common)
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_common PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_common PUBLIC Qt::Core)
+
+# The crash handler's platform part (decision E-834): minidumps with dbghelp on Windows, signals
+# elsewhere.
+if(WIN32)
+    target_sources(qc_common PRIVATE diagnostics/QcCrashHandler_win.cpp)
+    target_link_libraries(qc_common PRIVATE dbghelp psapi)
+else()
+    target_sources(qc_common PRIVATE diagnostics/QcCrashHandler_posix.cpp)
+endif()
+
+# Version and git commit of the build, for this one file only (decision E-834): taken at configure
+# time, so a new commit does not rebuild the libraries; a fresh configure (release, Windows build)
+# brings the current commit.
+find_package(Git QUIET)
+set(QC_BUILD_COMMIT "unknown")
+if(GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short=10 HEAD WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                    OUTPUT_VARIABLE QC_GIT_HEAD OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET RESULT_VARIABLE QC_GIT_RESULT)
+    if(QC_GIT_RESULT EQUAL 0 AND QC_GIT_HEAD)
+        set(QC_BUILD_COMMIT "${QC_GIT_HEAD}")
+        execute_process(COMMAND ${GIT_EXECUTABLE} status --porcelain --untracked-files=no WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        OUTPUT_VARIABLE QC_GIT_CHANGES OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+        if(QC_GIT_CHANGES)
+            string(APPEND QC_BUILD_COMMIT "-dirty")
+        endif()
+    endif()
+endif()
+set_source_files_properties(diagnostics/QcBuildInfo.cpp PROPERTIES
+    COMPILE_DEFINITIONS "QC_BUILD_VERSION=\"${PROJECT_VERSION}\";QC_BUILD_COMMIT=\"${QC_BUILD_COMMIT}\"")
 
 # The loader of the base game content (:/content/qtcraft, content/CMakeLists.txt) is part of
 # qc_base_content, so only the targets that load the base content embed it (decision E-419): the

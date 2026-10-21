@@ -64,6 +64,12 @@ ColumnLayout {
         onToggled: page.game.settings.debug.remeshFlash = checked
     }
 
+    DiagnosticsSection {
+        Layout.fillWidth: true
+        Layout.topMargin: Ui.px(8)
+        game: page.game
+    }
+
     Item {
         Layout.fillHeight: true
     }

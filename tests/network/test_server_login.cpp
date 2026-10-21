@@ -1,5 +1,6 @@
 #include "common/auth/QcLoginCrypto.h"
 #include "QcServerTestFixture.h"
+#include "QcTestProtocol.h"
 #include "QcTestUtil.h"
 #include "server/login/QcIdentityStore.h"
 
@@ -313,6 +314,16 @@ private slots:
         QcTestUtil::pump();
         QCOMPARE(old.disconnectKey, u"Protocol version mismatch: server %1, client %2"_s);
         QVERIFY(!old.challenge.has_value());
+
+        // A real client of the version before Hello carried the client text (decision E-834) hears
+        // about the mismatch, not about a frame the server could not decode.
+        auto [olderServerEnd, olderClientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(olderServerEnd));
+        RawClient older(std::move(olderClientEnd));
+        older.connection.transport().sendFrame(QcTestProtocol::helloWithoutClientText(u"Older"_s));
+        QcTestUtil::pump();
+        QCOMPARE(older.disconnectKey, u"Protocol version mismatch: server %1, client %2"_s);
+        QVERIFY(!older.challenge.has_value());
     }
 
     void aSlowLoginTimesOut()
@@ -381,7 +392,7 @@ private slots:
         // Seeded random frames: pure noise, a real Hello cut short or with flipped bytes, and the
         // tag of a real message followed by noise. None may crash the server; each connection ends
         // (refused or undecodable) and leaves nothing behind.
-        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"Fuzz"_s, {}});
+        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"Fuzz"_s, {}, {}});
         const QByteArray response = QcProtocol::encode(QcMsg::LoginResponse{});
         QRandomGenerator random(2510);
         int closed = 0;

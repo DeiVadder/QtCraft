@@ -17,6 +17,9 @@ Q_DECLARE_LOGGING_CATEGORY(lcGameModes)
 // "qtcraft.items": item entities in the world.
 Q_DECLARE_LOGGING_CATEGORY(lcItems)
 
+// "qtcraft.lag": ticks longer than 50 ms with their longest phases (QcLagReport, decision E-834).
+Q_DECLARE_LOGGING_CATEGORY(lcLag)
+
 // "qtcraft.network": the TCP server: listening, connections.
 Q_DECLARE_LOGGING_CATEGORY(lcNetwork)
 

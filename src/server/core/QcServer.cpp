@@ -169,6 +169,9 @@ void QcServer::flushIdentities()
 QcStatus QcServer::stop()
 {
     m_tickTimer->stop();
+    if (const std::optional<QString> lag = m_lag.flush()) {
+        qCInfo(lcLag).noquote() << *lag;
+    }
 
     // Open crafting grids and stonecutters are emptied like on a disconnect, so overflow lands in the
     // saved world.

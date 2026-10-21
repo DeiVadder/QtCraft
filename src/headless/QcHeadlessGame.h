@@ -15,6 +15,7 @@
 #include <optional>
 
 class QcClientSession;
+class QcDiagnosticsSession;
 class QcDedicatedServer;
 class QcHandbook;
 class QcContentRegistry;
@@ -81,6 +82,8 @@ private:
     [[nodiscard]] QJsonObject handbookCommand(const QJsonObject &request);
     const QcHandbook &handbook(const QString &language);
 
+    // First, so it is destroyed last: the log stays open until everything else said goodbye.
+    std::unique_ptr<QcDiagnosticsSession> m_diagnostics;
     std::unique_ptr<QcDedicatedServer> m_dedicated;
     std::unique_ptr<QcLocalServerHost> m_server;
     std::shared_ptr<const QcContentRegistry> m_content;

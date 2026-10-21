@@ -47,11 +47,13 @@ struct QcServerClient : QcEntity
     static constexpr qsizetype maxMiningResendsPerTick = 3;
 
     // The login (decision E-252): where the client connects from (address and port of a network
-    // client; empty in-process), since when (the login must finish within loginTimeoutMs), the nonce
+    // client; empty in-process), the program it reports, since when (the login must finish within loginTimeoutMs), the nonce
     // of the challenge and the fingerprint of the proven identity (remote clients).
     struct Login
     {
         QString address;
+        // What the client said it is (QcMsg::Hello::client), for the log.
+        QString client;
         QElapsedTimer connected;
         QByteArray nonce;
         QString fingerprint;

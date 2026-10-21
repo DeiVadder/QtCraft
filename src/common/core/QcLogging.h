@@ -11,3 +11,7 @@ Q_DECLARE_LOGGING_CATEGORY(lcConnection)
 Q_DECLARE_LOGGING_CATEGORY(lcRegistry)
 // "qtcraft.itemdata": item data refused for going beyond its limits (QcItemStack::withData).
 Q_DECLARE_LOGGING_CATEGORY(lcItemData)
+// "qtcraft.diagnostics": the log file, crash reports and diagnostics bundles (decision E-834).
+Q_DECLARE_LOGGING_CATEGORY(lcDiagnostics)
+// "qtcraft.health": the periodic health line of game and server (decision E-834).
+Q_DECLARE_LOGGING_CATEGORY(lcHealth)

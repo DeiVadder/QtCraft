@@ -2,11 +2,14 @@
 
 #include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionLink.h"
+#include "common/diagnostics/QcBuildInfo.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcTransport.h"
 
+
+#include <QCoreApplication>
 
 #include <cmath>
 
@@ -36,13 +39,19 @@ void QcClientSession::start(TickMode mode)
 {
     const bool timer = mode != TickMode::Manual;
     const bool threaded = mode == TickMode::Threaded && QcSessionLink::threadWanted();
-    m_link->start({QcMsg::Hello{QcProtocol::version, m_playerName, m_appearance}, timer}, threaded);
+    const QcMsg::Hello hello{QcProtocol::version, m_playerName, m_appearance, QcBuildInfo::clientText(QCoreApplication::applicationName()).left(QcMsg::Hello::maxClientLength)};
+    m_link->start({hello, timer}, threaded);
     m_helloSent = true;
 }
 
 QcTickTiming &QcClientSession::tickTiming() const
 {
     return m_link->timing();
+}
+
+QcLinkStats &QcClientSession::linkStats() const
+{
+    return m_link->linkStats();
 }
 
 void QcClientSession::setIntent(const QcPlayerInput &intent)

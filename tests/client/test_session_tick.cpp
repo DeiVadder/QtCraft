@@ -236,7 +236,7 @@ private slots:
         QcSessionCore core(host->connectClient(), [&](QcSessionEvent &&event) { events.push_back(std::move(event)); });
         qint64 now = 0;
         core.setClock([&now] { return now; });
-        core.apply({QcSessionCommand::Start{QcMsg::Hello{QcProtocol::version, u"Clock"_s, {}}, true}});
+        core.apply({QcSessionCommand::Start{QcMsg::Hello{QcProtocol::version, u"Clock"_s, {}, {}}, true}});
         QVERIFY(QTest::qWaitFor(
             [&] {
                 now += intervalNs;

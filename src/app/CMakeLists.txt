@@ -7,6 +7,7 @@ qt_add_library(qc_app_core STATIC)
 target_sources(qc_app_core PRIVATE
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
@@ -202,6 +203,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/RecentServerRow.qml
         qml/settings/ControlsPage.qml
         qml/settings/DebugOptionsPage.qml
+        qml/settings/DiagnosticsSection.qml
         qml/settings/GamepadPage.qml
         qml/settings/GamepadValues.qml
         qml/settings/SettingsScreen.qml

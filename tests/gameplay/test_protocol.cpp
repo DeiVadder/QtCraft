@@ -71,7 +71,7 @@ class TestProtocol : public QObject
 private slots:
     void simpleMessagesRoundTrip()
     {
-        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Jö"_s, {}});
+        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Jö"_s, {}, {}});
         QCOMPARE(hello.protocolVersion, QcProtocol::version);
         QCOMPARE(hello.playerName, u"Jö"_s);
 
@@ -560,7 +560,7 @@ private slots:
         look.hair.clear();
         look.skinColor = 0x123456;
         look.pantsColor = 0xFFFFFFFF;
-        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look});
+        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look, {}});
         QCOMPARE(hello.appearance.outfit, u"mod:robe"_s);
         QVERIFY(hello.appearance.hair.isEmpty());
         QCOMPARE(hello.appearance.skinColor, 0x123456u);
@@ -575,7 +575,7 @@ private slots:
         // The cape travels with the look (protocol 23, decision E-240); none stays none.
         look.cape = u"mod:red_cape"_s;
         look.pantsColor = 0xFFFFFF;
-        QCOMPARE(roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look}).appearance, look);
+        QCOMPARE(roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look, {}}).appearance, look);
         QCOMPARE(roundTrip(QcMsg::SetAppearance{look}).appearance.cape, u"mod:red_cape"_s);
         spawn.appearance = look;
         QCOMPARE(roundTrip(spawn).appearance.cape, u"mod:red_cape"_s);
@@ -587,10 +587,10 @@ private slots:
         // Overlong names are refused.
         look.outfit = QString(QcAppearance::maxNameLength + 1, u'x');
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SetAppearance{look}), QcProtocol::Peer::Client).has_value());
-        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look}), QcProtocol::Peer::Client)
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look, {}}), QcProtocol::Peer::Client)
                      .has_value());
         // A Hello of another version is still read far enough to report the mismatch.
-        const QcResult<QcMessage> old = QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version - 1, u"Old"_s, look}),
+        const QcResult<QcMessage> old = QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version - 1, u"Old"_s, look, {}}),
                                                            QcProtocol::Peer::Client);
         QVERIFY(old.has_value());
         QCOMPARE(std::get<QcMsg::Hello>(*old).protocolVersion, QcProtocol::version - 1);
@@ -607,7 +607,7 @@ private slots:
         QVERIFY(!QcProtocol::decode(QByteArray(), QcProtocol::Peer::Server).has_value());
         QVERIFY(!QcProtocol::decode(frameWithTag(999, {}), QcProtocol::Peer::Server).has_value());
 
-        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"player"_s, {}});
+        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"player"_s, {}, {}});
         QVERIFY(!QcProtocol::decode(hello.left(hello.size() - 3), QcProtocol::Peer::Client).has_value());
         QVERIFY(!QcProtocol::decode(hello + QByteArray(1, 'x'), QcProtocol::Peer::Client).has_value());
 

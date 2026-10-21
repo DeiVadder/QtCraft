@@ -1,6 +1,7 @@
 #include "clientcore/tick/QcSessionLink.h"
 
 #include "clientcore/tick/QcSessionCore.h"
+#include "common/diagnostics/QcCrashHandler.h"
 #include "common/protocol/QcTransport.h"
 
 #include <QPointer>
@@ -55,6 +56,7 @@ void QcSessionLink::start(const QcSessionCommand::Start &start, bool threaded)
         // Set before the thread runs; deliver() reads it from there.
         m_thread = std::make_unique<QThread>();
         m_thread->setObjectName(u"session tick"_s);
+        connect(m_thread.get(), &QThread::started, m_thread.get(), &QcCrashHandler::prepareThread, Qt::DirectConnection);
         m_core->moveAllToThread(m_thread.get());
         m_thread->start();
     }
@@ -92,6 +94,11 @@ bool QcSessionLink::tick()
 QcTickTiming &QcSessionLink::timing() const
 {
     return m_core->pacer().timing();
+}
+
+QcLinkStats &QcSessionLink::linkStats() const
+{
+    return m_core->linkStats();
 }
 
 void QcSessionLink::deliver(QcSessionEvent &&event)

@@ -58,6 +58,8 @@ public:
     QList<QcBlockPos> commandUpdates() const { return {m_commandUpdates.begin(), m_commandUpdates.end()}; }
     QList<QcBlockPos> waitingUpdates() const;
 
+    // Updates of loaded chunks waiting for the next ticks, of player actions and of commands.
+    qsizetype pendingCount() const { return pendingPlayerCount() + pendingCommandCount(); }
     qsizetype pendingPlayerCount() const { return qsizetype(m_playerUpdates.size()); }
     qsizetype pendingCommandCount() const { return qsizetype(m_commandUpdates.size()); }
     qsizetype waitingCount() const { return m_waitingCount; }

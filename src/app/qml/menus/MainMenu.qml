@@ -65,6 +65,33 @@ Rectangle {
             font.bold: true
         }
 
+        // The previous session ended with a crash (decision E-834): where its report is.
+        RowLayout {
+            objectName: "crashNotice"
+            Layout.fillWidth: true
+            Layout.maximumWidth: Ui.px(900)
+            Layout.alignment: Qt.AlignHCenter
+            visible: menu.game.settings.diagnostics.crashReport !== ""
+            spacing: Ui.px(12)
+
+            Label {
+                Layout.fillWidth: true
+                textFormat: Text.PlainText
+                wrapMode: Text.Wrap
+                color: Theme.text
+                text: qsTr("The last session ended with a crash. Its report is %1; please send it with the log.")
+                          .arg(menu.game.settings.diagnostics.crashReport)
+            }
+            Button {
+                text: qsTr("Open log folder")
+                onClicked: menu.game.settings.diagnostics.openLogFolder()
+            }
+            Button {
+                text: qsTr("Dismiss")
+                onClicked: menu.game.settings.diagnostics.dismissCrashReport()
+            }
+        }
+
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true

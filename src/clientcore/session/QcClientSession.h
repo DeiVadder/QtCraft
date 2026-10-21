@@ -31,6 +31,7 @@
 #include <optional>
 
 class QcSessionLink;
+class QcLinkStats;
 class QcTickTiming;
 class QcTransport;
 
@@ -102,6 +103,8 @@ public:
     // Punctuality of the timer-driven ticks (decision E-560); empty with TickMode::Manual. Safe to
     // read and reset while the tick thread runs.
     QcTickTiming &tickTiming() const;
+    // Round trip of the inputs and bytes of the connection (health line, decision E-834).
+    QcLinkStats &linkStats() const;
 
     // The hand: the block or entity the player looks at (updated every tick), mining progress.
     const QcHandActions &hand() const { return m_hand; }

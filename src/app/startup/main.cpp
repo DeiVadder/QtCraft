@@ -1,3 +1,4 @@
+#include "app/controllers/QcDiagnosticsSettings.h"
 #include "app/controllers/QcGameController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
@@ -9,6 +10,8 @@
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"
 #include "app/startup/QcAppWindow.h"
+#include "common/core/QcDataRoot.h"
+#include "common/diagnostics/QcDiagnosticsSession.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -42,6 +45,13 @@ int main(int argc, char *argv[])
         std::println(stderr, "qtcraft: {}", options.error.toStdString());
         return 1;
     }
+    // Logging and crash reports from here to the end of main() (decision E-834).
+    const QcDiagnosticsSession diagnostics({.program = u"qtcraft"_s,
+                                            .dataDirectory = QcDataRoot::path(),
+                                            .logByDefault = QcDiagnosticsSettings::storedLogToFile(),
+                                            .setup = options.diagnostics,
+                                            .arguments = QCoreApplication::arguments()});
+    diagnostics.runCrashTest();
     QcAppWindow::prepareScriptedRun(options, offscreen);
 
     const QString language = QcAppLanguage::uiLanguage(options);
@@ -70,6 +80,7 @@ int main(int argc, char *argv[])
         qCCritical(lcStartup, "Main.qml must contain a GameController with objectName 'game'");
         return 1;
     }
+    QcAppWindow::watchRenderThread(*window);
     const QcResult<std::unique_ptr<QcOffscreenRender>> offscreenRender =
         QcAppWindow::startWindowOrOffscreen(*window, *game, options, offscreen);
     if (!offscreenRender) {
@@ -77,11 +88,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    game->settings()->diagnostics()->setSession(diagnostics);
     game->setIconProvider(icons);
     game->setMapProvider(maps);
     game->settings()->texturePacks()->setPreviewProvider(texturePackPreviews);
     QcAppStartup::loadSettings(*game);
     QcAppLanguage::followSettings(*game, engine, translator, contentLanguage);
     QcAppStartup::startGame(*game, options, *window, offscreenRender->get());
+    game->startHealthLog(diagnostics.healthSeconds());
     return QGuiApplication::exec();
 }

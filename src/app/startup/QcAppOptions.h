@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/preview/QcPreviewHook.h"
+#include "common/diagnostics/QcDiagnosticsOptions.h"
 
 #include <QString>
 #include <QStringList>
@@ -48,6 +49,8 @@ struct QcAppOptions
     QString playerName;
     QString password;
     std::optional<int> hostLan;
+    // --log-file, --no-log-file, --log-rules, --health-log, --full-dump (decision E-834).
+    QcDiagnosticsSetup diagnostics;
     // What is wrong with the command line beyond what QCommandLineParser checks.
     QString error;
 

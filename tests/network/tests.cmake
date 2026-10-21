@@ -11,6 +11,10 @@ qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp QcRa
 target_compile_definitions(test_dedicated_server PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                          QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_dedicated_server qtcraft-headless)
+# The dedicated server's session log and diagnostics bundle (decision E-834).
+qc_add_test(test_server_log SOURCES network/test_server_log.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_network qc_common Qt::Network TIMEOUT 120)
+target_compile_definitions(test_server_log PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
+add_dependencies(test_server_log qtcraft-headless)
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 240)
 qc_add_test(test_adventure_client SOURCES network/test_adventure_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)

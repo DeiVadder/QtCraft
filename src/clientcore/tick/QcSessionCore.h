@@ -3,6 +3,7 @@
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientVitals.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/tick/QcLinkStats.h"
 #include "clientcore/tick/QcSessionCommand.h"
 #include "clientcore/tick/QcSessionEvent.h"
 #include "clientcore/tick/QcTickPacer.h"
@@ -26,7 +27,8 @@ class QTimer;
 // the player is dead. Every tick it predicts and sends the input; every message it receives it
 // applies to that state and passes on, with the ticks and reconciliations, as one ordered stream of
 // QcSessionEvent to its sink. Lives in the session's tick thread (QcSessionLink) or, without one,
-// in the session's thread; every member is used in that thread only, except pacer().timing().
+// in the session's thread; every member is used in that thread only, except pacer().timing() and
+// linkStats().
 class QcSessionCore : public QObject
 {
     Q_OBJECT
@@ -54,6 +56,8 @@ public:
     // The due times of the timer-driven ticks and their punctuality.
     const QcTickPacer &pacer() const { return m_pacer; }
     QcTickPacer &pacer() { return m_pacer; }
+    // Round trip of the inputs and bytes of the connection (health line, decision E-834).
+    QcLinkStats &linkStats() { return m_linkStats; }
     // Stops ticking and taking messages; the connection stays (it may leave the thread with the
     // core and close there, so that a TCP socket lingers in a thread that goes on).
     void stop();
@@ -76,6 +80,7 @@ private:
     QElapsedTimer m_clock;
     Clock m_now;
     QcTickPacer m_pacer;
+    QcLinkStats m_linkStats;
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcClientWorld> m_world;
     QcPrediction m_prediction;

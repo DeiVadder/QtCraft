@@ -12,6 +12,7 @@
 #include <mutex>
 #include <optional>
 
+class QcLinkStats;
 class QcSessionCore;
 class QcTickTiming;
 class QcTransport;
@@ -53,6 +54,8 @@ public:
     bool threaded() const { return m_thread != nullptr; }
     // Punctuality of the timer-driven ticks; safe to read and reset from this thread.
     QcTickTiming &timing() const;
+    // Round trip and traffic of the connection (health line); safe to read from this thread.
+    QcLinkStats &linkStats() const;
 
 private:
     void deliver(QcSessionEvent &&event);

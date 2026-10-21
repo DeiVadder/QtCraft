@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcVec3.h"
+#include "common/diagnostics/QcIntervalStats.h"
 
 #include <QElapsedTimer>
 
@@ -9,6 +10,7 @@
 
 class QcBenchmarkRun;
 class QcGamepadControls;
+class QcHealthLog;
 class QcGameInput;
 class QcHudState;
 class QcPreviewSource;
@@ -52,6 +54,9 @@ public:
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` while a
     // world runs (decision E-225); 0 leaves it off.
     void startStatsLog(int intervalMs);
+    // The health line every `seconds` (decision E-834): frame times since the previous line with
+    // the session's part (QcClientHealth); 0 leaves it off.
+    void startHealthLog(int seconds);
     // One frame of the window (QQuickWindow::afterAnimating).
     void onFrame();
 
@@ -67,4 +72,7 @@ private:
     // The player's feet as drawn in the latest frame (interpolated between ticks).
     QcVec3 m_drawnFeet;
     std::unique_ptr<QcStatsLog> m_statsLog;
+    std::unique_ptr<QcHealthLog> m_healthLog;
+    // Frame intervals since the previous health line.
+    QcIntervalStats m_frameTimes;
 };

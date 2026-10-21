@@ -8,6 +8,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include(${CMAKE_CURRENT_SOURCE_DIR}/world/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/client/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/content/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/diagnostics/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/gameplay/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/network/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/sound/tests.cmake)
@@ -25,7 +26,8 @@ set(qc_concurrency_tests
     test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
     test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
-    test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
+    test_tcp_transport test_network_client test_network_game test_dedicated_server test_server_log test_latency
+    test_message_log test_crash_report
     test_creative_client test_adventure_client test_backpack_control test_void_client test_ice_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
@@ -41,7 +43,7 @@ set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Tests that depend on wall time or load (test_tick_scheduler, test_interpolation and others) run in
 # a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
-set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
+set_tests_properties(test_dedicated_server test_server_log test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
 # together (known costs first), or where the next stage builds beside the run: test_light_engine
@@ -81,7 +83,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
 # tests that read sources compare against the folder. Runtime data (content, translations, mods,
 # test data) selects every test anyway.
-set_tests_properties(test_headless_cli test_dedicated_server test_multiplayer_bots test_creative_bots
+set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
     test_signal_bots test_minecart_bots test_machine_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")

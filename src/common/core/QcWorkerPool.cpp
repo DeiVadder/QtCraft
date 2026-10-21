@@ -1,5 +1,7 @@
 #include "common/core/QcWorkerPool.h"
 
+#include "common/diagnostics/QcCrashHandler.h"
+
 #include <QThread>
 
 #include <algorithm>
@@ -9,7 +11,10 @@ using namespace Qt::StringLiterals;
 QcWorkerPool::QcWorkerPool(int threadCount)
 {
     for (int i = 0; i < std::max(1, threadCount); ++i) {
-        std::unique_ptr<QThread> thread(QThread::create([this] { run(); }));
+        std::unique_ptr<QThread> thread(QThread::create([this] {
+            QcCrashHandler::prepareThread();
+            run();
+        }));
         thread->setObjectName(u"QtCraft worker %1"_s.arg(i));
         thread->start();
         m_threads.push_back(std::move(thread));

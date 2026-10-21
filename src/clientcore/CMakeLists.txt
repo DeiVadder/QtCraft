@@ -28,6 +28,7 @@ target_sources(qc_clientcore PRIVATE
     control/QcControlWorldCommands.h control/QcControlWorldCommands.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    debug/QcClientHealth.h debug/QcClientHealth.cpp
     debug/QcClientLogging.h debug/QcClientLogging.cpp
     debug/QcDebugJson.h debug/QcDebugJson.cpp
     debug/QcDebugLines.h debug/QcDebugLines.cpp
@@ -194,6 +195,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    tick/QcLinkStats.h tick/QcLinkStats.cpp
     tick/QcSessionCommand.h
     tick/QcSessionCore.h tick/QcSessionCore.cpp
     tick/QcSessionEvent.h

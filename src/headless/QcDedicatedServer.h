@@ -30,6 +30,8 @@ public:
         bool stopAtEndOfInput = true;
         // Seconds until the server stops with exit code 2; 0 for none.
         int timeLimit = 0;
+        // Seconds between health lines in the log; 0 for none (decision E-834).
+        int healthSeconds = 0;
     };
 
     QcDedicatedServer(std::shared_ptr<const QcContentRegistry> content, QList<QcPackFingerprint> packs, QObject *parent = nullptr);
@@ -42,6 +44,10 @@ private:
     // The configuration of the settings' world, made first when it does not exist.
     [[nodiscard]] QcResult<QcServerConfig> worldConfig(const Options &options) const;
     void startConsole(bool stopAtEndOfInput);
+    // The world and mods in the log, the health line every `healthSeconds` (decision E-834).
+    void startDiagnostics(const QcServerConfig &config, int healthSeconds);
+    // The console's line "diagnostics": writes a bundle of the data directory.
+    QStringList writeDiagnostics() const;
     // Ends the event loop with `code`; the destructor saves.
     void stop(const QString &why, int code);
 
@@ -49,4 +55,7 @@ private:
     QList<QcPackFingerprint> m_packs;
     std::unique_ptr<QcLocalServerHost> m_host;
     QcSignalWatcher *m_signals = nullptr;
+    QString m_dataDirectory;
+    // The world and the mods, for the log and the diagnostics bundle.
+    QStringList m_worldInfo;
 };

@@ -18,10 +18,14 @@ struct Hello
 {
     // Longer names are refused by the decoder before the server cleans them (32 code points).
     static constexpr qsizetype maxNameLength = 256;
+    static constexpr qsizetype maxClientLength = 256;
 
     quint32 protocolVersion = 0;
     QString playerName;
     QcAppearance appearance;
+    // Program, version, commit and system of the client (QcBuildInfo::clientText) for the server's
+    // log (decision E-834); sent before the appearance.
+    QString client;
 };
 
 // Server -> client: accepted connection.

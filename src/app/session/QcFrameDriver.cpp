@@ -8,11 +8,13 @@
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
 #include "app/session/QcSessionParts.h"
+#include "clientcore/debug/QcClientHealth.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/diagnostics/QcHealthLog.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>
@@ -48,7 +50,24 @@ void QcFrameDriver::restartTickClock()
 
 float QcFrameDriver::advanceFrameClocks()
 {
-    return float(std::min<qint64>(m_frameClock.restart(), 100)) / 1000.0f;
+    const qint64 sinceLast = m_frameClock.restart();
+    if (m_healthLog) {
+        m_frameTimes.add(double(sinceLast));
+    }
+    return float(std::min<qint64>(sinceLast, 100)) / 1000.0f;
+}
+
+void QcFrameDriver::startHealthLog(int seconds)
+{
+    if (seconds <= 0 || m_healthLog) {
+        return;
+    }
+
+    m_healthLog = std::make_unique<QcHealthLog>(seconds, [this] {
+        QcHealthSample sample = m_parts.session ? QcClientHealth::sample(*m_parts.session) : QcHealthSample{};
+        sample.frames = m_frameTimes.take();
+        return sample;
+    });
 }
 
 void QcFrameDriver::startStatsLog(int intervalMs)

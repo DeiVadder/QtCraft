@@ -41,6 +41,23 @@ void QcServerLogin::hello(QcServerClient &client, const QcMsg::Hello &hello)
     }
 
     client.name = QcProfileValidation::playerName(hello.playerName);
+    // The text comes from the other side: no line breaks, control or invisible format characters
+    // (direction overrides) in the log.
+    QString text = hello.client;
+    std::ranges::replace_if(
+        text,
+        [](QChar c) {
+            const QChar::Category category = c.category();
+            return category == QChar::Other_Control || category == QChar::Other_Format || category == QChar::Separator_Line
+                   || category == QChar::Separator_Paragraph;
+        },
+        u'?');
+    client.login.client = text.isEmpty() ? u"unknown client"_s : text;
+    if (!client.local) {
+        qCInfo(lcServer).noquote() << u"Hello from %1: player %2, protocol %3, %4"_s.arg(client.login.address, client.name)
+                                          .arg(hello.protocolVersion)
+                                          .arg(client.login.client);
+    }
     if (hello.protocolVersion != QcProtocol::version) {
         refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Protocol version mismatch: server %1, client %2"),
                                               {QString::number(QcProtocol::version), QString::number(hello.protocolVersion)}));
@@ -174,7 +191,8 @@ void QcServerLogin::admit(QcServerClient &client, const QByteArray &newIdentity)
     }
 
     client.login.nonce.clear();
-    qCInfo(lcServer).noquote() << u"Player %1 logged in from %2 (identity %3)"_s.arg(client.name, client.login.address, client.login.fingerprint);
+    qCInfo(lcServer).noquote() << u"Player %1 logged in from %2 (identity %3, %4)"_s.arg(client.name, client.login.address, client.login.fingerprint,
+                                                                                          client.login.client);
     m_join(client);
 }
 

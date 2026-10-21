@@ -15,7 +15,7 @@ namespace QcProtocolCodec {
 
 void encode(QDataStream &stream, const QcMsg::Hello &m)
 {
-    stream << m.protocolVersion << m.playerName << m.appearance;
+    stream << m.protocolVersion << m.playerName << m.client << m.appearance;
 }
 
 void encode(QDataStream &stream, const QcMsg::Welcome &m)
@@ -61,6 +61,12 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
     stream >> m.protocolVersion >> m.playerName;
     if (m.playerName.size() > QcMsg::Hello::maxNameLength) {
         return qcError(u"Player name too long"_s);
+    }
+    if (m.protocolVersion >= QcProtocol::firstVersionWithClientText) {
+        stream >> m.client;
+        if (m.client.size() > QcMsg::Hello::maxClientLength) {
+            return qcError(u"Client text too long"_s);
+        }
     }
 
     // Other versions may lay out the rest differently: skip it so the server can report the version

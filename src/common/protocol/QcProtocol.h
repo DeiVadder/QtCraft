@@ -9,8 +9,14 @@
 // Transports deliver whole frames; framing on byte streams is the transport's job.
 namespace QcProtocol {
 
-// Bumped whenever a message layout changes.
-inline constexpr quint32 version = 64;
+// From this version on Hello starts with version, player name and client text, so a server of another
+// version still reads who knocked (decision E-834). It is the number of the version that brought the
+// client text: renumbering that change (a merge after another bump) changes this line, not `version`.
+inline constexpr quint32 firstVersionWithClientText = 65;
+// Bumped whenever a message layout changes. The client text is the newest change, so the version is
+// its number; the next change sets a number of its own here and drops the check below.
+inline constexpr quint32 version = firstVersionWithClientText;
+static_assert(version == firstVersionWithClientText, "renumber the client text of Hello together with the protocol version");
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

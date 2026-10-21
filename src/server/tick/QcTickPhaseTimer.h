@@ -3,15 +3,19 @@
 #include "common/core/QcPhaseWindow.h"
 #include "common/core/QcTickPhase.h"
 
+#include <QString>
 #include <QtGlobal>
 
 #include <array>
+#include <atomic>
+#include <optional>
 
 // Permanent, cheap phase counters of the server tick (decision E-225): one monotonic clock read per
 // phase, no allocation per tick. The time since the previous lap goes to the phase named by lap(),
 // so the phases of a tick add up to its duration; the time spent on client messages between ticks
 // is collected separately. The latest ticks stay in a window (mean and maximum per phase, the tick's
-// duration and lateness) for the debug display. Lives in the server's thread; not thread-safe.
+// duration and lateness) for the debug display. Lives in the server's thread; not thread-safe, except
+// stall(), which other threads may call (tick watchdog, decision E-834).
 class QcTickPhaseTimer
 {
 public:
@@ -39,6 +43,11 @@ public:
     void endTick(qint64 lateNs);
     // Time spent handling client messages outside the tick.
     void addMessageTime(qint64 ns) { m_messagesNs += ns; }
+
+    // When the tick running now has run for longer than `limitNs`: a line with how long and the phase
+    // that finished last (the next one hangs); std::nullopt between ticks or before the limit. Safe
+    // from any thread.
+    std::optional<QString> stall(qint64 limitNs) const;
 
     // Nanoseconds per phase of the last finished tick.
     const Durations &lastTick() const { return m_lastTick; }
@@ -68,4 +77,8 @@ private:
     Durations m_current{};
     Durations m_lastTick{};
     QcPhaseWindow m_window;
+    // For stall(): the start of the tick running now (-1 between ticks) and its phase that finished
+    // last (-1 none yet).
+    std::atomic<qint64> m_runningSinceNs{-1};
+    std::atomic<int> m_finishedPhase{-1};
 };

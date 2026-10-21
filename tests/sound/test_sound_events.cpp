@@ -28,7 +28,7 @@ public:
     void hello(const QString &name)
     {
         key = QcTestLogin::keyFor(name);
-        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
+        connection.send(QcMsg::Hello{QcProtocol::version, name, {}, {}});
     }
 
     void received(QcMessage &&message)

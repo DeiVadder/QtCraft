@@ -88,12 +88,13 @@ if [ "$FILE_COUNT" -eq 0 ] && [ "$SELECTED" -eq 0 ]; then
     exit 2
 fi
 
-# Sources for other platforms (*_other.cpp, the counterpart of a *_mac.mm) are not built here.
+# Sources for other platforms (*_other.cpp, the counterpart of a *_mac.mm; *_win.cpp and *_posix.cpp,
+# decision E-834) are not built here.
 ANALYSED=""
 for file in $FILES; do
     if ! grep -qF "\"file\": \"$file\"" "$BUILD_DIR/compile_commands.json"; then
         case "$file" in
-        *_other.cpp)
+        *_other.cpp | *_win.cpp | *_posix.cpp)
             echo "skipped, not built on this platform: $file"
             continue
             ;;

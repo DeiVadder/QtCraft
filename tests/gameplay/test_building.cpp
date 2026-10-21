@@ -577,10 +577,10 @@ private slots:
 
         // Settled: further ticks change nothing.
         ticks(1);
-        const quint64 before = m_server->processedBlockUpdates();
+        const quint64 before = m_server->blockUpdates().processedCount();
         ticks(3);
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
-        QCOMPARE(m_server->processedBlockUpdates(), before);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
+        QCOMPARE(m_server->blockUpdates().processedCount(), before);
     }
 
     void unsupportedBlocksBreakAndDrop()
@@ -619,7 +619,7 @@ private slots:
                 QVERIFY(m_server->world().setBlock(base.offset(0, y, 0), id(u"test:stack"_s)));
             }
         }
-        const quint64 before = m_server->processedBlockUpdates();
+        const quint64 before = m_server->blockUpdates().processedCount();
         for (const QcBlockPos &base : bases) {
             m_client->connection.send(QcMsg::ChatInput{u"/setblock %1 %2 %3 air"_s.arg(base.x).arg(base.y).arg(base.z)});
         }
@@ -627,16 +627,16 @@ private slots:
 
         // The commands ran before the next tick; that tick and the following ones share the work.
         int ticksNeeded = 0;
-        while (m_server->pendingBlockUpdates() > 0 && ticksNeeded < 20) {
-            const quint64 start = m_server->processedBlockUpdates();
+        while (m_server->blockUpdates().pendingCount() > 0 && ticksNeeded < 20) {
+            const quint64 start = m_server->blockUpdates().processedCount();
             ticks(1);
-            QVERIFY(m_server->processedBlockUpdates() - start <= quint64(QcServer::maxBlockUpdatesPerTick));
+            QVERIFY(m_server->blockUpdates().processedCount() - start <= quint64(QcServer::maxBlockUpdatesPerTick));
             ++ticksNeeded;
         }
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
 
         // Each broken block queues its six neighbours once; the work is at most 6 per block.
-        const quint64 work = m_server->processedBlockUpdates() - before;
+        const quint64 work = m_server->blockUpdates().processedCount() - before;
         QVERIFY2(work <= quint64(bases.size()) * quint64(6 * height + 6), qPrintable(QString::number(work)));
         QVERIFY2(work > quint64(2 * QcServer::maxBlockUpdatesPerTick), qPrintable(QString::number(work)));
 
@@ -676,15 +676,15 @@ private slots:
         chat(u"/setblock %1 %2 %3 stone"_s.arg(x).arg(y + 1).arg(z));
         chat(u"/setblock %1 %2 %3 air"_s.arg(x).arg(y + 1).arg(z));
         ticks(1);
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
-        QCOMPARE(m_server->waitingBlockUpdates(), 2);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
+        QCOMPARE(m_server->blockUpdates().waitingCount(), 2);
 
         // Loading the neighbour re-derives the border: there is only air to the east now.
         QVERIFY(m_server->world().loadChunk(east));
         ticks(1);
         QCOMPARE(m_content->property(at(fence), u"east"_s), u"false"_s);
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
-        QCOMPARE(m_server->waitingBlockUpdates(), 0);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
+        QCOMPARE(m_server->blockUpdates().waitingCount(), 0);
 
         // Hanging on a block across the border counts as supported while that chunk is away.
         m_server->world().unloadChunk(east);
@@ -711,8 +711,8 @@ private slots:
         // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
         QcTestUtil::pump();
-        QVERIFY2(m_server->pendingCommandBlockUpdates() > qsizetype(10) * QcServer::maxBlockUpdatesPerTick,
-                 qPrintable(QString::number(m_server->pendingCommandBlockUpdates())));
+        QVERIFY2(m_server->blockUpdates().pendingCommandCount() > qsizetype(10) * QcServer::maxBlockUpdatesPerTick,
+                 qPrintable(QString::number(m_server->blockUpdates().pendingCommandCount())));
 
         // A fence placed by the player between them connects in the very next tick.
         face(90.0f);
@@ -722,7 +722,7 @@ private slots:
         ticks(1);
         QCOMPARE(m_content->property(at(fence), u"east"_s), u"true"_s);
         QCOMPARE(m_content->property(at(fence.offset(2, 0, 0)), u"west"_s), u"true"_s);
-        QVERIFY(m_server->pendingCommandBlockUpdates() > 0);
+        QVERIFY(m_server->blockUpdates().pendingCommandCount() > 0);
     }
 
     void pendingUpdatesSurviveARestart()
@@ -740,11 +740,11 @@ private slots:
         // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
         QcTestUtil::pump();
-        QVERIFY(m_server->pendingBlockUpdates() > 0);
+        QVERIFY(m_server->blockUpdates().pendingCount() > 0);
         QVERIFY(m_server->save().has_value());
         const auto stored = QcWorldStorage(directory.path(), m_content).readBlockUpdates();
         QVERIFY(stored.has_value());
-        QCOMPARE(stored->size(), m_server->pendingBlockUpdates() + m_server->waitingBlockUpdates() + m_server->liquids().plannedCount());
+        QCOMPARE(stored->size(), m_server->blockUpdates().pendingCount() + m_server->blockUpdates().waitingCount() + m_server->liquids().plannedCount());
 
         // Over the cleared stage nothing holds the torches (elsewhere hills may reach up to them).
         const auto floating = [&] {
@@ -763,15 +763,15 @@ private slots:
         // The server goes away without another tick; the saved queue finishes the job after loading.
         cleanup();
         join(config, false);
-        for (int tick = 0; tick < 200 && m_server->pendingBlockUpdates() > 0; ++tick) {
+        for (int tick = 0; tick < 200 && m_server->blockUpdates().pendingCount() > 0; ++tick) {
             ticks(1);
         }
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
         QCOMPARE(floating(), 0);
 
         // Only updates for chunks that are not loaded remain in the saved queue.
         QVERIFY(m_server->save().has_value());
-        QCOMPARE(QcWorldStorage(directory.path(), m_content).readBlockUpdates()->size(), m_server->waitingBlockUpdates() + m_server->liquids().plannedCount());
+        QCOMPARE(QcWorldStorage(directory.path(), m_content).readBlockUpdates()->size(), m_server->blockUpdates().waitingCount() + m_server->liquids().plannedCount());
     }
 
     void commandUpdatesAreCappedAndSavesTruncate()
@@ -791,8 +791,8 @@ private slots:
             QcMsg::ChatInput{u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(low.x + 47).arg(low.y + 2).arg(low.z + 47)});
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
         QcTestUtil::pump();
-        QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1024));
-        QVERIFY(m_server->droppedBlockUpdates() > 5000);
+        QCOMPARE(m_server->blockUpdates().pendingCommandCount(), qsizetype(1024));
+        QVERIFY(m_server->blockUpdates().droppedCount() > 5000);
 
         // Saving keeps the first 1024 updates, writes everything else and the player first.
         QVERIFY(m_server->save().has_value());

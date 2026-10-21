@@ -5,10 +5,18 @@
 
 #include <QObject>
 
+#include <atomic>
 #include <functional>
 #include <memory>
 
 class QcTransport;
+
+// Bytes of the message frames a connection sent and received so far (health line, decision E-834).
+struct QcTraffic
+{
+    quint64 sent = 0;
+    quint64 received = 0;
+};
 
 // Message-level view of a transport: encodes outgoing messages, decodes incoming frames and closes
 // the link on undecodable input.
@@ -32,6 +40,8 @@ public:
     qint64 pendingBytes() const;
     // The link underneath (to move it to another thread together with the connection).
     QcTransport &transport() const { return *m_transport; }
+    // Frame bytes so far; safe to read from any thread.
+    QcTraffic traffic() const { return {m_sent.load(std::memory_order_relaxed), m_received.load(std::memory_order_relaxed)}; }
 
 signals:
     void closed();
@@ -43,4 +53,6 @@ private:
     QcProtocol::Peer m_remote;
     Handler m_handler;
     QString m_lastError;
+    std::atomic<quint64> m_sent{0};
+    std::atomic<quint64> m_received{0};
 };

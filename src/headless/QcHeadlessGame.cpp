@@ -4,11 +4,13 @@
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/diagnostics/QcDiagnosticsSession.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookJson.h"
 #include "common/protocol/QcTransport.h"
 #include "headless/QcDedicatedServer.h"
+#include "headless/QcHeadlessDiagnostics.h"
 #include "headless/QcHeadlessJoin.h"
 #include "headless/QcHeadlessOptions.h"
 #include "headless/QcHeadlessTools.h"
@@ -87,6 +89,15 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     if (parser.isSet(u"help"_s)) {
         std::print("{}", parser.helpText().toStdString());
         exitSoon(0);
+        return true;
+    }
+    m_diagnostics = QcHeadlessDiagnostics::start(parser, options);
+    if (!m_diagnostics) {
+        return false;
+    }
+    m_diagnostics->runCrashTest();
+    if (parser.isSet(options.writeDiagnostics)) {
+        exitSoon(QcHeadlessDiagnostics::writeBundle(QcHeadlessOptions::dataDirectory(parser, options), {}) ? 0 : 1);
         return true;
     }
     if (parser.isSet(options.icon)) {
@@ -203,7 +214,7 @@ bool QcHeadlessGame::startDedicated(const QCommandLineParser &parser, const QcMo
 
     const QcDedicatedServer::Options run{*settings, QcHeadlessOptions::dataDirectory(parser, options), parser.value(options.generatorOptions),
                                    parser.isSet(options.console), !parser.isSet(options.noEofStop),
-                                   parser.isSet(options.time) ? parser.value(options.time).toInt() : 0};
+                                   parser.isSet(options.time) ? parser.value(options.time).toInt() : 0, m_diagnostics->healthSeconds()};
     m_dedicated = std::make_unique<QcDedicatedServer>(content.content, QcContentFingerprint::of(*content.content, content.mods));
     if (const QcStatus started = m_dedicated->start(run); !started) {
         printError(started.error());

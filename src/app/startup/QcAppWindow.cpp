@@ -7,11 +7,13 @@
 #include "app/models/QcControlPalette.h"
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/settings/QcScreenChoice.h"
+#include "common/diagnostics/QcCrashHandler.h"
 #include "common/gameplay/QcGameMode.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QGuiApplication>
 #include <QQuickWindow>
+#include <rhi/qrhi.h>
 #include <QScreen>
 #include <QStyleHints>
 
@@ -130,4 +132,26 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
         return std::unexpected(u"Cannot render offscreen"_s);
     }
     return render;
+}
+
+void QcAppWindow::watchRenderThread(QQuickWindow &window)
+{
+    // Emitted in the render thread; the window and its QRhi are valid there. The render thread gets
+    // its alternate signal stack for crash reports here, its first moment in QtCraft's hands.
+    QObject::connect(
+        &window, &QQuickWindow::sceneGraphInitialized, &window,
+        [&window] {
+            QcCrashHandler::prepareThread();
+            const QRhi *rhi = window.rhi();
+            if (!rhi) {
+                qCInfo(lcStartup, "Graphics: no QRhi (software rendering)");
+                return;
+            }
+            const QRhiDriverInfo driver = rhi->driverInfo();
+            qCInfo(lcStartup).noquote() << u"Graphics: %1 on %2 (device id 0x%3, vendor id 0x%4)"_s.arg(QString::fromLatin1(rhi->backendName()),
+                                                                                                      QString::fromUtf8(driver.deviceName))
+                                                .arg(driver.deviceId, 0, 16)
+                                                .arg(driver.vendorId, 0, 16);
+        },
+        Qt::DirectConnection);
 }

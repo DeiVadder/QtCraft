@@ -20,7 +20,9 @@ QcConnection::~QcConnection() = default;
 void QcConnection::send(const QcMessage &message)
 {
     if (m_transport->isOpen()) {
-        m_transport->sendFrame(QcProtocol::encode(message));
+        const QByteArray frame = QcProtocol::encode(message);
+        m_sent.fetch_add(quint64(frame.size()), std::memory_order_relaxed);
+        m_transport->sendFrame(frame);
     }
 }
 
@@ -46,6 +48,7 @@ qint64 QcConnection::pendingBytes() const
 
 void QcConnection::onFrame(const QByteArray &frame)
 {
+    m_received.fetch_add(quint64(frame.size()), std::memory_order_relaxed);
     QcResult<QcMessage> message = QcProtocol::decode(frame, m_remote);
     if (!message) {
         m_lastError = message.error();

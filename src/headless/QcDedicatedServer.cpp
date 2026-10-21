@@ -1,5 +1,9 @@
 #include "headless/QcDedicatedServer.h"
 
+#include "common/core/QcLogging.h"
+#include "common/diagnostics/QcDiagnosticsBundle.h"
+#include "common/diagnostics/QcHealthLog.h"
+#include "common/diagnostics/QcMessageLog.h"
 #include "headless/QcServerConsole.h"
 #include "headless/QcSignalWatcher.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -23,6 +27,7 @@ void say(const QString &line)
 {
     std::println("{}", line.toStdString());
     std::fflush(stdout);
+    QcMessageLog::note("qtcraft.headless", line);
 }
 
 } // namespace
@@ -83,6 +88,8 @@ QcStatus QcDedicatedServer::start(const Options &options)
             .arg(config->maxPlayers));
     say(u"Listening on port %1"_s.arg(*port));
 
+    m_dataDirectory = options.dataDirectory;
+    startDiagnostics(*config, options.healthSeconds);
     if (options.console) {
         startConsole(options.stopAtEndOfInput);
     }
@@ -137,9 +144,44 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
 
 void QcDedicatedServer::startConsole(bool stopAtEndOfInput)
 {
-    auto *console = new QcServerConsole([this](const QString &line) { return m_host->runConsoleCommand(line); }, stopAtEndOfInput, this);
+    auto *console = new QcServerConsole(
+        [this](const QString &line) {
+            // Not a server command: the bundle is about this process and its data directory.
+            return line.trimmed() == u"diagnostics"_s ? writeDiagnostics() : m_host->runConsoleCommand(line);
+        },
+        stopAtEndOfInput, this);
     connect(console, &QcServerConsole::finished, this, [this] { stop(u"end of input"_s, 0); });
     console->start();
+}
+
+void QcDedicatedServer::startDiagnostics(const QcServerConfig &config, int healthSeconds)
+{
+    QStringList mods;
+    for (const QcPackFingerprint &pack : std::as_const(m_packs)) {
+        mods.append(u"%1 %2"_s.arg(pack.id, pack.version));
+    }
+    m_worldInfo = {u"World: %1 (folder %2), seed %3, type %4"_s.arg(config.worldName, QDir(config.worldDirectory).dirName())
+                       .arg(config.seed)
+                       .arg(config.generator),
+                   u"Content packs: "_s + mods.join(u", "_s),
+                   u"Server: \"%1\", up to %2 players, view distance %3, port %4, password %5"_s.arg(config.serverName)
+                       .arg(config.maxPlayers)
+                       .arg(config.viewDistance)
+                       .arg(m_host->listeningPort())
+                       .arg(config.password.isEmpty() ? u"none"_s : u"set"_s)};
+    for (const QString &line : std::as_const(m_worldInfo)) {
+        qCInfo(lcDiagnostics).noquote() << line;
+    }
+
+    if (healthSeconds > 0) {
+        new QcHealthLog(healthSeconds, [this] { return m_host ? m_host->health() : QcHealthSample{}; }, this);
+    }
+}
+
+QStringList QcDedicatedServer::writeDiagnostics() const
+{
+    const QcResult<QString> written = QcDiagnosticsBundle::write({u"qtcraft-headless"_s, m_dataDirectory, m_worldInfo});
+    return {written ? u"Diagnostics written to %1"_s.arg(QDir::toNativeSeparators(*written)) : u"Cannot write the diagnostics: "_s + written.error()};
 }
 
 void QcDedicatedServer::stop(const QString &why, int code)

@@ -1,7 +1,7 @@
 #pragma once
 
-// Memory of the running process in MiB (debug display, statistics log, benchmark); 0 where the
-// platform does not report it.
+// Memory of the running process in MiB (debug display, statistics log, health line, benchmark); 0
+// where the platform does not report it. Windows reports the working set.
 namespace QcProcessMemory {
 
 // Bytes per MiB: every memory figure of the debug display ("MiB"), the statistics JSON (keys

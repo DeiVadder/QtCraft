@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/diagnostics/QcDiagnosticsOptions.h"
 #include "server/core/QcServerConfig.h"
 #include "server/network/QcServerSettings.h"
 #include "worlds/QcModLoader.h"
@@ -104,6 +105,13 @@ struct Options
                                     u"ids"_s};
     QCommandLineOption textureKeys{u"texture-keys"_s, u"Only these textures for --export-textures (comma-separated names)."_s, u"names"_s};
     QCommandLineOption textureName{u"texture-pack-name"_s, u"Name in the manifest written by --export-textures."_s, u"name"_s};
+    // --log-file, --no-log-file, --log-rules, --health-log, --full-dump (decision E-834).
+    QcDiagnosticsOptions diagnostics;
+    QCommandLineOption writeDiagnostics{u"write-diagnostics"_s,
+                                        u"Write a diagnostics bundle (logs, crash reports, server.json and settings without passwords, mods and "
+                                        u"worlds) of the data directory into <data>/diagnostics and exit; a running --server with --console "
+                                        u"does the same on the line 'diagnostics'."_s};
+
     QCommandLineOption atlasStats{u"atlas-stats"_s,
                                   u"Build the texture atlas without packs and with every built-in texture pack, print size, memory and "
                                   u"build time, and exit."_s};
@@ -119,6 +127,8 @@ struct Options
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
+        parser.addOptions(diagnostics.all());
+        parser.addOption(writeDiagnostics);
     }
 };
 

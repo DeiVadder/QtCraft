@@ -469,7 +469,7 @@ private slots:
                 QVERIFY2(it.value() < lowestBeforeRemoval, qPrintable(QString::number(it.value())));
                 it = lastSeen.erase(it);
             }
-            if (falling.isEmpty() && gravelLeft() < before && m_server->pendingBlockUpdates() == 0) {
+            if (falling.isEmpty() && gravelLeft() < before && m_server->blockUpdates().pendingCount() == 0) {
                 break;
             }
         }

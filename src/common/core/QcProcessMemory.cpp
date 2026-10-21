@@ -12,6 +12,30 @@
 #elif defined(Q_OS_LINUX)
 #include <QFile>
 #include <unistd.h>
+#elif defined(Q_OS_WIN)
+// clang-format off: windows.h first, psapi.h needs it.
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <psapi.h>
+// clang-format on
+#endif
+
+#if defined(Q_OS_WIN)
+namespace {
+
+// Working set now and its peak (decision E-834).
+std::optional<PROCESS_MEMORY_COUNTERS> windowsCounters()
+{
+    PROCESS_MEMORY_COUNTERS counters{};
+    if (!GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters))) {
+        return std::nullopt;
+    }
+    return counters;
+}
+
+} // namespace
 #endif
 
 namespace QcProcessMemory {
@@ -33,6 +57,9 @@ double currentMb()
     }
     const QList<QByteArray> fields = statm.readAll().split(' ');
     return fields.size() > 1 ? fields[1].toDouble() * double(sysconf(_SC_PAGESIZE)) / bytesPerMb : 0.0;
+#elif defined(Q_OS_WIN)
+    const std::optional<PROCESS_MEMORY_COUNTERS> counters = windowsCounters();
+    return counters ? double(counters->WorkingSetSize) / bytesPerMb : 0.0;
 #else
     return 0.0;
 #endif
@@ -50,6 +77,9 @@ double peakMb()
 #else
     return double(usage.ru_maxrss) / 1024.0; // kilobytes
 #endif
+#elif defined(Q_OS_WIN)
+    const std::optional<PROCESS_MEMORY_COUNTERS> counters = windowsCounters();
+    return counters ? double(counters->PeakWorkingSetSize) / bytesPerMb : 0.0;
 #else
     return 0.0;
 #endif

@@ -409,7 +409,7 @@ private slots:
         QVERIFY(m_server->save().has_value());
         cleanup();
         join(config, false);
-        for (int tick = 0; tick < 400 && (m_server->liquids().plannedCount() > 0 || m_server->pendingBlockUpdates() > 0); ++tick) {
+        for (int tick = 0; tick < 400 && (m_server->liquids().plannedCount() > 0 || m_server->blockUpdates().pendingCount() > 0); ++tick) {
             ticks(1);
         }
 

@@ -30,7 +30,7 @@ public:
         if (key.isEmpty()) {
             key = QcTestLogin::keyFor(name);
         }
-        connection.send(QcMsg::Hello{version, name, look});
+        connection.send(QcMsg::Hello{version, name, look, QStringLiteral("QcRawClient")});
     }
 
     QcMsg::LoginResponse answer(const QcMsg::LoginChallenge &challenge) const

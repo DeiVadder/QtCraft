@@ -12,7 +12,27 @@
 
 #include <algorithm>
 #include <chrono>
+#include <numeric>
 #include <thread>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+
+// Logs a network client that is leaving, with its reason and how long it stayed.
+void logLeaving(const QcServerClient &client)
+{
+    const QString error = client.connection ? client.connection->lastError() : QString();
+    const QString why = error.isEmpty() ? u"disconnected"_s : error;
+    const QString seconds = QString::number(double(client.login.connected.elapsed()) / 1000.0, 'f', 0);
+    if (client.joined) {
+        qCInfo(lcServer).noquote() << u"Player %1 (%2) left after %3 s: %4"_s.arg(client.name, client.login.address, seconds, why);
+    } else {
+        qCInfo(lcServer).noquote() << u"Connection from %1 (%2) closed before joining: %3"_s.arg(client.login.address, client.name, why);
+    }
+}
+
+} // namespace
 
 void QcServer::runDueTicks()
 {
@@ -62,6 +82,11 @@ void QcServer::tick()
     m_tickSystems.run(simulating, m_phases);
     m_phases.endTick(m_ticks.currentLateNs());
     m_ticks.stats().addPhases(m_phases.lastTick());
+    const QcTickPhaseTimer::Durations &phases = m_phases.lastTick();
+    m_healthTicks.add(double(std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64(0))) / 1e6);
+    if (const std::optional<QString> lag = m_lag.check(phases, m_phases.now())) {
+        qCInfo(lcLag).noquote() << *lag;
+    }
 }
 
 void QcServer::addUpkeepSystems()
@@ -258,10 +283,39 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
     }
 }
 
+QcHealthSample QcServer::health()
+{
+    // Bytes of the clients that left count on, so the rates never go back.
+    QcTraffic traffic = m_departedTraffic;
+    qint64 players = 0;
+    for (const auto &client : m_state.clients()) {
+        players += client->joined ? 1 : 0;
+        if (client->connection && !client->local) {
+            const QcTraffic own = client->connection->traffic();
+            traffic.sent += own.sent;
+            traffic.received += own.received;
+        }
+    }
+
+    QcHealthSample sample;
+    sample.players = players;
+    sample.loadedChunks = m_state.world().loadedChunkCount();
+    sample.entities = m_state.entities().creatures().mobs().size() + m_state.entities().items().items().size();
+    sample.traffic = traffic;
+    sample.ticks = m_healthTicks.take();
+    return sample;
+}
+
 void QcServer::removeClosedClients()
 {
     bool leaving = false;
     for (const auto &client : m_state.clients()) {
+        if (client->state == Client::State::Closed && !client->local) {
+            logLeaving(*client);
+            const QcTraffic own = client->connection ? client->connection->traffic() : QcTraffic{};
+            m_departedTraffic.sent += own.sent;
+            m_departedTraffic.received += own.received;
+        }
         if (client->state == Client::State::Closed && client->joined) {
             // Only a player who was on the list changes it; refused logins do not.
             m_state.notePlayerListChanged();

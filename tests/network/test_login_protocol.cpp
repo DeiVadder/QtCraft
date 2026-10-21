@@ -119,10 +119,10 @@ private slots:
 
     void helloNamesAreBoundedBeforeCleaning()
     {
-        QVERIFY(decoded(QcMsg::Hello{QcProtocol::version, QString(QcMsg::Hello::maxNameLength, u'a'), {}}).has_value());
-        QVERIFY(!decoded(QcMsg::Hello{QcProtocol::version, QString(QcMsg::Hello::maxNameLength + 1, u'a'), {}}).has_value());
+        QVERIFY(decoded(QcMsg::Hello{QcProtocol::version, QString(QcMsg::Hello::maxNameLength, u'a'), {}, {}}).has_value());
+        QVERIFY(!decoded(QcMsg::Hello{QcProtocol::version, QString(QcMsg::Hello::maxNameLength + 1, u'a'), {}, {}}).has_value());
         // A client of another version still gets its version checked, whatever follows the name.
-        QVERIFY(decoded(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s, {}}).has_value());
+        QVERIFY(decoded(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s, {}, {}}).has_value());
     }
 
     void disconnectReasonsAreTranslatable()

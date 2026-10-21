@@ -19,6 +19,9 @@ public:
     // the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison;
     // =system also keeps the system's control palette instead of the game's (E-279).
     static void applyColorScheme();
+    // Once the window's scene graph runs (decision E-834): prepares the render thread for crash
+    // reports and logs the graphics API and adapter.
+    static void watchRenderThread(QQuickWindow &window);
     // Scripted runs keep out of the user's way; offscreen runs are scripted runs too.
     static void prepareScriptedRun(const QcAppOptions &options, bool offscreen);
     // Shows the main window, or moves its content into an offscreen renderer (returned). The error

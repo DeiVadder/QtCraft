@@ -1,5 +1,6 @@
 #include "worlds/QcLocalServerHost.h"
 
+#include "common/diagnostics/QcCrashHandler.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
@@ -51,6 +52,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
     , m_thread(new QThread(this))
 {
     m_thread->setObjectName(u"QtCraft server"_s);
+    connect(m_thread, &QThread::started, m_thread, &QcCrashHandler::prepareThread, Qt::DirectConnection);
     m_server = std::make_unique<QcServer>(std::move(config), std::move(content), std::move(generator));
 
     // Opened before the thread starts, so a damaged save is reported right here.
@@ -124,6 +126,33 @@ QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()
             result = {server->mobs().mobs().size(), server->items().items().size(),
                       entities.containerCount() + entities.machineCount() + entities.saplingCount(),
                       QcBlockEntityChecks::problems(server->world()).size(), QcEntityChecks::problems(server->entities()).size()};
+        },
+        Qt::BlockingQueuedConnection);
+
+    const std::scoped_lock lock(mutex);
+    return result;
+}
+
+QcHealthSample QcLocalServerHost::health()
+{
+    if (!m_server) {
+        return {};
+    }
+    // A tick that hangs would block this thread too: name it instead of waiting for the server.
+    if (const std::optional<QString> stall = m_server->tickPhases().stall(stalledTickNs)) {
+        qCWarning(lcWorlds).noquote() << *stall;
+        return {};
+    }
+
+    std::mutex mutex;
+    QcHealthSample result;
+    { const std::scoped_lock lock(mutex); }
+    QcServer *server = m_server.get();
+    QMetaObject::invokeMethod(
+        server,
+        [server, &result, &mutex] {
+            const std::scoped_lock lock(mutex);
+            result = server->health();
         },
         Qt::BlockingQueuedConnection);
 

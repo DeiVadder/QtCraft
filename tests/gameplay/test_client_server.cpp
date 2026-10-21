@@ -175,7 +175,7 @@ private slots:
             }
         });
         QSignalSpy closed(&connection, &QcConnection::closed);
-        connection.send(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s, {}});
+        connection.send(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s, {}, {}});
         QTRY_COMPARE_WITH_TIMEOUT(closed.count(), 1, timeoutMs);
         QCOMPARE(reasons.size(), 1);
         QVERIFY(reasons.constFirst().contains(u"version"_s));
@@ -222,7 +222,7 @@ private slots:
                 ++healed;
             }
         });
-        connection.send(QcMsg::Hello{QcProtocol::version, u"Owner"_s, {}});
+        connection.send(QcMsg::Hello{QcProtocol::version, u"Owner"_s, {}, {}});
         for (int i = 0; i < 100; ++i) {
             connection.send(QcMsg::ChatInput{u"/heal"_s});
         }

@@ -106,9 +106,11 @@ bool QcSessionCore::tick()
             m_gameMode.stepped(m_prediction.motion().flying);
         }
         m_connection->send(QcMsg::PlayerInput{input});
+        m_linkStats.inputSent(input.sequence, m_now());
         ticked.predicted = true;
     }
 
+    m_linkStats.setTraffic(m_connection->traffic());
     ticked.after = prediction();
     m_sink({std::move(ticked)});
     return true;
@@ -171,6 +173,7 @@ void QcSessionCore::applyWorld(const QcMessage &message)
 
 void QcSessionCore::reconcile(const QcMsg::PlayerState &state)
 {
+    m_linkStats.acknowledged(state.lastInputSequence, m_now());
     // A player saved while flying flies on after joining (decision E-284).
     if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().movement()) == QcPrediction::Reconciled::Placed) {
         m_gameMode.setFlightWanted(state.motion.flying);

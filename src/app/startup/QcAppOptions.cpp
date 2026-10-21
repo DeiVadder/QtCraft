@@ -91,6 +91,8 @@ QcAppOptions QcAppOptions::parse(const QGuiApplication &app)
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOptions(commandLineOptions());
+    const QcDiagnosticsOptions diagnosticsOptions;
+    parser.addOptions(diagnosticsOptions.all());
     parser.process(app);
 
     const auto optional = [&parser](const QString &name) { return parser.isSet(name) ? std::optional(parser.value(name)) : std::nullopt; };
@@ -130,6 +132,11 @@ QcAppOptions QcAppOptions::parse(const QGuiApplication &app)
     }
     if (options.error.isEmpty()) {
         options.error = debugOptionsError(options);
+    }
+    if (QcResult<QcDiagnosticsSetup> diagnostics = diagnosticsOptions.read(parser); !diagnostics) {
+        options.error = options.error.isEmpty() ? diagnostics.error() : options.error;
+    } else {
+        options.diagnostics = std::move(*diagnostics);
     }
     if (const QcResult<QcPreviewHook> preview = QcPreviewHook::parse(parser.value(u"preview"_s)); !preview) {
         options.error = options.error.isEmpty() ? preview.error() : options.error;

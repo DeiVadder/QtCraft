@@ -151,15 +151,15 @@ private slots:
         const quint32 buried = m_server->mobs().spawn(zombie, here + QcVec3{1.5, -8.0, 1.5}, 900011);
         const quint32 flying = m_server->mobs().spawn(zombie, here + QcVec3{-1.5, 12.0, -1.5}, 900012);
         QVERIFY(m_server->liquids().plannedCount() > 0);
-        QVERIFY(m_server->pendingBlockUpdates() > 0);
+        QVERIFY(m_server->blockUpdates().pendingCount() > 0);
         QCOMPARE(m_server->fallingBlocks().all().size(), 1);
 
         chat(u"/regenerate ~-8 ~-8 ~8 ~8"_s);
         chat(u"/confirm"_s);
         QVERIFY2(lastLine().startsWith(u"Regenerated 4 chunks"_s), qPrintable(lastLine()));
         QCOMPARE(m_server->liquids().plannedCount(), 0);
-        QCOMPARE(m_server->pendingBlockUpdates(), 0);
-        QCOMPARE(m_server->waitingBlockUpdates(), 0);
+        QCOMPARE(m_server->blockUpdates().pendingCount(), 0);
+        QCOMPARE(m_server->blockUpdates().waitingCount(), 0);
         QVERIFY(m_server->fallingBlocks().all().isEmpty());
         QVERIFY(m_server->mobs().find(buried) == nullptr);
         QVERIFY(m_server->mobs().find(flying) != nullptr);

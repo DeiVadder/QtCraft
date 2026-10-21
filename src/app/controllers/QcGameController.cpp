@@ -443,3 +443,8 @@ void QcGameController::startStatsLog(int intervalMs)
 {
     m_frame.startStatsLog(intervalMs);
 }
+
+void QcGameController::startHealthLog(int seconds)
+{
+    m_frame.startHealthLog(seconds);
+}

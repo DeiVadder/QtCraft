@@ -164,6 +164,8 @@ public:
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` while a
     // world runs (decision E-225); 0 leaves it off.
     void startStatsLog(int intervalMs);
+    // The health line in the log every `seconds` (decision E-834); 0 leaves it off.
+    void startHealthLog(int seconds);
 
 signals:
     void viewChanged();

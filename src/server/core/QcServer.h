@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/diagnostics/QcHealthSample.h"
 #include "common/protocol/QcMessages.h"
 #include "server/blocks/QcBlockSimulation.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
@@ -43,6 +44,7 @@
 #include "server/signal/QcServerCircuits.h"
 #include "server/storage/QcServerPersistence.h"
 #include "server/tick/QcClientSyncPace.h"
+#include "server/tick/QcLagReport.h"
 #include "server/tick/QcTickControl.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
@@ -160,20 +162,15 @@ public:
 
     static constexpr int maxBlockUpdatesPerTick = QcBlockSimulation::maxBlockUpdatesPerTick;
     static constexpr qint64 maxFillBlocks = QcBlockCommands::maxFillBlocks;
-    // Queued updates of loaded chunks (the next ticks work on them).
-    qsizetype pendingBlockUpdates() const { return m_blockUpdates.pendingPlayerCount() + m_blockUpdates.pendingCommandCount(); }
-    // Updates of positions in chunks that are not loaded.
-    qsizetype waitingBlockUpdates() const { return m_blockUpdates.waitingCount(); }
-    // Updates waiting in the queue of player actions and in the queue of commands.
-    qsizetype pendingPlayerBlockUpdates() const { return m_blockUpdates.pendingPlayerCount(); }
-    qsizetype pendingCommandBlockUpdates() const { return m_blockUpdates.pendingCommandCount(); }
-    quint64 processedBlockUpdates() const { return m_blockUpdates.processedCount(); }
-    // Command updates dropped because the command queue was full (QcServerLimits::commandBlockUpdates).
-    quint64 droppedBlockUpdates() const { return m_blockUpdates.droppedCount(); }
+    // The queues of block updates and their counters (pending, waiting, processed, dropped).
+    const QcBlockUpdateQueue &blockUpdates() const { return m_blockUpdates; }
 
     // Duration and lateness of the timed ticks; safe to read and reset from other threads (benchmark).
     QcTickStats::Summary tickTimes() const { return m_ticks.stats().summary(); }
     void resetTickTimes() { m_ticks.stats().reset(); }
+    // Players, loaded chunks, creatures and items, the network traffic of the clients and the tick
+    // durations since the previous call for the health line (decision E-834); server thread only.
+    [[nodiscard]] QcHealthSample health();
     // Time per phase of the latest ticks (decision E-225); server thread only.
     const QcTickPhaseTimer &tickPhases() const { return m_phases; }
     // Tick rate, sprints and freezing (/tick, decision E-249); server thread only.
@@ -248,6 +245,11 @@ private:
     QcServerState m_state;
     QcTickScheduler m_ticks;
     QcTickPhaseTimer m_phases;
+    QcLagReport m_lag;
+    // Network bytes of the clients that left (health()).
+    QcTraffic m_departedTraffic;
+    // Tick durations since the previous health() (the shared tick statistics stay untouched).
+    QcIntervalStats m_healthTicks;
     QcTickControl m_tickControl;
     // The systems of one tick in their order (decision E-700).
     QcTickSystems m_tickSystems;

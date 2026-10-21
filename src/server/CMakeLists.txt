@@ -289,6 +289,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     tick/QcClientSyncPace.h tick/QcClientSyncPace.cpp
+    tick/QcLagReport.h tick/QcLagReport.cpp
     tick/QcServerClock.h
     tick/QcTickControl.h
     tick/QcTickPhaseTimer.h tick/QcTickPhaseTimer.cpp
