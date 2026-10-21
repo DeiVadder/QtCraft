@@ -13,6 +13,7 @@
 #include <array>
 #include <cstddef>
 #include <utility>
+#include <vector>
 
 using QcRenderPipelines::FrameUniforms;
 using QcRenderPipelines::minimumLight;
@@ -48,6 +49,7 @@ void QcWorldRenderer::replaceDevice()
     // The sections on the old device are gone with it: the view has them meshed again.
     m_meshesLost = m_device.rhi != nullptr;
     m_plan = QcFramePlan::selected();
+    m_baseVertex = rhi()->isFeatureSupported(QRhi::BaseVertex);
     m_meshStore.reset(rhi(), m_plan.sectionLight);
     // The pass group first: its pipelines refer to the device's bindings.
     dropPass();
@@ -168,6 +170,14 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
 
+void QcWorldRenderer::usePipeline(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPipeline *pipeline, QRhiShaderResourceBindings *resources)
+{
+    commandBuffer->setGraphicsPipeline(pipeline);
+    commandBuffer->setShaderResources(resources);
+    // QRhi wants the vertex input set again after a pipeline change.
+    m_bound = {};
+}
+
 void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 firstIndex, quint32 count)
 {
     if (list.indexCount == 0) {
@@ -175,9 +185,21 @@ void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuL
     }
 
     const quint32 drawn = count > 0 ? count : list.indexCount;
-    const QRhiCommandBuffer::VertexInput input(list.vertices, list.vertexOffset);
-    commandBuffer->setVertexInput(0, 1, &input, list.indices, list.indexOffset, list.indexFormat);
-    commandBuffer->drawIndexed(drawn, 1, firstIndex);
+    if (m_baseVertex) {
+        // The buffers from their start, bound only when they change: the lists of a section page
+        // differ in first index and base vertex alone (decision E-820).
+        const Binding binding{list.vertices, list.indices, list.indexFormat};
+        if (binding != m_bound) {
+            const QRhiCommandBuffer::VertexInput input(list.vertices, 0);
+            commandBuffer->setVertexInput(0, 1, &input, list.indices, 0, list.indexFormat);
+            m_bound = binding;
+        }
+        commandBuffer->drawIndexed(drawn, 1, list.firstIndex + firstIndex, list.baseVertex);
+    } else {
+        const QRhiCommandBuffer::VertexInput input(list.vertices, list.vertexOffset);
+        commandBuffer->setVertexInput(0, 1, &input, list.indices, list.indexOffset, list.indexFormat);
+        commandBuffer->drawIndexed(drawn, 1, firstIndex);
+    }
     ++m_sample.drawCalls;
     m_sample.indicesDrawn += drawn;
 }
@@ -203,8 +225,7 @@ void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const Fr
     const QRhiGraphicsPipeline *current = nullptr;
     const std::function<void(QRhiGraphicsPipeline *)> use = [&](QRhiGraphicsPipeline *pipeline) {
         if (pipeline != current) {
-            commandBuffer->setGraphicsPipeline(pipeline);
-            commandBuffer->setShaderResources();
+            usePipeline(commandBuffer, pipeline);
             current = pipeline;
         }
     };
@@ -257,8 +278,7 @@ void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameVie
     }
     std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, const QcGpuMesh *>::first);
 
-    commandBuffer->setGraphicsPipeline(m_pass.waterPipeline.get());
-    commandBuffer->setShaderResources();
+    usePipeline(commandBuffer, m_pass.waterPipeline.get());
     for (const auto &[distance, mesh] : std::as_const(water)) {
         drawBuffers(commandBuffer, mesh->water);
     }
@@ -267,8 +287,7 @@ void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameVie
 void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
 {
     if (!m_frame.selection.isEmpty() && m_pass.outlinePipeline && m_device.outlineVertexCount > 0) {
-        commandBuffer->setGraphicsPipeline(m_pass.outlinePipeline.get());
-        commandBuffer->setShaderResources();
+        usePipeline(commandBuffer, m_pass.outlinePipeline.get());
         const QRhiCommandBuffer::VertexInput input(m_device.outlineVertices.get(), 0);
         commandBuffer->setVertexInput(0, 1, &input);
         commandBuffer->draw(m_device.outlineVertexCount);
@@ -276,8 +295,7 @@ void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
     }
     // Last, with its depth squeezed to the front: the arm never disappears into a wall.
     if (m_device.handBuffers.indexCount > 0 && m_pass.handPipeline) {
-        commandBuffer->setGraphicsPipeline(m_pass.handPipeline.get());
-        commandBuffer->setShaderResources();
+        usePipeline(commandBuffer, m_pass.handPipeline.get());
         drawBuffers(commandBuffer, m_device.handBuffers.list());
     }
 }
@@ -288,19 +306,27 @@ QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjectio
     FrameView view;
     view.belowWorld = m_frame.camera.position.y() < 0.0f;
     const QcGpuMeshStore::Meshes &meshes = m_meshStore.meshes();
-    view.visible.reserve(qsizetype(meshes.size()));
+    // Each with its page, so the sort below compares a dense array instead of the scattered meshes.
+    std::vector<std::pair<quint32, const QcGpuMesh *>> paged;
+    paged.reserve(meshes.size());
     for (const auto &[key, mesh] : meshes) {
         if (mesh.isDrawable(view.belowWorld) && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
-            view.visible.append(&mesh);
+            paged.emplace_back(mesh.slot.page, &mesh);
         }
+    }
+    // By page, so the opaque pass binds each page once (decision E-820); the passes sorted by
+    // distance keep their own order.
+    std::ranges::sort(paged, std::ranges::less{}, &std::pair<quint32, const QcGpuMesh *>::first);
+    view.visible.reserve(qsizetype(paged.size()));
+    for (const auto &[page, mesh] : paged) {
+        view.visible.append(mesh);
     }
     return view;
 }
 
 void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
-    commandBuffer->setGraphicsPipeline(m_pass.solidPipeline.get());
-    commandBuffer->setShaderResources();
+    usePipeline(commandBuffer, m_pass.solidPipeline.get());
     for (const QcGpuMesh *mesh : view.visible) {
         drawBuffers(commandBuffer, mesh->opaque);
         if (view.belowWorld) {
@@ -316,8 +342,7 @@ void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameVi
             continue;
         }
         if (!cutoutPipelineSet) {
-            commandBuffer->setGraphicsPipeline(m_pass.cutoutPipeline.get());
-            commandBuffer->setShaderResources();
+            usePipeline(commandBuffer, m_pass.cutoutPipeline.get());
             cutoutPipelineSet = true;
         }
         drawBuffers(commandBuffer, mesh->cutout);
@@ -327,14 +352,12 @@ void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameVi
 void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
 {
     if (m_device.entityBuffers.indexCount > 0 && m_pass.entityPipeline) {
-        commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
-        commandBuffer->setShaderResources();
+        usePipeline(commandBuffer, m_pass.entityPipeline.get());
         drawBuffers(commandBuffer, m_device.entityBuffers.list());
     }
     // The maps in item frames: the same pipeline with the framed-map texture (decision E-809).
     if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && m_device.framedMaps.bindings()) {
-        commandBuffer->setGraphicsPipeline(m_pass.entityPipeline.get());
-        commandBuffer->setShaderResources(m_device.framedMaps.bindings());
+        usePipeline(commandBuffer, m_pass.entityPipeline.get(), m_device.framedMaps.bindings());
         drawBuffers(commandBuffer, m_device.framedMapBuffers.list());
     }
 }

@@ -10,15 +10,15 @@ class QRhiBuffer;
 // operations and keeps that allocation for reuse when the batch returns to QRhi's pool, so the pool
 // ends up holding about as much CPU memory as the largest uploads it has ever seen (with a world
 // loading in, nearly all section data). Only for buffers that are written once before any draw
-// reads them.
+// reads them, or for ranges of a buffer that no draw in flight reads (QcSectionArena, decision E-820).
 namespace QcBufferWrite {
 
 // Whether buffers of this QRhi created with the storage usage can be written directly (Metal: one
 // copy per buffer in memory the CPU can reach).
 bool isSupported(const QRhi *rhi);
-// Copies `size` bytes to the start of `buffer`, a buffer of a QRhi for which isSupported() holds,
-// created with the storage usage and not yet drawn from; false when it cannot (the caller uploads
-// through a batch instead).
-[[nodiscard]] bool write(QRhiBuffer *buffer, const void *data, quint32 size);
+// Copies `size` bytes to `offset` in `buffer`, a buffer of a QRhi for which isSupported() holds,
+// created with the storage usage, into a range no draw in flight reads; false when it cannot (the
+// caller uploads through a batch instead).
+[[nodiscard]] bool write(QRhiBuffer *buffer, quint32 offset, const void *data, quint32 size);
 
 } // namespace QcBufferWrite

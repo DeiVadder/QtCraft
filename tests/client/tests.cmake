@@ -116,6 +116,11 @@ qc_add_test(test_world_renderer_uploads SOURCES client/test_world_renderer_uploa
 # Section buffers written directly into GPU memory (decision E-813): uploaded through the mesh store
 # and read back on an offscreen QRhi (Metal; skipped without a device).
 qc_add_test(test_gpu_mesh_upload SOURCES client/test_gpu_mesh_upload.cpp LIBRARIES qc_app_core)
+# The ranges of the section arena's pages (decision E-820): first fit, merging of freed neighbours.
+qc_add_test(test_range_allocator SOURCES client/test_range_allocator.cpp LIBRARIES qc_app_core)
+# The pages of the section arena (decision E-820) on QRhi's Null backend: reuse after the frames in
+# flight, oversized sections, rollback, reserve page, per-section layout.
+qc_add_test(test_section_arena SOURCES client/test_section_arena.cpp LIBRARIES qc_app_core)
 # The steps of a frame of the world renderer and their GPU render passes (decision E-390); the plan is
 # a header of the app, so the test takes only the app's include folders.
 qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES qc_app_core_headers Qt::Core)

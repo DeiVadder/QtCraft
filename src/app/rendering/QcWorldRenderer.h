@@ -61,7 +61,11 @@ private:
     // The water lists alone, back to front, with the water pipeline (a plan with a Water step).
     void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
-    // `count` indices from `firstIndex`, all of them when `count` is 0.
+    // Sets the pipeline with its shader resources (the pipeline's own without `resources`) and
+    // forgets the bound vertex input.
+    void usePipeline(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPipeline *pipeline, QRhiShaderResourceBindings *resources = nullptr);
+    // `count` indices from `firstIndex`, all of them when `count` is 0; binds the list's buffers only
+    // when they differ from the bound ones (with QRhi::BaseVertex).
     void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 firstIndex = 0, quint32 count = 0);
     // The pipeline the translucent step draws the water lists with: the translucent one as long as
     // the water pipeline does the same (m_waterLikeTranslucent), so alternating draws need no switch.
@@ -69,6 +73,18 @@ private:
     // The water and translucent faces of one section in the mesher's order, switching pipelines.
     void drawTranslucentRuns(const QcGpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
                              QRhiCommandBuffer *commandBuffer);
+
+    // The vertex and index buffers bound since the last usePipeline() (decision E-820).
+    struct Binding
+    {
+        const QRhiBuffer *vertices = nullptr;
+        const QRhiBuffer *indices = nullptr;
+        QRhiCommandBuffer::IndexFormat indexFormat = QRhiCommandBuffer::IndexUInt16;
+        bool operator==(const Binding &) const = default;
+    };
+    Binding m_bound;
+    // Draws take a base vertex, so lists sharing buffers need no new binding (QRhi::BaseVertex).
+    bool m_baseVertex = false;
 
     // GPU resources by lifetime: the pass group is dropped with the device group and on its own
     // when the render target's pass changes (initialize()).

@@ -2414,3 +2414,28 @@ Basis `pre` = `aaedafc` (nach Etappe 62), `new` = `6446c89` (71.1 und 71.2, dazu
 | showcase-signal_farm | 0,0923 → 0,0917 (−0,7 %) | 0,168 → 0,175 (+4,2 %, Streuung 13 %) | 62,4 → 62,6 (+0,3 %) |
 
 Alle Werte innerhalb von ±6 %, keine Regression. Die Vegetationsschichten und Blumenflecken (E-814) ersetzen die bisherigen Pflanzen-Features der Biome; die Weltgenerierung beim Erkunden (`explore`) kostet gleich viel.
+
+## Paket 47.1c (Abschnitts-Arena, Zeichnen mit Basis-Vertex), Release offscreen (2026-10-21)
+
+Basis `base` = `dev` `c11e6e5`, `new` = `feature/47-1c-draw-batching` (E-820). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, 2400 Bilder, Statistik alle 3 s; Mittel der Fenster nach vollständigem Laden ohne das erste), je zwei Runden verschränkt (base/new abwechselnd) im Bench-Slot des Broker (ruhige Maschine). Offscreen nur Richtwerte; der Fenster-Benchmark (`bench-ab.sh @core`, dazu `stand sprint` mit `VIEW=16`) ist geschuldet.
+
+| | Sichtweite 8 base | 8 new | Sichtweite 16 base | 16 new |
+|---|---:|---:|---:|---:|
+| Zeichenaufrufe | 488 | 488 | 2372 | 2372 |
+| `worldRender` Ø (ms) | 0,75 | 0,39 (−48 %) | 1,84 | 0,92 (−50 %) |
+| Render-CPU Ø (ms) | 1,43 | 1,19 (−17 %) | 2,26 | 1,64 (−28 %) |
+| GPU Ø (ms) | 1,06 | 0,99 | 1,81 | 1,58 |
+| `sectionMb` (MiB; new: Kapazität der Seiten) | 100 | 110 | 334 | 352 |
+| physischer Gesamtbedarf (MB) | 612 | 610 | 1112 | 1075 |
+
+Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 366; `drawOpaque` 896 → 148, weil `QRhiMetal::setVertexInput` (fast nur Allokationen in `QRhiBatchedBindings`) nur noch je Seite statt je Zeichenaufruf läuft. Übrig sind vor allem `drawIndexedPrimitives` des Treibers und `cull`.
+
+**Nachmessung nach der zweiten Prüfung** (geteilte Seiten nur bei direktem Schreiben, Reserve-Seite, Freigabe-Prüfung im Allokator, Sortierung über Paare in `cull`; gleiche Methode, dieselbe `base`, Maschine mit Lastmittel rund 4 statt ruhig, deshalb beide Seiten etwas langsamer als oben). Bild: die Screenshots nach 2400 Bildern unterscheiden sich zwischen `base` und `new` nicht mehr als zwei Läufe derselben Variante (Sichtweite 16: 5 433 Byte base/new gegen 101 445 Byte base/base in der Bitmap; Wesen, Tageszeit und Statistik-Overlay bewegen sich), ein Unterschied durch die Arena ist nicht zu sehen.
+
+| | Sichtweite 8 base | 8 new | Sichtweite 16 base | 16 new |
+|---|---:|---:|---:|---:|
+| `worldRender` Ø (ms) | 0,75 | 0,42 (−44 %) | 1,95 | 1,05 (−46 %) |
+| Render-CPU Ø (ms) | 1,39 | 1,26 (−10 %) | 2,38 | 1,82 (−24 %) |
+| GPU Ø (ms) | 0,98 | 1,04 | 1,59 | 1,54 |
+| `sectionMb` (MiB; new: Kapazität der Seiten) | 100 | 110 | 334 | 352 |
+| physischer Gesamtbedarf (MB) | 614 | 606 | 1114 | 1079 |

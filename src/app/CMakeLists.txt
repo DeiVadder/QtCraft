@@ -90,9 +90,11 @@ target_sources(qc_app_core PRIVATE
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
+    rendering/QcRangeAllocator.h rendering/QcRangeAllocator.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
     rendering/QcRenderPipelines.h rendering/QcRenderPipelines.cpp
     rendering/QcRenderSample.h
+    rendering/QcSectionArena.h rendering/QcSectionArena.cpp
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp

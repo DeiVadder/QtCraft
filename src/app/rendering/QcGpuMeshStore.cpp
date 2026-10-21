@@ -6,53 +6,66 @@
 
 #include <algorithm>
 #include <limits>
+#include <optional>
 
 void QcGpuMeshStore::reset(QRhi *rhi, bool sectionLight)
 {
     m_meshes.clear();
     m_lightPool.reset();
-    m_bytes = 0;
     m_rhi = rhi;
     m_sectionLight = sectionLight;
     m_directWrite = QcBufferWrite::isSupported(rhi);
     m_warnedWriteFallback = false;
     m_directWrites = 0;
-}
-
-QRhiBuffer::UsageFlags QcGpuMeshStore::usage(QRhiBuffer::UsageFlag kind) const
-{
-    // Without the storage usage QRhi's Metal backend keeps every buffer once per frame in flight;
-    // section buffers are written once and never again, so one copy is safe, and QcBufferWrite
-    // needs it (decision E-813).
-    return m_directWrite ? QRhiBuffer::UsageFlags(kind | QRhiBuffer::StorageBuffer) : QRhiBuffer::UsageFlags(kind);
-}
-
-std::unique_ptr<QRhiBuffer> QcGpuMeshStore::createBuffer(QRhiBuffer::UsageFlag kind, quint32 size) const
-{
-    std::unique_ptr<QRhiBuffer> buffer(m_rhi->newBuffer(QRhiBuffer::Immutable, usage(kind), size));
-    if (!buffer->create()) {
-        qCWarning(lcRenderer).nospace() << "Section buffer of " << size << " bytes could not be created";
-        return nullptr;
+    // Pages shared by many sections only where they are written directly (Metal with the storage
+    // usage, so the backend keeps one copy instead of one per frame in flight): the direct write
+    // touches just the section's range, which no draw in flight reads. Through a resource update
+    // batch the other backends would stage or copy a whole page for every section (Vulkan allocates
+    // a staging buffer of the buffer's size per frame), so there every section keeps a page of its
+    // own, as before the arena (decisions E-813, E-820).
+    if (m_directWrite) {
+        m_arena.reset(rhi, QRhiBuffer::StorageBuffer, QcSectionArena::Layout::Shared);
+    } else {
+        m_arena.reset(rhi, QRhiBuffer::UsageFlags(), QcSectionArena::Layout::PerSection);
     }
-    return buffer;
 }
 
-void QcGpuMeshStore::fill(QRhiResourceUpdateBatch *updates, QRhiBuffer *buffer, const QByteArray &data)
+void QcGpuMeshStore::fill(QRhiResourceUpdateBatch *updates, QRhiBuffer *buffer, quint32 offset, const QByteArray &data)
 {
     const auto size = quint32(data.size());
     if (m_directWrite) {
-        if (QcBufferWrite::write(buffer, data.constData(), size)) {
+        if (QcBufferWrite::write(buffer, offset, data.constData(), size)) {
             ++m_directWrites;
             return;
         }
-        // Expected to work for every section buffer on this QRhi; the batch upload below still fills it.
+        // Expected to work for every section page on this QRhi; the batch upload below still fills it.
         if (!m_warnedWriteFallback) {
             m_warnedWriteFallback = true;
             qCWarning(lcRenderer) << "Direct section buffer write failed, uploading through resource update batches";
         }
     }
-    updates->uploadStaticBuffer(buffer, data.constData());
+    updates->uploadStaticBuffer(buffer, offset, size, data.constData());
 }
+
+namespace {
+
+// A list of the packed mesh at its place in the slot.
+QcGpuList gpuList(const QcArenaSlot &slot, QcPackedMesh::Place place)
+{
+    const quint32 vertexOffset = slot.vertexOffset + place.vertexOffset;
+    const quint32 indexOffset = slot.indexOffset + place.indexOffset;
+    const quint32 indexSize = place.shortIndices ? 2 : 4;
+    return QcGpuList{slot.vertices,
+                     slot.indices,
+                     vertexOffset,
+                     indexOffset,
+                     place.indexCount,
+                     place.shortIndices ? QRhiCommandBuffer::IndexUInt16 : QRhiCommandBuffer::IndexUInt32,
+                     indexOffset / indexSize,
+                     qint32(vertexOffset / QcSectionArena::vertexStride)};
+}
+
+} // namespace
 
 QcGpuMesh QcGpuMeshStore::createMesh(QRhiResourceUpdateBatch *updates, const QcChunkMesh &mesh)
 {
@@ -62,37 +75,26 @@ QcGpuMesh QcGpuMeshStore::createMesh(QRhiResourceUpdateBatch *updates, const QcC
         return gpuMesh;
     }
 
-    // Both buffers exist before either is filled: a buffer released with an upload still queued in
-    // the batch would crash the backend (decision E-413).
-    gpuMesh.vertexBuffer = createBuffer(QRhiBuffer::VertexBuffer, quint32(packed.vertices.size()));
-    gpuMesh.indexBuffer = createBuffer(QRhiBuffer::IndexBuffer, quint32(packed.indices.size()));
-    if (!gpuMesh.vertexBuffer || !gpuMesh.indexBuffer) {
-        return QcGpuMesh(); // nothing to draw; createBuffer() reported it
+    const std::optional<QcArenaSlot> slot = m_arena.allocate(quint32(packed.vertices.size()), quint32(packed.indices.size()));
+    if (!slot) {
+        return gpuMesh; // nothing to draw; the arena reported it
     }
-    fill(updates, gpuMesh.vertexBuffer.get(), packed.vertices);
-    fill(updates, gpuMesh.indexBuffer.get(), packed.indices);
+    fill(updates, slot->vertices, slot->vertexOffset, packed.vertices);
+    fill(updates, slot->indices, slot->indexOffset, packed.indices);
 
-    const auto list = [&](QcPackedMesh::List which) {
-        const QcPackedMesh::Place &place = packed.place(which);
-        return QcGpuList{gpuMesh.vertexBuffer.get(),
-                         gpuMesh.indexBuffer.get(),
-                         place.vertexOffset,
-                         place.indexOffset,
-                         place.indexCount,
-                         place.shortIndices ? QRhiCommandBuffer::IndexUInt16 : QRhiCommandBuffer::IndexUInt32};
-    };
-    gpuMesh.opaque = list(QcPackedMesh::List::Opaque);
-    gpuMesh.cutout = list(QcPackedMesh::List::Cutout);
-    gpuMesh.translucent = list(QcPackedMesh::List::Translucent);
-    gpuMesh.water = list(QcPackedMesh::List::Water);
-    gpuMesh.underside = list(QcPackedMesh::List::Underside);
+    gpuMesh.slot = *slot;
+    gpuMesh.opaque = gpuList(*slot, packed.place(QcPackedMesh::List::Opaque));
+    gpuMesh.cutout = gpuList(*slot, packed.place(QcPackedMesh::List::Cutout));
+    gpuMesh.translucent = gpuList(*slot, packed.place(QcPackedMesh::List::Translucent));
+    gpuMesh.water = gpuList(*slot, packed.place(QcPackedMesh::List::Water));
+    gpuMesh.underside = gpuList(*slot, packed.place(QcPackedMesh::List::Underside));
     return gpuMesh;
 }
 
 void QcGpuMeshStore::release(quint64 key)
 {
     if (const auto found = m_meshes.find(key); found != m_meshes.end()) {
-        m_bytes -= found->second.bytes();
+        m_arena.release(found->second.slot);
         m_meshes.erase(found);
     }
 }
@@ -101,10 +103,11 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
 {
     if (m_clearAll) {
         m_meshes.clear();
+        m_arena.clear();
         m_lightPool.reset();
-        m_bytes = 0;
         m_clearAll = false;
     }
+    m_arena.nextFrame();
 
     quint64 uploaded = 0;
     for (auto &[key, mesh] : m_uploads) {
@@ -130,9 +133,7 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
 
         gpuMesh.boundsMin = low;
         gpuMesh.boundsMax = high;
-        const quint64 bytes = gpuMesh.bytes();
-        m_bytes += bytes;
-        uploaded += bytes;
+        uploaded += gpuMesh.bytes();
         m_meshes.insert_or_assign(key, std::move(gpuMesh));
     }
 

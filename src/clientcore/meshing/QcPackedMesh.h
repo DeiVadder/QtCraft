@@ -6,13 +6,12 @@
 
 #include <array>
 
-// The lists of a section mesh (QcChunkMesh) packed for the GPU into one vertex and one index buffer
-// (decision E-813): every GPU buffer costs a few KiB of driver memory besides its data, and a section
-// has up to five lists, so one buffer pair per section instead of one pair per list saves most of that
-// at large view distances. A list's indices stay relative to its own first vertex (a draw binds the
-// vertex buffer at the list's offset); they take two bytes when the list has at most 65536 vertices
-// (QcIndexPacking), otherwise four, and every list starts at a multiple of four bytes in the index
-// data (padding bytes are zero).
+// The lists of a section mesh (QcChunkMesh) packed for the GPU into one vertex and one index range
+// (decision E-813), which the GPU mesh store places in a page shared with other sections (decision
+// E-820). A list's indices stay relative to its own first vertex (a draw takes that vertex as base
+// vertex, or binds the vertex buffer at the list's offset); they take two bytes when the list has at
+// most 65536 vertices (QcIndexPacking), otherwise four, and every list starts at a multiple of four
+// bytes in the index data (padding bytes are zero).
 struct QcPackedMesh
 {
     enum class List : quint8 { Opaque, Cutout, Translucent, Water, Underside };

@@ -15,10 +15,10 @@ bool isSupported(const QRhi *rhi)
     return rhi && rhi->backend() == QRhi::Metal && rhi->isFeatureSupported(QRhi::Compute);
 }
 
-bool write(QRhiBuffer *buffer, const void *data, quint32 size)
+bool write(QRhiBuffer *buffer, quint32 offset, const void *data, quint32 size)
 {
     const QRhiBuffer::NativeBuffer native = buffer->nativeBuffer();
-    if (native.slotCount != 1 || !native.objects[0] || size > buffer->size()) {
+    if (native.slotCount != 1 || !native.objects[0] || quint64(offset) + size > buffer->size()) {
         return false;
     }
 
@@ -29,10 +29,10 @@ bool write(QRhiBuffer *buffer, const void *data, quint32 size)
         return false; // private storage: only a blit could fill it
     }
 
-    std::memcpy(contents, data, size);
+    std::memcpy(static_cast<char *>(contents) + offset, data, size);
     // Managed storage (Macs with a separate GPU) keeps a GPU copy that has to be told.
     if (metal.storageMode == MTLStorageModeManaged) {
-        [metal didModifyRange:NSMakeRange(0, size)];
+        [metal didModifyRange:NSMakeRange(offset, size)];
     }
     return true;
 }

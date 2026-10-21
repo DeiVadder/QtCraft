@@ -8,7 +8,7 @@ bool isSupported(const QRhi *)
     return false;
 }
 
-bool write(QRhiBuffer *, const void *, quint32)
+bool write(QRhiBuffer *, quint32, const void *, quint32)
 {
     return false;
 }
