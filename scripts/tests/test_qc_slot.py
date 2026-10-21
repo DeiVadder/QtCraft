@@ -2,12 +2,15 @@
 """Tests of the slot broker scripts/qc-slot.py (decision E-781).
 
 Every test runs its own broker in a temporary slot directory (QC_SLOT_DIR and HOME point there), with
-a load read from a file, 8 cores and a tick of 50 ms, so nothing touches ~/.cache/qtcraft and the
+a load read from a file (it stands for both the 1-min and the short-term load), 8 cores and a tick of 50 ms, so nothing touches ~/.cache/qtcraft and the
 whole file runs in a few seconds. Run: python3 scripts/tests/test_qc_slot.py (verify.sh runs it in
 the step check-slot-broker).
 """
 
+import contextlib
+import io
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -19,6 +22,22 @@ import unittest
 SCRIPTS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SLOT = os.path.join(SCRIPTS, "qc-slot.py")
 WAIT_QUIET = os.path.join(SCRIPTS, "wait-quiet.sh")
+
+
+def slot_module():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("qc_slot", SLOT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class FakeClock:
+    def __init__(self):
+        self.now = 100.0
+
+    def __call__(self):
+        return self.now
 
 
 def wait_until(predicate, seconds=5.0):
@@ -328,6 +347,190 @@ class SlotBrokerTest(unittest.TestCase):
         self.assertIn("load", self.status()["queue"][0]["reason"])
         self.set_load(1.5)
         self.granted(bench)
+
+    def test_load_gate_holds_while_another_slot_runs(self):
+        # Cores 8: limit 10. The 4 held jobs explain load 11 (11 - 8 = 3), so the wait limit does not apply.
+        self.start_server(QC_SLOT_LOAD_WAIT="0.2")
+        self.hold("build", "a", "--jobs", "4")
+        self.set_load(11)
+        build = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        time.sleep(0.5)
+        self.assertIsNone(build.poll(), "a build granted at load 11 beside another slot")
+        self.assertIn("QC_SLOT_LOAD_LIMIT", self.status()["queue"][0]["reason"])
+        self.set_load(3)
+        # Load 3 (the load changed since a's grant, so its jobs no longer count extra): 5 cores, 4 free.
+        self.assertEqual(self.granted(build)["QC_BUILD_JOBS"], "4")
+
+    def test_foreign_load_beside_a_small_slot_escapes_one_per_period(self):
+        # 2 held jobs x 6 threads cannot explain load 40 on 8 cores: foreign load, the wait limit applies,
+        # and after one escape the wait starts again.
+        self.start_server(QC_SLOT_LOAD_WAIT="1.0")
+        self.hold("build", "a", "--jobs", "2")
+        self.set_load(40)
+        first = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        second = self.acquire("build", "c")
+        wait_until(lambda: len(self.queued()) == 2)
+        self.assertIn("foreign load", self.status()["queue"][0]["reason"])
+        self.assertEqual(self.granted(first)["QC_BUILD_JOBS"], "2")
+        self.assertIn("granted at load 40.0", self.holders()["b"]["note"])
+        time.sleep(0.5)
+        self.assertIsNone(second.poll(), "two requests escaped the load gate in one wait period")
+        self.granted(second)
+
+    def test_held_jobs_weighted_by_threads_explain_the_load(self):
+        # 2 held jobs x 6 threads = 12 >= 18 - 8: the broker's own load, no escape after the wait limit.
+        self.start_server(QC_SLOT_LOAD_WAIT="0.2")
+        self.hold("build", "a", "--jobs", "2")
+        self.set_load(18)
+        build = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        time.sleep(0.6)
+        self.assertIsNone(build.poll(), "escaped beside a slot whose jobs explain the load")
+        self.assertNotIn("foreign", self.status()["queue"][0]["reason"])
+
+    def test_light_releases_do_not_restart_the_wait(self):
+        self.set_load(12)
+        self.start_server(QC_SLOT_LOAD_WAIT="1.0")
+        build = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        deadline = time.time() + 4
+        while build.poll() is None and time.time() < deadline:
+            self.slot("run", "--kind", "light", "--who", "l", "--", "true")
+        self.assertIsNotNone(build.poll(), "light slots ending restarted the wait of a build")
+        self.granted(build)
+
+    def test_load_gate_never_blocks_an_idle_broker(self):
+        self.set_load(12)
+        self.start_server(QC_SLOT_LOAD_WAIT="0.6")
+        build = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        self.assertIn("nothing else held", self.status()["queue"][0]["reason"])
+        exports = self.granted(build)
+        self.assertEqual(exports["QC_BUILD_JOBS"], "2", "a loaded machine gets the fewest jobs")
+        note = self.holders()["b"]["note"]
+        self.assertIn("granted at load 12.0", note)
+        self.assertIn("jobs lowered to 2", note)
+
+    def test_wait_limit_counts_from_the_last_release(self):
+        self.start_server(QC_SLOT_LOAD_WAIT="0.8")
+        first = self.hold("build", "a", "--jobs", "4")
+        self.set_load(11)
+        build = self.acquire("build", "b")
+        time.sleep(1.0)
+        self.assertIsNone(build.poll())
+        self.release(first["QC_SLOT_ID"])
+        time.sleep(0.4)
+        self.assertIsNone(build.poll(), "the wait limit counted the time while another slot ran")
+        self.granted(build)
+
+    def test_jobs_scale_down_with_load(self):
+        self.set_load(5)
+        self.start_server()
+        self.assertEqual(self.hold("build", "a")["QC_BUILD_JOBS"], "3")
+        self.assertIn("jobs lowered to 3 at load 5.0", self.holders()["a"]["note"])
+        # Load 5 plus the 3 jobs just granted: 0 cores left, so the heavy minimum of 3.
+        self.assertEqual(self.hold("verify", "v")["QC_TEST_JOBS"], "3")
+        self.set_load(0)
+        self.assertEqual(self.hold("test", "t")["QC_TEST_JOBS"], "2", "free jobs and pending ones still count")
+
+    def test_jobs_just_granted_count_as_load(self):
+        self.start_server(QC_SLOT_LOAD_LIMIT="5", QC_SLOT_LOAD_WINDOW="1")
+        self.hold("verify", "a", "--jobs", "6")
+        build = self.acquire("build", "b")
+        wait_until(lambda: self.queued() == ["b"])
+        self.assertIn("6 jobs just granted", self.status()["queue"][0]["reason"])
+        self.assertEqual(self.granted(build)["QC_BUILD_JOBS"], "2")
+
+    def test_runnable_estimate_inverts_the_load_average(self):
+        module = slot_module()
+        decay = math.exp(-5 / 60)
+        after_one = 2 * decay + 10 * (1 - decay)
+        self.assertAlmostEqual(module.runnable_estimate(2, after_one, 4.2), 10)
+        after_two = 2 * decay ** 2 + 10 * (1 - decay ** 2)
+        self.assertAlmostEqual(module.runnable_estimate(2, after_two, 9.6), 10)
+        self.assertEqual(module.runnable_estimate(20, 1, 5), 0)
+
+    def test_monitor_window_and_unchanged_readings(self):
+        module = slot_module()
+        clock = FakeClock()
+        readings = [2.0]
+        monitor = module.LoadMonitor(15, source=lambda: (readings[0], 0, 0), clock=clock)
+        monitor.sample()
+        self.assertEqual(monitor.measure(), (2.0, False), "no sample yet: the 1-min average")
+        decay = math.exp(-5 / 60)
+        for _ in range(3):
+            clock.now += 1
+            monitor.sample()
+        self.assertEqual(len(monitor.samples), 0, "an unchanged reading added a sample")
+        clock.now += 2
+        readings[0] = 2 * decay + 10 * (1 - decay)
+        monitor.sample()
+        self.assertAlmostEqual(monitor.current(), 10)
+        # A missed step: two kernel updates (one unchanged) between the readings, n = 4 in both.
+        clock.now += 10
+        before = readings[0]
+        readings[0] = before * decay ** 2 + 4 * (1 - decay ** 2)
+        monitor.sample()
+        self.assertAlmostEqual(monitor.current(), 7)
+        clock.now += 30
+        value, from_window = monitor.measure()
+        self.assertEqual((value, from_window), (readings[0], False), "old samples left the window")
+
+    def test_monitor_direct_source(self):
+        module = slot_module()
+        clock = FakeClock()
+        values = [3.0]
+        monitor = module.LoadMonitor(15, source=lambda: values[0], clock=clock, direct=True)
+        monitor.sample()
+        self.assertEqual(monitor.measure(), (3.0, True))
+        clock.now += 1
+        values[0] = 5.0
+        monitor.sample()
+        self.assertEqual(monitor.measure(), (5.0, True))
+        self.assertEqual(monitor.fresh_weight(clock.now - 0.5), 0.0, "a window of one sample, taken after the grant")
+
+    def test_fresh_grant_weight_fades_over_a_window(self):
+        module = slot_module()
+        clock = FakeClock()
+        clock.now = 85.0
+        values = [1.0]
+        monitor = module.LoadMonitor(15, source=lambda: values[0], clock=clock, direct=True)
+        monitor.sample()
+
+        def update(at):
+            clock.now = at
+            values[0] += 1
+            monitor.sample()
+
+        update(90)
+        update(95)
+        granted = 100.0
+        clock.now = 101
+        self.assertEqual(monitor.fresh_weight(granted), 1.0, "no load update since the grant")
+        update(102)
+        self.assertAlmostEqual(monitor.fresh_weight(granted), 2 / 3)
+        update(107)
+        self.assertAlmostEqual(monitor.fresh_weight(granted), 1 / 3)
+        update(112)
+        self.assertEqual(monitor.fresh_weight(granted), 0.0)
+        self.assertEqual(monitor.fresh_weight(113.0), 1.0)
+        clock.now = 129
+        self.assertEqual(monitor.fresh_weight(113.0), 0.0, "a whole window without update")
+
+    def test_status_of_an_older_broker(self):
+        module = slot_module()
+        old = {"version": 1, "pid": 1, "up": 5, "load": 2.0, "cores": 8, "budget": 8, "used": 0, "bench_load": 4,
+               "locks": {}, "holders": [], "queue": []}
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            module.print_status(old)
+        self.assertIn("load 2 (1 min)", printed.getvalue())
+        self.assertIn("stop", module.version_warning(None, True))
+        self.assertIsNone(module.version_warning(module.VERSION, True))
+        self.start_server()
+        self.assertNotIn("WARNING", self.slot("status").stderr)
 
     def test_pid_death_releases(self):
         self.start_server()

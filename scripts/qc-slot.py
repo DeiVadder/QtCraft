@@ -33,14 +33,22 @@ Usage:
 
 Kinds: bench (exclusive: no build/test/verify slot held, 1-min load below QC_SLOT_BENCH_LOAD,
 default 4; while a bench waits no new slot except light is granted, running ones finish),
-tsan/asan/verify (heavy; job wish max(3, cores/2), waits while the load is at or above
-QC_SLOT_HEAVY_LOAD, default 2 x cores); a load limit holds a request at most QC_SLOT_LOAD_WAIT
-seconds (default 600; load from processes outside the broker never blocks for ever), build (wish 4), test (wish 3), light
-(1 job, outside the budget; only waits for a benchmark). Heavy, build and test share a budget of
-QC_SLOT_BUDGET jobs (default the number of cores): a grant gets min(wish, free jobs) and needs at
-least 3 (heavy; with --jobs half the wish) or 2 free jobs. Order: light, bench, then build, test
-and heavy slots first come first served in one queue; a request that waits for jobs is not
-overtaken by any later one.
+tsan/asan/verify (heavy; job wish max(3, cores/2)), build (wish 4), test (wish 3), light (1 job,
+outside the budget; only waits for a benchmark). Heavy, build and test share a budget of
+QC_SLOT_BUDGET jobs (default the number of cores): a grant gets min(wish, free jobs, cores - load)
+and needs at least 3 (heavy; with --jobs half the wish) or 2 jobs. They also wait while the load
+is at or above QC_SLOT_LOAD_LIMIT (default 1.25 x cores); the load is the mean number of runnable
+threads of the last QC_SLOT_LOAD_WINDOW seconds (default 15, derived from successive 1-min load
+averages sampled every second, so it follows a starting or ending run within seconds) plus the jobs
+of fresh grants until a full window of samples passed after their first load update (not yet fully
+visible in it). While held
+build/test/heavy slots explain the load (their jobs x QC_SLOT_THREADS_PER_JOB, default 6, at least
+load - cores) the gate holds without
+limit (those slots end and the load drops); otherwise (none held, or the load comes mostly from
+processes outside the broker) it holds a request at most QC_SLOT_LOAD_WAIT seconds from its arrival,
+the last release of such a slot or the last such escape (default 600; one request escapes per
+period; the grant carries a note). Order: light, bench, then build, test and heavy slots first come
+first served in one queue; a request that waits for jobs is not overtaken by any later one.
 Lock files of scripts without the broker keep working: no slot is granted while a live foreign
 ~/.cache/qtcraft/bench.lock exists (light and wait included) or a live quiet.lock of a timing phase
 (except light); a granted bench creates bench.lock itself (owner "bench-slot.sh pid=<holder> ...",
@@ -55,6 +63,7 @@ Exit codes: the command's (run), 0 granted, 1 timeout, 2 usage, 211 broker unava
 import argparse
 import fcntl
 import json
+import math
 import os
 import re
 import select
@@ -64,6 +73,7 @@ import subprocess
 import sys
 import threading
 import time
+from collections import deque
 
 HEAVY = ("tsan", "asan", "verify")
 COUNTED = HEAVY + ("build", "test")
@@ -76,7 +86,11 @@ MIN_JOBS = {"build": 2, "test": 2, "tsan": 3, "asan": 3, "verify": 3}
 EXIT_UNAVAILABLE = 211
 SOCKET_PATH_MAX = 103
 BENCH_HOLD_MAX = 1800
-VERSION = 1
+# Seconds between two kernel updates of the load average.
+LOADAVG_PERIOD = 5.0
+# Seconds between two load samples; must stay well below LOADAVG_PERIOD.
+LOAD_SAMPLE_SECONDS = 1.0
+VERSION = 2
 
 
 def slot_dir():
@@ -113,16 +127,98 @@ def pid_alive(pid):
     return True
 
 
-def machine_load():
+def fake_load():
+    """The load read from the file QC_SLOT_FAKE_LOAD (tests), or None without it."""
     fake = os.environ.get("QC_SLOT_FAKE_LOAD")
-    if fake:
-        try:
-            with open(fake, encoding="utf-8") as handle:
-                return float(handle.read().strip() or 0)
-        except (OSError, ValueError):
-            return 0.0
-    return os.getloadavg()[0]
+    if not fake:
+        return None
+    try:
+        with open(fake, encoding="utf-8") as handle:
+            return float(handle.read().strip() or 0)
+    except (OSError, ValueError):
+        return 0.0
 
+
+def machine_load():
+    """The 1-min load average (or the fake load of the tests)."""
+    fake = fake_load()
+    return fake if fake is not None else os.getloadavg()[0]
+
+
+def runnable_estimate(previous, current, elapsed):
+    """Runnable threads the kernel counted, from two 1-min load averages seen `elapsed` seconds apart.
+
+    macOS and Linux update the average every 5 s as L = L * e + n * (1 - e) with e = exp(-5/60);
+    solving for n gives the number of runnable threads now, without the minute of lag of the average.
+    """
+    steps = max(1, round(elapsed / LOADAVG_PERIOD))
+    decay = math.exp(-steps * LOADAVG_PERIOD / 60)
+    return max(0.0, (current - previous * decay) / (1 - decay))
+
+
+class LoadMonitor:
+    """Short-term load: mean of the runnable threads derived from the 1-min average over a window.
+
+    source() gives the 1-min load average, clock() a monotonic time (both injectable for tests).
+    The broker samples every LOAD_SAMPLE_SECONDS on its own timer, well below the 5 s between two
+    kernel updates, so every update is seen (a reading that did not change adds nothing; a later
+    change spanning several updates is inverted over all of them). Without samples in the window
+    (just started, or a steady load) the 1-min average itself is the value. With direct=True
+    (QC_SLOT_FAKE_LOAD of the tests) the source is the short-term load itself.
+    """
+
+    def __init__(self, window, source=os.getloadavg, clock=time.monotonic, direct=False):
+        self.window = window
+        self.source = source
+        self.clock = clock
+        self.direct = direct
+        self.lock = threading.Lock()
+        self.last = None
+        self.samples = deque()
+
+    def sample(self):
+        now = self.clock()
+        value = float(self.source()) if self.direct else self.source()[0]
+        with self.lock:
+            if self.last is not None and value == self.last[1]:
+                return
+            if self.last is not None:
+                estimate = value if self.direct else runnable_estimate(self.last[1], value, now - self.last[0])
+                self.samples.append((now, estimate))
+            self.last = (now, value)
+
+    def measure(self):
+        """(load, whether it is the window mean; False: the 1-min average)."""
+        if self.direct:
+            return float(self.source()), True
+        with self.lock:
+            self.prune()
+            if self.samples:
+                return sum(n for _, n in self.samples) / len(self.samples), True
+        return self.source()[0], False
+
+    def current(self):
+        return self.measure()[0]
+
+    def prune(self):
+        """Drops samples older than the window; runs under self.lock."""
+        limit = self.clock() - self.window
+        while self.samples and self.samples[0][0] < limit:
+            self.samples.popleft()
+
+    def fresh_weight(self, granted):
+        """Share of a grant's jobs the measured load does not show yet (1 down to 0).
+
+        Until the first load update after the grant the load cannot show it (1; 0 once a whole window
+        passed without one). From then on: 1 - samples since that update / samples in the window, so
+        the jobs count until the window is filled with samples taken after the grant.
+        """
+        with self.lock:
+            self.prune()
+            after = [t for t, _ in self.samples if t > granted]
+            if not after:
+                return 1.0 if self.clock() - granted < self.window else 0.0
+            return 1.0 - len(after) / len(self.samples)
 
 def lock_holder(path, ignore):
     """Owner line of a live lock directory of another process, or None when free or stale.
@@ -234,11 +330,14 @@ class Entry:
         self.slot_id = int(slot_id) if slot_id.isdigit() else None
         self.child_pid = None
         self.note = ""
+        self.escaped = False
         wish = request.get("jobs") or default_wish(self.kind, cores)
         self.wish = max(1, int(wish))
         self.jobs_explicit = bool(request.get("jobs_explicit"))
         timeout = float(request.get("timeout") or 0)
         self.since = time.time()
+        self.since_mono = time.monotonic()
+        self.granted_mono = None
         self.deadline = self.since + timeout if timeout > 0 else None
         self.granted_at = None
         self.expires = None
@@ -284,7 +383,17 @@ class Broker:
         self.budget = max(1, int(number("QC_SLOT_BUDGET", self.cores)))
         self.bench_load = number("QC_SLOT_BENCH_LOAD", 4)
         self.load_wait = number("QC_SLOT_LOAD_WAIT", 600)
-        self.heavy_load = number("QC_SLOT_HEAVY_LOAD", 2 * self.cores)
+        self.load_limit = number("QC_SLOT_LOAD_LIMIT", 1.25 * self.cores)
+        self.load_window = number("QC_SLOT_LOAD_WINDOW", 15)
+        # Threads one granted job runs on average (ctest jobs x test threads, compiler processes).
+        self.threads_per_job = number("QC_SLOT_THREADS_PER_JOB", 6)
+        if fake_load() is not None:
+            self.monitor = LoadMonitor(self.load_window, source=fake_load, direct=True)
+        else:
+            self.monitor = LoadMonitor(self.load_window)
+        # QC_SLOT_LOAD_WAIT counts from here (monotonic): the last release of a build/test/heavy slot
+        # or the last grant that escaped the load gate, so at most one request escapes per period.
+        self.load_wait_since = time.monotonic()
         self.tick_seconds = number("QC_SLOT_TICK", 2)
         self.idle_seconds = number("QC_SLOT_IDLE", 900)
         self.cond = threading.Condition()
@@ -316,6 +425,8 @@ class Broker:
             entry = Entry(ident, request, self.cores)
             if request.get("since"):
                 entry.since = float(request["since"])
+                entry.since_mono = time.monotonic() - max(0.0, time.time() - entry.since)
+            entry.granted_mono = entry.since_mono
             entry.jobs = int(request.get("jobs") or 0)
             entry.granted_at = entry.since
             entry.result = "granted"
@@ -359,6 +470,8 @@ class Broker:
             if entry is None:
                 return None
             self.drop_bench_lock(entry, ended)
+            if entry.kind in COUNTED and not any(h.kind in COUNTED for h in self.holders.values()):
+                self.load_wait_since = time.monotonic()
             held = time.time() - (entry.granted_at or entry.since)
             self.log(f"release #{entry.id} {entry.kind} who={entry.who!r} after {held:.0f}s: {why}")
             self.last_activity = time.time()
@@ -372,6 +485,17 @@ class Broker:
 
     def used_jobs(self):
         return sum(h.jobs for h in self.holders.values() if h.kind in COUNTED)
+
+    def pending_jobs(self):
+        """Jobs of fresh grants the measured load does not show yet, weighted by the share of the
+        window's samples taken before the grant's first load update (LoadMonitor.fresh_weight)."""
+        total = sum(h.jobs * self.monitor.fresh_weight(h.granted_mono) for h in self.holders.values()
+                    if h.kind in COUNTED and h.granted_mono is not None)
+        return round(total, 1)
+
+    def gate_load(self):
+        """The load the gate of build/test/heavy slots compares: short-term load plus pending jobs."""
+        return self.monitor.current() + self.pending_jobs()
 
     def schedule(self):
         with self.cond:
@@ -410,15 +534,51 @@ class Broker:
             return None, 0
         if behind_jobs is not None:
             return f"behind #{behind_jobs.id} {behind_jobs.kind} '{behind_jobs.who}', which came first and waits for jobs", 0
-        if entry.kind in HEAVY and load >= self.heavy_load:
-            waited = time.time() - entry.since
-            if waited < self.load_wait:
-                return f"load at or above {self.heavy_load:g} (QC_SLOT_HEAVY_LOAD)", 0
-            entry.note = f"granted at load {load:.1f} (limit {self.heavy_load:g}) after waiting {waited:.0f}s (QC_SLOT_LOAD_WAIT)"
+        gate = self.gate_load()
+        reason = self.load_gate(entry, gate)
+        if reason:
+            return reason, 0
         free = self.budget - self.used_jobs()
         if free < min(entry.min_jobs(), self.budget):
             return f"jobs: {self.budget - free} of {self.budget} in use", 0
-        return None, min(entry.wish, free)
+        return None, self.scaled_jobs(entry, free, gate)
+
+    def load_gate(self, entry, gate):
+        """Why a build/test/heavy request waits for the load to drop, or None.
+
+        While held build/test/heavy slots explain the load (their jobs at least load - cores), the gate
+        holds without limit: they end and the load drops (a job runs about QC_SLOT_THREADS_PER_JOB
+        threads, default 6). Otherwise (none held, or load mostly from
+        processes outside the broker) it holds at most QC_SLOT_LOAD_WAIT, counted from arrival or from
+        the last release of such a slot or the last escape, so foreign load never serialises the
+        queue for ever and at most one request escapes per period.
+        """
+        entry.note = ""
+        entry.escaped = False
+        if gate < self.load_limit:
+            return None
+        pending = self.pending_jobs()
+        what = f"load {gate:.1f}" + (f" (with {pending:g} jobs just granted)" if pending else "")
+        held = self.used_jobs()
+        if held and held * self.threads_per_job >= gate - self.cores:
+            return f"{what} at or above {self.load_limit:g} (QC_SLOT_LOAD_LIMIT)"
+        waited = time.monotonic() - max(entry.since_mono, self.load_wait_since)
+        if waited < self.load_wait:
+            source = "foreign load beyond the held jobs" if held else "nothing else held"
+            return f"{what} at or above {self.load_limit:g} (QC_SLOT_LOAD_LIMIT); {source}, granted after {self.load_wait:g}s"
+        entry.note = f"granted at load {gate:.1f} (limit {self.load_limit:g}) after waiting {waited:.0f}s (QC_SLOT_LOAD_WAIT)"
+        entry.escaped = True
+        return None
+
+    def scaled_jobs(self, entry, free, gate):
+        """min(wish, free jobs, cores - load), but at least the minimum of the kind: a loaded machine
+        gets fewer jobs."""
+        room = max(entry.min_jobs(), int(self.cores - gate))
+        jobs = min(entry.wish, free, room)
+        if room < min(entry.wish, free):
+            lowered = f"jobs lowered to {jobs} at load {gate:.1f}"
+            entry.note = f"{entry.note}; {lowered}" if entry.note else lowered
+        return jobs
 
     @staticmethod
     def own_slot(entry, holder):
@@ -433,7 +593,7 @@ class Broker:
         running = [h for h in self.holders.values() if h.kind in COUNTED]
         if running:
             return f"{len(running)} build/test/verify slot(s) still running", 0
-        waited = time.time() - entry.since
+        waited = time.monotonic() - entry.since_mono
         if load >= self.bench_load:
             if waited < self.load_wait:
                 return f"load not below {self.bench_load:g} (QC_SLOT_BENCH_LOAD)", 0
@@ -447,6 +607,9 @@ class Broker:
         self.queue.remove(entry)
         entry.jobs = jobs
         entry.granted_at = now
+        entry.granted_mono = time.monotonic()
+        if entry.escaped:
+            self.load_wait_since = entry.granted_mono
         entry.result = "granted"
         entry.reason = ""
         if entry.kind != "gate":
@@ -540,9 +703,12 @@ class Broker:
             locks = {}
             for path in lock_paths(self.dir):
                 locks[os.path.basename(path)] = lock_holder(path, set())
+            short, from_window = self.monitor.measure()
             return {
                 "version": VERSION, "pid": os.getpid(), "up": round(now - self.started), "load": round(machine_load(), 2),
                 "cores": self.cores, "budget": self.budget, "used": self.used_jobs(), "bench_load": self.bench_load,
+                "load_short": round(short, 2), "load_short_window": from_window, "pending": self.pending_jobs(),
+                "load_limit": self.load_limit, "load_window": self.load_window,
                 "locks": locks,
                 "holders": [h.view(now) for h in sorted(self.holders.values(), key=lambda e: e.id)],
                 "queue": [e.view(now) for e in sorted(self.queue, key=lambda e: (PRIORITY[e.kind], e.id))],
@@ -611,8 +777,10 @@ class Server:
             self.log(message)
             print("qc-slot: " + message, file=sys.stderr)
             return 2
-        self.log(f"broker pid {os.getpid()} started: cores={self.broker.cores} budget={self.broker.budget} bench_load={self.broker.bench_load:g}")
+        self.log(f"broker pid {os.getpid()} started: cores={self.broker.cores} budget={self.broker.budget} "
+                 f"bench_load={self.broker.bench_load:g} load_limit={self.broker.load_limit:g}")
         threading.Thread(target=self.ticker, daemon=True).start()
+        threading.Thread(target=self.sampler, daemon=True).start()
         listener.settimeout(0.25)
         while not self.broker.stopping:
             try:
@@ -647,6 +815,18 @@ class Server:
                     self.log(f"tick failed: {error!r}")
                 except OSError:
                     print(f"qc-slot: tick failed: {error!r}", file=sys.stderr)
+
+    def sampler(self):
+        """Samples the load on a fixed timer, independent of QC_SLOT_TICK (it must see every update)."""
+        while not self.broker.stopping:
+            time.sleep(min(LOAD_SAMPLE_SECONDS, self.broker.tick_seconds))
+            try:
+                self.broker.monitor.sample()
+            except Exception as error:  # noqa: BLE001 - sampling must survive any single failure
+                try:
+                    self.log(f"load sample failed: {error!r}")
+                except OSError:
+                    print(f"qc-slot: load sample failed: {error!r}", file=sys.stderr)
 
     def handle(self, conn):
         with self.broker.cond:
@@ -724,7 +904,7 @@ class Server:
             return
         grant = {"ok": True, "id": entry.id, "kind": entry.kind, "jobs": entry.jobs,
                  "waited": round(entry.granted_at - entry.since, 1), "holder_pid": entry.holder_pid(),
-                 "note": entry.note}
+                 "note": entry.note, "version": VERSION}
         try:
             send_json(conn, grant)
         except OSError:
@@ -869,6 +1049,9 @@ def send_request(sock, args, kind, lease, timeout):
             print(f"qc-slot: #{message['id']} {kind} '{args.who}' waits: {message['waiting']}", file=sys.stderr)
             continue
         if message.get("ok"):
+            warning = version_warning(message.get("version"), False)
+            if warning:
+                print(warning, file=sys.stderr)
             return sock, message
         if message.get("reason") == "broker stopped":
             return None
@@ -1192,20 +1375,49 @@ def duration(seconds):
     return f"{seconds // 3600}h{seconds // 60 % 60:02d}m"
 
 
+def version_warning(version, idle):
+    """Warning text when the daemon runs another version than this client, else None."""
+    if version == VERSION:
+        return None
+    text = (f"qc-slot: WARNING: the running broker has version {version or 1}, this client {VERSION}; "
+            "it keeps its old policy until it ends on idle")
+    if idle:
+        text += "; nothing is held or waiting, so `scripts/qc-slot.py stop` replaces it now"
+    return text
+
+
+def load_line(state):
+    """The load part of the status; tolerates an older daemon without the short-term fields."""
+    text = f"load {state.get('load', 0):g} (1 min)"
+    if "load_short" in state:
+        if state.get("load_short_window"):
+            text += f", {state['load_short']:g} (last {state.get('load_window', 0):g}s)"
+        else:
+            text += ", no short-term samples yet (the gate uses the 1-min average)"
+        text += f" + {state.get('pending', 0):g} jobs just granted"
+    return text
+
+
 def print_status(state):
-    print(f"broker pid {state['pid']}, up {duration(state['up'])}; load {state['load']:g}; "
-          f"jobs {state['used']} of {state['budget']} in use ({state['cores']} cores); bench needs load < {state['bench_load']:g}")
-    for name, owner in state["locks"].items():
+    print(f"broker pid {state.get('pid')}, up {duration(state.get('up', 0))}; {load_line(state)}; "
+          f"jobs {state.get('used')} of {state.get('budget')} in use ({state.get('cores')} cores)")
+    limit = f"build/test/verify need load < {state['load_limit']:g}; " if "load_limit" in state else ""
+    print(f"{limit}bench needs load < {state.get('bench_load', 0):g}")
+    for name, owner in state.get("locks", {}).items():
         print(f"{name}: {owner or 'free'}")
-    print(f"holders ({len(state['holders'])}):")
-    for h in state["holders"]:
-        clock = time.strftime("%H:%M:%S", time.localtime(h["since"]))
-        print(f"  #{h['id']:<4} {h['kind']:<6} jobs {h['jobs']:<3} pid {h['pid']:<7} since {clock} ({duration(h['held'])})  {h['who']}")
+    holders = state.get("holders", [])
+    print(f"holders ({len(holders)}):")
+    for h in holders:
+        clock = time.strftime("%H:%M:%S", time.localtime(h.get("since", 0)))
+        print(f"  #{h.get('id', '?'):<4} {h.get('kind', '?'):<6} jobs {h.get('jobs', '?'):<3} pid {h.get('pid', '?'):<7} "
+              f"since {clock} ({duration(h.get('held', 0))})  {h.get('who', '?')}")
         if h.get("note"):
             print(f"         note: {h['note']}")
-    print(f"queue ({len(state['queue'])}):")
-    for e in state["queue"]:
-        print(f"  #{e['id']:<4} {e['kind']:<6} waits {duration(e['waited']):<8} pid {e['pid']:<7} {e['who']}: {e['reason']}")
+    queue = state.get("queue", [])
+    print(f"queue ({len(queue)}):")
+    for e in queue:
+        print(f"  #{e.get('id', '?'):<4} {e.get('kind', '?'):<6} waits {duration(e.get('waited', 0)):<8} "
+              f"pid {e.get('pid', '?'):<7} {e.get('who', '?')}: {e.get('reason', '?')}")
 
 
 def command_status(args):
@@ -1222,6 +1434,9 @@ def command_status(args):
                 print(f"{name}: {owner or 'free'}")
         return 0
     state["running"] = True
+    warning = version_warning(state.get("version"), not state.get("holders") and not state.get("queue"))
+    if warning:
+        print(warning, file=sys.stderr)
     if args.json:
         print(json.dumps(state, indent=2))
     else:
