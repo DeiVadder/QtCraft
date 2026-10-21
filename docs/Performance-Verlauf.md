@@ -2491,3 +2491,49 @@ Die Menge in `crowd` hängt von der Welt ab: in der neuen Welt stehen dort 90 st
 
 Keine Tick-Regression über 10 %. Der Spitzenspeicher von gravel-collapse hing an der Größe der Stapel, nicht an Daten: Die erste Reihe (32-Byte-Stapel mit `std::shared_ptr`, Kennbyte nach jedem Stapel auf der Leitung) zeigte 90,3 → 101,3 MB (+12 %); `dev` mit 12 Byte Polster im Stapel allein ergab 96–97 MB. Die lebenden Allokationen am Ende sind gleich (`heap`: 14,2 MB in beiden), der Unterschied ist der Höchststand der freigegebenen kleinen Allokationen (`vmmap`, `MALLOC_SMALL`). `malloc_history -allEvents` zeigt als Quelle mit Stapeln die Tabelle der Spawns im messenden Roh-Client (`QcRawWorldRecord::spawns`, `QHash<quint32, QcMsg::EntitySpawn>`: ein Spawn trägt ein Item und vier Rüstungsstapel, 352 → 408 Byte), also das Messwerkzeug, nicht den Server. Daraufhin: Zeiger mit Zähler in den Daten (`QExplicitlySharedDataPointer`, Stapel 24 statt 32 Byte, `QcMessage` 360 → 416 statt 456 Byte) und auf der Leitung das Kennbit in der Anzahl statt eines Bytes je Stapel (gewöhnliche Stapel gleich lang wie vorher); danach die Reihe oben.
 
+## Fenster-Benchmark 58–74.1 (2026-10-21)
+
+Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-Seiten), 63 (Vegetation), 64 (Blumental), 65 (Riesenbäume), 66 (Klima-Ordnung), 68.1/68.2 (Item-Daten, Rucksack), 47.3 (gehaltene Items, extrudierte Sprites je Bild) und 74.1 (Diagnose: Protokolldatei, Gesundheitszeile) gemeinsam nachgeholt. Basis `pre58` = `5fe2b09` (`dev` vor 58), Kandidat `dev` = `e21a99c`; beide Release (`--target qtcraft`) in eigenen Worktrees. `scripts/bench-ab.sh` über den Slot-Broker, 10 s je Lauf, adaptiv 3–6 Runden (alle Szenarien bei Sichtweite 8 liefen 6 Runden, bei 16 stand 3 und sprint 6), rotierte Reihenfolge; Lastmittel meist 3–6, 4 von 72 Läufen bei Sichtweite 8 als `loaded=1` markiert (auf beide Stände verteilt). Werte: Median der Runden.
+
+**Vergleichbarkeit:** 63–66 ändern die Weltgenerierung, Seed 42 ergibt also in `stand`, `sprint`, `crowd` und `inventory` anderes Gelände (z. B. bei Sichtweite 8 `stand` 84 → 91 Wesen auf dem Server, 525 → 515 Tsd. Dreiecke; die Showcase-Welt hat in `dev` 7 % mehr Dreiecke, 47.3 hat ihren Rüstungsbereich geändert). Gleiches Gelände haben nur `flat-crowd` (flache Welt, 56 Wesen und 89 Zeichenaufrufe in beiden Ständen) und, bis auf die Showcase-Inhalte, `showcase`. `inventory` gibt dem Spieler eine Eisenspitzhacke in die Hand, zeigt also das extrudierte Sprite von 47.3 in der ersten Person. **Ein Szenario mit vielen Spielern, die Werkzeuge halten, gibt es nicht** (`crowd` hat Wesen und Items, `armour-crowd` Ständer ohne Gegenstand in der Hand); die Kosten von 47.3 je Figur in der dritten Person sind darum nicht gemessen (Lücke).
+
+**Sichtweite 8** (`@core`, `flat-crowd`, `inventory`):
+
+| Szenario | Frame Ø ms | Frame p99 ms | GPU Ø ms | Render-CPU Ø ms | GUI-CPU Ø ms | Spitzenspeicher MB |
+|---|---|---|---|---|---|---|
+| stand | 8,36 → 8,35 (−0,1 %) | 10,31 → 10,37 (+0,6 %) | 1,48 → 1,46 (−1,2 %) | 1,42 → 0,90 (**−37 %**) | 0,33 → 0,40 (+19 %, Streuung 53–61 %) | 480 → 446 (−6,9 %) |
+| sprint | 8,34 → 8,36 (+0,2 %) | 10,27 → 10,23 (−0,4 %) | 1,78 → 1,73 (−2,6 %) | 1,25 → 0,76 (**−39 %**) | 0,33 → 0,34 (+4,0 %) | 530 → 473 (**−10,8 %**) |
+| showcase | 8,34 → 8,33 (−0,1 %) | 10,32 → 10,22 (−0,9 %) | 0,77 → 0,77 (−0,4 %) | 1,18 → 0,82 (**−30 %**) | 0,47 → 0,53 (+13,5 %, Streuung 15–18 %) | 353 → 336 (−4,9 %) |
+| crowd | 8,34 → 8,34 (−0,1 %) | 10,32 → 10,20 (−1,2 %) | 2,33 → 2,32 (−0,5 %) | 1,22 → 0,64 (**−47 %**) | 0,74 → 0,76 (+2,9 %) | 488 → 452 (−7,2 %) |
+| flat-crowd | 8,35 → 8,34 (−0,1 %) | 10,26 → 10,31 (+0,5 %) | 1,45 → 1,51 (+4,0 %) | 0,59 → 0,49 (−16 %) | 0,65 → 0,69 (+6,6 %) | 329 → 325 (−1,4 %) |
+| inventory | 8,37 → 8,37 (+0,1 %) | 10,34 → 10,32 (−0,2 %) | 1,59 → 1,57 (−1,2 %) | 1,41 → 0,87 (**−39 %**) | 0,31 → 0,35 (+14,6 %, Streuung 22–66 %) | 483 → 452 (−6,3 %) |
+
+**Sichtweite 16** (`stand`, `sprint`; Client-Speicher von 58 und Abschnitts-Seiten von 47.1c):
+
+| Szenario | Frame Ø ms | Frame p99 ms | GPU Ø ms | Render-CPU Ø ms | GUI-CPU Ø ms | Spitzenspeicher MB |
+|---|---|---|---|---|---|---|
+| stand | 8,33 → 8,34 (+0,2 %) | 9,18 → 9,41 (+2,4 %) | 2,90 → 2,95 (+1,8 %) | 2,27 → 1,41 (**−38 %**) | 0,23 → 0,31 (+35 %) | 993 → 803 (**−19 %**) |
+| sprint | 8,33 → 8,34 (±0 %) | 9,16 → 9,34 (+1,9 %) | 3,33 → 3,23 (−3,0 %) | 2,28 → 1,36 (**−40 %**) | 0,24 → 0,40 (+64 %) | 1 109 → 859 (**−23 %**) |
+
+`worldRender` sinkt um 56–62 % (47.1c: Seiten statt Puffer je Abschnitt, `setVertexInput` nur noch je Seite), `section_mb` steigt um 4–22 % (Kapazität der Seiten, 47.1c, dazu das Gelände von 63–66).
+
+**Über +10 %:** GUI-CPU in stand, showcase, inventory (Sichtweite 8: +0,04–0,06 ms) und bei Sichtweite 16 (+0,08 bzw. +0,16 ms), sowie der Server-Tick der BENCH-Zeile (Sichtweite 8: stand +17 %, flat-crowd +12 %, inventory +11 %, alle bei 22–42 % Streuung; Sichtweite 16: 0,73 → 1,22 ms (+67 %) in stand und 0,79 → 1,28 ms (+63 %) in sprint, Streuung 3–15 %). Ursachen, aus einer zweiten Reihe mit den Zwischenständen `s47c` = `93dd10b` (58, 63, 47.1c), `s66` = `6d5db91` (dazu 64, 65, 68.1, 68.2, 66) und `s473` = `69cf943` (dazu 47.3), je 3 Runden:
+
+| Sichtweite 16, stand | pre58 | s47c | s66 | s473 | dev |
+|---|---:|---:|---:|---:|---:|
+| Tick Ø (Fenster) ms | 0,72 | 1,26 | 1,42 | 1,47 | 1,45 |
+| davon Wesen ms | 0,57 | 1,01 | 1,12 | 1,16 | 1,11 |
+| Wesen auf dem Server | 187 | 186 | 184 | 184 | 184 |
+| GUI-CPU Ø ms | 0,25 | 0,42 | 0,37 | 0,37 | 0,39 |
+| Entity-Vernetzung Ø ms | 0,10 | 0,15 | 0,12 | 0,13 | 0,13 |
+| Render-CPU Ø ms | 2,33 | 1,60 | 1,50 | 1,40 | 1,70 |
+
+(sprint ebenso: Tick 0,80 → 1,52 → 1,54 → 1,62 → 1,64 ms, GUI-CPU 0,28 → 0,47 → 0,46 → 0,48 → 0,50 ms.)
+
+- **Tick:** Der Sprung liegt zwischen `pre58` und `s47c`, bei gleicher Zahl der Wesen und gleichmäßig über alle Phasen (Wesen ×1,8, Pflanzen ×2, Loren ×1,6, Streaming ×1,7); 58 und 47.1c ändern nur den Client. **Headless** (`bench-headless.sh`, `stand` und `crowd` bei Sichtweite 16, 60 Spielsekunden, 3 Runden) ist der Server-Tick in allen drei Ständen gleich: stand 0,241 / 0,241 / 0,238 ms, crowd 0,290 / 0,288 / 0,294 ms (`pre58` / `s47c` / `dev`), Spitzenspeicher 120–122 MB. Die Arbeit des Servers ist also unverändert; im Fenster misst die Thread-CPU-Uhr mehr, seit der Render-Thread 0,7–0,9 ms je Bild weniger arbeitet (vermutlich niedrigerer Takt bzw. Effizienzkerne für den Server-Thread im dann weniger belasteten Prozess, nicht eigens nachgewiesen). Keine Regression durch eines der Pakete; die Signal-Phase steigt im Schritt `s47c` → `s66` (0,01 → 0,04 ms; Gelände von 64–66 mit anderen Block-Entities in Sicht).
+- **GUI-CPU:** Bei Sichtweite 16 ebenfalls im Schritt `pre58` → `s47c` (+0,17 ms), dort steigt auch die unveränderte Entity-Vernetzung (+0,04 ms): derselbe Takteffekt. Danach bleibt bei Sichtweite 8 ein kleiner Anstieg in showcase (GUI-CPU 0,58 → 0,61 ms, Entity-Vernetzung 0,21 → 0,23 ms von `s66` bis `dev`) und inventory (Entity-Vernetzung 0,165 → 0,189 ms): **47.3** (extrudierte Sprites in der Hand werden je Bild neu vernetzt) mit rund +0,02 ms und **74.1** mit höchstens +0,04 ms in showcase (3 Runden, innerhalb der Streuung). Absolut bleibt die GUI-CPU unter 0,8 ms (Ziel ≤ 4 ms Frame-Kosten).
+- **74.1, Protokolldatei:** `dev` schreibt auch im Benchmark ein Sitzungsprotokoll, weil `scripts/bench-common.sh` nur `QTCRAFT_DATA_DIR` auf einen Temp-Ordner setzt (`<data>/logs/qtcraft-<zeit>.log`, mit dem Ordner nach jedem Lauf gelöscht). Ein 10-s-Lauf schreibt 48 Zeilen (7,5 KB, ungepuffert), fast alle beim Start; eine Gesundheitszeile kommt erst nach 60 s. Für die Bildzeiten ohne Bedeutung; wer längere Fensterläufe (`explore` 75 s) vergleicht, bekommt in `dev` eine `HEALTH`-Zeile je Minute.
+
+**Ergebnis:** Keine Regression der Pakete über 10 % in Bildzeit, p99 oder GPU (alle ±4 %). Render-CPU −30 … −47 % und Spitzenspeicher −5 … −23 % (58, 47.1c). Tick und GUI-CPU der BENCH-Zeile steigen, sind aber headless unverändert (Server) bzw. größtenteils derselbe Takteffekt; echte Kosten von 47.3/74.1 auf dem GUI-Thread ≤ 0,04 ms.
+
+**Zielprüfung** (`docs/Performance.md`, „Ziele“): Sichtweite 8: 120 FPS (Frame Ø 8,33–8,37 ms), p99 10,2–10,4 ms (≤ 12,5), Frame-Kosten höchstens 2,32 ms GPU in crowd (≤ 4), Spitzenspeicher höchstens 473 MB (sprint 10 s; ≤ 600) erfüllt. Sichtweite 16: p99 9,3–9,4 ms (≤ 16,7) und Frame-Kosten höchstens 3,23 ms GPU (≤ 8,3) erfüllt; **Spitzenspeicher verfehlt, aber deutlich näher:** stand 803 MB (vorher 993), sprint (10 s) 859 MB (vorher 1 109) bei Ziel ≤ 800 MB; der physische Gesamtbedarf (`peak_footprint_mb`, nur `dev`) liegt bei 1 303 bzw. 1 362 MB. Befund „Spitzenspeicher ≤ 800 MB bei 16 Chunks“ bleibt offen (Rest: Blockindizes in Client und Server, siehe E-813, „Verworfen bzw. offen“). Kein Tick über 50 ms (höchstens 5,8 ms), keine übersprungenen Ticks.
