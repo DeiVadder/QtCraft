@@ -184,7 +184,7 @@ private slots:
     {
         QcBlockEntityRecord record;
         record.chunk = {0, 0};
-        record.signs = {{{3, 20, 5}, Lines{u"One"_s, {}, u"Three"_s, {}}}, {{4, 21, 5}, Lines{u"Ä€°"_s}}};
+        record.signs = {{{3, 20, 5}, Lines{u"One"_s, {}, u"Three"_s, {}}, {}}, {{4, 21, 5}, Lines{u"Ä€°"_s}, {}}};
         const QByteArray blob = QcBlockEntityCodec::encode(record, *m_content);
         QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = QcBlockEntityCodec::decode(blob, {0, 0}, *m_content, warnings);
@@ -212,20 +212,20 @@ private slots:
 
     void protocolAndClientMirror()
     {
-        const QcMsg::SignText text{{17, 30, -5}, Lines{u"a"_s, u"b"_s}};
+        const QcMsg::SignText text{{17, 30, -5}, Lines{u"a"_s, u"b"_s}, {}};
         const QcResult<QcMessage> decoded = QcProtocol::decode(QcProtocol::encode(QcMessage(text)), QcProtocol::Peer::Server);
         QVERIFY(decoded && std::holds_alternative<QcMsg::SignText>(*decoded));
         QCOMPARE(std::get<QcMsg::SignText>(*decoded).lines, text.lines);
         // Lines longer than the wire allows are refused; the client may not send SignText.
-        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMessage(QcMsg::SignText{{1, 2, 3}, Lines{u"x"_s.repeated(300)}})), QcProtocol::Peer::Server));
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMessage(QcMsg::SignText{{1, 2, 3}, Lines{u"x"_s.repeated(300)}, {}})), QcProtocol::Peer::Server));
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMessage(text)), QcProtocol::Peer::Client));
         QVERIFY(QcProtocol::decode(QcProtocol::encode(QcMessage(QcMsg::EditSign{{1, 2, 3}, Lines{u"hi"_s}})), QcProtocol::Peer::Client));
 
         QcChunkExtras extras;
         extras.setSign(text);
-        extras.setSign({{40, 30, 40}, Lines{u"c"_s}});
+        extras.setSign({{40, 30, 40}, Lines{u"c"_s}, {}});
         QCOMPARE(extras.signs().size(), 2);
-        extras.setSign({{40, 30, 40}, Lines{}});
+        extras.setSign({{40, 30, 40}, Lines{}, {}});
         QCOMPARE(extras.signs().size(), 1);
         const quint64 generation = extras.signGeneration();
         extras.chunkArrived(text.pos.chunk());
@@ -239,7 +239,7 @@ private slots:
         QcSignTextCache cache;
         const QcEntityMesher::UvLookup uv = [](const QString &) { return QRectF(0.0, 0.0, 1.0, 1.0); };
         const QcBlockPos near{1, 64, 1};
-        QHash<QcBlockPos, Lines> signs{{near, Lines{u"Hi"_s}}, {{200, 64, 200}, Lines{u"Far"_s}}};
+        QHash<QcBlockPos, QcSignText::Text> signs{{near, {Lines{u"Hi"_s}, {}}}, {{200, 64, 200}, {Lines{u"Far"_s}, {}}}};
         cache.setSigns(signs, 1);
         QCOMPARE(cache.signsNear({0.0, 64.0, 0.0}, 32.0), QList<QcBlockPos>{near});
 
@@ -256,7 +256,7 @@ private slots:
         QCOMPARE(cache.builds(), 3);
 
         // A new text counts only with a new generation.
-        signs[near] = Lines{u"Bye"_s};
+        signs[near].lines = Lines{u"Bye"_s};
         cache.setSigns(signs, 1);
         QCOMPARE(cache.quads(near, turned, light, *m_content, uv).size(), std::size_t(2));
         cache.setSigns(signs, 2);

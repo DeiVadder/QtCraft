@@ -23,6 +23,15 @@ using Table = QcBlockEntityRecord::Table;
 // The version every table and every entry of this version writes (decision E-440).
 constexpr quint16 tableVersion = 1;
 constexpr quint16 entryVersion = 1;
+// Signs write version 2: the colour of the text after the lines (decision E-830). Older readers keep
+// it as the tail of a newer version.
+constexpr quint16 signEntryVersion = 2;
+
+// The version the entries of `table` are written in.
+constexpr quint16 entryVersionOf(quint16 table)
+{
+    return table == quint16(QcBlockEntityRecord::Table::Signs) ? signEntryVersion : entryVersion;
+}
 // Bytes of one table at most: far more than one component of an entity (a chunk full of chests, a
 // circuit's long list of waiting positions), but never more than the blob of the whole chunk may
 // hold in its region file (encodeWithin keeps every saved blob within it).
@@ -187,14 +196,16 @@ private:
             return false;
         }
         const qint64 start = m_stream.device()->pos();
+        m_version = version;
         if (!(this->*read)() || m_stream.status() != QDataStream::Ok) {
             return false;
         }
         const qint64 used = m_stream.device()->pos() - start;
-        if (std::cmp_greater(used, length) || (version <= entryVersion && std::cmp_not_equal(used, length))) {
+        const quint16 known = entryVersionOf(quint16(table));
+        if (std::cmp_greater(used, length) || (version <= known && std::cmp_not_equal(used, length))) {
             return false;
         }
-        if (version <= entryVersion) {
+        if (version <= known) {
             return true;
         }
         if (m_tails >= maxKeptTails) {
@@ -403,6 +414,14 @@ private:
             }
             entry.lines[line] = QcNameText::clean(text, QcSignDefinition::maxLineLength);
         }
+        // The colour (decision E-830) from version 2 on; restore() turns an unknown one into the
+        // default.
+        if (m_version >= signEntryVersion) {
+            m_stream >> entry.color;
+            if (m_stream.status() != QDataStream::Ok || entry.color.size() > QcSignText::maxColorUnits) {
+                return false;
+            }
+        }
         m_record.signs.append(entry);
         return m_signs.add(entry.pos);
     }
@@ -410,8 +429,9 @@ private:
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
-    // The position of the entry being read (its tail is kept by it).
+    // The position and version of the entry being read (its tail is kept by its position).
     QcBlockPos m_at;
+    quint16 m_version = 0;
     SeenPositions m_containers;
     SeenPositions m_machines;
     SeenPositions m_saplings;
@@ -451,10 +471,11 @@ public:
     void entry(QcBlockPos pos, Write write)
     {
         const QcEntityComponent *tail = m_kept.entryTail(m_table, pos);
-        if (tail && tail->version <= entryVersion) {
+        const quint16 version = entryVersionOf(m_table);
+        if (tail && tail->version <= version) {
             tail = nullptr;
         }
-        m_stream << (tail ? tail->version : entryVersion) << quint32(0);
+        m_stream << (tail ? tail->version : version) << quint32(0);
         const qint64 start = m_stream.device()->pos();
         write();
         if (tail) {
@@ -535,6 +556,7 @@ public:
             for (const QString &line : sign.lines) {
                 m_stream << line;
             }
+            m_stream << sign.color;
         });
         if (m_record.furnished || hasTail(Table::Furnished)) {
             m_tables.add(quint16(Table::Furnished), tableVersion, [](QDataStream &) {});

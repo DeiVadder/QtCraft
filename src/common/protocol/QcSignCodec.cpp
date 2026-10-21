@@ -1,5 +1,6 @@
 // Payloads of the sign messages (QcSignMessages.h, decision E-766): a position and four lines, each
-// at most QcSignText::maxLineUnits UTF-16 units on the wire.
+// at most QcSignText::maxLineUnits UTF-16 units on the wire; SignText adds the colour of the text
+// (decision E-830), at most QcSignText::maxColorUnits.
 
 #include "common/protocol/QcProtocolCodec.h"
 
@@ -40,6 +41,7 @@ struct ReadSign
 void encode(QDataStream &stream, const QcMsg::SignText &m)
 {
     writeSign(stream, m.pos, m.lines);
+    stream << m.color;
 }
 
 void encode(QDataStream &stream, const QcMsg::OpenSignEditor &m)
@@ -55,7 +57,15 @@ void encode(QDataStream &stream, const QcMsg::EditSign &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SignText>, QDataStream &stream)
 {
     QcResult<ReadSign> sign = readSign(stream);
-    return sign ? QcResult<QcMessage>(QcMsg::SignText{sign->pos, sign->lines}) : qcError(sign.error());
+    if (!sign) {
+        return qcError(sign.error());
+    }
+    QString color;
+    stream >> color;
+    if (color.size() > QcSignText::maxColorUnits) {
+        return qcError(u"Sign colour too long"_s);
+    }
+    return QcResult<QcMessage>(QcMsg::SignText{sign->pos, sign->lines, color});
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenSignEditor>, QDataStream &stream)

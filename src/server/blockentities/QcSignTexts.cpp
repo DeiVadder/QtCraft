@@ -33,7 +33,8 @@ QList<QcSignTexts::Entry> QcSignTexts::savedOf(QcChunkPos pos) const
     QList<Entry> entries;
     entries.reserve(positions.size());
     for (const QcBlockPos &at : std::as_const(positions)) {
-        entries.append({at, m_entries.value(at)});
+        const QcSignText::Text text = m_entries.value(at);
+        entries.append({at, text.lines, text.color});
     }
     return entries;
 }
@@ -54,27 +55,39 @@ void QcSignTexts::restore(const QList<Entry> &entries, const QcChunk &chunk)
         const QcBlockId block = chunk.block(entry.pos.localX(), entry.pos.y, entry.pos.localZ());
         if (isSign(block)) {
             const QcSignDefinition &sign = m_sign[std::size_t(block)];
-            set(entry.pos, QcSignText::cleaned(entry.lines, sign.lines, sign.lineLength));
+            const QString color = QcSignText::colorOfDye(entry.color).value_or(QString());
+            put(entry.pos, {QcSignText::cleaned(entry.lines, sign.lines, sign.lineLength), color});
         }
     }
 }
 
 void QcSignTexts::set(QcBlockPos pos, const Lines &lines)
 {
-    if (QcSignText::isEmpty(lines)) {
+    put(pos, {lines, colorAt(pos)});
+}
+
+void QcSignTexts::setColor(QcBlockPos pos, const QString &color)
+{
+    const Lines *lines = at(pos);
+    put(pos, {lines ? *lines : Lines{}, color});
+}
+
+void QcSignTexts::put(QcBlockPos pos, const QcSignText::Text &text)
+{
+    if (QcSignText::isBlank(text)) {
         remove(pos);
         return;
     }
 
     const auto it = m_entries.find(pos);
     if (it != m_entries.end()) {
-        if (*it != lines) {
-            *it = lines;
+        if (*it != text) {
+            *it = text;
             m_changes.append(pos);
         }
         return;
     }
-    m_entries.insert(pos, lines);
+    m_entries.insert(pos, text);
     m_byChunk[pos.chunk()].append(pos);
     m_changes.append(pos);
 }
@@ -82,7 +95,13 @@ void QcSignTexts::set(QcBlockPos pos, const Lines &lines)
 const QcSignTexts::Lines *QcSignTexts::at(QcBlockPos pos) const
 {
     const auto it = m_entries.constFind(pos);
-    return it != m_entries.cend() ? &*it : nullptr;
+    return it != m_entries.cend() ? &it->lines : nullptr;
+}
+
+QString QcSignTexts::colorAt(QcBlockPos pos) const
+{
+    const auto it = m_entries.constFind(pos);
+    return it != m_entries.cend() ? it->color : QString();
 }
 
 QList<QcBlockPos> QcSignTexts::takeChanges()

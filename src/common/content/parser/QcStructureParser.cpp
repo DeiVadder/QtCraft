@@ -8,6 +8,7 @@
 #include "common/world/QcSignText.h"
 
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QHash>
 
 #include <algorithm>
@@ -342,8 +343,9 @@ void StructureReader::parseSpawnersAndLoot()
     }
 }
 
-// "signs": {"at": [x, y, z], "lines": ["...", ...]}: the text of a sign (decision E-766), at most
-// four lines of 32 characters (cleaned like a player's when the world is made).
+// "signs": {"at": [x, y, z], "lines": ["...", ...], "color": "blue"}: the text of a sign (decision
+// E-766), at most four lines of 32 characters (cleaned like a player's when the world is made), and
+// optionally its colour, one of the 16 dye colours (decision E-830).
 void StructureReader::parseSigns()
 {
     const QJsonArray signs = extraArray(m_json, u"signs"_s, m_reader);
@@ -358,11 +360,20 @@ void StructureReader::parseSigns()
             m_reader.fail(u"'signs' entries need 'at' inside the structure and 'lines': at most 4 strings of 32 characters"_s);
             return;
         }
+        const QJsonValue colorValue = object.value(u"color"_s);
+        const std::optional<QString> color = colorValue.isUndefined() ? std::optional(QString())
+                                             : colorValue.isString()  ? QcSignText::colorOfDye(colorValue.toString())
+                                                                      : std::nullopt;
+        if (!color) {
+            m_reader.fail(u"'signs' entry 'color' must be one of the 16 dye colours, not %1"_s.arg(
+                QString::fromUtf8(QJsonDocument(QJsonArray{colorValue}).toJson(QJsonDocument::Compact))));
+            return;
+        }
         QStringList text;
         for (const auto &line : lines) {
             text.append(line.toString());
         }
-        m_structure.signs.append({*cell, text});
+        m_structure.signs.append({*cell, text, *color});
     }
 }
 

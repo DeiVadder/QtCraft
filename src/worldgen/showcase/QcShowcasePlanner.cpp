@@ -267,7 +267,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         m_plan.setup.growing.append(placement.toWorld(pos));
     }
     for (const QcStructureDefinition::Sign &sign : structure.signs) {
-        m_plan.setup.signs.append({placement.toWorld(sign.at), sign.lines});
+        m_plan.setup.signs.append({placement.toWorld(sign.at), sign.lines, sign.color});
     }
     for (QcStructureDefinition::Hanging hanging : structure.hangings) {
         // Turned with the structure like the stands' yaw: north, east, south, west per quarter turn.

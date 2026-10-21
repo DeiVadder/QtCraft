@@ -73,7 +73,7 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
     state.noteContents(contents.at);
 }
 
-// The text of a sign of a structure, cleaned like a player's.
+// The text of a sign of a structure, cleaned like a player's, in its colour.
 void write(QcServerState &state, const QcWorldSetup::Sign &sign)
 {
     const QcBlockId block = blockAt(state, sign.at);
@@ -87,6 +87,7 @@ void write(QcServerState &state, const QcWorldSetup::Sign &sign)
     }
     const QcSignDefinition &definition = state.content().block(block).sign;
     state.world().signs().set(sign.at, QcSignText::cleaned(lines, definition.lines, definition.lineLength));
+    state.world().signs().setColor(sign.at, sign.color);
 }
 
 // An armour stand of a structure; properties that do not apply are reported and left out.

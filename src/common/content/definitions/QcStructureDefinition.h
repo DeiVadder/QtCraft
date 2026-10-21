@@ -96,6 +96,8 @@ struct QcStructureDefinition
     {
         QcBlockPos at;
         QStringList lines;
+        // The colour of the text (QcSignText::Text::color, decision E-830); empty for the default.
+        QString color;
     };
 
     // An item frame or painting hung when the world is made (decision E-797, the showcase's

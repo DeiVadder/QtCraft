@@ -80,6 +80,7 @@ qc_add_test(test_small_signal_torch SOURCES gameplay/test_small_signal_torch.cpp
 # Function blocks of package 62.2a (decisions E-765 to E-769).
 qc_add_test(test_signal_indicator SOURCES gameplay/test_signal_indicator.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_signs SOURCES gameplay/test_signs.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+qc_add_test(test_sign_colours SOURCES gameplay/test_sign_colours.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_note_block SOURCES gameplay/test_note_block.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_target_block SOURCES gameplay/test_target_block.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 # Function blocks of package 62.3 (decisions E-782 to E-785).

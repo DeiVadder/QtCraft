@@ -22,11 +22,14 @@
         "K": "bone_block[axis=z]",
         "1": "oak_sign[attach=floor,rotation=0]",
         "2": "birch_sign[attach=floor,rotation=1]",
-        "3": "spruce_sign[attach=north]"
+        "3": "spruce_sign[attach=north]",
+        "4": "spruce_sign[attach=floor,rotation=0]",
+        "5": "oak_sign[attach=floor,rotation=0]",
+        "6": "birch_sign[attach=floor,rotation=15]"
     },
     "layers": [
         ["PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP"],
-        ["             ", " sssss NNN Bv", " eOOOw W     ", " eOOOw W Z uU", " eOOOw   Z   ", " nnnnn XXX DD", "  1 2   3    "],
+        ["             ", " sssss NNN Bv", " eOOOw W     ", " eOOOw W Z uU", " eOOOw   Z   ", " nnnnn XXX DD", "  1 2 4 3 5 6"],
         ["             ", "           K ", "  sss        ", "  eOw        ", "  nnn        ", "        S    ", "             "],
         ["             ", "             ", "             ", "   h         ", "             ", "             ", "             "]
     ],
@@ -40,6 +43,9 @@
     "signs": [
         { "at": [2, 1, 6], "lines": ["Signs", "use one", "to write", "on it"] },
         { "at": [4, 1, 6], "lines": ["Birch", "turned by", "a sixteenth"] },
-        { "at": [8, 1, 6], "lines": ["", "Spruce", "on a log"] }
+        { "at": [8, 1, 6], "lines": ["", "Spruce", "on a log"] },
+        { "at": [6, 1, 6], "lines": ["White dye", "on spruce"], "color": "white" },
+        { "at": [10, 1, 6], "lines": ["Red dye", "colours", "the text"], "color": "red" },
+        { "at": [12, 1, 6], "lines": ["Blue dye", "on birch"], "color": "blue" }
     ]
 }

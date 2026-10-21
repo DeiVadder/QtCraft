@@ -40,17 +40,18 @@ public:
             m_spawners.insert(display.pos, display.mob);
         }
     }
-    // The lines on each sign with text of the loaded chunks.
-    const QHash<QcBlockPos, QcSignText::Lines> &signs() const { return m_signs; }
-    // Changes whenever a sign's text arrived or left.
+    // The lines and colour on each sign with text or a colour of the loaded chunks.
+    const QHash<QcBlockPos, QcSignText::Text> &signs() const { return m_signs; }
+    // Changes whenever a sign's text or colour arrived or left.
     quint64 signGeneration() const { return m_signGeneration; }
-    void setSign(const QcMsg::SignText &text)
+    void setSign(const QcMsg::SignText &message)
     {
-        if (QcSignText::isEmpty(text.lines)) {
-            m_signGeneration += m_signs.remove(text.pos) ? 1 : 0;
+        const QcSignText::Text text{message.lines, message.color};
+        if (QcSignText::isBlank(text)) {
+            m_signGeneration += m_signs.remove(message.pos) ? 1 : 0;
             return;
         }
-        m_signs.insert(text.pos, text.lines);
+        m_signs.insert(message.pos, text);
         ++m_signGeneration;
     }
     // The items (content ids, 0 for an empty slot) on each campfire of the loaded chunks that holds any.
@@ -92,7 +93,7 @@ private:
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     QHash<QcBlockPos, int> m_spawners;
-    QHash<QcBlockPos, QcSignText::Lines> m_signs;
+    QHash<QcBlockPos, QcSignText::Text> m_signs;
     quint64 m_signGeneration = 0;
     QHash<QcBlockPos, QList<quint32>> m_campfires;
     QcExplosionEffects m_explosions;

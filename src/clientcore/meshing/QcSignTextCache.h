@@ -13,15 +13,17 @@
 #include <vector>
 
 // The text quads of the signs of the loaded chunks (decision E-766), kept from frame to frame: a
-// sign's quads are built again only when its text, its block (state) or its light changes, or when
+// sign's quads are built again only when its text or its colour (decision E-830), its block (state)
+// or its light changes, or when
 // the atlas they are cut from is replaced. The signs are grouped by chunk, so a frame looks only at
 // the chunks within the draw distance instead of at every sign.
 class QcSignTextCache
 {
 public:
     // Takes the signs of the loaded chunks; nothing happens while `generation` is the one of the
-    // last call (QcChunkExtras::signGeneration). Built quads of signs whose lines stay are kept.
-    void setSigns(const QHash<QcBlockPos, QcSignText::Lines> &signs, quint64 generation);
+    // last call (QcChunkExtras::signGeneration). Built quads of signs whose lines and colour stay
+    // are kept.
+    void setSigns(const QHash<QcBlockPos, QcSignText::Text> &signs, quint64 generation);
     // Forgets every sign and built quad: the atlas or the world changed.
     void clear();
 
@@ -43,7 +45,7 @@ private:
 
     struct Sign
     {
-        QcSignText::Lines lines;
+        QcSignText::Text text;
         std::optional<QcBlockId> block;
         // Quantised sky and block light the quads were built with.
         std::pair<int, int> light{-1, -1};

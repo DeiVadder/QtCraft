@@ -90172,7 +90172,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Schild steht auf dem Boden, in sechzehn Stufen zu dir gedreht, oder hängt an der Seite eines Blocks. Beim Setzen öffnet sich ein Fenster für seinen Text: vier Zeilen mit je bis zu 15 Zeichen. Alle in der Nähe können ihn lesen; benutze das Schild noch einmal, um ihn zu ändern, und schleiche, um stattdessen einen Block daran zu setzen. Sechs Bretter über einem Stock ergeben drei Schilder.",
+                    "text": "Ein Schild steht auf dem Boden, in sechzehn Stufen zu dir gedreht, oder hängt an der Seite eines Blocks. Beim Setzen öffnet sich ein Fenster für seinen Text: vier Zeilen mit je bis zu 15 Zeichen. Alle in der Nähe können ihn lesen; benutze das Schild noch einmal, um ihn zu ändern, und schleiche, um stattdessen einen Block daran zu setzen. Ein Farbstoff auf einem beschrifteten Schild färbt den Text in seiner Farbe (ein Farbstoff; keiner im Kreativmodus und keiner, wenn der Text diese Farbe schon hat); anfangs ist der Text schwarz. Sechs Bretter über einem Stock ergeben drei Schilder.",
                     "title": "Schilder"
                 },
                 {

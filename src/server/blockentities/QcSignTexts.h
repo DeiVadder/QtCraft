@@ -12,7 +12,8 @@
 
 // The text on the signs of the loaded chunks (decision E-766): up to four lines per sign block,
 // filed by chunk so that they are saved, unloaded and loaded with their chunk
-// (QcBlockEntityRecord::Table::Signs), like the monster spawners. A sign without text has no entry.
+// (QcBlockEntityRecord::Table::Signs), like the monster spawners. A sign also keeps the colour a dye
+// gave its text (decision E-830); a sign without text in the default colour has no entry.
 // Kept in step with the blocks by QcServerWorld: a block that is no sign any more loses its text
 // (another state of a sign keeps it). Clients learn the text of each sign they see
 // (QcMsg::SignText): after its chunk and whenever it changes.
@@ -25,6 +26,8 @@ public:
     {
         QcBlockPos pos;
         Lines lines;
+        // QcSignText::Text::color: empty for the default.
+        QString color;
 
         bool operator==(const Entry &) const = default;
     };
@@ -41,14 +44,20 @@ public:
     [[nodiscard]] QList<Entry> savedOf(QcChunkPos pos) const;
     [[nodiscard]] QList<Entry> takeChunk(QcChunkPos pos);
     // Puts back saved texts where the chunk still has a sign block (others are dropped), cleaned
-    // again to that block's line count and line length (QcSignText::cleaned).
+    // again to that block's line count and line length (QcSignText::cleaned); an unknown colour
+    // becomes the default.
     void restore(const QList<Entry> &entries, const QcChunk &chunk);
-    // Sets the text of the sign at `pos` (all lines empty: removes it); the caller checked the
-    // block and cleaned the lines. A changed text is announced to the clients.
+    // Sets the text of the sign at `pos` and keeps its colour; the caller checked the block and
+    // cleaned the lines. A changed text is announced to the clients.
     void set(QcBlockPos pos, const Lines &lines);
+    // Sets the colour of the text of the sign at `pos` (QcSignText::colorOfDye) and keeps its lines;
+    // the caller checked the block. A changed colour is announced to the clients.
+    void setColor(QcBlockPos pos, const QString &color);
 
-    // The lines at `pos`; null for a sign without text.
+    // The lines at `pos`; null for a sign without an entry.
     const Lines *at(QcBlockPos pos) const;
+    // The colour of the text at `pos`; empty for the default.
+    QString colorAt(QcBlockPos pos) const;
     bool contains(QcBlockPos pos) const { return m_entries.contains(pos); }
     qsizetype size() const { return m_entries.size(); }
     QList<QcBlockPos> positionsIn(QcChunkPos pos) const { return m_byChunk.value(pos); }
@@ -58,10 +67,11 @@ public:
 
 private:
     void remove(QcBlockPos pos);
+    void put(QcBlockPos pos, const QcSignText::Text &text);
 
     // Per block state: its sign definition (no lines: no sign).
     std::vector<QcSignDefinition> m_sign;
-    QHash<QcBlockPos, Lines> m_entries;
+    QHash<QcBlockPos, QcSignText::Text> m_entries;
     QHash<QcChunkPos, QList<QcBlockPos>> m_byChunk;
     QList<QcBlockPos> m_changes;
 };

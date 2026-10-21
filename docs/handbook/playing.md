@@ -129,7 +129,7 @@ Logs, wood, stripped logs and bone blocks lie along the face you click: on a top
 
 **Signs**
 
-A sign stands on the floor, turned towards you in sixteen steps, or hangs on the side of a block. When you place it, a screen opens for its text: four lines of up to 15 characters each. Everyone near it can read the text; use the sign again to change it, and sneak to place a block against it instead. Six planks over a stick make three signs.
+A sign stands on the floor, turned towards you in sixteen steps, or hangs on the side of a block. When you place it, a screen opens for its text: four lines of up to 15 characters each. Everyone near it can read the text; use the sign again to change it, and sneak to place a block against it instead. Use a dye on a sign with text to colour the text in that dye's colour (one dye; none in creative mode, and none if the text already has that colour); the text starts black. Six planks over a stick make three signs.
 
 **See also**
 

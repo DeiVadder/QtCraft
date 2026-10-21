@@ -70,5 +70,5 @@ bool QcServerSigns::mayWrite(const QcServerClient &client, QcBlockPos pos) const
 QcMsg::SignText QcServerSigns::textAt(QcBlockPos pos) const
 {
     const QcSignTexts::Lines *lines = m_state.world().signs().at(pos);
-    return {pos, lines ? *lines : QcSignTexts::Lines{}};
+    return {pos, lines ? *lines : QcSignTexts::Lines{}, m_state.world().signs().colorAt(pos)};
 }

@@ -55,14 +55,15 @@ struct LinePlace
     double pixel = 0.0;
 };
 
-// Writes lines of text on one sign's face as quads, in the sign's light.
+// Writes lines of text on one sign's face as quads, in the sign's light and the ink of its colour.
 class Pen
 {
 public:
-    Pen(const Face &face, QcEntityLight light, const QcEntityMesher::UvLookup &uv)
+    Pen(const Face &face, QcEntityLight light, const QcEntityMesher::UvLookup &uv, QcSignText::Ink ink)
         : m_face(face)
         , m_light(light)
         , m_uv(uv)
+        , m_ink{ink.red, ink.green, ink.blue, 255}
     {
     }
 
@@ -98,8 +99,6 @@ private:
     // The quad of one glyph `width` font pixels wide whose left edge lies `x` metres along the line.
     Quad glyphQuad(const QRectF &rect, const LinePlace &place, double x, int width) const
     {
-        // Dark ink; the glyphs are white in the atlas.
-        constexpr std::array<quint8, 4> ink{40, 28, 16, 255};
         const double x1 = x + width * place.pixel;
         const double bottom = place.top - QcPixelFont::glyphHeight / pixelsPerMetre;
         const std::array<std::pair<double, double>, 4> corners{{{x, bottom}, {x1, bottom}, {x1, place.top}, {x, place.top}}};
@@ -108,7 +107,7 @@ private:
             const QcVec3 at = m_face.centre + m_face.right * corners[corner].first + QcVec3{0.0, corners[corner].second, 0.0};
             const bool left = corner == 0 || corner == 3;
             quad[corner] = {float(at.x), float(at.y), float(at.z), float(left ? rect.left() : rect.right()),
-                            float(corner < 2 ? rect.bottom() : rect.top()), 1.0f, m_light.sky, m_light.block, ink};
+                            float(corner < 2 ? rect.bottom() : rect.top()), 1.0f, m_light.sky, m_light.block, m_ink};
         }
         return quad;
     }
@@ -116,6 +115,8 @@ private:
     const Face &m_face;
     QcEntityLight m_light;
     const QcEntityMesher::UvLookup &m_uv;
+    // The tint of the glyphs, which are white in the atlas.
+    std::array<quint8, 4> m_ink;
     QHash<int, QRectF> m_pages;
     std::vector<Quad> m_quads;
 };
@@ -144,9 +145,10 @@ std::optional<Face> faceOf(const QcContentRegistry &content, QcBlockId block, Qc
     return Face{corner + turned(centre, angle), east, south};
 }
 
-std::vector<Quad> textQuads(const Face &face, const QcSignText::Lines &lines, QcEntityLight light, const QcEntityMesher::UvLookup &uv)
+std::vector<Quad> textQuads(const Face &face, const QcSignText::Text &text, QcEntityLight light, const QcEntityMesher::UvLookup &uv)
 {
-    Pen pen(face, light, uv);
+    Pen pen(face, light, uv, QcSignText::inkOf(text.color));
+    const QcSignText::Lines &lines = text.lines;
     const double pixel = 1.0 / pixelsPerMetre;
     const double blockHeight = (QcSignText::maxLines * lineStep - (lineStep - QcPixelFont::glyphHeight)) * pixel;
     for (std::size_t index = 0; index < lines.size(); ++index) {

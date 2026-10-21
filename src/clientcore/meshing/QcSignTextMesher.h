@@ -11,7 +11,8 @@
 #include <vector>
 
 // The text on signs (decision E-766) as quads of the entity mesh: one quad per character, cut from
-// the pixel font's pages in the texture atlas (QcPixelFont), dark on the front of the board. Lines
+// the pixel font's pages in the texture atlas (QcPixelFont), on the front of the board in the ink of
+// the text's colour (QcSignText::inkOf; dark by default, a dye's tone after decision E-830). Lines
 // are centred; a line wider than the board is narrowed to fit. QcSignTextCache keeps the quads of
 // each sign until its text, block or light changes.
 namespace QcSignTextMesher {
@@ -39,8 +40,8 @@ std::optional<Face> faceOf(const QcContentRegistry &content, QcBlockId block, Qc
 // One quad of the entity mesh.
 using Quad = std::array<QcEntityVertex, 4>;
 
-// The quads of `lines` on `face`.
-[[nodiscard]] std::vector<Quad> textQuads(const Face &face, const QcSignText::Lines &lines, QcEntityLight light,
+// The quads of the lines of `text` on `face`, in its colour.
+[[nodiscard]] std::vector<Quad> textQuads(const Face &face, const QcSignText::Text &text, QcEntityLight light,
                                           const QcEntityMesher::UvLookup &uv);
 
 } // namespace QcSignTextMesher

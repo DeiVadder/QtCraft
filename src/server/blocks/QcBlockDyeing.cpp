@@ -1,5 +1,6 @@
 #include "server/blocks/QcBlockDyeing.h"
 
+#include "server/blockentities/QcServerSigns.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -32,10 +33,33 @@ bool QcBlockDyeing::dye(QcServerClient &client, QcBlockPos target, const QcItemD
     }
 
     m_blocks.setAndBroadcast(target, content.withProperty(*clicked, block.dyeProperty, held->dye));
+    useDye(client, target, block);
+    return true;
+}
+
+bool QcBlockDyeing::dyeSign(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held)
+{
+    const std::optional<QString> color = held ? QcSignText::colorOfDye(held->dye) : std::nullopt;
+    QcSignTexts &signs = m_state.world().signs();
+    const QcSignTexts::Lines *lines = signs.at(target);
+    // As in the model: a dye works on written signs only; on a blank one the editor opens.
+    if (!color || !lines || QcSignText::isEmpty(*lines) || !QcServerSigns(m_state).mayWrite(client, target)) {
+        return false;
+    }
+    if (signs.colorAt(target) == *color) {
+        return true;
+    }
+
+    signs.setColor(target, *color);
+    useDye(client, target, m_state.content().block(m_state.world().blockAt(target).value_or(qcAirBlockId)));
+    return true;
+}
+
+void QcBlockDyeing::useDye(QcServerClient &client, QcBlockPos target, const QcBlockDefinition &block)
+{
     m_sounds.playBlock(block, QcBlockSoundAction::Place, target);
     if (!client.rules().infiniteItems) {
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     }
     m_inventory.send(client);
-    return true;
 }

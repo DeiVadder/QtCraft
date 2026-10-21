@@ -192,8 +192,10 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
-    // A sign opens its editor (decision E-766).
-    if (clickedBlock && !client.sneaking && QcServerSigns(m_state).openEditor(client, target)) {
+    // A dye colours a sign's text, else the sign opens its editor (decisions E-830, E-766).
+    if (clickedBlock && !client.sneaking
+        && (QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dyeSign(client, target, m_state.heldItem(client))
+            || QcServerSigns(m_state).openEditor(client, target))) {
         return true;
     }
 

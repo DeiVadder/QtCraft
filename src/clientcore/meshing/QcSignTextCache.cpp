@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
-void QcSignTextCache::setSigns(const QHash<QcBlockPos, QcSignText::Lines> &signs, quint64 generation)
+void QcSignTextCache::setSigns(const QHash<QcBlockPos, QcSignText::Text> &signs, quint64 generation)
 {
     if (m_generation == generation) {
         return;
@@ -16,7 +16,7 @@ void QcSignTextCache::setSigns(const QHash<QcBlockPos, QcSignText::Lines> &signs
     m_chunks.clear();
     for (auto it = signs.cbegin(); it != signs.cend(); ++it) {
         Sign sign = m_signs.take(it.key());
-        if (sign.lines != it.value()) {
+        if (sign.text != it.value()) {
             sign = Sign{it.value(), std::nullopt, {-1, -1}, {}};
         }
         kept.emplace(it.key(), std::move(sign));
@@ -73,7 +73,7 @@ const std::vector<QcSignTextMesher::Quad> &QcSignTextCache::quads(QcBlockPos pos
     sign.block = block;
     sign.light = key;
     const std::optional<QcSignTextMesher::Face> face = QcSignTextMesher::faceOf(content, block, pos);
-    sign.quads = face ? QcSignTextMesher::textQuads(*face, sign.lines, light, uv) : std::vector<QcSignTextMesher::Quad>{};
+    sign.quads = face ? QcSignTextMesher::textQuads(*face, sign.text, light, uv) : std::vector<QcSignTextMesher::Quad>{};
     ++m_builds;
     return sign.quads;
 }

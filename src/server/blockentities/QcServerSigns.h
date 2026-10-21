@@ -27,10 +27,10 @@ public:
     void sendChunk(QcServerClient &client, QcChunkPos pos) const;
     // Tells the clients that have a chunk about the signs in it whose text changed.
     void announceChanges();
+    // Whether `client` may write on the sign block at `pos` now (also: dye its text, E-830).
+    bool mayWrite(const QcServerClient &client, QcBlockPos pos) const;
 
 private:
-    // Whether `client` may write on the sign block at `pos` now.
-    bool mayWrite(const QcServerClient &client, QcBlockPos pos) const;
     QcMsg::SignText textAt(QcBlockPos pos) const;
 
     QcServerState &m_state;
