@@ -2,6 +2,8 @@
 
 #include "clientcore/meshing/QcEntityMesher.h"
 
+#include <utility>
+
 // Items in a hand (decision E-831): sprites are drawn with sides one texel thick around their
 // opaque texels (QcSpriteShape), the fist closes around the grip the shape gives, and the content's
 // placement (ItemLook::firstPerson, thirdPerson) puts the item around it.
@@ -26,13 +28,14 @@ void appendExtrudedSprite(QcEntityMesh &mesh, const ExtrudedSprite &sprite, cons
 // (QcHoldGrip::Middle); without a shape, where a handle drawn from the lower left usually is.
 QcVec3 spriteGrip(const ItemLook &look, double size);
 
-// Draws held items, in the first-person fist and in a figure's fist.
+// Draws held items, in the first-person fist and in a figure's fist. The painter keeps its own
+// copy of the UV lookup, so it may be built from a temporary lambda and outlive it.
 class HeldItemPainter
 {
 public:
-    HeldItemPainter(QcEntityMesh &mesh, const UvLookup &uv, QcEntityLight light)
+    HeldItemPainter(QcEntityMesh &mesh, UvLookup uv, QcEntityLight light)
         : m_mesh(mesh)
-        , m_uv(uv)
+        , m_uv(std::move(uv))
         , m_light(light)
     {
     }
@@ -44,7 +47,7 @@ public:
 
 private:
     QcEntityMesh &m_mesh;
-    const UvLookup &m_uv;
+    UvLookup m_uv;
     QcEntityLight m_light;
 };
 
