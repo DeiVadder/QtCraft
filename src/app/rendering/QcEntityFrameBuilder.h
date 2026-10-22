@@ -75,6 +75,8 @@ private:
         double seconds = 0.0;
     };
 
+    // One entity of the session's list, by its kind.
+    void appendEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // A creature; `scale` shrinks it about its feet (the small creature in a spawner).
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
     // The small creature spinning in each monster spawner near the player (decision E-520).

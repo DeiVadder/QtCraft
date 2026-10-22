@@ -23,6 +23,29 @@ QcEntityLight glowing(QcEntityLight light, const ItemLook &look)
     return {light.sky, std::max(light.block, look.glow)};
 }
 
+// An affine map sampled from a placement at the origin and the three unit points: the placements
+// of held items (fist, arm, bone and model turns, scales and offsets) are affine, so four calls of
+// the chain of placement functions stand for the hundreds a sprite's side quads would make.
+class SampledPlacement
+{
+public:
+    explicit SampledPlacement(const PlaceFunction &place)
+        : m_origin(place({0.0, 0.0, 0.0}))
+        , m_x(place({1.0, 0.0, 0.0}) - m_origin)
+        , m_y(place({0.0, 1.0, 0.0}) - m_origin)
+        , m_z(place({0.0, 0.0, 1.0}) - m_origin)
+    {
+    }
+
+    [[nodiscard]] QcVec3 operator()(const QcVec3 &p) const { return m_origin + m_x * p.x + m_y * p.y + m_z * p.z; }
+
+private:
+    QcVec3 m_origin;
+    QcVec3 m_x;
+    QcVec3 m_y;
+    QcVec3 m_z;
+};
+
 // Emits the quads of an extruded sprite; local points are texel coordinates (x from the left, y
 // from the top, 0..size of the shape) and z in texels from the middle.
 class Extruder
@@ -125,7 +148,7 @@ private:
 
     QcEntityMesh &m_mesh;
     const ExtrudedSprite &m_sprite;
-    const PlaceFunction &m_place;
+    SampledPlacement m_place;
     int m_texels;
     double m_scale;
 };

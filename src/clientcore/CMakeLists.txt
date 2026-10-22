@@ -83,6 +83,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
+    meshing/QcEntityCulling.h meshing/QcEntityCulling.cpp
     meshing/QcEntityMesh.h
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
     meshing/QcEntityPose.h

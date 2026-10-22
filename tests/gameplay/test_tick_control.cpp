@@ -1,5 +1,6 @@
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
+#include "server/commands/QcTickCommands.h"
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>
@@ -223,20 +224,27 @@ private slots:
         const int movesBefore = m_client->entityMoveMessages;
         double fastest = 0.0;
 
+        // The longest sprint, ended from the test once the client has learnt its speed: a short
+        // one may end (a Release build runs 2000 ticks in well under 100 ms) before the first
+        // time message of the sprint goes out. The chat spam would drop a "/tick sprint stop", so
+        // the test ends the sprint at the scheduler; the next round of ticks reports the end.
         QElapsedTimer timer;
         timer.start();
-        chat(u"/tick sprint 2000"_s);
+        chat(u"/tick sprint %1"_s.arg(QcTickCommands::maxSprintTicks));
         while (!lastLine().startsWith(u"Sprint ended"_s) && timer.elapsed() < 60'000) {
             for (int i = 0; i < 3; ++i) {
                 m_client->connection.send(QcMsg::ChatInput{u"spam"_s});
             }
             QCoreApplication::processEvents();
             fastest = std::max(fastest, m_client->timeSpeed);
+            if (fastest > 1.0) {
+                m_server->tickScheduler().stopSprint();
+            }
         }
         const double seconds = double(timer.elapsed()) / 1000.0;
-        QVERIFY2(lastLine().startsWith(u"Sprint ended: 2000 ticks"_s), qPrintable(lastLine()));
+        QVERIFY2(lastLine().startsWith(u"Sprint ended: "_s), qPrintable(lastLine()));
 
-        // 2000 ticks are 100 s of game time; real time is what counts.
+        // The sprint ran thousands of ticks; real time is what counts.
         const auto bound = [seconds](double perSecond) { return int(seconds * perSecond) + 3; };
         const QString counts = u"%1 s: %2 autosaves, %3 times, %4 moves, %5 chat lines"_s.arg(seconds).arg(m_server->autosaveCount() - autosaves)
                                    .arg(m_client->timeMessages - timeBefore).arg(m_client->entityMoveMessages - movesBefore)

@@ -3,6 +3,7 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/maps/QcMapColors.h"
+#include "clientcore/meshing/QcEntityCulling.h"
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/meshing/QcHangingMesher.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
@@ -414,6 +415,35 @@ void QcEntityFrameBuilder::appendFlames(QcEntityMesh &mesh, const EntityFrame &f
     }
 }
 
+void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
+{
+    const double alpha = frame.alpha;
+    const QcEntityMesher::UvLookup &uv = frame.uv;
+    if (entity.isItem()) {
+        QcEntityMesher::appendItem(mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
+                                   {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
+    } else if (entity.isExperienceOrb()) {
+        QcEntityMesher::appendOrb(mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
+    } else if (entity.isProjectile()) {
+        const QcVec3 centre = lerp(entity.previousPosition, entity.position, alpha);
+        const QcProjectileMesher::Placement placement{centre, lerpYaw(entity.previousYaw, entity.yaw, alpha),
+                                                      entity.previousPitch + (entity.pitch - entity.previousPitch) * alpha,
+                                                      entityLight(frame.world, centre)};
+        QcProjectileMesher::append(mesh, placement, uv(QcFigureLook::item(frame.content, entity.item.item).sprite));
+    } else if (entity.isMinecart()) {
+        const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
+        QcEntityMesher::appendParts(mesh, QcEntityMesher::minecartParts(),
+                                    {position, lerpYaw(entity.previousYaw, entity.yaw, alpha), entityLight(frame.world, position), false}, uv);
+        appendCartLoad(mesh, entity, frame, position);
+    } else if (entity.isBlockEntity()) {
+        appendBlockEntity(mesh, entity, frame);
+    } else if (entity.isHanging()) {
+        QcHangingMesher::append(mesh, entity, frame.content, entityLight(frame.world, entity.position), uv);
+    } else {
+        appendCreature(mesh, entity, frame);
+    }
+}
+
 std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, QcCameraMode mode)
 {
     if (!m_atlas) {
@@ -433,30 +463,15 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
         m_mapColoursStale = false;
     }
 
+    // Entities outside the view are not built (decision E-862).
+    const QcWorldView *view = m_parts.view;
+    const std::optional<QcFrustum::Planes> planes =
+        view ? QcEntityCulling::viewPlanes(view->camera(), view->width(), view->height()) : std::nullopt;
     for (const QcClientEntity &entity : session.entities()) {
-        if (entity.isItem()) {
-            QcEntityMesher::appendItem(*mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
-                                       {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
-        } else if (entity.isExperienceOrb()) {
-            QcEntityMesher::appendOrb(*mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
-        } else if (entity.isProjectile()) {
-            const QcVec3 centre = lerp(entity.previousPosition, entity.position, alpha);
-            const QcProjectileMesher::Placement placement{centre, lerpYaw(entity.previousYaw, entity.yaw, alpha),
-                                                          entity.previousPitch + (entity.pitch - entity.previousPitch) * alpha,
-                                                          entityLight(frame.world, centre)};
-            QcProjectileMesher::append(*mesh, placement, uv(QcFigureLook::item(frame.content, entity.item.item).sprite));
-        } else if (entity.isMinecart()) {
-            const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-            QcEntityMesher::appendParts(*mesh, QcEntityMesher::minecartParts(),
-                                        {position, lerpYaw(entity.previousYaw, entity.yaw, alpha), entityLight(frame.world, position), false}, uv);
-            appendCartLoad(*mesh, entity, frame, position);
-        } else if (entity.isBlockEntity()) {
-            appendBlockEntity(*mesh, entity, frame);
-        } else if (entity.isHanging()) {
-            QcHangingMesher::append(*mesh, entity, frame.content, entityLight(frame.world, entity.position), uv);
-        } else {
-            appendCreature(*mesh, entity, frame);
+        if (!QcEntityCulling::mayBeSeen(planes, QcEntityCulling::viewBox(entity, frame.content))) {
+            continue;
         }
+        appendEntity(*mesh, entity, frame);
     }
     for (const QcClientEntity &entity : session.entityMirror().dying()) {
         appendCreature(*mesh, entity, frame);

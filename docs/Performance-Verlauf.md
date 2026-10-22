@@ -2719,3 +2719,34 @@ Mit Vorhersage bleibt die Zeit bis zum nächsten gepumpten Bild plus das Meshen 
 Das Spawnen selbst kostet nichts Messbares (crowd, explore gleich; die Wahl aus der Liste braucht je Ort mit Kandidaten eine Biomabfrage, und bei voller Obergrenze gibt es keine Versuche). Die Showcase-Szenarien haben 6–7 Wesen mehr in Reichweite (drei neue Gehege der Wesenreihe, die damit länger wird, und drei Wesen der Station `monster_variants`), daher die Phase Wesen +7–8 %; das sind die Kosten der zusätzlichen Wesen (rund 0,7 µs je Wesen), kein Durchgang wird teurer.
 
 **Meeresgrund als Spawn-Ort** (Nachtrag nach dem Review): Über dem Meer bietet jetzt jede Spalte ihren Grund als Ort (vorher scheiterte der Versuch, weil Wasser nicht begehbar ist), jeder Versuch zieht dort also eine Art und prüft ihre Regeln wie an Land. Kein Benchmark-Szenario startet über dem Meer; gemessen in `test_biome_spawning` (`oceanBedsAsSpawnSpots`, Debug, Seed 42, Spieler über Wasser mit Grund mehr als 12 Blöcke unter dem Meeresspiegel gegen einen Spieler in der Ebene, 400 Ticks von Hand, nur die Wesen-Phase `QcMobManager::tick`, Wesen sofort entfernt): Meer 0,0169 ms je Tick, Land 0,0166 ms je Tick (+2 %, im Rauschen); über dem Meer kamen 34 Monster (davon 4 Ertrunkene), an Land 57. Ein Versuch über dem Meer kostet also so viel wie einer an Land, der Server über dem Meer nicht mehr als an Land.
+
+## Fenster-A/B nach 73–79 (2026-10-22)
+
+**Ausgangsmessung** (Koordinator, `scripts/bench-ab.sh`, `@core`, adaptiv 3–6 Runden, 10 s, Release): `dev` `d48421f` gegen die Basis `9b67546` (vor Block-Indizes E-844, 69 Flüsse, 73.1–73.3 Spawnen und Kjut, 76.0b/c Oberfläche, 77.1 Admin-Kanal, Eis/Schleim, 79). Mittel der Runden, Basis → `dev`:
+
+| Szenario | GUI-CPU Ø (ms) | Tick Ø (ms) | Spitzenspeicher (MB) |
+|---|---|---|---|
+| stand | 0,58 → 0,80 (+38 %) | 1,12 → 1,43 (+28 %) | 445 → 433 |
+| sprint | 0,55 → 0,86 (+55 %) | 1,10 → 1,44 (+31 %) | 473 → 457 |
+| showcase | 0,60 → 0,51 | 0,83 → 0,97 (+18 %) | 338 → 333 |
+| crowd | 1,12 → 1,27 (+13 %) | 1,32 → 1,47 (+12 %) | 453 → 439 |
+| stand, Sicht 16 | 0,47 → 0,66 (+39 %) | 1,69 → 1,97 | 804 → 706 (−12 %) |
+| sprint, Sicht 16 | 0,52 → 0,71 (+36 %) | 1,76 → 1,89 | 859 → 754 (−12 %, Ziel ≤ 800 erfüllt) |
+
+**Ursachen** (Schlüssel der BENCH-Zeilen derselben Läufe und `scripts/profile.sh time stand` beider Builds):
+
+- *GUI-CPU = Entity-Vernetzung:* `entity_mesh_avg_ms` stand 0,23 → 0,44, sprint 0,22 → 0,49 ms, also +0,21 bzw. +0,27 der +0,22 bzw. +0,31 ms GUI-CPU. Mehr Entitäten beim Client (sprint 18 → 35, stand 19 → 22,5; Monster nach E-836) und mehr davon mit Bogen oder Dreizack (73.2), deren Sprite mit Seitenflächen je Texel vernetzt wird: `HeldItemPainter::paint` 25 → 162 ms in 15 s, `appendCreature` 296 → 434 ms. QML (Bindungen, Benachrichtigungen, Polieren) kostet in beiden Ständen unter 10 ms in 15 s; der GUI-Thread ist in `dev` insgesamt nicht teurer (926 gegen 1 086 ms in 15 s). Ein Verdacht auf dauerhaft geladene versteckte Seiten der neuen Oberfläche bestätigt sich nicht.
+- *Tick = mehr Wesen:* Phase Wesen stand 0,87 → 1,12 ms bei 91 → 140 Wesen im Server, sprint 0,80 → 1,09 ms bei 99 → 148: die Monster-Obergrenze von E-836 (70 je 289 Chunks statt 8 je Spieler). Je Wesen nicht teurer (stand 9,5 → 8,0 µs). Dazu Phase Pflanzen 0,03 → 0,09 ms (keine Code-Änderung an Pflanzen; mehr Abschnitte mit wachsenden Pflanzen im neuen Gelände). Showcase: 64 → 77 Wesen (neue Gehege von 73.2/73.3), Phase Wesen 0,43 → 0,53 ms.
+
+**Korrektur** (E-862, Branch `feature/perf-regress`): Entitäten außerhalb des Sichtvolumens werden nicht vernetzt; gehaltene Sprites rechnen ihre Ecken mit einer aus vier Punkten abgetasteten affinen Platzierung. Der Tick bleibt als begründete Kosten von E-836.
+
+**Nachmessung** (`bench-ab.sh`, `SCENARIOS="stand sprint showcase crowd"`, 3 Runden, 10 s, Release, verschränkt über den Slot-Broker), `dev` (`build/release` des Haupt-Checkouts) → `fix`:
+
+| Szenario | Entity-Vernetzung Ø (ms) | GUI-CPU Ø (ms) | Tick Ø (ms) | p99 (ms) | GPU Ø (ms) |
+|---|---|---|---|---|---|
+| stand | 0,415 → 0,227 (−45 %) | 0,761 → 0,573 (−25 %; Basis 0,579) | 1,46 → 1,39 | 11,5 → 10,7 | 1,53 → 1,52 |
+| sprint | 0,436 → 0,130 (−70 %) | 0,776 → 0,445 (−43 %; Basis 0,554) | 1,31 → 1,24 | 11,1 → 11,9 | 1,81 → 1,74 |
+| showcase | 0,168 → 0,111 (−34 %) | 0,528 → 0,465 (−12 %) | 0,98 → 0,99 | 12,0 → 11,6 | 0,73 → 0,73 |
+| crowd | 0,863 → 0,806 (−7 %) | 1,231 → 1,170 (−5 %) | 1,43 → 1,43 | 11,9 → 12,9 | 2,26 → 2,39 |
+
+GUI-CPU liegt wieder auf oder unter der Basis (stand −1 %, sprint −20 %, showcase −23 %). In crowd stehen fast alle Wesen vor der Kamera, dort wirkt nur die Platzierung; p99 und GPU dort im Rauschen (Spanne 24–29 % bzw. 8 %). Tick unverändert (Server nicht geändert).
