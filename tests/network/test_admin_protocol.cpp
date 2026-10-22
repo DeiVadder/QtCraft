@@ -225,7 +225,10 @@ private slots:
         const QList<Parameter> afterSet = QcCommandSyntax::next(time, {u"set"_s});
         QCOMPARE(afterSet.size(), 1);
         QCOMPARE(afterSet[0].choices, (QStringList{u"day"_s, u"night"_s, u"seconds"_s}));
-        QCOMPARE(QcCommandSyntax::next(time, {u"add"_s})[0].type, Parameter::Type::Integer);
+        // A named list, not `next(...)[0]` inside QCOMPARE: clazy's detaching-temporary check does not finish on that.
+        const QList<Parameter> afterAdd =QcCommandSyntax::next(time, {u"add"_s});
+        QCOMPARE(afterAdd.size(), 1);
+        QCOMPARE(afterAdd[0].type, Parameter::Type::Integer);
         QVERIFY(QcCommandSyntax::next(time, {u"set"_s, u"day"_s}).isEmpty());
         // Free text takes the rest of the line.
         QVERIFY(QcCommandSyntax::next(QcCommandSyntax::forms(u"Usage: /say <message>"_s), {u"a"_s, u"b"_s}).isEmpty());
