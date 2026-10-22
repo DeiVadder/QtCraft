@@ -1,6 +1,6 @@
 # Third-party code
 
-Code from other projects that QtCraft builds and ships with. Assets (textures, sounds) are listed in `docs/ASSETS.md`; Qt, which the release packages contain as shared libraries, is used under the GNU LGPL version 3 (see `README.md`).
+Code and fonts from other projects that QtCraft builds and ships with. Assets (textures, sounds) are listed in `docs/ASSETS.md`; Qt, which the release packages contain as shared libraries, is used under the GNU LGPL version 3 (see `README.md`).
 
 | Component | Version | Where | Used for | Licence | Licence text |
 |-----------|---------|-------|----------|---------|--------------|
@@ -23,4 +23,12 @@ software is freely granted, provided that this notice
 is preserved.
 ```
 
-`scripts/build-sdl.sh` copies the three texts into every SDL3 cache entry (`LICENSE.txt`, `HIDAPI-LICENSE.txt`, `LIBM-NOTICE.txt`; an entry without them is not finished), and `scripts/release.sh` puts them into the bundle and checks that they are there.
+`scripts/build-sdl.sh` copies the three texts into every SDL3 cache entry (`LICENSE.txt`, `HIDAPI-LICENSE.txt`, `LIBM-NOTICE.txt`; an entry without them is not finished), and `scripts/release.sh` puts them into the bundle and checks that they are there; it does the same for the licence of Pixelify Sans.
+
+## Fonts
+
+| Component | Version | Where | Used for | Licence | Licence text |
+|-----------|---------|-------|----------|---------|--------------|
+| Pixelify Sans (The Pixelify Sans Project Authors), variable font (weight axis) | as published in google/fonts, `ofl/pixelifysans`, downloaded 2026-10-22 (approved by the human) | `src/app/fonts/PixelifySans.ttf` (renamed from `PixelifySans[wght].ttf`, otherwise unchanged), built into the game's Qt resources | The logo in the main menu only (decision E-852, `GameLogo.qml`) | SIL Open Font License 1.1 (GPL-compatible; the font stays under the OFL) | `src/app/fonts/OFL.txt`, also in the resources; in the macOS bundle `Contents/Resources/licenses/PixelifySans-OFL.txt` |
+
+Pixelify Sans: Copyright 2021 The Pixelify Sans Project Authors. The OFL allows embedding and redistributing the font with software, sold or not, as long as the font is not sold on its own, every copy carries the copyright notice and the licence, and modified versions do not use the reserved font name; the game uses the font unmodified.

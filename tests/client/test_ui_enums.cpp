@@ -9,9 +9,11 @@
 #include "clientcore/session/QcClientSession.h"
 #include "worlds/QcLocalServerHost.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QImage>
+#include <QLocale>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -272,6 +274,22 @@ private slots:
         QVERIFY2(result.error().startsWith(u"Screenshot not saved"_s), qPrintable(result.error()));
         QVERIFY(photo.lastScreenshot().isEmpty());
         QVERIFY(QFile::remove(folder));
+    }
+
+    // The main menu shows when a world was played (decision E-852): today and yesterday with the
+    // time, earlier days as the short date; the day changes at local midnight.
+    void worldListSaysWhenAWorldWasPlayed()
+    {
+        const QDateTime now(QDate(2026, 10, 22), QTime(0, 1));
+        const QDateTime lastMinute(QDate(2026, 10, 21), QTime(23, 59));
+        const QString time = QLocale().toString(QTime(0, 0), QLocale::ShortFormat);
+        QCOMPARE(QcWorldLibraryController::playedText(QDateTime(QDate(2026, 10, 22), QTime(0, 0)), now), u"Today, %1"_s.arg(time));
+        QCOMPARE(QcWorldLibraryController::playedText(lastMinute, now),
+                 u"Yesterday, %1"_s.arg(QLocale().toString(QTime(23, 59), QLocale::ShortFormat)));
+        QCOMPARE(QcWorldLibraryController::playedText(QDateTime(QDate(2026, 10, 20), QTime(23, 59)), now),
+                 QLocale().toString(QDate(2026, 10, 20), QLocale::ShortFormat));
+        // In UTC, too: the menu reads world.json's times as they are stored.
+        QCOMPARE(QcWorldLibraryController::playedText(lastMinute.toUTC(), now), QcWorldLibraryController::playedText(lastMinute, now));
     }
 
 private:

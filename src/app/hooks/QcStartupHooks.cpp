@@ -198,7 +198,8 @@ void QcStartupHooks::scheduleOverlaySteps()
         holdScreenshot();
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
             // Pointer, popup and pad steps work in the main menu as well, the others need a world.
-            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"hover:"_s) || overlay.startsWith(u"pad:"_s)) {
+            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
+                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s)) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -213,7 +214,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         if (m_scriptedPad && m_scriptedPad->run(QStringView(step).mid(4))) {
             holdScreenshot();
         }
-    } else if (step.startsWith(u"pick:"_s) || step.startsWith(u"open:"_s) || step.startsWith(u"text:"_s)) {
+    } else if (step.startsWith(u"pick:"_s) || step.startsWith(u"open:"_s) || step.startsWith(u"text:"_s) || step.startsWith(u"click:"_s)
+               || step.startsWith(u"focus:"_s)) {
         runOnLoadedScreen(step, 0);
     } else if (step.startsWith(u"hover:"_s)) {
         hoverAt(QStringView(step).mid(6));
@@ -289,6 +291,10 @@ void QcStartupHooks::runOnLoadedScreen(const QString &step, int attempt)
         done = pickInOpenScreen(QStringView(step).mid(5).toInt());
     } else if (step.startsWith(u"open:"_s)) {
         done = openPopup(step.mid(5));
+    } else if (step.startsWith(u"click:"_s)) {
+        done = clickControl(step.mid(6));
+    } else if (step.startsWith(u"focus:"_s)) {
+        done = focusControl(step.mid(6));
     } else {
         done = setText(step.mid(5));
     }
@@ -353,6 +359,22 @@ bool QcStartupHooks::setText(const QString &assignment) const
         return false;
     }
     control->setProperty("text", assignment.mid(equals + 1));
+    return true;
+}
+
+bool QcStartupHooks::clickControl(const QString &objectName) const
+{
+    QObject *control = shownControl(objectName, false);
+    return control && QMetaObject::invokeMethod(control, "click");
+}
+
+bool QcStartupHooks::focusControl(const QString &objectName) const
+{
+    auto *control = qobject_cast<QQuickItem *>(shownControl(objectName, false));
+    if (!control) {
+        return false;
+    }
+    control->forceActiveFocus(Qt::TabFocusReason);
     return true;
 }
 

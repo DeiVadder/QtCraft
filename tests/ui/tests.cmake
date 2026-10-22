@@ -123,8 +123,9 @@ if(NOT QC_SANITIZERS)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 300 COST 40)
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
-    add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 240)
+    add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
+        $<TARGET_FILE:qtcraft-headless>)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 750 COST 50)
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
@@ -135,11 +136,11 @@ if(NOT QC_SANITIZERS)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1080 COST 72
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1200 COST 80
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
 endif()
-# The menu's multiplayer screen with a refused join (nobody listens on port 1), and a world opened
+# The menu's multiplayer page with a refused join (nobody listens on port 1), and a world opened
 # to the network on this computer only with the open-to-LAN screen and the player list, load
 # without QML errors or binding loops.
 if(NOT QC_SANITIZERS)
@@ -196,9 +197,9 @@ add_test(NAME app_offscreen_pad_keyboard
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 add_test(NAME app_offscreen_pad_menu
     COMMAND ${CMAKE_COMMAND}
-        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadDown;--overlay;@1300 pad:dpadRight"
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadLeft;--overlay;@1300 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: createWorldButton.*padFocus: Button:.*padFocus: Button:"
+        "-DEXPECTED_ERROR=padFocus: firstWorldButton.*padFocus: menuEntry[0-9].*padFocus: menuEntry[0-9]"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)

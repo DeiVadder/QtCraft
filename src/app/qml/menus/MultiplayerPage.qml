@@ -5,13 +5,28 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Joining a network game (decision E-258): address, player name and password, the progress of the
-// join with a cancel button, the reason of a refusal, and the recently joined servers.
-Popup {
+// The main menu's multiplayer page (decisions E-258, E-852): the recently joined servers beside the
+// form with address, player name and password, how to play in the local network, the progress of
+// the join with a cancel button and the reason of a refusal.
+ColumnLayout {
     id: screen
 
     required property GameController game
     property string failure
+
+    // The page should be shown (open(), also --overlay multiplayer).
+    signal openRequested
+    // The join succeeded (the game starts).
+    signal joined
+
+    // Shows the page with the address field focused and the player name filled in.
+    function open() {
+        screen.failure = "";
+        if (nameField.text.length === 0)
+            nameField.text = screen.game.multiplayer.settings.playerName.length > 0 ? screen.game.multiplayer.settings.playerName : qsTr("Player");
+        openRequested();
+        addressField.forceActiveFocus(Qt.TabFocusReason);
+    }
 
     // Starts a join from the fields (also the --overlay multiplayer test hook with --join).
     function joinServer(address: string, name: string, password: string) {
@@ -26,21 +41,7 @@ Popup {
         screen.game.multiplayer.join(addressField.text, nameField.text, passwordField.text);
     }
 
-    anchors.centerIn: parent
-    width: Math.min(parent.width - Ui.px(64), Ui.px(820))
-    height: Math.min(parent.height - Ui.px(64), Ui.px(560))
-    modal: true
-    background: ScreenFrame {}
-    focus: true
-    padding: Ui.px(20)
-    closePolicy: screen.game.multiplayer.joining ? Popup.NoAutoClose : Popup.CloseOnEscape
-
-    onAboutToShow: {
-        screen.failure = "";
-        if (nameField.text.length === 0)
-            nameField.text = screen.game.multiplayer.settings.playerName.length > 0 ? screen.game.multiplayer.settings.playerName : qsTr("Player");
-        addressField.forceActiveFocus();
-    }
+    spacing: Ui.space.l
 
     Connections {
         target: screen.game.multiplayer
@@ -50,49 +51,71 @@ Popup {
         }
         function onJoined() {
             passwordField.text = "";
-            screen.close();
+            screen.joined();
         }
     }
 
+    // A field's label above it, with an optional help line below.
+    component FieldLabel: Label {
+        Layout.fillWidth: true
+        Layout.topMargin: Ui.space.s
+        font.pixelSize: Ui.type.body
+        color: Theme.text
+        wrapMode: Text.Wrap
+    }
+    component HelpLine: Label {
+        Layout.fillWidth: true
+        font.pixelSize: Ui.type.help
+        color: Theme.textMuted
+        wrapMode: Text.Wrap
+    }
+
     ColumnLayout {
-        anchors.fill: parent
-        focus: true
-        // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        // Keys the controls leave end here; Esc still leaves the page, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
                                                   && event.key !== Qt.Key_Backtab
-        spacing: Ui.px(12)
+        spacing: Ui.space.l
 
         Label {
             text: qsTr("Multiplayer")
-            font.pixelSize: Ui.px(24)
+            font.pixelSize: Ui.type.title
             font.bold: true
+            color: Theme.text
+            Accessible.role: Accessible.Heading
+            Accessible.name: text
         }
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: Ui.px(20)
+            spacing: Ui.space.xl
 
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.preferredWidth: Ui.px(420)
-                spacing: Ui.px(6)
+                spacing: Ui.space.s
 
                 Label {
                     text: qsTr("Recent servers")
-                    font.pixelSize: Ui.px(18)
+                    font.pixelSize: Ui.type.section
+                    font.bold: true
+                    color: Theme.text
                 }
 
                 ListView {
                     id: recentList
 
                     Accessible.name: qsTr("Recent servers")
+                    Accessible.role: Accessible.List
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-                    spacing: Ui.px(4)
+                    spacing: Ui.space.s
+                    boundsBehavior: Flickable.StopAtBounds
                     model: screen.game.multiplayer.settings.recentServers
+                    ScrollBar.vertical: ThemedScrollBar {}
 
                     Label {
                         anchors.centerIn: parent
@@ -101,11 +124,13 @@ Popup {
                         text: qsTr("Servers you join appear here.")
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.Wrap
+                        font.pixelSize: Ui.type.body
                         color: Theme.textSecondary
                     }
 
                     delegate: RecentServerRow {
-                        width: ListView.view.width
+                        // A gutter on the right for the scroll bar.
+                        width: ListView.view.width - Ui.space.l
                         enabled: !screen.game.multiplayer.joining
                         onChosen: address => addressField.text = address
                         onJoinRequested: address => {
@@ -118,80 +143,93 @@ Popup {
             }
 
             ColumnLayout {
-                Layout.preferredWidth: Ui.px(300)
-                Layout.maximumWidth: Ui.px(300)
+                Layout.preferredWidth: Ui.size.formColumn
+                Layout.maximumWidth: Ui.size.formColumn
                 Layout.alignment: Qt.AlignTop
                 enabled: !screen.game.multiplayer.joining
-                spacing: Ui.px(6)
+                spacing: Ui.space.xs
 
-                Label {
+                FieldLabel {
+                    Layout.topMargin: 0
                     text: qsTr("Server address")
                 }
 
-                TextField {
+                GameTextField {
                     id: addressField
 
                     objectName: "serverAddress"
                     Accessible.name: qsTr("Server address")
                     Layout.fillWidth: true
                     placeholderText: qsTr("host, host:port or [IPv6]:port")
-                    selectByMouse: true
                     onAccepted: screen.join()
                 }
 
-                Label {
+                FieldLabel {
                     text: qsTr("Player name")
                 }
 
-                TextField {
+                GameTextField {
                     id: nameField
 
                     Accessible.name: qsTr("Player name")
                     Layout.fillWidth: true
                     maximumLength: 32
-                    selectByMouse: true
                     onAccepted: screen.join()
                 }
 
-                Label {
-                    text: qsTr("Password (only if the server has one)")
+                FieldLabel {
+                    text: qsTr("Password")
                 }
 
-                TextField {
+                GameTextField {
                     id: passwordField
 
-                    Accessible.name: qsTr("Password (only if the server has one)")
+                    Accessible.name: qsTr("Password")
+                    Accessible.description: qsTr("Only needed if the server has one.")
                     Layout.fillWidth: true
                     echoMode: TextInput.Password
-                    selectByMouse: true
                     onAccepted: screen.join()
                 }
 
-                Label {
-                    Layout.fillWidth: true
-                    text: qsTr("Passwords are never saved. The game connects directly to the address, without encryption.")
-                    wrapMode: Text.Wrap
-                    color: Theme.textSecondary
-                    font.pixelSize: Ui.px(12)
+                HelpLine {
+                    text: qsTr("Only needed if the server has one. Passwords are never saved; the game connects directly to the address, without encryption.")
                 }
 
-                Button {
+                GameButton {
                     Layout.fillWidth: true
+                    Layout.topMargin: Ui.space.m
+                    kind: GameButton.Primary
+                    large: true
                     text: qsTr("Join")
-                    highlighted: true
                     enabled: addressField.text.trim().length > 0 && nameField.text.trim().length > 0
                     onClicked: screen.join()
+                }
+
+                // Games in the local network: a player opens a running world from the pause menu.
+                Label {
+                    Layout.fillWidth: true
+                    Layout.topMargin: Ui.space.xl
+                    text: qsTr("In the local network")
+                    font.pixelSize: Ui.type.group
+                    font.bold: true
+                    color: Theme.heading
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
+                }
+                Hint {
+                    Layout.fillWidth: true
+                    text: qsTr("Whoever plays a world opens it with “Open to LAN” in the pause menu and tells you one of the addresses it shows. To open your own world, start it and do the same.")
                 }
             }
         }
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: Ui.px(12)
+            spacing: Ui.space.m
 
             BusyIndicator {
-                Layout.preferredWidth: Ui.px(32)
-                Layout.preferredHeight: Ui.px(32)
+                Layout.preferredWidth: Ui.size.button
+                Layout.preferredHeight: Ui.size.button
                 visible: screen.game.multiplayer.joining
                 running: visible
             }
@@ -199,6 +237,7 @@ Popup {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
+                font.pixelSize: Ui.type.body
                 color: screen.failure.length > 0 && !screen.game.multiplayer.joining ? Theme.error : Theme.text
                 textFormat: Text.PlainText
                 text: screen.game.multiplayer.joinStage === NetworkClient.Stage.Connecting ? qsTr("Connecting to %1 …").arg(screen.game.multiplayer.lastAddress)
@@ -207,17 +246,14 @@ Popup {
                       : ""
             }
 
-            Button {
+            GameButton {
+                objectName: "cancelJoinButton"
                 visible: screen.game.multiplayer.joining
+                large: true
                 text: qsTr("Cancel")
                 onClicked: screen.game.multiplayer.cancelJoin()
             }
 
-            Button {
-                visible: !screen.game.multiplayer.joining
-                text: qsTr("Close")
-                onClicked: screen.close()
-            }
         }
     }
 }

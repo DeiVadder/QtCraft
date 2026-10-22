@@ -24,6 +24,8 @@ public:
     // One look of the controls on every system and in offscreen runs (decision E-845): the Basic
     // style, coloured by the game's control palette, under the game's own controls (GameButton,
     // SettingRow, ...). QT_QUICK_CONTROLS_STYLE still chooses another style for comparison.
+    // QTCRAFT_THEME=A, B or C (test hook, decision E-852; C is the default) chooses a colour variant
+    // of the palette (QcUiPalette::Preset) before the QML engine reads it.
     static void applyControlStyle();
     // Once the window's scene graph runs (decision E-834): prepares the render thread for crash
     // reports and logs the graphics API and adapter.

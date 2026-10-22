@@ -3,73 +3,46 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// One recently joined server in the multiplayer screen: its name and address; a click puts the
-// address into the field, Join joins at once, × removes the entry.
-Rectangle {
+// One recently joined server in the multiplayer screen (decision E-852, a ListRow): its name and
+// address and when it was joined; a click puts the address into the field, a double click and Join
+// join at once, × removes the entry.
+ListRow {
     id: row
 
     required property var modelData
+    // Without a server name the address is the title already.
+    readonly property string place: modelData.name.length > 0 ? modelData.address : ""
 
     signal chosen(string address)
     signal joinRequested(string address)
     signal removeRequested(string address)
 
-    height: Ui.px(56)
-    activeFocusOnTab: true
-    radius: Ui.px(4)
-    color: hover.hovered ? Theme.rowHighlight : Theme.scrim
+    interactive: true
+    // Tab and the pad reach the row: choosing it puts the address into the field.
+    focusable: true
+    title: modelData.name.length > 0 ? modelData.name : modelData.address
+    subtitle: modelData.lastJoined.length === 0 ? place
+              : place.length > 0 ? qsTr("%1 · last joined %2").arg(place).arg(modelData.lastJoined)
+              : qsTr("last joined %1").arg(modelData.lastJoined)
     Accessible.role: Accessible.ListItem
-    Accessible.name: row.modelData.name.length > 0 ? qsTr("%1 (%2)").arg(row.modelData.name).arg(row.modelData.address) : row.modelData.address
+    Accessible.name: modelData.name.length > 0 ? qsTr("%1 (%2)").arg(modelData.name).arg(modelData.address) : modelData.address
 
-    HoverHandler {
-        id: hover
-    }
+    onClicked: row.chosen(row.modelData.address)
+    onDoubleClicked: row.joinRequested(row.modelData.address)
 
-    TapHandler {
-        onTapped: row.chosen(row.modelData.address)
-        onDoubleTapped: row.joinRequested(row.modelData.address)
-    }
+    actions: RowLayout {
+        spacing: Ui.space.xs
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.margins: Ui.px(8)
-        spacing: Ui.px(8)
-
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: Ui.px(2)
-
-            Label {
-                Layout.fillWidth: true
-                textFormat: Text.PlainText
-                text: row.modelData.name.length > 0 ? row.modelData.name : row.modelData.address
-                color: Theme.text
-                font.bold: true
-                elide: Text.ElideRight
-            }
-
-            Label {
-                Layout.fillWidth: true
-                // Without a server name the address is the title already.
-                readonly property string place: row.modelData.name.length > 0 ? row.modelData.address : ""
-                visible: text.length > 0
-                textFormat: Text.PlainText
-                text: row.modelData.lastJoined.length === 0 ? place
-                      : place.length > 0 ? qsTr("%1 · last joined %2").arg(place).arg(row.modelData.lastJoined)
-                      : qsTr("last joined %1").arg(row.modelData.lastJoined)
-                color: Theme.textSecondary
-                elide: Text.ElideRight
-            }
-        }
-
-        Button {
+        GameButton {
             text: qsTr("Join")
+            Accessible.name: qsTr("Join %1").arg(row.modelData.address)
             onClicked: row.joinRequested(row.modelData.address)
         }
 
-        Button {
+        GameButton {
             id: removeButton
 
+            kind: GameButton.Quiet
             text: "×"
             Accessible.name: qsTr("Remove %1 from the list").arg(row.modelData.address)
             onClicked: row.removeRequested(row.modelData.address)

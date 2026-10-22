@@ -87,6 +87,8 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor buttonPressed MEMBER m_buttonPressed CONSTANT FINAL)
     Q_PROPERTY(QColor danger MEMBER m_danger CONSTANT FINAL)
     Q_PROPERTY(QColor dangerHover MEMBER m_dangerHover CONSTANT FINAL)
+    Q_PROPERTY(QColor buttonDisabled MEMBER m_buttonDisabled CONSTANT FINAL)
+    Q_PROPERTY(QColor textDisabled MEMBER m_textDisabled CONSTANT FINAL)
     Q_PROPERTY(QColor field MEMBER m_field CONSTANT FINAL)
     Q_PROPERTY(QColor track MEMBER m_track CONSTANT FINAL)
     Q_PROPERTY(QColor knob MEMBER m_knob CONSTANT FINAL)
@@ -176,6 +178,8 @@ private:
     QColor m_buttonPressed = QcUiPalette::color(QcUiPalette::Role::ButtonPressed);
     QColor m_danger = QcUiPalette::color(QcUiPalette::Role::Danger);
     QColor m_dangerHover = QcUiPalette::color(QcUiPalette::Role::DangerHover);
+    QColor m_buttonDisabled = QcUiPalette::color(QcUiPalette::Role::ButtonDisabled);
+    QColor m_textDisabled = QcUiPalette::color(QcUiPalette::Role::TextDisabled);
     QColor m_field = QcUiPalette::color(QcUiPalette::Role::Field);
     QColor m_track = QcUiPalette::color(QcUiPalette::Role::Track);
     QColor m_knob = QcUiPalette::color(QcUiPalette::Role::Knob);

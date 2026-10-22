@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcGameMode.h"
 #include "worlds/QcModLoader.h"
 #include "worlds/QcWorldLibrary.h"
 
@@ -51,16 +52,32 @@ void QcWorldLibraryController::refreshWorlds()
     m_worlds.clear();
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
     const QList<QcWorldLibrary::Entry> entries = library.list();
+    const QDateTime now = QDateTime::currentDateTime();
     for (const QcWorldLibrary::Entry &entry : entries) {
         m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
                                     {u"name"_s, entry.info.name},
                                     {u"seed"_s, QString::number(entry.info.seed)},
                                     {u"generator"_s, entry.info.generator},
-                                    {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
+                                    {u"gameMode"_s, QString(QcGameModes::name(entry.info.defaultGameMode))},
+                                    {u"lastPlayed"_s, playedText(entry.info.lastPlayed, now)},
                                     {u"error"_s, entry.tooOld ? tr("It was saved by an older development version of QtCraft and cannot be opened.")
                                                               : m_unplayable.value(entry.folder, entry.error)}});
     }
     emit worldsChanged();
+}
+
+QString QcWorldLibraryController::playedText(const QDateTime &played, const QDateTime &now)
+{
+    const QDateTime local = played.toLocalTime();
+    const QDate today = now.toLocalTime().date();
+    const QString time = QLocale().toString(local.time(), QLocale::ShortFormat);
+    if (local.date() == today) {
+        return tr("Today, %1").arg(time);
+    }
+    if (local.date() == today.addDays(-1)) {
+        return tr("Yesterday, %1").arg(time);
+    }
+    return QLocale().toString(local.date(), QLocale::ShortFormat);
 }
 
 void QcWorldLibraryController::noteUnplayable(const QString &folder, const QString &message)

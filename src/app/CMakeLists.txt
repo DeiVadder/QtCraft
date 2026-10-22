@@ -157,6 +157,7 @@ qt_add_qml_module(qc_app_core
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
     QML_FILES
         qml/Main.qml
+        qml/character/CharacterEditor.qml
         qml/character/CharacterPresets.qml
         qml/character/CharacterPreviewHost.qml
         qml/character/CharacterPreviewPanel.qml
@@ -165,14 +166,19 @@ qt_add_qml_module(qc_app_core
         qml/controls/ControlSlot.qml
         qml/controls/FocusOutline.qml
         qml/controls/GameButton.qml
+        qml/controls/GameLogo.qml
         qml/controls/GameSwitch.qml
+        qml/controls/GameTextField.qml
         qml/controls/Hint.qml
         qml/controls/ItemSlot.qml
         qml/controls/KeyBadge.qml
         qml/controls/LazyScreen.qml
         qml/controls/ListRow.qml
+        qml/controls/ModalDialog.qml
+        qml/controls/NavButton.qml
         qml/controls/NavList.qml
         qml/controls/ScreenFrame.qml
+        qml/controls/Segments.qml
         qml/controls/SettingCheck.qml
         qml/controls/SettingChoice.qml
         qml/controls/SettingDropdown.qml
@@ -180,10 +186,13 @@ qt_add_qml_module(qc_app_core
         qml/controls/SettingRow.qml
         qml/controls/SettingSlider.qml
         qml/controls/SettingSwitch.qml
+        qml/controls/SideBar.qml
+        qml/controls/SidebarScreen.qml
         qml/controls/ThemedComboBox.qml
         qml/controls/ThemedScrollBar.qml
         qml/controls/ThemedToolTip.qml
         qml/controls/Ui.qml
+        qml/controls/UnsavedChangesDialog.qml
         qml/controls/WindowFont.qml
         qml/gamepad/FocusRing.qml
         qml/gamepad/HotbarRadial.qml
@@ -192,7 +201,9 @@ qt_add_qml_module(qc_app_core
         qml/gamepad/PadHintRow.qml
         qml/gamepad/PadHints.qml
         qml/gamepad/PadNotice.qml
+        qml/handbook/HandbookEntryRow.qml
         qml/handbook/HandbookLink.qml
+        qml/handbook/HandbookPage.qml
         qml/handbook/HandbookRecipe.qml
         qml/handbook/HandbookScreen.qml
         qml/hud/ChatOverlay.qml
@@ -214,16 +225,24 @@ qt_add_qml_module(qc_app_core
         qml/inventory/SlotScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
+        qml/menus/CharacterPage.qml
+        qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml
+        qml/menus/DeleteWorldDialog.qml
         qml/menus/DisconnectScreen.qml
+        qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/MainMenu.qml
+        qml/menus/MenuSidebar.qml
         qml/menus/MessageScreen.qml
-        qml/menus/ModsScreen.qml
-        qml/menus/MultiplayerScreen.qml
+        qml/menus/ModsPage.qml
+        qml/menus/MultiplayerPage.qml
+        qml/menus/NewWorldPage.qml
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/menus/WorldRow.qml
+        qml/menus/WorldTile.qml
         qml/settings/AdvancedPage.qml
         qml/settings/AudioPage.qml
         qml/settings/ControlsPage.qml
@@ -237,6 +256,10 @@ qt_add_qml_module(qc_app_core
         qml/settings/SettingsScreen.qml
         qml/settings/TexturePackRow.qml
         qml/settings/TexturePacksPage.qml
+    # The logo's pixel font (Pixelify Sans, SIL Open Font License 1.1) with its licence.
+    RESOURCES
+        fonts/OFL.txt
+        fonts/PixelifySans.ttf
 )
 # qmltyperegistrar includes the headers of the QML types by file name only (QTBUG-93443): only its
 # generated file sees the folders of those headers, the code includes by path below src/ (E-418).

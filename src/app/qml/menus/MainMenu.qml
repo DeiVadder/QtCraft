@@ -5,10 +5,30 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
+// The main menu (variant C of docs/UI-Leitfaden.md, decision E-852): a side bar with the logo, the
+// entries, the player's profile and Quit; on the right the page of the chosen entry: the start page
+// (continue the world played last, the list of worlds) with the page for a new world, multiplayer,
+// character, and mods & packs. Esc and the pad's B go back to the start page. The settings and the
+// handbook take the side bar one level down (SidebarScreen, drill-down): the bar shows a back entry
+// and their categories, the content their page; back, the entry has the focus again.
 Rectangle {
     id: menu
 
+    enum Page {
+        Home,
+        NewWorld,
+        Multiplayer,
+        Character,
+        Mods
+    }
+
     required property GameController game
+    property int page: MainMenu.Home
+    // A screen or dialog of the menu is open.
+    readonly property bool covered: settingsScreen.visible || deleteDialog.visible || game.handbook.isOpen
+    // Gives the focus back when the settings close: to where they were opened from (the mods page's
+    // "Texture packs …"), else to the side bar's "Settings".
+    property var settingsReturn: null
 
     signal quitRequested
 
@@ -22,28 +42,62 @@ Rectangle {
     onVisibleChanged: {
         if (visible) {
             game.library.refreshWorlds();
+            page = MainMenu.Home;
             forceActiveFocus();
         } else {
-            // Its sub-screens belong to the menu and close with it.
+            // Its sub-screens belong to the menu and close with it; an open draft of the character
+            // closes unapplied.
             settingsScreen.close();
-            modsScreen.close();
-            characterScreen.close();
-            multiplayerScreen.close();
             deleteDialog.close();
+            characterPage.close();
         }
     }
-    // Keys the text fields and buttons leave; Tab moves the focus.
+    // Keys the text fields and buttons leave; Tab moves the focus, Esc goes back to the start page.
     Keys.onPressed: event => {
-        if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen)
+        if (event.key === Qt.Key_Escape && menu.leavesPage())
+            menu.navigate(() => menu.showHome());
+        else if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen
+                 && !menu.game.multiplayer.joining)
             menu.game.handbook.open("");
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
-    // Opens the multiplayer screen; with an address it joins from there (--overlay multiplayer).
+    // Opens the multiplayer page; with an address it joins from there (--overlay multiplayer).
     function openMultiplayer(address: string, name: string, password: string) {
-        multiplayerScreen.open();
-        if (address.length > 0)
-            multiplayerScreen.joinServer(address, name, password);
+        navigate(() => {
+            multiplayerPage.open();
+            if (address.length > 0)
+                multiplayerPage.joinServer(address, name, password);
+        });
+    }
+
+    // Runs `action`, which leaves the shown page; the character page first asks about unsaved
+    // changes (save, discard or keep editing, which runs nothing).
+    function navigate(action: var) {
+        if (page === MainMenu.Character)
+            characterPage.leave(action);
+        else
+            action();
+    }
+
+    // Esc or B leaves the shown page for the start page; not on the start page and not while a
+    // join runs (its Cancel stops it).
+    function leavesPage(): bool {
+        return page !== MainMenu.Home && !(page === MainMenu.Multiplayer && game.multiplayer.joining);
+    }
+
+    // The side bar's entry that belongs to a page.
+    function entryOf(shown: int): int {
+        switch (shown) {
+        case MainMenu.Multiplayer:
+            return MenuSidebar.Multiplayer;
+        case MainMenu.Character:
+            return MenuSidebar.Character;
+        case MainMenu.Mods:
+            return MenuSidebar.Mods;
+        default:
+            return MenuSidebar.Play;
+        }
     }
 
     function subScreenClosed() {
@@ -51,380 +105,156 @@ Rectangle {
             forceActiveFocus();
     }
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: Ui.px(32)
-        spacing: Ui.px(16)
+    // Back from the settings: the item they were opened from has the focus again.
+    function settingsClosed() {
+        const back = settingsReturn;
+        settingsReturn = null;
+        if (!visible)
+            return;
 
-        Label {
-            Layout.alignment: Qt.AlignHCenter
-            text: qsTr("QtCraft")
-            color: Theme.text
-            // Smaller in a low window, so the lists and the form keep their room.
-            font.pixelSize: Ui.px(menu.height < Ui.px(760) ? 48 : 64)
-            font.bold: true
+        if (back)
+            back();
+        else
+            sidebar.focusEntry(MenuSidebar.Settings);
+    }
+
+    function showHome() {
+        page = MainMenu.Home;
+        forceActiveFocus();
+    }
+
+    // The pad's B (Escape) leaves the shown page for the start page (QcMenuNavigator asks the
+    // items above the focus before it sends Escape).
+    function gamepadCommand(command: string): bool {
+        if (command !== "back" || !leavesPage())
+            return false;
+
+        navigate(() => showHome());
+        return true;
+    }
+
+    function openSettings(startPage: int, back: var) {
+        settingsReturn = back;
+        settingsScreen.startPage = startPage;
+        settingsScreen.open();
+    }
+
+    // A side bar entry: the handbook and the settings open over the page, the others leave it.
+    // Nothing while a join runs: the multiplayer page shows it, and only its Cancel stops it (a
+    // world started meanwhile would be replaced when the join succeeds).
+    function choose(entry: int) {
+        if (game.multiplayer.joining && entry !== MenuSidebar.Quit)
+            return;
+        if (entry === entryOf(page) && entry !== MenuSidebar.Play)
+            return;
+
+        if (entry === MenuSidebar.Handbook || entry === MenuSidebar.Settings || entry === entryOf(page))
+            show(entry);
+        else
+            navigate(() => show(entry));
+    }
+
+    function show(entry: int) {
+        switch (entry) {
+        case MenuSidebar.Play:
+            showHome();
+            break;
+        case MenuSidebar.Multiplayer:
+            multiplayerPage.open();
+            break;
+        case MenuSidebar.Character:
+            characterPage.open();
+            break;
+        case MenuSidebar.Handbook:
+            game.handbook.open("");
+            break;
+        case MenuSidebar.Mods:
+            modsPage.open();
+            break;
+        case MenuSidebar.Settings:
+            openSettings(SettingsScreen.Graphics, null);
+            break;
+        case MenuSidebar.Quit:
+            quitRequested();
+            break;
+        }
+    }
+
+    MenuSidebar {
+        id: sidebar
+
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: Ui.size.menuNav
+        // The settings show their own bar in its place; the handbook covers it (and keeps Tab).
+        visible: !settingsScreen.visible && !menu.game.handbook.isOpen
+        game: menu.game
+        // During a join only its Cancel (and Quit) can be used.
+        locked: menu.game.multiplayer.joining
+        current: menu.entryOf(menu.page)
+        // The character page shows the figure itself.
+        covered: menu.covered || menu.page === MainMenu.Character
+        onChosen: entry => menu.choose(entry)
+    }
+
+    // The page keeps the menu's margin to the window and is no wider than a large screen.
+    StackLayout {
+        visible: !settingsScreen.visible && !menu.game.handbook.isOpen
+        anchors.left: sidebar.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: Ui.screen.margin
+        anchors.topMargin: Ui.space.xl
+        // Room for the pad's hints (PadHints) while they show.
+        anchors.bottomMargin: Ui.space.xl + (menu.game.gamepad.focusShown ? Ui.size.padHints : 0)
+        width: Math.min(parent.width - sidebar.width - 2 * Ui.screen.margin, Ui.screen.l)
+        currentIndex: menu.page
+
+        HomePage {
+            game: menu.game
+            onPlayRequested: folder => menu.game.playWorld(folder)
+            onNewWorldRequested: newWorldPage.open()
+            onDeleteRequested: (folder, name) => {
+                deleteDialog.folder = folder;
+                deleteDialog.worldName = name;
+                deleteDialog.open();
+            }
         }
 
-        // The previous session ended with a crash (decision E-834): where its report is.
-        RowLayout {
-            objectName: "crashNotice"
-            Layout.fillWidth: true
-            Layout.maximumWidth: Ui.px(900)
-            Layout.alignment: Qt.AlignHCenter
-            visible: menu.game.settings.diagnostics.crashReport !== ""
-            spacing: Ui.px(12)
+        NewWorldPage {
+            id: newWorldPage
 
-            Label {
-                Layout.fillWidth: true
-                textFormat: Text.PlainText
-                wrapMode: Text.Wrap
-                color: Theme.text
-                text: qsTr("The last session ended with a crash. Its report is %1; please send it with the log.")
-                          .arg(menu.game.settings.diagnostics.crashReport)
-            }
-            Button {
-                text: qsTr("Open log folder")
-                onClicked: menu.game.settings.diagnostics.openLogFolder()
-            }
-            Button {
-                text: qsTr("Dismiss")
-                onClicked: menu.game.settings.diagnostics.dismissCrashReport()
-            }
+            objectName: "newWorldPage"
+            game: menu.game
+            onOpenRequested: menu.page = MainMenu.NewWorld
+            onBackRequested: menu.showHome()
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.maximumWidth: Ui.px(900)
-            Layout.alignment: Qt.AlignHCenter
-            spacing: Ui.px(24)
+        MultiplayerPage {
+            id: multiplayerPage
 
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.preferredWidth: Ui.px(540)
-                spacing: Ui.px(8)
+            objectName: "multiplayerPage"
+            game: menu.game
+            onOpenRequested: menu.page = MainMenu.Multiplayer
+            onJoined: menu.showHome()
+        }
 
-                Label {
-                    text: qsTr("Your worlds")
-                    color: Theme.text
-                    font.pixelSize: Ui.px(20)
-                }
+        CharacterPage {
+            id: characterPage
 
-                ListView {
-                    id: worldList
+            objectName: "menuCharacterScreen"
+            game: menu.game
+            onOpenRequested: menu.page = MainMenu.Character
+        }
 
-                    Accessible.name: qsTr("Your worlds")
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    clip: true
-                    spacing: Ui.px(4)
-                    model: menu.game.library.worlds
+        ModsPage {
+            id: modsPage
 
-                    Label {
-                        anchors.centerIn: parent
-                        visible: worldList.count === 0
-                        text: qsTr("No saved worlds yet.")
-                        color: Theme.textSecondary
-                    }
-
-                    delegate: Rectangle {
-                        id: worldRow
-
-                        required property var modelData
-
-                        width: ListView.view.width
-                        height: Ui.px(64)
-                        radius: Ui.px(4)
-                        color: Theme.scrim
-
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.margins: Ui.px(8)
-                            spacing: Ui.px(8)
-
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: Ui.px(2)
-
-                                Label {
-                                    textFormat: Text.PlainText
-                                    text: worldRow.modelData.name
-                                    color: Theme.text
-                                    font.pixelSize: Ui.px(17)
-                                    font.bold: true
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-
-                                Label {
-                                    textFormat: Text.PlainText
-                                    text: worldRow.modelData.error.length > 0
-                                          ? worldRow.modelData.error
-                                          : worldRow.modelData.generator === "showcase"
-                                            ? qsTr("Last played %1 · Showcase").arg(worldRow.modelData.lastPlayed)
-                                          : worldRow.modelData.generator === "flat"
-                                            ? qsTr("Last played %1 · Flat").arg(worldRow.modelData.lastPlayed)
-                                          : worldRow.modelData.generator === "void"
-                                            ? qsTr("Last played %1 · Void").arg(worldRow.modelData.lastPlayed)
-                                            : qsTr("Last played %1 · Seed %2").arg(worldRow.modelData.lastPlayed).arg(worldRow.modelData.seed)
-                                    color: worldRow.modelData.error.length > 0 ? Theme.error : Theme.textSecondary
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-                            }
-
-                            Button {
-                                text: qsTr("Play")
-                                highlighted: true
-                                enabled: worldRow.modelData.error.length === 0
-                                onClicked: menu.game.playWorld(worldRow.modelData.folder)
-                            }
-
-                            Button {
-                                text: qsTr("Delete")
-                                onClicked: {
-                                    deleteDialog.folder = worldRow.modelData.folder;
-                                    deleteDialog.worldName = worldRow.modelData.name;
-                                    deleteDialog.open();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                ProfileCard {
-                    Layout.fillWidth: true
-                    game: menu.game
-                    covered: settingsScreen.visible || modsScreen.visible || characterScreen.visible || deleteDialog.visible
-                             || multiplayerScreen.visible || menu.game.handbook.isOpen
-                    onCustomizeRequested: characterScreen.open()
-                }
-            }
-
-            // The new world's form scrolls when the window is too low for it; creating the world
-            // and the menu's other actions stay pinned below it.
-            ColumnLayout {
-                Layout.fillWidth: false
-                Layout.fillHeight: true
-                Layout.preferredWidth: Ui.px(320)
-                Layout.maximumWidth: Ui.px(320)
-                spacing: Ui.px(8)
-
-                Label {
-                    text: qsTr("New world")
-                    color: Theme.text
-                    font.pixelSize: Ui.px(20)
-                }
-
-                Flickable {
-                    id: newWorldForm
-
-                    objectName: "newWorldForm"
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.preferredHeight: contentHeight
-                    Layout.maximumHeight: contentHeight
-                    Layout.minimumHeight: Ui.px(64)
-                    clip: true
-                    contentWidth: width
-                    contentHeight: formFields.implicitHeight
-                    boundsBehavior: Flickable.StopAtBounds
-                    ScrollBar.vertical: ThemedScrollBar {}
-
-                    ColumnLayout {
-                        id: formFields
-
-                        // The column keeps a gutter on the right for the scroll bar.
-                        width: newWorldForm.width - Ui.px(14)
-                        spacing: Ui.px(8)
-
-                        Label {
-                            text: qsTr("World name")
-                            color: Theme.text
-                        }
-
-                        TextField {
-                            id: worldName
-
-                            Accessible.name: qsTr("World name")
-                            Layout.fillWidth: true
-                            text: qsTr("New World")
-                            selectByMouse: true
-                        }
-
-                        Label {
-                            text: qsTr("World type")
-                            color: Theme.text
-                        }
-
-                        ThemedComboBox {
-                            id: worldType
-
-                            objectName: "worldTypeChoice"
-                            Accessible.name: qsTr("World type")
-                            Layout.fillWidth: true
-                            textRole: "text"
-                            valueRole: "value"
-                            model: [
-                                { value: "terrain", text: qsTr("Normal") },
-                                { value: "flat", text: qsTr("Flat") },
-                                { value: "void", text: qsTr("Void") },
-                                { value: "showcase", text: qsTr("Showcase") }
-                            ]
-                        }
-
-                        Label {
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            color: Theme.textSecondary
-                            text: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
-                                  : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
-                                  : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
-                                  : qsTr("Hills, mountains, caves, oceans and biomes.")
-                        }
-
-                        Label {
-                            visible: worldType.currentValue === "terrain"
-                            text: qsTr("Seed (number or text, empty for random)")
-                            color: Theme.text
-                        }
-
-                        TextField {
-                            id: seed
-
-                            Accessible.name: qsTr("Seed (number or text, empty for random)")
-                            visible: worldType.currentValue === "terrain"
-                            Layout.fillWidth: true
-                            selectByMouse: true
-                        }
-
-                        Label {
-                            visible: worldType.currentValue === "flat"
-                            text: qsTr("Layers from the bottom up (empty for the default)")
-                            color: Theme.text
-                        }
-
-                        TextField {
-                            id: flatLayers
-
-                            Accessible.name: qsTr("Layers from the bottom up (empty for the default)")
-                            visible: worldType.currentValue === "flat"
-                            Layout.fillWidth: true
-                            selectByMouse: true
-                            placeholderText: visible ? menu.game.defaultFlatLayers() : ""
-                        }
-
-                        Label {
-                            text: qsTr("Game mode")
-                            color: Theme.text
-                        }
-
-                        ThemedComboBox {
-                            id: gameMode
-
-                            objectName: "gameModeChoice"
-                            Accessible.name: qsTr("Game mode")
-                            Layout.fillWidth: true
-                            textRole: "text"
-                            valueRole: "value"
-                            model: [
-                                { value: "survival", text: qsTr("Survival") },
-                                { value: "creative", text: qsTr("Creative") },
-                                { value: "adventure", text: qsTr("Adventure") },
-                                { value: "spectator", text: qsTr("Spectator") }
-                            ]
-                        }
-
-                        Label {
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            color: Theme.textSecondary
-                            text: gameMode.currentValue === "creative"
-                                  ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
-                                  : gameMode.currentValue === "adventure"
-                                  ? qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.")
-                                  : gameMode.currentValue === "spectator"
-                                  ? qsTr("Fly through blocks and look around, unseen; nothing can be touched.")
-                                  : qsTr("Gather, craft and survive: health, hunger and creatures count.")
-                        }
-
-                        CheckBox {
-                            id: keepInventory
-
-                            Layout.fillWidth: true
-                            checked: true
-                            text: qsTr("Keep inventory on death")
-                            palette.windowText: Theme.text
-                        }
-                    }
-                }
-
-                Button {
-                    objectName: "createWorldButton"
-                    Layout.fillWidth: true
-                    Layout.rightMargin: Ui.px(14)
-                    text: qsTr("Create and play")
-                    highlighted: true
-                    onClicked: menu.game.createWorld(worldName.text,
-                                                     seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)), {
-                                                         keepInventory: keepInventory.checked,
-                                                         worldType: worldType.currentValue,
-                                                         layers: worldType.currentValue === "flat" ? flatLayers.text : "",
-                                                         gameMode: gameMode.currentValue
-                                                     })
-                }
-
-                GridLayout {
-                    Layout.fillWidth: true
-                    Layout.topMargin: Ui.px(8)
-                    Layout.rightMargin: Ui.px(14)
-                    columns: 2
-                    columnSpacing: Ui.px(8)
-                    rowSpacing: Ui.px(8)
-
-                    Button {
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        text: qsTr("Multiplayer")
-                        onClicked: multiplayerScreen.open()
-                    }
-
-                    Button {
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        text: qsTr("Settings")
-                        onClicked: settingsScreen.open()
-                    }
-
-                    Button {
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        text: qsTr("Mods")
-                        onClicked: modsScreen.open()
-                    }
-
-                    Button {
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
-                        onClicked: menu.game.handbook.open("")
-                    }
-
-                    Button {
-                        objectName: "quitButton"
-                        Layout.fillWidth: true
-                        Layout.columnSpan: 2
-                        text: qsTr("Quit")
-                        onClicked: menu.quitRequested()
-                    }
-                }
-
-                // Keeps the column at the top when the window has room to spare.
-                Item {
-                    Layout.fillHeight: true
-                }
-            }
+            objectName: "modsScreen"
+            game: menu.game
+            onOpenRequested: menu.page = MainMenu.Mods
+            onTexturePacksRequested: menu.openSettings(SettingsScreen.TexturePacks, () => modsPage.focusTexturePacks())
         }
     }
 
@@ -433,64 +263,28 @@ Rectangle {
 
         objectName: "menuSettingsScreen"
         game: menu.game
-        onClosed: menu.subScreenClosed()
+        backText: qsTr("‹ Main menu")
+        // The handbook opened from the settings covers them (and keeps Tab).
+        covered: menu.game.handbook.isOpen
+        onClosed: menu.settingsClosed()
     }
 
-    ModsScreen {
-        id: modsScreen
-
-        objectName: "modsScreen"
-        game: menu.game
-        onClosed: menu.subScreenClosed()
-    }
-
-    CharacterScreen {
-        id: characterScreen
-
-        objectName: "menuCharacterScreen"
-        game: menu.game
-        onClosed: menu.subScreenClosed()
-    }
-
-    MultiplayerScreen {
-        id: multiplayerScreen
-
-        game: menu.game
-        onClosed: menu.subScreenClosed()
-    }
-
-    // A join started elsewhere ("join again", --join) shows its progress here.
+    // A join started elsewhere ("join again", --join) shows its progress here; the character page
+    // asks about unsaved changes first.
     Connections {
         target: menu.game.multiplayer
 
         function onJoiningChanged() {
-            if (menu.visible && menu.game.multiplayer.joining && !multiplayerScreen.visible)
-                multiplayerScreen.open();
+            if (menu.visible && menu.game.multiplayer.joining && menu.page !== MainMenu.Multiplayer)
+                menu.navigate(() => multiplayerPage.open());
         }
     }
 
-    Dialog {
+    DeleteWorldDialog {
         id: deleteDialog
 
         objectName: "deleteWorldDialog"
-        property string folder
-        property string worldName
-
-        anchors.centerIn: parent
-        // A fixed width: the style's implicit width would follow the scaled font in a loop.
-        width: Math.min(parent.width - Ui.px(64), Ui.px(460))
-        modal: true
-        background: ScreenFrame {}
-        title: qsTr("Delete world")
-        standardButtons: Dialog.Yes | Dialog.Cancel
-
-        Label {
-            width: deleteDialog.availableWidth
-            wrapMode: Text.Wrap
-            text: qsTr("Delete “%1” permanently? This cannot be undone.").arg(deleteDialog.worldName)
-        }
-
-        onAccepted: menu.game.library.deleteWorld(folder)
+        onAccepted: menu.game.library.deleteWorld(deleteDialog.folder)
         onClosed: menu.subScreenClosed()
     }
 }

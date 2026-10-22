@@ -117,7 +117,7 @@ std::shared_ptr<const QcTextureAtlas> QcPreviewSource::atlas()
 
 const QcAppearance &QcPreviewSource::appearance() const
 {
-    return m_character.appearance();
+    return m_character.shownAppearance();
 }
 
 QcEquipment QcPreviewSource::equipment() const

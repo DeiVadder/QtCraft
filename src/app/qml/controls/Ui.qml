@@ -45,9 +45,7 @@ QtObject {
         property real bar
         // The width of a slider's value ("12 Chunks", "80 %").
         property real value
-        // The settings' category list, and narrower in a small window; one category's height.
-        property real nav
-        property real navNarrow
+        // One entry's height in a side bar (main menu, settings, handbook).
         property real navItem
         // A small square symbol (category, list row).
         property real icon
@@ -68,6 +66,28 @@ QtObject {
         property real previewHeight
         // The lowest height of a list that scrolls on its own.
         property real listMinimum
+        // The main menu's side bar (logo, entries, profile, quit).
+        property real menuNav
+        // A world's tile in the main menu's "continue" card and in a row of the world list.
+        property real thumbnail
+        property real thumbnailSmall
+        // The small figure of the player's profile in the main menu's side bar.
+        property real figureWidth
+        property real figureHeight
+        // The character screen's preview, its lowest height, and its colour swatches.
+        property real preview
+        property real previewMinimum
+        property real swatch
+        // The label column of a form whose labels stand left of their fields (character screen).
+        property real label
+        // The column of a form beside a list (the multiplayer screen's address, name and password).
+        property real formColumn
+        // The handbook's list of entries beside the open page.
+        property real handbookEntries
+        // A row of that list (an entry, a heading) and an entry's item icon.
+        property real handbookRow
+        property real handbookHeading
+        property real handbookIcon
         // The scroll bar (ThemedScrollBar) and its handle.
         property real scrollBar
         property real scrollHandle
@@ -83,10 +103,10 @@ QtObject {
         property real l
         property real margin
         property real marginVertical
-        // Below this window width the category list gets narrower.
-        property real narrow
         // A single column of buttons (pause menu).
         property real column
+        // The height of a screen with a list (mods, multiplayer), at most.
+        property real height
     }
 
     // Font sizes: logo (and in low windows), screen title, section, group heading, body text, help.
@@ -126,8 +146,6 @@ QtObject {
         focus: Math.max(1, ui.px(2))
         bar: ui.px(3)
         value: ui.px(72)
-        nav: ui.px(200)
-        navNarrow: ui.px(160)
         navItem: ui.px(38)
         icon: ui.px(18)
         track: ui.px(6)
@@ -142,7 +160,21 @@ QtObject {
         previewWidth: ui.px(96)
         previewHeight: ui.px(48)
         listMinimum: ui.px(160)
+        menuNav: ui.px(224)
+        thumbnail: ui.px(88)
+        thumbnailSmall: ui.px(36)
+        figureWidth: ui.px(36)
+        figureHeight: ui.px(52)
+        preview: ui.px(300)
+        previewMinimum: ui.px(460)
+        swatch: ui.px(28)
+        label: ui.px(110)
+        formColumn: ui.px(300)
         padHints: ui.px(48)
+        handbookEntries: ui.px(220)
+        handbookRow: ui.px(36)
+        handbookHeading: ui.px(30)
+        handbookIcon: ui.px(24)
         scrollBar: ui.px(10)
         scrollHandle: ui.px(6)
     }
@@ -153,8 +185,8 @@ QtObject {
         l: ui.px(960)
         margin: ui.px(32)
         marginVertical: ui.px(16)
-        narrow: ui.px(1100)
         column: ui.px(320)
+        height: ui.px(560)
     }
 
     readonly property TypeScale type: TypeScale {

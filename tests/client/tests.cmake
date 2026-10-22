@@ -93,6 +93,8 @@ set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120
 # The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
 # Enter switches, the arrow keys choose segments (decision E-845).
 qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+# Dialogs that need an answer are modal for the whole window (E-852).
+qc_add_test(test_modal_dialog SOURCES client/test_modal_dialog.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 # The on-screen keyboard: addresses with ports and IPv6, shift, umlauts, hidden passwords (E-584).
 qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)
@@ -111,6 +113,8 @@ qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARI
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
 qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
+# The character screens edit a draft: save, discard, close (E-852).
+qc_add_test(test_character_draft SOURCES client/test_character_draft.cpp LIBRARIES qc_app_core qc_worlds)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)

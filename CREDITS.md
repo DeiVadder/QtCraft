@@ -12,6 +12,12 @@ QtCraft's textures, sounds and music are made by the project itself (procedurall
 
 Third-party packs added later are listed here with the attribution their licence asks for; the game also shows each pack's `license` and `credits` in Settings → Texture packs.
 
+## Fonts
+
+| Font | Author | Licence | Use |
+|------|--------|---------|-----|
+| Pixelify Sans | The Pixelify Sans Project Authors (Copyright 2021) | SIL Open Font License 1.1 (`src/app/fonts/OFL.txt`) | The QtCraft logo in the main menu (see `THIRD_PARTY.md`) |
+
 ## Libraries
 
 | Library | Author | Licence | Use |

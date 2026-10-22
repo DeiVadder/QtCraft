@@ -4,7 +4,9 @@
 #include <QList>
 #include <QPalette>
 #include <QString>
+#include <QStringView>
 
+#include <optional>
 #include <span>
 
 // The colours of every game screen in one place. QML reads them as `Theme` (QcUiTheme); screens use
@@ -115,6 +117,10 @@ enum class Role {
     ButtonPressed,
     Danger,
     DangerHover,
+    // A button that cannot be used now, of any kind: a flat grey surface with grey text, so a
+    // disabled primary button no longer looks like the accent (decision E-852).
+    ButtonDisabled,
+    TextDisabled,
     Field,
     Track,
     Knob,
@@ -136,6 +142,26 @@ struct Entry
     QRgb argb;
 };
 
+// Colour variants of the menus (decision E-852; QTCRAFT_THEME chooses one, not a setting yet): the
+// classic one (blue gradient, Qt green), one like the Qt web site (near-black background, neutral
+// greys, Qt green) and the same with the brighter "Qt Neon" accent. Each variant changes only a few
+// roles of the classic palette; the contrast pairs hold for every one (test_ui_palette).
+enum class Preset {
+    Classic,
+    QtDark,
+    QtNeon,
+};
+inline constexpr Preset presets[] = {Preset::Classic, Preset::QtDark, Preset::QtNeon};
+// The variant the game starts with (Mensch 2026-10-22: Qt Neon on near-black).
+inline constexpr Preset defaultPreset = Preset::QtNeon;
+
+// Chooses the variant for the whole process; before the QML engine reads `Theme` (QTCRAFT_THEME).
+void setPreset(Preset preset);
+Preset preset();
+// "A"/"classic", "B"/"qt", "C"/"neon" (case does not matter); nothing for anything else.
+std::optional<Preset> presetFromName(QStringView name);
+
+// The roles with the colours of the chosen variant.
 std::span<const Entry> entries();
 QColor color(Role role);
 QString name(Role role);

@@ -10,6 +10,8 @@
 #include <QTemporaryFile>
 #include <QTest>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -115,12 +117,14 @@ bool ownNumber(QStringView value, const QRegularExpressionMatch &number)
 // Whether a line (without comment and strings) gives a property a number above 1 of its own.
 bool assignsOwnNumber(const QString &code)
 {
-    // Properties whose numbers are no sizes: ranges and values, stacking, counts, stretch
-    // factors, decimals of a shown value, and times in milliseconds.
-    static const QSet<QString> notSizes = {u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"opacity"_s, u"z"_s,
-                                           u"maximumLineCount"_s, u"horizontalStretchFactor"_s,
-                                           u"verticalStretchFactor"_s, u"model"_s, u"valueText"_s,
-                                           u"interval"_s, u"duration"_s};
+    // Properties whose numbers are no sizes: ranges and values (also of a validator), stacking,
+    // counts (lines, characters, grid columns and spans), stretch factors, decimals of a shown
+    // value, frame rates, and times in milliseconds.
+    static const QSet<QString> notSizes = {u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"bottom"_s, u"top"_s,
+                                           u"opacity"_s, u"z"_s, u"maximumLineCount"_s, u"maximumLength"_s,
+                                           u"columns"_s, u"rows"_s, u"columnSpan"_s, u"rowSpan"_s,
+                                           u"horizontalStretchFactor"_s, u"verticalStretchFactor"_s, u"model"_s,
+                                           u"valueText"_s, u"framesPerSecond"_s, u"interval"_s, u"duration"_s};
     static const QRegularExpression assignment(
         uR"(^\s*(?:readonly\s+)?(?:required\s+)?(?:property\s+[\w<>]+\s+)?([\w.]+)\s*:\s*(.+)$)"_s);
     static const QRegularExpression number(uR"((?<![\w.])(\d+(?:\.\d+)?|\.\d+)(?![\w.]))"_s);
@@ -185,6 +189,21 @@ private slots:
         QCOMPARE(paletteNames().size(), qsizetype(entries.size()));
     }
 
+    // The variants change only colours, and the names choose them.
+    void presetsChangeOnlyColours()
+    {
+        QCOMPARE(QcUiPalette::presetFromName(u"b"), QcUiPalette::Preset::QtDark);
+        QCOMPARE(QcUiPalette::presetFromName(u"Neon"), QcUiPalette::Preset::QtNeon);
+        QVERIFY(!QcUiPalette::presetFromName(u"D"));
+        QcUiPalette::setPreset(QcUiPalette::Preset::QtNeon);
+        QCOMPARE(QcUiPalette::color(QcUiPalette::Role::Accent), QColor(0x2c, 0xde, 0x85));
+        QCOMPARE(QcUiPalette::color(QcUiPalette::Role::MenuTop), QColor(0x0c, 0x12, 0x1c));
+        entriesFollowTheRoles();
+        QcUiPalette::setPreset(QcUiPalette::Preset::Classic);
+        QCOMPARE(QcUiPalette::color(QcUiPalette::Role::Accent), QColor(0x41, 0xcd, 0x52));
+        QCOMPARE(QcUiPalette::defaultPreset, QcUiPalette::Preset::QtNeon);
+    }
+
     void contrastFollowsWcag()
     {
         // Reference values of the WCAG 2 formula.
@@ -194,9 +213,25 @@ private slots:
         QCOMPARE(QcUiPalette::composite(QColor(0, 0, 0, 128), Qt::white), QColor(127, 127, 127));
     }
 
-    // Every text of every screen stays readable over snow, sand, sky, water, grass, night and caves.
+    void cleanup() { QcUiPalette::setPreset(QcUiPalette::defaultPreset); }
+
+    // Every colour variant (QcUiPalette::Preset, decision E-852) is checked like the classic one.
+    static void addPresets()
+    {
+        QTest::addColumn<QcUiPalette::Preset>("preset");
+        QTest::newRow("A classic") << QcUiPalette::Preset::Classic;
+        QTest::newRow("B qt") << QcUiPalette::Preset::QtDark;
+        QTest::newRow("C neon") << QcUiPalette::Preset::QtNeon;
+    }
+
+    void everyTextPairIsReadableOverEveryWorld_data() { addPresets(); }
+
+    // Every text of every screen stays readable over snow, sand, sky, water, grass, night and caves,
+    // in every colour variant.
     void everyTextPairIsReadableOverEveryWorld()
     {
+        QFETCH(QcUiPalette::Preset, preset);
+        QcUiPalette::setPreset(preset);
         const QList<QcUiPalette::TextPair> pairs = QcUiPalette::textPairs();
         QVERIFY(pairs.size() >= 15);
         for (const QcUiPalette::TextPair &pair : pairs) {
@@ -289,9 +324,13 @@ private slots:
     }
 
     // The palette of the controls (E-279) sets every role, and the texts the controls draw on it
-    // stay readable; disabled texts are dimmer but legible (3:1).
+    // stay readable; disabled texts are dimmer but legible (3:1). In every colour variant.
+    void controlPaletteIsReadable_data() { addPresets(); }
+
     void controlPaletteIsReadable()
     {
+        QFETCH(QcUiPalette::Preset, preset);
+        QcUiPalette::setPreset(preset);
         const QPalette palette = QcUiPalette::controlPalette();
         const QMetaEnum roles = QMetaEnum::fromType<QPalette::ColorRole>();
         for (int role = 0; role < QPalette::NColorRoles; ++role) {
@@ -370,16 +409,23 @@ private slots:
         QVERIFY2(problems.isEmpty(), qPrintable(problems.join(u'\n')));
     }
 
-    // The settings screen, the shared controls and the pause menu take every gap, margin, size,
-    // radius and font size from the named steps of Ui (decision E-845), so they change in one
-    // place; the other screens follow in stage 76.2. Ui.qml itself holds the values.
+    // The shared controls, the settings, the main menu with its pages and screens (world list, new
+    // world, multiplayer, LAN, mods), the character screen and the handbook's screen with its list
+    // take every gap, margin, size, radius and font size from the named steps of Ui (decisions
+    // E-845, E-852), so they change in one place. Ui.qml itself holds the values. Still open
+    // (stage 76.2): the handbook's page, recipes and links, the inventories, the HUD, and the
+    // death, disconnect and message screens.
     void menusUseOnlyTheSizeSteps()
     {
+        static const QStringList stillOpen = {u"/DeathScreen.qml"_s, u"/DisconnectScreen.qml"_s, u"/MessageScreen.qml"_s,
+                                          u"/HandbookPage.qml"_s, u"/HandbookRecipe.qml"_s, u"/HandbookLink.qml"_s};
         QStringList problems;
         int checked = 0;
         const QStringList files = qmlFiles();
         for (const QString &path : files) {
-            const bool covered = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.endsWith(u"/PauseMenu.qml"_s);
+            const bool folder = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.contains(u"/menus/"_s)
+                                || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s);
+            const bool covered = folder && std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
             // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
             // (ItemSlot.px), in the HUD and on the screens alike.
             if (!covered || path.endsWith(u"/Ui.qml"_s) || path.endsWith(u"/ItemSlot.qml"_s)) {
@@ -388,7 +434,7 @@ private slots:
             ++checked;
             problems += ownSizes(path);
         }
-        QVERIFY(checked >= 30);
+        QVERIFY(checked >= 50);
         QVERIFY2(problems.isEmpty(), qPrintable(u"use a step of Ui (Ui.space, Ui.size, Ui.screen, Ui.type, Ui.radius):\n"_s + problems.join(u'\n')));
 
         // The check finds what it looks for.

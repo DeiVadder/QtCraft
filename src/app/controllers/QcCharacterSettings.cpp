@@ -37,12 +37,12 @@ QcCharacterSettings::QcCharacterSettings(const QcSessionParts &parts, const QcWo
 
 QVariantMap QcCharacterSettings::look() const
 {
-    return QcCharacterProfile::lookMap(m_appearance);
+    return QcCharacterProfile::lookMap(shownAppearance());
 }
 
 void QcCharacterSettings::setLook(const QVariantMap &look)
 {
-    QcAppearance appearance = m_appearance;
+    QcAppearance appearance = shownAppearance();
     const auto color = [&look](const QString &key, quint32 fallback) {
         const QString text = look.value(key).toString();
         bool ok = false;
@@ -60,7 +60,56 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
     appearance.shirtColor = color(u"shirt"_s, appearance.shirtColor);
     appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
     appearance.cape = look.value(u"cape"_s, appearance.cape).toString().left(QcAppearance::maxNameLength);
-    setAppearance(appearance);
+    change(appearance);
+}
+
+void QcCharacterSettings::change(const QcAppearance &appearance)
+{
+    if (!m_drafting) {
+        setAppearance(appearance);
+        return;
+    }
+    if (appearance == m_draft) {
+        return;
+    }
+
+    m_draft = appearance;
+    emit lookChanged();
+    emit draftChanged();
+}
+
+void QcCharacterSettings::beginDraft()
+{
+    m_draft = m_appearance;
+    m_drafting = true;
+    emit lookChanged();
+    emit draftChanged();
+}
+
+void QcCharacterSettings::saveDraft()
+{
+    if (m_drafting) {
+        setAppearance(m_draft);
+        emit draftChanged();
+    }
+}
+
+void QcCharacterSettings::discardDraft()
+{
+    if (m_drafting) {
+        change(m_appearance);
+    }
+}
+
+void QcCharacterSettings::endDraft()
+{
+    if (!m_drafting) {
+        return;
+    }
+
+    m_drafting = false;
+    emit lookChanged();
+    emit draftChanged();
 }
 
 void QcCharacterSettings::setAppearance(const QcAppearance &appearance)
@@ -74,12 +123,20 @@ void QcCharacterSettings::setAppearance(const QcAppearance &appearance)
         m_parts.session->setAppearance(m_appearance);
     }
     emit lookChanged();
+    // An open draft is compared with the stored look: whether it is unsaved may have changed.
+    if (m_drafting) {
+        emit draftChanged();
+    }
 }
 
 void QcCharacterSettings::load(const QcAppearance &appearance, const QList<QcCharacterPreset> &presets)
 {
+    const bool changed = appearance != m_appearance;
     m_appearance = appearance;
     emit lookChanged();
+    if (changed && m_drafting) {
+        emit draftChanged();
+    }
     m_presets.load(presets);
 }
 
@@ -151,26 +208,26 @@ QStringList QcCharacterSettings::clothColors()
 
 void QcCharacterSettings::randomize()
 {
-    setAppearance(QcCharacterProfile::random(playableNames(QcAppearanceDefinition::Kind::Outfit),
+    change(QcCharacterProfile::random(playableNames(QcAppearanceDefinition::Kind::Outfit),
                                              playableNames(QcAppearanceDefinition::Kind::Hair),
                                              playableNames(QcAppearanceDefinition::Kind::Cape), QRandomGenerator::global()->generate()));
 }
 
 void QcCharacterSettings::reset()
 {
-    setAppearance(QcAppearance());
+    change(QcAppearance());
 }
 
 void QcCharacterSettings::applyPreset(int row)
 {
     if (const std::optional<QcAppearance> look = m_presets.appearance(row)) {
-        setAppearance(*look);
+        change(*look);
     }
 }
 
 bool QcCharacterSettings::savePreset(const QString &name)
 {
-    return m_presets.save(name, m_appearance);
+    return m_presets.save(name, shownAppearance());
 }
 
 QString QcCharacterSettings::fitPresetName(const QString &text) const

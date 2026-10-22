@@ -86,6 +86,8 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::ButtonPressed, "buttonPressed", 0xff2c2e32},
     {R::Danger, "danger", 0xffa8372e},
     {R::DangerHover, "dangerHover", 0xff8e2c24},
+    {R::ButtonDisabled, "buttonDisabled", 0xff2e3033},
+    {R::TextDisabled, "textDisabled", 0xffc4c4c4},
     {R::Field, "field", 0xff1a1a1a},
     {R::Track, "track", 0xff7c7c7c},
     {R::Knob, "knob", 0xffe8e8e8},
@@ -94,6 +96,55 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::BevelDark, "bevelDark", 0x80000000},
     {R::Clear, "clear", 0x00000000},
 }};
+
+// A role whose colour a variant changes.
+struct Override
+{
+    Role role;
+    QRgb argb;
+};
+
+// Like the Qt web site: a near-black background fading to black, neutral greys without the blue
+// tint of the classic buttons and link chips.
+constexpr std::array<Override, 8> qtDark = {{
+    {R::MenuTop, 0xff0c121c},
+    {R::MenuBottom, 0xff000000},
+    {R::Button, 0xff3c3c3c},
+    {R::ButtonHover, 0xff4e4e4e},
+    {R::ButtonPressed, 0xff2c2c2c},
+    {R::ButtonDisabled, 0xff303030},
+    {R::TextDisabled, 0xff9a9a9a},
+    {R::LinkHover, 0x60686868},
+}};
+
+// The Qt Neon accent (#2CDE85) with its states; dark text on it as on Qt green.
+constexpr std::array<Override, 4> qtNeon = {{
+    {R::Accent, 0xff2cde85},
+    {R::AccentHover, 0xff5ae8a2},
+    {R::AccentPressed, 0xff22b36b},
+    {R::AccentText, 0xff0b1a0e},
+}};
+
+Preset activePreset = defaultPreset;
+
+std::array<Entry, std::size_t(Role::RoleCount)> makeEntries(Preset preset)
+{
+    std::array<Entry, std::size_t(Role::RoleCount)> made = palette;
+    const auto apply = [&made](std::span<const Override> overrides) {
+        for (const Override &change : overrides) {
+            made[std::size_t(change.role)].argb = change.argb;
+        }
+    };
+    if (preset != Preset::Classic) {
+        apply(qtDark);
+    }
+    if (preset == Preset::QtNeon) {
+        apply(qtNeon);
+    }
+    return made;
+}
+
+std::array<Entry, std::size_t(Role::RoleCount)> activeEntries = makeEntries(defaultPreset);
 
 double channel(int value)
 {
@@ -108,19 +159,45 @@ double luminance(const QColor &color)
 
 } // namespace
 
+void setPreset(Preset preset)
+{
+    activePreset = preset;
+    activeEntries = makeEntries(preset);
+}
+
+Preset preset()
+{
+    return activePreset;
+}
+
+std::optional<Preset> presetFromName(QStringView name)
+{
+    const QString lower = name.toString().toLower();
+    if (lower == u"a" || lower == u"classic") {
+        return Preset::Classic;
+    }
+    if (lower == u"b" || lower == u"qt") {
+        return Preset::QtDark;
+    }
+    if (lower == u"c" || lower == u"neon") {
+        return Preset::QtNeon;
+    }
+    return std::nullopt;
+}
+
 std::span<const Entry> entries()
 {
-    return palette;
+    return activeEntries;
 }
 
 QColor color(Role role)
 {
-    return QColor::fromRgba(palette[std::size_t(role)].argb);
+    return QColor::fromRgba(activeEntries[std::size_t(role)].argb);
 }
 
 QString name(Role role)
 {
-    return QString::fromLatin1(palette[std::size_t(role)].name);
+    return QString::fromLatin1(activeEntries[std::size_t(role)].name);
 }
 
 QList<TextPair> textPairs()
@@ -169,6 +246,14 @@ QList<TextPair> textPairs()
         {"Secondary button, pressed", R::Text, {R::ButtonPressed}},
         {"Destructive button", R::Text, {R::Danger}},
         {"Destructive button, hovered", R::Text, {R::DangerHover}},
+        {"Disabled button", R::TextDisabled, {R::ButtonDisabled}},
+        // A disabled quiet button has no surface: its text lies on the menu, a screen or the panel.
+        // Disabled controls are exempt from WCAG 1.4.3; 3:1 keeps the label legible (the classic
+        // menu's light blue needs a lighter grey than the dark variants).
+        {"Disabled quiet button on the menu", R::TextDisabled, {R::MenuTop}, true},
+        {"Disabled quiet button on the menu, lower half", R::TextDisabled, {R::MenuBottom}, true},
+        {"Disabled quiet button on a screen", R::TextDisabled, {R::PanelSolid}, true},
+        {"Disabled quiet button on the panel", R::TextDisabled, {R::Scrim, R::Panel}, true},
         {"Fields and lists", R::Text, {R::Field}},
         {"Screens and dialogs (ScreenFrame)", R::Text, {R::PanelSolid}},
         {"Highlighted row of a drop-down list", R::AccentText, {R::Accent}},
@@ -215,8 +300,9 @@ QPalette controlPalette()
         {P::BrightText, color(R::AccentText)},
         // HighlightedText stands on two surfaces: selected text on Highlight and the highlighted
         // row of a list or a ComboBox popup (ItemDelegate) on Light. No colour reads on both Light
-        // and the bright accent, so Highlight is a dark green that white text reads on.
-        {P::Highlight, QColor(0x26, 0x80, 0x32)},
+        // and the bright accent, so Highlight is a dark green that white text reads on (with the
+        // Qt Neon accent the petrol #00414A of the Qt web site).
+        {P::Highlight, activePreset == Preset::QtNeon ? QColor(0x00, 0x41, 0x4a) : QColor(0x26, 0x80, 0x32)},
         {P::HighlightedText, color(R::Text)},
         {P::ToolTipBase, QColor(tooltip.red(), tooltip.green(), tooltip.blue())},
         {P::ToolTipText, color(R::Text)},

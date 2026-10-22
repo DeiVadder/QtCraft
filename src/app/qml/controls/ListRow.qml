@@ -6,7 +6,8 @@ import QtCraft
 // A row of a list of things (decision E-845, docs/UI-Leitfaden.md 6.9): worlds, servers, mods,
 // texture packs. A picture on the left (optional), the title in bold and a subtitle, further lines
 // below them, and the row's actions on the right. Texts are plain (names and descriptions come from
-// files and the network).
+// files and the network). An interactive row answers clicks and double clicks as a whole; a
+// focusable one also takes the focus and is clicked with Enter, Space and the pad's A.
 Rectangle {
     id: row
 
@@ -16,11 +17,43 @@ Rectangle {
     property alias leading: leadingSlot.data
     default property alias details: detailColumn.data
     property alias actions: actionColumn.data
+    // The row answers the mouse as a whole: lit under it, clicked() and doubleClicked().
+    property bool interactive: false
+    // The row itself takes the focus (Tab, the pad): Enter, Space and the pad's A click it.
+    property bool focusable: false
+
+    signal clicked
+    signal doubleClicked
 
     Layout.fillWidth: true
     implicitHeight: layout.implicitHeight + 2 * Ui.space.s
     radius: Ui.radius
-    color: Theme.panelRaised
+    color: interactive && hover.hovered ? Theme.rowHighlight : Theme.panelRaised
+    activeFocusOnTab: focusable
+    Keys.onReturnPressed: event => event.accepted = row.focusable && row.click()
+    Keys.onEnterPressed: event => event.accepted = row.focusable && row.click()
+    Keys.onSpacePressed: event => event.accepted = row.focusable && row.click()
+
+    // Clicks the row from the keyboard; true (the key is taken).
+    function click(): bool {
+        clicked();
+        return true;
+    }
+
+    FocusOutline {
+        visible: row.focusable && row.activeFocus
+    }
+
+    HoverHandler {
+        id: hover
+
+        enabled: row.interactive
+    }
+    TapHandler {
+        enabled: row.interactive
+        onTapped: row.clicked()
+        onDoubleTapped: row.doubleClicked()
+    }
 
     RowLayout {
         id: layout

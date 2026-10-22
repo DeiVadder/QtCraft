@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The player's profile as others will see it: a live preview of the character, the name and a
-// button to the character screen (decision E-231). Shown in the main menu; the join screen of the
-// multiplayer (stage 25) uses it too.
-Rectangle {
+// The player's profile at the foot of the main menu's side bar (decision E-231, variant C of
+// docs/UI-Leitfaden.md): a small live figure of the character as others will see it and the name
+// the game joins network games with; a click (Enter, the pad's A) opens the character screen.
+AbstractButton {
     id: card
 
     required property GameController game
@@ -15,55 +15,59 @@ Rectangle {
     // Another screen covers the card: its preview stops moving.
     property bool covered: false
 
-    signal customizeRequested
+    Layout.fillWidth: true
+    leftPadding: Ui.space.l
+    rightPadding: Ui.space.s
+    topPadding: Ui.space.xs
+    bottomPadding: Ui.space.xs
+    focusPolicy: Qt.StrongFocus
+    // Disabled (the main menu's side bar during a join) it dims.
+    opacity: enabled ? 1 : Ui.disabledOpacity
+    Accessible.role: Accessible.Button
+    Accessible.name: qsTr("%1, customize character").arg(card.playerName)
+    Accessible.description: qsTr("Your character as other players see it")
+    Keys.onReturnPressed: click()
+    Keys.onEnterPressed: click()
 
-    implicitHeight: Ui.px(168)
-    radius: Ui.px(4)
-    color: Theme.scrim
+    background: Rectangle {
+        color: card.hovered ? Theme.rowHighlight : Theme.clear
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.margins: Ui.px(8)
-        spacing: Ui.px(12)
-
-        Rectangle {
-            Layout.preferredWidth: Ui.px(104)
-            Layout.fillHeight: true
-            radius: Ui.px(4)
-            color: Theme.panelRaised
-
-            CharacterPreviewHost {
-                previewName: "profilePreview"
-                anchors.fill: parent
-                anchors.margins: Ui.px(2)
-                source: card.game.preview
-                // A gentle idle motion is enough in the menu.
-                framesPerSecond: 15
-                paused: card.covered
-            }
+        FocusOutline {
+            visible: card.visualFocus
         }
+    }
+    contentItem: RowLayout {
+        spacing: Ui.space.m
 
+        CharacterPreviewHost {
+            Layout.preferredWidth: Ui.size.figureWidth
+            Layout.preferredHeight: Ui.size.figureHeight
+            previewName: "profilePreview"
+            source: card.game.preview
+            // A gentle idle motion is enough in the menu.
+            framesPerSecond: 15
+            paused: card.covered
+            interactive: false
+        }
         ColumnLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenter
-            spacing: Ui.px(6)
+            spacing: Ui.space.xs
 
-            Label {
-                text: qsTr("Your character")
-                color: Theme.text
-                font.pixelSize: Ui.px(17)
-                font.bold: true
-            }
             Label {
                 Layout.fillWidth: true
                 textFormat: Text.PlainText
                 text: card.playerName
-                color: Theme.textSecondary
+                font.pixelSize: Ui.type.body
+                font.bold: true
+                color: Theme.text
                 elide: Text.ElideRight
             }
-            Button {
-                text: qsTr("Customize…")
-                onClicked: card.customizeRequested()
+            Label {
+                Layout.fillWidth: true
+                text: qsTr("Customize character")
+                font.pixelSize: Ui.type.help
+                color: Theme.textMuted
+                elide: Text.ElideRight
             }
         }
     }

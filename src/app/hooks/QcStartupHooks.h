@@ -48,7 +48,8 @@ public:
     // "@<ms> <name>" opens that many milliseconds later ("@<ms> " closes the overlay and the
     // handbook, "@<ms> pick:<row>" picks up the stack of an inventory model row in the open screen,
     // "@<ms> hover:<x>,<y>" moves the pointer there, e.g. to show a tooltip, "@<ms> open:<objectName>"
-    // opens the list of that combo box or that popup or dialog).
+    // opens the list of that combo box or that popup, dialog or menu page, "@<ms> click:<objectName>"
+    // clicks that button).
     void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
@@ -62,7 +63,7 @@ public:
     void setMenuScreenshotHook(QcScreenshotHook *hook);
     QcBenchmarkRun *benchmark() const { return m_benchmark; }
 
-    // Without --play: runs the "@<ms> open:" and "@<ms> hover:" steps in the main menu.
+    // Without --play: runs the "@<ms> open:", "click:", "hover:" and "pad:" steps in the main menu.
     void menuShown();
     // Runs the script: the world has just become playable.
     void worldPlaying();
@@ -95,7 +96,7 @@ private:
     void showView(bool shown, int attemptsLeft);
     // Opens the screen of an --overlay name (QcScreenState::overlayFromName).
     void openOverlay(const QString &name) const;
-    // "pick:", "open:" and "text:" steps: they act on a control of a shown screen and wait up to
+    // "pick:", "open:", "text:" and "click:" steps: they act on a control of a shown screen and wait up to
     // loadedScreenAttempts * loadedScreenRetryMs for its screen to be loaded.
     void runOnLoadedScreen(const QString &step, int attempt);
     // Each returns whether it found what it acts on.
@@ -104,6 +105,10 @@ private:
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
     [[nodiscard]] bool setText(const QString &assignment) const;
     [[nodiscard]] bool openPopup(const QString &objectName) const;
+    // Clicks a shown button ("@<ms> click:<objectName>"), as the mouse would.
+    [[nodiscard]] bool clickControl(const QString &objectName) const;
+    // Gives a shown control the focus as Tab would ("@<ms> focus:<objectName>").
+    [[nodiscard]] bool focusControl(const QString &objectName) const;
     // The control named `objectName` on a shown screen, as pick: wants it: an item that is visible,
     // or with `parentShown` one whose visual parent is (a closed popup or sub-screen); a screen
     // kept loaded but hidden (LazyScreen) does not count.

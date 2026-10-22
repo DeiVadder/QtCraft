@@ -14,21 +14,22 @@ ColumnLayout {
     // The CharacterPreview while the panel is shown, else null.
     readonly property CharacterPreview preview: host.preview
 
-    spacing: Ui.px(6)
+    spacing: Ui.space.s
 
     Rectangle {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        radius: Ui.px(4)
+        radius: Ui.radius
         color: Theme.panelRaised
         border.color: Theme.panelBorder
+        border.width: Ui.size.line
 
         CharacterPreviewHost {
             id: host
 
             previewName: "characterPreview"
             anchors.fill: parent
-            anchors.margins: Ui.px(2)
+            anchors.margins: Ui.size.bevelDeep
             source: panel.game.preview
             paused: panel.game.handbook.isOpen
         }
@@ -36,49 +37,36 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: Ui.px(4)
+        spacing: Ui.space.xs
 
-        Button {
+        Segments {
             Layout.fillWidth: true
-            text: qsTr("Front")
-            highlighted: panel.preview?.side === CharacterPreview.Side.Front
-            onClicked: panel.preview?.showSide(CharacterPreview.Side.Front)
+            label: qsTr("Side")
+            model: [
+                { value: CharacterPreview.Side.Front, text: qsTr("Front") },
+                { value: CharacterPreview.Side.Back, text: qsTr("Back") }
+            ]
+            currentValue: panel.preview?.side ?? CharacterPreview.Side.Front
+            onActivated: value => panel.preview?.showSide(value)
         }
-        Button {
-            Layout.fillWidth: true
-            text: qsTr("Back")
-            highlighted: panel.preview?.side === CharacterPreview.Side.Back
-            onClicked: panel.preview?.showSide(CharacterPreview.Side.Back)
-        }
-        Button {
-            Layout.fillWidth: true
+        GameButton {
             text: qsTr("Reset view")
             onClicked: panel.preview?.resetView()
         }
     }
 
-    RowLayout {
+    Segments {
         Layout.fillWidth: true
-        spacing: Ui.px(4)
-
-        Repeater {
-            model: [
-                { value: CharacterPreview.Animation.Stand, text: qsTr("Stand") },
-                { value: CharacterPreview.Animation.Walk, text: qsTr("Walk") },
-                { value: CharacterPreview.Animation.Mine, text: qsTr("Mine") }
-            ]
-
-            delegate: Button {
-                required property var modelData
-
-                Layout.fillWidth: true
-                text: modelData.text
-                highlighted: panel.preview?.animation === modelData.value
-                onClicked: {
-                    if (panel.preview)
-                        panel.preview.animation = modelData.value;
-                }
-            }
+        label: qsTr("Motion")
+        model: [
+            { value: CharacterPreview.Animation.Stand, text: qsTr("Stand") },
+            { value: CharacterPreview.Animation.Walk, text: qsTr("Walk") },
+            { value: CharacterPreview.Animation.Mine, text: qsTr("Mine") }
+        ]
+        currentValue: panel.preview?.animation ?? CharacterPreview.Animation.Stand
+        onActivated: value => {
+            if (panel.preview)
+                panel.preview.animation = value;
         }
     }
 
@@ -86,6 +74,7 @@ ColumnLayout {
         Layout.fillWidth: true
         text: qsTr("Drag to turn the figure, scroll to zoom.")
         wrapMode: Text.Wrap
-        opacity: 0.7
+        font.pixelSize: Ui.type.help
+        color: Theme.textMuted
     }
 }

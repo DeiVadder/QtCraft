@@ -7,6 +7,7 @@
 #include "app/models/QcControlPalette.h"
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/settings/QcScreenChoice.h"
+#include "clientcore/settings/QcUiPalette.h"
 #include "common/diagnostics/QcCrashHandler.h"
 #include "common/gameplay/QcGameMode.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -38,13 +39,18 @@ void applyControlPalette(QQuickWindow &window)
 }
 
 // QTCRAFT_MENU_WORLD_TYPE=flat|void|showcase is a test hook that preselects the world type of the
-// menu's new world, so that screenshots show the fields of that type.
+// menu's new world, so that screenshots show the fields of that type; the page starts with it
+// whenever it opens (NewWorldPage.startWorldType, startGameMode).
 void preselectWorldType(const QQuickWindow &window)
 {
     const qsizetype index = QcWorldGenerators::types().indexOf(qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"));
     QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
+    QObject *page = window.findChild<QObject *>(u"newWorldPage"_s);
     if (index >= 0 && choice) {
         choice->setProperty("currentIndex", int(index));
+    }
+    if (index >= 0 && page) {
+        page->setProperty("startWorldType", int(index));
     }
 
     // QTCRAFT_MENU_GAME_MODE=creative (or another mode) preselects the game mode the same way.
@@ -55,6 +61,9 @@ void preselectWorldType(const QQuickWindow &window)
         && QMetaObject::invokeMethod(mode, "indexOfValue", Q_RETURN_ARG(int, modeIndex), Q_ARG(QVariant, QString(QcGameModes::name(*wanted))))
         && modeIndex >= 0) {
         mode->setProperty("currentIndex", modeIndex);
+        if (page) {
+            page->setProperty("startGameMode", modeIndex);
+        }
     }
 }
 
@@ -105,6 +114,16 @@ void QcAppWindow::applyControlStyle()
 {
     if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE")) {
         QQuickStyle::setStyle(u"Basic"_s);
+    }
+
+    const QString theme = qEnvironmentVariable("QTCRAFT_THEME");
+    if (theme.isEmpty()) {
+        return;
+    }
+    if (const std::optional<QcUiPalette::Preset> preset = QcUiPalette::presetFromName(theme)) {
+        QcUiPalette::setPreset(*preset);
+    } else {
+        qCWarning(lcStartup) << "QTCRAFT_THEME" << theme << ": no such colour variant (A, B or C); the default one (C) stays";
     }
 }
 

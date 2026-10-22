@@ -18,8 +18,9 @@ struct QcSessionParts;
 
 // The player's look (GameController.settings.character, stored with the settings), the outfits,
 // hair styles and capes the content offers for it, the colours to choose from and the presets: built-in
-// ones and those the player saved (decision E-231). Every change applies at once, also to the
-// player of a running world.
+// ones and those the player saved (decision E-231). A change applies at once, also to the player of
+// a running world, unless a draft is open (decision E-852): the character screens edit a draft that
+// the preview shows and that applies only with saveDraft(); discardDraft() goes back to the saved look.
 class QcCharacterSettings : public QObject
 {
     Q_OBJECT
@@ -40,14 +41,29 @@ class QcCharacterSettings : public QObject
     Q_PROPERTY(bool canSavePreset READ canSavePreset NOTIFY presetsChanged FINAL)
     // Places for the player's own presets.
     Q_PROPERTY(int maxPresets READ maxPresets CONSTANT FINAL)
+    // A draft is open (beginDraft()); look, randomize(), reset() and applyPreset() change it.
+    Q_PROPERTY(bool drafting READ drafting NOTIFY draftChanged FINAL)
+    // The draft differs from the saved look.
+    Q_PROPERTY(bool dirty READ dirty NOTIFY draftChanged FINAL)
 
 public:
     QcCharacterSettings(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcSettingsController &settings,
                         QObject *parent = nullptr);
 
+    // The draft while one is open, else the saved look.
     QVariantMap look() const;
-    // Applies at once, also to the player of a running world.
+    // Changes the draft while one is open, else applies at once, also to the player of a running world.
     void setLook(const QVariantMap &look);
+    bool drafting() const { return m_drafting; }
+    bool dirty() const { return m_drafting && m_draft != m_appearance; }
+    // Opens a draft of the saved look (the character screen or page opens).
+    Q_INVOKABLE void beginDraft();
+    // Applies the draft as the saved look (also to the player of a running world); the draft stays open.
+    Q_INVOKABLE void saveDraft();
+    // Sets the draft back to the saved look.
+    Q_INVOKABLE void discardDraft();
+    // Closes the draft without applying it (the screen or page closes).
+    Q_INVOKABLE void endDraft();
     QVariantList outfits() const;
     QVariantList hairStyles() const;
     QVariantList capes() const;
@@ -64,7 +80,7 @@ public:
     Q_INVOKABLE void reset();
     // Takes the look of a row of `presets`.
     Q_INVOKABLE void applyPreset(int row);
-    // Saves the current look as the player's preset `name` (replacing one of that name); false
+    // Saves the shown look (the draft while one is open) as the player's preset `name` (replacing one of that name); false
     // when the name is empty or all preset places are taken.
     Q_INVOKABLE bool savePreset(const QString &name);
     // Whether savePreset(name) would succeed.
@@ -74,7 +90,10 @@ public:
     // Removes a preset of the player (row of `presets`); built-in ones stay.
     Q_INVOKABLE void removePreset(int row);
 
+    // The saved look (stored with the settings, the player's in a running world).
     const QcAppearance &appearance() const { return m_appearance; }
+    // The look the previews show: the draft while one is open, else the saved one.
+    const QcAppearance &shownAppearance() const { return m_drafting ? m_draft : m_appearance; }
     void setAppearance(const QcAppearance &appearance);
     const QList<QcCharacterPreset> &savedPresets() const { return m_presets.saved(); }
     // The stored look and presets; signals the changes so bindings pick them up.
@@ -87,16 +106,21 @@ signals:
     void lookChanged();
     void appearancesChanged();
     void presetsChanged();
+    void draftChanged();
 
 private:
     // The running world's content, else base game plus enabled mods loaded on demand.
     const QcContentRegistry &content() const;
     QVariantList appearanceList(QcAppearanceDefinition::Kind kind) const;
     QStringList playableNames(QcAppearanceDefinition::Kind kind) const;
+    // A change by the player: to the draft while one is open, else applied at once.
+    void change(const QcAppearance &appearance);
 
     const QcSessionParts &m_parts;
     const QcWorldLibraryController &m_library;
     const QcSettingsController &m_settings;
     QcAppearance m_appearance;
+    QcAppearance m_draft;
+    bool m_drafting = false;
     QcCharacterPresets m_presets;
 };

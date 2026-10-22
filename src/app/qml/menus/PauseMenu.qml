@@ -34,8 +34,9 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        // Hidden while one of its screens is open: it would show around a small one.
-        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible
+        // Hidden while one of its screens is open: it would show around a small one. The handbook
+        // covers it as well (and keeps Tab).
+        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible && !menu.game.handbook.isOpen
         width: Math.min(parent.width - 2 * Ui.space.l, Ui.screen.column)
         spacing: Ui.space.s
 
@@ -123,10 +124,16 @@ Rectangle {
             forceActiveFocus();
     }
 
+    // One level down from the pause menu, as from the main menu (SidebarScreen); the debug options
+    // open from the world (debug options key) and lead back there.
     SettingsScreen {
         id: settingsScreen
 
         game: menu.game
+        inGame: true
+        // The handbook opened from the settings covers them (and keeps Tab).
+        covered: menu.game.handbook.isOpen
+        backText: menu.game.overlay === GameController.Overlay.Debug ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
         onClosed: menu.subScreenClosed(menu.settingsPages)
     }
 

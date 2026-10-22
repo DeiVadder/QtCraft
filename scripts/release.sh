@@ -138,6 +138,11 @@ if [ "$GAMEPAD" = ON ]; then
         cp "$SDL_PREFIX/LIBM-NOTICE.txt" "$LICENSES/SDL3-LIBM-NOTICE.txt" ||
         abort "cannot copy the licence texts of SDL3"
 fi
+# The logo's pixel font is built into the game's resources; its licence (SIL OFL 1.1) asks that
+# every copy carries the licence text.
+mkdir -p "$APP/Contents/Resources/licenses" &&
+    cp "$PROJECT_DIR/src/app/fonts/OFL.txt" "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ||
+    abort "cannot copy the licence text of Pixelify Sans"
 
 echo "== ad-hoc signature (inside out)"
 # Loose libraries and plugins first, then each framework as a whole, then the app.
@@ -226,6 +231,7 @@ if [ "$GAMEPAD" = ON ]; then
 else
     ok "built without gamepad support (QC_GAMEPAD=$GAMEPAD), no SDL checks"
 fi
+[ -s "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ] && ok "contains PixelifySans-OFL.txt" || problem "missing PixelifySans-OFL.txt"
 
 plist="$APP/Contents/Info.plist"
 for key in CFBundleIdentifier CFBundleShortVersionString CFBundleVersion CFBundleIconFile LSMinimumSystemVersion \

@@ -23,7 +23,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Without --play (test hooks): --overlay multiplayer opens the main menu's multiplayer screen; with
+// Without --play (test hooks): --overlay multiplayer opens the main menu's multiplayer page; with
 // --join it joins from there, so a refusal is shown like after a click. Runs the menu steps of the
 // script ("@<ms> open:<objectName>", "@<ms> hover:<x>,<y>").
 void openMenuScreen(const QQuickWindow &window, QcGameController &game, const QcAppOptions &options)
@@ -35,7 +35,7 @@ void openMenuScreen(const QQuickWindow &window, QcGameController &game, const Qc
     if (!options.overlays.contains(u"multiplayer"_s)) {
         return;
     }
-    // Popups are no QObject children of the window; the menu opens its own screen.
+    // The menu opens its own page.
     QObject *menu = window.findChild<QObject *>(u"mainMenu"_s);
     if (!menu) {
         qCWarning(lcStartup, "--overlay multiplayer: no main menu");

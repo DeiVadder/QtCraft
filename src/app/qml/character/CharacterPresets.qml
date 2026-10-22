@@ -14,11 +14,14 @@ GridLayout {
     required property var character
 
     columns: 3
-    columnSpacing: Ui.px(8)
+    columnSpacing: Ui.space.m
+    rowSpacing: Ui.space.s
 
     Label {
-        Layout.preferredWidth: Ui.px(110)
+        Layout.preferredWidth: Ui.size.label
         text: qsTr("Preset")
+        font.pixelSize: Ui.type.body
+        color: Theme.text
     }
     ThemedComboBox {
         id: presetBox
@@ -31,7 +34,7 @@ GridLayout {
         currentIndex: -1
         onActivated: index => presets.character.applyPreset(index)
     }
-    Button {
+    GameButton {
         text: qsTr("Delete")
         enabled: presetBox.currentIndex >= 0 && presetBox.currentIndex < presets.character.presets.length
                  && !presets.character.presets[presetBox.currentIndex].builtIn
@@ -42,15 +45,14 @@ GridLayout {
     }
 
     Item {
-        Layout.preferredWidth: Ui.px(110)
+        Layout.preferredWidth: Ui.size.label
     }
-    TextField {
+    GameTextField {
         id: presetName
 
         Accessible.name: qsTr("Preset name")
         Layout.fillWidth: true
-        selectByMouse: true
-        placeholderText: presets.character.canSavePreset ? qsTr("Name for a new preset") : qsTr("Name of a preset to replace")
+        placeholderText: presets.character.canSavePreset ? qsTr("New preset") : qsTr("Preset to replace")
         // At most 32 characters, counted as the game counts names (an emoji is one).
         onTextEdited: {
             const fitted = presets.character.fitPresetName(text);
@@ -58,7 +60,7 @@ GridLayout {
                 text = fitted;
         }
     }
-    Button {
+    GameButton {
         text: qsTr("Save preset")
         // Reads `presets`, so it is checked again when they change.
         enabled: presets.character.presets.length > 0 && presets.character.canSavePresetAs(presetName.text)
@@ -69,17 +71,16 @@ GridLayout {
     }
 
     Item {
-        Layout.preferredWidth: Ui.px(110)
+        Layout.preferredWidth: Ui.size.label
         visible: fullHint.visible
     }
-    Label {
+    Hint {
         id: fullHint
 
         Layout.columnSpan: 2
         Layout.fillWidth: true
         visible: !presets.character.canSavePreset
+        kind: Hint.Warning
         text: qsTr("All %1 places for your own presets are taken: delete one, or save under the name of one to replace it.").arg(presets.character.maxPresets)
-        wrapMode: Text.Wrap
-        color: Theme.warning
     }
 }

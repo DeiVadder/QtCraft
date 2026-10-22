@@ -1,6 +1,6 @@
 # UI-Leitfaden
 
-Stand 2026-10-22 (Etappe 76.0, entschieden vom Menschen am 2026-10-22, Entscheidung E-845). Gilt für jeden Bildschirm außerhalb der Welt (Hauptmenü, Pause, Einstellungen, Mehrspieler, Mods, Charakter, Handbuch, Dialoge) und für die Paneele über der Welt (Inventar, Behälter, Handel). Das HUD hat eigene Regeln (`Ui.hudPx`, E-725) und ist hier nur am Rand betroffen. Neue Menüs (41 Zaubertisch/Amboss, 45 Render-Modus, 55 Welt- und Server-Optionen, 67 Fortschritte, 77 Server-Oberfläche) bauen auf diesem Leitfaden auf; 76.2 bringt Hauptmenü und übrige Bildschirme auf diesen Stand. Umgesetzt sind seit 76.0b die Bausteine (Abschnitt 6), die zentralen Werte (Abschnitt 0), der eigene Steuerelement-Stil und die Einstellungen mit Seitenleiste (Abschnitt 8) samt Pausenmenü.
+Stand 2026-10-22 (Etappe 76.0, entschieden vom Menschen am 2026-10-22, Entscheidungen E-845 und E-852). Gilt für jeden Bildschirm außerhalb der Welt (Hauptmenü, Pause, Einstellungen, Mehrspieler, Mods, Charakter, Handbuch, Dialoge) und für die Paneele über der Welt (Inventar, Behälter, Handel). Das HUD hat eigene Regeln (`Ui.hudPx`, E-725) und ist hier nur am Rand betroffen. Neue Menüs (41 Zaubertisch/Amboss, 45 Render-Modus, 55 Welt- und Server-Optionen, 67 Fortschritte, 77 Server-Oberfläche) bauen auf diesem Leitfaden auf; 76.2 bringt die übrigen Bildschirme (Handbuch, Inventare, Tod, Trennung, Meldung) auf diesen Stand. Umgesetzt sind seit 76.0b die Bausteine (Abschnitt 6), die zentralen Werte (Abschnitt 0), der eigene Steuerelement-Stil und die Einstellungen mit Seitenleiste (Abschnitt 8) samt Pausenmenü, seit 76.0c das Hauptmenü in Variante C (Abschnitt 8a) mit dem Logo in Pixelify Sans und Weltliste, Neue Welt, Mehrspieler, LAN, Mods und Charakter, Einstellungen und Handbuch eine Ebene tiefer in derselben Seitenleiste (Abschnitt 8b) und fensterweit modale Rückfragen (6.0).
 
 ## 0 Wo man was zentral ändert
 
@@ -11,12 +11,12 @@ Alle Werte stehen an genau **einer** Stelle im Code; Seiten und Bausteine schrei
 | Farben (Rollen mit Kontrastprüfung) | `src/clientcore/settings/QcUiPalette.cpp`, Tabelle `palette` (Rolle, QML-Name, ARGB) | `Theme.accent`, `Theme.panel`, … |
 | Farben der Qt-Steuerelemente (Basic-Stil: Listen, Felder, Kästchen) | dieselbe Datei, `controlPalette()` (aus den Rollen abgeleitet) | – |
 | Abstände, auch zum Fensterrand | `src/app/qml/controls/Ui.qml`, `space`, `screen.margin`, `screen.marginVertical` | `Ui.space.xs` … `Ui.space.xxl`, `Ui.screen.margin` |
-| Größen der Steuerelemente | `Ui.qml`, `size` | `Ui.size.row`, `Ui.size.button`, `Ui.size.nav`, … |
+| Größen der Steuerelemente | `Ui.qml`, `size` | `Ui.size.row`, `Ui.size.button`, `Ui.size.menuNav`, … |
 | Bildschirmbreiten | `Ui.qml`, `screen` | `Ui.screen.s`, `.m`, `.l` |
 | Radius | `Ui.qml` | `Ui.radius` |
 | Schriftgrößen | `Ui.qml`, `type` | `Ui.type.title`, `.section`, `.group`, `.body`, `.help` |
 
-Werte in `Ui.qml` sind für 100 % in 1024 × 640 geschrieben und laufen durch `Ui.px()` (E-725), stehen also schon in der Größe des Spielers bereit. Eine neue Farbe ist eine neue Rolle in `QcUiPalette` (Enum `Role`, Tabelle, Q_PROPERTY in `QcUiTheme.h`) und bekommt ihr Text-Hintergrund-Paar in `textPairs()`; ein neuer Abstand oder eine neue Größe kommt als benannter Wert nach `Ui.qml`. `test_ui_palette` prüft: keine Farbe außerhalb der Palette in irgendeiner QML-Datei (`screensUseOnlyThePalette`), keine eigene Größe in den Einstellungen, den Bausteinen (`src/app/qml/controls`) und dem Pausenmenü (`menusUseOnlyTheSizeSteps`: kein Zahlwert in `px()`/`hudPx()` oder `Qt.size()` und keine Zahl über 1 in einer Eigenschaft oder Deklaration, außer Faktoren wie `2 * Ui.space.l` und Eigenschaften ohne Größe wie `from`, `to`, `value`, `stepSize`, `opacity`, `z`, `model`, Zeiten in ms; `ItemSlot` nimmt den Faktor des HUD oder des Bildschirms und ist ausgenommen; die übrigen Bildschirme kommen mit 76.2 dazu).
+Werte in `Ui.qml` sind für 100 % in 1024 × 640 geschrieben und laufen durch `Ui.px()` (E-725), stehen also schon in der Größe des Spielers bereit. Eine neue Farbe ist eine neue Rolle in `QcUiPalette` (Enum `Role`, Tabelle, Q_PROPERTY in `QcUiTheme.h`) und bekommt ihr Text-Hintergrund-Paar in `textPairs()`; ein neuer Abstand oder eine neue Größe kommt als benannter Wert nach `Ui.qml`. `test_ui_palette` prüft: keine Farbe außerhalb der Palette in irgendeiner QML-Datei (`screensUseOnlyThePalette`), keine eigene Größe in den Bausteinen (`src/app/qml/controls`), den Einstellungen, dem Hauptmenü mit seinen Seiten und Bildschirmen und dem Pausenmenü (`src/app/qml/menus` außer Tod, Trennung und Meldung) und im Charakter-Bildschirm (`menusUseOnlyTheSizeSteps`: kein Zahlwert in `px()`/`hudPx()` oder `Qt.size()` und keine Zahl über 1 in einer Eigenschaft oder Deklaration, außer Faktoren wie `2 * Ui.space.l` und Eigenschaften ohne Größe wie `from`, `to`, `value`, `stepSize`, `opacity`, `z`, `model`, Zählungen (`columns`, `columnSpan`, `maximumLength`, `maximumLineCount`), Grenzen eines Validators, Bildraten, Zeiten in ms; `ItemSlot` nimmt den Faktor des HUD oder des Bildschirms und ist ausgenommen; Handbuch, Inventare, HUD, Tod, Trennung und Meldung kommen mit 76.2 dazu).
 
 ## 1 Grundsätze
 
@@ -75,6 +75,14 @@ Alle Farben kommen aus `Theme` (`QcUiPalette`, E-097, E-279). Die vorhandenen Ro
 
 Die Fläche `button` hebt sich vom Paneel kaum ab; die Grenze einer Schaltfläche zeigt deshalb die Fase (`bevelLight` oben/links, `bevelDark` unten/rechts, Baustein `Bevel`), nicht die Fläche allein. Die Qt-Steuerelemente des Basic-Stils nehmen die Rollen über `controlPalette()`: `Dark` ist `accent`, `BrightText` ist `accentText` (eine hervorgehobene Basic-Schaltfläche sieht damit wie die primäre aus), `Button` ist `button`, `Base` ist `field`. `HighlightedText` steht auf zwei Flächen – markierter Text auf `Highlight` und die hervorgehobene Zeile einer Liste (`ItemDelegate`) auf `Light` –, für die keine Farbe zugleich auf dem hellen Akzent lesbar ist: `HighlightedText` ist deshalb `text` und `Highlight` ein dunkles Grün (#268032). Aufklapplisten sind `ThemedComboBox`: die hervorgehobene Zeile in `accent` mit `accentText`.
 
+### 2.3 Farbvarianten (E-852)
+
+Drei Varianten (noch keine Einstellung), gewählt beim Start mit `QTCRAFT_THEME=A|B|C` (`QcUiPalette::Preset`, Tabellen `qtDark` und `qtNeon` in `QcUiPalette.cpp`, die nur einzelne Rollen der klassischen Palette ändern). **Standard ist C** (Mensch 2026-10-22, `QcUiPalette::defaultPreset`); C wirkt sehr dunkel und gilt als Dunkelmodus, eine hellere bzw. helle Variante als Einstellung ist Kandidat für 76.2. `test_ui_palette` prüft alle Kontrastpaare für jede Variante.
+
+- **A klassisch:** blauer Verlauf (`menuTop` #3D6F9E → `menuBottom` #22384F), Qt-Grün #41CD52.
+- **B wie qt.io:** fast schwarzer Hintergrund (#0C121C → #000000), neutrale Grautöne ohne Blaustich (`button` #3C3C3C, `buttonHover` #4E4E4E, `buttonPressed` #2C2C2C, `buttonDisabled` #303030, `linkHover` grau), Qt-Grün #41CD52.
+- **C wie B mit „Qt Neon“** #2CDE85 (`accentHover` #5AE8A2, `accentPressed` #22B36B, dunkler Text #0B1A0E auf allen drei, mindestens 6:1), markierter Text der Qt-Steuerelemente auf Petrol #00414A.
+
 ## 3 Abstände und Raster
 
 Alle Maße als benannte Werte aus `Ui` (Abschnitt 0), geschrieben für 100 % in 1024 × 640 (E-725); das HUD weiter mit `Ui.hudPx`.
@@ -100,11 +108,11 @@ Alle Maße als benannte Werte aus `Ui` (Abschnitt 0), geschrieben für 100 % in 
 
 ## 4 Schrift
 
-Systemschrift. **Pixelschrift nur für das Logo (Entscheidung 5):** vorgesehen ist „Pixelify Sans“ (SIL Open Font License 1.1, darf eingebettet und mit dem Spiel weitergegeben werden; Lizenztext gehört neben die Datei). Das Logo steht im Hauptmenü und kommt mit 76.2; die Schriftdatei braucht dafür einen Download, den der Mensch freigibt, eingebettet über die Ressourcen (qrc). Bis dahin Systemschrift fett. Größen bei 100 %:
+Systemschrift. **Pixelschrift nur für das Logo (Entscheidung 5):** „Pixelify Sans“ (SIL Open Font License 1.1, darf eingebettet und mit dem Spiel weitergegeben werden), eingebettet über die Ressourcen: `src/app/fonts/PixelifySans.ttf` mit `OFL.txt` daneben (auch im macOS-Bundle unter `licenses/`, `THIRD_PARTY.md`, `CREDITS.md`). Das Logo ist der Baustein `GameLogo` (lädt die Schrift selbst, schrumpft auf seine Breite); kein anderer Text nutzt die Schrift. Größen bei 100 %:
 
 | Stufe | Name | Größe | Gewicht | Farbe | Wofür |
 |---|---|---|---|---|---|
-| Logo | `Ui.type.logo` / `logoSmall` | 64 / 48 | fett | `text` | nur Hauptmenü |
+| Logo | `Ui.type.logo` / `logoSmall` | 64 / 48 | normal (Regular), Pixelify Sans | `text` | Seitenleiste (`logoSmall`): Hauptmenü, Einstellungen, Handbuch |
 | Titel | `Ui.type.title` | 24 | fett | `text` | Titel eines Bildschirms (Einstellungen, Pause) |
 | Abschnitt | `Ui.type.section` | 18 | fett | `text` | Seitentitel in den Einstellungen, Spaltenüberschrift |
 | Gruppe | `Ui.type.group` | 14 | fett | `heading` | Gruppenüberschrift in Einstellungen |
@@ -116,25 +124,35 @@ Systemschrift. **Pixelschrift nur für das Logo (Entscheidung 5):** vorgesehen i
 
 Jeder Bildschirm hat dieselben vier Teile:
 
-1. **Kopf:** Titel links (Stufe „Titel“), rechts „Schließen (Esc)“ bzw. das B-Symbol des Pads. Bei Unterseiten links „‹ Zurück“ (wie im Handbuch).
-2. **Navigation** (nur bei mehreren Seiten): Seitenleiste links (Entscheidung 2).
+1. **Kopf:** Titel links (Stufe „Titel“), rechts „Schließen (Esc)“ bzw. das B-Symbol des Pads. Bei Unterseiten links „‹ Zurück“. Einstellungen und Handbuch haben keinen Kopf: Titel und Rückweg stehen in der Seitenleiste (8b).
+2. **Navigation** (nur bei mehreren Seiten): Seitenleiste links (Entscheidung 2), bei Einstellungen und Handbuch eine Ebene tiefer in derselben Seitenleiste (8b).
 3. **Inhalt:** scrollt als Ganzes (`ThemedScrollBar`), Kopf und Fuß bleiben stehen. Gruppen untereinander, Abstand `xl`.
 4. **Fuß:** Aktionen rechtsbündig, die primäre ganz rechts; seitenbezogene Aktionen („Standard wiederherstellen“, „Ordner öffnen“) links. Darunter, wenn ein Pad benutzt wird, die Pad-Hinweise (`PadHints`).
 
 Regeln:
 
-- Einstellungen wirken **sofort** und werden beim Schließen gespeichert (wie heute). Deshalb kein „Übernehmen/Abbrechen“, sondern nur „Fertig“. Ausnahme: Anzeigemodus und Monitor (74.3) – nach dem Wechsel 10 s Rückfrage „Beibehalten?“ mit Rückfall.
+- **Nur zwei Muster für Änderungen** (Mensch 2026-10-22, E-852):
+  1. **Sofort wirksam, ohne Bestätigungsknopf:** jede Änderung gilt sofort (Einstellungen; Zurücksetzen je Wert), der Bildschirm schließt mit dem Rückweg-Eintrag der Seitenleiste („‹ Hauptmenü“, „‹ Pausenmenü“, 8b) bzw. Esc/B. Ausnahme: Anzeigemodus und Monitor (74.3) – nach dem Wechsel 10 s Rückfrage „Beibehalten?“ mit Rückfall.
+  2. **Bearbeiten, dann Speichern oder Verwerfen:** die Seite bearbeitet einen Entwurf (die Vorschau zeigt ihn sofort), „Speichern“ (primär, nur aktiv, wenn der Entwurf vom Gespeicherten abweicht) und „Verwerfen“; solange etwas ungespeichert ist, steht „Ungespeicherte Änderungen“ sichtbar da. Wer die Seite mit Änderungen verlässt (Esc/B, anderer Eintrag der Seitenleiste, „Zurück“, „Schließen“, Weltstart), wird gefragt: Speichern / Verwerfen / Weiter bearbeiten (Baustein `UnsavedChangesDialog`, Fokus und sichere Wahl „Weiter bearbeiten“). Beispiel: Charakter (Seite im Hauptmenü und Bildschirm im Spiel).
+
+  **Nie** ein einzelnes „Fertig“/„OK“, das Änderungen ohnehin übernimmt. Offen nach diesem Muster: das Schild (`SignEditor`, „Fertig“ übernimmt den Text, Esc ebenso; gehört zum HUD, Etappe 76.2). Die Bildschirmtastatur des Pads behält „Fertig“: es beendet die Eingabe in ein Feld, kein Bildschirm.
 - Wirkt eine Einstellung erst später („ab dem nächsten Weltstart“, „ab dem nächsten Start“), steht das als Hilfetext **an der Einstellung**, nicht als Fußnote am Seitenende.
 - Leere Listen zeigen einen Satz, was hineinkommt, und die Aktion, die es ändert („Noch keine Welten. [Neue Welt]“).
 - Pfade (Log-Ordner, Texturpakete, Mods) nicht als langer Fließtext; Schaltfläche „Ordner öffnen“ und daneben oder darunter der Pfad als auswählbarer Text, der an jeder Stelle umbricht (Tooltips sind Zusatz, nie die einzige Stelle).
 
 ## 6 Bausteine
 
-QML-Komponenten in `src/app/qml/controls/`. Jede setzt `Accessible.name`/`role`, nimmt Farben aus `Theme`, Maße aus `Ui`, und hat feste Wertemengen als QML-`enum` (E-688). Dazu die Hilfsbausteine `Bevel` (Fase), `FocusOutline` (Tastaturfokus, gold, 2 px außen), `GameSwitch` (der Schalter allein, für Listenzeilen) und `ScreenFrame` (Fläche jedes Bildschirms und Dialogs). Die Einstellungsseiten bauen auf `settings/SettingsPage.qml` (Titel, Gruppen, scrollt als Ganzes).
+QML-Komponenten in `src/app/qml/controls/`. Jede setzt `Accessible.name`/`role`, nimmt Farben aus `Theme`, Maße aus `Ui`, und hat feste Wertemengen als QML-`enum` (E-688). Dazu die Hilfsbausteine `Bevel` (Fase), `FocusOutline` (Tastaturfokus, gold, 2 px außen), `GameSwitch` (der Schalter allein, für Listenzeilen), `ScreenFrame` (Fläche jedes Bildschirms und Dialogs), `GameTextField` (Textfeld, eingelassen wie die Aufklappliste, goldener Rahmen mit Fokus; jedes Textfeld der Menüs), `Segments` (die Segmente von 6.6 ohne Einstellungszeile, z. B. Seite und Bewegung der Charakter-Vorschau), `NavButton` (Eintrag einer Seitenleiste, 6.11) und `GameLogo` (Abschnitt 4). Die Einstellungsseiten bauen auf `settings/SettingsPage.qml` (Titel, Gruppen, scrollt als Ganzes).
+
+### 6.0 `ModalDialog`, `UnsavedChangesDialog`
+**Dialoge, die eine Antwort verlangen, sind modal für das ganze Fenster** (Mensch 2026-10-22, E-852): mittig über dem Fenster (nicht über der Seite, die sie öffnet), `scrimStrong` über allem darunter, die Seitenleiste eingeschlossen; nichts darunter nimmt Klick, Taste oder den Pad-Fokus, bis der Dialog schließt. Baustein `ModalDialog` (`Dialog` im `Overlay.overlay` des Fensters, `Overlay.modal` = `scrimStrong`, Breite `Ui.screen.s`, Fläche `ScreenFrame`); jede Rückfrage im Menü und im Spiel baut darauf: `UnsavedChangesDialog`, `DeleteWorldDialog`. Test: `test_modal_dialog` (Mitte des Fensters, kein Klick und kein Pad-Schritt erreicht die Seitenleiste, Tab bleibt im Dialog).
+
+`UnsavedChangesDialog`: Rückfrage beim Verlassen mit ungespeicherten Änderungen (Muster 2, Abschnitt 5): „Verwerfen“ (zerstörend), „Weiter bearbeiten“ (Fokus, auch Esc/B), „Speichern“ (primär); `ask(proceed)` führt `proceed` nach Speichern oder Verwerfen aus.
 
 ### 6.1 `GameButton`
+- Gesperrt (`enabled: false`) ist jede Art flach und grau (`buttonDisabled`, `textDisabled`, ohne Fase), damit eine gesperrte primäre Schaltfläche nicht wie die Hervorhebung aussieht.
 - `kind: GameButton.Primary | Secondary | Destructive | Quiet` (QML-`enum`, kein String).
-- Primary: `accent`, fett; höchstens **eine** pro Bildschirm (die wahrscheinlichste nächste Aktion: „Spielen“, „Beitreten“, „Fertig“, „Zurück zum Spiel“).
+- Primary: `accent`, fett; höchstens **eine** pro Bildschirm (die wahrscheinlichste nächste Aktion: „Weiterspielen“, „Beitreten“, „Speichern“, „Zurück zum Spiel“).
 - Secondary: `button`. Destructive: `danger`, nur wenn danach eine Rückfrage kommt oder es unumkehrbar ist. Quiet: nur Text (z. B. „‹ Zurück“, „Mehr …“).
 - Fase: 1 px `bevelLight` oben/links, 2 px `bevelDark` unten/rechts; gedrückt umgekehrt (blockiger Look). Fokus: 2 px `focusRing` außen.
 - Text immer ein Verb oder Ziel („Welt erstellen“, „Ordner öffnen“, „Zum Menü“); Tastenkürzel als kleines Schild rechts im Knopf (`KeyBadge`), nicht in Klammern im Text.
@@ -161,19 +179,19 @@ Ein-/Aus-Einstellungen sind **Schalter** (`Switch`), nicht Kästchen; die Beschr
 `kind: Info | Warning | Error`; Kasten mit 3 px Balken links in `link`/`warning`/`error`, Text `text`. Für Hinweise, die eine Gruppe betreffen (z. B. „Mods sind in dieser Sitzung abgeschaltet“). Nie nur Farbe: Warnung und Fehler haben ein Symbol (!, ×).
 
 ### 6.9 `ListRow`
-Für Welten, Server, Mods, Texturpakete: Bild/Symbol links (optional), Titel (fett) und eine Zeile Untertitel (`textSecondary`), Aktionen rechts (höchstens eine primäre). Den Fokus nehmen die Aktionen der Zeile (Schalter, Knöpfe); eine ganz fokussierbare Zeile mit Doppelklick/A als Hauptaktion und ein „…“-Menü für weitere Aktionen sind für 76.2 vorgesehen.
+Für Welten, Server, Mods, Texturpakete: Bild/Symbol links (optional), Titel (fett) und eine Zeile Untertitel (`textSecondary`), Aktionen rechts (höchstens eine primäre). `interactive: true` lässt die Zeile unter der Maus aufhellen und meldet `clicked()`/`doubleClicked()` (Server: Klick übernimmt die Adresse, Doppelklick tritt bei; Welten: Doppelklick spielt). `focusable: true` macht die Zeile selbst zum Fokusziel (Enter, Leertaste, A klicken sie; Server-Zeilen). Den Fokus nehmen die Aktionen der Zeile (Schalter, Knöpfe); eine ganz fokussierbare Zeile mit Doppelklick/A als Hauptaktion und ein „…“-Menü für weitere Aktionen sind für 76.2 vorgesehen.
 
 ### 6.10 `KeyBadge`
 Taste oder Pad-Symbol (`PadGlyph`) als kleines Schild, z. B. neben „Handbuch“ das „H“. Ersetzt „Handbuch (H)“, „Beschriftungen in der Welt anzeigen (L)“.
 
 ### 6.11 `NavList` (Seitenleiste)
-Kategorien als Liste links (Symbol + Text), gewählte Kategorie mit `accent`-Balken links und `panelRaised`; LB/RB (Gamepad, `gamepadCommand` des Bildschirms) und Strg+Tab / Strg+Umschalt+Tab wechseln die Kategorie (auf dem Mac die Control-Taste, die Qt als Meta meldet; Shortcuts der `NavList`, die vor dem fokussierten Steuerelement greifen, und `NavList.takeCommand`).
+Kategorien als Liste links (Einträge `NavButton`, Text, optional Tasten-Schild oder eine leise Zahl rechts, `notes`: die Einträge je Kapitel im Handbuch), gewählte Kategorie mit `accent`-Balken links und `panelRaised`; LB/RB (Gamepad, `gamepadCommand` des Bildschirms) und Strg+Tab / Strg+Umschalt+Tab wechseln die Kategorie (auf dem Mac die Control-Taste, die Qt als Meta meldet; Shortcuts der `NavList`, die vor dem fokussierten Steuerelement greifen, und `NavList.takeCommand`). Hoch/Runter wandern durch die Einträge wie in der Seitenleiste des Hauptmenüs.
 
 ## 7 Beschriftung
 
 - **Satzanfang groß, sonst wie im Satz** („Größe der Oberfläche“, nicht „Größe Der Oberfläche“); englisch ebenso (sentence case).
-- **Schaltflächen sagen, was passiert:** Verb + Objekt („Welt löschen“, „Server beitreten“); Ausnahmen „Fertig“, „Schließen“, „Abbrechen“, „Zurück“. Nicht „OK“/„Ja“ in Dialogen, sondern die Aktion („Löschen“).
-- **Ein Wort, eine Sache:** „Schließen“ für Bildschirme ohne Änderungen, „Fertig“ für Einstellungen, nie beides für dasselbe. Heute: Einstellungen „Fertig“, Mods/Mehrspieler „Schließen“, Charakter „Fertig“ – passt, wenn die Regel so gilt.
+- **Schaltflächen sagen, was passiert:** Verb + Objekt („Welt löschen“, „Server beitreten“); Ausnahmen „Schließen“, „Abbrechen“, „Zurück“, „Speichern“, „Verwerfen“. Nicht „OK“/„Ja“ in Dialogen, sondern die Aktion („Löschen“).
+- **Ein Wort, eine Sache:** „Schließen“ für Bildschirme, deren Änderungen sofort gelten (LAN; die Einstellungen schließen mit dem Rückweg-Eintrag, 8b), „Speichern“/„Verwerfen“ für Entwürfe (Charakter); kein „Fertig“ (Abschnitt 5).
 - **Keine Erklärungen in Klammern im Label:** „Passwort (nur, wenn der Server eines hat)“ → Label „Passwort“, Hilfetext „Nur nötig, wenn der Server eines hat“. Ebenso „Port (0: ein beliebiger freier Port)“.
 - **Einheiten am Wert**, nicht am Label. Zahlen im deutschen Format (Komma).
 - **Du-Form**, kurz, ohne Fachwörter auf der ersten Ebene („Chunks“ ist im Spiel eingeführt und bleibt; „Mip-Stufen“, „Atlas“ nur unter „Erweitert“).
@@ -182,7 +200,7 @@ Kategorien als Liste links (Symbol + Text), gewählte Kategorie mit `accent`-Bal
 
 ## 8 Reihenfolge und Gliederung der Einstellungen
 
-Umgesetzt in `src/app/qml/settings/` (`SettingsScreen.qml` mit `enum Page`; je Kategorie eine Seite: `GraphicsPage`, `AudioPage`, `ControlsPage`, `GamepadPage`, `InterfacePage`, `TexturePacksPage`, `AdvancedPage`). Die Overlays des Test-Hooks `--overlay` öffnen die Seiten: `settings` und `display` Grafik, `audio`, `controls`, `gamepad`, `interface`, `texturepacks`, `debug` Erweitert (`SettingsScreen.pageOfOverlay`).
+Umgesetzt in `src/app/qml/settings/` (`SettingsScreen.qml` mit `enum Page`, eine Ebene tiefer in der Seitenleiste, Abschnitt 8b; je Kategorie eine Seite: `GraphicsPage`, `AudioPage`, `ControlsPage`, `GamepadPage`, `InterfacePage`, `TexturePacksPage`, `AdvancedPage`). Die Overlays des Test-Hooks `--overlay` öffnen die Seiten: `settings` und `display` Grafik, `audio`, `controls`, `gamepad`, `interface`, `texturepacks`, `debug` Erweitert (`SettingsScreen.pageOfOverlay`).
 
 Kategorien (Seitenleiste), in dieser Reihenfolge; in jeder Kategorie die Gruppen von häufig nach selten:
 
@@ -198,10 +216,32 @@ Jede heutige Einstellung hat damit genau einen Platz; neue Einstellungen (41, 45
 
 Ein „Schnell“-Bereich ist nicht nötig, wenn die erste Kategorie Grafik → Anzeige ist und die Seitenleiste alles in einem Schritt erreicht.
 
+## 8a Hauptmenü (Variante C, E-852)
+
+Umgesetzt in `src/app/qml/menus/` (`MainMenu`, `MenuSidebar`, `HomePage`, `ContinueCard`, `WorldRow`, `WorldTile`, `NewWorldPage`, `MultiplayerPage`, `CharacterPage`, `ModsPage`, `DeleteWorldDialog`, `ProfileCard`) und `character/CharacterEditor.qml`.
+
+- **Seitenleiste** links (`Ui.size.menuNav`, auf `scrim`): Logo, dann Spielen (die Startseite, gewählt) · Mehrspieler · Charakter · Handbuch (Tasten-Schild) · Mods & Pakete · Einstellungen; unten das Profil (kleine Figur, Name, „Charakter anpassen“, öffnet den Charakter) und Beenden. Hoch/Runter wandern durch die Einträge; der Eintrag der gezeigten Seite ist markiert.
+- **Startseite** rechts davon im Rand `Ui.screen.margin`, höchstens `Ui.screen.l` breit: nach einem Absturz der Hinweis mit „Log-Ordner öffnen“; die Karte „Zuletzt gespielt“ (Kachel mit Anfangsbuchstaben, Name, „Heute, 21:14 · Normal · Überleben“, primär **Weiterspielen**, dort beginnt der Pad-Fokus); „Deine Welten“ mit „Neue Welt …“ und allen Welten, die zuletzt gespielte zuerst (Spielen, Löschen; Doppelklick spielt; eine Welt, die sich nicht öffnen lässt, nennt den Grund in `error`).
+- **Erststart:** statt der Karte „Willkommen! Erstelle deine erste Welt.“ mit primärem **Neue Welt erstellen**; keine leere Liste.
+- **Neue Welt** ist eine eigene Seite (Gruppen „Welt“ und „Regeln“, scrollt als Ganzes) mit „‹ Zurück“ und primär **Erstellen und spielen** im Fuß; Esc/B führt zurück. Welt- und Serveroptionen aus Etappe 55 kommen als weitere Gruppe dazu.
+- **Mehrspieler, Charakter, Mods & Pakete sind Seiten** im selben Bereich (kein Bildschirm über der Startseite, kein „Schließen“); die Seitenleiste markiert die gezeigte. Mehrspieler: zuletzt genutzte Server links, das Formular rechts, darunter „Im lokalen Netzwerk“. „Mods & Pakete“ zeigt die Mods; deren Fuß führt mit „Texturpakete …“ in die Einstellungen (Entscheidung 8). Esc/B führt von jeder Seite zur Startseite.
+- **Handbuch und Einstellungen** führen die Seitenleiste eine Ebene tiefer (Abschnitt 8b), kein Bildschirm über dem Menü.
+
+## 8b Einstellungen und Handbuch: eine Ebene tiefer in der Seitenleiste (E-852)
+
+Mensch 2026-10-22, wie die Systemeinstellungen von macOS: **eine** Seitenleiste, die ihre Einträge wechselt (Drill-down), kein Bildschirm über dem Hauptmenü. Baustein `SidebarScreen` (`controls/`, auf `SideBar`, das auch `MenuSidebar` trägt), im Hauptmenü und im Spiel dieselben Komponenten (`SettingsScreen`, `HandbookScreen`).
+
+- **Seitenleiste** an derselben Stelle und so breit wie im Hauptmenü (`Ui.size.menuNav`): oben das Logo (bleibt, damit die Leiste nicht springt), darunter der **Rückweg-Eintrag**, der sein Ziel nennt, dann der Titel („Einstellungen“, „Handbuch“, Stufe „Abschnitt“), dann die Kategorien. Profil und Beenden des Hauptmenüs entfallen eine Ebene tiefer (sie gehören zum Hauptmenü, nicht zu den Kategorien).
+- **Rückweg-Eintrag:** „‹ Hauptmenü“ im Hauptmenü, „‹ Pausenmenü“ im Spiel aus dem Pausenmenü, „‹ Zurück zum Spiel“ direkt aus der Welt (Taste H, Taste O für die Debug-Optionen), „‹ Zurück“ über einem anderen Bildschirm (Handbuch aus dem Inventar). Esc und B des Pads tun dasselbe. Zurück im Hauptmenü hat der Eintrag „Einstellungen“ bzw. „Handbuch“ wieder den Fokus.
+- **Einstellungen:** die sieben Kategorien aus Abschnitt 8, rechts die Seite im Rand `Ui.screen.margin`, höchstens `Ui.screen.l` breit; kein Fuß mehr mit „Schließen“ (der Rückweg-Eintrag ersetzt ihn), Änderungen gelten sofort (Muster 1). LB/RB und Strg+Tab wechseln die Kategorie.
+- **Handbuch:** in der Seitenleiste unter dem Titel die Suche (`GameTextField`, Enter öffnet den ersten Treffer, Runter springt in die Liste) und die Kapitel mit ihrer Zahl an Einträgen (`NavList.notes`; die Liste scrollt, wenn das Fenster zu niedrig ist, und folgt dem Fokus); während einer Suche ist kein Kapitel markiert, ein gewähltes Kapitel beendet die Suche. Rechts oben „‹ Vorherige Seite“ (leise, Rücktaste, Alt+Links) mit dem Bedienhinweis, darunter die Einträge (`Ui.size.handbookEntries`) und die Seite (`HandbookPage`). LB/RB wechseln das Kapitel.
+- **Hintergrund:** im Hauptmenü dessen Verlauf (nichts vom Menü scheint durch), im Spiel das fast deckende `panel` über der Welt (weder Welt noch HUD scheinen durch den Text), die Seitenleiste darauf auf `scrim`.
+- Test-Hooks bleiben: `open:menuSettingsScreen` (Einstellungen im Hauptmenü), die Overlays `settings`, `display`, `audio`, … (im Spiel), `--handbook <ziel>`.
+
 ## 9 Mindestgröße, Skalierung, Scrollen
 
 - Jede Seite muss bei **1024 × 640** und **200 %** (begrenzt auf das, was passt, E-725) ohne abgeschnittene Elemente auskommen; der Inhalt scrollt, Kopf und Fuß nicht.
-- Die Seitenleiste wird in Fenstern schmaler als `Ui.screen.narrow` (1100) auf `Ui.size.navNarrow` (160) statt `Ui.size.nav` (200).
+- Die Seitenleiste ist überall `Ui.size.menuNav` (224) breit; Kategorien, die nicht in die Höhe passen, scrollen (Handbuch).
 - Layout-Tests: jede neue Seite kommt in `tests/ui/test_ui_scale.sh` und `test_menu_layout.sh` (Overlay oder `open:`), Deutsch eingeschlossen (`--language de`).
 
 ## 10 Gamepad und Tastatur
@@ -225,10 +265,10 @@ Alle neun Empfehlungen angenommen; Abweichung bei 4 (Qt-Grün).
 
 1. **Eigener Steuerelement-Stil** auf allen Systemen: `QQuickStyle` „Basic“ (`QcAppWindow::applyControlStyle`, auch offscreen; `QT_QUICK_CONTROLS_STYLE` wählt zum Vergleich einen anderen) mit der Palette aus Abschnitt 2 und den eigenen Bausteinen. Screenshots zeigen damit, was Spieler sehen.
 2. **Einstellungen mit Seitenleiste** (Variante B): Grafik, Audio, Steuerung, Controller, Oberfläche, Texturpakete, Erweitert.
-3. **Hauptmenü Variante C** (Startseite mit „Weiterspielen“ und Seitenleiste) – Etappe 76.2.
+3. **Hauptmenü Variante C** (Startseite mit „Weiterspielen“ und Seitenleiste) – umgesetzt in 76.0c (Abschnitt 8a, E-852).
 4. **Hervorhebungsfarbe Qt-Grün** (#41CD52) statt Grasgrün, mit dunklem Text (Abschnitt 2.2); Gold bleibt Fokus und Überschrift.
-5. **Pixelschrift nur für das Logo** (Abschnitt 4), mit dem Hauptmenü in 76.2.
+5. **Pixelschrift nur für das Logo** (Abschnitt 4), Pixelify Sans, umgesetzt in 76.0c; Gewicht Regular (Mensch 2026-10-22, vorher fett).
 6. **Schalter statt Kästchen** für Ein/Aus-Einstellungen.
 7. **Debug und Diagnose unter „Erweitert“**; die Taste O öffnet die Seite in der Welt weiter direkt (Overlay `debug`).
 8. **Texturpakete in den Einstellungen, Mods im Hauptmenü.**
-9. **Reihenfolge:** 76.0b Bausteine, zentrale Werte, Stil und Einstellungen (mit 74.3) samt Pausenmenü; Hauptmenü und übrige Bildschirme in 76.2.
+9. **Reihenfolge:** 76.0b Bausteine, zentrale Werte, Stil und Einstellungen (mit 74.3) samt Pausenmenü; 76.0c (vorgezogen) Hauptmenü, Weltliste, Neue Welt, Mehrspieler, LAN, Mods und Charakter; die übrigen Bildschirme in 76.2.

@@ -2,6 +2,7 @@
 
 #include "worlds/QcModStatus.h"
 
+#include <QDateTime>
 #include <QHash>
 #include <QObject>
 #include <QString>
@@ -32,7 +33,13 @@ public:
     // Where mods are looked for; empty loads only the base game (test hook --no-mods).
     void setModsDirectory(const QString &directory);
 
+    // The saved worlds, the last played first: folder, name, seed, generator, gameMode (the mode of
+    // new players, "survival", ...), lastPlayed (when, as the menu shows it) and error (why it
+    // cannot be opened, else empty).
     Q_INVOKABLE void refreshWorlds();
+    // When a world was last played, as the menu shows it at `now`: "Today, 21:14", "Yesterday,
+    // 08:05", else the short date in the user's locale.
+    [[nodiscard]] static QString playedText(const QDateTime &played, const QDateTime &now);
     // A world that failed to open for a reason the list cannot see (a damaged per-region file):
     // its entry shows `message` until the game restarts or the world opens (an empty message).
     void noteUnplayable(const QString &folder, const QString &message);

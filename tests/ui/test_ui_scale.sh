@@ -55,10 +55,12 @@ check() {
 
 world="--play --world-type flat --view-distance 2"
 check menu
+check newworld --overlay "@300 open:newWorldPage"
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
 check character --overlay "@300 open:menuCharacterScreen"
 check multiplayer --overlay multiplayer
+check menu-handbook --handbook block:qtcraft:furnace
 # shellcheck disable=SC2086 # $world is a list of options
 check hud $world --chat "/equip diamond" --chat "/xp add Player 5 levels" --chat "Hello" --chat "A chat line"
 # shellcheck disable=SC2086

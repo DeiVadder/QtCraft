@@ -18,6 +18,15 @@ ApplicationWindow {
     color: Theme.menuBottom
     // The game for the items made by loaders (their own `game` property hides the id there).
     readonly property GameController controller: game
+    // The item that had the focus before the handbook opened; the handbook gives the focus back to
+    // it. Kept here rather than read when the handbook opens: the screens it covers hide at the same
+    // moment (and lose the focus) in no fixed order.
+    property Item focusBeforeHandbook: null
+
+    onActiveFocusItemChanged: {
+        if (!game.handbook.isOpen && activeFocusItem)
+            focusBeforeHandbook = activeFocusItem;
+    }
 
     // The UI scale (decision E-725): the player's choice and the window; Ui.px() and
     // Ui.hudPx() take their factors from here.
@@ -243,6 +252,7 @@ ApplicationWindow {
 
         screen: HandbookScreen {
             game: root.controller
+            focusOutside: root.focusBeforeHandbook
         }
     }
 

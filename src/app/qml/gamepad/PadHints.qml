@@ -15,6 +15,8 @@ Rectangle {
                                         GameController.Overlay.Chest, GameController.Overlay.Trade,
                                         GameController.Overlay.Stonecutter].includes(game.overlay)
                                        && game.phase === GameController.Phase.Playing && !game.handbook.isOpen
+    // The focus is in an open popup (a prompt, a list): the shoulders switch no tabs there.
+    readonly property bool inPopup: game.gamepad.focusLayer !== null
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
@@ -36,6 +38,9 @@ Rectangle {
             { input: "north", text: qsTr("quick move") },
             { input: "east", text: qsTr("close") },
             { input: "rightStickMove", text: qsTr("scroll") }
+        ] : hints.inPopup ? [
+            { input: "south", text: qsTr("select") },
+            { input: "east", text: qsTr("back") }
         ] : [
             { input: "south", text: qsTr("select") },
             { input: "east", text: qsTr("back") },

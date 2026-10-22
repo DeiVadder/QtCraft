@@ -1,6 +1,6 @@
 # Third-party assets
 
-QtCraft currently contains no third-party assets. The game's textures are generated procedurally at runtime from the content definitions (`content/*/textures/*.json`); the only image files are the project's own texture pack files below (exported from those textures and hand-tuned). All sounds are synthesized from `content/*/sounds/*.json` and the music is composed algorithmically at runtime; the repository contains no audio files.
+QtCraft contains one third-party asset, the logo's pixel font Pixelify Sans (SIL Open Font License 1.1, `src/app/fonts`, listed in `THIRD_PARTY.md` and `CREDITS.md`). The game's textures are generated procedurally at runtime from the content definitions (`content/*/textures/*.json`); the only image files are the project's own texture pack files below (exported from those textures and hand-tuned). All sounds are synthesized from `content/*/sounds/*.json` and the music is composed algorithmically at runtime; the repository contains no audio files.
 
 ## Third-party code
 

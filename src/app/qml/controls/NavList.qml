@@ -8,13 +8,25 @@ import QtCraft
 // The category list on the left of a screen with several pages (decision E-845,
 // docs/UI-Leitfaden.md 6.11): the chosen category on the raised surface with an accent bar on the
 // left. A click chooses one; Ctrl+Tab (its shortcuts) and the pad's shoulders (takeCommand(), from
-// the screen's gamepadCommand()) switch it.
+// the screen's gamepadCommand()) switch it. Up and down move the focus along the entries (and on
+// out of the list, as Tab does), as in the main menu's side bar.
 ColumnLayout {
     id: nav
 
     // The categories' names, in order.
     property list<string> model
+    // The chosen category; -1 for none (the handbook while it shows search results).
     property int currentIndex
+    // A short muted text at the right of each category (the handbook's counts); empty for none.
+    property list<string> notes
+
+    // An entry took the focus (a list in a Flickable scrolls it into view).
+    signal entryFocused(Item entry)
+
+    // Moves the focus to the item before or after `item` in the focus chain.
+    function moveFocus(item: Item, forward: bool) {
+        item.nextItemInFocusChain(forward)?.forceActiveFocus(Qt.TabFocusReason);
+    }
 
     // The category after (step 1) or before (step -1) the current one, wrapping around.
     function next(step: int) {
@@ -52,47 +64,23 @@ ColumnLayout {
     Repeater {
         model: nav.model
 
-        delegate: AbstractButton {
-            id: category
+        delegate: NavButton {
+            id: entry
 
             required property string modelData
             required property int index
 
-            Layout.fillWidth: true
-            implicitHeight: Ui.size.navItem
+            page: true
             checked: index === nav.currentIndex
             text: modelData
-            focusPolicy: Qt.StrongFocus
-            // The focus outline reaches over the neighbours.
-            z: visualFocus ? 1 : 0
-            Accessible.role: Accessible.PageTab
-            Accessible.name: text
-            Accessible.selected: checked
+            note: index < nav.notes.length ? nav.notes[index] : ""
             onClicked: nav.currentIndex = index
-
-            background: Rectangle {
-                color: category.checked ? Theme.panelRaised : category.hovered ? Theme.rowHighlight : Theme.clear
-
-                Rectangle {
-                    visible: category.checked
-                    width: Ui.size.bar
-                    height: parent.height
-                    color: Theme.accent
-                }
-                FocusOutline {
-                    visible: category.visualFocus
-                }
+            onActiveFocusChanged: {
+                if (activeFocus)
+                    nav.entryFocused(entry);
             }
-            contentItem: Label {
-                leftPadding: Ui.space.l
-                rightPadding: Ui.space.s
-                text: category.text
-                font.pixelSize: Ui.type.body
-                font.bold: category.checked
-                color: category.checked ? Theme.text : Theme.textSecondary
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-            }
+            Keys.onUpPressed: nav.moveFocus(entry, false)
+            Keys.onDownPressed: nav.moveFocus(entry, true)
         }
     }
 }

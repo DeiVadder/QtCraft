@@ -58,6 +58,9 @@ Item {
 
     BusyIndicator {
         anchors.centerIn: parent
+        // Not larger than a small preview (the main menu's profile).
+        width: Math.min(parent.width, implicitWidth)
+        height: width
         running: host.visible && !(host.preview && host.preview.hasFigure)
         visible: running
     }
