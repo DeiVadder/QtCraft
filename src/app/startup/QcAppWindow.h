@@ -15,10 +15,16 @@ struct QcAppOptions;
 class QcAppWindow
 {
 public:
+    // Colour scheme and control style, before the QML engine starts.
+    static void applyAppearance();
     // The game screens are drawn dark over the world (E-079), so the controls are dark too, whatever
     // the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison;
     // =system also keeps the system's control palette instead of the game's (E-279).
     static void applyColorScheme();
+    // One look of the controls on every system and in offscreen runs (decision E-845): the Basic
+    // style, coloured by the game's control palette, under the game's own controls (GameButton,
+    // SettingRow, ...). QT_QUICK_CONTROLS_STYLE still chooses another style for comparison.
+    static void applyControlStyle();
     // Once the window's scene graph runs (decision E-834): prepares the render thread for crash
     // reports and logs the graphics API and adapter.
     static void watchRenderThread(QQuickWindow &window);

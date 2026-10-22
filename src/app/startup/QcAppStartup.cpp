@@ -185,11 +185,16 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
                                options.gameMode);
     } else if (options.join && options.overlays.contains(u"multiplayer"_s)) {
         // The menu's screen joins (openMenuScreen); the screenshot shows its state, a refusal included.
+        game.startup()->setMenuScreenshotHook(screenshot);
     } else if (options.join) {
         game.startup()->setScreenshotHook(screenshot);
         startNetworkRun(game, options);
-    } else if (options.handbook || options.overlays.contains(u"handbook"_s)) {
-        game.handbook()->open(options.handbook.value_or(QString()));
+    } else {
+        // The main menu: the screenshot waits for its steps ("@<ms> open:", "pad:").
+        game.startup()->setMenuScreenshotHook(screenshot);
+        if (options.handbook || options.overlays.contains(u"handbook"_s)) {
+            game.handbook()->open(options.handbook.value_or(QString()));
+        }
     }
 }
 

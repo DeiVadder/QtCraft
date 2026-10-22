@@ -25,6 +25,7 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::ScrimStrong, "scrimStrong", 0xb0000000},
     {R::DeathScrim, "deathScrim", 0xb0600000},
     {R::Panel, "panel", 0xf0262626},
+    {R::PanelSolid, "panelSolid", 0xff262626},
     {R::PanelRaised, "panelRaised", 0xa0303030},
     {R::PanelBorder, "panelBorder", 0x80ffffff},
     {R::MenuTop, "menuTop", 0xff3d6f9e},
@@ -76,6 +77,21 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::MapMarker, "mapMarker", 0xfff8f8f0},
     {R::MapMarkerOther, "mapMarkerOther", 0xff9cc0f0},
     {R::MapMarkerFrame, "mapMarkerFrame", 0xff3cb83c},
+    {R::Accent, "accent", 0xff41cd52},
+    {R::AccentHover, "accentHover", 0xff5ad96a},
+    {R::AccentPressed, "accentPressed", 0xff34a843},
+    {R::AccentText, "accentText", 0xff0b1a0e},
+    {R::Button, "button", 0xff3a3d42},
+    {R::ButtonHover, "buttonHover", 0xff4a4f57},
+    {R::ButtonPressed, "buttonPressed", 0xff2c2e32},
+    {R::Danger, "danger", 0xffa8372e},
+    {R::DangerHover, "dangerHover", 0xff8e2c24},
+    {R::Field, "field", 0xff1a1a1a},
+    {R::Track, "track", 0xff7c7c7c},
+    {R::Knob, "knob", 0xffe8e8e8},
+    {R::KnobOutline, "knobOutline", 0xff1a1a1a},
+    {R::BevelLight, "bevelLight", 0x30ffffff},
+    {R::BevelDark, "bevelDark", 0x80000000},
     {R::Clear, "clear", 0x00000000},
 }};
 
@@ -144,6 +160,26 @@ QList<TextPair> textPairs()
         {"Pad button, blue", R::PadBlue, {R::PadGlyph}, true},
         {"Pad button, yellow", R::PadYellow, {R::PadGlyph}, true},
         {"Pad button, pink", R::PadPink, {R::PadGlyph}, true},
+        // Controls of the menus (decision E-845); their surfaces are opaque.
+        {"Primary button", R::AccentText, {R::Accent}},
+        {"Primary button, hovered", R::AccentText, {R::AccentHover}},
+        {"Primary button, pressed", R::AccentText, {R::AccentPressed}},
+        {"Secondary button", R::Text, {R::Button}},
+        {"Secondary button, hovered", R::Text, {R::ButtonHover}},
+        {"Secondary button, pressed", R::Text, {R::ButtonPressed}},
+        {"Destructive button", R::Text, {R::Danger}},
+        {"Destructive button, hovered", R::Text, {R::DangerHover}},
+        {"Fields and lists", R::Text, {R::Field}},
+        {"Screens and dialogs (ScreenFrame)", R::Text, {R::PanelSolid}},
+        {"Highlighted row of a drop-down list", R::AccentText, {R::Accent}},
+        // Graphics, not text: the empty track against the panel, the filled part against the track,
+        // the knob on the track and its dark outline on the fill (WCAG 1.4.11, 3:1).
+        {"Slider track on the panel", R::Track, {R::Scrim, R::Panel, R::PanelRaised}, true},
+        {"Slider fill on the panel", R::Accent, {R::Scrim, R::Panel, R::PanelRaised}, true},
+        {"Knob on the slider track", R::Knob, {R::Track}, true},
+        {"Knob outline on the slider fill and a switch that is on", R::KnobOutline, {R::Accent}, true},
+        {"Knob outline on the slider track and a switch that is off", R::KnobOutline, {R::Track}, true},
+        {"Check box outline on the panel", R::Track, {R::PanelSolid, R::PanelRaised}, true},
     };
 }
 
@@ -167,25 +203,31 @@ QPalette controlPalette()
     const QList<std::pair<P::ColorRole, QColor>> roles = {
         {P::Window, QColor(0x26, 0x26, 0x26)},
         {P::WindowText, color(R::Text)},
-        {P::Base, QColor(0x1a, 0x1a, 0x1a)},
+        {P::Base, color(R::Field)},
         {P::AlternateBase, QColor(0x30, 0x30, 0x30)},
         {P::Text, color(R::Text)},
         {P::PlaceholderText, color(R::TextMuted)},
-        {P::Button, QColor(0x32, 0x32, 0x32)},
+        {P::Button, color(R::Button)},
         {P::ButtonText, color(R::Text)},
-        {P::BrightText, color(R::Text)},
-        {P::Highlight, color(R::MenuTop)},
+        // The Basic style draws a highlighted (primary) button, the filled part of a slider, a
+        // switch that is on and a progress bar in Dark, the text of a highlighted button in
+        // BrightText: both are the accent and its text, as in the own controls (decision E-845).
+        {P::BrightText, color(R::AccentText)},
+        // HighlightedText stands on two surfaces: selected text on Highlight and the highlighted
+        // row of a list or a ComboBox popup (ItemDelegate) on Light. No colour reads on both Light
+        // and the bright accent, so Highlight is a dark green that white text reads on.
+        {P::Highlight, QColor(0x26, 0x80, 0x32)},
         {P::HighlightedText, color(R::Text)},
         {P::ToolTipBase, QColor(tooltip.red(), tooltip.green(), tooltip.blue())},
         {P::ToolTipText, color(R::Text)},
         {P::Light, QColor(0x3c, 0x3c, 0x3c)},
         {P::Midlight, QColor(0x36, 0x36, 0x36)},
         {P::Mid, QColor(0x8a, 0x8a, 0x8a)},
-        {P::Dark, QColor(0x1a, 0x1a, 0x1a)},
+        {P::Dark, color(R::Accent)},
         {P::Shadow, QColor(0, 0, 0)},
         {P::Link, color(R::Link)},
         {P::LinkVisited, color(R::Link)},
-        {P::Accent, color(R::MenuTop)},
+        {P::Accent, color(R::Accent)},
     };
 
     QPalette palette;
@@ -193,7 +235,7 @@ QPalette controlPalette()
         palette.setColor(role, value);
     }
     // Disabled texts are dimmed but stay legible.
-    for (const P::ColorRole role : {P::WindowText, P::Text, P::ButtonText, P::HighlightedText}) {
+    for (const P::ColorRole role : {P::WindowText, P::Text, P::ButtonText}) {
         palette.setColor(P::Disabled, role, color(R::TextMuted).darker(130));
     }
     return palette;
@@ -208,6 +250,8 @@ QList<ControlPair> controlPairs()
         {P::Text, P::AlternateBase},
         {P::ButtonText, P::Button},
         {P::HighlightedText, P::Highlight},
+        {P::HighlightedText, P::Light},
+        {P::BrightText, P::Dark},
         {P::ToolTipText, P::ToolTipBase},
         {P::PlaceholderText, P::Base},
         {P::Link, P::Window},

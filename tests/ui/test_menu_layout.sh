@@ -3,7 +3,8 @@
 # real game renders the menu offscreen, alone and with each of its screens open, and the layout
 # check (QTCRAFT_LAYOUT_CHECK) lists every shown item that reaches outside the window, such as a
 # Quit button pushed below the bottom edge by a form taller than the window. Any such item, a
-# missing check line or a QML warning fails the test.
+# missing check line or a QML warning fails the test. Every page of the settings is checked in German
+# as well.
 # Usage: test_menu_layout.sh <qtcraft executable>
 set -u
 APP=$1
@@ -42,4 +43,26 @@ check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
 check character --overlay "@300 open:menuCharacterScreen"
 check multiplayer --overlay multiplayer
+
+# settings_page <name> <presses>: the settings in German (its texts are longer) at the page the
+# pad's right shoulder reaches after <presses> presses; the steps run after the screen opened. The
+# window without a screen has no focus of its own: the first press (up) shows the pad's focus on
+# the categories, as the pad's first press does, and the shoulders then go to the settings.
+settings_page() {
+    page=$1
+    presses=$2
+    set -- --language de --overlay "@300 open:menuSettingsScreen" --overlay "@600 pad:dpadUp"
+    while [ "$presses" -gt 0 ]; do
+        set -- "$@" --overlay "@600 pad:rightShoulder"
+        presses=$((presses - 1))
+    done
+    check "settings-de-$page" "$@"
+}
+settings_page graphics 0
+settings_page audio 1
+settings_page controls 2
+settings_page controller 3
+settings_page interface 4
+settings_page texturepacks 5
+settings_page advanced 6
 exit $failed

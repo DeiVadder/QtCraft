@@ -88,6 +88,9 @@ qc_add_test(test_gamepad_screens SOURCES client/test_gamepad_screens.cpp LIBRARI
 add_test(NAME test_gamepad_screens_scaled COMMAND test_gamepad_screens slotsTakeClicksFromThePad slidersAndSpinBoxesTakeLeftAndRight)
 set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120
     ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_SCALE_FACTOR=1.5;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/test_gamepad_screens_scaled;QTEST_FUNCTION_TIMEOUT=120000")
+# The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
+# Enter switches, the arrow keys choose segments (decision E-845).
+qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 # The on-screen keyboard: addresses with ports and IPv6, shift, umlauts, hidden passwords (E-584).
 qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)

@@ -12,6 +12,7 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QGuiApplication>
+#include <QQuickStyle>
 #include <QQuickWindow>
 #include <rhi/qrhi.h>
 #include <QScreen>
@@ -91,6 +92,19 @@ void QcAppWindow::applyColorScheme()
     if (!systemColorScheme()) {
         const bool light = qEnvironmentVariable("QTCRAFT_COLOR_SCHEME") == u"light"_s;
         QGuiApplication::styleHints()->setColorScheme(light ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+    }
+}
+
+void QcAppWindow::applyAppearance()
+{
+    applyColorScheme();
+    applyControlStyle();
+}
+
+void QcAppWindow::applyControlStyle()
+{
+    if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE")) {
+        QQuickStyle::setStyle(u"Basic"_s);
     }
 }
 

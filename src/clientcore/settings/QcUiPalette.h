@@ -30,6 +30,8 @@ enum class Role {
     ScrimStrong,
     DeathScrim,
     Panel,
+    // The panel without transparency: screens and dialogs over other screens (ScreenFrame).
+    PanelSolid,
     PanelRaised,
     PanelBorder,
     MenuTop,
@@ -98,6 +100,29 @@ enum class Role {
     MapMarker,
     MapMarkerOther,
     MapMarkerFrame,
+    // Controls of the menus (decision E-845): the accent (Qt green) of the primary button, the
+    // filled part of sliders and switches and the chosen category, with the dark text that stands on
+    // it (white on Qt green reaches only 2.1:1); the secondary button in its states, the destructive
+    // button, the sunken field of text fields and lists, the empty track of sliders and switches
+    // (3:1 to the panel, WCAG 1.4.11), the knob of sliders and switches and the bevel that gives
+    // buttons their blocky edge (light above and left, dark below and right).
+    Accent,
+    AccentHover,
+    AccentPressed,
+    AccentText,
+    Button,
+    ButtonHover,
+    ButtonPressed,
+    Danger,
+    DangerHover,
+    Field,
+    Track,
+    Knob,
+    // The dark edge around a knob: it marks the knob on the accent fill (3:1) where the knob's own
+    // light colour does not.
+    KnobOutline,
+    BevelLight,
+    BevelDark,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

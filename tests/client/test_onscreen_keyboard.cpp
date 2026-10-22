@@ -105,7 +105,7 @@ private:
     QString text(const QString &field) const { return item(field)->property("text").toString(); }
 
 private slots:
-    void initTestCase() { QQuickStyle::setStyle(u"Fusion"_s); }
+    void initTestCase() { QQuickStyle::setStyle(u"Basic"_s); }
 
     void init()
     {

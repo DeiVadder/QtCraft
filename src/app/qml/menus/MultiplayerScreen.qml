@@ -30,6 +30,7 @@ Popup {
     width: Math.min(parent.width - Ui.px(64), Ui.px(820))
     height: Math.min(parent.height - Ui.px(64), Ui.px(560))
     modal: true
+    background: ScreenFrame {}
     focus: true
     padding: Ui.px(20)
     closePolicy: screen.game.multiplayer.joining ? Popup.NoAutoClose : Popup.CloseOnEscape

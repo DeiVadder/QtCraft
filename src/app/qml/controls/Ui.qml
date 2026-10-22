@@ -8,11 +8,170 @@ import QtCraft
 // margins and panels alike. Sizes are written as at 100 % in a 1024 x 640 window; the factors are
 // already limited so that a screen still fits into the window. Bindings that call px() follow the
 // factor (the functions read it as a property).
+//
+// The named steps below (decision E-845, docs/UI-Leitfaden.md) are the one place where the menus'
+// spacing, sizes, screen widths, radius and type scale are set: Ui.space.m, Ui.size.row,
+// Ui.screen.l, Ui.radius, Ui.type.title and so on, already at the player's scale. Changing a value
+// here changes every screen built from them; the colours are in QcUiPalette (Theme). The settings
+// screen and the controls of this folder use no sizes of their own (test_ui_palette).
 QtObject {
+    id: ui
+
+    // Gaps, from the smallest: label and help, controls in a row, setting rows, card padding and
+    // footer buttons, groups and screen padding, the main menu's margin to the window.
+    component Spacing: QtObject {
+        property real xs
+        property real s
+        property real m
+        property real l
+        property real xl
+        property real xxl
+    }
+
+    // Sizes of the controls.
+    component Sizes: QtObject {
+        // A setting row (the focus target of mouse and pad), a button, a footer or pause button, a
+        // field (drop-down, segment).
+        property real row
+        property real button
+        property real buttonLarge
+        property real field
+        // Thin lines: borders and separators; the bevel's light and dark edges; the focus outline.
+        property real line
+        property real bevel
+        property real bevelDeep
+        property real focus
+        // The coloured bar left of a chosen category and of a hint.
+        property real bar
+        // The width of a slider's value ("12 Chunks", "80 %").
+        property real value
+        // The settings' category list, and narrower in a small window; one category's height.
+        property real nav
+        property real navNarrow
+        property real navItem
+        // A small square symbol (category, list row).
+        property real icon
+        // Slider: track height, knob width and height. Switch: width, height, knob.
+        property real track
+        property real knobWidth
+        property real knobHeight
+        property real switchWidth
+        property real switchHeight
+        property real switchKnob
+        // A key or pad button shown as a small plate.
+        property real badge
+        // The key buttons of the key table and the "Change" buttons of the pad's buttons.
+        property real keyButton
+        property real padButton
+        // A texture pack's preview.
+        property real previewWidth
+        property real previewHeight
+        // The lowest height of a list that scrolls on its own.
+        property real listMinimum
+        // The scroll bar (ThemedScrollBar) and its handle.
+        property real scrollBar
+        property real scrollHandle
+        // The room a screen leaves below itself for the pad's hints (PadHints) while they show.
+        property real padHints
+    }
+
+    // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
+    // a screen keeps to the window's edges at the sides and at the top and bottom.
+    component Screens: QtObject {
+        property real s
+        property real m
+        property real l
+        property real margin
+        property real marginVertical
+        // Below this window width the category list gets narrower.
+        property real narrow
+        // A single column of buttons (pause menu).
+        property real column
+    }
+
+    // Font sizes: logo (and in low windows), screen title, section, group heading, body text, help.
+    component TypeScale: QtObject {
+        property real logo
+        property real logoSmall
+        property real title
+        property real section
+        property real group
+        property real body
+        property real help
+        property real badge
+    }
+
     // Screens, menus and their popups.
     readonly property real scale: UiScaling.scale
     // The HUD over the world (hotbar, status rows, chat lines, notices).
     readonly property real hudScale: UiScaling.hudScale
+
+    readonly property Spacing space: Spacing {
+        xs: ui.px(4)
+        s: ui.px(8)
+        m: ui.px(12)
+        l: ui.px(16)
+        xl: ui.px(24)
+        xxl: ui.px(32)
+    }
+
+    readonly property Sizes size: Sizes {
+        row: ui.px(40)
+        button: ui.px(32)
+        buttonLarge: ui.px(40)
+        field: ui.px(30)
+        line: Math.max(1, ui.px(1))
+        bevel: Math.max(1, ui.px(1))
+        bevelDeep: Math.max(1, ui.px(2))
+        focus: Math.max(1, ui.px(2))
+        bar: ui.px(3)
+        value: ui.px(72)
+        nav: ui.px(200)
+        navNarrow: ui.px(160)
+        navItem: ui.px(38)
+        icon: ui.px(18)
+        track: ui.px(6)
+        knobWidth: ui.px(12)
+        knobHeight: ui.px(18)
+        switchWidth: ui.px(42)
+        switchHeight: ui.px(22)
+        switchKnob: ui.px(16)
+        badge: ui.px(18)
+        keyButton: ui.px(130)
+        padButton: ui.px(170)
+        previewWidth: ui.px(96)
+        previewHeight: ui.px(48)
+        listMinimum: ui.px(160)
+        padHints: ui.px(48)
+        scrollBar: ui.px(10)
+        scrollHandle: ui.px(6)
+    }
+
+    readonly property Screens screen: Screens {
+        s: ui.px(480)
+        m: ui.px(760)
+        l: ui.px(960)
+        margin: ui.px(32)
+        marginVertical: ui.px(16)
+        narrow: ui.px(1100)
+        column: ui.px(320)
+    }
+
+    readonly property TypeScale type: TypeScale {
+        logo: ui.px(64)
+        logoSmall: ui.px(48)
+        title: ui.px(24)
+        section: ui.px(18)
+        group: ui.px(14)
+        body: ui.px(14)
+        help: ui.px(12)
+        badge: ui.px(11)
+    }
+
+    // Buttons, fields, cards and plates: blocky, nearly square corners.
+    readonly property real radius: ui.px(2)
+    // A control that cannot be used now (with the reason in its help text).
+    readonly property real disabledOpacity: 0.45
 
     // A size at `factor`, in whole pixels (borders and gaps stay sharp); for items that are on
     // screens and in the HUD alike (ItemSlot.unit).

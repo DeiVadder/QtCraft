@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     QcAppWindow::prepareScriptedRun(options, offscreen);
 
     const QString language = QcAppLanguage::uiLanguage(options);
-    QcAppWindow::applyColorScheme();
+    QcAppWindow::applyAppearance();
     QTranslator translator;
     const QString contentLanguage = QcAppLanguage::install(translator, language);
 

@@ -13,6 +13,7 @@
     --qc-scrimStrong: rgba(0, 0, 0, 0.690);
     --qc-deathScrim: rgba(96, 0, 0, 0.690);
     --qc-panel: rgba(38, 38, 38, 0.941);
+    --qc-panelSolid: rgba(38, 38, 38, 1.000);
     --qc-panelRaised: rgba(48, 48, 48, 0.627);
     --qc-panelBorder: rgba(255, 255, 255, 0.502);
     --qc-menuTop: rgba(61, 111, 158, 1.000);
@@ -64,5 +65,20 @@
     --qc-mapMarker: rgba(248, 248, 240, 1.000);
     --qc-mapMarkerOther: rgba(156, 192, 240, 1.000);
     --qc-mapMarkerFrame: rgba(60, 184, 60, 1.000);
+    --qc-accent: rgba(65, 205, 82, 1.000);
+    --qc-accentHover: rgba(90, 217, 106, 1.000);
+    --qc-accentPressed: rgba(52, 168, 67, 1.000);
+    --qc-accentText: rgba(11, 26, 14, 1.000);
+    --qc-button: rgba(58, 61, 66, 1.000);
+    --qc-buttonHover: rgba(74, 79, 87, 1.000);
+    --qc-buttonPressed: rgba(44, 46, 50, 1.000);
+    --qc-danger: rgba(168, 55, 46, 1.000);
+    --qc-dangerHover: rgba(142, 44, 36, 1.000);
+    --qc-field: rgba(26, 26, 26, 1.000);
+    --qc-track: rgba(124, 124, 124, 1.000);
+    --qc-knob: rgba(232, 232, 232, 1.000);
+    --qc-knobOutline: rgba(26, 26, 26, 1.000);
+    --qc-bevelLight: rgba(255, 255, 255, 0.188);
+    --qc-bevelDark: rgba(0, 0, 0, 0.502);
     --qc-clear: rgba(0, 0, 0, 0.000);
 }

@@ -7,6 +7,7 @@
 #include <QMetaEnum>
 #include <QRegularExpression>
 #include <QSet>
+#include <QTemporaryFile>
 #include <QTest>
 
 using namespace Qt::StringLiterals;
@@ -97,6 +98,74 @@ bool setsPlainText(const QStringList &lines, qsizetype start, qsizetype indent)
         }
     }
     return false;
+}
+
+// Whether a numeric literal in a property's value is a size of its own: above 1 and not a factor or
+// divisor ("2 * Ui.space.l", "width / 2").
+bool ownNumber(QStringView value, const QRegularExpressionMatch &number)
+{
+    if (number.captured(1).toDouble() <= 1.0) {
+        return false;
+    }
+    const QStringView before = value.first(number.capturedStart(1)).trimmed();
+    const QStringView after = value.sliced(number.capturedEnd(1)).trimmed();
+    return !before.endsWith(u'*') && !before.endsWith(u'/') && !after.startsWith(u'*') && !after.startsWith(u'/');
+}
+
+// Whether a line (without comment and strings) gives a property a number above 1 of its own.
+bool assignsOwnNumber(const QString &code)
+{
+    // Properties whose numbers are no sizes: ranges and values, stacking, counts, stretch
+    // factors, decimals of a shown value, and times in milliseconds.
+    static const QSet<QString> notSizes = {u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"opacity"_s, u"z"_s,
+                                           u"maximumLineCount"_s, u"horizontalStretchFactor"_s,
+                                           u"verticalStretchFactor"_s, u"model"_s, u"valueText"_s,
+                                           u"interval"_s, u"duration"_s};
+    static const QRegularExpression assignment(
+        uR"(^\s*(?:readonly\s+)?(?:required\s+)?(?:property\s+[\w<>]+\s+)?([\w.]+)\s*:\s*(.+)$)"_s);
+    static const QRegularExpression number(uR"((?<![\w.])(\d+(?:\.\d+)?|\.\d+)(?![\w.]))"_s);
+
+    const QRegularExpressionMatch match = assignment.match(code);
+    if (!match.hasMatch()) {
+        return false;
+    }
+    const QString name = match.captured(1).section(u'.', -1);
+    if (notSizes.contains(name) || name.endsWith(u"Ms"_s)) {
+        return false;
+    }
+    const QString value = match.captured(2);
+    for (auto it = number.globalMatch(value); it.hasNext();) {
+        if (ownNumber(value, it.next())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Lines of a QML file with a size of its own instead of a step of Ui (decision E-845): a literal
+// passed to a px()/hudPx() or to Qt.size(), or a number above 1 given to a property or declared with
+// one (an allow-list names the properties whose numbers are no sizes; factors are allowed).
+QStringList ownSizes(const QString &path)
+{
+    static const QRegularExpression scaled(uR"(\b\w*\.(px|hudPx)\(\s*[\d.]|\bQt\.size\(\s*[\d.])"_s);
+    static const QRegularExpression strings(uR"re("(?:[^"\\]|\\.)*"|\x27(?:[^\x27\\]|\\.)*\x27)re"_s);
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return {u"cannot open"_s};
+    }
+
+    QStringList found;
+    int number = 0;
+    while (!file.atEnd()) {
+        const QString line = QString::fromUtf8(file.readLine());
+        ++number;
+        QString code = line.section(u"//"_s, 0, 0);
+        code.replace(strings, u"\"\""_s);
+        if (scaled.match(code).hasMatch() || assignsOwnNumber(code)) {
+            found.append(u"%1:%2: %3"_s.arg(QFileInfo(path).fileName()).arg(number).arg(line.trimmed()));
+        }
+    }
+    return found;
 }
 
 } // namespace
@@ -299,6 +368,38 @@ private slots:
             }
         }
         QVERIFY2(problems.isEmpty(), qPrintable(problems.join(u'\n')));
+    }
+
+    // The settings screen, the shared controls and the pause menu take every gap, margin, size,
+    // radius and font size from the named steps of Ui (decision E-845), so they change in one
+    // place; the other screens follow in stage 76.2. Ui.qml itself holds the values.
+    void menusUseOnlyTheSizeSteps()
+    {
+        QStringList problems;
+        int checked = 0;
+        const QStringList files = qmlFiles();
+        for (const QString &path : files) {
+            const bool covered = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.endsWith(u"/PauseMenu.qml"_s);
+            // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
+            // (ItemSlot.px), in the HUD and on the screens alike.
+            if (!covered || path.endsWith(u"/Ui.qml"_s) || path.endsWith(u"/ItemSlot.qml"_s)) {
+                continue;
+            }
+            ++checked;
+            problems += ownSizes(path);
+        }
+        QVERIFY(checked >= 30);
+        QVERIFY2(problems.isEmpty(), qPrintable(u"use a step of Ui (Ui.space, Ui.size, Ui.screen, Ui.type, Ui.radius):\n"_s + problems.join(u'\n')));
+
+        // The check finds what it looks for.
+        QTemporaryFile probe;
+        QVERIFY(probe.open());
+        probe.write("    spacing: Ui.px(10)\n    radius: 3\n    padding: 0\n    font.pixelSize: Ui.type.body\n"
+                    "    width: parent.width - 2 * Ui.space.l\n    sourceSize: Qt.size(96, 48)\n"
+                    "    property real gap: 10\n    x: parent.width - 12\n    stepSize: 5\n"
+                    "    implicitWidth: slot.hudPx(52)\n    text: \"12 chunks\"\n    keepAliveMs: 60000\n");
+        probe.close();
+        QCOMPARE(ownSizes(probe.fileName()).size(), 6);
     }
 };
 

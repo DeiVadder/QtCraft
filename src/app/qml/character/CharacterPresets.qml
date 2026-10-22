@@ -20,7 +20,7 @@ GridLayout {
         Layout.preferredWidth: Ui.px(110)
         text: qsTr("Preset")
     }
-    ComboBox {
+    ThemedComboBox {
         id: presetBox
 
         Accessible.name: qsTr("Preset")

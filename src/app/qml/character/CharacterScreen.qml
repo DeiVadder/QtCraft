@@ -31,6 +31,7 @@ Popup {
     y: (parent.height - height) / 2
     width: Math.min(parent.width - Ui.px(64), Ui.px(940))
     modal: true
+    background: ScreenFrame {}
     focus: true
     padding: Ui.px(20)
 
@@ -147,7 +148,7 @@ Popup {
                     Layout.preferredWidth: Ui.px(110)
                     text: qsTr("Outfit")
                 }
-                ComboBox {
+                ThemedComboBox {
                     id: outfitBox
 
                     Accessible.name: qsTr("Outfit")
@@ -161,7 +162,7 @@ Popup {
                 Label {
                     text: qsTr("Hair")
                 }
-                ComboBox {
+                ThemedComboBox {
                     id: hairBox
 
                     Accessible.name: qsTr("Hair")
@@ -175,7 +176,7 @@ Popup {
                 Label {
                     text: qsTr("Cape")
                 }
-                ComboBox {
+                ThemedComboBox {
                     id: capeBox
 
                     Accessible.name: qsTr("Cape")

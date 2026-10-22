@@ -161,8 +161,26 @@ qt_add_qml_module(qc_app_core
         qml/character/CharacterPreviewHost.qml
         qml/character/CharacterPreviewPanel.qml
         qml/character/CharacterScreen.qml
+        qml/controls/Bevel.qml
+        qml/controls/ControlSlot.qml
+        qml/controls/FocusOutline.qml
+        qml/controls/GameButton.qml
+        qml/controls/GameSwitch.qml
+        qml/controls/Hint.qml
         qml/controls/ItemSlot.qml
+        qml/controls/KeyBadge.qml
         qml/controls/LazyScreen.qml
+        qml/controls/ListRow.qml
+        qml/controls/NavList.qml
+        qml/controls/ScreenFrame.qml
+        qml/controls/SettingCheck.qml
+        qml/controls/SettingChoice.qml
+        qml/controls/SettingDropdown.qml
+        qml/controls/SettingGroup.qml
+        qml/controls/SettingRow.qml
+        qml/controls/SettingSlider.qml
+        qml/controls/SettingSwitch.qml
+        qml/controls/ThemedComboBox.qml
         qml/controls/ThemedScrollBar.qml
         qml/controls/ThemedToolTip.qml
         qml/controls/Ui.qml
@@ -206,13 +224,18 @@ qt_add_qml_module(qc_app_core
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/settings/AdvancedPage.qml
+        qml/settings/AudioPage.qml
         qml/settings/ControlsPage.qml
-        qml/settings/DebugOptionsPage.qml
         qml/settings/DiagnosticsSection.qml
-        qml/settings/DisplayPage.qml
+        qml/settings/GamepadBindingRow.qml
         qml/settings/GamepadPage.qml
         qml/settings/GamepadValues.qml
+        qml/settings/GraphicsPage.qml
+        qml/settings/InterfacePage.qml
+        qml/settings/SettingsPage.qml
         qml/settings/SettingsScreen.qml
+        qml/settings/TexturePackRow.qml
         qml/settings/TexturePacksPage.qml
 )
 # qmltyperegistrar includes the headers of the QML types by file name only (QTBUG-93443): only its

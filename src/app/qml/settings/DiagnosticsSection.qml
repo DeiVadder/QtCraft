@@ -1,14 +1,14 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The log file and crash reports on the debug page (decision E-834): switching the log file on or
-// off for the next start, opening the folder of logs and crash reports, and collecting a
-// diagnostics bundle to hand in after a playtest.
-ColumnLayout {
+// The log file and crash reports on the advanced page (decision E-834): switching the log file on
+// or off for the next start, opening the folder of logs and crash reports, and collecting a
+// diagnostics bundle to hand in after a playtest. The folder's path stands below the button as
+// selectable text (docs/UI-Leitfaden.md 5).
+SettingGroup {
     id: section
 
     required property GameController game
@@ -16,34 +16,56 @@ ColumnLayout {
     property string bundle: ""
     property bool bundleFailed: false
 
-    spacing: Ui.px(8)
+    title: qsTr("Log and crash reports")
 
-    Label {
-        text: qsTr("Log and crash reports")
-        font.bold: true
-    }
-
-    CheckBox {
+    SettingSwitch {
         objectName: "logToFile"
-        text: qsTr("Write a log file (from the next start)")
+        label: qsTr("Write a log file")
+        badge: qsTr("from the next start")
         checked: section.game.settings.diagnostics.logToFile
         onToggled: section.game.settings.diagnostics.logToFile = checked
     }
 
-    RowLayout {
-        Layout.fillWidth: true
-        spacing: Ui.px(12)
+    SettingRow {
+        label: qsTr("Folder")
 
-        Button {
+        GameButton {
             objectName: "openLogFolder"
             text: qsTr("Open log folder")
             onClicked: section.game.settings.diagnostics.openLogFolder()
         }
-        Button {
+        Item {
+            Layout.fillWidth: true
+        }
+    }
+
+    // The folder's path, to copy into a message or a file dialog: selectable, broken anywhere.
+    TextEdit {
+        objectName: "logFolderPath"
+        Layout.fillWidth: true
+        readOnly: true
+        selectByMouse: true
+        textFormat: TextEdit.PlainText
+        wrapMode: TextEdit.WrapAnywhere
+        text: section.game.settings.diagnostics.logFolder
+        font.pixelSize: Ui.type.help
+        color: Theme.textMuted
+        Accessible.role: Accessible.StaticText
+        Accessible.name: qsTr("Log folder: %1").arg(text)
+    }
+
+    SettingRow {
+        label: qsTr("Diagnostics")
+        help: qsTr("Logs and crash reports in one folder, to hand in after a playtest")
+
+        GameButton {
             objectName: "collectDiagnostics"
             text: section.game.settings.diagnostics.collecting ? qsTr("Collecting…") : qsTr("Collect diagnostics")
             enabled: !section.game.settings.diagnostics.collecting
             onClicked: section.game.settings.diagnostics.collectDiagnostics()
+        }
+        Item {
+            Layout.fillWidth: true
         }
     }
 
@@ -56,13 +78,12 @@ ColumnLayout {
         }
     }
 
-    Label {
+    Hint {
         Layout.fillWidth: true
-        textFormat: Text.PlainText
+        Layout.bottomMargin: Ui.space.xs
+        visible: section.bundleFailed || section.bundle !== ""
+        kind: section.bundleFailed ? Hint.Error : Hint.Info
         text: section.bundleFailed ? qsTr("The diagnostics could not be written; the log says why.")
-              : section.bundle !== "" ? qsTr("Diagnostics written to %1. Send this folder (zipped) to the organiser.").arg(section.bundle)
-              : qsTr("Logs and crash reports are in %1.").arg(section.game.settings.diagnostics.logFolder)
-        wrapMode: Text.Wrap
-        opacity: 0.7
+              : qsTr("Diagnostics written to %1. Send this folder (zipped) to the organiser.").arg(section.bundle)
     }
 }

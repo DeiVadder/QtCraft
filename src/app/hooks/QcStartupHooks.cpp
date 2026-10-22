@@ -90,6 +90,12 @@ void QcStartupHooks::setScreenshotHook(QcScreenshotHook *hook)
     }
 }
 
+void QcStartupHooks::setMenuScreenshotHook(QcScreenshotHook *hook)
+{
+    setScreenshotHook(hook);
+    m_menuHold = hook != nullptr;
+}
+
 void QcStartupHooks::holdScreenshot() const
 {
     if (m_screenshotHook) {
@@ -106,7 +112,13 @@ void QcStartupHooks::releaseScreenshot() const
 
 void QcStartupHooks::menuShown()
 {
+    // Each step holds the screenshot until it ran; then the menu's own hold ends.
     scheduleOverlaySteps();
+    if (m_menuHold) {
+        m_menuHold = false;
+        m_screenshotReleased = true;
+        releaseScreenshot();
+    }
 }
 
 void QcStartupHooks::worldPlaying()

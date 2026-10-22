@@ -34,7 +34,9 @@ public:
     // screen, the pause menu, the settings (at the general page, the key table, the controller
     // page, the debug options or the texture packs), the character screen, open to LAN, the chat
     // line, the editor of a sign (decision E-766), the stonecutter (decision E-785) or the settings
-    // at the display page (decision E-835).
+    // at the display options (decision E-835), the audio page or the interface page (decision E-845).
+    // Settings opens the graphics page, which begins with the display options; Debug opens the
+    // advanced page.
     enum class Overlay {
         None,
         Inventory,
@@ -54,6 +56,8 @@ public:
         Sign,
         Stonecutter,
         Display,
+        Audio,
+        Interface,
     };
     Q_ENUM(Overlay)
 

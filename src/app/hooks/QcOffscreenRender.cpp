@@ -6,7 +6,6 @@
 #include <QQuickItem>
 #include <QQuickRenderControl>
 #include <QQuickRenderTarget>
-#include <QQuickStyle>
 #include <QQuickWindow>
 #include <QScreen>
 #include <rhi/qrhi.h>
@@ -76,13 +75,6 @@ void QcOffscreenRender::prepare()
     if (platformWithoutWindows()) {
         QQuickWindow::setSceneGraphBackend(u"rhi"_s);
     }
-#if defined(Q_OS_MACOS)
-    // The native macOS style draws its controls into the AppKit view of the window; the window
-    // id of the offscreen platform is no view, and drawing crashes.
-    if (platformWithoutWindows() && qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE")) {
-        QQuickStyle::setStyle(u"Fusion"_s);
-    }
-#endif
 }
 
 bool QcOffscreenRender::start()

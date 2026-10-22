@@ -193,9 +193,9 @@ private:
     }
 
 private slots:
-    // The macOS style draws through AppKit, which the platform without windows does not have; the
-    // game's offscreen runs take Fusion as well (QcOffscreenRender).
-    void initTestCase() { QQuickStyle::setStyle(u"Fusion"_s); }
+    // The game's style on every system (decision E-845, QcAppWindow::applyControlStyle); the macOS
+    // style would draw through AppKit, which the platform without windows does not have.
+    void initTestCase() { QQuickStyle::setStyle(u"Basic"_s); }
 
     void init()
     {

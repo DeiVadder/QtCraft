@@ -26,6 +26,7 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor scrimStrong MEMBER m_scrimStrong CONSTANT FINAL)
     Q_PROPERTY(QColor deathScrim MEMBER m_deathScrim CONSTANT FINAL)
     Q_PROPERTY(QColor panel MEMBER m_panel CONSTANT FINAL)
+    Q_PROPERTY(QColor panelSolid MEMBER m_panelSolid CONSTANT FINAL)
     Q_PROPERTY(QColor panelRaised MEMBER m_panelRaised CONSTANT FINAL)
     Q_PROPERTY(QColor panelBorder MEMBER m_panelBorder CONSTANT FINAL)
     Q_PROPERTY(QColor menuTop MEMBER m_menuTop CONSTANT FINAL)
@@ -77,6 +78,21 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor mapMarker MEMBER m_mapMarker CONSTANT FINAL)
     Q_PROPERTY(QColor mapMarkerOther MEMBER m_mapMarkerOther CONSTANT FINAL)
     Q_PROPERTY(QColor mapMarkerFrame MEMBER m_mapMarkerFrame CONSTANT FINAL)
+    Q_PROPERTY(QColor accent MEMBER m_accent CONSTANT FINAL)
+    Q_PROPERTY(QColor accentHover MEMBER m_accentHover CONSTANT FINAL)
+    Q_PROPERTY(QColor accentPressed MEMBER m_accentPressed CONSTANT FINAL)
+    Q_PROPERTY(QColor accentText MEMBER m_accentText CONSTANT FINAL)
+    Q_PROPERTY(QColor button MEMBER m_button CONSTANT FINAL)
+    Q_PROPERTY(QColor buttonHover MEMBER m_buttonHover CONSTANT FINAL)
+    Q_PROPERTY(QColor buttonPressed MEMBER m_buttonPressed CONSTANT FINAL)
+    Q_PROPERTY(QColor danger MEMBER m_danger CONSTANT FINAL)
+    Q_PROPERTY(QColor dangerHover MEMBER m_dangerHover CONSTANT FINAL)
+    Q_PROPERTY(QColor field MEMBER m_field CONSTANT FINAL)
+    Q_PROPERTY(QColor track MEMBER m_track CONSTANT FINAL)
+    Q_PROPERTY(QColor knob MEMBER m_knob CONSTANT FINAL)
+    Q_PROPERTY(QColor knobOutline MEMBER m_knobOutline CONSTANT FINAL)
+    Q_PROPERTY(QColor bevelLight MEMBER m_bevelLight CONSTANT FINAL)
+    Q_PROPERTY(QColor bevelDark MEMBER m_bevelDark CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -99,6 +115,7 @@ private:
     QColor m_scrimStrong = QcUiPalette::color(QcUiPalette::Role::ScrimStrong);
     QColor m_deathScrim = QcUiPalette::color(QcUiPalette::Role::DeathScrim);
     QColor m_panel = QcUiPalette::color(QcUiPalette::Role::Panel);
+    QColor m_panelSolid = QcUiPalette::color(QcUiPalette::Role::PanelSolid);
     QColor m_panelRaised = QcUiPalette::color(QcUiPalette::Role::PanelRaised);
     QColor m_panelBorder = QcUiPalette::color(QcUiPalette::Role::PanelBorder);
     QColor m_menuTop = QcUiPalette::color(QcUiPalette::Role::MenuTop);
@@ -150,5 +167,20 @@ private:
     QColor m_mapMarker = QcUiPalette::color(QcUiPalette::Role::MapMarker);
     QColor m_mapMarkerOther = QcUiPalette::color(QcUiPalette::Role::MapMarkerOther);
     QColor m_mapMarkerFrame = QcUiPalette::color(QcUiPalette::Role::MapMarkerFrame);
+    QColor m_accent = QcUiPalette::color(QcUiPalette::Role::Accent);
+    QColor m_accentHover = QcUiPalette::color(QcUiPalette::Role::AccentHover);
+    QColor m_accentPressed = QcUiPalette::color(QcUiPalette::Role::AccentPressed);
+    QColor m_accentText = QcUiPalette::color(QcUiPalette::Role::AccentText);
+    QColor m_button = QcUiPalette::color(QcUiPalette::Role::Button);
+    QColor m_buttonHover = QcUiPalette::color(QcUiPalette::Role::ButtonHover);
+    QColor m_buttonPressed = QcUiPalette::color(QcUiPalette::Role::ButtonPressed);
+    QColor m_danger = QcUiPalette::color(QcUiPalette::Role::Danger);
+    QColor m_dangerHover = QcUiPalette::color(QcUiPalette::Role::DangerHover);
+    QColor m_field = QcUiPalette::color(QcUiPalette::Role::Field);
+    QColor m_track = QcUiPalette::color(QcUiPalette::Role::Track);
+    QColor m_knob = QcUiPalette::color(QcUiPalette::Role::Knob);
+    QColor m_knobOutline = QcUiPalette::color(QcUiPalette::Role::KnobOutline);
+    QColor m_bevelLight = QcUiPalette::color(QcUiPalette::Role::BevelLight);
+    QColor m_bevelDark = QcUiPalette::color(QcUiPalette::Role::BevelDark);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };

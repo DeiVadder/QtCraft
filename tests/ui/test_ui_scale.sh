@@ -78,6 +78,10 @@ check pause-settings $world --overlay settings
 # shellcheck disable=SC2086
 check display $world --overlay display
 # shellcheck disable=SC2086
+check audio $world --overlay audio
+# shellcheck disable=SC2086
+check interface $world --overlay interface
+# shellcheck disable=SC2086
 check controls $world --overlay controls
 # shellcheck disable=SC2086
 check gamepad $world --overlay gamepad

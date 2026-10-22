@@ -10,19 +10,19 @@ ScrollBar {
 
     policy: bar.size < 1.0 ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
     minimumSize: 0.1
-    padding: Ui.px(2)
+    padding: Ui.size.line * 2
 
     contentItem: Rectangle {
-        implicitWidth: Ui.px(6)
-        implicitHeight: Ui.px(6)
-        radius: Ui.px(3)
+        implicitWidth: Ui.size.scrollHandle
+        implicitHeight: Ui.size.scrollHandle
+        radius: Ui.size.scrollHandle / 2
         color: bar.pressed ? Theme.text : bar.hovered ? Theme.textSecondary : Theme.textMuted
     }
 
     background: Rectangle {
-        implicitWidth: Ui.px(10)
-        implicitHeight: Ui.px(10)
-        radius: Ui.px(5)
+        implicitWidth: Ui.size.scrollBar
+        implicitHeight: Ui.size.scrollBar
+        radius: Ui.size.scrollBar / 2
         color: Theme.scrim
     }
 }

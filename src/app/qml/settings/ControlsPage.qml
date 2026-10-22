@@ -5,13 +5,15 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The key table of the settings: every action with its primary and secondary key. Clicking a key
-// waits for the next key press; Esc cancels, Backspace removes the key, a key used elsewhere is
-// swapped (the message says what moved).
-ColumnLayout {
+// The controls page of the settings: the mouse (sensitivity, invert), then the key table, every
+// action with its primary and secondary key. Clicking a key waits for the next key press; Esc
+// cancels, Backspace removes the key, a key used elsewhere is swapped (the message above the table,
+// scrolled into view, says what moved).
+SettingsPage {
     id: page
 
-    required property KeyControls keys
+    required property GameController game
+    readonly property KeyControls keys: game.settings.keys
     // The slot waiting for a key press: action id and slot (0 primary, 1 secondary).
     property string captureAction
     property int captureSlot: -1
@@ -26,11 +28,24 @@ ColumnLayout {
     }
 
     function bindCaptured(key) {
-        // The list is rebuilt from the new table; keep its position.
-        const contentY = keyList.contentY;
+        // The table is rebuilt from the new bindings; keep the page's position.
+        const position = contentY;
         message = keys.bind(captureAction, captureSlot, key);
         cancelCapture();
-        keyList.contentY = contentY;
+        contentY = position;
+        Qt.callLater(revealMessage);
+    }
+
+    // Scrolls the page so the message above the key table is in view (once laid out).
+    function revealMessage() {
+        if (message.length === 0)
+            return;
+
+        const top = messageHint.mapToItem(contentItem, 0, 0).y;
+        if (top < contentY)
+            contentY = Math.max(0, top - Ui.space.s);
+        else if (top + messageHint.height > contentY + height)
+            contentY = Math.min(contentHeight - height, top + messageHint.height - height + Ui.space.s);
     }
 
     function startCapture(action, slot) {
@@ -47,7 +62,7 @@ ColumnLayout {
 
         captureAction = "";
         captureSlot = -1;
-        keyList.forceActiveFocus();
+        page.forceActiveFocus();
     }
 
     function clear() {
@@ -55,111 +70,132 @@ ColumnLayout {
         message = "";
     }
 
-    spacing: Ui.px(8)
+    title: qsTr("Controls")
 
-    // Takes the next key while a slot waits for one. It takes the shortcuts too (Esc would close the
-    // settings otherwise), so every key reaches it.
-    Item {
-        id: keyCapture
+    SettingGroup {
+        title: qsTr("Mouse")
 
-        // The fullscreen key leaves it alone while it waits (QcDisplaySettings).
-        objectName: "keyCapture"
-        Keys.onShortcutOverride: event => event.accepted = true
-        Keys.onPressed: event => {
-            event.accepted = true;
-            if (event.isAutoRepeat)
-                return;
-
-            if (event.key === Qt.Key_Escape) {
-                page.cancelCapture();
-            } else if (page.isModifier(event.key)) {
-                page.pendingModifier = event.key;
-            } else {
-                page.bindCaptured(event.key);
-            }
+        SettingSlider {
+            label: qsTr("Mouse sensitivity")
+            from: 0.02
+            to: 1.0
+            value: page.game.settings.mouseSensitivity
+            valueText: value.toLocaleString(Qt.locale(), "f", 2)
+            onMoved: page.game.settings.mouseSensitivity = value
         }
-        Keys.onReleased: event => {
-            event.accepted = true;
-            if (!event.isAutoRepeat && page.captureSlot >= 0 && event.key === page.pendingModifier)
-                page.bindCaptured(event.key);
+
+        SettingSwitch {
+            label: qsTr("Invert mouse")
+            checked: page.game.settings.invertMouse
+            onToggled: page.game.settings.invertMouse = checked
         }
     }
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.")
-        wrapMode: Text.Wrap
-        opacity: 0.7
-    }
+    SettingGroup {
+        title: qsTr("Keys")
 
-    ListView {
-        id: keyList
+        Label {
+            Layout.fillWidth: true
+            Layout.topMargin: Ui.space.xs
+            text: qsTr("Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.")
+            font.pixelSize: Ui.type.help
+            color: Theme.textMuted
+            wrapMode: Text.Wrap
 
-        Accessible.name: qsTr("Keys")
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.minimumHeight: Ui.px(160)
-        clip: true
-        spacing: Ui.px(2)
-        model: page.keys.rows
-        ScrollBar.vertical: ThemedScrollBar {}
+            // Takes the next key while a slot waits for one. It takes the shortcuts too (Esc would close the
+            // settings otherwise), so every key reaches it.
+            Item {
+                id: keyCapture
 
-        delegate: RowLayout {
-            id: keyRow
+                // The fullscreen key leaves it alone while it waits (QcDisplaySettings).
+                objectName: "keyCapture"
+                Keys.onShortcutOverride: event => event.accepted = true
+                Keys.onPressed: event => {
+                    event.accepted = true;
+                    if (event.isAutoRepeat)
+                        return;
 
-            required property var modelData
-
-            width: ListView.view.width - Ui.px(12)
-            spacing: Ui.px(8)
-
-            Label {
-                Layout.fillWidth: true
-                text: keyRow.modelData.label
-                elide: Text.ElideRight
-            }
-
-            Repeater {
-                model: 2
-
-                delegate: Button {
-                    required property int index
-                    readonly property bool capturing: page.captureAction === keyRow.modelData.action && page.captureSlot === index
-
-                    Layout.preferredWidth: Ui.px(130)
-                    enabled: !keyRow.modelData.fixed
-                    highlighted: capturing
-                    text: capturing ? qsTr("Press a key …") : (index === 0 ? keyRow.modelData.primary : keyRow.modelData.secondary)
-                    // "–" or an arrow says little without the row: the action, which key and the key.
-                    Accessible.name: qsTr("%1, %2: %3").arg(keyRow.modelData.label)
-                                     .arg(index === 0 ? qsTr("primary key") : qsTr("secondary key"))
-                                     .arg(text === "–" ? qsTr("none") : text)
-                    onClicked: page.startCapture(keyRow.modelData.action, index)
+                    if (event.key === Qt.Key_Escape) {
+                        page.cancelCapture();
+                    } else if (page.isModifier(event.key)) {
+                        page.pendingModifier = event.key;
+                    } else {
+                        page.bindCaptured(event.key);
+                    }
+                }
+                Keys.onReleased: event => {
+                    event.accepted = true;
+                    if (!event.isAutoRepeat && page.captureSlot >= 0 && event.key === page.pendingModifier)
+                        page.bindCaptured(event.key);
                 }
             }
         }
-    }
 
-    Label {
-        Layout.fillWidth: true
-        visible: text.length > 0
-        text: page.message
-        wrapMode: Text.Wrap
-        color: Theme.warning
-    }
+        // What the last change did ("… moved to …"): above the table, and scrolled into view.
+        Hint {
+            id: messageHint
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).")
-        wrapMode: Text.Wrap
-        opacity: 0.7
-    }
+            Layout.fillWidth: true
+            visible: page.message.length > 0
+            kind: Hint.Warning
+            text: page.message
+        }
 
-    Button {
-        text: qsTr("Reset to defaults")
-        onClicked: {
-            page.cancelCapture();
-            page.keys.reset();
-            page.message = qsTr("All keys are back to their defaults.");
+        Repeater {
+            model: page.keys.rows
+
+            delegate: RowLayout {
+                id: keyRow
+
+                required property var modelData
+
+                Layout.fillWidth: true
+                spacing: Ui.space.s
+
+                Label {
+                    Layout.fillWidth: true
+                    text: keyRow.modelData.label
+                    font.pixelSize: Ui.type.body
+                    color: Theme.text
+                    elide: Text.ElideRight
+                }
+
+                Repeater {
+                    model: 2
+
+                    delegate: GameButton {
+                        required property int index
+                        readonly property bool capturing: page.captureAction === keyRow.modelData.action && page.captureSlot === index
+
+                        Layout.preferredWidth: Ui.size.keyButton
+                        enabled: !keyRow.modelData.fixed
+                        kind: capturing ? GameButton.Primary : GameButton.Secondary
+                        text: capturing ? qsTr("Press a key …") : (index === 0 ? keyRow.modelData.primary : keyRow.modelData.secondary)
+                        // "–" or an arrow says little without the row: the action, which key and the key.
+                        Accessible.name: qsTr("%1, %2: %3").arg(keyRow.modelData.label)
+                                         .arg(index === 0 ? qsTr("primary key") : qsTr("secondary key"))
+                                         .arg(text === "–" ? qsTr("none") : text)
+                        onClicked: page.startCapture(keyRow.modelData.action, index)
+                    }
+                }
+            }
+        }
+
+        Hint {
+            Layout.fillWidth: true
+            text: qsTr("On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).")
+        }
+
+        GameButton {
+            Layout.topMargin: Ui.space.xs
+            Layout.bottomMargin: Ui.space.xs
+            text: qsTr("Reset to defaults")
+            onClicked: {
+                page.cancelCapture();
+                page.keys.reset();
+                page.message = qsTr("All keys are back to their defaults.");
+                Qt.callLater(page.revealMessage);
+            }
         }
     }
 }

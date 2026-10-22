@@ -135,7 +135,7 @@ if(NOT QC_SANITIZERS)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 990 COST 65
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1080 COST 72
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
 endif()
@@ -227,7 +227,7 @@ add_test(NAME app_offscreen_pad_lazy_menu
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 pad:start;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:start;--overlay;@2500 pad:start;--overlay;@3000 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: Button:[^\n]*\n.*padFocus: Button:[^\n]*\n.*padFocus: \n.*padFocus: Button:[^\n]*\n.*padFocus: Button:"
+        "-DEXPECTED_ERROR=padFocus: GameButton:[^\n]*\n.*padFocus: GameButton:[^\n]*\n.*padFocus: \n.*padFocus: GameButton:[^\n]*\n.*padFocus: GameButton:"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)

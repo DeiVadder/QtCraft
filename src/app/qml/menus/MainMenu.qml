@@ -258,7 +258,7 @@ Rectangle {
                             color: Theme.text
                         }
 
-                        ComboBox {
+                        ThemedComboBox {
                             id: worldType
 
                             objectName: "worldTypeChoice"
@@ -320,7 +320,7 @@ Rectangle {
                             color: Theme.text
                         }
 
-                        ComboBox {
+                        ThemedComboBox {
                             id: gameMode
 
                             objectName: "gameModeChoice"
@@ -480,6 +480,7 @@ Rectangle {
         // A fixed width: the style's implicit width would follow the scaled font in a loop.
         width: Math.min(parent.width - Ui.px(64), Ui.px(460))
         modal: true
+        background: ScreenFrame {}
         title: qsTr("Delete world")
         standardButtons: Dialog.Yes | Dialog.Cancel
 

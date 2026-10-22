@@ -27,6 +27,7 @@ Popup {
     width: Math.min(parent.width - Ui.px(64), Ui.px(520))
     height: Math.min(implicitHeight, parent.height - Ui.px(32))
     modal: true
+    background: ScreenFrame {}
     focus: true
     padding: Ui.px(20)
 

@@ -34,26 +34,31 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: Math.min(parent.width - Ui.px(32), Ui.px(320))
-        spacing: Ui.px(10)
+        // Hidden while one of its screens is open: it would show around a small one.
+        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible
+        width: Math.min(parent.width - 2 * Ui.space.l, Ui.screen.column)
+        spacing: Ui.space.s
 
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Game paused")
             color: Theme.text
-            font.pixelSize: Ui.px(28)
+            Layout.bottomMargin: Ui.space.s
+            font.pixelSize: Ui.type.title
             font.bold: true
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            kind: GameButton.Primary
+            large: true
             text: qsTr("Back to game")
-            highlighted: true
             onClicked: menu.game.overlay = GameController.Overlay.None
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            large: true
             visible: menu.game.persistent
             text: qsTr("Save world")
             onClicked: {
@@ -62,43 +67,49 @@ Rectangle {
             }
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            large: true
             text: qsTr("Settings")
             onClicked: menu.game.overlay = GameController.Overlay.Settings
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            large: true
             text: qsTr("Character")
             onClicked: menu.game.overlay = GameController.Overlay.Character
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            large: true
             visible: !menu.game.multiplayer.networkGame
             text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
             onClicked: menu.game.overlay = GameController.Overlay.Lan
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
-            text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
+            large: true
+            text: qsTr("Handbook")
+            keyHint: menu.game.settings.keys.labels.handbook
             onClicked: menu.game.handbook.open("")
         }
 
-        Button {
+        GameButton {
             Layout.fillWidth: true
+            large: true
             text: menu.game.multiplayer.networkGame ? qsTr("Disconnect")
                   : menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
             onClicked: menu.game.leaveGame()
         }
     }
 
-    // The settings pages in the order of SettingsScreen.startPage.
+    // The overlays that open the settings (each at its page, SettingsScreen.pageOfOverlay).
     readonly property list<int> settingsPages: [GameController.Overlay.Settings, GameController.Overlay.Display,
-        GameController.Overlay.Controls, GameController.Overlay.Gamepad, GameController.Overlay.Debug,
-        GameController.Overlay.TexturePacks]
+        GameController.Overlay.Audio, GameController.Overlay.Interface, GameController.Overlay.Controls,
+        GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks]
 
     // The settings are an overlay of their own (Overlay.Settings) so the --overlay test hook can
     // open them. Closing a sub-screen returns to the menu and its keys.
@@ -143,7 +154,7 @@ Rectangle {
         if (overlay !== GameController.Overlay.Lan)
             lanScreen.close();
         if (menu.settingsPages.includes(overlay)) {
-            settingsScreen.startPage = menu.settingsPages.indexOf(overlay);
+            settingsScreen.startPage = settingsScreen.pageOfOverlay(overlay);
             settingsScreen.open();
         } else if (overlay === GameController.Overlay.Character) {
             characterScreen.open();

@@ -1,19 +1,18 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The gamepad page of the settings (decisions E-610, E-611, E-613, E-614): which profile is edited
-// (the one all controllers use, or a controller model's own), look speed, invert, dead zones, the
-// response curve, the trigger point, vibration, the radial menu alone, and the buttons of the
-// actions. "Change" waits for the next button on any controller (a button used by another action is
-// swapped); a key or a click anywhere (GameController.gamepad takes them), the last controller
-// disconnecting or leaving the page cancels. The controllers connected now are listed, the one in
-// use marked: pressing a button on another one hands it over. The page opens on the profile of the
-// controller in use when its model has one of its own.
-Flickable {
+// The gamepad page of the settings (decisions E-610, E-611, E-613, E-614, E-845) in three groups:
+// the profile (the one all controllers use, or a controller model's own; the controllers connected
+// now, the one in use marked: pressing a button on another one hands it over), sticks and triggers
+// (look speed, invert, dead zones, the response curve, the trigger point, vibration) and the
+// buttons (the radial menu alone and the buttons of the actions). "Change" waits for the next
+// button on any controller (a button used by another action is swapped); a key or a click anywhere
+// (GameController.gamepad takes them), the last controller disconnecting or leaving the page
+// cancels. The page opens on the profile of the controller in use when its model has its own.
+SettingsPage {
     id: page
 
     required property GameController game
@@ -53,12 +52,7 @@ Flickable {
         game?.gamepad.cancelCapture();
     }
 
-    implicitHeight: content.implicitHeight
-    clip: true
-    contentWidth: width
-    contentHeight: content.implicitHeight
-    boundsBehavior: Flickable.StopAtBounds
-    ScrollBar.vertical: ThemedScrollBar {}
+    title: qsTr("Controller")
 
     onVisibleChanged: {
         if (visible && game)
@@ -82,48 +76,30 @@ Flickable {
         }
     }
 
-    ColumnLayout {
-        id: content
+    SettingGroup {
+        title: qsTr("Profile")
 
-        // A gutter on the right for the scroll bar.
-        width: page.width - Ui.px(14)
-        spacing: Ui.px(10)
+        SettingDropdown {
+            id: profileBox
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: Ui.px(12)
-
-            Label {
-                text: qsTr("Settings for")
-            }
-            ComboBox {
-                id: profileBox
-
-                objectName: "gamepadProfile"
-                Accessible.name: qsTr("Settings for")
-                Layout.fillWidth: true
-                textRole: "text"
-                valueRole: "value"
-                model: page.profileChoices
-                currentIndex: Math.max(0, indexOfValue(page.options.profileKey))
-                onActivated: page.options.profileKey = currentValue
-            }
+            objectName: "gamepadProfile"
+            label: qsTr("Settings for")
+            help: page.options.profileKey.length === 0 ? ""
+                  : (page.options.ownProfile ? qsTr("This controller model has its own settings.")
+                                             : qsTr("This controller uses the settings for all controllers."))
+                    + " " + qsTr("Over USB and over Bluetooth a controller counts as two models.")
+            textRole: "text"
+            valueRole: "value"
+            model: page.profileChoices
+            currentIndex: Math.max(0, indexOfValue(page.options.profileKey))
+            onActivated: page.options.profileKey = currentValue
         }
 
-        RowLayout {
-            Layout.fillWidth: true
+        SettingRow {
+            label: qsTr("Own settings")
             visible: page.options.profileKey.length > 0
-            spacing: Ui.px(12)
 
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Text.Wrap
-                opacity: 0.7
-                text: (page.options.ownProfile ? qsTr("This controller model has its own settings.")
-                                               : qsTr("This controller uses the settings for all controllers."))
-                      + " " + qsTr("Over USB and over Bluetooth a controller counts as two models.")
-            }
-            Button {
+            GameButton {
                 objectName: "ownProfileButton"
                 text: page.options.ownProfile ? qsTr("Use the shared settings") : qsTr("Own settings")
                 onClicked: {
@@ -135,103 +111,71 @@ Flickable {
                     }
                 }
             }
+            Item {
+                Layout.fillWidth: true
+            }
         }
 
-        Label {
+        Hint {
             Layout.fillWidth: true
-            wrapMode: Text.Wrap
-            opacity: 0.7
+            Layout.bottomMargin: Ui.space.xs
             text: page.game.gamepad.pads.list.length === 0
                   ? qsTr("No controller connected. Xbox, PlayStation and Switch Pro controllers and most others work over USB or Bluetooth.")
                   : qsTr("Connected: %1. The controller you press a button on is used.")
                         .arg(page.game.gamepad.pads.list.map(pad => pad.inUse ? qsTr("%1 (in use)").arg(pad.name) : pad.name).join(", "))
         }
+    }
+
+    SettingGroup {
+        title: qsTr("Sticks and triggers")
 
         GamepadValues {
-            Layout.fillWidth: true
             options: page.options
         }
+    }
 
-        CheckBox {
+    SettingGroup {
+        title: qsTr("Buttons")
+
+        SettingSwitch {
             objectName: "radialOnly"
-            text: qsTr("Radial menu only: the hotbar shows just the slot in the hand")
+            label: qsTr("Radial menu only")
+            help: qsTr("The hotbar shows just the slot in the hand")
+            enabled: page.options.editable
             checked: page.options.radialOnly
             onToggled: page.options.radialOnly = checked
-        }
-
-        Label {
-            text: qsTr("Buttons")
-            font.bold: true
         }
 
         Repeater {
             model: page.options.rows
 
-            delegate: RowLayout {
-                id: bindingRow
-
-                required property var modelData
-                readonly property bool capturing: page.captureAction === modelData.action
-
-                Layout.fillWidth: true
-                spacing: Ui.px(8)
-
-                Label {
-                    Layout.fillWidth: true
-                    text: bindingRow.modelData.label
-                    elide: Text.ElideRight
-                }
-                PadGlyph {
-                    visible: bindingRow.modelData.button.length > 0
-                    symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.button)
-                }
-                // The fixed combination (modifier held plus a button), read-only (decision E-692).
-                PadGlyph {
-                    visible: bindingRow.modelData.comboModifier !== undefined
-                    symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.comboModifier ?? "")
-                }
-                Label {
-                    visible: bindingRow.modelData.comboModifier !== undefined
-                    text: "+"
-                }
-                PadGlyph {
-                    visible: bindingRow.modelData.comboButton !== undefined
-                    symbol: page.game.gamepad.pads.glyph(page.game.gamepad.pads.family, bindingRow.modelData.comboButton ?? "")
-                }
-                Label {
-                    visible: bindingRow.modelData.button.length === 0 && bindingRow.modelData.comboModifier === undefined
-                    text: qsTr("none")
-                    opacity: 0.7
-                }
-                Button {
-                    Layout.preferredWidth: Ui.px(170)
-                    enabled: page.options.editable && page.game.gamepad.pads.list.length > 0
-                    highlighted: bindingRow.capturing
-                    text: bindingRow.capturing ? qsTr("Press a button …") : qsTr("Change")
-                    onClicked: page.startCapture(bindingRow.modelData.action)
-                }
+            delegate: GamepadBindingRow {
+                game: page.game
+                capturing: page.captureAction === modelData.action
+                changeEnabled: page.options.editable && page.game.gamepad.pads.list.length > 0
+                onChangeClicked: page.startCapture(modelData.action)
             }
         }
 
-        Label {
+        Hint {
             Layout.fillWidth: true
-            visible: text.length > 0
+            visible: page.message.length > 0
+            kind: Hint.Warning
             text: page.message
-            wrapMode: Text.Wrap
-            color: Theme.warning
         }
 
-        Label {
+        Hint {
             Layout.fillWidth: true
-            wrapMode: Text.Wrap
-            opacity: 0.7
-            text: qsTr("The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).")
+            text: page.game.gamepad.pads.list.length === 0 ? qsTr("Connect a controller to change its buttons.")
+                  : qsTr("The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).")
         }
 
         RowLayout {
-            spacing: Ui.px(12)
+            Layout.topMargin: Ui.space.xs
+            Layout.bottomMargin: Ui.space.xs
+            spacing: Ui.space.s
 
-            Button {
+            GameButton {
                 text: qsTr("Reset buttons")
                 enabled: page.options.editable
                 onClicked: {
@@ -240,7 +184,7 @@ Flickable {
                     page.message = qsTr("The buttons are back to their defaults.");
                 }
             }
-            Button {
+            GameButton {
                 text: qsTr("Reset everything")
                 enabled: page.options.editable
                 onClicked: {

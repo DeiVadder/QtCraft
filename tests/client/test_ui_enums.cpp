@@ -45,6 +45,8 @@ private slots:
         QCOMPARE(QcScreenState::overlayFromName(u"Pause"_s), std::nullopt);
         QCOMPARE(QcScreenState::overlayFromName(u"handbook"_s), std::nullopt);
         QCOMPARE(QcScreenState::overlayFromName(u"display"_s), QcScreenState::Overlay::Display);
+        QCOMPARE(QcScreenState::overlayFromName(u"audio"_s), QcScreenState::Overlay::Audio);
+        QCOMPARE(QcScreenState::overlayFromName(u"interface"_s), QcScreenState::Overlay::Interface);
     }
 
     // The pause menu and its screens count as menus (background frame limit, decision E-835); the
@@ -52,7 +54,7 @@ private slots:
     void menusOfThePause()
     {
         using O = QcScreenState::Overlay;
-        for (const O overlay : {O::Pause, O::Settings, O::Display, O::Controls, O::Gamepad, O::Debug, O::TexturePacks, O::Character, O::Lan}) {
+        for (const O overlay : {O::Pause, O::Settings, O::Display, O::Audio, O::Interface, O::Controls, O::Gamepad, O::Debug, O::TexturePacks, O::Character, O::Lan}) {
             QVERIFY2(QcScreenState::isMenu(overlay), qPrintable(QcScreenState::overlayName(overlay)));
         }
         for (const O overlay : {O::None, O::Inventory, O::Creative, O::Furnace, O::Chest, O::Trade, O::Chat, O::Sign, O::Stonecutter}) {

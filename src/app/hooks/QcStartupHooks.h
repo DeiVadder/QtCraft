@@ -57,6 +57,9 @@ public:
     void setScriptedPad(QcScriptedPad *pad);
     // The screenshot to take once the world is loaded.
     void setScreenshotHook(QcScreenshotHook *hook);
+    // The screenshot of the main menu (without --play): it waits for the menu and for the steps the
+    // menu runs (menuShown()).
+    void setMenuScreenshotHook(QcScreenshotHook *hook);
     QcBenchmarkRun *benchmark() const { return m_benchmark; }
 
     // Without --play: runs the "@<ms> open:" and "@<ms> hover:" steps in the main menu.
@@ -125,4 +128,6 @@ private:
     QPointer<QcScreenshotHook> m_screenshotHook;
     QcScriptedPad *m_scriptedPad = nullptr;
     bool m_screenshotReleased = false;
+    // The menu's screenshot is held until the menu has scheduled its steps.
+    bool m_menuHold = false;
 };
