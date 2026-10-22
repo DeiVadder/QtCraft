@@ -431,6 +431,9 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
     case A::Screenshot:
         emit screenshotRequested();
         return true;
+    case A::Fullscreen:
+        m_settings.display()->toggleFullscreen();
+        return true;
     default:
         return false;
     }

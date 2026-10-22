@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcSettingsController.h"
+#include "app/display/QcFrameLimiter.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
@@ -87,6 +88,14 @@ void QcFrameDriver::startStatsLog(int intervalMs)
 
 void QcFrameDriver::onFrame()
 {
+    // A frame before the frame rate limit allows (an item changed in the previous one asked for
+    // it) leaves the scene as it is, so nothing new is drawn; the limiter asks for the next one
+    // when it is due (decision E-835).
+    QcFrameLimiter &limiter = m_targets.settings.display()->frames();
+    if (m_parts.session && !limiter.frameDue(m_parts.window)) {
+        return;
+    }
+    ++m_framesHandled;
     m_targets.benchmark.recordFrame();
     const float frameSeconds = advanceFrameClocks();
     const QPointF mouseDelta = m_targets.input.takeMouseDelta();
@@ -97,10 +106,8 @@ void QcFrameDriver::onFrame()
     }
 
     // The world moves every frame (interpolated motion, animations, day cycle): the next frame is
-    // requested explicitly, not left to item changes made during this one.
-    if (m_parts.window) {
-        m_parts.window->update();
-    }
+    // requested explicitly, not left to item changes made during this one, when the limit allows.
+    limiter.requestNextFrame(m_parts.window);
     m_targets.input.applyFrame(mouseDelta, frameSeconds);
     // After the keyboard: a deflected stick wins over the held keys, a centred one leaves them.
     m_targets.gamepad.applyFrame(*m_parts.session, frameSeconds, m_targets.input.worldFocused());

@@ -59,6 +59,14 @@ qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp L
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
+# The display options and the frame pacer on a fake clock (decision E-835).
+qc_add_test(test_display_options SOURCES client/test_display_options.cpp LIBRARIES qc_clientcore)
+# The display settings with window modes, the fullscreen key and the frame limit on an offscreen
+# window (decision E-835).
+qc_add_test(test_display_settings SOURCES client/test_display_settings.cpp LIBRARIES qc_app_core)
+# The frame limit on the world's frames: QcFrameDriver::onFrame with a session and a fake clock
+# (decision E-835).
+qc_add_test(test_frame_driver SOURCES client/test_frame_driver.cpp LIBRARIES qc_server qc_app_core qc_worlds)
 # The gamepad model (dead zone, curve, types, virtual pads) and the SDL3 backend with its cache
 # (decision E-540).
 qc_add_test(test_gamepad_input SOURCES client/test_gamepad_input.cpp LIBRARIES qc_clientcore)

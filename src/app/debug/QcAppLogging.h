@@ -9,6 +9,8 @@
 // "qtcraft.game": the game controller, menus, worlds and test hooks.
 Q_DECLARE_LOGGING_CATEGORY(lcGame)
 
+// "qtcraft.display": window mode, screen and frame rate limit (decision E-835).
+Q_DECLARE_LOGGING_CATEGORY(lcDisplay)
 // "qtcraft.gamepad": gamepads.
 Q_DECLARE_LOGGING_CATEGORY(lcGamepad)
 

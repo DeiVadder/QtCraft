@@ -33,7 +33,8 @@ public:
     // creative inventory, an open machine (furnace) or container (chest), a villager's trading
     // screen, the pause menu, the settings (at the general page, the key table, the controller
     // page, the debug options or the texture packs), the character screen, open to LAN, the chat
-    // line, the editor of a sign (decision E-766) or the stonecutter (decision E-785).
+    // line, the editor of a sign (decision E-766), the stonecutter (decision E-785) or the settings
+    // at the display page (decision E-835).
     enum class Overlay {
         None,
         Inventory,
@@ -52,6 +53,7 @@ public:
         Chat,
         Sign,
         Stonecutter,
+        Display,
     };
     Q_ENUM(Overlay)
 
@@ -59,8 +61,11 @@ public:
 
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
-    // "texturepacks", "character", "lan", "chat", "sign" or "stonecutter".
+    // "texturepacks", "character", "lan", "chat", "sign", "stonecutter" or "display".
     static QString overlayName(Overlay overlay);
+    // The pause menu and the screens it opens (settings, character, LAN): the world waits behind
+    // them, and the window draws at the background frame rate (decision E-835).
+    static bool isMenu(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
     Phase phase() const { return m_phase; }

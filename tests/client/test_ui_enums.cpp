@@ -44,6 +44,20 @@ private slots:
         QCOMPARE(QcScreenState::overlayFromName(u"texturepacks"_s), QcScreenState::Overlay::TexturePacks);
         QCOMPARE(QcScreenState::overlayFromName(u"Pause"_s), std::nullopt);
         QCOMPARE(QcScreenState::overlayFromName(u"handbook"_s), std::nullopt);
+        QCOMPARE(QcScreenState::overlayFromName(u"display"_s), QcScreenState::Overlay::Display);
+    }
+
+    // The pause menu and its screens count as menus (background frame limit, decision E-835); the
+    // screens over the running game do not.
+    void menusOfThePause()
+    {
+        using O = QcScreenState::Overlay;
+        for (const O overlay : {O::Pause, O::Settings, O::Display, O::Controls, O::Gamepad, O::Debug, O::TexturePacks, O::Character, O::Lan}) {
+            QVERIFY2(QcScreenState::isMenu(overlay), qPrintable(QcScreenState::overlayName(overlay)));
+        }
+        for (const O overlay : {O::None, O::Inventory, O::Creative, O::Furnace, O::Chest, O::Trade, O::Chat, O::Sign, O::Stonecutter}) {
+            QVERIFY2(!QcScreenState::isMenu(overlay), qPrintable(QcScreenState::overlayName(overlay)));
+        }
     }
 
     // An overlay value outside the enumeration (QML passes ints) is refused with a warning; the

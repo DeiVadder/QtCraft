@@ -76,7 +76,11 @@ QString QcDebugText::compact(const QcDebugSnapshot &snapshot)
     }
 
     const QcDebugSnapshot::Timing &interval = snapshot.frame->phases[std::size_t(QcFramePhase::Interval)];
-    return tr("%1 FPS · %2 ms (max %3 ms)").arg(qRound(snapshot.frame->fps)).arg(ms(interval.meanMs), ms(interval.maxMs));
+    QString line = tr("%1 FPS · %2 ms (max %3 ms)").arg(qRound(snapshot.frame->fps)).arg(ms(interval.meanMs), ms(interval.maxMs));
+    if (snapshot.frame->frameLimit <= 0) {
+        return line;
+    }
+    return tr("%1 · limit %2 FPS").arg(line).arg(snapshot.frame->frameLimit);
 }
 
 QStringList QcDebugText::general(const QcDebugSnapshot &snapshot)

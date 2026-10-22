@@ -817,5 +817,23 @@
     "and %n more": [
         "und %n weiterer",
         "und %n weitere"
-    ]
+    ],
+    "Fullscreen on and off": "Vollbild ein und aus",
+    "%1 · limit %2 FPS": "%1 · Limit %2 FPS",
+    "Unlimited": "Unbegrenzt",
+    "%1 FPS": "%1 FPS",
+    "Window mode (%1)": "Fenstermodus (%1)",
+    "Window mode": "Fenstermodus",
+    "Window": "Fenster",
+    "Borderless fullscreen": "Randloses Vollbild",
+    "Fullscreen": "Vollbild",
+    "Screen": "Bildschirm",
+    "VSync (wait for the display; no tearing)": "VSync (auf den Bildschirm warten; kein Zerreißen)",
+    "VSync takes effect after a restart of the game.": "VSync wirkt nach einem Neustart des Spiels.",
+    "Frame rate limit": "Bildraten-Limit",
+    "In menus and in the background": "In Menüs und im Hintergrund",
+    "Frame rate limit in menus and in the background": "Bildraten-Limit in Menüs und im Hintergrund",
+    "A lower limit keeps the graphics card cooler and quieter; VSync without a limit gives the smoothest picture. The second limit applies to the world behind the pause menu, to the character previews and while another window has the focus.": "Ein niedrigeres Limit hält die Grafikkarte kühler und leiser; VSync ohne Limit gibt das ruhigste Bild. Das zweite Limit gilt für die Welt hinter dem Pausenmenü, für die Charaktervorschauen und während ein anderes Fenster den Fokus hat.",
+    "This run places its window itself (a test or measurement); the choices apply at the next normal start.": "Dieser Lauf platziert sein Fenster selbst (ein Test oder eine Messung); die Auswahl gilt beim nächsten normalen Start.",
+    "Display": "Anzeige"
 }

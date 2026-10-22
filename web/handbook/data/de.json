@@ -91494,6 +91494,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "**Einstellungen → Anzeige** legt fest, wie das Fenster erscheint: *Fenster*, *Randloses Vollbild* (ein Fenster ohne Rahmen über den ganzen Bildschirm) oder *Vollbild*, und bei mehreren Monitoren, welcher Bildschirm; die Lage des Fensters merkt sich das Spiel. **F11** schaltet ins Vollbild und zurück in den Modus davor. *VSync* wartet auf den Monitor und verhindert, dass das Bild zerreißt; es gilt nach einem Neustart. Das *Bildraten-Limit* (30 bis 144 Bilder pro Sekunde oder unbegrenzt) hält die Grafikkarte kühler und leiser; VSync ohne Limit gibt das ruhigste Bild. Ein zweites Limit, 30, solange du es nicht änderst, gilt für die Welt hinter dem Pausenmenü, für die Charaktervorschauen und während ein anderes Fenster den Fokus hat. Die kompakte Debug-Anzeige nennt das gültige Limit.",
+                    "title": "Anzeige"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "**P / F6** blendet die Anzeige aus: Fadenkreuz, Schnellleiste, Herzen, Chatzeilen, Beschriftungen und den Rahmen um den anvisierten Block, dazu die Hand, sofern du das unter Einstellungen → Allgemein nicht abschaltest. Ein zweiter Druck zeigt alles wieder. **K / F2** speichert ein Bild des Fensters als PNG-Datei im Ordner *screenshots* neben deinen Welten, benannt nach Datum und Uhrzeit; ein kurzer Hinweis nennt den Namen. Auf dem Gamepad hältst du **Back** und drückst die obere Aktionstaste für ein Bildschirmfoto oder die linke, um die Anzeige auszublenden; die Spielerliste erscheint dabei, und die beiden Tasten tun sonst nichts.",
                     "title": "Fotomodus"
                 }

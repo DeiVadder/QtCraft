@@ -121,7 +121,14 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
     preselectWorldType(window);
 
     if (!offscreen) {
-        window.show();
+        // The player's window mode, screen and frame limits (decision E-835), unless a scripted run
+        // or a window hook (--screen, QTCRAFT_WINDOW_SIZE) placed the window.
+        const bool placedByHook = options.background || !options.screen.isEmpty() || qEnvironmentVariableIsSet("QTCRAFT_WINDOW_SIZE");
+        if (placedByHook) {
+            window.show();
+        } else {
+            game.settings()->display()->showWindow(window);
+        }
         return nullptr;
     }
     game.preview()->setOffscreen(true);

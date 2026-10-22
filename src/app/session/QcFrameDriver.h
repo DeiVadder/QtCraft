@@ -59,6 +59,8 @@ public:
     void startHealthLog(int seconds);
     // One frame of the window (QQuickWindow::afterAnimating).
     void onFrame();
+    // The frames onFrame() handled since the start: those the frame rate limit let through.
+    qint64 framesHandled() const { return m_framesHandled; }
 
 private:
     // Seconds since the last frame (at most 0.1).
@@ -75,4 +77,5 @@ private:
     std::unique_ptr<QcHealthLog> m_healthLog;
     // Frame intervals since the previous health line.
     QcIntervalStats m_frameTimes;
+    qint64 m_framesHandled = 0;
 };

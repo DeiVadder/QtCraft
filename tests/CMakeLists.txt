@@ -24,7 +24,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/tests.cmake)
 # A new test that starts threads, a server host or a process belongs in this list.
 set(qc_concurrency_tests
     test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
-    test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_survival_scenario test_persistence
+    test_interpolation test_client_server test_scenarios test_gamepad_scenarios test_gamepad_controls test_frame_driver test_survival_scenario test_persistence
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_server_log test_latency
     test_message_log test_crash_report

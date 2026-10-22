@@ -193,6 +193,10 @@ private:
     void onContentReset();
     // The photo mode's keys, the hidden hand and the HUD shown again when a world ends.
     void connectPhotoMode();
+    // The frame rate limit follows what the window shows (decision E-835): the world in the
+    // foreground, or a menu, a pause or an inactive window; character previews follow it too.
+    void connectFrameLimit();
+    void updateForeground();
 
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.

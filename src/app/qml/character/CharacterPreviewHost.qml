@@ -49,7 +49,8 @@ Item {
         sourceComponent: CharacterPreview {
             objectName: host.previewName
             source: host.source
-            framesPerSecond: host.framesPerSecond
+            // No more often than the window may draw (its frame rate limit, decision E-835).
+            framesPerSecond: host.source.frameLimit > 0 ? Math.min(host.framesPerSecond, host.source.frameLimit) : host.framesPerSecond
             paused: host.paused
             interactive: host.interactive
         }

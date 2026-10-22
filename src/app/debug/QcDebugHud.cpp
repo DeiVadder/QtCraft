@@ -128,6 +128,7 @@ QcDebugSnapshot QcDebugHud::snapshot(const QcVec3 &feet, QcFrameMonitor::Reader 
         snapshot.frame = m_frames.frame(*m_parts.meshes, m_parts.view ? m_parts.view->meshCount() : 0, reader);
         // Walks every light section: only for the full display and the statistics log, not per frame.
         snapshot.frame->blockLightBytes = m_parts.meshes->lightBytes();
+        snapshot.frame->frameLimit = m_settings.display()->activeFrameLimit();
     }
     return snapshot;
 }
@@ -145,6 +146,7 @@ void QcDebugHud::updateText(const QcVec3 &feet)
     } else {
         QcDebugSnapshot data;
         data.frame = m_frames.frame(*m_parts.meshes, 0, QcFrameMonitor::Reader::Display);
+        data.frame->frameLimit = m_settings.display()->activeFrameLimit();
         general = QcDebugText::compact(data);
         m_frameGraph.clear();
         m_tickGraph.clear();

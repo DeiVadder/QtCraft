@@ -6,6 +6,7 @@
 #include "app/controllers/QcGamepadOptions.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcDebugSettings.h"
+#include "app/display/QcDisplaySettings.h"
 #include "app/input/QcKeyControlsForeign.h"
 #include "app/models/QcUiScaling.h"
 #include "clientcore/camera/QcCamera.h"
@@ -50,6 +51,8 @@ class QcSettingsController : public QObject
     // The player's keys.
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
+    // Window mode, screen, VSync and frame rate limits (decision E-835).
+    Q_PROPERTY(QcDisplaySettings *display READ display CONSTANT FINAL)
     // The log file, crash reports and diagnostics bundles (decision E-834).
     Q_PROPERTY(QcDiagnosticsSettings *diagnostics READ diagnostics CONSTANT FINAL)
     Q_PROPERTY(QcCharacterSettings *character READ character CONSTANT FINAL)
@@ -114,6 +117,7 @@ public:
     int textureFilteringSamples() const { return int(m_textureFiltering); }
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
+    QcDisplaySettings *display() const { return m_display; }
     QcDiagnosticsSettings *diagnostics() const { return m_diagnostics; }
     QcCharacterSettings *character() const { return m_character; }
     QcDebugSettings *debug() const { return m_debug; }
@@ -133,6 +137,7 @@ private:
     const QcSessionParts &m_parts;
     QcKeyControls *m_keyControls = nullptr;
     QcAudioSettings *m_audio = nullptr;
+    QcDisplaySettings *m_display = nullptr;
     QcDiagnosticsSettings *m_diagnostics = nullptr;
     QcCharacterSettings *m_character = nullptr;
     QcDebugSettings *m_debug = nullptr;

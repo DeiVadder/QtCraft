@@ -76,6 +76,7 @@ QcGameController::QcGameController(QObject *parent)
     // The page of what the crosshair points at, else the page shown last.
     connect(m_input.get(), &QcGameInput::handbookRequested, this, [this] { m_handbook->open(m_hud->targetName()); });
     connectPhotoMode();
+    connectFrameLimit();
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
     m_gamepad.setSettings(m_settings->gamepad());
@@ -170,6 +171,7 @@ void QcGameController::attachWindow(QQuickWindow *window)
     if (m_parts.window) {
         connect(m_parts.window, &QQuickWindow::afterAnimating, this, [this] { m_frame.onFrame(); });
         connect(m_parts.window, &QWindow::activeChanged, this, [this] {
+            updateForeground();
             if (!m_parts.window->isActive()) {
                 m_input->clearKeys();
                 m_input->releaseMouse();
@@ -180,6 +182,20 @@ void QcGameController::attachWindow(QQuickWindow *window)
             m_gamepad.setWindowActive(m_parts.window->isActive());
         });
     }
+}
+
+void QcGameController::connectFrameLimit()
+{
+    connect(&m_screens, &QcScreenState::phaseChanged, this, &QcGameController::updateForeground);
+    connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::updateForeground);
+    const QcDisplaySettings *display = m_settings->display();
+    connect(display, &QcDisplaySettings::activeFrameLimitChanged, this, [this, display] { m_preview->setFrameLimit(display->activeFrameLimit()); });
+}
+
+void QcGameController::updateForeground()
+{
+    const bool active = m_parts.window && m_parts.window->isActive();
+    m_settings->display()->setForeground(active && m_screens.playing() && !QcScreenState::isMenu(m_screens.overlay()));
 }
 
 void QcGameController::startAudio(bool enabled)

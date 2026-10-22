@@ -51,6 +51,14 @@ qtcraft-headless --server --console --log-rules "qtcraft.network.debug=true;qtcr
 
 ## 3. Für die Spieler (Windows)
 
+- **Anzeige** (E-835): Einstellungen → Anzeige wählt Fenster, randloses Vollbild oder Vollbild samt
+  Monitor, VSync (gilt nach einem Neustart) und ein Bildraten-Limit (30–144 oder unbegrenzt) mit
+  eigenem Limit für Menüs, Pause und Hintergrund (Standard 30); **F11** schaltet Vollbild ein und
+  zurück. Lüfter laut oder Grafikkarte heiß: ein Limit von 60 setzen. Am ruhigsten läuft das Bild
+  mit VSync ohne Limit.
+- **Prüfpunkt Bildraten-Limit (Spielleitung):** Limit 60 an einem 60-Hz-Monitor und an einem
+  120- oder 144-Hz-Monitor einstellen, in der Welt gehen und sich umsehen: ruckelt das Bild
+  gegenüber „Unbegrenzt“ sichtbar (Timer-Takt gegen VSync, E-835), bitte mit Monitor und Hz notieren.
 - **Protokoll ist standardmäßig an.** Jeder Start schreibt ein Sitzungsprotokoll; die letzten 10
   Sitzungen bleiben. Abschalten (nicht empfohlen): Einstellungen → Debug → „Protokolldatei
   schreiben“ (gilt ab dem nächsten Start).

@@ -1,6 +1,7 @@
 #include "app/debug/QcAppLogging.h"
 
 Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
+Q_LOGGING_CATEGORY(lcDisplay, "qtcraft.display")
 Q_LOGGING_CATEGORY(lcGamepad, "qtcraft.gamepad")
 Q_LOGGING_CATEGORY(lcInput, "qtcraft.input")
 Q_LOGGING_CATEGORY(lcOffscreen, "qtcraft.offscreen")

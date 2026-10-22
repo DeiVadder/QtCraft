@@ -20,7 +20,7 @@ struct ActionRow
 
 using A = QcKeyBindings::Action;
 
-// The default table. Primary keys are never function keys (see the class comment). Sprint is
+// The default table. Primary keys are never function keys except F11 (see the class comment). Sprint is
 // replaced on a Mac (macSprint), where Qt::Key_Control is Cmd.
 constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::Forward, u"forward", Qt::Key_W, 0},
@@ -60,6 +60,8 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     // P for photo; F6 and F2 as the familiar function keys (F1 is the handbook's, decision E-692).
     {A::HideHud, u"hideHud", Qt::Key_P, Qt::Key_F6},
     {A::Screenshot, u"screenshot", Qt::Key_K, Qt::Key_F2},
+    // F11 as in other games and browsers (decision E-835); a Mac gets it as secondary key (macFullscreen).
+    {A::Fullscreen, u"fullscreen", Qt::Key_F11, 0},
     {A::Pause, u"pause", Qt::Key_Escape, 0},
 }};
 
@@ -138,6 +140,9 @@ QcKeyBindings QcKeyBindings::defaults(Platform platform)
 
     if (platform == Platform::Mac) {
         bindings.set(A::Sprint, 0, macSprint);
+        // F11 needs fn on a Mac: a secondary key, like the other function keys.
+        bindings.set(A::Fullscreen, 0, 0);
+        bindings.set(A::Fullscreen, 1, Qt::Key_F11);
     }
     return bindings;
 }
@@ -387,6 +392,9 @@ QMap<QString, QStringList> QcKeyBindings::placeholderKeys() const
         const QList<int> bound = keys(row.action);
         for (const int key : bound) {
             names.append(m_platform == Platform::Mac ? macName(key) : keyName(key));
+        }
+        if (m_platform == Platform::Mac && !bound.isEmpty() && isFunctionKey(bound.first())) {
+            names.first().prepend(u"fn+"_s);
         }
 
         values.insert(u"key."_s + row.id, names);

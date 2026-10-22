@@ -96,8 +96,9 @@ Rectangle {
     }
 
     // The settings pages in the order of SettingsScreen.startPage.
-    readonly property list<int> settingsPages: [GameController.Overlay.Settings, GameController.Overlay.Controls,
-        GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks]
+    readonly property list<int> settingsPages: [GameController.Overlay.Settings, GameController.Overlay.Display,
+        GameController.Overlay.Controls, GameController.Overlay.Gamepad, GameController.Overlay.Debug,
+        GameController.Overlay.TexturePacks]
 
     // The settings are an overlay of their own (Overlay.Settings) so the --overlay test hook can
     // open them. Closing a sub-screen returns to the menu and its keys.

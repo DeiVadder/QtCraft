@@ -65,10 +65,75 @@ private slots:
         QFETCH(QcKeyBindings::Platform, platform);
         const QcKeyBindings defaults = QcKeyBindings::defaults(platform);
         for (const A action : QcKeyBindings::actions()) {
+            // Fullscreen is F11 as everywhere else (decision E-835; fullscreenOnF11 checks it).
+            if (action == A::Fullscreen) {
+                continue;
+            }
             const int primary = defaults.key(action, 0);
             QVERIFY2(primary != 0, qPrintable(QcKeyBindings::id(action)));
             QVERIFY2(!QcKeyBindings::isFunctionKey(primary), qPrintable(QcKeyBindings::id(action)));
         }
+    }
+
+    // F11 switches fullscreen (decision E-835): the primary key elsewhere; on a Mac, where F11
+    // needs fn, the secondary key with the primary slot empty. No other default uses F11, and the
+    // key works in the world (actionForPress) like the others.
+    void fullscreenOnF11()
+    {
+        const QcKeyBindings other = QcKeyBindings::defaults(QcKeyBindings::Platform::Other);
+        QCOMPARE(other.key(A::Fullscreen, 0), int(Qt::Key_F11));
+        QCOMPARE(other.key(A::Fullscreen, 1), 0);
+        QCOMPARE(other.actionForPress(Qt::Key_F11, Qt::NoModifier), std::optional(A::Fullscreen));
+        QCOMPARE(QcKeyBindings::id(A::Fullscreen), u"fullscreen"_s);
+
+        const QcKeyBindings mac = QcKeyBindings::defaults(QcKeyBindings::Platform::Mac);
+        QCOMPARE(mac.key(A::Fullscreen, 0), 0);
+        QCOMPARE(mac.keys(A::Fullscreen), QList<int>{Qt::Key_F11});
+        QCOMPARE(mac.actionForPress(Qt::Key_F11, Qt::NoModifier), std::optional(A::Fullscreen));
+        // Cmd+F11 stays the system's.
+        QCOMPARE(mac.actionForPress(Qt::Key_F11, Qt::ControlModifier), std::nullopt);
+        QVERIFY(!QcKeyLabels::action(A::Fullscreen).isEmpty());
+
+        // The handbook and the settings name it fn+F11 on a Mac, where it is the only key; a
+        // function key after a letter key keeps its name (the Mac section explains fn).
+        QCOMPARE(other.placeholderKeys().value(u"key.fullscreen"_s), QStringList{u"F11"_s});
+        QCOMPARE(mac.placeholderKeys().value(u"key.fullscreen"_s), QStringList{u"fn+F11"_s});
+        QCOMPARE(mac.placeholderKeys().value(u"key.hideHud"_s), (QStringList{u"P"_s, u"F6"_s}));
+        const QcKeyControls controls;
+        const bool onMac = QcKeyBindings::currentPlatform() == QcKeyBindings::Platform::Mac;
+        QCOMPARE(controls.labels().value(u"fullscreen"_s).toString(), onMac ? u"fn+F11"_s : u"F11"_s);
+        QCOMPARE(controls.labels().value(u"hideHud"_s).toString(), u"P"_s);
+    }
+
+    // Rebinding the fullscreen key: a key of another action is swapped (the other action gets F11),
+    // F11 taken by another action leaves fullscreen without it, a stored F11 elsewhere wins over the
+    // default with a warning.
+    void fullscreenKeyConflicts()
+    {
+        QcKeyBindings keys = QcKeyBindings::defaults(QcKeyBindings::Platform::Other);
+        const std::optional<QcKeyBindings::Displaced> swapped = keys.bind(A::Fullscreen, 0, Qt::Key_K);
+        QVERIFY(swapped.has_value());
+        QCOMPARE(swapped->action, A::Screenshot);
+        QCOMPARE(swapped->key, int(Qt::Key_F11));
+        QCOMPARE(keys.key(A::Screenshot, 0), int(Qt::Key_F11));
+        QCOMPARE(keys.actionFor(Qt::Key_K), std::optional(A::Fullscreen));
+        QVERIFY(keys.conflicts().isEmpty());
+
+        QcKeyBindings taken = QcKeyBindings::defaults(QcKeyBindings::Platform::Other);
+        taken.bind(A::Handbook, 1, Qt::Key_F11);
+        QCOMPARE(taken.key(A::Fullscreen, 0), int(Qt::Key_F1));
+        QVERIFY(taken.conflicts().isEmpty());
+
+        if (QcKeyBindings::currentPlatform() != QcKeyBindings::Platform::Other) {
+            return;
+        }
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        writeFile(path, "[keys]\nscreenshot.2=F11\n");
+        QTest::ignoreMessage(QtWarningMsg, "Key F11 of 'fullscreen' is already bound to another action; 'fullscreen' goes without it");
+        const QcKeyBindings loaded = QcGameSettings::load(path).keys;
+        QCOMPARE(loaded.actionFor(Qt::Key_F11), std::optional(A::Screenshot));
+        QCOMPARE(loaded.keys(A::Fullscreen), QList<int>{});
     }
 
     void macDefaultsAvoidCmdAndControl()

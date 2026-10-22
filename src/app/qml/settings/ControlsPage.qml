@@ -62,6 +62,8 @@ ColumnLayout {
     Item {
         id: keyCapture
 
+        // The fullscreen key leaves it alone while it waits (QcDisplaySettings).
+        objectName: "keyCapture"
         Keys.onShortcutOverride: event => event.accepted = true
         Keys.onPressed: event => {
             event.accepted = true;

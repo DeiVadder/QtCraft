@@ -142,7 +142,7 @@ ApplicationWindow {
         keepAliveMs: root.controller.screenKeepAliveMs
         logCreation: root.controller.logScreenCreation
         shown: game.phase === GameController.Phase.Playing
-               && [GameController.Overlay.Pause, GameController.Overlay.Settings, GameController.Overlay.Controls,
+               && [GameController.Overlay.Pause, GameController.Overlay.Settings, GameController.Overlay.Display, GameController.Overlay.Controls,
                    GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks,
                    GameController.Overlay.Character, GameController.Overlay.Lan].includes(game.overlay)
 

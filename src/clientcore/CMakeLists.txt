@@ -112,6 +112,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcSprintLatch.h player/QcSprintLatch.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    preview/QcFramePacer.h preview/QcFramePacer.cpp
     preview/QcPreviewActivity.h preview/QcPreviewActivity.cpp
     preview/QcPreviewCamera.h preview/QcPreviewCamera.cpp
     preview/QcPreviewHook.h preview/QcPreviewHook.cpp
@@ -144,6 +145,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
+    settings/QcDisplayOptions.h settings/QcDisplayOptions.cpp
     settings/QcGamepadProfile.h settings/QcGamepadProfile.cpp
     settings/QcGamepadSettings.h settings/QcGamepadSettings.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp

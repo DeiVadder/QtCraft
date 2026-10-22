@@ -24,8 +24,9 @@ public:
     static void watchRenderThread(QQuickWindow &window);
     // Scripted runs keep out of the user's way; offscreen runs are scripted runs too.
     static void prepareScriptedRun(const QcAppOptions &options, bool offscreen);
-    // Shows the main window, or moves its content into an offscreen renderer (returned). The error
-    // when offscreen rendering cannot start.
+    // Shows the main window (in the player's display settings unless a hook placed it), or moves
+    // its content into an offscreen renderer (returned). The error when offscreen rendering cannot
+    // start.
     [[nodiscard]] static QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow &window, QcGameController &game,
                                                                                            const QcAppOptions &options, bool offscreen);
 };

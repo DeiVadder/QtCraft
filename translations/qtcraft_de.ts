@@ -218,52 +218,52 @@
 <context>
     <name>ControlsPage</name>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="88"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="90"/>
         <source>Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.</source>
         <translation>Klicke auf eine Taste und drücke die neue. Esc bricht ab, die Rücktaste entfernt die Taste. Eine Taste, die eine andere Aktion nutzt, wird getauscht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="96"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="98"/>
         <source>Keys</source>
         <translation>Tasten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="129"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="131"/>
         <source>Press a key …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="131"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="133"/>
         <source>%1, %2: %3</source>
         <translation>%1, %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="132"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="134"/>
         <source>primary key</source>
         <translation>erste Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="132"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="134"/>
         <source>secondary key</source>
         <translation>zweite Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="133"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="135"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="150"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="152"/>
         <source>On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).</source>
         <translation>Auf einem Mac erreichen F1–F12 das Spiel nur mit gedrückter fn-Taste oder wenn in den Systemeinstellungen (Tastatur) „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ eingeschaltet ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="156"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="158"/>
         <source>Reset to defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="160"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="162"/>
         <source>All keys are back to their defaults.</source>
         <translation>Alle Tasten sind wieder auf dem Standard.</translation>
     </message>
@@ -516,6 +516,95 @@
         <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="62"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
+    </message>
+</context>
+<context>
+    <name>DisplayPage</name>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="18"/>
+        <source>Unlimited</source>
+        <translation>Unbegrenzt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="19"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="20"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="21"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="22"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="23"/>
+        <source>%1 FPS</source>
+        <translation>%1 FPS</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="51"/>
+        <source>Window mode (%1)</source>
+        <translation>Fenstermodus (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="52"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="58"/>
+        <source>Window mode</source>
+        <translation>Fenstermodus</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="63"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="64"/>
+        <source>Borderless fullscreen</source>
+        <translation>Randloses Vollbild</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="65"/>
+        <source>Fullscreen</source>
+        <translation>Vollbild</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="71"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="77"/>
+        <source>Screen</source>
+        <translation>Bildschirm</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="87"/>
+        <source>VSync (wait for the display; no tearing)</source>
+        <translation>VSync (auf den Bildschirm warten; kein Zerreißen)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="96"/>
+        <source>VSync takes effect after a restart of the game.</source>
+        <translation>VSync wirkt nach einem Neustart des Spiels.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="102"/>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="108"/>
+        <source>Frame rate limit</source>
+        <translation>Bildraten-Limit</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="117"/>
+        <source>In menus and in the background</source>
+        <translation>In Menüs und im Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="123"/>
+        <source>Frame rate limit in menus and in the background</source>
+        <translation>Bildraten-Limit in Menüs und im Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="134"/>
+        <source>A lower limit keeps the graphics card cooler and quieter; VSync without a limit gives the smoothest picture. The second limit applies to the world behind the pause menu, to the character previews and while another window has the focus.</source>
+        <translation>Ein niedrigeres Limit hält die Grafikkarte kühler und leiser; VSync ohne Limit gibt das ruhigste Bild. Das zweite Limit gilt für die Welt hinter dem Pausenmenü, für die Charaktervorschauen und während ein anderes Fenster den Fokus hat.</translation>
+    </message>
+    <message>
+        <source>A lower limit keeps the graphics card cooler and quieter. The second limit applies in the menus, while the game is paused and while another window has the focus.</source>
+        <translation type="vanished">Ein niedrigeres Limit hält die Grafikkarte kühler und leiser. Das zweite Limit gilt in den Menüs, während das Spiel pausiert und während ein anderes Fenster den Fokus hat.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/DisplayPage.qml" line="142"/>
+        <source>This run places its window itself (a test or measurement); the choices apply at the next normal start.</source>
+        <translation>Dieser Lauf platziert sein Fenster selbst (ein Test oder eine Messung); die Auswahl gilt beim nächsten normalen Start.</translation>
     </message>
 </context>
 <context>
@@ -1735,7 +1824,7 @@
 <context>
     <name>QcDebugHud</name>
     <message>
-        <location filename="../src/app/debug/QcDebugHud.cpp" line="179"/>
+        <location filename="../src/app/debug/QcDebugHud.cpp" line="181"/>
         <source>S%1 B%2</source>
         <translation>H%1 B%2</translation>
     </message>
@@ -1908,87 +1997,92 @@
         <translation>%1 FPS · %2 ms (max. %3 ms)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="100"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="83"/>
+        <source>%1 · limit %2 FPS</source>
+        <translation>%1 · Limit %2 FPS</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="104"/>
         <source>Protocol %1 · world type %2 · seed %3</source>
         <translation>Protokoll %1 · Welttyp %2 · Seed %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="101"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="105"/>
         <source>XYZ: %1 / %2 / %3</source>
         <translation>XYZ: %1 / %2 / %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="102"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="106"/>
         <source>Block: %1 %2 %3 · chunk %4 %5 (at %6 %7) · section %8</source>
         <translation>Block: %1 %2 %3 · Chunk %4 %5 (bei %6 %7) · Sektion %8</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="112"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="116"/>
         <source>Facing: %1 (yaw %2°, pitch %3°)</source>
         <translation>Blick: %1 (Gier %2°, Neigung %3°)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="116"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="120"/>
         <source>Light at the feet: sky %1, block %2</source>
         <translation>Licht an den Füßen: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="119"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="123"/>
         <source>Biome: %1</source>
         <translation>Biom: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="128"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="132"/>
         <source>Target: %1 at %2 %3 %4</source>
         <translation>Ziel: %1 bei %2 %3 %4</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="134"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="138"/>
         <source>  State: %1</source>
         <translation>  Zustand: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="137"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="141"/>
         <source>  Tags: %1</source>
         <translation>  Tags: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="139"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="143"/>
         <source>  Light in front: sky %1, block %2</source>
         <translation>  Licht davor: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="142"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="146"/>
         <source>Creature: %1</source>
         <translation>Wesen: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="151"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="155"/>
         <source>Entities: %1 creatures, %2 players, %3 items, %4 falling blocks</source>
         <translation>Entities: %1 Wesen, %2 Spieler, %3 Items, %4 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="159"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="163"/>
         <source>Chunks: %1 loaded · sections: %2 meshed, %3 visible · %4 draw calls</source>
         <translation>Chunks: %1 geladen · Sektionen: %2 vernetzt, %3 sichtbar · %4 Draw-Calls</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="164"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="168"/>
         <source>Meshing: %1 waiting (%2 ms each) · light jobs: %3 waiting (%4 ms each)</source>
         <translation>Vernetzung: %1 wartend (je %2 ms) · Licht-Jobs: %3 wartend (je %4 ms)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="170"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="174"/>
         <source>Chunks: %1 loaded</source>
         <translation>Chunks: %1 geladen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="173"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="177"/>
         <source>Memory: %1 MiB (peak %2 MiB)</source>
         <translation>Speicher: %1 MiB (Spitze %2 MiB)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="176"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="180"/>
         <source>Client memory: blocks %1 MiB · block light %2 MiB · section buffers %3 MiB · footprint %4 MiB</source>
         <translation>Client-Speicher: Blöcke %1 MiB · Blocklicht %2 MiB · Abschnittspuffer %3 MiB · Gesamtbedarf %4 MiB</translation>
     </message>
@@ -2001,54 +2095,54 @@
         <translation type="vanished">Client-Speicher: Blöcke %1 MB · Blocklicht %2 MB · Abschnittspuffer %3 MB · Gesamtbedarf %4 MB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="188"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="192"/>
         <source>Server: %1 chunks · %2 players · %3 creatures · %4 items · %5 falling blocks</source>
         <translation>Server: %1 Chunks · %2 Spieler · %3 Wesen · %4 Items · %5 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="194"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="198"/>
         <source>Server tick %1: %2 ms (max %3 ms) · late %4 ms (max %5 ms) · %6 skipped</source>
         <translation>Server-Tick %1: %2 ms (max. %3 ms) · verspätet %4 ms (max. %5 ms) · %6 übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="198"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="202"/>
         <source>Block updates: %1 queued, %2 waiting for chunks</source>
         <translation>Block-Updates: %1 in der Warteschlange, %2 warten auf Chunks</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="199"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="203"/>
         <source>Chunks: %1 stored, %2 arriving, %3 not yet saved · forced %4 · loaders %5</source>
         <translation>Chunks: %1 gespeichert, %2 unterwegs, %3 noch nicht gesichert · erzwungen %4 · Lader %5</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="205"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
         <source>Groups: %1 (largest %2, here %3, too large %4) · tickets %5 (refused %6)</source>
         <translation>Gruppen: %1 (größte %2, hier %3, zu groß %4) · Lade-Tickets %5 (abgelehnt %6)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="228"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
         <source>Client frame</source>
         <translation>Client-Frame</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="228"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="237"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="241"/>
         <source>mean</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="228"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="237"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="241"/>
         <source>max</source>
         <translation>max.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="237"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="241"/>
         <source>Server tick</source>
         <translation>Server-Tick</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="242"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="246"/>
         <source>Whole tick</source>
         <translation>Ganzer Tick</translation>
     </message>
@@ -2056,14 +2150,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="232"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="257"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="248"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="273"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="252"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="261"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="268"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="277"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -2072,22 +2166,22 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="296"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="296"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="322"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="347"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -2132,12 +2226,12 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="316"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="332"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="436"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="452"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -2340,27 +2434,27 @@
 <context>
     <name>QcKeyControls</name>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="62"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="65"/>
         <source>Cmd cannot be used on a Mac: macOS keeps Cmd+Q, Cmd+H, Cmd+Space and other Cmd shortcuts for itself.</source>
         <translation>Cmd lässt sich am Mac nicht belegen: macOS behält Cmd+Q, Cmd+H, Cmd+Leertaste und andere Cmd-Kürzel für sich.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="64"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="67"/>
         <source>This key cannot be used.</source>
         <translation>Diese Taste lässt sich nicht belegen.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="79"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="82"/>
         <source>%1 was used for “%2”, which now has no key there.</source>
         <translation>%1 war für „%2“ belegt; dort ist jetzt keine Taste.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="80"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="83"/>
         <source>%1 was used for “%2”, which now uses %3.</source>
         <translation>%1 war für „%2“ belegt; das nutzt jetzt %3.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="84"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="87"/>
         <source>Careful: on a Mac, Control with the arrow keys or Space switches desktops or the input source.</source>
         <translation>Achtung: Am Mac wechselt Control mit den Pfeiltasten oder der Leertaste Schreibtische oder die Eingabequelle.</translation>
     </message>
@@ -2488,57 +2582,57 @@
         <translation>Nach rechts drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="129"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="130"/>
         <source>Mine, attack</source>
         <translation>Abbauen, angreifen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="131"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="132"/>
         <source>Place, use, eat</source>
         <translation>Setzen, benutzen, essen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="133"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="134"/>
         <source>Pick block (also middle mouse button)</source>
         <translation>Block wählen (auch mittlere Maustaste)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="135"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="136"/>
         <source>Throw item (with %1: stack)</source>
         <translation>Item werfen (mit %1: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="183"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="185"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="185"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="187"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="187"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="189"/>
         <source>Command</source>
         <translation>Befehl</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="189"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="191"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="191"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="193"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="193"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="195"/>
         <source>Debug display (off, compact, full)</source>
         <translation>Debug-Anzeige (aus, kompakt, voll)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="195"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="197"/>
         <source>Debug options</source>
         <translation>Debug-Optionen</translation>
     </message>
@@ -2547,37 +2641,42 @@
         <translation type="vanished">Bildrate und Position</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="197"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="199"/>
         <source>Labels in the world</source>
         <translation>Beschriftungen in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="199"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="201"/>
         <source>Player list (hold)</source>
         <translation>Spielerliste (halten)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="201"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="203"/>
         <source>Radial menu of the hotbar (hold, choose with the mouse)</source>
         <translation>Radialmenü der Schnellleiste (halten, mit der Maus wählen)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="203"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="205"/>
         <source>Hide HUD (photo mode)</source>
         <translation>Anzeige ausblenden (Fotomodus)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="205"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="207"/>
         <source>Screenshot</source>
         <translation>Bildschirmfoto</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="207"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="209"/>
+        <source>Fullscreen on and off</source>
+        <translation>Vollbild ein und aus</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="211"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="146"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="147"/>
         <source>Hotbar slot %1</source>
         <translation>Schnellleiste, Feld %1</translation>
     </message>
@@ -4702,33 +4801,33 @@
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="52"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="54"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="65"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="67"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="68"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="74"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="75"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="81"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="111"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="117"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="122"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="127"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="133"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -4736,24 +4835,24 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="131"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="136"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="137"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="142"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="145"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="151"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="192"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="197"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="198"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="203"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="210"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="216"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
@@ -4762,149 +4861,154 @@
         <translation type="vanished">Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="217"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="223"/>
         <source>Show labels in the world (%1)</source>
         <translation>Beschriftungen in der Welt anzeigen (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="230"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="235"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="236"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="241"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="165"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="243"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="260"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="277"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="294"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="357"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="358"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="359"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="360"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="361"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="362"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="171"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="249"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="266"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="283"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="300"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="363"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="364"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="365"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="366"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="367"/>
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="368"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="374"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="72"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="71"/>
+        <source>Display</source>
+        <translation>Anzeige</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="78"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="79"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="85"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="150"/>
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="156"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="162"/>
         <source>FOV effects</source>
         <translation>Sichtfeld-Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="171"/>
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="177"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="183"/>
         <source>Texture filtering</source>
         <translation>Texturfilterung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="183"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="189"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="184"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="185"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="186"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="190"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="191"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="192"/>
         <source>%1×</source>
         <translation>%1×</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="224"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="230"/>
         <source>Hiding the HUD (%1) hides the hand too</source>
         <translation>Anzeige ausblenden (%1) blendet auch die Hand aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="247"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="252"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="253"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="258"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="264"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="269"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="270"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="275"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="281"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="286"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="287"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="292"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="299"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="305"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="305"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="310"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="311"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="316"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="316"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="322"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="317"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="323"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="318"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="324"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="324"/>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="329"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="330"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="335"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="336"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="342"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="345"/>
         <location filename="../src/app/qml/settings/SettingsScreen.qml" line="351"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="357"/>
         <source>Interface size</source>
         <translation>Größe der Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="356"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="362"/>
         <source>Auto</source>
         <translation>Automatisch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="377"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="383"/>
         <source>Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.</source>
         <translation>Bildschirme erscheinen in diesem Fenster mit %1 %, die Anzeige im Spiel mit %2 %. Ein größeres Fenster zeigt sie größer.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="386"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="392"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="414"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="424"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>

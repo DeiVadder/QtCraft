@@ -62,6 +62,8 @@ public:
         // hand too, as the settings say), and saves a screenshot of the window.
         HideHud,
         Screenshot,
+        // Fullscreen and back to the window mode before it (decision E-835); F11 as elsewhere.
+        Fullscreen,
         // Esc: fixed, because Esc also cancels every screen and the key capture.
         Pause,
     };
@@ -126,7 +128,8 @@ public:
 
     // Values for handbook placeholders: "key.<id>" lists all keys of an action, "key1.<id>" only
     // the primary key, both as key names; on a Mac the modifiers are "MacCmd", "MacControl" and
-    // "MacOption", so the handbook names them like the keyboard.
+    // "MacOption", so the handbook names them like the keyboard, and a function key that comes
+    // first is "fn+F11" (no letter key before it; a Mac needs fn for it).
     // "key.stackModifier" names the modifier of stackModifier().
     QMap<QString, QStringList> placeholderKeys() const;
 

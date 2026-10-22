@@ -32,6 +32,11 @@ target_sources(qc_app_core PRIVATE
     debug/QcGraphItem.h debug/QcGraphItem.cpp
 )
 target_sources(qc_app_core PRIVATE
+    display/QcDisplaySettings.h display/QcDisplaySettings.cpp
+    display/QcFrameLimiter.h display/QcFrameLimiter.cpp
+    display/QcWindowPlacement.h display/QcWindowPlacement.cpp
+)
+target_sources(qc_app_core PRIVATE
     hooks/QcAccessibilityCheck.h hooks/QcAccessibilityCheck.cpp
     hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
@@ -204,6 +209,7 @@ qt_add_qml_module(qc_app_core
         qml/settings/ControlsPage.qml
         qml/settings/DebugOptionsPage.qml
         qml/settings/DiagnosticsSection.qml
+        qml/settings/DisplayPage.qml
         qml/settings/GamepadPage.qml
         qml/settings/GamepadValues.qml
         qml/settings/SettingsScreen.qml
@@ -214,7 +220,7 @@ qt_add_qml_module(qc_app_core
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qc_app_core_qmltyperegistrations.cpp
     TARGET_DIRECTORY qc_app_core
     PROPERTIES INCLUDE_DIRECTORIES
-        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/debug;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/preview;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
+        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/debug;${CMAKE_CURRENT_SOURCE_DIR}/display;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/preview;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
 
 # The executable: start-up (command line, hooks of a scripted run), shaders, translations, icon.
 qt_add_executable(qtcraft

@@ -115,6 +115,7 @@ QString QcKeyLabels::movementAction(QcKeyBindings::Action action)
     case A::HotbarRadial:
     case A::HideHud:
     case A::Screenshot:
+    case A::Fullscreen:
     case A::Pause:
         return {};
     }
@@ -169,6 +170,7 @@ QString QcKeyLabels::handAction(QcKeyBindings::Action action)
     case A::HotbarRadial:
     case A::HideHud:
     case A::Screenshot:
+    case A::Fullscreen:
     case A::Pause:
         return {};
     }
@@ -203,6 +205,8 @@ QString QcKeyLabels::screenAction(QcKeyBindings::Action action)
         return tr("Hide HUD (photo mode)");
     case A::Screenshot:
         return tr("Screenshot");
+    case A::Fullscreen:
+        return tr("Fullscreen on and off");
     case A::Pause:
         return tr("Menu");
     // The actions of the other groups.

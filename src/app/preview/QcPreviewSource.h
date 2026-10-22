@@ -30,6 +30,9 @@ class QcPreviewSource : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
+    // The window's frame rate limit in force (decision E-835), 0 for none: previews draw no more
+    // often than the window.
+    Q_PROPERTY(int frameLimit READ frameLimit NOTIFY frameLimitChanged FINAL)
 
 public:
     QcPreviewSource(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcCharacterSettings &character,
@@ -65,6 +68,15 @@ public:
     // Changes with every setHook(); previews apply a new hook before their next frame.
     int hookVersion() const { return m_hookVersion; }
 
+    int frameLimit() const { return m_frameLimit; }
+    void setFrameLimit(int framesPerSecond)
+    {
+        if (framesPerSecond != m_frameLimit) {
+            m_frameLimit = framesPerSecond;
+            emit frameLimitChanged();
+        }
+    }
+
     // Offscreen runs (E-229): their window is never shown or active, its previews draw anyway.
     void setOffscreen(bool offscreen) { m_offscreen = offscreen; }
     bool offscreen() const { return m_offscreen; }
@@ -76,6 +88,9 @@ public:
     // Mesh building time of the previews since the last takeBuildNs() (debug display).
     void addBuildNs(qint64 nanoseconds) { m_buildNs += nanoseconds; }
     qint64 takeBuildNs() { return std::exchange(m_buildNs, 0); }
+
+signals:
+    void frameLimitChanged();
 
 private:
     // A menu atlas from the worker, tagged with the build it belongs to.
@@ -106,6 +121,7 @@ private:
     QcMailbox<BuiltAtlas> m_builtAtlases;
     QElapsedTimer m_atlasTimer;
     bool m_offscreen = false;
+    int m_frameLimit = 0;
     bool m_forceActive = false;
     bool m_inWorld = false;
     quint64 m_version = 1;

@@ -44,6 +44,8 @@ struct QcDebugSnapshot
     struct Frame
     {
         double fps = 0.0;
+        // The window's frame rate limit in force (decision E-835); 0 for none.
+        int frameLimit = 0;
         std::array<Timing, QcFramePhases::count> phases{};
         // GPU times need RHI timestamps (QSG_RHI_PROFILE=1).
         bool gpuTimed = false;

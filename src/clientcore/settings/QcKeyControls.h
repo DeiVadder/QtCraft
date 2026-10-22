@@ -26,6 +26,8 @@ public:
     // Takes keys loaded from the settings; does not ask for storing.
     void setBindings(const QcKeyBindings &bindings);
     QVariantList rows() const;
+    // The first key of every action by its id, as the HUD names it; a function key on a Mac with
+    // "fn+".
     QVariantMap labels() const;
 
     // Whether `key` (a Qt::Key) triggers the action with this id ("handbook", "inventory", ...).

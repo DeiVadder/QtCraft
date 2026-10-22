@@ -5,15 +5,17 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Game settings on five pages: general, controls (the key table), controller (the gamepad, decision
-// E-610), debug (the debug display and its visualisations) and texture packs; stored when the
-// screen closes, key changes at once.
+// Game settings on six pages: general, display (window mode and frame rate, decision E-835),
+// controls (the key table), controller (the gamepad, decision E-610), debug (the debug display and
+// its visualisations) and texture packs; stored when the screen closes, key and display changes at
+// once.
 Popup {
     id: screen
 
     required property GameController game
-    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 controller (overlay
-    // "gamepad"), 3 debug (overlay "debug"), 4 texture packs (overlay "texturepacks").
+    // The page to open on: 0 general, 1 display (overlay "display"), 2 controls (overlay
+    // "controls"), 3 controller (overlay "gamepad"), 4 debug (overlay "debug"), 5 texture packs
+    // (overlay "texturepacks").
     property int startPage
     // Room kept free below the screen for the pad's hints (PadHints, about 40 px high) while they
     // show: the screen moves up by it and gets shorter if it must.
@@ -63,6 +65,10 @@ Popup {
 
             TabButton {
                 text: qsTr("General")
+            }
+            TabButton {
+                objectName: "displayTab"
+                text: qsTr("Display")
             }
             TabButton {
                 text: qsTr("Controls")
@@ -388,6 +394,10 @@ Popup {
                         opacity: 0.7
                     }
                 }
+            }
+
+            DisplayPage {
+                game: screen.game
             }
 
             ControlsPage {

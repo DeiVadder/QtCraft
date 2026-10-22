@@ -185,6 +185,11 @@ private slots:
     {
         QCOMPARE(QcDebugText::compact(fullSnapshot()), u"120 FPS · 8.34 ms (max 12.5 ms)"_s);
         QCOMPARE(QcDebugText::compact(QcDebugSnapshot{}), u"No frame statistics"_s);
+
+        // A frame rate limit in force is named (decision E-835).
+        QcDebugSnapshot limited = fullSnapshot();
+        limited.frame->frameLimit = 60;
+        QCOMPARE(QcDebugText::compact(limited), u"120 FPS · 8.34 ms (max 12.5 ms) · limit 60 FPS"_s);
     }
 
     void fullColumnNamesPlaceTargetAndServer()

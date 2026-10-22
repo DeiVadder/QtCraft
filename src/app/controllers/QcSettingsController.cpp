@@ -34,6 +34,7 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     , m_parts(parts)
     , m_keyControls(new QcKeyControls(this))
     , m_audio(new QcAudioSettings(audio, this))
+    , m_display(new QcDisplaySettings(*m_keyControls, this))
     , m_diagnostics(new QcDiagnosticsSettings(this))
     , m_character(new QcCharacterSettings(parts, library, *this, this))
     , m_debug(new QcDebugSettings(this))

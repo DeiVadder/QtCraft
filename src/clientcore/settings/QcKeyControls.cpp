@@ -37,7 +37,10 @@ QVariantMap QcKeyControls::labels() const
     QVariantMap labels;
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
         const QList<int> keys = m_bindings.keys(action);
-        labels.insert(QcKeyBindings::id(action), QcKeyLabels::key(keys.isEmpty() ? 0 : keys.first()));
+        const int first = keys.isEmpty() ? 0 : keys.first();
+        // A Mac needs fn for the function keys (F11 for fullscreen is a secondary key there).
+        const bool fn = m_bindings.platform() == QcKeyBindings::Platform::Mac && QcKeyBindings::isFunctionKey(first);
+        labels.insert(QcKeyBindings::id(action), fn ? u"fn+"_s + QcKeyLabels::key(first) : QcKeyLabels::key(first));
     }
     return labels;
 }
