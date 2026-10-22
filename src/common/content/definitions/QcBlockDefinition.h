@@ -302,9 +302,9 @@ struct QcBlockDefinition
     // Texture of a named slot, or empty.
     QString slotTexture(const QString &slot) const
     {
-        for (const auto &[name, texture] : textureSlots) {
-            if (name == slot) {
-                return texture;
+        for (const auto &[slotName, slotTextureName] : textureSlots) {
+            if (slotName == slot) {
+                return slotTextureName;
             }
         }
         return {};

@@ -2,7 +2,8 @@
 # Builds the SDL3 submodule (3rdparty/SDL) once and installs it into a cache shared by every preset
 # and every worktree (decision E-540): <cache>/<tag>-<arch>-<config>, where <cache> is $QC_SDL_CACHE
 # or ~/.cache/qtcraft/sdl3, <tag> the line of 3rdparty/sdl3-tag.txt, <arch> the machine (`uname -m`),
-# the architecture of --arch or "universal" (arm64 and x86_64, for the release bundle), and <config>
+# the architecture of --arch or "universal" (arm64 and x86_64, for the release bundle; on Windows
+# the target of the MSVC environment, VSCMD_ARG_TGT_ARCH, e.g. arm64 or x64), and <config>
 # the version of this script's build options (CONFIG_VERSION below; raised whenever the options
 # change, so an entry built with other options is never reused). Only the joystick, gamepad, HIDAPI
 # (without libusb), haptic and sensor parts are built (no audio, video, GPU, render, camera, dialog,
@@ -10,9 +11,11 @@
 # and is never built again. The configure step of QtCraft runs this script itself when SDL3 is
 # missing, so it is rarely needed by hand.
 #
-# Usage: scripts/build-sdl.sh [--universal | --arch <arch>] [--print-prefix]
+# Usage: scripts/build-sdl.sh [--universal | --arch <arch>] [--debug-runtime] [--print-prefix]
 #   --universal     build arm64 and x86_64 in one library (macOS)
 #   --arch <arch>   build for this one architecture (macOS, e.g. x86_64 on an arm64 machine)
+#   --debug-runtime MSVC: link against the debug C runtime (/MDd) like a Debug build of the game;
+#                   SDL itself stays optimised, the entry gets the suffix "-mdd" (decision E-861)
 #   --print-prefix  only print the cache directory of this tag and architecture and exit
 # Environment: QC_SDL_CACHE (cache root), QC_SDL_MAKE_PROGRAM (path of ninja; otherwise ninja from
 # PATH or ~/Qt/Tools/Ninja/ninja, else make), QC_SDL_WAIT_BENCH_LOCK=1 (wait while the benchmark
@@ -25,7 +28,7 @@ set -u
 CONFIG_VERSION=c2
 
 usage() {
-    echo "usage: scripts/build-sdl.sh [--universal | --arch <arch>] [--print-prefix]" >&2
+    echo "usage: scripts/build-sdl.sh [--universal | --arch <arch>] [--debug-runtime] [--print-prefix]" >&2
     exit 2
 }
 
@@ -37,13 +40,20 @@ if [ -z "$TAG" ]; then
     exit 2
 fi
 UNIVERSAL=0
+DEBUG_RUNTIME=0
 PRINT_ONLY=0
 ARCH=$(uname -m)
+# Windows (Git Bash): uname names the architecture of the shell, which runs emulated as x86_64 on an
+# ARM64 machine; the target of the MSVC environment (vcvarsall) is the one that counts.
+case "$(uname -s)" in
+    MINGW* | MSYS* | CYGWIN*) [ -n "${VSCMD_ARG_TGT_ARCH:-}" ] && ARCH=$VSCMD_ARG_TGT_ARCH ;;
+esac
 EXPLICIT_ARCH=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --universal) UNIVERSAL=1 ;;
         --print-prefix) PRINT_ONLY=1 ;;
+        --debug-runtime) DEBUG_RUNTIME=1 ;;
         --arch)
             [ $# -ge 2 ] || usage
             EXPLICIT_ARCH=$2
@@ -63,7 +73,12 @@ fi
 [ "$UNIVERSAL" -eq 1 ] && ARCH=universal
 
 KEY="$TAG-$ARCH-$CONFIG_VERSION"
+[ "$DEBUG_RUNTIME" -eq 1 ] && KEY="$KEY-mdd"
 CACHE_ROOT=${QC_SDL_CACHE:-"${XDG_CACHE_HOME:-$HOME/.cache}/qtcraft/sdl3"}
+# Windows: a path like C:/Users/... that CMake and the native tools read as well as Git Bash.
+case "$(uname -s)" in
+    MINGW* | MSYS* | CYGWIN*) CACHE_ROOT=$(cygpath -m "$CACHE_ROOT") ;;
+esac
 PREFIX="$CACHE_ROOT/$KEY"
 if [ "$PRINT_ONLY" -eq 1 ]; then
     echo "$PREFIX"
@@ -125,7 +140,13 @@ lock_is_stale() {
         [ -d "$1" ] && [ -n "$(find "$1" -maxdepth 0 -mmin +1 2>/dev/null)" ]
         return
     fi
-    [ "$(process_start "${owner%% *}")" != "${owner#* }" ]
+    started=$(process_start "${owner%% *}")
+    if [ -z "$started" ] && [ -z "${owner#* }" ]; then
+        # No start time (Git Bash: its ps has no -o lstart): stale when the process is gone.
+        ! kill -0 "${owner%% *}" 2>/dev/null
+        return
+    fi
+    [ "$started" != "${owner#* }" ]
 }
 
 take_over_stale_lock() {
@@ -199,6 +220,8 @@ set -- -S "$SDL_DIR" -B "$WORK/build" -G "$GENERATOR" \
     -DSDL_JOYSTICK=ON -DSDL_HAPTIC=ON -DSDL_HIDAPI=ON -DSDL_HIDAPI_LIBUSB=OFF -DSDL_SENSOR=ON \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 [ -n "$MAKE_PROGRAM" ] && set -- "$@" -DCMAKE_MAKE_PROGRAM="$MAKE_PROGRAM"
+# A Debug build of the game links the debug C runtime of MSVC; a static SDL must use the same one.
+[ "$DEBUG_RUNTIME" -eq 1 ] && set -- "$@" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL
 if [ "$(uname -s)" = Darwin ]; then
     # The same lowest macOS as the game (CMakeLists.txt), so linking gives no version warnings.
     set -- "$@" -DCMAKE_OSX_DEPLOYMENT_TARGET=13.3

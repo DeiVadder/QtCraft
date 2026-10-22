@@ -316,15 +316,15 @@ QPalette controlPalette()
         {P::Accent, color(R::Accent)},
     };
 
-    QPalette palette;
+    QPalette result;
     for (const auto &[role, value] : roles) {
-        palette.setColor(role, value);
+        result.setColor(role, value);
     }
     // Disabled texts are dimmed but stay legible.
     for (const P::ColorRole role : {P::WindowText, P::Text, P::ButtonText}) {
-        palette.setColor(P::Disabled, role, color(R::TextMuted).darker(130));
+        result.setColor(P::Disabled, role, color(R::TextMuted).darker(130));
     }
-    return palette;
+    return result;
 }
 
 QList<ControlPair> controlPairs()

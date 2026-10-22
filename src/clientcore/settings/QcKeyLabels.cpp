@@ -119,6 +119,8 @@ QString QcKeyLabels::movementAction(QcKeyBindings::Action action)
     case A::Pause:
         return {};
     }
+    // Every action is a case above; MSVC still wants a return after the switch (C4715).
+    return {};
 }
 
 // What the hands do: mining, using, picking, throwing and the hotbar slots.
@@ -174,6 +176,8 @@ QString QcKeyLabels::handAction(QcKeyBindings::Action action)
     case A::Pause:
         return {};
     }
+    // Every action is a case above; MSVC still wants a return after the switch (C4715).
+    return {};
 }
 
 // Screens, the camera, the debug display and the other parts of the interface.
@@ -236,6 +240,8 @@ QString QcKeyLabels::screenAction(QcKeyBindings::Action action)
     case A::Hotbar9:
         return {};
     }
+    // Every action is a case above; MSVC still wants a return after the switch (C4715).
+    return {};
 }
 
 QString QcKeyLabels::action(QcKeyBindings::Action action)

@@ -129,10 +129,10 @@ qsizetype QcFireQueue::dueCount(quint64 now) const
 
 QList<QcBlockPos> QcFireQueue::takeUnplanned()
 {
-    QList<QcBlockPos> unplanned(m_unplanned.begin(), m_unplanned.end());
+    QList<QcBlockPos> cells(m_unplanned.begin(), m_unplanned.end());
     m_unplanned.clear();
-    std::ranges::sort(unplanned);
-    return unplanned;
+    std::ranges::sort(cells);
+    return cells;
 }
 
 QList<QcBlockPos> QcFireQueue::takeRefused()

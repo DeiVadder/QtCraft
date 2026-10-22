@@ -32,7 +32,7 @@ bool QcPendingCommands::confirm(const QcCommandSource &source, qint64 nowNs)
 
 bool QcPendingCommands::cancel(const QcCommandSource &source)
 {
-    const bool dropped = m_pending.remove(source.id()) > 0;
+    const bool dropped = m_pending.remove(source.id());
     source.reply(dropped ? QT_TRANSLATE_NOOP("QcServerMessages", "Cancelled") : QT_TRANSLATE_NOOP("QcServerMessages", "Nothing to confirm"));
     return dropped;
 }

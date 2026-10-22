@@ -242,7 +242,9 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile)
 {
     m_output = new QFile(this);
     // Opened by descriptor: a FILE*-based QFile would sit in stdio's buffer when stdout is a pipe.
-    if (!m_output->open(fileno(stdout), QIODevice::WriteOnly | QIODevice::Unbuffered)) {
+    // Standard output is descriptor 1 on every platform (POSIX and the Windows C runtime).
+    constexpr int standardOutput = 1;
+    if (!m_output->open(standardOutput, QIODevice::WriteOnly | QIODevice::Unbuffered)) {
         printError(u"Cannot open standard output"_s);
         return false;
     }

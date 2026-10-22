@@ -97,11 +97,11 @@ namespace {
     int alpha = 0;
     std::array<int, 3> colour = {0, 0, 0};
     std::array<int, 3> plain = {0, 0, 0};
-    for (const uchar *pixel : block) {
-        alpha += pixel[3];
+    for (const uchar *texel : block) {
+        alpha += texel[3];
         for (std::size_t c = 0; c < 3; ++c) {
-            colour[c] += pixel[c] * pixel[3];
-            plain[c] += pixel[c];
+            colour[c] += texel[c] * texel[3];
+            plain[c] += texel[c];
         }
     }
     for (std::size_t c = 0; c < 3; ++c) {

@@ -398,8 +398,8 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_trading.trade(client, *trade);
     } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
         m_trading.close(client, false);
-    } else if (const auto *select = std::get_if<QcMsg::SelectStonecutterRecipe>(&message)) {
-        m_stonecutter.select(client, *select);
+    } else if (const auto *recipe = std::get_if<QcMsg::SelectStonecutterRecipe>(&message)) {
+        m_stonecutter.select(client, *recipe);
     } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
         m_stonecutter.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {

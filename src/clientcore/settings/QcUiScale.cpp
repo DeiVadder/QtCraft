@@ -29,7 +29,7 @@ constexpr std::array<StepInfo, 7> steps{{
 
 int percentOf(Step step)
 {
-    const auto *found = std::ranges::find(steps, step, &StepInfo::step);
+    const auto found = std::ranges::find(steps, step, &StepInfo::step);
     return found != steps.end() ? found->percent : 100;
 }
 

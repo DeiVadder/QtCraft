@@ -18,12 +18,12 @@ QString filled(QString text, const QStringList &arguments)
 
 QString QcTexturePackProblem::englishText() const
 {
-    const QString message = filled(QString::fromUtf8(this->message), arguments);
-    return file.isEmpty() ? message : u"%1: %2"_s.arg(file, message);
+    const QString filledText = filled(QString::fromUtf8(message), arguments);
+    return file.isEmpty() ? filledText : u"%1: %2"_s.arg(file, filledText);
 }
 
 QString QcTexturePackProblem::text() const
 {
-    const QString message = filled(QCoreApplication::translate("QcTexturePack", this->message), arguments);
-    return file.isEmpty() ? message : u"%1: %2"_s.arg(file, message);
+    const QString filledText = filled(QCoreApplication::translate("QcTexturePack", message), arguments);
+    return file.isEmpty() ? filledText : u"%1: %2"_s.arg(file, filledText);
 }

@@ -9,7 +9,11 @@ add_library(qc_project_options INTERFACE)
 target_compile_features(qc_project_options INTERFACE cxx_std_23)
 
 if(MSVC)
-    target_compile_options(qc_project_options INTERFACE /W4 /WX /EHs-c- /permissive-)
+    # The default /EHsc of CMake would only be overridden by /EHs-c- with warning D9025 per file.
+    string(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    # C4702 (unreachable code) comes from the optimizer inside Qt's inline code once exceptions are
+    # off; /external:W0 does not reach it, and Clang/GCC have no such warning in -Wall -Wextra.
+    target_compile_options(qc_project_options INTERFACE /W4 /WX /EHs-c- /permissive- /wd4702)
     target_compile_definitions(qc_project_options INTERFACE _HAS_EXCEPTIONS=0)
 else()
     target_compile_options(qc_project_options INTERFACE

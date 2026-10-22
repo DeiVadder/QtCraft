@@ -141,8 +141,8 @@ QList<QcBlockPos> QcServerHoppers::actors()
             // Gone, unloaded or locked: unlocking or loading is a block change that wakes it.
             continue;
         }
-        if (const quint64 ready = readyAt(pos); ready > m_state.clock().tick()) {
-            hoppers.wakeAt(pos, ready);
+        if (const quint64 readyTick = readyAt(pos); readyTick > m_state.clock().tick()) {
+            hoppers.wakeAt(pos, readyTick);
             continue;
         }
         const std::optional<QcBlockFace> facing = m_table.at(*block).facing;

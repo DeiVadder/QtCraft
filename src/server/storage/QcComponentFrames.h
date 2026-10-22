@@ -52,7 +52,7 @@ public:
         requires(!std::same_as<std::remove_cvref_t<Read>, FieldReader>)
     FieldReader(const Read &read) // NOLINT(google-explicit-constructor): taken from lambdas in lists of known components
         : m_read(&read)
-        , m_call([](const void *object, QDataStream &stream, quint16 version, quint32 length) {
+        , m_call([](const void *object, QDataStream &stream, quint16 version, [[maybe_unused]] quint32 length) {
             const Read &reader = *static_cast<const Read *>(object);
             if constexpr (std::invocable<const Read &, QDataStream &, quint16, quint32>) {
                 return reader(stream, version, length);

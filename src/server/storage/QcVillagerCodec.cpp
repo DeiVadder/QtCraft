@@ -109,7 +109,7 @@ void write(QDataStream &stream, const QcVillagerRecord &villager)
     stream << villager.sleptAt;
 }
 
-std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
+std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 fileVersion)
 {
     QcVillagerRecord villager;
     qint32 level = 0;
@@ -134,7 +134,7 @@ std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
     villager.style = std::move(*style);
     stream >> produce;
     // Version 1 has no offers yet: none are traded, it never restocked.
-    if (version >= 2) {
+    if (fileVersion >= 2) {
         std::optional<Offers> offers = readOffers(stream);
         if (!offers) {
             return std::nullopt;
@@ -144,7 +144,7 @@ std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version)
         villager.restocks = offers->restocks;
     }
     // Version 3 knows when it last slept (decision E-470); older ones never slept.
-    if (version >= 3) {
+    if (fileVersion >= 3) {
         stream >> villager.sleptAt;
     }
     if (stream.status() != QDataStream::Ok || !home.valid || !work.valid || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0

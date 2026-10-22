@@ -151,8 +151,8 @@ void QcCircuitState::wakeOne(const QcServerWorld &world, QcBlockPos pos)
 
 void QcCircuitState::chunkLoaded(const QcServerWorld &world, QcChunkPos chunk)
 {
-    const QList<QcBlockPos> readers = waitingOn.take(chunk);
-    for (const QcBlockPos &pos : readers) {
+    const QList<QcBlockPos> resumed = waitingOn.take(chunk);
+    for (const QcBlockPos &pos : resumed) {
         // A signal that waited goes on as one; a look after a chunk came stays a look.
         changes.append({pos, qcAirBlockId, qcAirBlockId, false, signalWaits.remove(pos)});
     }

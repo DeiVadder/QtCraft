@@ -56,7 +56,7 @@ struct QcServerSettings
     [[nodiscard]] static QcResult<QcServerSettings> fromJson(const QJsonObject &json);
     QJsonObject toJson() const;
     // Writes the file (with every key, so it documents itself).
-    [[nodiscard]] QcStatus write(const QString &path) const;
+    [[nodiscard]] QcStatus write(const QString &target) const;
 
     // The listener's address: the bind address, or Any.
     [[nodiscard]] QcResult<QHostAddress> address() const;

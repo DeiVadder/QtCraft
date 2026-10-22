@@ -79,8 +79,9 @@ jobs:
 
       # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
       # follows the tag and the build script (whose CONFIG_VERSION names the build options).
+      # Windows builds it too, through Git Bash and with the debug C runtime of the Debug build
+      # (decision E-861), so the job builds the game as players get it, with gamepads.
       - name: SDL3 cache
-        if: runner.os != 'Windows'
         uses: actions/cache@v4
         with:
           path: ~/.cache/qtcraft/sdl3

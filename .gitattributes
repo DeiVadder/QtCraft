@@ -1,0 +1,6 @@
+# Every text file is checked out with LF on every platform. The content packs are hashed byte by
+# byte for the login comparison (QcContentFingerprint, decision E-861): a Windows checkout with
+# core.autocrlf=true would otherwise turn their JSON into CRLF and differ from a macOS server.
+* text=auto eol=lf
+# The font licence is kept byte for byte as published (CRLF).
+src/app/fonts/OFL.txt -text

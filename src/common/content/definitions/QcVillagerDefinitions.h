@@ -179,10 +179,10 @@ struct QcVillagerSettings
     QcTradingSettings trading;
     QcVillagerBreedingSettings breeding;
 
-    const QcVillagerProfession *profession(const QString &name) const
+    const QcVillagerProfession *profession(const QString &professionName) const
     {
         for (const QcVillagerProfession &entry : professions) {
-            if (entry.name == name) {
+            if (entry.name == professionName) {
                 return &entry;
             }
         }

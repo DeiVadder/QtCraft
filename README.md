@@ -18,12 +18,12 @@ Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `t
 
 ### Windows (port in progress)
 
-Windows has not been built yet (stage 74.2). A build machine needs the following.
+`qtcraft` and `qtcraft-headless` build natively on Windows 11 ARM64 with MSVC 2022 and Qt 6.8 (msvc2022_arm64), with and without gamepads (stage 74.2, decision E-861). The dedicated server, the control interface and the crash reports with minidumps run there; the game window and the tests have not been run on Windows yet, and there is no Windows package yet (`windeployqt`). An x64 build for Intel PCs is the next step. A build machine needs the following.
 
 **Qt Online Installer, Qt 6.8 (6.8.3 or later):**
 
 - **MSVC 2022 64-bit.** This is the x64 kit, used for x64 PCs. It is also the kit to choose inside an ARM64 Windows VM on Apple silicon when the game is meant for x64 PCs: MSVC cross-compiles for x64 and the x64 Qt tools run emulated.
-- **MSVC 2022 ARM64.** Only needed for a native ARM64 build, for example to play inside the VM. It needs the x64 kit as host tools.
+- **MSVC 2022 ARM64.** Only needed for a native ARM64 build, for example to play inside the VM. Since Qt 6.8 it brings its own ARM64 host tools (`moc`, `qsb`, `lrelease`).
 - **Additional Libraries → Qt Multimedia.** Sound output, with the FFmpeg backend.
 - **Additional Libraries → Qt Shader Tools.** The `qt_add_shaders` step that bakes the shaders for D3D11/D3D12, Vulkan, OpenGL and Metal.
 - **Qt Debug Information Files.** Recommended: they let crash dumps (`.dmp`) resolve Qt frames.
@@ -37,12 +37,45 @@ Windows has not been built yet (stage 74.2). A build machine needs the following
   - MSVC v143 x64/x86 build tools,
   - MSVC v143 ARM64 build tools (for an ARM64 VM),
   - a Windows 11 SDK.
-- Git for Windows, with Git Bash: it fetches the SDL submodule, and `scripts/*.sh` run in Git Bash.
+- Git for Windows, with Git Bash: it fetches the SDL submodule, and `scripts/*.sh` run in Git Bash. The configure step finds its `bash.exe` in `%ProgramFiles%\Git\bin` (or set `QC_SDL_SHELL`) and builds SDL3 for gamepads once, like on macOS (a Debug build gets its own copy with the debug C runtime), into `%USERPROFILE%\.cache\qtcraft\sdl3` (`QC_SDL_CACHE` moves it). Without Git Bash, configure with `-DQC_GAMEPAD=OFF`.
 - Python 3: `scripts/*.py`.
 
-Gamepads use SDL3, which `scripts/build-sdl.sh` builds on the first configure. Without Git Bash, configure with `-DQC_GAMEPAD=OFF`.
+The repository checks out every text file with LF (`.gitattributes`), also with `core.autocrlf=true`: the content packs are hashed byte for byte when a client joins a server, and CRLF files would make a Windows client differ from a macOS server. A checkout made before `.gitattributes` existed is renewed with `git rm -r --cached . && git reset --hard`. **This discards every uncommitted change in the checkout:** commit or stash your work first.
 
-Copy `CMakeUserPresets.example.json` to `CMakeUserPresets.json` and point its `local` preset at the Qt kit (for example `C:/Qt/6.8.3/msvc2022_64`). Then build from an "x64 Native Tools Command Prompt for VS 2022", or from "ARM64_x64 Cross Tools" inside an ARM64 VM.
+**Build (ARM64, as in the Parallels VM):** create `CMakeUserPresets.json` next to `CMakePresets.json` (not in git; the Windows counterpart of `CMakeUserPresets.example.json`):
+
+```json
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "local",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.8.3/msvc2022_arm64",
+                "CMAKE_MAKE_PROGRAM": "C:/Qt/Tools/Ninja/ninja.exe",
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        { "name": "release", "inherits": ["qc-release", "local"] }
+    ],
+    "buildPresets": [
+        { "name": "release", "inherits": "qc-build", "configurePreset": "release", "jobs": 4 }
+    ]
+}
+```
+
+Then, in `cmd`:
+
+```bat
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" arm64
+set PATH=C:\Qt\Tools\CMake\bin;C:\Qt\Tools\Ninja;%PATH%
+cmake --preset release
+cmake --build --preset release --target qtcraft qtcraft-headless
+```
+
+`qc-release` is RelWithDebInfo, so `build\release` holds `qtcraft.exe` and `qtcraft-headless.exe` with their `.pdb` files for the minidumps. Prefer the CMake and Ninja of `C:\Qt\Tools` over others on `PATH` (Strawberry Perl brings a MinGW toolchain). For an x64 build use the x64 kit (`C:/Qt/6.8.x/msvc2022_64`) and `vcvarsall.bat x64` (on an x64 PC) or `arm64_amd64` (cross build in an ARM64 VM). To start the programs from the build folder, put the kit's `bin` on `PATH` (`set PATH=C:\Qt\6.8.3\msvc2022_arm64\bin;%PATH%`); a standalone folder with `windeployqt` is still to come. The preset limits the build to 4 jobs, the cores of the VM (`qc-build` asks for 16).
 
 ## Release: a standalone app
 

@@ -37,10 +37,25 @@ elseif(APPLE AND _qc_arch_count EQUAL 1)
     set(QC_SDL_ARCH "${CMAKE_OSX_ARCHITECTURES}")
 endif()
 
+# MSVC: a Debug build links the debug C runtime (/MDd, CMake's default runtime for Debug), and a
+# static SDL must link the same one, or the program gets two C runtimes (LNK4098); its own entry.
+if(MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+    list(APPEND _qc_sdl_args --debug-runtime)
+endif()
+
+# The script needs a POSIX shell: sh, on Windows the bash of Git for Windows (Git Bash; the MSVC
+# environment of the configure step passes through, so SDL is built with the same compiler).
+# Only Git's own folder: a bash.exe on PATH may be the one of WSL, which does not see the MSVC tools.
+if(WIN32)
+    find_program(QC_SDL_SHELL bash HINTS "$ENV{ProgramFiles}/Git/bin" NO_DEFAULT_PATH)
+else()
+    find_program(QC_SDL_SHELL sh)
+endif()
+
 # The cache directory comes from the script, so CMake and the script cannot disagree about it.
 set(_qc_sdl_prefix "")
-if(NOT WIN32)
-    execute_process(COMMAND sh "${_qc_sdl_script}" ${_qc_sdl_args} --print-prefix
+if(QC_SDL_SHELL)
+    execute_process(COMMAND "${QC_SDL_SHELL}" "${_qc_sdl_script}" ${_qc_sdl_args} --print-prefix
         OUTPUT_VARIABLE _qc_sdl_prefix OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
@@ -74,7 +89,7 @@ macro(_qc_find_sdl3)
 endmacro()
 _qc_find_sdl3()
 
-if(NOT SDL3_FOUND AND NOT _qc_sdl_user_dir AND QC_SDL_AUTO_BUILD AND NOT WIN32)
+if(NOT SDL3_FOUND AND NOT _qc_sdl_user_dir AND QC_SDL_AUTO_BUILD AND QC_SDL_SHELL)
     message(STATUS "SDL3 missing in ${_qc_sdl_prefix}: building it once (scripts/build-sdl.sh ${_qc_sdl_args})")
     find_program(_qc_nice nice)
     set(_qc_nice_command "")
@@ -83,7 +98,7 @@ if(NOT SDL3_FOUND AND NOT _qc_sdl_user_dir AND QC_SDL_AUTO_BUILD AND NOT WIN32)
     endif()
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E env "QC_SDL_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}" QC_SDL_WAIT_BENCH_LOCK=1
-            ${_qc_nice_command} sh "${_qc_sdl_script}" ${_qc_sdl_args}
+            ${_qc_nice_command} "${QC_SDL_SHELL}" "${_qc_sdl_script}" ${_qc_sdl_args}
         RESULT_VARIABLE _qc_sdl_result OUTPUT_QUIET)
     if(_qc_sdl_result EQUAL 0)
         unset(SDL3_DIR CACHE)
@@ -93,10 +108,11 @@ if(NOT SDL3_FOUND AND NOT _qc_sdl_user_dir AND QC_SDL_AUTO_BUILD AND NOT WIN32)
 endif()
 
 if(NOT SDL3_FOUND)
-    if(WIN32)
-        # scripts/build-sdl.sh needs a POSIX shell; Windows builds go without gamepads for now.
-        message(WARNING "SDL3 not found: building without gamepad support (set SDL3_DIR to a static SDL3 build to enable it)")
-        return()
+    if(WIN32 AND NOT QC_SDL_SHELL)
+        message(FATAL_ERROR
+            "SDL3 is built by scripts/build-sdl.sh, which needs the bash of Git for Windows (not found).\n"
+            "Install Git for Windows, set QC_SDL_SHELL to its bin/bash.exe, set SDL3_DIR to a static SDL3 build,\n"
+            "or configure without gamepad support:  -DQC_GAMEPAD=OFF")
     endif()
     message(FATAL_ERROR
         "SDL3 (static, ${_qc_sdl_prefix}) not found and could not be built.\n"

@@ -312,7 +312,7 @@ Line lineOf(const QcBlockAccess &world, const Table &rails, QcBlockPos cell, int
 
     const QcContentRegistry &content = world.content();
     const quint32 type = content.state(*start).type;
-    std::array<QList<QcBlockPos>, 2> sides;
+    std::array<QList<QcBlockPos>, 2> halves;
     for (int end = 0; end < 2; ++end) {
         QcBlockPos at = cell;
         Track current = *track;
@@ -320,22 +320,22 @@ Line lineOf(const QcBlockAccess &world, const Table &rails, QcBlockPos cell, int
         for (int step = 0; step < reach; ++step) {
             const std::optional<Joint> next = joined(world, rails, at, current, out);
             // A loop of rails ends where it meets itself.
-            if (!next || next->cell == cell || sides[0].contains(next->cell)
+            if (!next || next->cell == cell || halves[0].contains(next->cell)
                 || content.state(world.blockAt(next->cell).value_or(qcAirBlockId)).type != type) {
                 break;
             }
-            sides[std::size_t(end)].append(next->cell);
+            halves[std::size_t(end)].append(next->cell);
             at = next->cell;
             current = next->track;
             out = 1 - next->entry;
         }
     }
 
-    std::ranges::reverse(sides[0]);
-    line.cells = sides[0];
+    std::ranges::reverse(halves[0]);
+    line.cells = halves[0];
     line.index = line.cells.size();
     line.cells.append(cell);
-    line.cells.append(sides[1]);
+    line.cells.append(halves[1]);
     return line;
 }
 

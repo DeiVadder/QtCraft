@@ -19,6 +19,6 @@ inline constexpr quint16 version = 3;
 void write(QDataStream &stream, const QcVillagerRecord &villager);
 // The fields of `version` (up to the current one), defaults for those it lacks; std::nullopt for
 // damaged data (a stream error, numbers out of range, a place outside the world).
-[[nodiscard]] std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 version);
+[[nodiscard]] std::optional<QcVillagerRecord> read(QDataStream &stream, quint16 fileVersion);
 
 } // namespace QcVillagerCodec

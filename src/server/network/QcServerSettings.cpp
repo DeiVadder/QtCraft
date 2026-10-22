@@ -213,16 +213,16 @@ QJsonObject QcServerSettings::toJson() const
             {u"limits"_s, limits.toJson()}};
 }
 
-QcStatus QcServerSettings::write(const QString &path) const
+QcStatus QcServerSettings::write(const QString &target) const
 {
-    QSaveFile file(path);
+    QSaveFile file(target);
     if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(toJson()).toJson()) < 0) {
-        return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));
+        return qcError(u"Cannot write %1: %2"_s.arg(target, file.errorString()));
     }
     // It may hold the server password.
     file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     if (!file.commit()) {
-        return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));
+        return qcError(u"Cannot write %1: %2"_s.arg(target, file.errorString()));
     }
     return {};
 }
