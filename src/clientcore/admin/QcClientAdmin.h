@@ -37,7 +37,7 @@ public:
     // The server welcomed the client: the topics followed go out now.
     void welcomed();
     // The connection closed: nothing goes out any more, what came stays.
-    void closed() { m_welcomed = false; }
+    void closed();
     // Takes an admin message of the server; false for every other message.
     bool receive(const QcMessage &message);
 
@@ -57,12 +57,27 @@ public:
     const QcMsg::AdminLists &lists() const { return m_lists; }
     const QcMsg::AdminSettings &settings() const { return m_settings; }
     const QList<QcMsg::AdminLogLine> &log() const { return m_log; }
+    // How many chat and log lines came so far (on over their limits), and how often the list was
+    // replaced (a new history or tail, following anew): a view appends only what is new (decision
+    // E-863).
+    struct Arrivals
+    {
+        quint64 total = 0;
+        quint64 replacements = 0;
+
+        bool operator==(const Arrivals &) const = default;
+    };
+    Arrivals chatArrivals() const { return m_chatArrivals; }
+    Arrivals logArrivals() const { return m_logArrivals; }
     // The answer to request `id` while it is among the latest resultLimit; std::nullopt before it came.
     std::optional<QcMsg::AdminResult> result(quint32 id) const;
     // The answer's lines as the player reads them (translated, QcChatText::display).
     static QStringList display(const QcMsg::AdminResult &result);
     // Why the latest answer of the server was refused; None when it was not.
     Refusal lastRefusal() const { return m_lastRefusal; }
+    // The server said this player is an operator (decision E-863): it tells every player when he
+    // becomes one and when he stops being one; every answer that was not refused says so too.
+    bool operatorRights() const { return m_operatorRights; }
 
 signals:
     void statusChanged();
@@ -74,6 +89,7 @@ signals:
     void settingsChanged();
     void logReceived();
     void resultReceived(quint32 id);
+    void operatorRightsChanged();
     // The server refused a request or the subscription; `text` is translated. With Rights the
     // player is no operator (any more) and follows nothing now.
     void refused(QcClientAdmin::Refusal reason, const QString &text);
@@ -82,6 +98,7 @@ private:
     bool receiveReport(const QcMessage &message);
     void receiveResult(const QcMsg::AdminResult &result);
     void sendFollow();
+    void setOperatorRights(bool rights);
 
     Sender m_send;
     bool m_welcomed = false;
@@ -96,7 +113,10 @@ private:
     QcMsg::AdminLists m_lists;
     QcMsg::AdminSettings m_settings;
     QList<QcMsg::AdminLogLine> m_log;
+    Arrivals m_chatArrivals;
+    Arrivals m_logArrivals;
     QHash<quint32, QcMsg::AdminResult> m_results;
     QList<quint32> m_resultOrder;
     Refusal m_lastRefusal = Refusal::None;
+    bool m_operatorRights = false;
 };

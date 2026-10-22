@@ -59,6 +59,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
     , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
+    , m_admin(std::make_unique<QcAdminController>())
     , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render, *m_hud->heldMap()})
@@ -112,6 +113,7 @@ QcGameController::QcGameController(QObject *parent)
     connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
     connect(this, &QcGameController::sessionStarted, m_multiplayer.get(), &QcMultiplayerController::sessionStarted);
+    connect(this, &QcGameController::sessionStarted, m_admin.get(), &QcAdminController::sessionStarted);
     // Before QML hears joined(): the joined server's world is played.
     connect(m_multiplayer.get(), &QcMultiplayerController::sessionJoined, this, [this] {
         if (std::unique_ptr<QcClientSession> session = m_multiplayer->takeJoinedSession()) {

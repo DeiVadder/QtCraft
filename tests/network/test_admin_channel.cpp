@@ -33,6 +33,21 @@ class TestAdminChannel : public QcAdminTestFixture
         return u"%1|%2|%3|%4"_s.arg(lists.whitelistEnabled).arg(lists.operators.join(u','), lists.whitelist.join(u','), bans.join(u','));
     }
 
+    // The answers to requests, without the notices of the rights (number 0).
+    QList<QcMsg::AdminResult> answers() const
+    {
+        QList<QcMsg::AdminResult> found = received<QcMsg::AdminResult>();
+        found.removeIf([](const QcMsg::AdminResult &result) { return result.id == 0; });
+        return found;
+    }
+
+    QList<QcMsg::AdminResult> rightsNotices() const
+    {
+        QList<QcMsg::AdminResult> found = received<QcMsg::AdminResult>();
+        found.removeIf([](const QcMsg::AdminResult &result) { return result.id != 0; });
+        return found;
+    }
+
 private slots:
     void cleanup()
     {
@@ -119,8 +134,8 @@ private slots:
             m_client->connection.send(QcMsg::AdminRequest{quint32(1000 + i), Kind::Players, {}});
         }
         QcTestUtil::pump();
-        QCOMPARE(received<QcMsg::AdminResult>().size(), 60);
         m_origin = QcServer::ClientOrigin::Remote;
+        QCOMPARE(answers().size(), 60);
     }
 
     void longTextsArriveWhole()
@@ -132,6 +147,32 @@ private slots:
         ticks(1);
         QVERIFY(m_client->chatLines.last().endsWith(text));
         QCOMPARE(m_client->chatKeys.last().arguments.first(), text);
+    }
+
+    // Every player hears whether he is an operator (decision E-863), once and again when it
+    // changes; a player who never was one hears nothing.
+    void playersHearTheirRights()
+    {
+        join();
+        ticks(1);
+        QCOMPARE(rightsNotices().size(), 1);
+        QVERIFY(rightsNotices().constFirst().ok);
+        ticks(5);
+        QCOMPARE(rightsNotices().size(), 1);
+
+        console(u"deop Raw"_s);
+        ticks(2);
+        QCOMPARE(rightsNotices().size(), 2);
+        QCOMPARE(rightsNotices().constLast().refusal, QcMsg::AdminResult::Refusal::Rights);
+        console(u"op Raw"_s);
+        ticks(2);
+        QCOMPARE(rightsNotices().size(), 3);
+        QVERIFY(rightsNotices().constLast().ok);
+
+        // A second player who is no operator gets no notice at all.
+        std::unique_ptr<RawClient> guest = connect(u"Guest"_s);
+        ticks(3);
+        QVERIFY(std::ranges::none_of(guest->admin, [](const QcMessage &message) { return std::holds_alternative<QcMsg::AdminResult>(message); }));
     }
 
     void deopOfOneselfAnswersAndThenRefuses()
@@ -324,9 +365,8 @@ private slots:
             m_client->connection.send(QcMsg::AdminRequest{quint32(1000 + i), Kind::Players, {}});
         }
         QcTestUtil::pump();
-        const QList<QcMsg::AdminResult> answers = received<QcMsg::AdminResult>();
-        QVERIFY(answers.size() >= 15);
-        QVERIFY(answers.size() <= 25);
+        QVERIFY(answers().size() >= 15);
+        QVERIFY(answers().size() <= 25);
     }
 
     void oversizedRequestsCloseTheConnection()
@@ -336,7 +376,7 @@ private slots:
         m_client->connection.send(QcMsg::AdminRequest{1, Kind::Command, {u"a"_s, u"b"_s, u"c"_s, u"d"_s, u"e"_s}});
         QcTestUtil::pump();
         ticks(2);
-        QVERIFY(received<QcMsg::AdminResult>().isEmpty());
+        QVERIFY(answers().isEmpty());
         QCOMPARE(m_server->clientCount(), 0);
     }
 };

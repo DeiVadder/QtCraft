@@ -187,6 +187,9 @@ Taste oder Pad-Symbol (`PadGlyph`) als kleines Schild, z. B. neben „Handbuch�
 ### 6.11 `NavList` (Seitenleiste)
 Kategorien als Liste links (Einträge `NavButton`, Text, optional Tasten-Schild oder eine leise Zahl rechts, `notes`: die Einträge je Kapitel im Handbuch), gewählte Kategorie mit `accent`-Balken links und `panelRaised`; LB/RB (Gamepad, `gamepadCommand` des Bildschirms) und Strg+Tab / Strg+Umschalt+Tab wechseln die Kategorie (auf dem Mac die Control-Taste, die Qt als Meta meldet; Shortcuts der `NavList`, die vor dem fokussierten Steuerelement greifen, und `NavList.takeCommand`). Hoch/Runter wandern durch die Einträge wie in der Seitenleiste des Hauptmenüs.
 
+### 6.12 `LineChart` (Diagramm, E-863)
+Kleines Liniendiagramm eines Werts über die Zeit (Übersicht von „Server verwalten“): oben Titel (Stufe „Hilfe“, `textSecondary`) und der aktuelle Wert mit Einheit (fett), darunter die Fläche `panelRaised` mit Rahmen `graphFrame`, Höhe `Ui.size.chart`; die Linie in `accent`, die neueste Messung rechts, `capacity` Werte füllen die Breite (`AdminController.chartCapacity`: 600 Sekunden, 1 440 Minuten). Zahlen der Grenzen und Längen kommen aus C++ (`ticksPerSecond`, `tickBudgetMs`, `nameLength` …), nie als Literal in QML. Eine Grenze (`limit`, z. B. 20 Ticks je Sekunde) ist eine eigene Linie in `graphLimit`. Die Skala rundet den höchsten Wert auf 1, 2 oder 5 mal eine Zehnerpotenz und steht klein oben links. Gezeichnet von `DebugGraph` im Szenengraph (keine Canvas). `Accessible.role` ist `Chart`, der Name Titel und Wert. Mehrere Diagramme stehen in einem Raster mit zwei Spalten; der Zeitraum ist ein `Segments` darüber.
+
 ## 7 Beschriftung
 
 - **Satzanfang groß, sonst wie im Satz** („Größe der Oberfläche“, nicht „Größe Der Oberfläche“); englisch ebenso (sentence case).
@@ -237,6 +240,10 @@ Mensch 2026-10-22, wie die Systemeinstellungen von macOS: **eine** Seitenleiste,
 - **Handbuch:** in der Seitenleiste unter dem Titel die Suche (`GameTextField`, Enter öffnet den ersten Treffer, Runter springt in die Liste) und die Kapitel mit ihrer Zahl an Einträgen (`NavList.notes`; die Liste scrollt, wenn das Fenster zu niedrig ist, und folgt dem Fokus); während einer Suche ist kein Kapitel markiert, ein gewähltes Kapitel beendet die Suche. Rechts oben „‹ Vorherige Seite“ (leise, Rücktaste, Alt+Links) mit dem Bedienhinweis, darunter die Einträge (`Ui.size.handbookEntries`) und die Seite (`HandbookPage`). LB/RB wechseln das Kapitel.
 - **Hintergrund:** im Hauptmenü dessen Verlauf (nichts vom Menü scheint durch), im Spiel das fast deckende `panel` über der Welt (weder Welt noch HUD scheinen durch den Text), die Seitenleiste darauf auf `scrim`.
 - Test-Hooks bleiben: `open:menuSettingsScreen` (Einstellungen im Hauptmenü), die Overlays `settings`, `display`, `audio`, … (im Spiel), `--handbook <ziel>`.
+
+## 8c Server verwalten (E-863)
+
+Umgesetzt in `src/app/qml/admin/` (`AdminScreen` und je Abschnitt eine Seite). Pausenmenü → „Server verwalten“ (nur für Operatoren) führt eine Ebene tiefer wie die Einstellungen (8b), Rückweg „‹ Pausenmenü“. Abschnitte: Übersicht (Diagramme 6.12), Spieler, Chat, Befehle, Listen, Einstellungen, Log, Server. Muster: Listen und Spieleraktionen gelten sofort (Muster 1), Spielregeln und Grenzen sind ein Entwurf mit „Speichern“/„Verwerfen“ (Muster 2), Rauswerfen, Sperren und Stoppen fragen modal (`AdminActionDialog`, Fokus auf „Abbrechen“, die Aktion destruktiv und nach sich selbst benannt). Antworten und Ablehnungen des Servers stehen als `Hint` über dem Abschnitt. Einstellungen zeigen den übersetzten Namen (`QcAdminSettingNames`) als Bezeichnung und den Schlüssel in der Hilfezeile; der Entwurf liegt im Controller und überdauert das Schließen (Leiste „ungespeichert“). Die eigenen Operator-Rechte zu entziehen fragt modal. Listen von Zeilen (Chat, Log, Ausgabe) liegen eingelassen auf `field` und scrollen für sich, die Eingabezeile steht darunter; Warnungen und Fehler mit Farbe und Zeichen („!“, „×“). Layout-Test: `tests/ui/test_admin_layout.sh`.
 
 ## 9 Mindestgröße, Skalierung, Scrollen
 

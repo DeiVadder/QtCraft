@@ -20,6 +20,7 @@ Rectangle {
             settingsScreen.close();
             characterScreen.close();
             lanScreen.close();
+            adminScreen.close();
         }
     }
     Keys.onPressed: event => {
@@ -36,7 +37,8 @@ Rectangle {
         anchors.centerIn: parent
         // Hidden while one of its screens is open: it would show around a small one. The handbook
         // covers it as well (and keeps Tab).
-        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible && !menu.game.handbook.isOpen
+        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible && !adminScreen.visible
+                 && !menu.game.handbook.isOpen
         width: Math.min(parent.width - 2 * Ui.space.l, Ui.screen.column)
         spacing: Ui.space.s
 
@@ -88,6 +90,16 @@ Rectangle {
             visible: !menu.game.multiplayer.networkGame
             text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
             onClicked: menu.game.overlay = GameController.Overlay.Lan
+        }
+
+        // Only for operators (decision E-863): the server tells each player whether he is one.
+        GameButton {
+            objectName: "manageServerButton"
+            Layout.fillWidth: true
+            large: true
+            visible: menu.game.admin.operatorRights
+            text: qsTr("Manage server")
+            onClicked: menu.game.overlay = GameController.Overlay.Admin
         }
 
         GameButton {
@@ -151,6 +163,13 @@ Rectangle {
         onClosed: menu.subScreenClosed([GameController.Overlay.Lan])
     }
 
+    AdminScreen {
+        id: adminScreen
+
+        game: menu.game
+        onClosed: menu.subScreenClosed([GameController.Overlay.Admin])
+    }
+
     // One sub-screen at a time, the one the overlay names; any other overlay closes them.
     function followOverlay() {
         const overlay = menu.game.overlay;
@@ -160,6 +179,8 @@ Rectangle {
             characterScreen.close();
         if (overlay !== GameController.Overlay.Lan)
             lanScreen.close();
+        if (overlay !== GameController.Overlay.Admin)
+            adminScreen.close();
         if (menu.settingsPages.includes(overlay)) {
             settingsScreen.startPage = settingsScreen.pageOfOverlay(overlay);
             settingsScreen.open();
@@ -167,6 +188,8 @@ Rectangle {
             characterScreen.open();
         } else if (overlay === GameController.Overlay.Lan) {
             lanScreen.open();
+        } else if (overlay === GameController.Overlay.Admin && !adminScreen.visible) {
+            adminScreen.open();
         }
     }
 

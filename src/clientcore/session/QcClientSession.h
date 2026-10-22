@@ -65,6 +65,8 @@ public:
     void disconnectFromServer();
 
     State state() const { return m_state; }
+    // The name this session plays under (sent in Hello).
+    QString playerName() const { return m_playerName; }
     // Why the session ended (translated, E-094) and the server's Disconnect (empty if the link broke).
     QString disconnectReason() const { return m_disconnectReason; }
     const QcMsg::Disconnect &disconnectMessage() const { return m_disconnectMessage; }

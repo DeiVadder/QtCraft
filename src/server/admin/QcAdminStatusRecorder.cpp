@@ -1,5 +1,7 @@
 #include "server/admin/QcAdminStatusRecorder.h"
 
+#include "common/protocol/QcAdminSamples.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -61,7 +63,7 @@ QcMsg::AdminSample QcAdminStatusRecorder::sample(const Counts &counts, double se
         m_seconds.removeFirst();
     }
     m_seconds.append(sample);
-    if (++m_inMinute >= 60) {
+    if (++m_inMinute >= QcAdminSamples::secondsPerMinute) {
         foldMinute();
     }
     return sample;
@@ -74,25 +76,8 @@ std::optional<QcMsg::AdminSample> QcAdminStatusRecorder::latest() const
 
 void QcAdminStatusRecorder::foldMinute()
 {
-    const QList<QcMsg::AdminSample> minute = m_seconds.mid(m_seconds.size() - m_inMinute);
+    const QcMsg::AdminSample folded = QcAdminSamples::folded(m_seconds.mid(m_seconds.size() - m_inMinute));
     m_inMinute = 0;
-    QcMsg::AdminSample folded = minute.last();
-    const auto mean = [&minute](float QcMsg::AdminSample::*field) {
-        double sum = 0.0;
-        for (const QcMsg::AdminSample &sample : minute) {
-            sum += double(sample.*field);
-        }
-        return float(sum / double(minute.size()));
-    };
-    const auto highest = [&minute](float QcMsg::AdminSample::*field) {
-        return std::ranges::max(minute, {}, field).*field;
-    };
-    folded.tickMeanMs = mean(&QcMsg::AdminSample::tickMeanMs);
-    folded.ticksPerSecond = mean(&QcMsg::AdminSample::ticksPerSecond);
-    folded.sentKbPerSecond = mean(&QcMsg::AdminSample::sentKbPerSecond);
-    folded.receivedKbPerSecond = mean(&QcMsg::AdminSample::receivedKbPerSecond);
-    folded.tickP99Ms = highest(&QcMsg::AdminSample::tickP99Ms);
-    folded.tickMaxMs = highest(&QcMsg::AdminSample::tickMaxMs);
 
     if (m_minutes.size() >= minutesKept) {
         m_minutes.removeFirst();

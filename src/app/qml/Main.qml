@@ -154,7 +154,7 @@ ApplicationWindow {
                && [GameController.Overlay.Pause, GameController.Overlay.Settings, GameController.Overlay.Display, GameController.Overlay.Audio,
                    GameController.Overlay.Interface, GameController.Overlay.Controls,
                    GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks,
-                   GameController.Overlay.Character, GameController.Overlay.Lan].includes(game.overlay)
+                   GameController.Overlay.Character, GameController.Overlay.Lan, GameController.Overlay.Admin].includes(game.overlay)
 
         screen: PauseMenu {
             game: root.controller

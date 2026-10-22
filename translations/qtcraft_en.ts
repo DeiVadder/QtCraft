@@ -2,6 +2,17 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>AdminPlayersPage</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="30"/>
+        <source>Playing now (%n)</source>
+        <translation>
+            <numerusform>Playing now (%n)</numerusform>
+            <numerusform>Playing now (%n)</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>GraphicsPage</name>
     <message numerus="yes">
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="128"/>
@@ -20,6 +31,25 @@
         <translation>
             <numerusform>%n player online</numerusform>
             <numerusform>%n players online</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QcAdminController</name>
+    <message numerus="yes">
+        <location filename="../src/app/admin/QcAdminController.cpp" line="510"/>
+        <source>Saved %n value(s).</source>
+        <translation>
+            <numerusform>Saved %n value.</numerusform>
+            <numerusform>Saved %n values.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/admin/QcAdminController.cpp" line="512"/>
+        <source>%n value(s) not saved; they stay changed here:</source>
+        <translation>
+            <numerusform>%n value not saved; it stays changed here:</numerusform>
+            <numerusform>%n values not saved; they stay changed here:</numerusform>
         </translation>
     </message>
 </context>

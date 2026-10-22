@@ -7,6 +7,7 @@
 
 #include <QElapsedTimer>
 #include <QHash>
+#include <QSet>
 
 class QcServerCommands;
 struct QcServerClient;
@@ -18,7 +19,9 @@ struct QcServerClient;
 // operator's command line through QcServerCommands, the same code as the chat and the console, so
 // the admin channel adds no rules of its own; stopping the server runs the console's /stop and
 // needs the argument "confirm". The status history is recorded all the time; pings to measure the
-// players' round trips go out only while an operator follows the status.
+// players' round trips go out only while an operator follows the status. Every playing client is
+// told when he becomes an operator (a result with number 0 and ok) and when he stops being one (a
+// refusal with number 0), so the game shows "Manage server" only to operators (decision E-863).
 class QcServerAdmin
 {
 public:
@@ -34,7 +37,7 @@ public:
     bool handle(QcServerClient &client, const QcMessage &message);
     // A tick ended after `ms` (the phases inside the tick).
     void noteTick(double ms) { m_recorder.noteTick(ms); }
-    // Every tick: rights of the subscribers, new chat lines, and once a second the status sample,
+    // Every tick: rights of the subscribers and of the players, new chat lines, and once a second the status sample,
     // the status, the players and new log lines for those who follow them.
     void update();
     // A client left: his network bytes count on (traffic()), his subscription ends.
@@ -77,6 +80,8 @@ private:
     void pong(const QcServerClient &client, quint32 nonce);
     // Ends subscriptions of clients who left or lost their rights.
     void dropUnauthorized();
+    // Tells the playing clients whose rights changed whether they are operators now.
+    void tellRights();
     void sendChat();
     // The sample of the second that ended; the status, players and log to those who follow them.
     void sampleSecond();
@@ -90,6 +95,8 @@ private:
     QcAdminStatusRecorder m_recorder;
     QHash<quint32, Subscriber> m_subscribers;
     QHash<quint32, Ping> m_pings;
+    // Clients told they are operators (tellRights).
+    QSet<quint32> m_operators;
     // Players' time of each client's latest log tail.
     QHash<quint32, qint64> m_lastTail;
     QcTraffic m_departed;

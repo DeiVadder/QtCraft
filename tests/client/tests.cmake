@@ -153,3 +153,4 @@ qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES qc_app_
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.
 qc_add_test(test_multiplayer_ui SOURCES client/test_multiplayer_ui.cpp LIBRARIES qc_app_core)
+qc_add_test(test_admin_controller SOURCES client/test_admin_controller.cpp LIBRARIES qc_app_core)

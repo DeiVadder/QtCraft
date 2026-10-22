@@ -236,6 +236,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     protocol/QcAdminCodec.cpp
     protocol/QcAdminMessages.h
+    protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcChunkCodec.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp

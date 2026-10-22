@@ -69,6 +69,16 @@ private slots:
         }
     }
 
+    // The server tells the player of his own world that he is an operator, without being asked:
+    // the pause menu offers "Manage server" (decision E-863).
+    void theHostHearsHeIsAnOperator()
+    {
+        start({});
+        QTRY_VERIFY_WITH_TIMEOUT(m_session->admin().operatorRights(), timeoutMs);
+        m_session->disconnectFromServer();
+        QTRY_VERIFY_WITH_TIMEOUT(!m_session->admin().operatorRights(), timeoutMs);
+    }
+
     void followsTheStatusAndPlayers()
     {
         start({});

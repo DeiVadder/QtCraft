@@ -11,7 +11,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 20> overlayNames{
+constexpr std::array<QStringView, 21> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -32,8 +32,9 @@ constexpr std::array<QStringView, 20> overlayNames{
     u"display",
     u"audio",
     u"interface",
+    u"admin",
 };
-static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Interface) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Admin) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -71,6 +72,7 @@ bool QcScreenState::isMenu(Overlay overlay)
     case Overlay::TexturePacks:
     case Overlay::Character:
     case Overlay::Lan:
+    case Overlay::Admin:
         return true;
     default:
         return false;

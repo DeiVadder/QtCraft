@@ -14,5 +14,7 @@
     "and %n more": [
         "and %n more",
         "and %n more"
-    ]
+    ],
+    "Saved %n value(s).": ["Saved %n value.", "Saved %n values."],
+    "%n value(s) not saved; they stay changed here:": ["%n value not saved; it stays changed here:", "%n values not saved; they stay changed here:"]
 }

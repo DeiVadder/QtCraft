@@ -1,6 +1,7 @@
 #include "clientcore/admin/QcClientAdmin.h"
 
 #include "clientcore/debug/QcClientLogging.h"
+#include "common/protocol/QcAdminSamples.h"
 #include "common/protocol/QcChatText.h"
 
 namespace {
@@ -55,14 +56,30 @@ void QcClientAdmin::follow(quint8 topics, QcMsg::AdminLogLine::Level logLevel)
     // A topic followed anew starts from the server's history, not from what came before.
     if ((wanted & ~m_topics & QcMsg::AdminSubscribe::chat) != 0) {
         m_chat.clear();
+        ++m_chatArrivals.replacements;
     }
     if ((wanted & ~m_topics & QcMsg::AdminSubscribe::log) != 0 || logLevel != m_logLevel) {
         m_log.clear();
+        ++m_logArrivals.replacements;
     }
     m_topics = wanted;
     m_logLevel = logLevel;
     if (m_welcomed) {
         sendFollow();
+    }
+}
+
+void QcClientAdmin::closed()
+{
+    m_welcomed = false;
+    setOperatorRights(false);
+}
+
+void QcClientAdmin::setOperatorRights(bool rights)
+{
+    if (rights != m_operatorRights) {
+        m_operatorRights = rights;
+        emit operatorRightsChanged();
     }
 }
 
@@ -114,6 +131,9 @@ void QcClientAdmin::receiveResult(const QcMsg::AdminResult &result)
     // Without rights the server follows nothing for this client any more; a new follow() asks again.
     if (m_lastRefusal == Refusal::Rights) {
         m_topics = 0;
+        setOperatorRights(false);
+    } else if (result.ok) {
+        setOperatorRights(true);
     }
     if (!result.ok) {
         emit refused(m_lastRefusal, display(result).join(u'\n'));
@@ -134,7 +154,9 @@ bool QcClientAdmin::receiveReport(const QcMessage &message)
         m_status = *status;
         // The status right after the history repeats its newest sample.
         if (m_history.seconds.isEmpty() || m_history.seconds.last() != status->sample) {
-            m_history.seconds = appendedBounded(std::move(m_history.seconds), {status->sample}, qsizetype(QcMsg::AdminLimits::maxHistory));
+            m_history.seconds = appendedBounded(std::move(m_history.seconds), {status->sample}, QcAdminSamples::secondsKept);
+            // The day goes on as on the server: every 60 seconds make a minute.
+            m_history = QcAdminSamples::withMinuteFolded(std::move(m_history));
         }
         emit statusChanged();
     } else if (const auto *history = std::get_if<QcMsg::AdminHistory>(&message)) {
@@ -146,8 +168,10 @@ bool QcClientAdmin::receiveReport(const QcMessage &message)
     } else if (const auto *chat = std::get_if<QcMsg::AdminChat>(&message)) {
         if (chat->history) {
             m_chat.clear();
+            ++m_chatArrivals.replacements;
         }
         m_chat = appendedBounded(std::move(m_chat), chat->lines, chatLimit);
+        m_chatArrivals.total += quint64(chat->lines.size());
         emit chatReceived();
     } else if (const auto *catalogue = std::get_if<QcMsg::AdminCatalogue>(&message)) {
         m_catalogue = *catalogue;
@@ -161,8 +185,10 @@ bool QcClientAdmin::receiveReport(const QcMessage &message)
     } else if (const auto *log = std::get_if<QcMsg::AdminLog>(&message)) {
         if (log->tail) {
             m_log.clear();
+            ++m_logArrivals.replacements;
         }
         m_log = appendedBounded(std::move(m_log), log->lines, logLimit);
+        m_logArrivals.total += quint64(log->lines.size());
         emit logReceived();
     } else {
         return false;

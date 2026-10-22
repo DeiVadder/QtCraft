@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/admin/QcAdminController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
@@ -85,6 +86,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
     // Photo mode: hidden HUD and screenshots (decision E-692).
     Q_PROPERTY(QcPhotoMode *photo READ photo CONSTANT FINAL)
+    // "Manage server" for operators (decision E-863).
+    Q_PROPERTY(QcAdminController *admin READ admin CONSTANT FINAL)
 
 public:
     // What the window shows (QcScreenState::Phase); QML compares against GameController.Phase.Playing etc.
@@ -127,6 +130,7 @@ public:
     // Joining and hosting network games (decision E-251).
     QcMultiplayerController *multiplayer() const { return m_multiplayer.get(); }
     QcPhotoMode *photo() const { return m_photo.get(); }
+    QcAdminController *admin() const { return m_admin.get(); }
     // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
     void startRemoteSession(std::unique_ptr<QcClientSession> session);
     // The mods that went into the content of the running world.
@@ -219,6 +223,7 @@ private:
     std::unique_ptr<QcBenchmarkRun> m_benchmark;
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
+    std::unique_ptr<QcAdminController> m_admin;
     std::unique_ptr<QcGamepadSource> m_gamepadSource;
     QcGamepadControls m_gamepad;
     QcGamepadUi m_gamepadUi;

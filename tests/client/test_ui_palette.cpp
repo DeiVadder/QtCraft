@@ -118,13 +118,14 @@ bool ownNumber(QStringView value, const QRegularExpressionMatch &number)
 bool assignsOwnNumber(const QString &code)
 {
     // Properties whose numbers are no sizes: ranges and values (also of a validator), stacking,
-    // counts (lines, characters, grid columns and spans), stretch factors, decimals of a shown
-    // value, frame rates, and times in milliseconds.
+    // counts (lines, characters, grid columns and spans, a chart's values), stretch factors,
+    // decimals of a shown value, a chart's limit line, frame rates, and times in milliseconds.
     static const QSet<QString> notSizes = {u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"bottom"_s, u"top"_s,
                                            u"opacity"_s, u"z"_s, u"maximumLineCount"_s, u"maximumLength"_s,
                                            u"columns"_s, u"rows"_s, u"columnSpan"_s, u"rowSpan"_s,
                                            u"horizontalStretchFactor"_s, u"verticalStretchFactor"_s, u"model"_s,
-                                           u"valueText"_s, u"framesPerSecond"_s, u"interval"_s, u"duration"_s};
+                                           u"valueText"_s, u"framesPerSecond"_s, u"interval"_s, u"duration"_s,
+                                           u"capacity"_s, u"limit"_s};
     static const QRegularExpression assignment(
         uR"(^\s*(?:readonly\s+)?(?:required\s+)?(?:property\s+[\w<>]+\s+)?([\w.]+)\s*:\s*(.+)$)"_s);
     static const QRegularExpression number(uR"((?<![\w.])(\d+(?:\.\d+)?|\.\d+)(?![\w.]))"_s);
@@ -410,8 +411,8 @@ private slots:
     }
 
     // The shared controls, the settings, the main menu with its pages and screens (world list, new
-    // world, multiplayer, LAN, mods), the character screen and the handbook's screen with its list
-    // take every gap, margin, size, radius and font size from the named steps of Ui (decisions
+    // world, multiplayer, LAN, mods), the character screen, the handbook's screen with its list and
+    // "Manage server" (decision E-863) take every gap, margin, size, radius and font size from the named steps of Ui (decisions
     // E-845, E-852), so they change in one place. Ui.qml itself holds the values. Still open
     // (stage 76.2): the handbook's page, recipes and links, the inventories, the HUD, and the
     // death, disconnect and message screens.
@@ -424,7 +425,8 @@ private slots:
         const QStringList files = qmlFiles();
         for (const QString &path : files) {
             const bool folder = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.contains(u"/menus/"_s)
-                                || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s);
+                                || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s)
+                                || path.contains(u"/admin/"_s);
             const bool covered = folder && std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
             // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
             // (ItemSlot.px), in the HUD and on the screens alike.

@@ -93,6 +93,9 @@ QtObject {
         property real scrollHandle
         // The room a screen leaves below itself for the pad's hints (PadHints) while they show.
         property real padHints
+        // A small line chart (LineChart) and the list of the admin screen's chat, log and output.
+        property real chart
+        property real lines
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -171,6 +174,8 @@ QtObject {
         label: ui.px(110)
         formColumn: ui.px(300)
         padHints: ui.px(48)
+        chart: ui.px(64)
+        lines: ui.px(200)
         handbookEntries: ui.px(220)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)

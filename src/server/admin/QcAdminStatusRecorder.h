@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/protocol/QcAdminMessages.h"
+#include "common/protocol/QcAdminSamples.h"
 
 #include <QList>
 
@@ -8,15 +8,15 @@
 
 // The status history of the admin channel (decision E-848): the durations of the ticks since the
 // latest sample, and the samples of the last secondsKept seconds (one a second) and of the last
-// minutesKept minutes (one a minute, the seconds of the minute folded together: means of the means
+// minutesKept minutes (one a minute, the seconds of the minute folded by QcAdminSamples::folded: means of the means
 // and rates, the highest p99 and maximum, the latest counts). Recorded whether or not an operator
 // looks, so a chart opened later shows the time before it. Cheap: one entry per tick, one sample a
 // second.
 class QcAdminStatusRecorder
 {
 public:
-    static constexpr qsizetype secondsKept = 600;
-    static constexpr qsizetype minutesKept = 1440;
+    static constexpr qsizetype secondsKept = QcAdminSamples::secondsKept;
+    static constexpr qsizetype minutesKept = QcAdminSamples::minutesKept;
     // Tick durations kept between two samples; a sprint runs more, then mean and maximum still count
     // all of them and the p99 looks at the first ones.
     static constexpr qsizetype ticksKept = 8192;

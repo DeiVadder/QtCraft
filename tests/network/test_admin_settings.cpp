@@ -210,6 +210,42 @@ private slots:
         QCOMPARE(QSet<QString>(seen.begin(), seen.end()).size(), 120);
     }
 
+    // A new log level brings its tail at once (no LogTail, no rate limit); after a tail, of either
+    // kind, the new lines follow from its newest on, none twice (decision E-863).
+    void aNewLevelBringsItsTailAndNoLineTwice()
+    {
+        QcServerConfig config;
+        config.fullAdminLog = true;
+        join(config);
+        follow(QcMsg::AdminSubscribe::log, 1);
+        qCInfo(lcSettingsTest) << "before the change";
+        ticks(25);
+        const auto tails = [this] { return std::ranges::count_if(received<QcMsg::AdminLog>(), &QcMsg::AdminLog::tail); };
+        const qsizetype before = tails();
+        follow(QcMsg::AdminSubscribe::log, 0);
+        ticks(1);
+        QCOMPARE(tails(), before + 1);
+        QCOMPARE(latest<QcMsg::AdminLog>()->tail, true);
+
+        // The request is logged before its tail is taken: it must not come again afterwards.
+        QVERIFY(ask(Kind::LogTail, {u"0"_s, u"100"_s})->ok);
+        qCInfo(lcSettingsTest) << "after the change";
+        ticks(25);
+        QStringList shown;
+        const QList<QcMsg::AdminLog> logs = received<QcMsg::AdminLog>();
+        for (const QcMsg::AdminLog &log : logs) {
+            if (log.tail) {
+                shown.clear();
+            }
+            for (const QcMsg::AdminLogLine &line : log.lines) {
+                shown.append(QString::number(line.timeMs) + u' ' + line.text);
+            }
+        }
+        QCOMPARE(QSet<QString>(shown.begin(), shown.end()).size(), shown.size());
+        QCOMPARE(shown.filter(u"before the change"_s).size(), 1);
+        QCOMPARE(shown.filter(u"after the change"_s).size(), 1);
+    }
+
     void aWorldInTheGameShowsOnlyTheServersLog()
     {
         // The default: a server in the game's process shares its log with the host's game.

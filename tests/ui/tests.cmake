@@ -285,3 +285,10 @@ add_test(NAME app_offscreen_view_hidden_keeps_sections
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_view_hidden_keeps_sections;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-view-hidden.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# "Manage server" in every section, German and English, small and medium window (decision E-863).
+if(NOT QC_SANITIZERS)
+    add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
+        ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 1800 COST 60
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
+endif()

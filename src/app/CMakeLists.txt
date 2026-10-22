@@ -5,6 +5,13 @@
 qt_add_library(qc_app_core STATIC)
 # Sources per folder, sorted, each header next to its sources (scripts/check-cmake-lists.py).
 target_sources(qc_app_core PRIVATE
+    admin/QcAdminController.h admin/QcAdminController.cpp
+    admin/QcAdminLineModel.h admin/QcAdminLineModel.cpp
+    admin/QcAdminSettingNames.h admin/QcAdminSettingNames.cpp
+    admin/QcAdminSettingsDraft.h admin/QcAdminSettingsDraft.cpp
+    admin/QcAdminViews.h admin/QcAdminViews.cpp
+)
+target_sources(qc_app_core PRIVATE
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
@@ -157,6 +164,18 @@ qt_add_qml_module(qc_app_core
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
     QML_FILES
         qml/Main.qml
+        qml/admin/AdminActionDialog.qml
+        qml/admin/AdminChatPage.qml
+        qml/admin/AdminCommandsPage.qml
+        qml/admin/AdminLineList.qml
+        qml/admin/AdminListsPage.qml
+        qml/admin/AdminLogPage.qml
+        qml/admin/AdminOverviewPage.qml
+        qml/admin/AdminPlayersPage.qml
+        qml/admin/AdminScreen.qml
+        qml/admin/AdminServerPage.qml
+        qml/admin/AdminSettingRow.qml
+        qml/admin/AdminSettingsPage.qml
         qml/character/CharacterEditor.qml
         qml/character/CharacterPresets.qml
         qml/character/CharacterPreviewHost.qml
@@ -173,6 +192,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/ItemSlot.qml
         qml/controls/KeyBadge.qml
         qml/controls/LazyScreen.qml
+        qml/controls/LineChart.qml
         qml/controls/ListRow.qml
         qml/controls/ModalDialog.qml
         qml/controls/NavButton.qml

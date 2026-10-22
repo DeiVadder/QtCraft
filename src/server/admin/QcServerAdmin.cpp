@@ -3,7 +3,9 @@
 #include "common/core/QcProcessMemory.h"
 #include "common/diagnostics/QcMessageLog.h"
 #include "common/protocol/QcChatText.h"
+#include "server/commands/QcAccessList.h"
 #include "server/commands/QcServerCommands.h"
+#include "server/commands/QcWorldBackup.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
@@ -79,6 +81,10 @@ QcMsg::AdminResult refusal(quint32 id, QcMsg::AdminResult::Refusal reason, const
 
 constexpr const char *rightsText = QT_TRANSLATE_NOOP("QcServerMessages", "Only operators can use the server administration");
 
+// The screen offers the fields at the lengths the server takes.
+static_assert(QcMsg::AdminLimits::maxReason == QcAccessList::maxReasonLength);
+static_assert(QcMsg::AdminLimits::maxBackupLabel == QcWorldBackup::maxLabelLength);
+
 } // namespace
 
 QcServerAdmin::QcServerAdmin(QcServerState &state, QcServerCommands &commands, const QcTickPhaseTimer &phases, const QcTickScheduler &ticks)
@@ -118,6 +124,8 @@ bool QcServerAdmin::authorized(QcServerClient &client, quint32 id, QLatin1String
         client.connection->send(refusal(0, QcMsg::AdminResult::Refusal::Rights, rightsText));
     }
     client.connection->send(refusal(id, QcMsg::AdminResult::Refusal::Rights, rightsText));
+    // The refusal tells him he is no operator (tellRights).
+    m_operators.remove(client.id);
     return false;
 }
 
@@ -131,6 +139,7 @@ void QcServerAdmin::subscribe(QcServerClient &client, QcMsg::AdminSubscribe subs
     }
 
     Subscriber &subscriber = m_subscribers[client.id];
+    const QcMsg::AdminLogLine::Level previousLevel = subscriber.logLevel;
     subscriber.topics = subscribe.topics;
     subscriber.logLevel = QcMsg::AdminLogLine::Level(subscribe.logLevel);
     const quint8 added = subscribe.topics & ~before;
@@ -145,7 +154,9 @@ void QcServerAdmin::subscribe(QcServerClient &client, QcMsg::AdminSubscribe subs
         client.connection->send(QcMsg::AdminChat{true, m_commands.chatLog().since(0)});
         subscriber.chatSeen = m_commands.chatLog().latest();
     }
-    if ((added & QcMsg::AdminSubscribe::log) != 0) {
+    // The log followed anew or at another level starts from its tail at that level.
+    const bool newLevel = (before & QcMsg::AdminSubscribe::log) != 0 && subscriber.logLevel != previousLevel;
+    if ((added & QcMsg::AdminSubscribe::log) != 0 || ((subscribe.topics & QcMsg::AdminSubscribe::log) != 0 && newLevel)) {
         const QcAdminReports::Log tail = m_reports.log(subscriber.logLevel, tailLines, 0, true);
         subscriber.logSeen = tail.latest;
         client.connection->send(tail.message);
@@ -255,7 +266,12 @@ void QcServerAdmin::logTail(QcServerClient &client, const QcMsg::AdminRequest &r
     if (boundedLevel != level || boundedLines != lines) {
         qCWarning(lcAdmin).noquote() << u"Log tail of %1: level %2 and %3 lines bounded to %4 and %5"_s.arg(client.name).arg(level).arg(lines).arg(boundedLevel).arg(boundedLines);
     }
-    client.connection->send(m_reports.log(QcMsg::AdminLogLine::Level(boundedLevel), boundedLines, 0, true).message);
+    const QcAdminReports::Log tail = m_reports.log(QcMsg::AdminLogLine::Level(boundedLevel), boundedLines, 0, true);
+    // The tail replaces what the client shows: new lines follow from its newest on, not twice.
+    if (const auto subscriber = m_subscribers.find(client.id); subscriber != m_subscribers.end()) {
+        subscriber->logSeen = std::max(subscriber->logSeen, tail.latest);
+    }
+    client.connection->send(tail.message);
     client.connection->send(QcMsg::AdminResult{request.id, true, {}});
 }
 
@@ -298,6 +314,7 @@ void QcServerAdmin::pong(const QcServerClient &client, quint32 nonce)
 void QcServerAdmin::update()
 {
     dropUnauthorized();
+    tellRights();
     sendChat();
     if (m_state.clock().playerTimeNs() - m_lastSampleNs >= statusIntervalNs) {
         sampleSecond();
@@ -310,6 +327,7 @@ void QcServerAdmin::noteLeft(const QcServerClient &client)
     m_departed.sent += own.sent;
     m_departed.received += own.received;
     m_subscribers.remove(client.id);
+    m_operators.remove(client.id);
     m_pings.remove(client.id);
     m_lastTail.remove(client.id);
 }
@@ -339,8 +357,31 @@ void QcServerAdmin::dropUnauthorized()
         if (present) {
             qCInfo(lcAdmin).noquote() << u"%1 lost the operator rights: the server administration ends"_s.arg((*client)->name);
             (*client)->connection->send(refusal(0, QcMsg::AdminResult::Refusal::Rights, rightsText));
+            // That refusal tells him already (tellRights).
+            m_operators.remove(it.key());
         }
         it = m_subscribers.erase(it);
+    }
+}
+
+void QcServerAdmin::tellRights()
+{
+    for (const auto &client : m_state.clients()) {
+        if (client->state != QcServerClient::State::Playing || !client->connection) {
+            continue;
+        }
+
+        const bool operatorRights = m_state.permissionOf(*client) != QcPermission::Player;
+        if (operatorRights == m_operators.contains(client->id)) {
+            continue;
+        }
+        if (operatorRights) {
+            m_operators.insert(client->id);
+            client->connection->send(QcMsg::AdminResult{0, true, {}});
+        } else {
+            m_operators.remove(client->id);
+            client->connection->send(refusal(0, QcMsg::AdminResult::Refusal::Rights, rightsText));
+        }
     }
 }
 

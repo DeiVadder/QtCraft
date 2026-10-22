@@ -273,9 +273,15 @@ against a determined attacker.
 ## Server administration (admin channel)
 
 Operators manage a running server over their normal game connection (decision E-848); there is
-no second port and no separate login. The in-game screen "Manage server" follows in stage 77.2;
-until then the channel is used by the control interface (`admin`, `adminFollow`, `adminStatus`,
-see `docs/Steuerschnittstelle.md`) and the tests.
+no second port and no separate login. In the game, operators open **Pause menu → Manage server**
+(decision E-863): overview with charts of the load, players (operator rights, kick and ban with a
+reason), chat, commands with completion and parameter help, lists, game rules and limits (edit,
+then save or discard), log with a level filter, saving, backups and stopping. The entry shows only
+to operators: the server tells every player when he becomes one and when he stops being one (an
+admin result with number 0). The screen follows status, chat and log only while it is open. There
+is no management-only connection from the main menu: join the server (as a spectator if you like)
+and open the screen there. The control interface uses the same channel (`admin`, `adminFollow`,
+`adminStatus`, see `docs/Steuerschnittstelle.md`).
 
 - **Who:** operators only, the same rule as the commands (`access.json`, `operators` in
   `server.json`, the local player of a single-player world). The server checks the rights on

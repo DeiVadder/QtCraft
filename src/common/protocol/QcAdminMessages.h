@@ -33,6 +33,11 @@ inline constexpr quint32 maxSettings = 512;
 // The status history: ten minutes at one point per second, a day at one point per minute.
 inline constexpr quint32 maxHistory = 2048;
 inline constexpr quint32 maxLogLines = 2000;
+// What the server takes in the arguments of an action (checked there, offered to the screen):
+// a reason of a kick or ban (QcAccessList::maxReasonLength) and a backup's label
+// (QcWorldBackup::maxLabelLength).
+inline constexpr qsizetype maxReason = 128;
+inline constexpr qsizetype maxBackupLabel = 32;
 } // namespace AdminLimits
 
 // Client -> server: the topics the operator follows; 0 ends the subscription. Subscribing to a
