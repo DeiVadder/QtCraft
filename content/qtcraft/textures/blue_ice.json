@@ -1,8 +1,8 @@
 {
     "name": "blue_ice",
-    "pattern": "speckle",
-    "primary": "#74a8f2",
-    "secondary": "#93bdf6",
+    "pattern": "ice",
+    "primary": "#5a92ea",
+    "secondary": "#8cbaf6",
     "variation": 0.05,
     "seed": 910
 }

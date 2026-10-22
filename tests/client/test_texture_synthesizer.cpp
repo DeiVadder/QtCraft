@@ -1,6 +1,11 @@
+#include "clientcore/textures/QcProceduralTexture.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
+#include <QJsonObject>
 #include <QTest>
+
+#include <array>
+#include <cstdlib>
 
 using namespace Qt::StringLiterals;
 
@@ -12,6 +17,94 @@ int transparentPixels(const QImage &image)
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             count += image.pixelColor(x, y).alpha() == 0;
+        }
+    }
+    return count;
+}
+
+int difference(const QImage &image, QPoint first, QPoint second)
+{
+    const QColor a = image.pixelColor(first);
+    const QColor b = image.pixelColor(second);
+    return std::abs(a.red() - b.red()) + std::abs(a.green() - b.green()) + std::abs(a.blue() - b.blue()) + std::abs(a.alpha() - b.alpha());
+}
+
+// How much neighbouring pixels differ across the tile's edge (the last column against the first, the
+// last row against the first: neighbours when blocks lie side by side) and across the lines inside it
+// that divide the tile into quarters (where the patterns' coarse structure changes too).
+struct Seams
+{
+    double edge = 0.0;
+    double inside = 0.0;
+};
+
+double lineDifference(const QImage &image, int before, int after)
+{
+    double sum = 0.0;
+    for (int a = 0; a < image.width(); ++a) {
+        sum += difference(image, {before, a}, {after, a}) + difference(image, {a, before}, {a, after});
+    }
+    return sum / (2.0 * image.width());
+}
+
+Seams seamsOf(const QImage &image)
+{
+    const int size = image.width();
+    const int quarter = size / 4;
+    const double inside = (lineDifference(image, quarter - 1, quarter) + lineDifference(image, 2 * quarter - 1, 2 * quarter)
+                           + lineDifference(image, 3 * quarter - 1, 3 * quarter)) / 3.0;
+    return {lineDifference(image, size - 1, 0), inside};
+}
+
+// Summed over the channels: how far the mean colour of the outermost ring of pixels lies from the
+// mean colour inside it (a frame is a ring of another colour).
+double ringContrast(const QImage &image)
+{
+    std::array<double, 4> ring{};
+    std::array<double, 4> inner{};
+    int ringCount = 0;
+    int innerCount = 0;
+    const int last = image.width() - 1;
+    for (int y = 0; y <= last; ++y) {
+        for (int x = 0; x <= last; ++x) {
+            const QColor c = image.pixelColor(x, y);
+            const std::array<double, 4> channels = {double(c.red()), double(c.green()), double(c.blue()), double(c.alpha())};
+            const bool onRing = x == 0 || y == 0 || x == last || y == last;
+            std::array<double, 4> &sum = onRing ? ring : inner;
+            for (std::size_t i = 0; i < 4; ++i) {
+                sum[i] += channels[i];
+            }
+            (onRing ? ringCount : innerCount) += 1;
+        }
+    }
+    double contrast = 0.0;
+    for (std::size_t i = 0; i < 4; ++i) {
+        contrast += std::abs(ring[i] / ringCount - inner[i] / innerCount);
+    }
+    return contrast;
+}
+
+// No frame and no seam: the ring at the edge has the colour of the inside, and neighbouring blocks
+// continue each other about as well as the quarters of one tile do.
+bool tilesWithoutFrame(const QImage &image)
+{
+    const Seams seams = seamsOf(image);
+    const double ring = ringContrast(image);
+    qInfo("edge %.1f, quarter lines %.1f, ring contrast %.1f", seams.edge, seams.inside, ring);
+    return seams.edge <= 1.5 * seams.inside + 4.0 && ring <= 20.0;
+}
+
+QJsonObject definition(const QString &pattern, const QString &primary, const QString &secondary)
+{
+    return {{u"pattern"_s, pattern}, {u"primary"_s, primary}, {u"secondary"_s, secondary}, {u"variation"_s, 0.05}, {u"seed"_s, 13}};
+}
+
+int alphaBelow(const QImage &image, int limit)
+{
+    int count = 0;
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            count += image.pixelColor(x, y).alpha() < limit;
         }
     }
     return count;
@@ -61,6 +154,68 @@ private slots:
         const QImage image = QcTextureSynthesizer::synthesize(glass);
         QCOMPARE(image.pixelColor(0, 0).alpha(), 255);
         QVERIFY(image.pixelColor(12, 4).alpha() < 128);
+    }
+
+    // Ice and packed ice have no frame: neighbouring blocks continue each other at 16 and enlarged
+    // (decision E-860); glass, with its frame, does not.
+    void iceTilesWithoutAFrame_data()
+    {
+        QTest::addColumn<QString>("pattern");
+        QTest::addColumn<QString>("primary");
+        QTest::addColumn<QString>("secondary");
+        QTest::addColumn<int>("resolution");
+        QTest::addColumn<bool>("seamless");
+        for (const int resolution : {16, 64}) {
+            const QByteArray at = QByteArray::number(resolution);
+            QTest::newRow(QByteArray("ice " + at).constData()) << u"ice"_s << u"#9ec4f290"_s << u"#e2effc"_s << resolution << true;
+            QTest::newRow(QByteArray("blue ice " + at).constData()) << u"ice"_s << u"#5a92ea"_s << u"#8cbaf6"_s << resolution << true;
+            QTest::newRow(QByteArray("packed ice " + at).constData()) << u"packed_ice"_s << u"#a4c2ee"_s << u"#cadcf6"_s << resolution << true;
+            QTest::newRow(QByteArray("glass " + at).constData()) << u"glass"_s << u"#9ec4f2"_s << u"#b8d6f8"_s << resolution << false;
+        }
+    }
+
+    void iceTilesWithoutAFrame()
+    {
+        QFETCH(QString, pattern);
+        QFETCH(QString, primary);
+        QFETCH(QString, secondary);
+        QFETCH(int, resolution);
+        QFETCH(bool, seamless);
+        const QcResult<QImage> image = QcProceduralTexture::render(definition(pattern, primary, secondary), resolution);
+        QVERIFY(image.has_value());
+        QCOMPARE(tilesWithoutFrame(*image), seamless);
+    }
+
+    // Ice keeps the alpha of its primary colour (translucent ice, opaque blue ice); packed ice is opaque.
+    void iceKeepsTheAlphaOfItsColour()
+    {
+        const QcTextureSpec ice{QcTextureSpec::Pattern::Ice, QColor(158, 196, 242, 0x90), QColor(226, 239, 252), 0.05, 13};
+        const QImage translucent = QcTextureSynthesizer::synthesize(ice);
+        QCOMPARE(alphaBelow(translucent, 255), 16 * 16);
+        QCOMPARE(alphaBelow(translucent, 0x90), 0);
+
+        QcTextureSpec blue = ice;
+        blue.primary = QColor(90, 146, 234);
+        QCOMPARE(alphaBelow(QcTextureSynthesizer::synthesize(blue), 255), 0);
+
+        const QcTextureSpec packed{QcTextureSpec::Pattern::PackedIce, QColor(164, 194, 238, 0x90), QColor(202, 220, 246, 0x90), 0.04, 909};
+        QCOMPARE(alphaBelow(QcTextureSynthesizer::synthesize(packed), 255), 0);
+    }
+
+    // Slime: a translucent fill in the primary colour inside a rim in the secondary one, both with
+    // their own alpha (decision E-860).
+    void slimeIsATranslucentFillInARim()
+    {
+        QCOMPARE(qcTexturePatternFromName(u"slime"_s), QcTextureSpec::Pattern::Slime);
+        const QcTextureSpec slime{QcTextureSpec::Pattern::Slime, QColor(114, 208, 100, 0xb0), QColor(78, 168, 66, 0xd0), 0.05, 908};
+        const QImage image = QcTextureSynthesizer::synthesize(slime);
+        for (const QPoint rim : {QPoint(0, 0), QPoint(15, 7), QPoint(7, 15), QPoint(0, 9)}) {
+            QCOMPARE(image.pixelColor(rim).alpha(), 0xd0);
+        }
+        for (const QPoint inside : {QPoint(1, 1), QPoint(7, 7), QPoint(14, 14)}) {
+            QCOMPARE(image.pixelColor(inside).alpha(), 0xb0);
+            QVERIFY(image.pixelColor(inside).green() > image.pixelColor(0, 0).green());
+        }
     }
 
     void furnaceFrontHasADarkOpeningInAStoneFace()

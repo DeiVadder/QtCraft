@@ -72616,7 +72616,7 @@
                     "label": "Light blocked",
                     "links": [
                     ],
-                    "value": "1 of 15"
+                    "value": "0 of 15"
                 },
                 {
                     "label": "Sound",
@@ -128087,7 +128087,7 @@
                         },
                         {
                             "icon": "qtcraft:slime_block",
-                            "note": "dims light by 1, no creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:slime_block",
                             "text": "Slime block"
                         },

@@ -1,8 +1,8 @@
 {
     "name": "packed_ice",
-    "pattern": "speckle",
-    "primary": "#8eb4ea",
-    "secondary": "#a8c8f2",
-    "variation": 0.05,
+    "pattern": "packed_ice",
+    "primary": "#a4c2ee",
+    "secondary": "#cadcf6",
+    "variation": 0.04,
     "seed": 909
 }

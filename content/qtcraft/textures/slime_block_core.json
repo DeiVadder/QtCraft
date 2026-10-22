@@ -1,0 +1,8 @@
+{
+    "name": "slime_block_core",
+    "pattern": "slime",
+    "primary": "#4fae44e0",
+    "secondary": "#3a8a32f0",
+    "variation": 0.05,
+    "seed": 911
+}

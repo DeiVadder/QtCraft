@@ -72616,7 +72616,7 @@
                     "label": "Lichtdämpfung",
                     "links": [
                     ],
-                    "value": "1 von 15"
+                    "value": "0 von 15"
                 },
                 {
                     "label": "Klang",
@@ -128039,7 +128039,7 @@
                         },
                         {
                             "icon": "qtcraft:slime_block",
-                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:slime_block",
                             "text": "Schleimblock"
                         },

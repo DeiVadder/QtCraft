@@ -8844,7 +8844,7 @@ Nine slimeballs pressed together.
 | Hardness | 0 |
 | Breaking by hand | 0.05 s |
 | Drops | [Slime block](#block-qtcraft-slime_block) |
-| Light blocked | 1 of 15 |
+| Light blocked | 0 of 15 |
 | Sound | wool |
 
 **How to make it**

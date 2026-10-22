@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdlib>
 #include <utility>
 
@@ -92,6 +93,103 @@ QColor paintGlazedTerracotta(const QcTextureSpec &spec, int x, int y, QColor col
     return color;
 }
 
+// The mask in wrapped() is a positive modulo only for a power-of-two tile size.
+static_assert(size > 0 && (size & (size - 1)) == 0);
+
+// A coordinate wrapped into the tile (also for negative values): the ice patterns continue across
+// the edge into the next block, so a frozen lake shows no grid (decision E-860).
+int wrapped(int value)
+{
+    return value & (size - 1);
+}
+
+// Whether (x, y) lies on one of the streaks of ice: short segments running from the bottom left to
+// the top right, placed by the seed. On the wrapped tile a diagonal never ends at the edge.
+bool onIceStreak(quint32 seed, int x, int y)
+{
+    // Per streak: its diagonal, where it starts along it and how long it is (in steps of two).
+    static constexpr std::array<std::array<int, 3>, 4> streaks = {{{2, 0, 12}, {3, 3, 6}, {10, 8, 9}, {11, 12, 3}}};
+    const int diagonal = wrapped(x + y);
+    const int along = wrapped(x - y);
+    const int shift = int(seed % size);
+    for (const auto &[streakDiagonal, start, length] : streaks) {
+        if (diagonal == wrapped(streakDiagonal + shift) && wrapped(along - start - 3 * shift) < length) {
+            return true;
+        }
+    }
+    return false;
+}
+
+QColor mixed(const QColor &first, const QColor &second, double share, int alpha)
+{
+    const auto channel = [share](int a, int b) { return int(std::lround(a + (b - a) * share)); };
+    return QColor(channel(first.red(), second.red()), channel(first.green(), second.green()), channel(first.blue(), second.blue()), alpha);
+}
+
+// Soft light and dark clouds over the face, on a grid of four pixels that tiles.
+double iceCloud(const QcTextureSpec &spec, int x, int y)
+{
+    return 1.0 + spec.variation * noise(spec.seed + 5, x / 4, y / 4);
+}
+
+QColor paintIce(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    // The primary colour's alpha decides how much of the water below shows through.
+    const int alpha = spec.primary.alpha();
+    if (onIceStreak(spec.seed, x, y)) {
+        return mixed(color, varied(spec, spec.secondary, x, y, 3), 0.45, std::min(255, alpha + 30));
+    }
+    // A faint haze beside each streak softens its edge.
+    if (onIceStreak(spec.seed, x - 1, y) || onIceStreak(spec.seed, x + 1, y)) {
+        return mixed(color, spec.secondary, 0.15, std::min(255, alpha + 10));
+    }
+    return scaled(color, iceCloud(spec, x, y), alpha);
+}
+
+// Whether (x, y) lies on one of the fine cracks of packed ice: three short wandering lines, each a
+// walk of single steps (down, sideways or diagonal, now and then turning back) from a start the seed
+// picks.
+bool onIceCrack(quint32 seed, int x, int y)
+{
+    constexpr int cracks = 3;
+    constexpr int steps = 8;
+    for (int crack = 0; crack < cracks; ++crack) {
+        int cx = int(hashPixel(seed + 31, crack, 0) % size);
+        int cy = int(hashPixel(seed + 37, crack, 0) % size);
+        int sideways = crack % 2 == 0 ? 1 : -1;
+        for (int step = 0; step < steps; ++step) {
+            if (wrapped(cx) == x && wrapped(cy) == y) {
+                return true;
+            }
+            const quint32 turn = hashPixel(seed + 41, crack, step);
+            if (turn % 5 == 0) {
+                sideways = -sideways;
+            }
+            cx += turn % 4 == 0 ? 0 : sideways;
+            cy += turn % 4 == 1 ? 0 : 1;
+        }
+    }
+    return false;
+}
+
+QColor paintPackedIce(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    if (onIceCrack(spec.seed, x, y)) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    return scaled(color, iceCloud(spec, x, y));
+}
+
+QColor paintSlime(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool rim = x == 0 || y == 0 || x == size - 1 || y == size - 1;
+    if (rim) {
+        return scaled(varied(spec, spec.secondary, x, y, 3), 1.0, spec.secondary.alpha());
+    }
+    // Soft blotches in the jelly, on a grid of four pixels.
+    return scaled(color, 1.0 + spec.variation * noise(spec.seed + 9, x / 4, y / 4), spec.primary.alpha());
+}
+
 // The whole door as an icon, half as wide as high (x 4..11): boards (primary) in a frame
 // (secondary), a window of four panes in the upper half, a rail across the middle and the handle
 // below it.
@@ -121,13 +219,16 @@ QColor paintDoorItem(const QcTextureSpec &spec, int x, int y, QColor)
     return scaled(spec.primary, 1.0 + spec.variation * 0.5 * noise(spec.seed, x / 3, y));
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 6> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 9> painters = {{
     {Pattern::DoorItem, paintDoorItem},
     {Pattern::MossyBricks, paintMossyBricks},
     {Pattern::CrackedBricks, paintCrackedBricks},
     {Pattern::ChiseledBricks, paintChiseledBricks},
     {Pattern::SmoothStone, paintSmoothStone},
     {Pattern::GlazedTerracotta, paintGlazedTerracotta},
+    {Pattern::Ice, paintIce},
+    {Pattern::PackedIce, paintPackedIce},
+    {Pattern::Slime, paintSlime},
 }};
 
 } // namespace

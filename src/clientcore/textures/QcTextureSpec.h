@@ -258,6 +258,15 @@ struct QcTextureSpec
         PaintingNight,
         PaintingSunset,
         PaintingRings,
+        // Ice without a frame, tiling without seams (QcTextureBuildingPatterns): a smooth face
+        // (primary, its alpha kept, so ice stays translucent and blue ice opaque) with soft
+        // diagonal streaks (secondary); packed ice is opaque with fine wandering cracks (secondary).
+        Ice,
+        PackedIce,
+        // Slime (decision E-860): a translucent fill in the primary colour (its alpha kept) with a
+        // one-pixel rim in the secondary colour (its alpha kept too); the slime block draws it on its
+        // outer cube and, darker and more opaque, on its inner core cube.
+        Slime,
     };
 
     // Emblem and Icon only: up to 16 rows of up to 16 characters, top row first.

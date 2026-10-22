@@ -189,6 +189,14 @@ Params forPattern(Pattern pattern)
                         Pattern::PumpkinTop, Pattern::MelonSide, Pattern::Repeater, Pattern::PistonSide})) {
         return {0.05, 0.22, false};
     }
+    // Ice: no bevel (it would draw the edges of the streaks and cracks as ridges), a faint grain.
+    if (among(pattern, {Pattern::Ice, Pattern::PackedIce})) {
+        return {0.03, 0.0, true};
+    }
+    // Slime: a crisp rim without bevel or grain.
+    if (pattern == Pattern::Slime) {
+        return {0.0, 0.0, false};
+    }
     if (among(pattern, {Pattern::Glass, Pattern::StainedGlass, Pattern::FireflyGlass})) {
         return {0.0, 0.1, false};
     }

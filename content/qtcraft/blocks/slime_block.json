@@ -2,10 +2,14 @@
     "name": "slime_block",
     "sound": "wool",
     "hardness": 0.0,
+    "shape": "slime_block",
     "render": "translucent",
     "opaque": false,
-    "lightOpacity": 1,
+    "lightOpacity": 0,
     "textures": {
-        "all": "slime_block"
+        "all": "slime_block",
+        "slots": {
+            "core": "slime_block_core"
+        }
     }
 }

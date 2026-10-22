@@ -8457,7 +8457,7 @@ Neun Schleimbälle zusammengepresst.
 | Härte | 0 |
 | Abbauen mit der Hand | 0,05 s |
 | Beute | [Schleimblock](#block-qtcraft-slime_block) |
-| Lichtdämpfung | 1 von 15 |
+| Lichtdämpfung | 0 von 15 |
 | Klang | Wolle |
 
 **Herstellung**

@@ -572,6 +572,9 @@ private slots:
         QVERIFY(!forPattern(QcTextureSpec::Pattern::Bricks).smooth);
         QVERIFY(forPattern(QcTextureSpec::Pattern::Pickaxe).smooth);
         QCOMPARE(forPattern(QcTextureSpec::Pattern::Glass).grain, 0.0);
+        // Ice tiles without seams (decision E-860): a bevel would draw the tile's edge.
+        QCOMPARE(forPattern(QcTextureSpec::Pattern::Ice).bevel, 0.0);
+        QCOMPARE(forPattern(QcTextureSpec::Pattern::PackedIce).bevel, 0.0);
         QVERIFY(forPattern(QcTextureSpec::Pattern::Speckle).grain > forPattern(QcTextureSpec::Pattern::Pickaxe).grain);
 
         const QcTextureDetail::Params changed =

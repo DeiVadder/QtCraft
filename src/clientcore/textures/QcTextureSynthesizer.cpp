@@ -583,8 +583,9 @@ Painter painterFor(Pattern pattern)
 void paint(QImage &image, const QcTextureSpec &spec)
 {
     const Painter painter = painterFor(spec.pattern);
-    // Only glass, water and the glass-like craft patterns keep partial transparency.
-    const bool translucent = spec.pattern == Pattern::Glass || spec.pattern == Pattern::Water || qcCraftPatternIsTranslucent(spec.pattern);
+    // Only glass, water, ice, slime and the glass-like craft patterns keep partial transparency.
+    const bool translucent = spec.pattern == Pattern::Glass || spec.pattern == Pattern::Water || spec.pattern == Pattern::Ice
+                             || spec.pattern == Pattern::Slime || qcCraftPatternIsTranslucent(spec.pattern);
     for (int y = 0; y < size; ++y) {
         for (int x = 0; x < size; ++x) {
             QColor color = painter(spec, x, y, varied(spec, spec.primary, x, y));
