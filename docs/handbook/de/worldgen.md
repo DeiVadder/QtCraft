@@ -166,7 +166,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Biome**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Gebirge](biomes.md#biome-qtcraft-mountains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Blumental](biomes.md#biome-qtcraft-flower_valley), [Dschungel](biomes.md#biome-qtcraft-jungle), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge), [Ebene](biomes.md#biome-qtcraft-plains), [Fluss](biomes.md#biome-qtcraft-river), [Gebirge](biomes.md#biome-qtcraft-mountains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
 
 ### <a id="ore-qtcraft-gold"></a>Golderz-Vorkommen
 

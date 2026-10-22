@@ -92,9 +92,10 @@ QString biomeLegendPlace(const QcTerrainGenerator &generator, int biome, int rad
     return u"not found"_s;
 }
 
-void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry &content, int radius, const QString &file)
+void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry &content, QcMapRenderer::Area area, const QString &file)
 {
-    const bool saved = QcMapRenderer::renderBiomes(generator, {0, 0, radius, std::max(1, radius / 512)}).save(file);
+    const int radius = area.radius;
+    const bool saved = QcMapRenderer::renderBiomes(generator, area).save(file);
     if (!saved) {
         printError(u"Cannot write map"_s);
     }
@@ -102,6 +103,21 @@ void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry 
         std::println("{} {} {}", i, generator.biomeName(int(i)).toStdString(), biomeLegendPlace(generator, int(i), radius).toStdString());
     }
     exitSoon(saved ? 0 : 1);
+}
+
+// The centre of the maps (--map-centre "x,z"); the origin when the value does not parse.
+std::pair<int, int> mapCentre(const QCommandLineParser &parser, const Options &options)
+{
+    const QStringList parts = parser.value(options.mapCentre).split(u',');
+    bool okX = false;
+    bool okZ = false;
+    const int x = parts.size() == 2 ? parts[0].trimmed().toInt(&okX) : 0;
+    const int z = parts.size() == 2 ? parts[1].trimmed().toInt(&okZ) : 0;
+    if (!okX || !okZ) {
+        printError(u"--map-centre needs x,z; using the origin"_s);
+        return {0, 0};
+    }
+    return {x, z};
 }
 
 // The world generation tools (--world-stats, --slice-map, --biome-map, --map); false when none
@@ -117,21 +133,22 @@ bool runWorldTool(const QCommandLineParser &parser, const Options &options, cons
         return true;
     }
 
+    const auto [centreX, centreZ] = mapCentre(parser, options);
     if (parser.isSet(options.slice)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 16, 1024);
-        saveMap(QcMapRenderer::renderSlice(generator, content, {0, 0, radius, 4}), parser.value(options.slice));
+        saveMap(QcMapRenderer::renderSlice(generator, content, {centreX, centreZ, radius, 4}), parser.value(options.slice));
         return true;
     }
 
     if (parser.isSet(options.biomeMap)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
-        writeBiomeMap(generator, content, radius, parser.value(options.biomeMap));
+        writeBiomeMap(generator, content, {centreX, centreZ, radius, std::max(1, radius / 512)}, parser.value(options.biomeMap));
         return true;
     }
 
     if (parser.isSet(options.map)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
-        saveMap(QcMapRenderer::render(generator, content, {0, 0, radius, std::max(1, radius / 512)}), parser.value(options.map));
+        saveMap(QcMapRenderer::render(generator, content, {centreX, centreZ, radius, std::max(1, radius / 512)}), parser.value(options.map));
         return true;
     }
 

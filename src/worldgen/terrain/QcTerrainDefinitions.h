@@ -60,10 +60,16 @@ struct QcTerrainDefinitions
         QcBlockId subsurface = qcAirBlockId;
         int subsurfaceDepth = 3;
         QcBlockId underwater = qcAirBlockId;
+        // Patches of other blocks among `underwater` (decision E-840): block and share.
+        QList<std::pair<QcBlockId, double>> underwaterPatches;
         QcBlockId beach = qcAirBlockId;
         QcBlockId frozenWater = qcAirBlockId;
         int snowLine = 0;
         QcBlockId snow = qcAirBlockId;
+        // A river biome, which the climate never chooses (decision E-840).
+        bool river = false;
+        // Land biomes: the index of the river biome of their rivers, -1 without one.
+        int riverBiome = -1;
         // Index into features and density per column; the vegetation layers come last.
         QList<std::pair<int, double>> features;
         // Giant trees (decision E-822): index into features and chance per cell of
@@ -128,6 +134,8 @@ struct QcTerrainDefinitions
     // Some biome has a rarity (decision E-821); without one the world's rarity map is not computed.
     bool anyRare = false;
     bool anyOverhangs = false;
+    // Rivers run through the land (terrain setting `rivers`, decision E-840).
+    bool rivers = false;
     // What could not be resolved and was replaced by a fallback.
     QStringList warnings;
 };

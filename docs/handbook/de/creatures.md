@@ -317,7 +317,7 @@ Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwa
 
 **Erscheint in Biomen**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga)
+[Fluss](biomes.md#biome-qtcraft-river), [Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 

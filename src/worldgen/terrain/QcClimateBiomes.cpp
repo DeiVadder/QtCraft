@@ -47,6 +47,9 @@ int choose(const QList<Biome> &biomes, const QcTerrainClimate::Point &climate)
     int nearest = 0;
     for (qsizetype i = 0; i < biomes.size(); ++i) {
         const Biome &biome = biomes[i];
+        if (biome.river) {
+            continue;
+        }
         const double own = weight(biome, climate);
         if (own > nearestWeight) {
             nearestWeight = own;

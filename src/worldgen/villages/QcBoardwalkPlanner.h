@@ -10,6 +10,7 @@
 #include <utility>
 
 class QcTerrainGenerator;
+struct QcTerrainColumn;
 
 // The ground of a village over water (decision E-407), from the terrain noise alone like the rest of
 // a village plan: pieces and boardwalks lie at one floor height above the water surface, wherever
@@ -32,6 +33,8 @@ int floorY(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stil
 // Whether a piece or boardwalk can stand over the column: its ground lies at most at the floor
 // height and at most `maxDepth` blocks below the water surface, and it is no overhang.
 bool carries(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stilts, int x, int z);
+// The same for a column already known.
+bool carries(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stilts, const QcTerrainColumn &column);
 // The floor height for a piece over the rectangle (inclusive corners), sampled at its corners, edge
 // middles and centre; std::nullopt where one of them cannot carry it.
 [[nodiscard]] std::optional<int> floorFor(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stilts,
@@ -48,7 +51,7 @@ QList<QcVillagePlan::Deck> stairs(const QcTerrainGenerator &terrain, const QcCon
 
 // Over water: the number of samples (every `step` blocks within `reach` of the centre) of the
 // ground under water, when most of them carry stilts and enough of them are water (the style's
-// share); std::nullopt otherwise.
+// share); std::nullopt otherwise, and near a river (decision E-841).
 [[nodiscard]] std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageStyle &style, std::pair<int, int> centre,
                                            int reach, int step);
 // Stairs from the end of a laid boardwalk down to dry land with the land access the wetland keeps

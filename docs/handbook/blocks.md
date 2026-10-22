@@ -3941,7 +3941,7 @@ Loose stones that fall when nothing holds them. Now and then it drops a flint as
 
 **Found in**
 
-[Gravel veins](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Mountains](biomes.md#biome-qtcraft-mountains) (Under water, Beaches), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Under water, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Under water, Beaches), [Tundra](biomes.md#biome-qtcraft-tundra) (Under water)
+[Frozen River](biomes.md#biome-qtcraft-frozen_river) (Surface, Below the surface, Under water, Beaches), [Gravel veins](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Mountains](biomes.md#biome-qtcraft-mountains) (Under water, Beaches), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Under water, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Under water, Beaches), [Tundra](biomes.md#biome-qtcraft-tundra) (Under water)
 
 ### <a id="block-qtcraft-gray_bed"></a>Gray bed
 
@@ -4496,7 +4496,7 @@ Covers the water of cold biomes. Slippery: whoever walks on it keeps sliding, an
 
 **Found in**
 
-[Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Frozen water), [Taiga](biomes.md#biome-qtcraft-taiga) (Frozen water), [Tundra](biomes.md#biome-qtcraft-tundra) (Frozen water)
+[Frozen River](biomes.md#biome-qtcraft-frozen_river) (Frozen water), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Frozen water), [Taiga](biomes.md#biome-qtcraft-taiga) (Frozen water), [Tundra](biomes.md#biome-qtcraft-tundra) (Frozen water)
 
 ### <a id="block-qtcraft-infested_cobblestone"></a>Infested cobblestone
 
@@ -8297,7 +8297,7 @@ Falls when nothing holds it. Smelts into glass.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Beaches), [Desert](biomes.md#biome-qtcraft-desert) (Surface, Below the surface, Under water, Beaches), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Beaches), [Forest](biomes.md#biome-qtcraft-forest) (Beaches), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Under water, Beaches), [Jungle](biomes.md#biome-qtcraft-jungle) (Beaches), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Beaches), [Plains](biomes.md#biome-qtcraft-plains) (Under water, Beaches)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Beaches), [Desert](biomes.md#biome-qtcraft-desert) (Surface, Below the surface, Under water, Beaches), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Beaches), [Forest](biomes.md#biome-qtcraft-forest) (Beaches), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Under water, Beaches), [Jungle](biomes.md#biome-qtcraft-jungle) (Beaches), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Beaches), [Plains](biomes.md#biome-qtcraft-plains) (Under water, Beaches), [River](biomes.md#biome-qtcraft-river) (Surface, Below the surface, Under water, Beaches)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstone
 

@@ -35,11 +35,31 @@ public:
     // `stone` and `water` are the fallbacks of the biome's own blocks.
     Biome biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBlockId water);
     void warnSharedClimate(const QList<Biome> &biomes, const Biome &biome);
+    // Warns about the fields a river biome sets that do not apply to it (decision E-840).
+    void warnRiverFields(const QcBiomeDefinition &definition)
+    {
+        if (definition.river && !definition.riverBiome.isEmpty()) {
+            warn(u"River biome %1 names a river biome of its own, which is ignored"_s.arg(definition.name));
+        }
+        if (definition.river && definition.rarity > 0.0) {
+            warn(u"River biome %1 has a rarity, which is ignored"_s.arg(definition.name));
+        }
+    }
+    // The river biome of every biome (decision E-840), -1 for river biomes and without one: the one
+    // a land biome names, else the terrain's `riverBiome` (`fallback`), else the first.
+    [[nodiscard]] QList<int> riverBiomes(const QList<Biome> &biomes, const QString &fallback);
     // The vegetation layers of a biome (decision E-814): a feature for the scattered plants of each
     // layer with a density, placed after the biome's own features, and the patches.
     [[nodiscard]] BiomeVegetation vegetation(const QcBiomeDefinition &definition, quint64 seed);
     std::optional<Ore> ore(const QcOreDefinition &definition, QcBlockId stone, quint64 seed);
     void warn(const QString &warning) { m_warnings.append(warning); }
+    // Warns when the terrain's `vegetationBiome` names no biome.
+    void warnUnknownBiome(const QList<Biome> &biomes, const QString &vegetationBiome)
+    {
+        if (!vegetationBiome.isEmpty() && std::ranges::none_of(biomes, [&vegetationBiome](const Biome &biome) { return biome.name == vegetationBiome; })) {
+            warn(u"Terrain names the unknown vegetation biome %1"_s.arg(vegetationBiome));
+        }
+    }
     [[nodiscard]] QStringList takeWarnings() { return std::exchange(m_warnings, {}); }
 
 private:
@@ -137,10 +157,21 @@ Biome Loader::biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBloc
     biome.subsurface = resolve(definition.subsurfaceBlock, biome.surface);
     biome.subsurfaceDepth = definition.subsurfaceDepth;
     biome.underwater = resolve(definition.underwaterBlock, biome.subsurface);
+    for (const QcBlockShare &patch : definition.underwaterPatches) {
+        // A river bed is ground: patches of air, plants or liquids would leave holes or open water.
+        const QcBlockId block = resolve(patch.block, biome.underwater);
+        const QcBlockDefinition &patchBlock = m_content.block(block);
+        if (!patchBlock.solid || patchBlock.liquid) {
+            warn(u"Biome %1 has the underwater patch %2, which is no solid block; left out"_s.arg(definition.name, patch.block));
+            continue;
+        }
+        biome.underwaterPatches.append({block, patch.share});
+    }
     biome.beach = resolve(definition.beachBlock, biome.surface);
     biome.frozenWater = definition.frozenWaterBlock.isEmpty() ? water : resolve(definition.frozenWaterBlock, water);
     biome.snowLine = definition.snowLine;
     biome.snow = definition.snowBlock.isEmpty() ? biome.surface : resolve(definition.snowBlock, biome.surface);
+    biome.river = definition.river;
 
     // Giant trees are placed per cell (decision E-822): their density per column becomes the chance
     // of one in a whole cell.
@@ -182,12 +213,59 @@ bool Loader::isGiant(int feature) const
 
 void Loader::warnSharedClimate(const QList<Biome> &biomes, const Biome &biome)
 {
+    if (biome.river) {
+        return;
+    }
     for (const Biome &other : biomes) {
-        if (other.temperature == biome.temperature && other.humidity == biome.humidity && other.ruggedness == biome.ruggedness
+        if (!other.river && other.temperature == biome.temperature && other.humidity == biome.humidity && other.ruggedness == biome.ruggedness
             && other.rarity == biome.rarity) {
             warn(u"Biomes %1 and %2 share a climate point; only %1 can appear"_s.arg(other.name, biome.name));
         }
     }
+}
+
+QList<int> Loader::riverBiomes(const QList<Biome> &biomes, const QString &fallback)
+{
+    const auto first = std::ranges::find_if(biomes, &Biome::river);
+    int firstRiver = first == biomes.end() ? -1 : int(first - biomes.begin());
+    if (!fallback.isEmpty()) {
+        const auto named = std::ranges::find(biomes, fallback, &Biome::name);
+        if (named != biomes.end() && named->river) {
+            firstRiver = int(named - biomes.begin());
+        } else {
+            warn(u"Terrain names %1 as the river biome, which is no river biome"_s.arg(fallback));
+        }
+    }
+    if (!biomes.isEmpty() && std::ranges::all_of(biomes, &Biome::river)) {
+        // The climate then chooses none: every column takes the first biome.
+        warn(u"Every biome is a river biome; the climate chooses none"_s);
+    }
+
+    QList<int> rivers(biomes.size(), -1);
+    const QList<QcBiomeDefinition> &definitions = m_content.worldgen().biomes();
+    for (qsizetype i = 0; i < biomes.size() && i < definitions.size(); ++i) {
+        const QString &named = definitions[i].riverBiome;
+        if (biomes[i].river || named.isEmpty()) {
+            rivers[i] = biomes[i].river ? -1 : firstRiver;
+            continue;
+        }
+        const auto found = std::ranges::find(biomes, named, &Biome::name);
+        if (found == biomes.end() || !found->river) {
+            warn(u"Biome %1 names %2 as its river biome, which is no river biome"_s.arg(biomes[i].name, named));
+        }
+        rivers[i] = found == biomes.end() || !found->river ? firstRiver : int(found - biomes.begin());
+    }
+    return rivers;
+}
+
+// The biome of a terrain without biome data: bare stone hills, which keep the game playable.
+Biome fallbackBiome(QcBlockId stone)
+{
+    Biome fallback;
+    fallback.name = u"qtcraft:fallback"_s;
+    fallback.surface = fallback.subsurface = fallback.underwater = fallback.beach = stone;
+    fallback.frozenWater = fallback.snow = stone;
+    return fallback;
 }
 
 std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId stone, quint64 seed)
@@ -254,6 +332,9 @@ QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes
         for (const QcBlockId block : {biome.surface, biome.subsurface, biome.underwater, biome.beach, biome.steep, biome.snow}) {
             ground.insert(block);
         }
+        for (const auto &[block, share] : biome.underwaterPatches) {
+            ground.insert(block);
+        }
     }
 
     ground.remove(qcAirBlockId);
@@ -283,6 +364,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     bedrock = terrain.bedrockBlock.isEmpty() ? stone : loader.resolve(terrain.bedrockBlock, stone);
     caveLiquid = terrain.caveLiquidBlock.isEmpty() ? qcAirBlockId : loader.resolve(terrain.caveLiquidBlock, qcAirBlockId);
     bedrockLayers = terrain.bedrockLayers;
+    rivers = terrain.rivers;
 
     // Seeds come from the names (decision E-214): new content leaves the other features and ores
     // where they were.
@@ -313,30 +395,28 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         anyOverhangs = anyOverhangs || biome.overhang > 0;
         anyRidges = anyRidges || biome.ridges > 0.0;
         anyTerraces = anyTerraces || biome.terraceHeight > 0;
-        anyRare = anyRare || biome.rarity > 0.0;
+        // River biomes take no part in the climate's choice, their rarity included.
+        anyRare = anyRare || (!biome.river && biome.rarity > 0.0);
+        loader.warnRiverFields(definition);
         loader.warnSharedClimate(biomes, biome);
         biomes.append(biome);
     }
     if (biomes.isEmpty()) {
-        // Without any biome data the world is bare stone hills, which keeps the game playable.
-        Biome fallback;
-        fallback.name = u"qtcraft:fallback"_s;
-        fallback.surface = fallback.subsurface = fallback.underwater = fallback.beach = stone;
-        fallback.frozenWater = fallback.snow = stone;
-        biomes.append(fallback);
+        biomes.append(fallbackBiome(stone));
         loader.warn(u"No biomes defined; using a stone fallback"_s);
     }
-    if (std::ranges::none_of(biomes, [](const Biome &biome) { return biome.rarity <= 0.0; })) {
+    const QList<int> riverOf = loader.riverBiomes(biomes, terrain.riverBiome);
+    for (qsizetype i = 0; i < biomes.size(); ++i) {
+        biomes[i].riverBiome = riverOf[i];
+    }
+    if (std::ranges::none_of(biomes, [](const Biome &biome) { return !biome.river && biome.rarity <= 0.0; })) {
         // Outside the rarity spots no biome would have any weight; the terrain falls back to the
         // nearest biome (decision E-815).
         loader.warn(u"Every biome has a rarity; outside the rare spots the nearest biome is used"_s);
     }
 
     naturalGround = naturalGroundOf(biomes, stone, water);
-    const QString &vegetationBiome = terrain.vegetationBiome;
-    if (!vegetationBiome.isEmpty() && std::ranges::none_of(biomes, [&vegetationBiome](const Biome &biome) { return biome.name == vegetationBiome; })) {
-        loader.warn(u"Terrain names the unknown vegetation biome %1"_s.arg(vegetationBiome));
-    }
+    loader.warnUnknownBiome(biomes, terrain.vegetationBiome);
 
     for (const QcOreDefinition &definition : content.worldgen().ores()) {
         if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {

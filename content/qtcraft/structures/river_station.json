@@ -1,0 +1,132 @@
+{
+    "name": "river_station",
+    "showcase": {
+        "order": 61
+    },
+    "palette": {
+        ".": "air",
+        "g": "grass_block",
+        "S": "sand",
+        "V": "gravel",
+        "C": "clay",
+        "W": "water",
+        "I": "ice",
+        "L": "oak_log",
+        "P": "oak_planks",
+        "c": "sugar_cane",
+        "o": "lantern[attach=floor]"
+    },
+    "layers": [
+        [
+            "ggggggggggggggggg",
+            "ggggggggggggggggg",
+            "SSSSSSSSSSSSSSSSS",
+            "SSSSSVSSSCSVSVVCS",
+            "SSVSSSSVSSSCSVSVS",
+            "SVCSVSSSSVSSSCSVS",
+            "SSVVCSVSSSSVSSSCS",
+            "SSVSVVCSVSSSSVSSS",
+            "SSSSSSSSSSSSSSSSS",
+            "ggggggggggggggggg",
+            "ggggggggggggggggg"
+        ],
+        [
+            "                 ",
+            "ggggggggggggggggg",
+            "SSSSSSSSSSSSSSSSS",
+            "SWWWWWWWWWWWWWWWS",
+            "SWWWWLWLWWWWWWWWS",
+            "SWWWWWWWWWWWWWWWS",
+            "SWWWWLWLWWWWWWWWS",
+            "SWWWWWWWWWWWWWWWS",
+            "SSSSSSSSSSSSSSSSS",
+            "ggggggggggggggggg",
+            "                 "
+        ],
+        [
+            "                 ",
+            "     ggg         ",
+            "SSSSSSSSSSSSSSSSS",
+            "SWWWWWWWWWWIIIIIS",
+            "SWWWWLWLWWWIIIIIS",
+            "SWWWWWWWWWWIIIIIS",
+            "SWWWWLWLWWWIIIIIS",
+            "SWWWWWWWWWWIIIIIS",
+            "SSSSSSSSSSSSSSSSS",
+            "     ggg         ",
+            "                 "
+        ],
+        [
+            "                 ",
+            "     PPP         ",
+            "  c  PPP  c      ",
+            "     PPP         ",
+            "     PPP         ",
+            "     PPP         ",
+            "     PPP         ",
+            "     PPP         ",
+            "  c  PPP  c      ",
+            "     PPP         ",
+            "                 "
+        ],
+        [
+            "                 ",
+            "     o           ",
+            "  c       c      ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "  c       c      ",
+            "     o           ",
+            "                 "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "salmon",
+            "at": [
+                2.5,
+                1.0,
+                5.5
+            ],
+            "confined": true
+        },
+        {
+            "mob": "salmon",
+            "at": [
+                9.5,
+                1.0,
+                4.5
+            ],
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                2.5,
+                4.5,
+                5.5
+            ],
+            "text": "biome.qtcraft.river"
+        },
+        {
+            "at": [
+                13.5,
+                4.5,
+                5.5
+            ],
+            "text": "biome.qtcraft.frozen_river"
+        },
+        {
+            "at": [
+                6.5,
+                5.6,
+                5.5
+            ],
+            "text": "showcase.river.bridge"
+        }
+    ]
+}

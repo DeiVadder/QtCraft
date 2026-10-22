@@ -31,6 +31,8 @@ struct Options
                             QString::number(defaultTimeLimitSeconds)};
     QCommandLineOption map{u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s};
     QCommandLineOption mapRadius{u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s};
+    QCommandLineOption mapCentre{u"map-centre"_s, u"Centre of --map, --biome-map and --slice-map (the cut runs along x at this z)."_s,
+                                 u"x,z"_s, u"0,0"_s};
     QCommandLineOption biomeMap{u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s, u"file"_s};
     QCommandLineOption spawn{u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s};
     QCommandLineOption slice{u"slice-map"_s,
@@ -123,7 +125,7 @@ struct Options
         parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
         parser.addOptions({handbook, language, handbookWeb});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, data, mods,
+        parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});

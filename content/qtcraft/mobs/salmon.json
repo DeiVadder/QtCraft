@@ -20,7 +20,9 @@
             "taiga",
             "tundra",
             "mountains",
-            "snowy_taiga"
+            "snowy_taiga",
+            "river",
+            "frozen_river"
         ],
         "maxGroup": 4,
         "weight": 3

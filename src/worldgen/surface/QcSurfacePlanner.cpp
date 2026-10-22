@@ -114,6 +114,11 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
         if (!ground || column.overhang >= 1.0 || !kind.rule.biomes.contains(m_terrain.biomeName(column.biome))) {
             return std::nullopt;
         }
+        // A river narrower than the samples' spacing may run between them (decision E-840): on land
+        // no sample lies within a block of a river's water.
+        if (kind.rule.waterDepth == 0 && column.riverDistance < column.riverHalfWidth + 1.0) {
+            return std::nullopt;
+        }
         low = std::min(low, column.height);
         high = std::max(high, column.height);
     }

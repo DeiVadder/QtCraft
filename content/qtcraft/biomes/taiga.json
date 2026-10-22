@@ -13,6 +13,7 @@
     "steep": "stone",
     "steepSlope": 4,
     "frozenWater": "ice",
+    "riverBiome": "frozen_river",
     "features": [
         {
             "feature": "giant_spruce_tree",

@@ -19,6 +19,14 @@ struct QcFeaturePlacement
     double density = 0.0;
 };
 
+// A block covering a share of some ground (the beds of rivers, decision E-840).
+struct QcBlockShare
+{
+    QString block;
+    // Share of the columns in [0, 1], in patches of a few blocks.
+    double share = 0.0;
+};
+
 struct QcBiomeDefinition
 {
     QString name;
@@ -62,6 +70,9 @@ struct QcBiomeDefinition
     QString subsurfaceBlock;
     int subsurfaceDepth = 3;
     QString underwaterBlock;
+    // Patches of other blocks among `underwaterBlock` (gravel and clay in river beds, decision
+    // E-840); their shares add up to at most 1.
+    QList<QcBlockShare> underwaterPatches;
     QString beachBlock;
     // Water surface block in cold biomes (e.g. ice); empty keeps water.
     QString frozenWaterBlock;
@@ -71,6 +82,13 @@ struct QcBiomeDefinition
     // Villages may be built here (decision E-403), in the style that names the biome or else the
     // fallback style. Server side only.
     bool villages = false;
+    // A river biome (decision E-840): the climate never chooses it; the water of a river channel
+    // takes the river biome of the land biome it runs through. Its climate point only sets the
+    // weather.
+    bool river = false;
+    // The river biome of the rivers through this land biome (decision E-840; frozen rivers in cold
+    // biomes); empty: the terrain's `riverBiome`.
+    QString riverBiome;
     QList<QcFeaturePlacement> features;
     // Grass and flowers (decision E-814): placed after the listed features, used by bone meal.
     QcVegetationDefinition vegetation;
@@ -155,6 +173,10 @@ struct QcTerrainSettings
     double caveEntrances = 0.04;
     // Bedrock: the bottom layer is solid, the layers above it get thinner up to this many layers.
     int bedrockLayers = 3;
+    // Rivers (decision E-840): winding channels down to the sea level through the land.
+    bool rivers = false;
+    // The river biome of land biomes that name none (decision E-840); empty: the first river biome.
+    QString riverBiome;
     // Biome whose vegetation bone meal grows where the world generator names no biome (flat,
     // showcase and void worlds; decision E-814); empty: none there.
     QString vegetationBiome;

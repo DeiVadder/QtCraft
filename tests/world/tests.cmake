@@ -11,7 +11,7 @@ qc_add_test(test_flight SOURCES world/test_flight.cpp QcTestWorld.h LIBRARIES qc
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_worldgen)
 qc_add_test(test_dungeons SOURCES world/test_dungeons.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 480)
 qc_add_test(test_mineshafts SOURCES world/test_mineshafts.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 510)
-qc_add_test(test_coastal_towers SOURCES world/test_coastal_towers.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 360)
+qc_add_test(test_coastal_towers SOURCES world/test_coastal_towers.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 420)
 qc_add_test(test_desert_temples SOURCES world/test_desert_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_jungle_temples SOURCES world/test_jungle_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_surface_ruins SOURCES world/test_surface_ruins.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
@@ -21,6 +21,7 @@ qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIME
 qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_flower_valley SOURCES world/test_flower_valley.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
+qc_add_test(test_rivers SOURCES world/test_rivers.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 450)
 qc_add_test(test_climate_order SOURCES world/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp world/QcTerrainTestUtil.h LIBRARIES qc_server TIMEOUT 900)
@@ -39,6 +40,8 @@ qc_add_test(test_village_layouts SOURCES world/test_village_layouts.cpp world/Qc
 qc_add_test(test_village_bounds SOURCES world/test_village_bounds.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_plan_hash SOURCES world/test_village_plan_hash.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_village_swamp SOURCES world/test_village_swamp.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 360)
+# Headless measurement of terrain generation (stage 69); QTCRAFT_TERRAIN_MEASURE=1 in a Release build for the recorded times.
+qc_add_test(test_terrain_measure SOURCES world/test_terrain_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 # Headless measurement of village generation (stage 37.2); QTCRAFT_VILLAGE_MEASURE=1 for the recorded sizes.
 qc_add_test(test_village_measure SOURCES world/test_village_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)

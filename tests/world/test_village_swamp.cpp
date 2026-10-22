@@ -345,7 +345,7 @@ private slots:
                 const QcPathResult path = finder.find(world, m_cells, rules, QcPathRequest{*start, *goal, 0, 8192, 256});
                 QVERIFY2(path.reachesGoal, qPrintable(u"%1 %2 -> %3 %4"_s.arg(from.at.x).arg(from.at.z).arg(to.at.x).arg(to.at.z)));
                 for (const QcBlockPos cell : path.cells) {
-                    QVERIFY(blockIn(chunks, cell) != water && blockIn(chunks, cell.offset(0, -1, 0)) != water);
+                    QVERIFY2(blockIn(chunks, cell) != water && blockIn(chunks, cell.offset(0, -1, 0)) != water, qPrintable(u"%1 %2 %3 from %4 %5"_s.arg(cell.x).arg(cell.y).arg(cell.z).arg(from.at.x).arg(from.at.z)));
                 }
                 ++walks;
             }
@@ -397,10 +397,10 @@ private slots:
         QTest::addColumn<int>("regionX");
         QTest::addColumn<int>("regionZ");
         QTest::newRow("rings 14") << seed << 0 << 0;
-        // Seed 20261017: a village beside a hill (x 9007..9096, z 5502..5564, the terrain up to
-        // y 83); a wetland beside high ground once cut a pit with steps of 6 blocks (decision E-660).
-        const int spacing = m_generator.villages().spacing();
-        QTest::newRow("village beside a hill") << qint64(20261017) << 9050 / spacing << 5530 / spacing;
+        // Seed 20261017: the village beside the highest ground of the seed's 38 swamp villages within
+        // 60 regions of the origin (region 34, -44: x 13165..13276, z -16775..-16703, the terrain up
+        // to y 82); a wetland beside high ground once cut a pit with steps of 6 blocks (decision E-660).
+        QTest::newRow("village beside a hill") << qint64(20261017) << 34 << -44;
     }
 
     void theWetlandBlendsIntoTheTerrain()

@@ -278,7 +278,8 @@ private slots:
                         {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
                         {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
                         {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
-                        {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}}});
+                        {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}},
+                        {u"qtcraft:river_station"_s, {u"qtcraft:salmon"_s}, 2, {}}});
         if (QTest::currentTestFailed()) {
             return;
         }

@@ -2016,7 +2016,7 @@ Bedeckt das Wasser kalter Biome. Rutschig: Wer darauf läuft, rutscht weiter und
 
 **Kommt vor in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Gefrorenes Wasser), [Tundra](biomes.md#biome-qtcraft-tundra) (Gefrorenes Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Gefrorenes Wasser)
+[Taiga](biomes.md#biome-qtcraft-taiga) (Gefrorenes Wasser), [Tundra](biomes.md#biome-qtcraft-tundra) (Gefrorenes Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Gefrorenes Wasser), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river) (Gefrorenes Wasser)
 
 ### <a id="block-qtcraft-iron_block"></a>Eisenblock
 
@@ -5281,7 +5281,7 @@ Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein 
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Unter Wasser, Strände), [Kies-Vorkommen](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter Wasser, Strände), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter Wasser, Strände)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Unter Wasser, Strände), [Kies-Vorkommen](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter Wasser, Strände), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter Wasser, Strände), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
 ### <a id="block-qtcraft-sticky_signal_piston"></a>Klebriger Signalkolben
 
@@ -8250,7 +8250,7 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter Wasser, Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Fluss](biomes.md#biome-qtcraft-river) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter Wasser, Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
 ### <a id="block-qtcraft-sandstone"></a>Sandstein
 

@@ -672,6 +672,7 @@
                 "biome:qtcraft:jungle",
                 "biome:qtcraft:jungle_edge",
                 "biome:qtcraft:plains",
+                "biome:qtcraft:river",
                 "biome:qtcraft:mountains",
                 "biome:qtcraft:swamp",
                 "biome:qtcraft:taiga",
@@ -679,7 +680,8 @@
                 "biome:qtcraft:snowy_taiga",
                 "biome:qtcraft:forest",
                 "biome:qtcraft:forest_steppe",
-                "biome:qtcraft:desert"
+                "biome:qtcraft:desert",
+                "biome:qtcraft:frozen_river"
             ],
             "id": "biomes",
             "title": "Biome"
@@ -1913,6 +1915,204 @@
             "text": "Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelten Eichen und Eichenbüschen, hier und da trockenes Gestrüpp. Auch hier stehen Dörfer der Ebene.",
             "title": "Waldsteppe"
         },
+        "biome:qtcraft:frozen_river": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "Frozen River",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:frozen_river"
+                },
+                {
+                    "label": "Flüsse in",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Verschneite Taiga"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "25 %",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "8 %",
+                            "target": "block:qtcraft:clay",
+                            "text": "Ton"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Gefrorenes Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "",
+                            "target": "block:qtcraft:ice",
+                            "text": "Eis"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:gravel",
+            "id": "biome:qtcraft:frozen_river",
+            "name": "qtcraft:frozen_river",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Ein Fluss durch kaltes Land (Tundra, verschneite Taiga, Taiga): Eis bedeckt ihn, Grund und Ufer sind Kies. Unter dem Eis schwimmen Lachse.",
+            "title": "Zugefrorener Fluss"
+        },
         "biome:qtcraft:jungle": {
             "category": "biomes",
             "categoryTitle": "Biome",
@@ -2848,6 +3048,234 @@
             ],
             "text": "Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe.",
             "title": "Ebene"
+        },
+        "biome:qtcraft:river": {
+            "category": "biomes",
+            "categoryTitle": "Biome",
+            "englishTitle": "River",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:river"
+                },
+                {
+                    "label": "Flüsse in",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:birch_forest",
+                            "text": "Birkenwald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Blumental"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Dschungel"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Dschungelrand"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Ebene"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:mountains",
+                            "text": "Gebirge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Sumpf"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest",
+                            "text": "Wald"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Waldsteppe"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Wüste"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter der Oberfläche",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "3 Blöcke",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Unter Wasser",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "35 %",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "10 %",
+                            "target": "block:qtcraft:clay",
+                            "text": "Ton"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Strände",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:sand",
+            "id": "biome:qtcraft:river",
+            "name": "qtcraft:river",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cave_spider",
+                            "text": "Höhlenspinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Huhn"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Kuh"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Lachs"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Schaf"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Schleim"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Schwein"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skelett"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spinne"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wesen"
+                }
+            ],
+            "text": "Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen laufen. Ihr Wasser steht auf Meereshöhe, ihr Grund ist Sand mit Flecken aus Kies und Ton, Sand säumt ihre Ufer. Hier schwimmen Lachse und Kabeljau. Durch Gebirge laufen sie in Schluchten; in den trockensten Wüsten werden sie schmal und enden.",
+            "title": "Fluss"
         },
         "biome:qtcraft:snowy_taiga": {
             "category": "biomes",
@@ -31166,6 +31594,12 @@
                             "note": "Unter Wasser, Strände",
                             "target": "biome:qtcraft:snowy_taiga",
                             "text": "Verschneite Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "Oberfläche, Unter der Oberfläche, Unter Wasser, Strände",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Zugefrorener Fluss"
                         }
                     ],
                     "recipes": [
@@ -35077,6 +35511,12 @@
                             "note": "Gefrorenes Wasser",
                             "target": "biome:qtcraft:snowy_taiga",
                             "text": "Verschneite Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "Gefrorenes Wasser",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Zugefrorener Fluss"
                         }
                     ],
                     "recipes": [
@@ -67682,6 +68122,12 @@
                             "note": "Unter Wasser, Strände",
                             "target": "biome:qtcraft:plains",
                             "text": "Ebene"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "Oberfläche, Unter der Oberfläche, Unter Wasser, Strände",
+                            "target": "biome:qtcraft:river",
+                            "text": "Fluss"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -118850,6 +119296,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:river",
+                            "text": "Fluss"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "biome:qtcraft:mountains",
@@ -118872,6 +119324,12 @@
                             "note": "",
                             "target": "biome:qtcraft:snowy_taiga",
                             "text": "Verschneite Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Zugefrorener Fluss"
                         }
                     ],
                     "recipes": [
@@ -129152,6 +129610,12 @@
                             "text": "Ebene"
                         },
                         {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:river",
+                            "text": "Fluss"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "biome:qtcraft:mountains",
@@ -129198,6 +129662,12 @@
                             "note": "",
                             "target": "biome:qtcraft:desert",
                             "text": "Wüste"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Zugefrorener Fluss"
                         }
                     ],
                     "recipes": [

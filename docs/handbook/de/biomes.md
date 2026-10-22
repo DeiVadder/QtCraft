@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
 
 ## QtCraft
 
@@ -156,6 +156,23 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 **Wesen**
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-river"></a>Fluss
+
+Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen laufen. Ihr Wasser steht auf Meereshöhe, ihr Grund ist Sand mit Flecken aus Kies und Ton, Sand säumt ihre Ufer. Hier schwimmen Lachse und Kabeljau. Durch Gebirge laufen sie in Schluchten; in den trockensten Wüsten werden sie schmal und enden.
+
+| | |
+|---|---|
+| ID | `qtcraft:river` |
+| Flüsse in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Sumpf](#biome-qtcraft-swamp), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Oberfläche | [Sand](blocks.md#block-qtcraft-sand) |
+| Unter der Oberfläche | [Sand](blocks.md#block-qtcraft-sand) (3 Blöcke) |
+| Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Kies](blocks.md#block-qtcraft-gravel) (35 %), [Ton](blocks.md#block-qtcraft-clay) (10 %) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-mountains"></a>Gebirge
 
@@ -376,3 +393,21 @@ Sand und Sandstein mit Kakteen und wenig sonst.
 **Wesen**
 
 [Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-frozen_river"></a>Zugefrorener Fluss
+
+Ein Fluss durch kaltes Land (Tundra, verschneite Taiga, Taiga): Eis bedeckt ihn, Grund und Ufer sind Kies. Unter dem Eis schwimmen Lachse.
+
+| | |
+|---|---|
+| ID | `qtcraft:frozen_river` |
+| Flüsse in | [Taiga](#biome-qtcraft-taiga), [Tundra](#biome-qtcraft-tundra), [Verschneite Taiga](#biome-qtcraft-snowy_taiga) |
+| Oberfläche | [Kies](blocks.md#block-qtcraft-gravel) |
+| Unter der Oberfläche | [Kies](blocks.md#block-qtcraft-gravel) (3 Blöcke) |
+| Unter Wasser | [Kies](blocks.md#block-qtcraft-gravel), [Sand](blocks.md#block-qtcraft-sand) (25 %), [Ton](blocks.md#block-qtcraft-clay) (8 %) |
+| Strände | [Kies](blocks.md#block-qtcraft-gravel) |
+| Gefrorenes Wasser | [Eis](blocks.md#block-qtcraft-ice) |
+
+**Wesen**
+
+[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)

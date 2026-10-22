@@ -67,6 +67,10 @@ bool QcVillagePlanner::villageBiomeAround(int x, int z) const
     for (const auto &[sx, sz] : corners) {
         const QcTerrainColumn column = m_terrain.column(x + sx * centreReach, z + sz * centreReach);
         const QcBiomeDefinition *biome = m_content.worldgen().biome(m_terrain.biomeName(column.biome));
+        // A river through the village is crossed by bridges (decision E-841).
+        if (m_terrain.isRiverBiome(column.biome)) {
+            continue;
+        }
         if (!biome || !biome->villages) {
             return false;
         }
@@ -84,9 +88,14 @@ bool QcVillagePlanner::isFlatAround(const QcVillageStyle &style, int x, int z) c
     int high = 0;
     for (int dz = -reach; dz <= reach; dz += flatnessStep) {
         for (int dx = -reach; dx <= reach; dx += flatnessStep) {
-            const int height = m_terrain.column(x + dx, z + dz).height;
-            low = std::min(low, height);
-            high = std::max(high, height);
+            // A river and the low ground of its valley are crossed by bridges (decision E-841): the
+            // land around them must be flat.
+            const QcTerrainColumn column = m_terrain.column(x + dx, z + dz);
+            if (column.riverDistance < column.riverHalfWidth + riverValley) {
+                continue;
+            }
+            low = std::min(low, column.height);
+            high = std::max(high, column.height);
         }
     }
     return high - low <= m_settings.maxHeightSpread;

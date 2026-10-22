@@ -136,10 +136,18 @@ struct QcVillageDraft
     bool touchesRoad(Rect rect, int gap) const;
     // Columns that pieces and lamps keep off (jetties, stairs).
     void markRoad(Rect rect);
+    // The level of a road's middle line: its top block, and whether it runs on a bridge there (its
+    // top block the deck over a river, decision E-841).
+    struct RoadLevel
+    {
+        int y = 0;
+        bool bridge = false;
+    };
     // A road cell at the ground's top block, or at `level` (the road's middle line) where that lies at
-    // most one block above or below it (decision E-409); over water a boardwalk deck. Cells under a
-    // piece or already a road stay as they are: the first rank laid on a cell keeps it.
-    void addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<int> level = std::nullopt);
+    // most one block above or below it (decision E-409); over water a boardwalk deck, and where the
+    // middle line runs on a bridge a bridge deck over the water. Cells under a piece or already a
+    // road stay as they are: the first rank laid on a cell keeps it.
+    void addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<RoadLevel> level = std::nullopt);
 
     // The plan's settings from the style, its road surfaces drawn from the variant sequence before
     // any building's variation.

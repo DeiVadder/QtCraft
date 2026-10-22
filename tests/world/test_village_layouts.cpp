@@ -96,8 +96,10 @@ private:
                 columns.insert(key(cell.x, cell.z));
             }
         }
-        for (const QcVillagePlan::Deck &deck : plan.decks) {
-            columns.insert(key(deck.at.x, deck.at.z));
+        for (const QList<QcVillagePlan::Deck> *decks : {&plan.decks, &plan.bridges}) {
+            for (const QcVillagePlan::Deck &deck : *decks) {
+                columns.insert(key(deck.at.x, deck.at.z));
+            }
         }
         return columns;
     }

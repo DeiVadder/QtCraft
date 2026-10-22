@@ -42,7 +42,11 @@ int floorY(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stil
 
 bool carries(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stilts, int x, int z)
 {
-    const QcTerrainColumn column = terrain.column(x, z);
+    return carries(terrain, stilts, terrain.column(x, z));
+}
+
+bool carries(const QcTerrainGenerator &terrain, const QcVillageStyle::Stilts &stilts, const QcTerrainColumn &column)
+{
     const int ground = column.height - 1;
     return column.overhang < 1.0 && ground <= floorY(terrain, stilts) && ground >= terrain.seaLevel() - 1 - stilts.maxDepth;
 }
@@ -108,9 +112,14 @@ std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageS
     for (int dz = -reach; dz <= reach; dz += step) {
         for (int dx = -reach; dx <= reach; dx += step) {
             ++samples;
-            carried += QcBoardwalkPlanner::carries(terrain, style.stilts, x + dx, z + dz) ? 1 : 0;
+            // Boardwalks do not cross rivers (decision E-841): no village over water beside one.
+            const QcTerrainColumn column = terrain.column(x + dx, z + dz);
+            if (column.riverDistance < column.riverHalfWidth + step) {
+                return std::nullopt;
+            }
+            carried += QcBoardwalkPlanner::carries(terrain, style.stilts, column) ? 1 : 0;
             // Water stands over ground below the water surface.
-            wet += terrain.column(x + dx, z + dz).height - 1 < terrain.seaLevel() - 1 ? 1 : 0;
+            wet += column.height - 1 < terrain.seaLevel() - 1 ? 1 : 0;
         }
     }
     // Most of the ground carries stilts (pieces and boardwalks keep off the rest), and some of it

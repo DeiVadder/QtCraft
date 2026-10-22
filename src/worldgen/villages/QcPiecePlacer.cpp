@@ -48,9 +48,15 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
     int low = QcWorld::worldHeight;
     int high = 0;
     int sum = 0;
-    for (const auto &[x, z] : samples) {
-        const QcTerrainColumn column = m_terrain.column(x, z);
+    // A river may run between the samples (decision E-840): no water of one within the circle
+    // round the footprint's middle (the last sample), a block of bank left.
+    const double reach = 0.5 * std::hypot(rect.x1 - rect.x0 + 1, rect.z1 - rect.z0 + 1) + 1.0;
+    for (const auto &sample : samples) {
+        const QcTerrainColumn column = m_terrain.column(sample.first, sample.second);
         if (column.height - 1 < m_terrain.seaLevel() || column.overhang >= 1.0) {
+            return std::nullopt;
+        }
+        if (&sample == &samples.back() && column.riverDistance < column.riverHalfWidth + reach) {
             return std::nullopt;
         }
         low = std::min(low, column.height);

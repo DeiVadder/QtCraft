@@ -109,6 +109,15 @@ struct QcVillageStyle
         int reach() const { return margin + fray + blend; }
     };
 
+    // A bridge carries a road of a style on land over a river (decision E-841): the deck one block
+    // above the water and the posts under it, oak planks and logs through the style's palette; air:
+    // no bridges.
+    struct Bridge
+    {
+        QcBlockId deck = qcAirBlockId;
+        QcBlockId post = qcAirBlockId;
+    };
+
     QString name;
     // Pieces and roads stand over water on stilts (decision E-407): floors and boardwalks at one
     // height above the water surface instead of on the ground.
@@ -129,6 +138,7 @@ struct QcVillageStyle
     // Street plans by weight (decision E-408), never empty; over water without diagonals and winding.
     QList<QcVillageLayout> layouts;
     QcBlockId foundation = qcAirBlockId;
+    Bridge bridge;
 };
 
 // The village styles of the content (decision E-403), resolved once per world generator: which
@@ -170,6 +180,7 @@ private:
                                                            const QString &style);
     [[nodiscard]] QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content,
                                                            const QString &style);
+    [[nodiscard]] static QcVillageStyle::Bridge bridgeOf(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
     [[nodiscard]] std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
     [[nodiscard]] QcVillageStyle::Wetland fitWetland(QcVillageStyle::Wetland wetland, const QcVillageSettings &settings, const QString &style);
     [[nodiscard]] QcBlockId wetlandPlant(const QcContentRegistry &content, const QString &style, const QString &name);

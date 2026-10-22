@@ -13,4 +13,12 @@ struct QcTerrainColumn
     int slope = 0;
     // Overhang amplitude in blocks, blended across biome borders (0: plain column).
     double overhang = 0.0;
+    // Dry ground at the water's edge of a river (decision E-840): the river biome's beach in
+    // patches. The water of a river channel has the river biome as `biome`.
+    bool riverBank = false;
+    // The river near the column (decision E-840): blocks from its middle line (about; 1e9 far from
+    // rivers and where the ground lies too deep under water for one) and half the width of its
+    // water there (0 where none runs), as QcTerrainGenerator::riverAt() gives them.
+    double riverDistance = 1.0e9;
+    double riverHalfWidth = 0.0;
 };

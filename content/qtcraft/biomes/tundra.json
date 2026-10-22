@@ -10,6 +10,7 @@
     "underwater": "gravel",
     "beach": "snow_block",
     "frozenWater": "ice",
+    "riverBiome": "frozen_river",
     "features": [
         {
             "feature": "spruce_tree",

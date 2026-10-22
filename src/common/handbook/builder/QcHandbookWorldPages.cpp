@@ -33,6 +33,12 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     layer(biome.surfaceBlock, u"biome.surface"_s);
     layer(biome.subsurfaceBlock, u"biome.subsurface"_s, text.label(u"unit.blocks"_s).arg(biome.subsurfaceDepth));
     layer(biome.underwaterBlock, u"biome.underwater"_s);
+    // Patches in the ground under water (river beds, decision E-840) join that fact.
+    if (!biome.underwaterBlock.isEmpty()) {
+        for (const QcBlockShare &patch : biome.underwaterPatches) {
+            facts.back().links.append(context.links.blockLink(patch.block, text.percent(patch.share)));
+        }
+    }
     layer(biome.beachBlock, u"biome.beach"_s);
     layer(biome.steepBlock, u"biome.steep"_s, text.label(u"value.steep"_s).arg(biome.steepSlope));
     layer(biome.frozenWaterBlock, u"biome.frozenWater"_s);
@@ -124,6 +130,23 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     return sections;
 }
 
+// The land biomes whose rivers take a river biome (decision E-840): those naming it, and those
+// naming none when it is the terrain's river biome (or, without one, the content's first).
+[[nodiscard]] Fact riverFact(const QcHandbookContext &context, const QcBiomeDefinition &river)
+{
+    const QList<QcBiomeDefinition> &biomes = context.content.worldgen().biomes();
+    const QString &terrainRiver = context.content.worldgen().terrainSettings().riverBiome;
+    const auto first = std::ranges::find_if(biomes, &QcBiomeDefinition::river);
+    const bool isFirst = terrainRiver.isEmpty() ? first != biomes.end() && first->name == river.name : terrainRiver == river.name;
+    QcLinkList land;
+    for (const QcBiomeDefinition &biome : biomes) {
+        if (!biome.river && (biome.riverBiome == river.name || (biome.riverBiome.isEmpty() && isFirst))) {
+            land.addUnique(context.links.biomeLink(biome));
+        }
+    }
+    return {context.text.label(u"fact.riverOf"_s), {}, land.sorted()};
+}
+
 QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinition &biome)
 {
     QcHandbookText &text = context.text;
@@ -137,6 +160,14 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.text = text.description(biome.descriptionKey, biome.name);
 
     entry.facts.append({text.label(u"fact.id"_s), biome.name, {}});
+    if (biome.river) {
+        // A river biome has no climate cell or height of its own: it lies in the rivers of others.
+        entry.facts.append(riverFact(context, biome));
+        entry.facts += layerFacts(context, biome);
+        entry.sections += biomeSections(context, biome);
+        entry.englishTitle = context.content.translations().translate(biome.translationKey, QcHandbookText::english());
+        return entry;
+    }
     entry.facts.append({text.label(u"fact.climate"_s),
                         text.label(u"value.climate"_s)
                             .arg(text.number(biome.temperature), text.number(biome.humidity), text.number(biome.ruggedness)),

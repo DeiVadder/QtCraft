@@ -88,10 +88,12 @@ private:
             addBlockPos(hash, step.at);
             addBlock(hash, step.block);
         }
-        for (const QcVillagePlan::Deck &deck : plan.decks) {
-            addBlockPos(hash, deck.at);
-            addBlock(hash, deck.block);
-            addBlock(hash, deck.post);
+        for (const QList<QcVillagePlan::Deck> *decks : {&plan.decks, &plan.bridges}) {
+            for (const QcVillagePlan::Deck &deck : *decks) {
+                addBlockPos(hash, deck.at);
+                addBlock(hash, deck.block);
+                addBlock(hash, deck.post);
+            }
         }
         for (const QList<QcVillagePlan::Area> *areas : {&plan.wetland.wet, &plan.wetland.dry}) {
             addInts(hash, {areas->size()});
@@ -170,9 +172,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64(42) << QByteArray("93c723b3b1cfa569c484496e0ed0e3340df3637b15cac62d4e4e375681b3e810") << 175;
-        QTest::newRow("seed 7") << qint64(7) << QByteArray("13be510faa366848a7ff0ebf196cdb26a72b612fbd5bec52b29c18fcf392ac9d") << 173;
-        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("df7c9f5bd3fc5b7f3875dcde587e729958535c2a6663cdaf61d14657cf644134") << 169;
+        QTest::newRow("seed 42") << qint64(42) << QByteArray("64ddcb15394fafa325cc22164537c8251cc1c9f41f17c980d9b42de9188c58cd") << 165;
+        QTest::newRow("seed 7") << qint64(7) << QByteArray("8015b66ff35de046250df585b7b05d943959737574259fa6e7c91a12a81bd350") << 166;
+        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("39b62ca0800b796cd7b6e278ee317fc3212e8d7da9ddac015a5c7cbe748249a1") << 169;
     }
 
     void plansStayTheSame()

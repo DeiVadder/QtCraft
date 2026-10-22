@@ -74,6 +74,20 @@ QList<QcVillageStyle::Crop> QcVillageStyles::resolveCrops(const QList<QcVillageC
     return crops;
 }
 
+// The bridges of a style on land (decision E-841): oak planks and logs through its palette; none
+// (air) without them in the content.
+QcVillageStyle::Bridge QcVillageStyles::bridgeOf(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
+{
+    const QString planks = u"qtcraft:oak_planks"_s;
+    const QString log = u"qtcraft:oak_log"_s;
+    const std::optional<QcBlockId> deck = content.stateId(definition.palette.value(planks, planks));
+    const std::optional<QcBlockId> post = content.stateId(definition.palette.value(log, log));
+    if (!deck || !post) {
+        return {};
+    }
+    return {*deck, *post};
+}
+
 // The posts and stairs of a style over water; std::nullopt (with a warning) when one is unknown or
 // the stairs have no facing.
 std::optional<QcVillageStyle::Stilts> QcVillageStyles::resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content)
@@ -227,6 +241,9 @@ std::optional<QcVillageStyle> QcVillageStyles::resolve(const QcVillageStyleDefin
         }
     }
 
+    if (!style.overWater) {
+        style.bridge = bridgeOf(definition, content);
+    }
     if (!definition.lamp.isEmpty()) {
         if (std::optional<QcVillageStyle::Piece> lamp = piece(single(definition.lamp), definition, content)) {
             style.lamp = std::move(*lamp);

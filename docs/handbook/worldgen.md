@@ -453,7 +453,7 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Flower Valley](biomes.md#biome-qtcraft-flower_valley), [Forest](biomes.md#biome-qtcraft-forest), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Jungle](biomes.md#biome-qtcraft-jungle), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [River](biomes.md#biome-qtcraft-river), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="feature-qtcraft-wild_carrots"></a>Wild carrots
 

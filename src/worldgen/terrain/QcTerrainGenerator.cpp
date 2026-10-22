@@ -31,8 +31,6 @@ constexpr double terraceScale = 380.0;
 // Ocean floor lies this far below sea level (before detail noise).
 constexpr double oceanDepth = 12.0;
 constexpr int featureMargin = QcTerrainColumnGrid::featureMargin;
-// The snow line is ragged by this many blocks.
-constexpr int snowLineJitter = 3;
 constexpr int spawnSearchRadius = 512;
 
 // Terraces: flat steps of `step` blocks with a cliff at the end of each.
@@ -69,6 +67,8 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_caves(quint64(seed), m_content->worldgen().terrainSettings(), m_definitions)
     , m_pools(m_content, m_definitions)
     , m_climate(quint64(seed), m_definitions.anyRare)
+    , m_rivers(quint64(seed))
+    , m_ground(m_definitions, m_rivers, quint64(seed))
     , m_continentNoise(qcMixSeed(quint64(seed), 1))
     , m_detailNoise(qcMixSeed(quint64(seed), 2))
     , m_warpNoiseX(qcMixSeed(quint64(seed), 9))
@@ -168,6 +168,29 @@ int QcTerrainGenerator::biomeForClimate(const QcTerrainClimate::Point &climate) 
     return QcClimateBiomes::choose(m_definitions.biomes, climate);
 }
 
+QcRiverField::Sample QcTerrainGenerator::riverAt(int x, int z) const
+{
+    // Where column() asks no river (no rivers, ground too deep under water) there is none.
+    if (!m_definitions.rivers || column(x, z).riverDistance >= QcRiverField::far) {
+        return {};
+    }
+    return m_rivers.at(x, z, climateAt(x, z));
+}
+
+bool QcTerrainGenerator::isRiverBiome(int biome) const
+{
+    return biome >= 0 && biome < m_definitions.biomes.size() && m_definitions.biomes[biome].river;
+}
+
+QcTerrainGenerator::RiverCut QcTerrainGenerator::riverCut(int x, int z, const QcTerrainClimate::Point &climate, double height,
+                                                          int biome) const
+{
+    const QcRiverField::Cut cut = m_rivers.cut(x, z, climate, height, seaLevel());
+    // Lands without a river biome keep their own biome along their rivers.
+    const int riverBiome = m_definitions.biomes[biome].riverBiome;
+    return {cut.height, cut.water && riverBiome >= 0 ? riverBiome : biome, cut.bank && riverBiome >= 0, cut.river};
+}
+
 QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const
 {
     // Inverse-distance weighting in climate space blends heights smoothly across biome borders. All
@@ -183,6 +206,10 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
     Blend result;
     for (qsizetype i = 0; i < m_definitions.biomes.size(); ++i) {
         const Biome &biome = m_definitions.biomes[i];
+        // River biomes take the channels of rivers, never a climate (decision E-840).
+        if (biome.river) {
+            continue;
+        }
         double weight = QcClimateBiomes::weight(biome, climate);
         if (weight > nearestWeight) {
             nearestWeight = weight;
@@ -240,7 +267,15 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     const double continent = 1.4 * m_continentNoise.fractal2(warpedX / continentScale, warpedZ / continentScale, 4);
     result.landFactor = smoothstep(-0.30, -0.05, continent);
     const double oceanFloor = seaLevel() - oceanDepth + 5.0 * detail;
-    const double height = oceanFloor + (blended.landHeight - oceanFloor) * result.landFactor;
+    double height = oceanFloor + (blended.landHeight - oceanFloor) * result.landFactor;
+    if (m_definitions.rivers) {
+        const RiverCut cut = riverCut(x, z, climate, height, blended.biome);
+        height = cut.height;
+        result.biome = cut.biome;
+        result.riverBank = cut.bank;
+        result.riverDistance = cut.river.distance;
+        result.riverHalfWidth = cut.river.halfWidth;
+    }
     result.height = std::clamp(int(std::lround(height)), 4, QcWorld::worldHeight - 8);
     // Overhangs fade out towards the coast and never reach down to the sea level, so no hollow
     // lies next to or under water.
@@ -256,40 +291,7 @@ QcBlockId QcTerrainGenerator::surfaceBlockAt(int x, int z) const
         info.slope = std::max({std::abs(column(x - 1, z).height - info.height), std::abs(column(x + 1, z).height - info.height),
                                std::abs(column(x, z - 1).height - info.height), std::abs(column(x, z + 1).height - info.height)});
     }
-    return surfaceBlock(info, x, z);
-}
-
-QcBlockId QcTerrainGenerator::surfaceBlock(const Column &column, int x, int z) const
-{
-    const Biome &biome = m_definitions.biomes[column.biome];
-    const int top = column.height - 1;
-    if (top < seaLevel() - 1) {
-        return biome.underwater;
-    }
-    // Beaches only where land meets the sea, not on low inland plains.
-    if (top <= seaLevel() + 1 && column.landFactor < 1.0) {
-        return biome.beach;
-    }
-    if (biome.snowLine > 0
-        && top >= biome.snowLine - snowLineJitter + int(qcPositionRandom(m_seed, x, 7, z) * (2 * snowLineJitter + 1))) {
-        return biome.snow;
-    }
-    if (biome.steep != qcAirBlockId && column.slope >= biome.steepSlope) {
-        return biome.steep;
-    }
-    return biome.surface;
-}
-
-QcBlockId QcTerrainGenerator::subsurfaceBlock(const Column &column, QcBlockId surface) const
-{
-    const Biome &biome = m_definitions.biomes[column.biome];
-    if (column.height - 1 < seaLevel() - 1) {
-        return biome.underwater;
-    }
-    if (surface == biome.beach || (surface == biome.steep && biome.steep != qcAirBlockId)) {
-        return surface;
-    }
-    return biome.subsurface;
+    return m_ground.surface(info, x, z);
 }
 
 bool QcTerrainGenerator::isCave(int x, int y, int z) const
@@ -358,8 +360,8 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
     const int bedrockLayers = m_definitions.bedrockLayers;
     const int worldX = chunk.pos().x * QcWorld::chunkSize + localX;
     const int worldZ = chunk.pos().z * QcWorld::chunkSize + localZ;
-    const QcBlockId surface = surfaceBlock(column, worldX, worldZ);
-    const QcBlockId subsurface = subsurfaceBlock(column, surface);
+    const QcBlockId surface = m_ground.surface(column, worldX, worldZ);
+    const QcBlockId subsurface = m_ground.subsurface(column, surface);
     const bool overhangs = column.overhang >= 1.0;
     const OverhangBand band = overhangs ? overhangBand(worldX, worldZ, column) : OverhangBand{.bottom = column.height};
     const int highest = overhangs ? band.bottom + band.size - 1 : column.height - 1;
@@ -529,7 +531,7 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
     const QcVegetationTable::Plant *plant =
         feature.plants.isEmpty() ? nullptr : &feature.plants.pick(kindRandom(feature, x, z));
     const QSet<QcBlockId> &allowedGround = plant ? plant->ground : feature.ground;
-    if (!allowedGround.isEmpty() && !allowedGround.contains(surfaceBlock(info, x, z))) {
+    if (!allowedGround.isEmpty() && !allowedGround.contains(m_ground.surface(info, x, z))) {
         return;
     }
 

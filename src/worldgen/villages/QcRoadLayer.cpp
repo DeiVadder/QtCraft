@@ -53,12 +53,13 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
     int direction = arm.direction;
     int heading = arm.direction;
     std::pair<int, int> cell{arm.x, arm.z};
-    int previous = m_terrain.column(arm.x, arm.z).height;
+    From from{m_terrain.column(arm.x, arm.z).height, 0, arm.direction};
     qsizetype bend = 0;
     int nextWind = arm.winding ? arm.firstSlot + windGapMinimum + int(draft.random() * windGapRange) : -1;
     Road run{arm.x, arm.z, directions[direction].first, directions[direction].second, 0, arm.firstSlot, arm.branch, 0, false, arm.sides};
     int laid = 0;
-    for (int d = 0; d < arm.length; ++d) {
+    // A road on a bridge at the end of its length goes on to the far bank (decision E-841).
+    for (int d = 0; d < arm.length || (from.bridgeCells > 0 && d < arm.length + maxBridge); ++d) {
         int next = direction;
         if (bend < arm.bends.size() && arm.bends[bend].first == d) {
             next = (direction + arm.bends[bend++].second + 8) % 8;
@@ -70,8 +71,8 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
 
         const auto [dx, dz] = directions[next];
         const std::pair<int, int> at = d == 0 ? cell : std::pair{cell.first + dx, cell.second + dz};
-        const std::optional<int> height = roadGround(draft, at, next, previous, d >= arm.firstSlot);
-        if (!height) {
+        const std::optional<Ground> ground = roadGround(draft, at, next, from, d >= arm.firstSlot);
+        if (!ground) {
             break;
         }
         if (next != direction) {
@@ -82,9 +83,13 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
         ++run.length;
         ++laid;
         cell = at;
-        previous = *height;
+        from = {ground->height, ground->bridge ? from.bridgeCells + 1 : 0, next};
     }
     runs.append(run);
+    // A bridge the road does not finish (its length, a piece or the radius ends it over the water)
+    // is left out: the road ends at the bank.
+    laid -= from.bridgeCells;
+    runs = withoutLast(std::move(runs), from.bridgeCells);
     if (laid <= arm.firstSlot || (arm.closed && laid < arm.length)) {
         return {};
     }
@@ -93,21 +98,94 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
     return runs;
 }
 
-std::optional<int> QcRoadLayer::roadGround(const QcVillageDraft &draft, std::pair<int, int> cell, int direction, int previous,
-                                           bool checkPieces) const
+std::optional<QcRoadLayer::Ground> QcRoadLayer::roadGround(const QcVillageDraft &draft, std::pair<int, int> cell, int direction,
+                                                           From from, bool checkPieces) const
 {
     const auto [x, z] = cell;
     const QcTerrainColumn column = m_terrain.column(x, z);
     // Over water a road is a boardwalk at the floor height: it ends where the ground cannot carry it.
-    const bool ends = draft.style->overWater ? !QcBoardwalkPlanner::carries(m_terrain, draft.style->stilts, x, z)
-                                             : column.height - 1 < m_terrain.seaLevel() || std::abs(column.height - previous) > roadStep;
+    // On land it crosses rivers on bridges and ends at other water; the whole stretch of water is
+    // checked at its first cell, the cells after it in the same direction lie on the same bridge.
+    Ground ground{column.height, false};
+    if (!draft.style->overWater && column.height - 1 < m_terrain.seaLevel()) {
+        const bool sameBridge = from.bridgeCells > 0 && from.direction == direction;
+        const std::optional<int> deck = sameBridge ? std::optional<int>(bridgeDeck()) : bridgeHeight(draft, cell, direction);
+        if (!deck) {
+            return std::nullopt;
+        }
+        ground = {*deck, true};
+    }
+    // Onto and off a bridge the road steps at most a block, which villagers walk (decision E-411).
+    const int step = ground.bridge || from.bridgeCells > 0 ? 1 : roadStep;
+    const bool ends = draft.style->overWater ? !QcBoardwalkPlanner::carries(m_terrain, draft.style->stilts, column)
+                                             : std::abs(ground.height - from.height) > step;
     const auto [dx, dz] = directions[direction];
     const Rect rect = QcVillageDraft::brush(cell, dx, dz, dx != 0 && dz != 0);
     const bool blocked = checkPieces && std::ranges::any_of(draft.pieces, [&](Rect piece) { return piece.intersects(rect, 0); });
     if (ends || blocked || !draft.insideRadius(rect)) {
         return std::nullopt;
     }
-    return column.height;
+    return ground;
+}
+
+QList<QcRoadLayer::Road> QcRoadLayer::withoutLast(QList<Road> runs, int cells)
+{
+    while (cells > 0 && !runs.isEmpty()) {
+        const int cut = std::min(cells, runs.back().length);
+        runs.back().length -= cut;
+        cells -= cut;
+        if (runs.back().length == 0 && runs.size() > 1) {
+            runs.removeLast();
+        } else if (cut == 0) {
+            break;
+        }
+    }
+    return runs;
+}
+
+QcRoadLayer::Stretch QcRoadLayer::wetStretch(std::pair<int, int> cell, int dx, int dz) const
+{
+    Stretch stretch;
+    for (int i = 0; stretch.cells <= maxBridge; ++i) {
+        const QcTerrainColumn column = m_terrain.column(cell.first + dx * i, cell.second + dz * i);
+        if (column.height - 1 >= m_terrain.seaLevel()) {
+            stretch.bankHeight = column.height;
+            return stretch;
+        }
+        stretch.river = stretch.river || m_terrain.isRiverBiome(column.biome);
+        ++stretch.cells;
+    }
+    return stretch;
+}
+
+std::optional<int> QcRoadLayer::bridgeHeight(const QcVillageDraft &draft, std::pair<int, int> cell, int direction) const
+{
+    if (draft.style->bridge.deck == qcAirBlockId) {
+        return std::nullopt;
+    }
+
+    // The whole stretch of low bank and water along the road through this cell, back and on to the
+    // first dry cells: some of its water a river's (a lake or the sea ends the road as before), at
+    // most maxBridge cells, and the far bank about at the deck's height.
+    const int deck = bridgeDeck();
+    const auto [dx, dz] = directions[direction];
+    const Stretch ahead = wetStretch(cell, dx, dz);
+    const Stretch behind = wetStretch({cell.first - dx, cell.second - dz}, -dx, -dz);
+    const bool fits = ahead.bankHeight && std::abs(*ahead.bankHeight - deck) <= 1 && ahead.cells + behind.cells <= maxBridge;
+    return fits && (ahead.river || behind.river) ? std::optional<int>(deck) : std::nullopt;
+}
+
+int QcRoadLayer::bridgeDeck() const
+{
+    return m_terrain.seaLevel() + 1;
+}
+
+QcVillageDraft::RoadLevel QcRoadLayer::roadLevel(int x, int z) const
+{
+    // A road's middle line only runs over water and low bank on a bridge (roadGround).
+    const QcTerrainColumn column = m_terrain.column(x, z);
+    const bool bridge = column.height - 1 < m_terrain.seaLevel();
+    return bridge ? QcVillageDraft::RoadLevel{m_terrain.seaLevel(), true} : QcVillageDraft::RoadLevel{column.height - 1, false};
 }
 
 int QcRoadLayer::windTurn(QcVillageDraft &draft, std::pair<int, int> cell, int direction, int heading) const
@@ -156,7 +234,7 @@ void QcRoadLayer::paintRun(QcVillageDraft &draft, const Road &run, std::pair<boo
         const std::pair<int, int> middle{run.x + run.dx * d, run.z + run.dz * d};
         const Rect rect = QcVillageDraft::brush(middle, run.dx, run.dz, run.diagonal() || joint);
         // The cells across the road lie at the height of its middle line where the ground allows.
-        const int level = m_terrain.column(middle.first, middle.second).height - 1;
+        const QcVillageDraft::RoadLevel level = roadLevel(middle.first, middle.second);
         for (int z = rect.z0; z <= rect.z1; ++z) {
             for (int x = rect.x0; x <= rect.x1; ++x) {
                 draft.addRoadCell(m_terrain, {x, z}, run.branch, level);

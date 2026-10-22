@@ -35,6 +35,8 @@ public:
 private:
     // The ground around a centre is sampled this far apart for the flatness and wetness checks.
     static constexpr int flatnessStep = 8;
+    // The flatness check leaves out columns this many blocks beyond a river's water (its valley).
+    static constexpr int riverValley = 12;
 
     // The style of the centre column when it is land (or, for a style over water, wet ground too) of a
     // biome with villages.

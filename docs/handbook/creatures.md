@@ -351,7 +351,7 @@ A fish of the cold waters of taiga, tundra and mountains. It swims in schools, f
 
 **Appears in biomes**
 
-[Mountains](biomes.md#biome-qtcraft-mountains), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Frozen River](biomes.md#biome-qtcraft-frozen_river), [Mountains](biomes.md#biome-qtcraft-mountains), [River](biomes.md#biome-qtcraft-river), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sand golem
 

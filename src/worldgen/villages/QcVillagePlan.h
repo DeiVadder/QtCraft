@@ -139,6 +139,8 @@ struct QcVillagePlan
     QcBlockId stiltPost = qcAirBlockId;
     int stiltSpacing = 3;
     QList<Deck> decks;
+    // The decks of the bridges that carry roads on land over rivers (decision E-841).
+    QList<Deck> bridges;
     Wetland wetland;
     QList<Spot> beds;
     QList<Spot> workstations;
@@ -177,6 +179,7 @@ struct QcVillagePlan
         runs.squeeze();
         steps.squeeze();
         decks.squeeze();
+        bridges.squeeze();
         wetland.wet.squeeze();
         wetland.dry.squeeze();
         beds.squeeze();

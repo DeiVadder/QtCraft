@@ -12,6 +12,8 @@
     "caveEntrances": 0.08,
     "bedrockLayers": 5,
     "vegetationBiome": "plains",
+    "rivers": true,
+    "riverBiome": "river",
     "dungeons": {
         "regionSize": 48,
         "chance": 0.6,

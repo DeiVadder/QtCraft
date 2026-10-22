@@ -323,6 +323,7 @@ void QcVillageGenerator::build(QcChunk &chunk, const QcVillagePlan &plan) const
     buildRoads(chunk, plan.roads, plan.pathBlock);
     buildSteps(chunk, plan.steps);
     buildDecks(chunk, plan.decks);
+    buildDecks(chunk, plan.bridges);
     for (const QcStructurePlacement &piece : plan.pieces) {
         if (piece.overlaps(chunk.pos())) {
             buildPiece(chunk, piece, plan);

@@ -84,6 +84,11 @@ QImage renderBiomes(const QcTerrainGenerator &generator, Area area)
             const int x = area.centreX - area.radius + px * area.blocksPerPixel;
             const int z = area.centreZ - area.radius + py * area.blocksPerPixel;
             const QcTerrainGenerator::Column column = generator.column(x, z);
+            // River biomes (decision E-840) in a lighter blue than the sea and the lakes.
+            if (generator.isRiverBiome(column.biome)) {
+                image.setPixelColor(px, py, QColor(70, 140, 235));
+                continue;
+            }
             if (column.height <= generator.seaLevel()) {
                 image.setPixelColor(px, py, QColor(20, 30, 60));
                 continue;

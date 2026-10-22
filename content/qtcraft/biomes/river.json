@@ -1,0 +1,31 @@
+{
+    "name": "river",
+    "river": true,
+    "temperature": 0.5,
+    "humidity": 0.5,
+    "surface": "sand",
+    "subsurface": "sand",
+    "underwater": "sand",
+    "underwaterPatches": [
+        {
+            "block": "gravel",
+            "share": 0.35
+        },
+        {
+            "block": "clay",
+            "share": 0.1
+        }
+    ],
+    "beach": "sand",
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

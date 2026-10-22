@@ -1,0 +1,32 @@
+{
+    "name": "frozen_river",
+    "river": true,
+    "temperature": 0.05,
+    "humidity": 0.5,
+    "surface": "gravel",
+    "subsurface": "gravel",
+    "underwater": "gravel",
+    "underwaterPatches": [
+        {
+            "block": "sand",
+            "share": 0.25
+        },
+        {
+            "block": "clay",
+            "share": 0.08
+        }
+    ],
+    "beach": "gravel",
+    "frozenWater": "ice",
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

@@ -296,6 +296,10 @@ private slots:
     void everyBiomeHasASaneShare()
     {
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
+            // River biomes lie under the water of rivers, not on land (test_rivers, decision E-840).
+            if (biome.river) {
+                continue;
+            }
             const QString name = biome.name.mid(qsizetype(8));
             const double share = double(m_survey.shares.value(name)) / m_survey.land;
             qInfo("share %-16s %.3f", qPrintable(name), share);

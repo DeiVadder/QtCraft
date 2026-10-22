@@ -2627,3 +2627,36 @@ Die Obergrenze ist nach weniger als 10 s voll, tags wie nachts (Höhlen bleiben 
 | explore | 6 | 0,243 → 0,249 (+2,5 %) | 1,085 → 1,092 (+0,6 %) | 0,067 → 0,073 | 66,5 → 65,5 | 73,7 → 72,7 |
 
 **explore** wieder auf dem Stand vor den Fixes (+2,5 %, rund 6 µs je Tick für den Durchgang). **crowd über +10 %**, wieder durch die Zahl der Wesen: 23,5 mehr als `dev` (in der ersten 73.1-Reihe 7 mehr), die Phase Wesen wächst um 0,040 ms, rund 1,7 µs je zusätzlichem Wesen. Die Zahl ist je Build fest (alle 6 Runden 138 bzw. 139), sie hängt an den Zufallsfolgen (Blickrichtungen jetzt aus der Monster-Folge, Despawn-Chance aus einer eigenen) und am Zeitpunkt des Neuzählens; mehr als 70 Monster je 289 Chunks lässt die Obergrenze nicht zu. Gewollt (Parität mit dem Vorbild), wie in der ersten Reihe.
+
+## Etappe 69 (Flüsse), headless, Release (2026-10-22)
+
+**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, neu in Etappe 69: `QcTerrainGenerator::generate` für 4 Seeds 1/7/42/1234 × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, dazu `column()` auf 192 × 192 Spalten je Feld; dieselbe Testdatei in einem Worktree auf `dev` `f15f17d`; zwei Reihen abwechselnd, unter dem Slot-Broker exklusiv):
+
+| Wert | dev | 69 |
+|---|---:|---:|
+| ms je Chunk | 0,643 / 0,645 | 0,674 / 0,676 (+4,8 %) |
+| µs je Spalte (`column`) | 0,380 / 0,380 | 0,448 / 0,446 (+17,6 %) |
+
+Die erste Fassung (Steigung des Flussfelds an den unverbogenen Koordinaten, also drei volle Auswertungen samt Mäanderfeld, `reach` 56, auch im Meer) kostete +11,5 % je Chunk und +37 % je Spalte. Die Steigung an den verbogenen Koordinaten (zwei Auswertungen des Mäanderfelds weniger), `reach` 44 und kein Flussfeld unter Grund tiefer als 8 Blöcke unter dem Meer brachten es unter die 10-%-Schwelle (E-840). Die Spalte bleibt +18 % teurer; sie zählt nur über die Chunks (Planung der Dörfer und Bauwerke läuft beim Erzeugen) und ist dort enthalten.
+
+**Server** (`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, nicht nahe der Schwelle), `dev` `f15f17d` (`pre`) gegen `feature/69-rivers` (`new`); Lastmittel 2,4. Mittelwerte der Runden:
+
+| Wert | pre | new |
+|---|---:|---:|
+| Tick Ø (ms) | 0,2440 | 0,2417 (−0,9 %) |
+| Tick p99 (ms) | 1,087 | 1,061 (−2,4 %) |
+| Spitzenspeicher (MB) | 72,8 | 72,8 |
+| `chunkLoading` Ø (ms) | 0,0609 | 0,0613 (+0,7 %) |
+| `streaming` Ø (ms) | 0,1048 | 0,1037 |
+| `plants` Ø (ms) | 0,0042 | 0,0067 |
+
+Unter der 10-%-Schwelle. Die Phase Pflanzen wächst um 0,0025 ms: an den Ufern der Flüsse wächst Zuckerrohr (Zufallsticks); im Tick fällt das nicht ins Gewicht.
+
+**Nach dem Review** (2026-10-22, Ringe der Nulllinie ausblenden, E-840/E-842): `test_terrain_measure` legt jetzt für jede Runde einen neuen Generator an (die Suche nach der Spitze eines Rings merkt sich ihre Ergebnisse je Feld; mit demselben Generator rechneten Runde 2 und 3 mit dem Gemerkten und den Dorfplänen der ersten), daher höhere absolute Zahlen. Gemessen gegen `dev` `9afc1ee` (dieselbe Testdatei), zwei Reihen abwechselnd, exklusiv unter dem Slot-Broker:
+
+| Wert | dev | 69 |
+|---|---:|---:|
+| ms je Chunk | 0,775 / 0,789 | 0,833 / 0,845 (+7,3 %) |
+| µs je Spalte (`column`) | 0,359 / 0,365 | 0,446 / 0,451 (+23,7 %) |
+
+Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suche ohne Schranke und ohne Merken 0,741 ms (+17 %), mit der Schranke `reach` 0,712 ms (+12,3 %). Unter der 10-%-Schwelle erst mit dem Merken je Startzelle.

@@ -8,6 +8,13 @@
 
 #include <algorithm>
 
+namespace {
+
+// Posts stand under a bridge's deck on a grid of this many blocks (decision E-841).
+constexpr int bridgePostSpacing = 3;
+
+} // namespace
+
 int QcVillageDraft::turnsFacing(int fx, int fz)
 {
     if (fz > 0) {
@@ -72,7 +79,7 @@ void QcVillageDraft::markRoad(Rect rect)
     roads.append(rect);
 }
 
-void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<int> level)
+void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<int, int> cell, bool branch, std::optional<RoadLevel> level)
 {
     const auto [x, z] = cell;
     const bool underPiece = std::ranges::any_of(pieces, [&](Rect piece) { return piece.intersects({x, z, x, z}, 0); });
@@ -81,9 +88,14 @@ void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<in
     }
 
     roadCells.insert(cellKey(x, z));
-    if (!style->overWater) {
-        const int ground = terrain.column(x, z).height - 1;
-        const int y = level && std::abs(*level - ground) <= 1 ? *level : ground;
+    const QcTerrainColumn column = terrain.column(x, z);
+    if (!style->overWater && style->bridge.deck != qcAirBlockId && column.height < terrain.seaLevel() && level && level->bridge) {
+        // A bridge over a river (decision E-841): a deck one block above the water, posts on a grid.
+        const bool post = x % bridgePostSpacing == 0 && z % bridgePostSpacing == 0;
+        plan.bridges.append({{x, level->y, z}, style->bridge.deck, post ? style->bridge.post : qcAirBlockId});
+    } else if (!style->overWater) {
+        const int ground = column.height - 1;
+        const int y = level && std::abs(level->y - ground) <= 1 ? level->y : ground;
         (branch ? plan.branchRoads : plan.roads).append({x, y, z});
     } else {
         const QcBlockId block = branch ? plan.branchPathBlock : plan.pathBlock;

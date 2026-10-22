@@ -7,9 +7,11 @@
 #include "worldgen/terrain/QcGiantTreePlacer.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
+#include "worldgen/terrain/QcRiverField.h"
 #include "worldgen/terrain/QcTerrainClimate.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/terrain/QcTerrainDefinitions.h"
+#include "worldgen/terrain/QcTerrainSurface.h"
 #include "worldgen/terrain/QcVegetationPatchPlacer.h"
 
 #include <QList>
@@ -28,8 +30,8 @@ class QcVillageGenerator;
 
 // Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity,
 // ruggedness and rarity, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
-// cliffs, connected cave tunnels and caverns, ore veins, liquid pools sunk into cave floors and
-// features (trees, cacti, plants in patches). All blocks
+// cliffs, winding rivers down to the sea level, connected cave tunnels and caverns, ore veins,
+// liquid pools sunk into cave floors and features (trees, cacti, plants in patches). All blocks
 // come from the registry's biome, feature, ore and terrain definitions. Deterministic per seed and
 // thread-safe: generate() only reads immutable state.
 class QcTerrainGenerator : public QcWorldGenerator
@@ -77,6 +79,13 @@ public:
     // The biome a climate point belongs to (the heaviest after the rarity gate), as the terrain picks
     // it; tests check the layout of the biomes in climate space with it (decision E-824).
     [[nodiscard]] int biomeForClimate(const QcTerrainClimate::Point &climate) const;
+    // The river near a column (decision E-840): distance to its middle line, width and depth there,
+    // for tools, tests and the river deltas; `far` away without rivers and where the ground before
+    // the river lies more than 8 blocks under the sea level (the sea, deep lakes), as in
+    // column(). Costs a column(); column() itself gives the distance and the half width.
+    [[nodiscard]] QcRiverField::Sample riverAt(int x, int z) const;
+    // Whether a biome is a river biome (the water of river channels, decision E-840).
+    [[nodiscard]] bool isRiverBiome(int biome) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
     QString biomeName(int index) const;
@@ -95,9 +104,6 @@ private:
     using Feature = QcTerrainDefinitions::Feature;
     using Ore = QcTerrainDefinitions::Ore;
 
-    QcBlockId surfaceBlock(const Column &column, int x, int z) const;
-    // The ground's own block below the surface down to the subsurface depth.
-    QcBlockId subsurfaceBlock(const Column &column, QcBlockId surface) const;
     // Biome height of land before blending: base height plus hills, ridges and terraces.
     double biomeHeight(const Biome &biome, double rolling, double ridge, double terraces) const;
     // The climate blend of a column: its biome (the heaviest) and the weighted land height and
@@ -109,6 +115,17 @@ private:
         double overhang = 0.0;
     };
     [[nodiscard]] Blend blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const;
+    // A column of land height `height` and biome `biome` carved by the river near it (decision
+    // E-840): the new height, the river biome where the river put water, and whether it is a bank.
+    struct RiverCut
+    {
+        double height = 0.0;
+        int biome = 0;
+        bool bank = false;
+        // The river the column asked (none where its ground lies too deep).
+        QcRiverField::Sample river;
+    };
+    [[nodiscard]] RiverCut riverCut(int x, int z, const QcTerrainClimate::Point &climate, double height, int biome) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;
@@ -152,6 +169,9 @@ private:
     QcCaveCarver m_caves;
     QcPoolPlacer m_pools;
     QcTerrainClimate m_climate;
+    QcRiverField m_rivers;
+    // The ground blocks of the columns; after the definitions and rivers it reads.
+    QcTerrainSurface m_ground;
     // Created in the constructor's body: it reads the terrain columns.
     std::unique_ptr<QcVillageGenerator> m_villages;
     std::unique_ptr<QcDungeonGenerator> m_dungeons;

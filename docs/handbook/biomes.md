@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
+**QtCraft:** [Birch Forest](#biome-qtcraft-birch_forest) · [Desert](#biome-qtcraft-desert) · [Flower Valley](#biome-qtcraft-flower_valley) · [Forest](#biome-qtcraft-forest) · [Forest Steppe](#biome-qtcraft-forest_steppe) · [Frozen River](#biome-qtcraft-frozen_river) · [Jungle](#biome-qtcraft-jungle) · [Jungle Edge](#biome-qtcraft-jungle_edge) · [Mountains](#biome-qtcraft-mountains) · [Plains](#biome-qtcraft-plains) · [River](#biome-qtcraft-river) · [Snowy Taiga](#biome-qtcraft-snowy_taiga) · [Swamp](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra)
 
 ## QtCraft
 
@@ -150,6 +150,24 @@ Warm, dry grassland between the plains and the desert: tall grass with scattered
 
 [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
+### <a id="biome-qtcraft-frozen_river"></a>Frozen River
+
+A river through cold land (tundra, snowy taiga, taiga): ice covers it, its bed and banks are gravel. Salmon swim under the ice.
+
+| | |
+|---|---|
+| ID | `qtcraft:frozen_river` |
+| Rivers of | [Snowy Taiga](#biome-qtcraft-snowy_taiga), [Taiga](#biome-qtcraft-taiga), [Tundra](#biome-qtcraft-tundra) |
+| Surface | [Gravel](blocks.md#block-qtcraft-gravel) |
+| Below the surface | [Gravel](blocks.md#block-qtcraft-gravel) (3 blocks) |
+| Under water | [Gravel](blocks.md#block-qtcraft-gravel), [Sand](blocks.md#block-qtcraft-sand) (25 %), [Clay](blocks.md#block-qtcraft-clay) (8 %) |
+| Beaches | [Gravel](blocks.md#block-qtcraft-gravel) |
+| Frozen water | [Ice](blocks.md#block-qtcraft-ice) |
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
 ### <a id="biome-qtcraft-jungle"></a>Jungle
 
 Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temples hide in it.
@@ -271,6 +289,23 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 **Creatures**
 
 [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="biome-qtcraft-river"></a>River
+
+The water of the winding rivers that run through the land down to the sea or into lakes. Their water stands at the sea level, their beds are sand with patches of gravel and clay, and sand lines their banks. Salmon and cod swim here. Through mountains they run in gorges; in the driest deserts they grow narrow and end.
+
+| | |
+|---|---|
+| ID | `qtcraft:river` |
+| Rivers of | [Birch Forest](#biome-qtcraft-birch_forest), [Desert](#biome-qtcraft-desert), [Flower Valley](#biome-qtcraft-flower_valley), [Forest](#biome-qtcraft-forest), [Forest Steppe](#biome-qtcraft-forest_steppe), [Jungle](#biome-qtcraft-jungle), [Jungle Edge](#biome-qtcraft-jungle_edge), [Mountains](#biome-qtcraft-mountains), [Plains](#biome-qtcraft-plains), [Swamp](#biome-qtcraft-swamp) |
+| Surface | [Sand](blocks.md#block-qtcraft-sand) |
+| Below the surface | [Sand](blocks.md#block-qtcraft-sand) (3 blocks) |
+| Under water | [Sand](blocks.md#block-qtcraft-sand), [Gravel](blocks.md#block-qtcraft-gravel) (35 %), [Clay](blocks.md#block-qtcraft-clay) (10 %) |
+| Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Creatures**
+
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Snowy Taiga
 

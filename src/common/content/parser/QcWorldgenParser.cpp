@@ -159,6 +159,36 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     return placements;
 }
 
+// The `underwaterPatches` of a biome (decision E-840): up to 8 blocks with shares adding up to at
+// most 1.
+[[nodiscard]] QList<QcBlockShare> parseBlockShares(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<QcBlockShare> shares;
+    const QJsonValue patches = json.value(u"underwaterPatches"_s);
+    if (!patches.isUndefined() && (!patches.isArray() || patches.toArray().size() > 8)) {
+        reader.fail(u"'underwaterPatches' must be an array of at most 8 entries"_s);
+        return shares;
+    }
+
+    double total = 0.0;
+    const QJsonArray entries = patches.toArray();
+    for (const auto &entry : entries) {
+        const QJsonObject shareJson = entry.toObject();
+        QcJsonFieldReader shareReader{shareJson, reader.context, {}};
+        const QcBlockShare share{shareReader.name(u"block"_s, packNamespace), shareReader.number(u"share"_s, 0.0, 0.0, 1.0)};
+        if (!entry.isObject() || share.block.isEmpty() || !shareJson.contains(u"share"_s) || !shareReader.ok()) {
+            reader.fail(shareReader.ok() ? u"'underwaterPatches' entries need 'block' and 'share'"_s : shareReader.error);
+            break;
+        }
+        total += share.share;
+        shares.append(share);
+    }
+    if (total > 1.0 + 1e-9) {
+        reader.fail(u"the shares of 'underwaterPatches' add up to more than 1"_s);
+    }
+    return shares;
+}
+
 } // namespace
 
 namespace QcWorldgenParser {
@@ -199,6 +229,9 @@ namespace QcWorldgenParser {
     biome.snowLine = reader.integer(u"snowLine"_s, 0, 0, QcWorld::worldHeight);
     biome.snowBlock = reader.name(u"snow"_s, packNamespace);
     biome.villages = reader.boolean(u"villages"_s, false);
+    biome.river = reader.boolean(u"river"_s, false);
+    biome.riverBiome = reader.name(u"riverBiome"_s, packNamespace);
+    biome.underwaterPatches = parseBlockShares(json, reader, packNamespace);
     reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
     });
@@ -413,6 +446,8 @@ QcMineshaftSettings MineshaftReader::read()
     settings.caveEntrances = reader.number(u"caveEntrances"_s, settings.caveEntrances, 0.0, 1.0);
     settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
     settings.vegetationBiome = reader.name(u"vegetationBiome"_s, packNamespace);
+    settings.rivers = reader.boolean(u"rivers"_s, false);
+    settings.riverBiome = reader.name(u"riverBiome"_s, packNamespace);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.dungeons = parseDungeons(object, nested, packNamespace);
     });

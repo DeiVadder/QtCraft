@@ -109,6 +109,9 @@ std::shared_ptr<QcVillagerRoads::Graph> QcVillagerRoads::build(const QcVillagePl
     for (const QcVillagePlan::Deck &deck : plan.decks) {
         add(deck.at);
     }
+    for (const QcVillagePlan::Deck &deck : plan.bridges) {
+        add(deck.at);
+    }
 
     graph->neighbours.resize(graph->cells.size());
     for (std::size_t i = 0; i < graph->cells.size(); ++i) {
